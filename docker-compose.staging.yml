@@ -1,0 +1,96 @@
+version: '3.8'
+
+# KOMPASS Docker Compose - Staging Environment
+# Override for staging-specific configuration
+
+services:
+  couchdb:
+    environment:
+      - COUCHDB_USER=${STAGING_COUCHDB_USER}
+      - COUCHDB_PASSWORD=${STAGING_COUCHDB_PASSWORD}
+    volumes:
+      - /opt/kompass/staging/data/couchdb:/opt/couchdb/data
+      - /opt/kompass/staging/config/couchdb:/opt/couchdb/etc/local.d
+    restart: always
+
+  meilisearch:
+    environment:
+      - MEILI_MASTER_KEY=${STAGING_MEILI_MASTER_KEY}
+      - MEILI_ENV=production
+    volumes:
+      - /opt/kompass/staging/data/meilisearch:/meili_data
+    restart: always
+
+  keycloak:
+    environment:
+      - KEYCLOAK_ADMIN=${STAGING_KEYCLOAK_ADMIN}
+      - KEYCLOAK_ADMIN_PASSWORD=${STAGING_KEYCLOAK_ADMIN_PASSWORD}
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://${STAGING_POSTGRES_HOST}:5432/keycloak
+      - KC_DB_USERNAME=${STAGING_POSTGRES_USER}
+      - KC_DB_PASSWORD=${STAGING_POSTGRES_PASSWORD}
+      - KC_HOSTNAME=${STAGING_HOSTNAME}
+      - KC_HOSTNAME_STRICT=true
+      - KC_HOSTNAME_STRICT_HTTPS=true
+      - KC_PROXY=edge
+    command:
+      - start
+      - --optimized
+      - --http-enabled=false
+      - --https-certificate-file=/opt/keycloak/conf/tls.crt
+      - --https-certificate-key-file=/opt/keycloak/conf/tls.key
+    volumes:
+      - /opt/kompass/staging/certs:/opt/keycloak/conf
+      - /opt/kompass/staging/data/keycloak:/opt/keycloak/data
+    restart: always
+
+  backend:
+    image: ghcr.io/${GITHUB_REPOSITORY}/backend:staging
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=${STAGING_DATABASE_URL}
+      - COUCHDB_USER=${STAGING_COUCHDB_USER}
+      - COUCHDB_PASSWORD=${STAGING_COUCHDB_PASSWORD}
+      - COUCHDB_DATABASE=kompass_staging
+      - MEILISEARCH_URL=${STAGING_MEILISEARCH_URL}
+      - MEILISEARCH_MASTER_KEY=${STAGING_MEILI_MASTER_KEY}
+      - KEYCLOAK_URL=${STAGING_KEYCLOAK_URL}
+      - KEYCLOAK_REALM=kompass-staging
+      - KEYCLOAK_CLIENT_ID=kompass-api-staging
+      - KEYCLOAK_CLIENT_SECRET=${STAGING_KEYCLOAK_CLIENT_SECRET}
+      - JWT_SECRET=${STAGING_JWT_SECRET}
+      - ALLOWED_ORIGINS=${STAGING_ALLOWED_ORIGINS}
+      - LOG_LEVEL=info
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    image: ghcr.io/${GITHUB_REPOSITORY}/frontend:staging
+    environment:
+      - VITE_API_URL=${STAGING_API_URL}
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  kompass-network:
+    driver: bridge
+
+volumes:
+  couchdb-data:
+    driver: local
+  couchdb-config:
+    driver: local
+  meilisearch-data:
+    driver: local
+  keycloak-data:
+    driver: local
+

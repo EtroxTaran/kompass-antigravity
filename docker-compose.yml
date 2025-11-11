@@ -1,0 +1,170 @@
+version: '3.8'
+
+# KOMPASS Docker Compose - Development Environment
+# For staging/production, use docker-compose.staging.yml or docker-compose.production.yml
+
+services:
+  # CouchDB - Offline-first database
+  couchdb:
+    image: couchdb:3.3
+    container_name: kompass-couchdb
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-devpassword}
+    ports:
+      - "5984:5984"
+    volumes:
+      - couchdb-data:/opt/couchdb/data
+      - couchdb-config:/opt/couchdb/etc/local.d
+    networks:
+      - kompass-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5984/_up"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+
+  # MeiliSearch - Search engine
+  meilisearch:
+    image: getmeili/meilisearch:v1.5
+    container_name: kompass-meilisearch
+    environment:
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-devmasterkey}
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_ENV=development
+    ports:
+      - "7700:7700"
+    volumes:
+      - meilisearch-data:/meili_data
+    networks:
+      - kompass-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Keycloak - Authentication & SSO
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0
+    container_name: kompass-keycloak
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-devpassword}
+      - KC_DB=dev-file
+      - KC_HTTP_ENABLED=true
+      - KC_HOSTNAME_STRICT=false
+      - KC_HOSTNAME_STRICT_HTTPS=false
+    command:
+      - start-dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+    networks:
+      - kompass-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+  # Backend - NestJS API
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+      target: production
+    container_name: kompass-backend
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_URL=http://couchdb:5984
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-devpassword}
+      - COUCHDB_DATABASE=kompass
+      - MEILISEARCH_URL=http://meilisearch:7700
+      - MEILISEARCH_MASTER_KEY=${MEILI_MASTER_KEY:-devmasterkey}
+      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=kompass
+      - KEYCLOAK_CLIENT_ID=kompass-api
+      - JWT_SECRET=${JWT_SECRET:-dev-jwt-secret-min-32-chars-long}
+      - ALLOWED_ORIGINS=http://localhost:3000,http://frontend:8080
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./apps/backend/src:/app/apps/backend/src
+      - ./packages/shared/src:/app/packages/shared/src
+    depends_on:
+      couchdb:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    networks:
+      - kompass-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+
+  # Frontend - React PWA with nginx
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+      target: production
+      args:
+        - VITE_API_URL=http://localhost:3001
+    container_name: kompass-frontend
+    ports:
+      - "3000:8080"
+    depends_on:
+      - backend
+    networks:
+      - kompass-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+
+networks:
+  kompass-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  couchdb-data:
+    driver: local
+  couchdb-config:
+    driver: local
+  meilisearch-data:
+    driver: local
+  keycloak-data:
+    driver: local
+

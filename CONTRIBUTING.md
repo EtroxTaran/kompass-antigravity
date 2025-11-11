@@ -66,7 +66,7 @@ git checkout -b feature/customer-duplicate-detection
 
 ### 2. Make Changes
 
-- Follow coding standards (see CODING_STANDARDS.md)
+- Follow coding standards (see `docs/guides/CODING_STANDARDS.md`)
 - Write tests for new code (80% coverage minimum)
 - Update documentation as needed
 - Run linter and type checker frequently

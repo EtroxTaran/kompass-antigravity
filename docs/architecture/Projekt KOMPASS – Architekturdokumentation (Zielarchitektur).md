@@ -1454,6 +1454,9 @@ ready).
 
 # UI Library: shadcn/ui (Radix UI + Tailwind CSS). Alternativen: MUI, AntD, eigene Entwicklung.
 
+**Rich Text Editor: TipTap.** Alternative Evaluierungen: Lexical, Editor.js, Quill, plain Markdown. **Warum TipTap?**
+Headless-Architektur integriert perfekt mit shadcn/ui Buttons und Radix-Primitiven. **WCAG 2.1 AA accessibility** out-of-the-box (ProseMirror-basiert), mobile-optimiert mit Touch-Interface. TypeScript-native mit ~50KB Bundle-Size (erfüllt NFR-Performance). **Modular extension system:** Nur benötigte Features laden (StarterKit, Placeholder, TaskList, TaskItem, Link, Table, Mention). Verwendet für Activity-Protokolle (Meeting-Notes mit Voice-to-Text-Integration), Projekt-Beschreibungen (strukturierter Content mit Headings/Tables), Customer/Contact-Notes (basic formatting). HTML-Ausgabe ist GoBD-compliant (immutable nach Finalisierung). **ADR-019** dokumentiert vollständige Entscheidung mit Alternativen-Vergleich (Lexical zu komplex, Editor.js block-based nicht WYSIWYG, Markdown zu developer-centric für ADM-Feldvertrieb).
+
 # 19
 
 **State Management: React Query + Context & Hooks** . Alternatives: Redux, MobX. **Warum React**

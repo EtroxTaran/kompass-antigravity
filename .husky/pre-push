@@ -1,16 +1,142 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "Running unit tests before push..."
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🔍 Running pre-push checks..."
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Get current branch name
+BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+
+# ============================================================================
+# 1. Check branch naming convention
+# ============================================================================
+echo ""
+echo "1️⃣  Checking branch name format..."
+
+# Allow develop, main, and properly formatted feature branches
+if [ "$BRANCH_NAME" != "develop" ] && [ "$BRANCH_NAME" != "main" ]; then
+  # Check if branch follows naming convention
+  if ! echo "$BRANCH_NAME" | grep -qE "^(feature|bugfix|hotfix|refactor|docs|test|chore)/KOM-[0-9]+-[a-z0-9-]+$"; then
+    echo "❌ Branch name does not follow naming convention"
+    echo "   Got: $BRANCH_NAME"
+    echo ""
+    echo "   Required format: <type>/KOM-###-<description>"
+    echo "   Examples:"
+    echo "     feature/KOM-123-customer-validation"
+    echo "     bugfix/KOM-456-invoice-fix"
+    echo "     hotfix/KOM-789-security-patch"
+    echo ""
+    echo "   Or rename your branch:"
+    echo "     git branch -m <new-branch-name>"
+    echo ""
+    exit 1
+  fi
+  echo "   ✅ Branch name is valid: $BRANCH_NAME"
+else
+  echo "   ✅ Main branch: $BRANCH_NAME"
+fi
+
+# ============================================================================
+# 2. Check commit messages have Linear issue IDs
+# ============================================================================
+echo ""
+echo "2️⃣  Checking commit messages for Linear issue IDs..."
+
+# Get commits that would be pushed
+COMMITS=$(git log @{u}.. --format=%s 2>/dev/null)
+
+if [ -z "$COMMITS" ]; then
+  echo "   ℹ️  No new commits to push"
+else
+  # Check if all commits have Linear issue ID (KOM-###)
+  INVALID_COMMITS=$(echo "$COMMITS" | grep -vE "^(feat|fix|docs|style|refactor|perf|test|chore|ci|revert)\(KOM-[0-9]+\):")
+  
+  if [ -n "$INVALID_COMMITS" ]; then
+    echo "   ❌ Some commits missing Linear issue ID:"
+    echo "$INVALID_COMMITS" | head -5
+    echo ""
+    echo "   Required format: <type>(KOM-###): <subject>"
+    echo "   Example: feat(KOM-123): add customer validation"
+    echo ""
+    echo "   Fix with:"
+    echo "     git commit --amend  # to fix last commit"
+    echo "     git rebase -i       # to fix older commits"
+    echo ""
+    exit 1
+  fi
+  echo "   ✅ All commits have Linear issue IDs"
+fi
+
+# ============================================================================
+# 3. Check if documentation needs updating
+# ============================================================================
+echo ""
+echo "3️⃣  Checking documentation updates..."
+
+# Get changed files
+CHANGED_FILES=$(git diff --name-only @{u}.. 2>/dev/null)
+
+if [ -n "$CHANGED_FILES" ]; then
+  # Check if API changes were made
+  if echo "$CHANGED_FILES" | grep -qE "apps/backend/src/.*\.(controller|dto|guard|module)\.ts$"; then
+    # Check if docs were updated
+    if ! echo "$CHANGED_FILES" | grep -qE "^docs/(api/|specifications/API)"; then
+      echo "   ⚠️  WARNING: API changes detected but no documentation updates"
+      echo "   Consider updating:"
+      echo "     - docs/api/reference/"
+      echo "     - docs/specifications/API_SPECIFICATION.md"
+      echo ""
+      echo "   If documentation is not needed, you can proceed."
+      echo "   Continue? (y/N)"
+      read -r CONTINUE
+      if [ "$CONTINUE" != "y" ] && [ "$CONTINUE" != "Y" ]; then
+        echo "   ❌ Push aborted. Update documentation and try again."
+        exit 1
+      fi
+    else
+      echo "   ✅ Documentation updated with API changes"
+    fi
+  else
+    echo "   ✅ No API changes requiring documentation"
+  fi
+else
+  echo "   ℹ️  No file changes to check"
+fi
+
+# ============================================================================
+# 4. Run unit tests
+# ============================================================================
+echo ""
+echo "4️⃣  Running unit tests..."
 
 # Run fast unit tests only (not integration or E2E)
 pnpm test:unit --bail --passWithNoTests
 
 if [ $? -ne 0 ]; then
-  echo "❌ Unit tests failed. Push aborted."
-  echo "Fix the failing tests or skip with: git push --no-verify"
+  echo "   ❌ Unit tests failed. Push aborted."
+  echo ""
+  echo "   Fix the failing tests or skip with: git push --no-verify"
+  echo "   (Not recommended - all tests should pass)"
+  echo ""
   exit 1
 fi
 
-echo "✓ Unit tests passed"
+echo "   ✅ Unit tests passed"
 
+# ============================================================================
+# Summary
+# ============================================================================
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "✅ ALL PRE-PUSH CHECKS PASSED"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "   ✅ Branch name valid"
+echo "   ✅ Commit messages valid"
+echo "   ✅ Documentation check passed"
+echo "   ✅ Unit tests passed"
+echo ""
+echo "   Pushing to $BRANCH_NAME..."
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""

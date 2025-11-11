@@ -357,3 +357,32 @@ security-report.json
 
 # Dependency vulnerability reports
 audit-results.json
+
+# ============================================================================
+# Project Organization Rules - FORBIDDEN FILE PATTERNS
+# ============================================================================
+# See: .cursor/rules/file-organization.mdc
+#      .cursor/rules/documentation-organization.mdc
+
+# Forbidden documentation in root (must be in docs/)
+/IMPLEMENTATION*.md
+/MIGRATION*.md
+/DEVELOPMENT.md
+/DEPLOYMENT*.md
+/USAGE*.md
+/CODING*.md
+/SETUP*.md
+/API*.md
+/*_GUIDE.md
+/*_SPECIFICATION.md
+/*_UPDATES.md
+/*_COMPLETE.md
+/*_SUMMARY.md
+
+# Forbidden file versioning patterns (use Git instead!)
+*_backup*
+*_old
+*_v[0-9]*
+*_fixed
+*_copy
+*_temp

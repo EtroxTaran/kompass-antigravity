@@ -1,0 +1,164 @@
+version: '3.8'
+
+# KOMPASS Docker Compose - Production Environment
+# Override for production-specific configuration
+
+services:
+  couchdb:
+    environment:
+      - COUCHDB_USER=${PRODUCTION_COUCHDB_USER}
+      - COUCHDB_PASSWORD=${PRODUCTION_COUCHDB_PASSWORD}
+    volumes:
+      - /opt/kompass/production/data/couchdb:/opt/couchdb/data
+      - /opt/kompass/production/config/couchdb:/opt/couchdb/etc/local.d
+      - /opt/kompass/production/backups/couchdb:/opt/couchdb/backups
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+  meilisearch:
+    environment:
+      - MEILI_MASTER_KEY=${PRODUCTION_MEILI_MASTER_KEY}
+      - MEILI_ENV=production
+    volumes:
+      - /opt/kompass/production/data/meilisearch:/meili_data
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
+  keycloak:
+    environment:
+      - KEYCLOAK_ADMIN=${PRODUCTION_KEYCLOAK_ADMIN}
+      - KEYCLOAK_ADMIN_PASSWORD=${PRODUCTION_KEYCLOAK_ADMIN_PASSWORD}
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://${PRODUCTION_POSTGRES_HOST}:5432/keycloak
+      - KC_DB_USERNAME=${PRODUCTION_POSTGRES_USER}
+      - KC_DB_PASSWORD=${PRODUCTION_POSTGRES_PASSWORD}
+      - KC_HOSTNAME=${PRODUCTION_HOSTNAME}
+      - KC_HOSTNAME_STRICT=true
+      - KC_HOSTNAME_STRICT_HTTPS=true
+      - KC_PROXY=edge
+      - KC_LOG_LEVEL=info
+    command:
+      - start
+      - --optimized
+      - --http-enabled=false
+      - --https-certificate-file=/opt/keycloak/conf/tls.crt
+      - --https-certificate-key-file=/opt/keycloak/conf/tls.key
+    volumes:
+      - /opt/kompass/production/certs:/opt/keycloak/conf
+      - /opt/kompass/production/data/keycloak:/opt/keycloak/data
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+  backend:
+    image: ghcr.io/${GITHUB_REPOSITORY}/backend:${IMAGE_TAG:-latest}
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=${PRODUCTION_DATABASE_URL}
+      - COUCHDB_USER=${PRODUCTION_COUCHDB_USER}
+      - COUCHDB_PASSWORD=${PRODUCTION_COUCHDB_PASSWORD}
+      - COUCHDB_DATABASE=kompass
+      - MEILISEARCH_URL=${PRODUCTION_MEILISEARCH_URL}
+      - MEILISEARCH_MASTER_KEY=${PRODUCTION_MEILI_MASTER_KEY}
+      - KEYCLOAK_URL=${PRODUCTION_KEYCLOAK_URL}
+      - KEYCLOAK_REALM=kompass
+      - KEYCLOAK_CLIENT_ID=kompass-api
+      - KEYCLOAK_CLIENT_SECRET=${PRODUCTION_KEYCLOAK_CLIENT_SECRET}
+      - JWT_SECRET=${PRODUCTION_JWT_SECRET}
+      - ALLOWED_ORIGINS=${PRODUCTION_ALLOWED_ORIGINS}
+      - LOG_LEVEL=warn
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+  frontend:
+    image: ghcr.io/${GITHUB_REPOSITORY}/frontend:${IMAGE_TAG:-latest}
+    environment:
+      - VITE_API_URL=${PRODUCTION_API_URL}
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+  # Nginx Reverse Proxy (optional - for SSL termination)
+  nginx-proxy:
+    image: nginx:1.25-alpine
+    container_name: kompass-nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /opt/kompass/production/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/kompass/production/certs:/etc/nginx/certs:ro
+      - /opt/kompass/production/logs/nginx:/var/log/nginx
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - kompass-network
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+networks:
+  kompass-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+
+volumes:
+  couchdb-data:
+    driver: local
+  couchdb-config:
+    driver: local
+  meilisearch-data:
+    driver: local
+  keycloak-data:
+    driver: local
+

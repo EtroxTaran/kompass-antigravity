@@ -107,6 +107,35 @@ See `docs/reviews/DATA_MODEL_SPECIFICATION.md` for complete entity definitions.
 
 ## Development
 
+### Developer Workflow
+
+KOMPASS uses Linear-integrated Git workflow with automated quality gates.
+
+**Quick workflow**:
+```bash
+# 1. Create branch for Linear issue KOM-123
+git checkout -b feature/KOM-123-description
+
+# 2. Make changes and commit
+git commit -m "feat(KOM-123): add feature description"
+# Pre-commit hooks run: linting, formatting, type checking
+
+# 3. Push branch
+git push origin feature/KOM-123-description
+# Pre-push hooks run: unit tests, documentation checks
+
+# 4. Create PR on GitHub
+# CI/CD runs: all quality gates (11 checks)
+
+# 5. After approval, merge to develop
+# Auto-deploys to staging
+
+# 6. QA on staging, then merge develop → main
+# Auto-deploys to production
+```
+
+**See**: `docs/processes/DEVELOPMENT_WORKFLOW.md` for complete workflow
+
 ### Generate New Entity
 
 ```bash
@@ -126,13 +155,13 @@ See `docs/reviews/DATA_MODEL_SPECIFICATION.md` for complete entity definitions.
 # All tests
 pnpm test
 
-# Unit tests only
+# Unit tests only (70% of tests)
 pnpm test:unit
 
-# Integration tests
+# Integration tests (20% of tests)
 pnpm test:integration
 
-# E2E tests
+# E2E tests (10% of tests)
 pnpm test:e2e
 
 # With coverage
@@ -151,8 +180,65 @@ pnpm format
 # Type check
 pnpm type-check
 
+# Generate API docs
+pnpm generate:api-docs
+
+# Generate changelog
+pnpm changelog:generate
+
 # All checks
 pnpm lint && pnpm type-check && pnpm test:unit
+```
+
+### Local Docker Environment
+
+```bash
+# Start all services (CouchDB, MeiliSearch, Keycloak, backend, frontend)
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Check health
+bash scripts/health-check.sh
+```
+
+## CI/CD & Deployment
+
+### Automated Workflows
+
+KOMPASS uses GitHub Actions for complete CI/CD:
+
+**Quality Gates** (on every PR):
+- ✅ ESLint, Prettier, TypeScript checks
+- ✅ Unit, integration, and E2E tests (75%+ coverage)
+- ✅ Security scanning (Snyk, Semgrep, pnpm audit)
+- ✅ Documentation validation
+- ✅ Build verification
+
+**Deployments**:
+- **Staging**: Auto-deploy on merge to `develop`
+- **Production**: Auto-deploy on merge to `main`
+
+**See**: `docs/deployment/QUICK_START.md` for setup guide
+
+### Deployment Commands
+
+```bash
+# Deploy to staging (on server)
+bash scripts/deploy-staging.sh
+
+# Deploy to production (on server)
+bash scripts/deploy-production.sh
+
+# Run health checks
+bash scripts/health-check.sh <environment>
+
+# Rollback deployment
+bash scripts/rollback.sh <environment>
 ```
 
 ## Project Status
@@ -166,6 +252,10 @@ pnpm lint && pnpm type-check && pnpm test:unit
 - Test strategy (70/20/10 pyramid)
 - API specification
 - Development environment setup
+- **Complete CI/CD pipeline with Docker deployment**
+- **Documentation automation**
+- **Quality gates enforcement**
+- **Dual-environment deployment (staging + production)**
 
 ### In Progress 🚧
 
@@ -194,10 +284,19 @@ pnpm lint && pnpm type-check && pnpm test:unit
 
 ### For Developers
 
-- **Development Guide:** `DEVELOPMENT.md`
+- **Development Workflow:** `docs/processes/DEVELOPMENT_WORKFLOW.md` ⭐ **NEW**
+- **Quick Start (CI/CD):** `docs/deployment/QUICK_START.md` ⭐ **NEW**
+- **File Organization:** `docs/processes/FILE_ORGANIZATION_ENFORCEMENT.md` ⭐ **NEW**
+- **Development Guide:** `docs/guides/DEVELOPMENT.md`
 - **Contributing:** `CONTRIBUTING.md`
-- **Coding Standards:** `CODING_STANDARDS.md`
+- **Coding Standards:** `docs/guides/CODING_STANDARDS.md`
 - **API Reference:** http://localhost:3000/api (when running)
+
+### For DevOps
+
+- **Deployment Guide:** `docs/deployment/DEPLOYMENT_GUIDE.md` ⭐ **NEW**
+- **GitHub Secrets:** `docs/deployment/GITHUB_SECRETS.md` ⭐ **NEW**
+- **Rollback Procedures:** `docs/deployment/ROLLBACK_PROCEDURES.md` ⭐ **NEW**
 
 ### By Role
 
@@ -205,6 +304,7 @@ pnpm lint && pnpm type-check && pnpm test:unit
 - **Tech Lead:** See `docs/architectur/` and `docs/reviews/`
 - **QA Lead:** See `docs/reviews/TEST_STRATEGY_DOCUMENT.md`
 - **Security:** See `docs/reviews/NFR_SPECIFICATION.md` §15
+- **DevOps:** See `docs/deployment/` ⭐ **NEW**
 
 ## Team
 

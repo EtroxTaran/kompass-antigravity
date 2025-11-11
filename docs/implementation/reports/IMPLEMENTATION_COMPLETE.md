@@ -315,7 +315,7 @@ All implementation phases complete. Recommended deployment order:
 ## 📞 Support & Contact
 
 For questions about this implementation:
-- **Technical Questions**: Review `docs/IMPLEMENTATION_SUMMARY.md`
+- **Technical Questions**: Review `docs/implementation/reports/IMPLEMENTATION_SUMMARY.md`
 - **Migration Help**: See `docs/MIGRATION_GUIDE.md`
 - **API Questions**: Check `docs/API_UPDATES.md`
 - **Issues**: Open GitHub issue with `[migration]` tag
