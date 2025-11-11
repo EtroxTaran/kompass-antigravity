@@ -1,0 +1,595 @@
+---
+description: Documentation folder structure, organization standards, naming conventions, and maintenance practices to prevent duplicates and ensure clarity
+globs: ["docs/**/*.md", "docs/**/*.mdx"]
+alwaysApply: true
+---
+
+# Documentation Organization Standards
+
+## Core Principle
+
+**Documentation must be organized logically, discoverable, and maintainable. Each document must have a single source of truth and clear ownership.**
+
+## Minimal Root Directory Rule
+
+### ✅ ALLOWED in `docs/` Root
+
+**ONLY these 2 files allowed in `docs/` root:**
+
+- `README.md` - Main documentation index and navigation (REQUIRED)
+- `CHANGELOG.md` - Version history (OPTIONAL)
+
+**ALL other documentation MUST be in subfolders.**
+
+### ❌ FORBIDDEN in `docs/` Root
+
+**NEVER place documentation files directly in `docs/` root:**
+
+- ❌ API documentation → Must be in `docs/api/`
+- ❌ Implementation reports → Must be in `docs/implementation/`
+- ❌ Migration guides → Must be in `docs/implementation/migrations/`
+- ❌ Rules and standards → Must be in `docs/rules/`
+- ❌ Guides → Must be in `docs/guides/`
+- ❌ Architecture docs → Must be in `docs/architecture/`
+- ❌ Specifications → Must be in `docs/specifications/`
+- ❌ Any other `.md` files → Must be in appropriate subfolder
+
+**Rule**: If you're creating a `.md` file in `docs/` and it's not `README.md` or `CHANGELOG.md`, it MUST go in an appropriate subfolder.
+
+## Documentation Folder Structure
+
+### Standard Structure (Minimal Root)
+
+```
+docs/
+├── README.md                    # ✅ ONLY main index (required)
+├── CHANGELOG.md                 # ✅ ONLY changelog (optional)
+│
+├── guides/                      # User and developer guides
+│   ├── README.md               # Guides index
+│   ├── getting-started.md      # Quick start guide
+│   ├── development.md          # Development guide
+│   ├── deployment.md           # Deployment guide
+│   ├── troubleshooting.md      # Common issues and solutions
+│   └── contributing.md         # Contribution guidelines
+│
+├── api/                         # API documentation
+│   ├── README.md               # API documentation index
+│   ├── reference/              # API reference
+│   │   ├── endpoints.md        # All endpoints
+│   │   ├── authentication.md   # Auth documentation
+│   │   └── models.md          # Data models
+│   ├── updates/                # API change logs
+│   │   └── API_UPDATES.md      # API changes by version
+│   └── examples/               # API usage examples
+│
+├── architecture/                # Architecture documentation
+│   ├── README.md               # Architecture overview
+│   ├── system-design.md        # Main architecture document
+│   ├── decisions/              # Architecture Decision Records (ADRs)
+│   │   ├── README.md          # ADR index
+│   │   └── adr-001-*.md        # Individual ADRs
+│   ├── evolution/              # Architecture evolution guides
+│   └── diagrams/               # Architecture diagrams
+│       └── images/             # Diagram images
+│
+├── specifications/              # Technical specifications
+│   ├── README.md               # Specifications index
+│   ├── data-model.md           # Data model specification
+│   ├── rbac.md                 # RBAC permission matrix
+│   ├── testing.md              # Test strategy
+│   ├── nfr.md                  # Non-functional requirements
+│   └── security.md              # Security specifications
+│
+├── product-vision/              # Product vision and strategy
+│   ├── README.md               # Product vision index
+│   ├── overview.md              # Main product vision
+│   ├── roadmap.md              # Technology roadmap
+│   └── features/               # Feature-specific visions
+│
+├── personas/                    # User personas
+│   ├── README.md               # Personas index
+│   └── *.md                    # Individual persona files
+│
+├── implementation/              # Implementation reports and logs
+│   ├── README.md               # Implementation index
+│   ├── reports/                # Implementation reports
+│   │   ├── IMPLEMENTATION_COMPLETE.md
+│   │   └── IMPLEMENTATION_SUMMARY.md
+│   ├── migrations/             # Migration guides
+│   │   └── MIGRATION_GUIDE.md
+│   └── setup/                  # Setup documentation
+│       └── SETUP_COMPLETE.md
+│
+├── processes/                   # Process and workflow documentation
+│   ├── README.md               # Processes index
+│   ├── git-workflow.md         # Git workflow
+│   ├── code-review.md          # Code review process
+│   └── release.md              # Release process
+│
+├── rules/                       # Project rules and standards
+│   ├── README.md               # Rules index
+│   ├── FILE_ORGANIZATION_RULES.md
+│   └── ROOT_DIRECTORY_CLEANUP.md
+│
+└── assets/                      # Documentation assets
+    ├── images/                  # Images referenced in docs
+    ├── diagrams/               # Diagrams and charts
+    └── templates/              # Documentation templates
+```
+
+## Documentation Categories
+
+### 1. Guides (`docs/guides/`)
+
+**Purpose**: Step-by-step instructions for users and developers.
+
+**Content Types**:
+- Getting started guides
+- Development setup
+- Deployment procedures
+- Troubleshooting guides
+- Contribution guidelines
+
+**Naming**: `kebab-case.md` (e.g., `getting-started.md`, `development.md`)
+
+**Ownership**: Development team, updated with code changes
+
+### 2. API Documentation (`docs/api/`)
+
+**Purpose**: Complete API reference and usage examples.
+
+**Content Types**:
+- Endpoint documentation
+- Authentication/authorization
+- Request/response models
+- API versioning
+- Change logs
+
+**Naming**: `UPPER_SNAKE_CASE.md` for specs, `kebab-case.md` for guides
+
+**Ownership**: Backend team, updated with API changes
+
+**Single Source of Truth**: OpenAPI/Swagger spec generates API docs
+
+### 3. Architecture (`docs/architecture/`)
+
+**Purpose**: System design, architecture decisions, and technical overview.
+
+**Content Types**:
+- System architecture diagrams
+- Architecture Decision Records (ADRs)
+- Technology stack documentation
+- Integration patterns
+- Evolution guides
+
+**Naming**: `kebab-case.md` for guides, `adr-###-*.md` for ADRs
+
+**Ownership**: Tech leads, reviewed quarterly
+
+**Single Source of Truth**: Main architecture document is authoritative
+
+### 4. Specifications (`docs/specifications/`)
+
+**Purpose**: Technical specifications and requirements.
+
+**Content Types**:
+- Data model specifications
+- RBAC matrices
+- Test strategies
+- NFR specifications
+- Security requirements
+
+**Naming**: `UPPER_SNAKE_CASE.md` (e.g., `DATA_MODEL_SPECIFICATION.md`)
+
+**Ownership**: Architects/tech leads, versioned with releases
+
+**Single Source of Truth**: One specification per topic, no duplicates
+
+### 5. Product Vision (`docs/product-vision/`)
+
+**Purpose**: Product strategy, vision, and roadmap.
+
+**Content Types**:
+- Product vision documents
+- Technology roadmap
+- Feature visions
+- Strategic documents
+
+**Naming**: `PascalCase.md` or `kebab-case.md` for consistency
+
+**Ownership**: Product team, reviewed quarterly
+
+### 6. Personas (`docs/personas/`)
+
+**Purpose**: User personas and profiles.
+
+**Content Types**:
+- User persona profiles
+- Role descriptions
+- User journey maps
+
+**Naming**: `PascalCase.md` (e.g., `Persona_ADM.md`)
+
+**Ownership**: Product/UX team, updated when roles change
+
+### 7. Implementation (`docs/implementation/`)
+
+**Purpose**: Implementation reports, migration guides, setup documentation.
+
+**Content Types**:
+- Implementation completion reports
+- Migration guides
+- Setup documentation
+- Post-implementation reviews
+
+**Naming**: `UPPER_SNAKE_CASE.md` for reports, `kebab-case.md` for guides
+
+**Ownership**: Implementation team, archived after completion
+
+**Important**: Implementation reports are historical - never update, only archive
+
+### 8. Processes (`docs/processes/`)
+
+**Purpose**: Development processes and workflows.
+
+**Content Types**:
+- Git workflow
+- Code review process
+- Release process
+- CI/CD documentation
+
+**Naming**: `kebab-case.md`
+
+**Ownership**: DevOps/Engineering leads, updated with process changes
+
+### 9. Rules (`docs/rules/`)
+
+**Purpose**: Project rules and standards documentation.
+
+**Content Types**:
+- File organization rules
+- Coding standards
+- Project structure rules
+
+**Naming**: `UPPER_SNAKE_CASE.md`
+
+**Ownership**: Tech leads, updated with rule changes
+
+## Documentation Naming Conventions
+
+### File Naming Rules
+
+**Guides and Tutorials:**
+- Format: `kebab-case.md`
+- Examples: `getting-started.md`, `deployment-guide.md`, `troubleshooting.md`
+
+**Specifications:**
+- Format: `UPPER_SNAKE_CASE.md`
+- Examples: `DATA_MODEL_SPECIFICATION.md`, `API_SPECIFICATION.md`, `RBAC_PERMISSION_MATRIX.md`
+
+**Implementation Reports:**
+- Format: `UPPER_SNAKE_CASE.md`
+- Examples: `IMPLEMENTATION_COMPLETE.md`, `MIGRATION_GUIDE.md`
+
+**Architecture Decision Records:**
+- Format: `adr-###-short-description.md`
+- Examples: `adr-001-use-nestjs.md`, `adr-002-couchdb-offline-first.md`
+
+**Personas:**
+- Format: `PascalCase.md` or `Persona_ROLE.md`
+- Examples: `Persona_ADM.md`, `Persona_GF.md`
+
+**Product Vision:**
+- Format: `PascalCase.md` or `kebab-case.md` (consistent within folder)
+- Examples: `ProductVision.md` or `product-vision.md`
+
+### Versioning Documentation
+
+**NEVER create versioned documentation files:**
+- ❌ `API_v2.md`, `API_v1.md`
+- ❌ `specification_v2.md`
+- ❌ `guide_2024.md`
+
+**INSTEAD:**
+- ✅ Use `CHANGELOG.md` for version history
+- ✅ Update existing document and note changes in changelog
+- ✅ Use Git history to see previous versions
+- ✅ Archive old versions in `docs/implementation/archive/` if needed
+
+## Preventing Duplicates
+
+### Single Source of Truth Principle
+
+**Each topic must have ONE authoritative document:**
+
+```bash
+# ❌ WRONG: Multiple documents for same topic
+docs/API_SPECIFICATION.md
+docs/api/endpoints.md
+docs/api/reference/API.md
+
+# ✅ CORRECT: Single source of truth
+docs/specifications/api.md          # Main specification
+docs/api/reference/endpoints.md    # Detailed reference (links to spec)
+docs/api/examples/                 # Examples only
+```
+
+### Duplicate Detection Rules
+
+**NEVER create documentation that duplicates existing content:**
+
+1. **Check before creating:**
+   - Search existing docs for similar content
+   - Check if topic exists in different folder
+   - Verify if update is needed vs. new document
+
+2. **If similar content exists:**
+   - Update existing document
+   - Add cross-reference
+   - Archive old version if needed
+
+3. **If new document needed:**
+   - Place in correct category folder
+   - Add to folder's README.md index
+   - Link from main docs/README.md
+
+### Documentation Lifecycle
+
+**Stages of Documentation:**
+
+1. **Draft** (`docs/drafts/` or branch)
+   - Work in progress
+   - Not linked from main index
+   - Marked as `[DRAFT]` in title
+
+2. **Active** (`docs/[category]/`)
+   - Published and maintained
+   - Linked from indexes
+   - Regularly reviewed
+
+3. **Deprecated** (`docs/[category]/deprecated/`)
+   - No longer current
+   - Marked with deprecation notice
+   - Links to replacement document
+
+4. **Archived** (`docs/implementation/archive/`)
+   - Historical only
+   - Never updated
+   - Read-only reference
+
+## Documentation Maintenance
+
+### Ownership and Review
+
+**Each document category has an owner:**
+
+| Category | Owner | Review Frequency |
+|----------|-------|------------------|
+| Guides | Development Team | With code changes |
+| API | Backend Team | With API changes |
+| Architecture | Tech Leads | Quarterly |
+| Specifications | Architects | With releases |
+| Product Vision | Product Team | Quarterly |
+| Personas | UX/Product | When roles change |
+| Implementation | Implementation Team | Archive after completion |
+| Processes | DevOps/Engineering | With process changes |
+
+### Review Checklist
+
+**Before updating documentation:**
+
+- [ ] Check if document already exists
+- [ ] Verify correct category folder
+- [ ] Update folder's README.md index
+- [ ] Add cross-references
+- [ ] Update CHANGELOG.md if significant
+- [ ] Notify document owner
+
+**During review:**
+
+- [ ] Verify accuracy
+- [ ] Check links are valid
+- [ ] Ensure examples work
+- [ ] Update last reviewed date
+- [ ] Archive outdated content
+
+### Documentation Templates
+
+**Use templates for consistency:**
+
+```markdown
+# Document Title
+
+**Last Updated**: YYYY-MM-DD  
+**Owner**: [Team/Role]  
+**Status**: Active | Draft | Deprecated  
+**Related**: [Links to related docs]
+
+---
+
+## Overview
+
+Brief description of document purpose.
+
+## Content
+
+Main content here.
+
+## Related Documentation
+
+- [Related Doc 1](./related-doc-1.md)
+- [Related Doc 2](../category/related-doc-2.md)
+
+## Changelog
+
+- YYYY-MM-DD: Initial version
+- YYYY-MM-DD: Updated section X
+```
+
+## README Files as Indexes
+
+### Every Category Folder Must Have README.md
+
+**Purpose**: Navigation and discovery
+
+**Content**:
+- Category overview
+- List of documents with descriptions
+- Quick links
+- Last updated dates
+
+**Example** (`docs/api/README.md`):
+
+```markdown
+# API Documentation
+
+Complete API reference and usage guides.
+
+## Quick Links
+
+- [API Reference](./reference/endpoints.md) - All endpoints
+- [Authentication](./reference/authentication.md) - Auth guide
+- [API Updates](./updates/API_UPDATES.md) - Change log
+
+## Documents
+
+| Document | Description | Last Updated |
+|----------|-------------|--------------|
+| [Endpoints](./reference/endpoints.md) | Complete endpoint reference | 2025-01-27 |
+| [Authentication](./reference/authentication.md) | Auth documentation | 2025-01-27 |
+| [API Updates](./updates/API_UPDATES.md) | Version change log | 2025-01-27 |
+
+## Related Documentation
+
+- [API Specification](../specifications/api.md) - Technical specification
+- [Architecture](../architecture/system-design.md) - System architecture
+```
+
+## Cross-Referencing
+
+### Link Between Related Documents
+
+**Always link related documentation:**
+
+```markdown
+# API Documentation
+
+See also:
+- [API Specification](../specifications/api.md) - Technical specification
+- [Authentication Guide](./authentication.md) - Auth details
+- [API Examples](./examples/) - Usage examples
+```
+
+### Avoid Circular References
+
+**Structure links hierarchically:**
+
+```
+Main Doc (specifications/api.md)
+  └─> Reference Doc (api/reference/endpoints.md)
+      └─> Examples (api/examples/)
+```
+
+## Migration Strategy
+
+### Moving Existing Documentation
+
+**If reorganizing existing docs:**
+
+1. **Create new structure** (don't move yet)
+2. **Update links** in all documents
+3. **Move files** to new locations
+4. **Update indexes** (README.md files)
+5. **Verify all links** work
+6. **Archive old structure** if needed
+
+### Consolidating Duplicates
+
+**If duplicate docs found:**
+
+1. **Identify authoritative version**
+2. **Merge content** if both have unique info
+3. **Update all references** to point to single doc
+4. **Archive or delete** duplicate
+5. **Update indexes**
+
+## Examples
+
+### ✅ CORRECT: Well-Organized Documentation
+
+```
+docs/
+├── README.md                    # Main index
+├── guides/
+│   ├── README.md               # Guides index
+│   ├── getting-started.md      # Single getting started guide
+│   └── development.md          # Single development guide
+├── api/
+│   ├── README.md               # API index
+│   └── reference/
+│       └── endpoints.md        # Single API reference
+└── specifications/
+    ├── README.md               # Specs index
+    └── api.md                  # Single API specification
+```
+
+### ❌ WRONG: Cluttered Root and Duplicates
+
+```
+docs/
+├── README.md                    # ✅ OK
+├── CHANGELOG.md                 # ✅ OK
+├── API_UPDATES.md               # ❌ Should be in api/updates/
+├── IMPLEMENTATION_SUMMARY.md    # ❌ Should be in implementation/reports/
+├── MIGRATION_GUIDE.md           # ❌ Should be in implementation/migrations/
+├── FILE_ORGANIZATION_RULES.md   # ❌ Should be in rules/
+├── DOCUMENTATION_ORGANIZATION.md # ❌ Should be in rules/
+├── API.md                       # ❌ Duplicate
+├── API_SPECIFICATION.md         # ❌ Duplicate
+├── api/
+│   └── API.md                  # ❌ Duplicate
+├── guides/
+│   ├── getting-started.md
+│   └── GETTING_STARTED.md      # ❌ Duplicate (wrong case)
+└── implementation/
+    ├── IMPLEMENTATION_COMPLETE.md
+    └── IMPLEMENTATION_COMPLETE_v2.md  # ❌ Versioned file
+```
+
+## Enforcement
+
+### Pre-Commit Checks
+
+**Pre-commit hooks should check:**
+
+1. New docs in correct category folder
+2. No duplicate filenames (case-insensitive)
+3. README.md updated in category folder
+4. Links are valid
+5. No versioned filenames (`*_v*.md`)
+
+### CI/CD Checks
+
+**CI/CD should validate:**
+
+1. All README.md files exist in category folders
+2. No broken internal links
+3. Documentation structure compliance
+4. No duplicate content (basic checks)
+
+### Code Review Checklist
+
+**Reviewers check:**
+
+1. Document in correct category
+2. No duplicates created
+3. README.md updated
+4. Cross-references added
+5. Template followed (if applicable)
+
+## References
+
+- File Organization: `.cursor/rules/file-organization.mdc`
+- Git Workflow: `.cursor/rules/git-workflow.mdc`
+- Project Structure: `.cursor/rules/project-structure.mdc`

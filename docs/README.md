@@ -12,7 +12,7 @@
 1. **[Product Vision (Nordstern-Direktive)](./product-vision/Produktvision%20für%20Projekt%20KOMPASS%20(Nordstern-Direktive).md)** – North Star Vision, MVP Scope, 4 Strategic Pillars (AI, Collaboration, Analytics, 2025 Intelligence Extensions)
 2. **[AI & Automation Features Vision](./product-vision/Produktvision%20KI%20&%20Automation-Features.md)** – ✨ NEW: RAG Knowledge Management, n8n Automation, Predictive Forecasting, BI Dashboards (2025 Extensions)
 3. **[Technology Roadmap](./product-vision/TECHNOLOGY_ROADMAP.md)** – Timeline, Budget, KPIs für Phases 1-3 + 2025 AI/Automation Roadmap
-4. **[Architecture Documentation](./architectur/Projekt%20KOMPASS%20–%20Architekturdokumentation%20(Zielarchitektur).md)** – Technical Specs, ADRs, Stack (NestJS, React, CouchDB, Grafana, RAG, n8n, Neo4j)
+4. **[Architecture Documentation](./architecture/Projekt%20KOMPASS%20–%20Architekturdokumentation%20(Zielarchitektur).md)** – Technical Specs, ADRs, Stack (NestJS, React, CouchDB, Grafana, RAG, n8n, Neo4j)
 
 ### 🎯 For Product/Business
 - **[Gesamtkonzept (Comprehensive Overview)](./product-vision/Gesamtkonzept_Integriertes_CRM_und_PM_Tool_final.md)** – Executive Summary, Domain Analysis, Requirements, MVP Scope, Phase 2/3 Strategic Outlook
@@ -30,30 +30,30 @@
 - **[Marketing Persona](./personas/Persona%20Marketing%20und%20Grafik%20(Merged%20Profile).md)** – Marketing/Grafik, Customer Portal (Phase 2.2), Analytics
 
 ### 🏗️ For Developers
-- **[Architecture Documentation](./architectur/Projekt%20KOMPASS%20–%20Architekturdokumentation%20(Zielarchitektur).md)** – Complete Technical Specs with:
+- **[Architecture Documentation](./architecture/Projekt%20KOMPASS%20–%20Architekturdokumentation%20(Zielarchitektur).md)** – Complete Technical Specs with:
   - **AI Integration Architecture** (BullMQ, n8n, Whisper, Socket.IO, MinIO)
   - **✨ 2025 Extensions:** RAG System (LlamaIndex, Weaviate), n8n Automation, Neo4j Knowledge Graph, BI Layer (Grafana/Metabase)
   - **Observability & Monitoring** (Grafana Stack: Prometheus, Loki, Tempo)
   - **Real-Time Communication** (Socket.IO + Redis Adapter)
   - **CQRS for Analytics** (CouchDB → PostgreSQL Replication)
   - **ADR-015 to ADR-018** (Key Architectural Decisions)
-- **[AI Extensions Implementation Guide](./architectur/AI-Extensions%20Architektur%20&%20Implementierungs-Guide.md)** – ✨ NEW: Step-by-Step Setup for RAG, n8n, Neo4j, ML-Models, BI-Dashboards (with Docker Compose, code templates, troubleshooting)
-- **[Architecture Evolution Guide](./architectur/ARCHITECTURE_EVOLUTION_GUIDE.md)** – Step-by-Step Migration from MVP to Phase 2/3 (with code examples)
+- **[AI Extensions Implementation Guide](./architecture/ai-extensions/AI-Extensions%20Architektur%20&%20Implementierungs-Guide.md)** – ✨ NEW: Step-by-Step Setup for RAG, n8n, Neo4j, ML-Models, BI-Dashboards (with Docker Compose, code templates, troubleshooting)
+- **[Architecture Evolution Guide](./architecture/evolution/ARCHITECTURE_EVOLUTION_GUIDE.md)** – Step-by-Step Migration from MVP to Phase 2/3 (with code examples)
 - **[Technology Roadmap](./product-vision/TECHNOLOGY_ROADMAP.md)** – Detailed Timeline, Tech Stack Evolution, Budget
 
 ### 📋 For QA/Testing
-- **[Test Strategy Document](./reviews/TEST_STRATEGY_DOCUMENT.md)** – 70/20/10 Pyramid, 50+ E2E Scenarios, Offline Tests, Browser Matrix
-- **[NFR Specification](./reviews/NFR_SPECIFICATION.md)** – Performance (P50/P95/P99), Offline Quota (50MB iOS), Availability (>95%)
-- **[Conflict Resolution Specification](./reviews/CONFLICT_RESOLUTION_SPECIFICATION.md)** – Hybrid Strategy (70% auto, 25% nutzergeführt, 5% eskaliert)
+- **[Test Strategy Document](./specifications/TEST_STRATEGY_DOCUMENT.md)** – 70/20/10 Pyramid, 50+ E2E Scenarios, Offline Tests, Browser Matrix
+- **[NFR Specification](./specifications/NFR_SPECIFICATION.md)** – Performance (P50/P95/P99), Offline Quota (50MB iOS), Availability (>95%)
+- **[Conflict Resolution Specification](./specifications/CONFLICT_RESOLUTION_SPECIFICATION.md)** – Hybrid Strategy (70% auto, 25% nutzergeführt, 5% eskaliert)
 
 ### 🔐 For Security/Compliance
-- **[Data Model Specification](./reviews/DATA_MODEL_SPECIFICATION.md)** – ERD, Entities, Validation, GoBD Immutability, ID Strategies
-- **[RBAC Permission Matrix](./reviews/RBAC_PERMISSION_MATRIX.md)** – 5 Roles (ADM/INNEN/PLAN/BUCH/GF), Entity + Field-Level Permissions
-- **[API Specification](./reviews/API_SPECIFICATION.md)** – OpenAPI 3.0, JWT Auth, RESTful Endpoints, Error Handling (RFC 7807)
+- **[Data Model Specification](./specifications/DATA_MODEL_SPECIFICATION.md)** – ERD, Entities, Validation, GoBD Immutability, ID Strategies
+- **[RBAC Permission Matrix](./specifications/RBAC_PERMISSION_MATRIX.md)** – 5 Roles (ADM/INNEN/PLAN/BUCH/GF), Entity + Field-Level Permissions
+- **[API Specification](./specifications/API_SPECIFICATION.md)** – OpenAPI 3.0, JWT Auth, RESTful Endpoints, Error Handling (RFC 7807)
 
 ### 🗓️ For Project Management
-- **[Delivery Plan](./reviews/DELIVERY_PLAN.md)** – 16 Wochen MVP, 6.75 FTE, €230K Budget, Training & Rollout
-- **[User Journey Maps](./reviews/USER_JOURNEY_MAPS.md)** – 5 End-to-End Journeys (Lead→Projekt, Projekt→Rechnung, GF-Review, Offline-Sync)
+- **[Delivery Plan](./specifications/DELIVERY_PLAN.md)** – 16 Wochen MVP, 6.75 FTE, €230K Budget, Training & Rollout
+- **[User Journey Maps](./specifications/USER_JOURNEY_MAPS.md)** – 5 End-to-End Journeys (Lead→Projekt, Projekt→Rechnung, GF-Review, Offline-Sync)
 - **[Technology Roadmap](./product-vision/TECHNOLOGY_ROADMAP.md)** – Timeline & KPIs für Phases 2-3 (€538-608K Total Budget)
 
 ---
@@ -62,9 +62,14 @@
 
 ```
 docs/
-├── README.md                           # ← You are here
+├── README.md                           # ← You are here (main index)
+├── CHANGELOG.md                        # Version history
 │
-├── architectur/
+├── api/                                # API documentation
+│   └── updates/
+│       └── API_UPDATES.md             # API change logs
+│
+├── architecture/                       # Architecture documentation
 │   ├── Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md
 │   │   # Complete Technical Specs:
 │   │   # - Stack (NestJS, React, CouchDB, Grafana)
@@ -75,20 +80,22 @@ docs/
 │   │   # - CQRS (CouchDB → PostgreSQL)
 │   │   # - ADR-001 to ADR-018 (Architectural Decisions)
 │   │
-│   ├── AI-Extensions Architektur & Implementierungs-Guide.md  # ✨ NEW (2025)
-│   │   # Step-by-Step Implementation Guide:
-│   │   # - RAG System Setup (Weaviate, LlamaIndex, Document Ingestion)
-│   │   # - n8n Workflow Automation (Integration Patterns, Example Workflows)
-│   │   # - Neo4j Knowledge Graph (Schema, Sync Strategies)
-│   │   # - BI & Analytics Layer (PostgreSQL Star-Schema, Grafana, Metabase)
-│   │   # - ML Model Serving (FastAPI, Training Pipelines)
-│   │   # - Security Hardening (DSGVO Compliance, Prompt Injection Defense)
-│   │   # - Monitoring & Observability (Prometheus Metrics, Grafana Dashboards)
-│   │   # - Troubleshooting & FAQ
+│   ├── ai-extensions/
+│   │   └── AI-Extensions Architektur & Implementierungs-Guide.md  # ✨ NEW (2025)
+│   │       # Step-by-Step Implementation Guide:
+│   │       # - RAG System Setup (Weaviate, LlamaIndex, Document Ingestion)
+│   │       # - n8n Workflow Automation (Integration Patterns, Example Workflows)
+│   │       # - Neo4j Knowledge Graph (Schema, Sync Strategies)
+│   │       # - BI & Analytics Layer (PostgreSQL Star-Schema, Grafana, Metabase)
+│   │       # - ML Model Serving (FastAPI, Training Pipelines)
+│   │       # - Security Hardening (DSGVO Compliance, Prompt Injection Defense)
+│   │       # - Monitoring & Observability (Prometheus Metrics, Grafana Dashboards)
+│   │       # - Troubleshooting & FAQ
 │   │
-│   └── ARCHITECTURE_EVOLUTION_GUIDE.md # Migration Path from MVP to Full Vision
+│   └── evolution/
+│       └── ARCHITECTURE_EVOLUTION_GUIDE.md # Migration Path from MVP to Full Vision
 │
-├── product-vision/
+├── product-vision/                     # Product vision and strategy
 │   ├── Produktvision für Projekt KOMPASS (Nordstern-Direktive).md
 │   │   # North Star Vision, MVP Scope, 4 Strategic Pillars:
 │   │   # - Pillar 1: AI-Powered Intelligent Co-Pilot
@@ -107,54 +114,50 @@ docs/
 │   │   # - Implementation Roadmap (Q2-Q4 2025)
 │   │
 │   ├── TECHNOLOGY_ROADMAP.md           # Timeline, Budget, KPIs (Phases 1-3 + 2025 Extensions)
-│   │
 │   ├── Gesamtkonzept_Integriertes_CRM_und_PM_Tool_final.md
-│   │   # Comprehensive Overview: Domain, Requirements, MVP, Phase 2/3 Outlook
-│   │
 │   ├── Produktvision Projektmanagement & -durchführung.md
-│   │   # PM Features, Workflows, Phase 2 AI Risk Assessment & Collaboration
-│   │
 │   ├── Produktvision & Zielbild – Kontakt- & Kundenverwaltung (CRM-Basis).md
-│   │   # CRM Features, Customer/Contact/Opportunity Management
-│   │
 │   └── Produktvision Finanz- und Compliance-Management.md
-│       # Invoicing, GoBD, DSGVO, Phase 2 Observability & Compliance Monitoring
 │
-├── personas/
+├── personas/                           # User personas
 │   ├── Persona-Profil_ Geschäftsführer (CEO) im Projektgeschäft.md
-│   │   # GF Needs, Dashboards, Phase 2.2 Advanced Analytics
-│   │   # ✨ 2025: Executive Intelligence, RAG-based Q&A, Predictive Forecasts, Early Warning Systems
-│   │
 │   ├── Referenzpersona_ Außendienstmitarbeiter (Vertrieb Ladenbau-Projekte).md
-│   │   # Außendienst, Phase 2.1 AI Transcription & Lead Scoring, Route Planning
-│   │   # ✨ 2025: Opportunity Forecasting, AI-powered Customer Research, Pipeline Visualization
-│   │
 │   ├── Innendienst (Vertriebsinnendienst & Kalkulation) – Referenzprofil.md
-│   │   # Innendienst, Phase 2.1 Real-Time Activity Feed & Contextual Commenting
-│   │   # ✨ 2025: Workload Forecasting, n8n Automation (Follow-Ups, Supplier Inquiry), AI Quote Assistant
-│   │
 │   ├── Strategische Referenzpersona_ Planungsabteilung.md
-│   │   # Planer, Phase 2.1 AI Risk Assessment & Real-Time Collaboration
-│   │   # ✨ 2025: Project Timeline Forecasting, RAG Knowledge Search, Design Pattern Library, Capacity Dashboards
-│   │
 │   ├── Persona-Bericht_ Buchhaltung (Integriertes CRM- und PM-Tool).md
-│   │   # Buchhaltung, GoBD Compliance, Phase 2 Observability
-│   │   # ✨ 2025: Cash Flow Forecasting, BI Dashboards, Predictive Collections, AI Financial Analysis
-│   │
 │   └── Persona Marketing und Grafik (Merged Profile).md
-│       # Marketing/Grafik, Phase 2.2 Customer Portal & Analytics für Marketing-ROI
 │
-└── reviews/
-    ├── DATA_MODEL_SPECIFICATION.md     # ERD, Entities, Validation, GoBD, IDs
-    ├── RBAC_PERMISSION_MATRIX.md       # 5 Roles, Entity + Field-Level Permissions
-    ├── API_SPECIFICATION.md            # OpenAPI 3.0, JWT, REST, Error Handling (RFC 7807)
-    ├── NFR_SPECIFICATION.md            # Performance, Offline Quota, Availability
-    ├── TEST_STRATEGY_DOCUMENT.md       # 70/20/10 Pyramid, 50+ E2E Scenarios
-    ├── CONFLICT_RESOLUTION_SPECIFICATION.md  # Hybrid Strategy (70%/25%/5%)
-    ├── USER_JOURNEY_MAPS.md            # 5 End-to-End Journeys
-    ├── DELIVERY_PLAN.md                # 16 Wochen MVP, 6.75 FTE, €230K Budget
-    ├── VALIDATION_REPORT.md            # Gap Resolution Validation (100% Complete)
-    └── FINAL_SUMMARY.md                # Documentation Update Summary
+├── specifications/                     # Technical specifications
+│   ├── DATA_MODEL_SPECIFICATION.md     # ERD, Entities, Validation, GoBD, IDs
+│   ├── RBAC_PERMISSION_MATRIX.md       # 5 Roles, Entity + Field-Level Permissions
+│   ├── API_SPECIFICATION.md            # OpenAPI 3.0, JWT, REST, Error Handling (RFC 7807)
+│   ├── NFR_SPECIFICATION.md            # Performance, Offline Quota, Availability
+│   ├── TEST_STRATEGY_DOCUMENT.md       # 70/20/10 Pyramid, 50+ E2E Scenarios
+│   ├── CONFLICT_RESOLUTION_SPECIFICATION.md  # Hybrid Strategy (70%/25%/5%)
+│   ├── USER_JOURNEY_MAPS.md            # 5 End-to-End Journeys
+│   ├── DELIVERY_PLAN.md                # 16 Wochen MVP, 6.75 FTE, €230K Budget
+│   ├── VALIDATION_REPORT.md            # Gap Resolution Validation (100% Complete)
+│   └── FINAL_SUMMARY.md                # Documentation Update Summary
+│
+├── implementation/                     # Implementation reports
+│   ├── reports/
+│   │   └── IMPLEMENTATION_SUMMARY.md   # Implementation summary
+│   └── migrations/
+│       └── MIGRATION_GUIDE.md          # Migration guides
+│
+├── rules/                              # Project rules and standards
+│   ├── FILE_ORGANIZATION_RULES.md
+│   ├── DOCUMENTATION_ORGANIZATION.md
+│   ├── DOCUMENTATION_STANDARDS_SUMMARY.md
+│   ├── DOCUMENTATION_SOLUTIONS.md
+│   ├── DOCUMENTATION_ROOT_CLEANUP_PLAN.md
+│   ├── CLEANUP_SCRIPT.md
+│   ├── README_STRUCTURE.md
+│   └── ROOT_DIRECTORY_CLEANUP.md
+│
+├── guides/                             # User and developer guides (to be populated)
+├── processes/                          # Process documentation (to be populated)
+└── assets/                             # Documentation assets (images, diagrams, templates)
 ```
 
 ---

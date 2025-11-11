@@ -6,35 +6,164 @@ alwaysApply: true
 
 # Git Workflow & Version Control
 
-## No File Duplication
+## No File Duplication - STRICTLY ENFORCED
 
 ### Use Git for Versioning
 
-NEVER create duplicate copies of files:
+**NEVER create duplicate copies of files.** Use Git for all versioning needs:
 
 ```bash
 # ✅ CORRECT: Use git for versions
 git commit -m "feat(KOM-123): add customer validation"
 # If you need to revert:
 git revert HEAD
-
-# ❌ WRONG: Creating file copies
-customer.service.ts
-customer.service.backup.ts
-customer.service.old.ts
-customer.service.v2.ts
-# NEVER create these files!
+# If you need to see history:
+git log --follow customer.service.ts
+# If you need to compare versions:
+git diff HEAD~1 customer.service.ts
 ```
+
+### Forbidden File Patterns
+
+**NEVER create files matching these patterns:**
+
+```bash
+# ❌ WRONG: Backup/duplicate patterns
+file_backup.ts
+file.backup.ts
+file_backup_2024.ts
+file.bak
+file~                    # Editor backup
+file.swp                 # Vim swap file
+file.tmp                 # Temporary file
+
+# ❌ WRONG: Version suffixes
+file_v2.ts
+file_v2.0.ts
+file_v1.ts
+file.version2.ts
+file.new.ts
+
+# ❌ WRONG: Status suffixes
+file_fixed.ts
+file.fixed.ts
+file_final.ts
+file.final.ts
+file_working.ts
+file.working.ts
+file_done.ts
+file.done.ts
+
+# ❌ WRONG: Old/temporary suffixes
+file_old.ts
+file.old.ts
+file_old_backup.ts
+file_temp.ts
+file.temp.ts
+file_tmp.ts
+file.tmp.ts
+
+# ❌ WRONG: Date-based duplicates
+file_2024-01-27.ts
+file_20240127.ts
+file_jan27.ts
+
+# ❌ WRONG: Copy suffixes
+file_copy.ts
+file.copy.ts
+file_copy2.ts
+file_copy_final.ts
+
+# ❌ WRONG: Test/experimental suffixes
+file_test.ts              # Use __tests__/ directory instead
+file.experimental.ts
+file_try.ts
+file.try.ts
+```
+
+### Complete Pattern List
+
+**These patterns are FORBIDDEN in the entire codebase:**
+
+- `*_backup*`, `*.backup*`, `*.bak`, `*~`, `*.swp`, `*.tmp`
+- `*_v[0-9]*`, `*.v[0-9]*`, `*_version*`, `*.version*`
+- `*_fixed*`, `*.fixed*`, `*_final*`, `*.final*`, `*_working*`, `*.working*`
+- `*_old*`, `*.old*`, `*_temp*`, `*.temp*`, `*_tmp*`, `*.tmp*`
+- `*_copy*`, `*.copy*`, `*_copy[0-9]*`
+- `*_[0-9]{4}-[0-9]{2}-[0-9]{2}*` (date suffixes)
+- `*_test.ts`, `*.test.ts` (use `__tests__/` directory instead)
+- `*_experimental*`, `*.experimental*`, `*_try*`, `*.try*`
 
 ### Prevent Duplication
 
-If Cursor suggests creating a duplicate file, respond:
+**If Cursor suggests creating a duplicate file, ALWAYS respond:**
 
 ```
 "No, do not create a duplicate file. Instead:
 1. Make the changes directly to the existing file
-2. Commit the changes to git
-3. If this doesn't work, we'll revert via git"
+2. Commit the changes to git with a descriptive message
+3. If you need to revert: use 'git revert' or 'git checkout'
+4. If you need to compare: use 'git diff' or 'git log'
+5. If you need experimental code: create a feature branch"
+```
+
+### Exception: Archive Directory (Rare Cases Only)
+
+**ONLY** if historical snapshots must be preserved outside Git (extremely rare):
+
+```bash
+# ✅ CORRECT: Archive directory (use sparingly)
+archive/
+├── legacy/
+│   └── old-api-spec-v1.yaml    # Only if Git history insufficient
+└── README.md                    # Explain why files are archived
+
+# ❌ WRONG: Archive files in project root or source directories
+customer.service.ts
+customer.service.archived.ts     # NEVER do this
+```
+
+**Rules for archive directory:**
+- Must have `archive/README.md` explaining why files exist
+- Must be reviewed and cleaned quarterly
+- Must not contain code files (only documentation/legacy specs)
+- Must be excluded from build/test processes
+
+### Git History is Your Version Control
+
+**Use Git commands instead of file copies:**
+
+```bash
+# See file history
+git log --follow --all -- path/to/file.ts
+
+# See changes in a file
+git log -p path/to/file.ts
+
+# Compare with previous version
+git diff HEAD~1 path/to/file.ts
+
+# Restore previous version (creates new commit)
+git checkout HEAD~1 -- path/to/file.ts
+git commit -m "revert(KOM-123): restore previous version"
+
+# Create a branch for experimental changes
+git checkout -b experiment/KOM-123-new-approach
+# Make changes, test, then merge or discard
+```
+
+### Pre-Commit Hook Enforcement
+
+**Pre-commit hooks MUST detect and reject duplicate patterns:**
+
+```bash
+# .husky/pre-commit should include:
+# Check for forbidden patterns
+if git diff --cached --name-only | grep -E '(_backup|\.backup|\.bak|_old|\.old|_v[0-9]|\.v[0-9]|_fixed|\.fixed|_copy|\.copy|_temp|\.temp|~$|\.swp$|\.tmp$)'; then
+  echo "❌ ERROR: Forbidden file pattern detected!"
+  echo "Use Git for versioning instead of creating duplicate files."
+  exit 1
+fi
 ```
 
 ## Commit Message Format (Conventional Commits)

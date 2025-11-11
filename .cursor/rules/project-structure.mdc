@@ -14,6 +14,7 @@ This is a **pnpm workspace monorepo** with strict directory boundaries:
 - **Frontend**: `apps/frontend/` (React + Vite PWA)
 - **Shared**: `packages/shared/` (TypeScript types, utilities, validation)
 - **Tests**: `tests/` (E2E Playwright tests, integration tests, performance tests)
+- **Documentation**: `docs/` (All project documentation)
 
 ### Rules
 
@@ -21,6 +22,54 @@ This is a **pnpm workspace monorepo** with strict directory boundaries:
 - NEVER create duplicate copies of files - use git for versioning
 - All shared code MUST be in `packages/shared/`
 - All tests MUST be in `tests/` directory (E2E) or colocated with source (unit tests)
+- All documentation MUST be in `docs/` directory (except standard root files listed below)
+
+## Root Directory Files
+
+### ✅ ALLOWED in Root Directory
+
+Only these standard project files are allowed in root:
+
+- `README.md` - Project overview and quick start guide
+- `CHANGELOG.md` - Version history (if maintained)
+- `LICENSE` - License file
+- `CONTRIBUTING.md` - Contribution guidelines (optional, can be in `docs/`)
+- Configuration files: `package.json`, `tsconfig.json`, `turbo.json`, `.eslintrc.js`, `.prettierrc.js`, `.gitignore`, etc.
+- CI/CD configs: `.github/workflows/`, `.husky/`, etc.
+
+### ❌ FORBIDDEN in Root Directory
+
+These types of files MUST be in `docs/` directory:
+
+- Implementation reports: `IMPLEMENTATION_*.md`, `SETUP_COMPLETE.md`
+- Development guides: `DEVELOPMENT.md`, `USAGE_GUIDE.md`
+- Coding standards: `CODING_STANDARDS.md`
+- Migration guides: `MIGRATION_GUIDE.md`
+- API documentation: `API_UPDATES.md`
+- Architecture documentation
+- Any project-specific documentation beyond README
+
+### Documentation Organization
+
+All documentation MUST be organized in `docs/` directory:
+
+```
+docs/
+├── README.md                    # Documentation index
+├── CHANGELOG.md                 # Version history
+├── MIGRATION_GUIDE.md           # Migration instructions
+├── API_UPDATES.md               # API documentation
+├── architectur/                 # Architecture docs
+├── reviews/                     # Review documents
+├── product-vision/              # Product vision docs
+├── personas/                    # User personas
+└── implementation/              # Implementation reports (NEW)
+    ├── IMPLEMENTATION_COMPLETE.md
+    ├── IMPLEMENTATION_SUMMARY.md
+    └── SETUP_COMPLETE.md
+```
+
+**Rule**: If you're creating a `.md` file and it's not `README.md`, `CHANGELOG.md`, or `LICENSE`, it MUST go in `docs/` directory.
 
 ## Domain-Driven Directory Organization
 
@@ -148,6 +197,28 @@ apps/frontend/src/features/customer/
 ❌ utils/date.ts                     # Should be in packages/shared/src/utils/
 ```
 
+### ❌ WRONG: Documentation in Root Directory
+
+```
+❌ IMPLEMENTATION_COMPLETE.md         # Should be in docs/implementation/
+❌ IMPLEMENTATION_SUMMARY.md         # Should be in docs/implementation/
+❌ DEVELOPMENT.md                    # Should be in docs/
+❌ CODING_STANDARDS.md               # Should be in docs/
+❌ SETUP_COMPLETE.md                 # Should be in docs/implementation/
+❌ USAGE_GUIDE.md                    # Should be in docs/
+```
+
+### ✅ CORRECT: Documentation Organization
+
+```
+✅ README.md                         # Root - project overview
+✅ docs/DEVELOPMENT.md               # Development guide
+✅ docs/CODING_STANDARDS.md          # Coding standards
+✅ docs/implementation/              # Implementation reports
+✅ docs/implementation/IMPLEMENTATION_COMPLETE.md
+✅ docs/implementation/SETUP_COMPLETE.md
+```
+
 ### ❌ WRONG: Circular Dependencies
 
 ```typescript
@@ -162,5 +233,7 @@ import { CustomerService } from '../customer/customer.service';
 
 ## References
 
+- File Organization: `.cursor/rules/file-organization.mdc` - Complete file organization standards
+- Git Workflow: `.cursor/rules/git-workflow.mdc` - No file duplication rules
 - Architecture Documentation: `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md`
 - Data Model: `docs/reviews/DATA_MODEL_SPECIFICATION.md`
