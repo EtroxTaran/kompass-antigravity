@@ -1,0 +1,132 @@
+---
+description: Code review requirements, review checklist (functionality, security, code quality, testing, documentation), review focus areas, and automated checks
+globs: []
+alwaysApply: true
+---
+
+# Code Review Standards
+
+## Review Requirements
+
+### Mandatory Reviews
+
+- EVERY change MUST go through a pull request
+- NEVER commit directly to main/master
+- At least 1 code review approval required (2 for security-critical changes)
+- All CI checks MUST pass before merging
+
+### Review Checklist
+
+Every code review MUST check:
+
+1. **Functionality**
+   - Does the code meet the requirements?
+   - Are edge cases handled?
+   - Are error cases handled?
+
+2. **Security**
+   - No hardcoded secrets
+   - Input validation and sanitization
+   - RBAC guards on endpoints
+   - No sensitive data in logs
+
+3. **Code Quality**
+   - Follows project structure rules
+   - Uses shadcn/ui components (no custom UI)
+   - Proper TypeScript types (no 'any')
+   - Functions are < 50 lines
+   - No code duplication
+
+4. **Testing**
+   - Tests added for new functionality
+   - Test coverage maintained or improved
+   - Tests follow 70/20/10 pyramid
+
+5. **Documentation**
+   - JSDoc comments for complex functions
+   - README updated if needed
+   - Linear issue referenced
+
+## Review Focus Areas
+
+### Security-Critical Areas
+
+Extra scrutiny required for:
+
+- Authentication/authorization code
+- Payment/financial operations
+- Data export/import
+- User input handling
+- Database queries
+- API endpoints
+
+### Performance-Critical Areas
+
+Check for:
+
+- N+1 query problems
+- Missing indexes
+- Unnecessary re-renders
+- Large bundle sizes
+- Memory leaks
+
+## Review Comments
+
+### ✅ CORRECT: Constructive Review Comments
+
+```markdown
+**Security Concern:**
+The login endpoint doesn't have rate limiting. Consider adding @Throttle(10, 60) to prevent brute force attacks.
+
+**Code Quality:**
+This function is 75 lines long. Consider extracting the validation logic into a separate function.
+
+**Testing:**
+This change needs tests for the error case when the customer is not found.
+```
+
+### ❌ WRONG: Vague or Unhelpful Comments
+
+```markdown
+This looks wrong.
+Can you fix this?
+I don't like this approach.
+```
+
+## Automated Checks
+
+### Pre-Merge Requirements
+
+Before merging, ensure:
+
+- [ ] All tests passing
+- [ ] Linting passes (ESLint, Prettier)
+- [ ] Type checking passes
+- [ ] No security vulnerabilities (pnpm audit)
+- [ ] Test coverage maintained
+- [ ] Linear issue referenced
+- [ ] PR description complete
+
+## Review Best Practices
+
+### For Reviewers
+
+- Be constructive and respectful
+- Explain why changes are needed
+- Suggest specific improvements
+- Approve when satisfied
+- Request changes when issues found
+
+### For Authors
+
+- Keep PRs small and focused
+- Respond to all comments
+- Update PR based on feedback
+- Don't take feedback personally
+- Ask for clarification if needed
+
+## References
+
+- Git Workflow: `.cursor/rules/git-workflow.mdc`
+- Testing Strategy: `.cursor/rules/testing-strategy.mdc`
+- Security Best Practices: `.cursor/rules/security-best-practices.mdc`

@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Running unit tests before push..."
+
+# Run fast unit tests only (not integration or E2E)
+pnpm test:unit --bail --passWithNoTests
+
+if [ $? -ne 0 ]; then
+  echo "❌ Unit tests failed. Push aborted."
+  echo "Fix the failing tests or skip with: git push --no-verify"
+  exit 1
+fi
+
+echo "✓ Unit tests passed"
+

@@ -1,0 +1,330 @@
+---
+description: Layered architecture patterns for NestJS backend and React frontend, dependency injection, guards, interceptors, and component structure
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: true
+---
+
+# Architecture Enforcement
+
+## Backend Architecture (NestJS)
+
+### Layered Architecture
+
+The backend MUST follow strict layered architecture:
+
+```
+Controller → Service → Repository → Database
+     ↓         ↓          ↓
+   DTOs     Business    CouchDB
+             Logic
+```
+
+### Layer Responsibilities
+
+#### Controller Layer
+
+- **ONLY** handles HTTP concerns (request/response)
+- **MUST NOT** contain business logic
+- Validates DTOs using class-validator
+- Extracts user from JWT token
+- Calls service layer methods
+- Returns HTTP responses
+
+#### Service Layer
+
+- **MUST** contain all business logic
+- **MUST** use repositories for data access
+- **MUST NOT** access CouchDB directly
+- Handles domain validation
+- Orchestrates multiple repositories if needed
+- Throws domain exceptions
+
+#### Repository Layer
+
+- **MUST** be the ONLY layer accessing the database
+- **MUST NOT** contain business logic
+- Handles CouchDB operations (CRUD)
+- Converts between domain entities and CouchDB documents
+- Implements query logic
+
+### NestJS Module Structure
+
+```typescript
+// ✅ CORRECT: Proper module structure
+@Module({
+  imports: [SharedModule],
+  controllers: [CustomerController],
+  providers: [
+    CustomerService,
+    CustomerRepository,
+    // Provide repository interface
+    {
+      provide: 'ICustomerRepository',
+      useClass: CustomerRepository,
+    },
+  ],
+  exports: [CustomerService], // Export for other modules
+})
+export class CustomerModule {}
+```
+
+### Dependency Injection Rules
+
+- ALWAYS use constructor injection
+- ALWAYS inject interfaces, not concrete implementations
+- Use `@Inject()` decorator for custom providers
+- NEVER use circular dependencies - refactor to shared module if needed
+
+```typescript
+// ✅ CORRECT: Constructor injection with interface
+@Injectable()
+export class CustomerService {
+  constructor(
+    @Inject('ICustomerRepository')
+    private readonly customerRepo: ICustomerRepository,
+    private readonly validationService: ValidationService,
+  ) {}
+}
+
+// ❌ WRONG: Direct instantiation or concrete dependency
+@Injectable()
+export class CustomerService {
+  private repo = new CustomerRepository(); // Wrong!
+}
+```
+
+### Guards and Interceptors
+
+- EVERY controller method MUST have `@UseGuards(JwtAuthGuard, RbacGuard)`
+- Use guards for authentication/authorization checks ONLY
+- Use interceptors for cross-cutting concerns (logging, transformation)
+- NEVER put business logic in guards or interceptors
+
+```typescript
+// ✅ CORRECT: Guards on controller
+@Controller('customers')
+@UseGuards(JwtAuthGuard, RbacGuard)
+export class CustomerController {
+  @Get(':id')
+  @RequirePermission('Customer', 'READ')
+  async findOne(
+    @Param('id') id: string,
+    @CurrentUser() user: User
+  ): Promise<CustomerResponseDto> {
+    return this.customerService.findById(id, user);
+  }
+}
+```
+
+## Frontend Architecture (React)
+
+### Component Structure
+
+- Use functional components ONLY (no class components)
+- Maximum component size: **300 lines**
+- Extract complex JSX into sub-components
+- Keep render logic simple - move complexity to custom hooks
+
+### Component Hierarchy
+
+```
+Page Component (route-level)
+  └─> Feature Container (data fetching)
+      └─> Presentation Components (shadcn/ui)
+          └─> Atomic UI Components (shadcn/ui)
+```
+
+### Custom Hooks
+
+- Extract complex logic into custom hooks
+- Hooks MUST start with 'use' prefix
+- Hooks MUST follow React hooks rules
+- One hook per responsibility (`useCustomer`, `useOfflineSync`, `useRBAC`)
+
+```typescript
+// ✅ CORRECT: Custom hook with single responsibility
+export function useCustomer(id: string) {
+  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    customerService
+      .getById(id)
+      .then(setCustomer)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  return { customer, loading, error };
+}
+```
+
+### Props and Prop Drilling
+
+- NEVER pass props more than 2 levels deep
+- Use Context or state management for deeper prop passing
+- Always define TypeScript interfaces for props
+- Prefer composition over prop drilling
+
+```typescript
+// ✅ CORRECT: Max 2 levels of prop passing
+<CustomerPage>
+  <CustomerList customers={customers} onSelect={handleSelect}>
+    <CustomerCard customer={customer} onSelect={onSelect} />
+  </CustomerList>
+</CustomerPage>
+
+// ❌ WRONG: More than 2 levels - use Context
+<App>
+  <Layout user={user}>
+    <Sidebar user={user}>
+      <UserMenu user={user}>
+        <UserAvatar user={user} /> {/* 4 levels! Use Context */}
+      </UserMenu>
+    </Sidebar>
+  </Layout>
+</App>
+```
+
+### Use Context for Deep Props
+
+```typescript
+// ✅ CORRECT: Context for deep props
+import { createContext, useContext } from 'react';
+
+const UserContext = createContext<User | null>(null);
+
+export function UserProvider({ children, user }: { children: React.ReactNode, user: User }) {
+  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+}
+
+export function useUser() {
+  const user = useContext(UserContext);
+  if (!user) throw new Error('useUser must be used within UserProvider');
+  return user;
+}
+```
+
+## Shared Code Architecture
+
+### packages/shared Structure
+
+```
+packages/shared/src/
+├── types/
+│   ├── entities/     # Domain entity TypeScript interfaces
+│   ├── dtos/         # Data transfer object types
+│   └── enums/        # Shared enumerations
+├── validation/
+│   ├── customer.validation.ts   # Shared validation rules
+│   └── opportunity.validation.ts
+├── constants/
+│   ├── rbac.constants.ts        # RBAC roles and permissions
+│   └── gobd.constants.ts       # GoBD compliance rules
+└── utils/
+    ├── id-generator.ts          # UUID and GoBD ID generation
+    ├── date-utils.ts            # Date formatting, calculations
+    └── validation-utils.ts      # Common validation functions
+```
+
+### Shared Code Rules
+
+- Shared code MUST be framework-agnostic (no React, no NestJS)
+- Shared code MUST have 100% test coverage
+- Shared code MUST be pure functions or simple classes
+- NEVER import backend or frontend code into shared
+
+```typescript
+// ✅ CORRECT: Framework-agnostic shared code
+// packages/shared/src/utils/id-generator.ts
+export function generateCustomerId(): string {
+  return `customer-${uuidv4()}`;
+}
+
+// ❌ WRONG: Framework-specific code in shared
+import { Injectable } from '@nestjs/common'; // Wrong!
+import { useState } from 'react'; // Wrong!
+```
+
+## Dependency Rule (Clean Architecture)
+
+### Rule: No Imports from Deeper Layers
+
+- Higher layers MUST NOT import from lower layers
+- React components MUST NOT import from repositories
+- Domain entities MUST NOT know about infrastructure
+
+```typescript
+// ✅ CORRECT: Proper dependency flow
+// Component → Service → Repository → Database
+import { customerService } from '../services/customer-service';
+// Component uses service, not repository
+
+// ❌ WRONG: Component directly accessing repository
+import { customerRepository } from '../repositories/customer-repository';
+// Violates dependency rule!
+```
+
+## Examples
+
+### ✅ CORRECT: Proper Backend Layering
+
+```typescript
+// Controller
+@Controller('customers')
+export class CustomerController {
+  constructor(private readonly customerService: CustomerService) {}
+
+  @Post()
+  async create(@Body() dto: CreateCustomerDto, @CurrentUser() user: User) {
+    return this.customerService.create(dto, user);
+  }
+}
+
+// Service
+@Injectable()
+export class CustomerService {
+  constructor(
+    @Inject('ICustomerRepository')
+    private readonly repository: ICustomerRepository
+  ) {}
+
+  async create(dto: CreateCustomerDto, user: User): Promise<Customer> {
+    // Business logic here
+    const customer = this.mapToEntity(dto, user);
+    return this.repository.create(customer);
+  }
+}
+
+// Repository
+@Injectable()
+export class CustomerRepository implements ICustomerRepository {
+  constructor(private readonly nano: Nano) {}
+
+  async create(customer: Customer): Promise<Customer> {
+    // CouchDB access here
+    return this.nano.use('kompass').insert(customer);
+  }
+}
+```
+
+### ❌ WRONG: Violating Layer Boundaries
+
+```typescript
+// ❌ Controller accessing database directly
+@Controller('customers')
+export class CustomerController {
+  constructor(private readonly nano: Nano) {} // Wrong!
+
+  @Post()
+  async create(@Body() dto: CreateCustomerDto) {
+    return this.nano.use('kompass').insert(dto); // Wrong!
+  }
+}
+```
+
+## References
+
+- Clean Architecture: `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md`
+- NestJS Documentation: https://docs.nestjs.com/

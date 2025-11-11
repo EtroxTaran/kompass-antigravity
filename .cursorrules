@@ -1,0 +1,1705 @@
+# KOMPASS Project - Cursor AI Coding Rules
+# Version: 2.0.0
+# Last Updated: 2025-01-27
+# 
+# ⚠️ DEPRECATED: This file format is deprecated by Cursor.
+# 
+# ✅ USE INSTEAD: Rules are now in `.cursor/rules/*.mdc` files with proper YAML frontmatter.
+# These files are automatically detected and applied by Cursor AI.
+#
+# All rules have been migrated to `.cursor/rules/*.mdc` format with:
+# - YAML frontmatter (description, globs, alwaysApply)
+# - Proper rule type configuration
+# - Automatic application by Cursor AI
+#
+# This file is kept for backwards compatibility only.
+# See `.cursor/rules/README.md` for details on the new rule format.
+#
+# Documentation References:
+# - docs/reviews/DATA_MODEL_SPECIFICATION.md
+# - docs/reviews/NFR_SPECIFICATION.md
+# - docs/reviews/TEST_STRATEGY_DOCUMENT.md
+# - docs/reviews/RBAC_PERMISSION_MATRIX.md
+# - docs/reviews/API_SPECIFICATION.md
+# - docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md
+
+# ============================================================================
+# PROJECT STRUCTURE & ORGANIZATION
+# ============================================================================
+
+# Project Structure & Organization
+
+## Monorepo Structure
+
+This is a **pnpm workspace monorepo** with strict directory boundaries:
+
+- **Backend**: `apps/backend/` (NestJS)
+- **Frontend**: `apps/frontend/` (React + Vite PWA)
+- **Shared**: `packages/shared/` (TypeScript types, utilities, validation)
+- **Tests**: `tests/` (E2E Playwright tests, integration tests, performance tests)
+
+### Rules
+
+- NEVER create files outside these designated directories
+- NEVER create duplicate copies of files - use git for versioning
+- All shared code MUST be in `packages/shared/`
+- All tests MUST be in `tests/` directory (E2E) or colocated with source (unit tests)
+
+## Domain-Driven Directory Organization
+
+### Backend Module Structure
+
+Backend modules MUST follow domain structure: `customer/`, `opportunity/`, `project/`, `invoice/`, etc.
+
+Each backend module MUST contain:
+
+```
+apps/backend/src/modules/{entity}/
+├── {entity}.module.ts          # NestJS module
+├── {entity}.controller.ts      # HTTP endpoints
+├── {entity}.service.ts         # Business logic
+├── {entity}.repository.ts      # Data access
+├── dto/                        # Data transfer objects
+│   ├── create-*.dto.ts
+│   ├── update-*.dto.ts
+│   └── response-*.dto.ts
+├── entities/                   # Domain entities
+│   └── {entity}.entity.ts
+└── __tests__/                 # Unit tests
+    └── *.spec.ts
+```
+
+### Frontend Feature Structure
+
+Frontend features MUST follow feature-based structure:
+
+```
+apps/frontend/src/features/{entity}/
+├── components/                 # React components using shadcn/ui
+├── hooks/                      # Custom hooks
+├── services/                   # API clients
+├── store/                      # Redux Toolkit slices or Zustand stores
+└── types/                      # TypeScript types
+```
+
+## Module Boundaries
+
+### Backend Module Boundaries
+
+- Backend services MUST NOT import from other module services directly
+- Use dependency injection and interfaces for cross-module communication
+- NEVER create circular dependencies between modules
+- Shared business logic MUST be extracted to `packages/shared/`
+
+### Frontend Feature Boundaries
+
+- Frontend features MUST NOT directly access other feature stores
+- Use shared state management (Redux Toolkit) for cross-feature data
+- Shared UI components MUST be in `apps/frontend/src/components/ui/` (shadcn)
+- Shared utilities MUST be in `packages/shared/`
+
+## File Naming Conventions
+
+### Backend Files
+
+- **kebab-case** for file names: `customer.service.ts`, `create-customer.dto.ts`
+- **PascalCase** for classes: `CustomerService`, `CreateCustomerDto`
+- **camelCase** for functions and variables: `getCustomerById`, `customerId`
+
+### Frontend Files
+
+- **PascalCase** for React components: `CustomerList.tsx`, `CustomerCard.tsx`
+- **camelCase** for hooks: `useCustomer.ts`, `useCustomerFilters.ts`
+- **kebab-case** for utility files: `api-client.ts`, `date-utils.ts`
+
+### Test Files
+
+- **Unit tests**: `*.spec.ts` (colocated with source)
+- **E2E tests**: `*.e2e.spec.ts` (in `tests/e2e/`)
+- **Integration tests**: `*.integration.spec.ts` (in `tests/integration/`)
+
+### Constants Files
+
+- **UPPER_SNAKE_CASE** for constants: `MAX_RETRY_ATTEMPTS`, `DEFAULT_TIMEOUT`
+- Constants MUST be in files named `*.constants.ts`
+
+# ============================================================================
+# TYPESCRIPT & CODE QUALITY STANDARDS
+# ============================================================================
+
+# TypeScript & Code Quality Standards
+
+## Strict TypeScript Configuration
+
+### Requirements
+
+- ALWAYS use strict mode (`strict: true` in `tsconfig.json`)
+- NEVER use `any` type - use `unknown` with type guards instead
+- ALWAYS provide explicit return types for functions and methods
+- ALWAYS use `readonly` for immutable properties
+- Use const assertions for literal types: `const STATUS = ['NEW', 'ACTIVE'] as const;`
+
+## Type Safety Rules
+
+### Prefer Interfaces Over Type Aliases
+
+```typescript
+// ✅ CORRECT: Interface for object shapes
+interface Customer {
+  id: string;
+  companyName: string;
+  email?: string;
+}
+
+// ❌ WRONG: Type alias for object shape
+type Customer = {
+  id: string;
+  companyName: string;
+};
+```
+
+### Use Discriminated Unions for State Management
+
+```typescript
+// ✅ CORRECT: Discriminated union
+type AsyncState<T> =
+  | { status: 'loading' }
+  | { status: 'success'; data: T }
+  | { status: 'error'; error: Error };
+```
+
+### NEVER Use Type Assertions
+
+```typescript
+// ❌ WRONG: Type assertion
+const customer = response.data as Customer;
+
+// ✅ CORRECT: Type guard
+function isCustomer(data: unknown): data is Customer {
+  // Validation logic
+}
+const customer = isCustomer(response.data) ? response.data : null;
+```
+
+## Function Quality Standards
+
+- Functions MUST have a single responsibility
+- Maximum function length: **50 lines** (excluding comments)
+- Maximum cyclomatic complexity: **10**
+- Extract complex conditions into named boolean functions
+- Use early returns to reduce nesting
+
+## Naming Conventions
+
+- **camelCase**: `getUserById`, `isActive`, `customerId`
+- Boolean variables/functions: prefix with `is`/`has`/`should`/`can`
+- **PascalCase**: `Customer`, `ICustomerRepository`, `CustomerService`
+- **UPPER_SNAKE_CASE**: `MAX_RETRY_ATTEMPTS`, `DEFAULT_TIMEOUT`
+- Private class members: prefix with underscore: `_validateData`
+
+# ============================================================================
+# ARCHITECTURE ENFORCEMENT
+# ============================================================================
+
+# Architecture Enforcement
+
+## Backend Architecture (NestJS)
+
+### Layered Architecture
+
+The backend MUST follow strict layered architecture:
+
+```
+Controller → Service → Repository → Database
+     ↓         ↓          ↓
+   DTOs     Business    CouchDB
+             Logic
+```
+
+### Layer Responsibilities
+
+#### Controller Layer
+
+- **ONLY** handles HTTP concerns (request/response)
+- **MUST NOT** contain business logic
+- Validates DTOs using class-validator
+- Extracts user from JWT token
+- Calls service layer methods
+- Returns HTTP responses
+
+#### Service Layer
+
+- **MUST** contain all business logic
+- **MUST** use repositories for data access
+- **MUST NOT** access CouchDB directly
+- Handles domain validation
+- Orchestrates multiple repositories if needed
+- Throws domain exceptions
+
+#### Repository Layer
+
+- **MUST** be the ONLY layer accessing the database
+- **MUST NOT** contain business logic
+- Handles CouchDB operations (CRUD)
+- Converts between domain entities and CouchDB documents
+- Implements query logic
+
+### Dependency Injection Rules
+
+- ALWAYS use constructor injection
+- ALWAYS inject interfaces, not concrete implementations
+- Use `@Inject()` decorator for custom providers
+- NEVER use circular dependencies - refactor to shared module if needed
+
+### Guards and Interceptors
+
+- EVERY controller method MUST have `@UseGuards(JwtAuthGuard, RbacGuard)`
+- Use guards for authentication/authorization checks ONLY
+- Use interceptors for cross-cutting concerns (logging, transformation)
+- NEVER put business logic in guards or interceptors
+
+## Frontend Architecture (React)
+
+### Component Structure
+
+- Use functional components ONLY (no class components)
+- Maximum component size: **300 lines**
+- Extract complex JSX into sub-components
+- Keep render logic simple - move complexity to custom hooks
+
+### Component Hierarchy
+
+```
+Page Component (route-level)
+  └─> Feature Container (data fetching)
+      └─> Presentation Components (shadcn/ui)
+          └─> Atomic UI Components (shadcn/ui)
+```
+
+### Custom Hooks
+
+- Extract complex logic into custom hooks
+- Hooks MUST start with 'use' prefix
+- Hooks MUST follow React hooks rules
+- One hook per responsibility (`useCustomer`, `useOfflineSync`, `useRBAC`)
+
+### Props and Prop Drilling
+
+- NEVER pass props more than 2 levels deep
+- Use Context or state management for deeper prop passing
+- Always define TypeScript interfaces for props
+- Prefer composition over prop drilling
+
+# ============================================================================
+# DOMAIN MODEL RULES
+# ============================================================================
+
+# Domain Model Rules
+
+## Entity Structure (CouchDB Documents)
+
+### Required Fields for ALL Entities
+
+Every CouchDB document MUST include these fields:
+
+```typescript
+interface BaseEntity {
+  _id: string;              // CouchDB document ID
+  _rev: string;             // CouchDB revision (for optimistic locking)
+  type: string;             // Document type discriminator (e.g., 'customer')
+  
+  // Audit trail (GoBD compliance)
+  createdBy: string;        // User ID who created
+  createdAt: Date;          // ISO 8601 timestamp
+  modifiedBy: string;       // User ID who last modified
+  modifiedAt: Date;         // ISO 8601 timestamp
+  version: number;          // Optimistic locking version
+  
+  // Offline sync support
+  _conflicts?: string[];    // CouchDB conflict array
+  lastSyncedAt?: Date;      // Last successful sync
+}
+```
+
+### ID Generation Rules
+
+- **Customer, Contact, Opportunity**: UUID format → `"customer-{uuid}"`
+- **Invoice**: Sequential GoBD-compliant → `"R-2024-00456"`
+- **Project**: Sequential GoBD-compliant → `"P-2024-B023"`
+- Use `packages/shared/utils/id-generator.ts` for all ID generation
+- NEVER generate IDs manually in business logic
+
+## Validation Rules
+
+### Customer Entity Validation
+
+- companyName: Required, 2-200 chars, pattern: `/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/`
+- vatNumber: Optional, pattern: `/^DE\d{9}$/`
+- email: Optional, valid email format
+- phone: Optional, 7-20 chars, pattern: `/^[\+]?[0-9\s\-()]+$/`
+- creditLimit: Optional, 0-1000000 (€1M)
+- owner: Required, must reference existing User with role ADM
+
+### Opportunity Entity Validation
+
+- estimatedValue: Required, 0-10000000 (€10M)
+- probability: Required, 0-100, step: 5 (must be multiple of 5)
+- status: Required, enum: 'New' | 'Qualifying' | 'Proposal' | 'Negotiation' | 'Won' | 'Lost'
+- Status transitions: Only specific transitions allowed
+
+### Project Entity Validation
+
+- projectNumber: Required, unique, pattern: `/^P-\d{4}-[A-Z]\d{3}$/`
+- contractValue: Required, must match Offer totalPrice if created from opportunity
+- budget: Required, should be ≤ contractValue
+- plannedStartDate: Required, -30 to +365 days from today
+- plannedEndDate: Required, must be > plannedStartDate
+- projectManager: Required, must be User with role PLAN
+
+### Invoice Entity (GoBD Compliance)
+
+- invoiceNumber: Required, immutable, unique, pattern: `/^R-\d{4}-\d{5}$/`
+- invoiceDate: Required, immutable after finalization, -7 days to today
+- totalAmount: Required, must equal: subtotal + taxAmount - discountAmount
+- immutableHash: SHA-256 hash of all immutable fields, generated on finalization
+
+## Business Rule Validation
+
+### Cross-Field Validation
+
+- Opportunity Lost: Requires reason (min 10 characters)
+- Opportunity Won: Requires actual contract value
+- Project: End date must be after start date
+- Project: Budget warning if > contractValue (negative margin)
+- Invoice: Total must match calculated total (±0.01 tolerance)
+
+### RBAC Permission Checks
+
+EVERY data access operation MUST check permissions:
+
+```typescript
+async findCustomer(id: string, currentUser: User): Promise<Customer> {
+  const customer = await this.repository.findById(id);
+  
+  // Check entity-level permission
+  if (!hasPermission(currentUser.role, 'Customer', 'READ')) {
+    throw new ForbiddenException('You do not have permission to view customers');
+  }
+  
+  // Check record-level permission (ownership)
+  if (currentUser.role === 'ADM' && customer.owner !== currentUser.id) {
+    throw new ForbiddenException('You can only view your own customers');
+  }
+  
+  // Filter fields based on role
+  return this.filterFieldsByRole(customer, currentUser.role);
+}
+```
+
+## GoBD Immutability Pattern
+
+### Immutable Entities
+
+After finalization, these entities CANNOT be modified:
+- Invoice (after `finalized = true`)
+- Payment records (always immutable)
+- Protocol entries (after 24 hours)
+
+### Change Log Pattern
+
+All immutable entities MUST have changeLog array:
+
+```typescript
+interface ChangeLogEntry {
+  field: string;
+  oldValue: unknown;
+  newValue: unknown;
+  changedBy: string;     // User ID
+  changedAt: Date;
+  reason: string;        // REQUIRED for post-immutability changes
+  approvedBy?: string;   // GF approval for significant changes
+}
+```
+
+# ============================================================================
+# UI COMPONENTS RULES
+# ============================================================================
+
+# UI Components Rules
+
+## CRITICAL RULE: shadcn/ui and RadixUI ONLY
+
+**NEVER create custom UI components. ALWAYS use shadcn/ui (built on RadixUI).**
+
+shadcn/ui provides accessible, customizable components built on RadixUI primitives and styled with Tailwind CSS. All components are copied into your project, allowing full customization while maintaining accessibility standards.
+
+## Component Installation
+
+### Installing shadcn/ui Components
+
+When you need a component, use the shadcn CLI:
+
+```bash
+pnpm dlx shadcn-ui@latest add button
+pnpm dlx shadcn-ui@latest add input
+pnpm dlx shadcn-ui@latest add form
+pnpm dlx shadcn-ui@latest add table
+# etc.
+```
+
+Components will be installed to `apps/frontend/src/components/ui/` directory.
+
+## Accessibility Requirements (WCAG 2.1 AA)
+
+### Semantic HTML
+
+- Use semantic HTML elements (`<main>`, `<nav>`, `<section>`, etc.)
+- Provide ARIA labels for icons and interactive elements
+- Ensure keyboard navigation works for all interactive elements
+- Text must meet WCAG AA contrast ratio (4.5:1 for normal text)
+
+### Mobile-First Responsive Design
+
+- Minimum touch target: 44px
+- Use mobile-first Tailwind classes: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
+- NEVER use fixed widths that break on mobile
+
+## Loading States
+
+ALWAYS show loading states with Skeleton components:
+
+```typescript
+import { Skeleton } from '@/components/ui/skeleton';
+
+{isLoading ? (
+  <Skeleton className="h-20 w-full" />
+) : (
+  <CustomerList customers={customers} />
+)}
+```
+
+# ============================================================================
+# TESTING STRATEGY (70/20/10 PYRAMID)
+# ============================================================================
+
+# Testing Strategy (70/20/10 Pyramid)
+
+## Test Coverage Requirements
+
+### Coverage Targets
+
+- **Overall**: 80% minimum
+- **Business logic (services)**: 90% minimum
+- **React components**: 80% minimum
+- **Utilities**: 85% minimum
+- **Controllers/routes**: 70% minimum
+
+## Test Pyramid Distribution
+
+- **70% Unit Tests**: Fast, isolated tests for individual functions, methods, and components
+- **20% Integration Tests**: Tests that verify interactions between modules, services, and external systems
+- **10% E2E Tests**: End-to-end tests that verify complete user workflows
+
+## Unit Tests (70% of tests)
+
+### Test File Location
+
+Unit tests MUST be colocated with source files:
+
+```
+apps/backend/src/modules/customer/
+├── customer.service.ts
+├── customer.service.spec.ts          ✅ Colocated
+```
+
+### Unit Test Structure
+
+```typescript
+describe('CustomerService', () => {
+  let service: CustomerService;
+  let repository: jest.Mocked<ICustomerRepository>;
+
+  beforeEach(async () => {
+    // Mock repository
+    repository = {
+      findById: jest.fn(),
+      create: jest.fn(),
+    } as any;
+
+    const module = await Test.createTestingModule({
+      providers: [
+        CustomerService,
+        {
+          provide: 'ICustomerRepository',
+          useValue: repository,
+        },
+      ],
+    }).compile();
+
+    service = module.get<CustomerService>(CustomerService);
+  });
+
+  describe('findById', () => {
+    it('should return customer when found', async () => {
+      const mockCustomer = { id: '1', companyName: 'Test GmbH' };
+      repository.findById.mockResolvedValue(mockCustomer);
+
+      const result = await service.findById('1');
+
+      expect(result).toEqual(mockCustomer);
+    });
+  });
+});
+```
+
+## Integration Tests (20% of tests)
+
+Integration tests verify interactions between modules, services, and external systems.
+
+## E2E Tests (10% of tests)
+
+E2E tests verify complete user workflows using Playwright.
+
+## Mocking Rules
+
+### What to Mock
+
+- External services (CouchDB, MeiliSearch, Keycloak, n8n)
+- HTTP requests
+- Date/time functions (use `jest.useFakeTimers()`)
+- File system operations
+
+### What NOT to Mock
+
+- Pure functions
+- Simple utilities
+- The code under test itself
+
+# ============================================================================
+# REUSABLE COMPONENTS & CODE EXTRACTION
+# ============================================================================
+
+# Reusable Components & Code Extraction
+
+## When to Extract to packages/shared
+
+Extract code to `packages/shared/` when:
+
+- Used by both backend and frontend
+- Pure functions without framework dependencies
+- Domain types and interfaces
+- Validation rules
+- Constants
+- Utility functions
+
+### ✅ CORRECT: Shared Code Structure
+
+```
+packages/shared/src/
+├── types/
+│   ├── entities/     # Customer, Opportunity, Project, etc.
+│   ├── dtos/         # CreateCustomerDto, UpdateCustomerDto, etc.
+│   └── enums/        # Status enums, Role enums, etc.
+├── validation/
+│   ├── customer.validation.ts   # Shared validation rules
+│   └── opportunity.validation.ts
+├── constants/
+│   ├── rbac.constants.ts        # RBAC roles and permissions
+│   └── gobd.constants.ts        # GoBD compliance rules
+└── utils/
+    ├── id-generator.ts          # UUID and GoBD ID generation
+    ├── date-utils.ts            # Date formatting, calculations
+    └── validation-utils.ts      # Common validation functions
+```
+
+## No Copy-Paste Code
+
+NEVER duplicate code. Extract to shared utilities:
+
+```typescript
+// ✅ CORRECT: Extract to shared utility
+// packages/shared/src/utils/currency.utils.ts
+export function formatCurrency(value: number): string {
+  return new Intl.NumberFormat('de-DE', {
+    style: 'currency',
+    currency: 'EUR'
+  }).format(value);
+}
+
+// ❌ WRONG: Copy-pasted code in multiple files
+// file1.ts
+function formatCurrency(value: number): string { /* ... */ }
+// file2.ts
+function formatCurrency(value: number): string { /* DUPLICATE! */ }
+```
+
+# ============================================================================
+# LINEAR INTEGRATION RULES
+# ============================================================================
+
+# Linear Integration Rules
+
+## Commit Message Format
+
+Every commit message MUST reference a Linear issue:
+
+```
+<type>(<linear-issue-id>): <subject>
+
+<body>
+```
+
+### Format Details
+
+- **Type**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+- **Linear Issue ID**: Format `KOM-123` (project prefix + issue number)
+- **Subject**: Brief description (50 characters or less)
+
+### ✅ CORRECT: Commit Messages with Linear
+
+```bash
+feat(KOM-123): add customer duplicate detection
+fix(KOM-456): correct invoice total calculation
+refactor(KOM-789): extract RBAC logic to guard
+```
+
+### ❌ WRONG: Commit Messages Without Linear
+
+```bash
+# ❌ Missing Linear issue reference
+feat: add customer duplicate detection
+
+# ❌ Wrong format
+feat KOM-123: add customer duplicate detection
+```
+
+## Branch Naming
+
+Branches MUST include Linear issue ID:
+
+```
+<type>/<linear-issue-id>-<short-description>
+```
+
+### ✅ CORRECT: Branch Names
+
+```bash
+feature/KOM-123-customer-duplicate-detection
+bugfix/KOM-456-invoice-total-calculation
+hotfix/KOM-789-security-jwt-expiration
+```
+
+### ❌ WRONG: Branch Names
+
+```bash
+# ❌ Missing Linear issue ID
+feature/customer-duplicate-detection
+
+# ❌ Wrong format
+KOM-123-feature-customer-duplicate
+```
+
+## Pull Request Requirements
+
+Every PR description MUST include:
+
+1. **Linear Issue Reference**: Link to Linear issue
+2. **Description**: What changes were made and why
+3. **Testing**: How the changes were tested
+4. **Screenshots**: For UI changes (if applicable)
+
+# ============================================================================
+# OFFLINE-FIRST PATTERNS (CouchDB/PouchDB)
+# ============================================================================
+
+# Offline-First Patterns (CouchDB/PouchDB)
+
+## Data Access Rules
+
+### Repository Pattern for Offline-First
+
+NEVER access CouchDB directly from services. ALWAYS use repositories:
+
+```typescript
+// ✅ CORRECT: Using repository
+@Injectable()
+export class CustomerService {
+  constructor(
+    @Inject('ICustomerRepository')
+    private readonly customerRepo: ICustomerRepository
+  ) {}
+  
+  async findById(id: string): Promise<Customer> {
+    return await this.customerRepo.findById(id);
+  }
+}
+
+// ❌ WRONG: Direct database access
+@Injectable()
+export class CustomerService {
+  constructor(private readonly nano: Nano) {}
+  
+  async findById(id: string): Promise<Customer> {
+    return await this.nano.use('kompass').get(id); // ❌ NEVER DO THIS
+  }
+}
+```
+
+## Sync Queue Pattern
+
+All offline changes MUST be queued for sync:
+
+```typescript
+interface QueuedChange {
+  id: string;
+  entity: string;
+  operation: 'CREATE' | 'UPDATE' | 'DELETE';
+  data: unknown;
+  timestamp: Date;
+  userId: string;
+  synced: boolean;
+  retries: number;
+  lastError?: string;
+}
+```
+
+## Conflict Detection and Resolution
+
+ALWAYS detect conflicts during sync:
+
+```typescript
+async detectConflicts(localDoc: Customer, remoteDoc: Customer): Promise<Conflict[]> {
+  const conflicts: Conflict[] = [];
+  
+  Object.keys(localDoc).forEach(field => {
+    if (field.startsWith('_')) return; // Skip metadata
+    
+    if (localDoc[field] !== remoteDoc[field]) {
+      conflicts.push({
+        field,
+        localValue: localDoc[field],
+        remoteValue: remoteDoc[field],
+        type: determineConflictType(field, localDoc, remoteDoc)
+      });
+    }
+  });
+  
+  return conflicts;
+}
+```
+
+## Storage Quota Management
+
+### iOS 50MB Limit Awareness
+
+ALWAYS check quota before storing large data:
+
+```typescript
+async checkQuota(userId: string): Promise<QuotaStatus> {
+  const usage = await calculateOfflineUsage(userId);
+  const limit = 50 * 1024 * 1024; // 50 MB (iOS safe zone)
+  
+  return {
+    used: usage.bytes,
+    limit: limit,
+    percent: (usage.bytes / limit) * 100,
+    warning: usage.bytes > limit * 0.80, // 80% warning
+    critical: usage.bytes > limit * 0.95, // 95% block
+  };
+}
+```
+
+# ============================================================================
+# API DESIGN (REST + OpenAPI)
+# ============================================================================
+
+# API Design (REST + OpenAPI)
+
+## RESTful Conventions
+
+### HTTP Methods
+
+Use HTTP methods semantically:
+
+```typescript
+// ✅ CORRECT: Proper HTTP method usage
+@Controller('api/v1/customers')
+export class CustomerController {
+  @Get()           // List customers
+  @Get(':id')      // Get single customer
+  @Post()          // Create customer
+  @Put(':id')      // Update customer (full replacement)
+  @Patch(':id')    // Update customer (partial)
+  @Delete(':id')   // Delete customer
+}
+```
+
+### URL Structure
+
+Use resource-based URLs:
+
+```typescript
+// ✅ CORRECT: Resource-based URLs
+/api/v1/customers
+/api/v1/customers/:id
+/api/v1/customers/:id/contacts
+
+// ❌ WRONG: Action-based URLs
+/api/v1/getCustomers
+/api/v1/createCustomer
+```
+
+## Consistent Error Responses (RFC 7807)
+
+ALWAYS return consistent error responses:
+
+```typescript
+interface ProblemDetails {
+  type: string;        // URI reference to problem type
+  title: string;       // Human-readable summary
+  status: number;      // HTTP status code
+  detail?: string;     // Human-readable explanation
+  instance?: string;   // URI reference to specific occurrence
+  errors?: ValidationError[];
+}
+```
+
+## Request Validation with DTOs
+
+ALWAYS use DTOs with validation:
+
+```typescript
+// ✅ CORRECT: Complete DTO with validation
+import { IsString, IsEmail, Length, Matches, IsOptional } from 'class-validator';
+
+export class CreateCustomerDto {
+  @IsString()
+  @Length(2, 200)
+  @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/, {
+    message: 'Company name contains invalid characters'
+  })
+  companyName: string;
+
+  @IsString()
+  @Matches(/^DE\d{9}$/, {
+    message: 'VAT number must be format: DE123456789'
+  })
+  @IsOptional()
+  vatNumber?: string;
+}
+```
+
+## OpenAPI Documentation
+
+EVERY endpoint MUST have:
+
+1. **Summary**: Brief description
+2. **Parameters**: All path, query, and body parameters
+3. **Responses**: All possible response codes
+4. **Examples**: Request/response examples
+5. **Authentication**: Required auth method
+
+# ============================================================================
+# SECURITY & COMPLIANCE
+# ============================================================================
+
+# Security & Compliance
+
+## Authentication & Authorization
+
+### No Secrets in Code
+
+NEVER hardcode secrets in code:
+
+```typescript
+// ✅ CORRECT: Environment variables
+const jwtSecret = process.env.JWT_SECRET;
+if (!jwtSecret) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+
+// ❌ WRONG: Hardcoded secrets
+const jwtSecret = 'my-super-secret-key'; // NEVER DO THIS
+```
+
+### RBAC Guards on All Endpoints
+
+EVERY controller method MUST have guards:
+
+```typescript
+// ✅ CORRECT: Guards on controller methods
+@Controller('customers')
+@UseGuards(JwtAuthGuard, RbacGuard)
+export class CustomerController {
+  @Get(':id')
+  @RequirePermission('Customer', 'READ')
+  async findOne(
+    @Param('id') id: string,
+    @CurrentUser() user: User
+  ): Promise<CustomerResponseDto> {
+    return this.customerService.findById(id, user);
+  }
+}
+```
+
+## Input Validation
+
+ALWAYS validate user input:
+
+```typescript
+// ✅ CORRECT: DTO with validation
+import { IsString, IsEmail, Length, Matches, IsOptional } from 'class-validator';
+
+export class CreateCustomerDto {
+  @IsString()
+  @Length(2, 200)
+  @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/, {
+    message: 'Company name contains invalid characters'
+  })
+  companyName: string;
+}
+```
+
+## Audit Trail
+
+Log all data modifications:
+
+```typescript
+async update(id: string, updates: Partial<Customer>, user: User): Promise<Customer> {
+  const existing = await this.repository.findById(id);
+  
+  // Log changes
+  const changes = this.detectChanges(existing, updates);
+  for (const change of changes) {
+    await this.auditService.log({
+      entityType: 'Customer',
+      entityId: id,
+      action: 'UPDATE',
+      field: change.field,
+      oldValue: change.oldValue,
+      newValue: change.newValue,
+      userId: user.id,
+      timestamp: new Date(),
+    });
+  }
+  
+  // Update entity
+  const updated = { ...existing, ...updates };
+  updated.modifiedBy = user.id;
+  updated.modifiedAt = new Date();
+  updated.version += 1;
+  
+  return await this.repository.update(updated);
+}
+```
+
+## DSGVO Compliance
+
+### Consent Management
+
+```typescript
+interface DSGVOConsent {
+  marketing: boolean;
+  aiProcessing: boolean;
+  dataSharing: boolean;
+  grantedAt?: Date;
+  grantedBy?: string;
+  revokedAt?: Date;
+}
+
+// Check consent before AI processing
+async processWithAI(customer: Customer): Promise<void> {
+  if (!customer.dsgvoConsent?.aiProcessing) {
+    throw new ForbiddenException('AI processing requires customer consent');
+  }
+}
+```
+
+## GoBD Compliance
+
+### Immutability After Finalization
+
+```typescript
+async updateInvoice(id: string, updates: Partial<Invoice>, user: User): Promise<Invoice> {
+  const invoice = await this.repository.findById(id);
+  
+  if (invoice.finalized) {
+    const immutableFields = [
+      'invoiceNumber', 'invoiceDate', 'customer',
+      'lineItems', 'subtotal', 'taxAmount', 'totalAmount'
+    ];
+    
+    const attemptedChanges = Object.keys(updates);
+    const immutableAttempts = attemptedChanges.filter(field => 
+      immutableFields.includes(field)
+    );
+    
+    if (immutableAttempts.length > 0) {
+      if (user.role !== 'GF') {
+        throw new ForbiddenException(
+          `Cannot modify finalized invoice fields: ${immutableAttempts.join(', ')}. Requires GF approval.`
+        );
+      }
+      
+      // GF approval: Log correction
+      for (const field of immutableAttempts) {
+        invoice.changeLog.push({
+          field,
+          oldValue: invoice[field],
+          newValue: updates[field],
+          changedBy: user.id,
+          changedAt: new Date(),
+          reason: updates._correctionReason || 'Correction by GF',
+          approvedBy: user.id,
+        });
+      }
+    }
+  }
+  
+  return await this.repository.update({ ...invoice, ...updates });
+}
+```
+
+## Security Headers
+
+ALWAYS use Helmet for security headers:
+
+```typescript
+import helmet from 'helmet';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+      },
+    },
+  }));
+  
+  app.enableCors({
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
+  
+  await app.listen(3000);
+}
+```
+
+## Rate Limiting
+
+ALWAYS implement rate limiting:
+
+```typescript
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+
+@Module({
+  imports: [
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 100, // 100 requests per minute
+    }),
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
+})
+export class AppModule {}
+```
+
+## Input Sanitization
+
+ALWAYS sanitize user input in addition to validation:
+
+```typescript
+import { Transform } from 'class-transformer';
+import DOMPurify from 'isomorphic-dompurify';
+
+export class CreateCustomerDto {
+  @Transform(({ value }) => DOMPurify.sanitize(value, { ALLOWED_TAGS: [] }))
+  @IsString()
+  @Length(2, 200)
+  companyName: string;
+}
+```
+
+## Error Handling Security
+
+NEVER expose stack traces or sensitive information in production:
+
+```typescript
+@Catch()
+export class AllExceptionsFilter implements ExceptionFilter {
+  catch(exception: unknown, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
+
+    const status = exception instanceof HttpException
+      ? exception.getStatus()
+      : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    // Log full error server-side
+    this.logger.error({
+      message: exception instanceof Error ? exception.message : 'Unknown error',
+      stack: exception instanceof Error ? exception.stack : undefined,
+      url: request.url,
+    });
+
+    // Return sanitized error to client
+    response.status(status).json({
+      statusCode: status,
+      message: process.env.NODE_ENV === 'production'
+        ? 'An error occurred' // Generic in production
+        : exception instanceof HttpException ? exception.getResponse() : 'Internal server error',
+    });
+  }
+}
+```
+
+## Logging Security
+
+NEVER log sensitive data:
+
+```typescript
+// ✅ CORRECT: Sanitized logging
+logger.log('Customer created', {
+  customerId: customer.id,
+  userId: user.id,
+  // DO NOT log: passwords, tokens, credit card numbers
+});
+
+// ❌ WRONG: Logging sensitive data
+logger.log('Login attempt', {
+  password: dto.password, // NEVER!
+  token: jwtToken, // NEVER!
+});
+```
+
+## Environment Variable Validation
+
+ALWAYS validate environment variables at startup:
+
+```typescript
+import { z } from 'zod';
+
+const envSchema = z.object({
+  NODE_ENV: z.enum(['development', 'production', 'test']),
+  DATABASE_URL: z.string().url(),
+  JWT_SECRET: z.string().min(32),
+  ALLOWED_ORIGINS: z.string(),
+});
+
+export function validateEnv(): z.infer<typeof envSchema> {
+  try {
+    return envSchema.parse(process.env);
+  } catch (error) {
+    console.error('❌ Invalid environment variables:', error);
+    process.exit(1);
+  }
+}
+```
+
+## HTTPS Enforcement
+
+ALWAYS enforce HTTPS in production:
+
+```typescript
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https') {
+      res.redirect(`https://${req.header('host')}${req.url}`);
+    } else {
+      next();
+    }
+  });
+}
+```
+
+## CouchDB Security
+
+ALWAYS configure CouchDB _security documents:
+
+```typescript
+const customerDbSecurity = {
+  admins: {
+    names: [],
+    roles: ['admin', 'crm_admin'],
+  },
+  members: {
+    names: [],
+    roles: ['sales', 'crm_user'],
+  },
+};
+
+await nano.db('kompass_customers').setSecurity(customerDbSecurity);
+```
+
+# ============================================================================
+# ERROR HANDLING & LOGGING
+# ============================================================================
+
+# Error Handling & Logging
+
+## Error Handling Patterns
+
+### Structured Error Responses
+
+ALWAYS return consistent error responses (RFC 7807):
+
+```typescript
+interface ProblemDetails {
+  type: string;
+  title: string;
+  status: number;
+  detail?: string;
+  instance?: string;
+  errors?: ValidationError[];
+}
+```
+
+### Global Exception Filter
+
+ALWAYS use global exception filter:
+
+```typescript
+@Catch()
+export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly logger = new Logger(AllExceptionsFilter.name);
+
+  catch(exception: unknown, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
+
+    const status = exception instanceof HttpException
+      ? exception.getStatus()
+      : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    // Log full error server-side
+    this.logger.error({
+      message: exception instanceof Error ? exception.message : 'Unknown error',
+      stack: exception instanceof Error ? exception.stack : undefined,
+      url: request.url,
+      method: request.method,
+      userId: request.user?.id,
+    });
+
+    // Return sanitized error to client
+    response.status(status).json({
+      type: 'https://api.kompass.de/errors/server-error',
+      title: 'An error occurred',
+      status,
+      detail: process.env.NODE_ENV === 'production'
+        ? 'An error occurred' // Generic in production
+        : message,
+      instance: request.url,
+      timestamp: new Date().toISOString(),
+    });
+  }
+}
+```
+
+## Logging Patterns
+
+### Structured Logging
+
+ALWAYS use structured logging:
+
+```typescript
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('CustomerService');
+
+logger.log('Customer created', {
+  customerId: customer.id,
+  userId: user.id,
+  timestamp: new Date().toISOString(),
+  requestId: request.id,
+});
+```
+
+### Correlation IDs
+
+ALWAYS include correlation IDs in logs:
+
+```typescript
+@Injectable()
+export class CorrelationIdMiddleware implements NestMiddleware {
+  use(req: Request, res: Response, next: NextFunction) {
+    const correlationId = req.headers['x-correlation-id'] || uuidv4();
+    req['correlationId'] = correlationId;
+    res.setHeader('X-Correlation-ID', correlationId);
+    next();
+  }
+}
+```
+
+# ============================================================================
+# DEPENDENCY MANAGEMENT
+# ============================================================================
+
+# Dependency Management
+
+## Dependency Security
+
+### Regular Vulnerability Scanning
+
+ALWAYS scan dependencies for vulnerabilities:
+
+```bash
+pnpm audit
+pnpm audit --fix
+
+# Add to CI/CD pipeline
+# - Run pnpm audit in CI
+# - Fail build if critical vulnerabilities found
+```
+
+### Lock File Management
+
+ALWAYS commit lock files:
+
+```bash
+pnpm-lock.yaml  # Commit this
+
+# ❌ WRONG: Ignoring lock files
+# .gitignore
+# pnpm-lock.yaml  # NEVER ignore lock files!
+```
+
+## Dependency Selection
+
+### Prefer Established Libraries
+
+Choose well-maintained, popular libraries:
+
+```typescript
+// ✅ CORRECT: Use established libraries
+import { z } from 'zod'; // Well-maintained, popular
+import axios from 'axios'; // Established, widely used
+
+// ❌ WRONG: Use obscure or unmaintained libraries
+import { someObscureLib } from 'some-obscure-package'; // Avoid
+```
+
+### Avoid Unnecessary Dependencies
+
+Don't add dependencies for simple tasks:
+
+```typescript
+// ✅ CORRECT: Use native JavaScript
+const debounce = (fn: Function, delay: number) => {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: unknown[]) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+};
+
+// ❌ WRONG: Add dependency for simple function
+import { debounce } from 'lodash'; // Unnecessary if only using debounce
+```
+
+# ============================================================================
+# CODE REVIEW STANDARDS
+# ============================================================================
+
+# Code Review Standards
+
+## Review Requirements
+
+### Mandatory Reviews
+
+- EVERY change MUST go through a pull request
+- NEVER commit directly to main/master
+- At least 1 code review approval required (2 for security-critical changes)
+- All CI checks MUST pass before merging
+
+### Review Checklist
+
+Every code review MUST check:
+
+1. **Functionality**
+   - Does the code meet the requirements?
+   - Are edge cases handled?
+   - Are error cases handled?
+
+2. **Security**
+   - No hardcoded secrets
+   - Input validation and sanitization
+   - RBAC guards on endpoints
+   - No sensitive data in logs
+
+3. **Code Quality**
+   - Follows project structure rules
+   - Uses shadcn/ui components (no custom UI)
+   - Proper TypeScript types (no 'any')
+   - Functions are < 50 lines
+   - No code duplication
+
+4. **Testing**
+   - Tests added for new functionality
+   - Test coverage maintained or improved
+   - Tests follow 70/20/10 pyramid
+
+5. **Documentation**
+   - JSDoc comments for complex functions
+   - README updated if needed
+   - Linear issue referenced
+
+# ============================================================================
+# GIT WORKFLOW & VERSION CONTROL
+# ============================================================================
+
+# Git Workflow & Version Control
+
+## No File Duplication
+
+### Use Git for Versioning
+
+NEVER create duplicate copies of files:
+
+```bash
+# ✅ CORRECT: Use git for versions
+git commit -m "feat(KOM-123): add customer validation"
+# If you need to revert:
+git revert HEAD
+
+# ❌ WRONG: Creating file copies
+customer.service.ts
+customer.service.backup.ts
+customer.service.old.ts
+# NEVER create these files!
+```
+
+## Commit Message Format (Conventional Commits)
+
+### Commit Message Structure
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Types
+
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code refactoring
+- `test`: Test additions/changes
+- `chore`: Build process, dependencies, etc.
+
+### ✅ CORRECT: Commit Messages
+
+```bash
+feat(KOM-123): add customer duplicate detection
+fix(KOM-456): correct invoice total calculation
+docs(KOM-234): update OpenAPI spec
+refactor(KOM-789): extract RBAC logic to guard
+test(KOM-567): add status transition tests
+chore(KOM-890): update nestjs to v10
+```
+
+### ❌ WRONG: Commit Messages
+
+```bash
+# ❌ Vague commit messages
+git commit -m "fix stuff"
+git commit -m "updates"
+git commit -m "wip"
+
+# ❌ Missing Linear issue reference
+git commit -m "feat: add customer duplicate detection"
+```
+
+## Branch Naming
+
+### Branch Name Format
+
+```
+<type>/<linear-issue-id>-<short-description>
+```
+
+### ✅ CORRECT: Branch Names
+
+```bash
+feature/KOM-123-customer-duplicate-detection
+bugfix/KOM-456-invoice-total-calculation
+hotfix/KOM-789-security-jwt-expiration
+refactor/KOM-234-extract-rbac-logic
+docs/KOM-567-update-api-documentation
+```
+
+## Pull Request Rules
+
+### PR Requirements
+
+- EVERY change MUST go through a pull request
+- NEVER commit directly to main/master
+- PR must have:
+  - Descriptive title (following conventional commit format)
+  - Description of changes
+  - Reference to Linear issue (required)
+  - Screenshots/videos for UI changes
+  - Test results (all tests passing)
+  - At least 1 code review approval (2 for critical changes)
+
+# ============================================================================
+# PERFORMANCE OPTIMIZATION
+# ============================================================================
+
+# Performance Optimization
+
+## Performance Targets
+
+From NFR_SPECIFICATION.md:
+
+- API response P50: ≤ 400ms
+- API response P95: ≤ 1.5s
+- API response P99: ≤ 2.5s
+- Dashboard load: ≤ 3s
+- Search response: ≤ 500ms
+- Offline sync (100 changes): ≤ 30s
+
+## Lazy Loading
+
+### Route-Level Code Splitting
+
+ALWAYS lazy load routes:
+
+```typescript
+// ✅ CORRECT: Lazy load routes
+import { lazy, Suspense } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const CustomerPage = lazy(() => import('./features/customer/pages/CustomerPage'));
+const OpportunityPage = lazy(() => import('./features/opportunity/pages/OpportunityPage'));
+
+function App() {
+  return (
+    <Suspense fallback={<Skeleton className="h-screen w-full" />}>
+      <Routes>
+        <Route path="/customers" element={<CustomerPage />} />
+        <Route path="/opportunities" element={<OpportunityPage />} />
+      </Routes>
+    </Suspense>
+  );
+}
+```
+
+## Memoization
+
+### React.memo for Components
+
+Memoize expensive components:
+
+```typescript
+import { memo } from 'react';
+
+export const CustomerCard = memo(({ customer, onSelect }: CustomerCardProps) => {
+  return (
+    <Card onClick={() => onSelect(customer.id)}>
+      <h3>{customer.companyName}</h3>
+    </Card>
+  );
+});
+```
+
+### useMemo for Expensive Calculations
+
+```typescript
+import { useMemo } from 'react';
+
+function CustomerDashboard({ customers }: { customers: Customer[] }) {
+  const statistics = useMemo(() => {
+    return {
+      total: customers.length,
+      totalRevenue: customers.reduce((sum, c) => sum + (c.totalRevenue || 0), 0),
+    };
+  }, [customers]);
+
+  return <Dashboard statistics={statistics} />;
+}
+```
+
+### useCallback for Function References
+
+```typescript
+import { useCallback } from 'react';
+
+function CustomerList({ customers }: { customers: Customer[] }) {
+  const handleSelect = useCallback((customerId: string) => {
+    navigate(`/customers/${customerId}`);
+  }, []);
+
+  return customers.map(customer => (
+    <CustomerCard 
+      key={customer.id} 
+      customer={customer} 
+      onSelect={handleSelect}
+    />
+  ));
+}
+```
+
+## Virtual Scrolling
+
+Use virtual scrolling for lists with >100 items:
+
+```typescript
+import { useVirtualizer } from '@tanstack/react-virtual';
+
+function CustomerList({ customers }: { customers: Customer[] }) {
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const virtualizer = useVirtualizer({
+    count: customers.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 100,
+  });
+
+  return (
+    <div ref={parentRef} style={{ height: '600px', overflow: 'auto' }}>
+      {/* Virtual scrolling implementation */}
+    </div>
+  );
+}
+```
+
+## Image Optimization
+
+ALWAYS use WebP format and lazy loading:
+
+```typescript
+<picture>
+  <source srcSet="/images/customer-logo.webp" type="image/webp" />
+  <source srcSet="/images/customer-logo.jpg" type="image/jpeg" />
+  <img 
+    src="/images/customer-logo.jpg" 
+    alt="Customer Logo"
+    loading="lazy"
+    width={200}
+    height={200}
+  />
+</picture>
+```
+
+# ============================================================================
+# END OF RULES
+# ============================================================================

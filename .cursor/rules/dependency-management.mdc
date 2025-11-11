@@ -1,0 +1,168 @@
+---
+description: Dependency security scanning, vulnerability management, lock file management, dependency selection best practices, version pinning, and license compatibility checks
+globs: ["package.json", "pnpm-lock.yaml", "package-lock.json"]
+alwaysApply: true
+---
+
+# Dependency Management
+
+## Dependency Security
+
+### Regular Vulnerability Scanning
+
+ALWAYS scan dependencies for vulnerabilities:
+
+```bash
+# ✅ CORRECT: Regular dependency scanning
+pnpm audit
+pnpm audit --fix
+
+# Add to CI/CD pipeline
+# - Run pnpm audit in CI
+# - Fail build if critical vulnerabilities found
+# - Auto-update dependencies with pnpm update
+```
+
+### Dependency Updates
+
+Keep dependencies up to date:
+
+```bash
+# ✅ CORRECT: Update dependencies regularly
+pnpm update
+pnpm update --latest --recursive
+
+# Use Dependabot or Renovate for automated updates
+```
+
+### Lock File Management
+
+ALWAYS commit lock files:
+
+```bash
+# ✅ CORRECT: Commit lock files
+pnpm-lock.yaml  # Commit this
+package-lock.json  # If using npm, commit this
+
+# ❌ WRONG: Ignoring lock files
+# .gitignore
+# pnpm-lock.yaml  # NEVER ignore lock files!
+```
+
+## Dependency Selection
+
+### Prefer Established Libraries
+
+Choose well-maintained, popular libraries:
+
+```typescript
+// ✅ CORRECT: Use established libraries
+import { z } from 'zod'; // Well-maintained, popular
+import axios from 'axios'; // Established, widely used
+
+// ❌ WRONG: Use obscure or unmaintained libraries
+import { someObscureLib } from 'some-obscure-package'; // Avoid
+```
+
+### Avoid Unnecessary Dependencies
+
+Don't add dependencies for simple tasks:
+
+```typescript
+// ✅ CORRECT: Use native JavaScript
+const debounce = (fn: Function, delay: number) => {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: unknown[]) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+};
+
+// ❌ WRONG: Add dependency for simple function
+import { debounce } from 'lodash'; // Unnecessary if only using debounce
+```
+
+### Check License Compatibility
+
+ALWAYS check license compatibility:
+
+```bash
+# ✅ CORRECT: Check licenses
+pnpm licenses list
+
+# Ensure all dependencies have compatible licenses
+# For commercial projects, avoid GPL licenses
+```
+
+## Version Pinning
+
+### Pin Critical Dependencies
+
+Pin critical dependencies to specific versions:
+
+```json
+// ✅ CORRECT: Pin critical dependencies
+{
+  "dependencies": {
+    "nest": "10.3.0", // Pin major.minor.patch
+    "react": "^18.2.0", // Allow patch updates
+    "typescript": "~5.3.3" // Allow patch updates
+  }
+}
+```
+
+### Use Exact Versions for Security
+
+For security-sensitive packages, use exact versions:
+
+```json
+// ✅ CORRECT: Exact versions for security packages
+{
+  "dependencies": {
+    "jsonwebtoken": "9.0.2", // Exact version - security critical
+    "bcrypt": "5.1.1", // Exact version - security critical
+    "helmet": "^7.1.0" // Can allow minor updates
+  }
+}
+```
+
+## Dependency Audit
+
+### Pre-Commit Checks
+
+Run dependency audit before committing:
+
+```bash
+# ✅ CORRECT: Pre-commit hook for dependency audit
+#!/bin/sh
+pnpm audit --audit-level=moderate
+if [ $? -ne 0 ]; then
+  echo "❌ Dependency vulnerabilities found. Run 'pnpm audit --fix'"
+  exit 1
+fi
+```
+
+### CI/CD Integration
+
+Integrate dependency scanning in CI/CD:
+
+```yaml
+# ✅ CORRECT: CI/CD dependency check
+# .github/workflows/security.yml
+name: Security Audit
+on: [push, pull_request]
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - run: pnpm install
+      - run: pnpm audit --audit-level=moderate
+```
+
+## References
+
+- pnpm Documentation: https://pnpm.io/
+- npm audit: https://docs.npmjs.com/cli/v8/commands/npm-audit
+- OWASP Dependency Check: https://owasp.org/www-project-dependency-check/

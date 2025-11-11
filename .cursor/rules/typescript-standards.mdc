@@ -1,0 +1,305 @@
+---
+description: Strict TypeScript configuration, type safety rules, immutability patterns, function quality standards, and naming conventions
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: true
+---
+
+# TypeScript & Code Quality Standards
+
+## Strict TypeScript Configuration
+
+### Requirements
+
+- ALWAYS use strict mode (`strict: true` in `tsconfig.json`)
+- NEVER use `any` type - use `unknown` with type guards instead
+- ALWAYS provide explicit return types for functions and methods
+- ALWAYS use `readonly` for immutable properties
+- Use const assertions for literal types: `const STATUS = ['NEW', 'ACTIVE'] as const;`
+
+### TypeScript Config Example
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  }
+}
+```
+
+## Type Safety Rules
+
+### Prefer Interfaces Over Type Aliases
+
+```typescript
+// ✅ CORRECT: Interface for object shapes
+interface Customer {
+  id: string;
+  companyName: string;
+  email?: string;
+}
+
+// ❌ WRONG: Type alias for object shape
+type Customer = {
+  id: string;
+  companyName: string;
+};
+```
+
+### Use Discriminated Unions for State Management
+
+```typescript
+// ✅ CORRECT: Discriminated union
+type AsyncState<T> =
+  | { status: 'loading' }
+  | { status: 'success'; data: T }
+  | { status: 'error'; error: Error };
+
+// Usage
+function handleState(state: AsyncState<Customer>) {
+  if (state.status === 'success') {
+    console.log(state.data); // TypeScript knows data exists
+  }
+}
+```
+
+### Validate External Data at Boundaries
+
+```typescript
+// ✅ CORRECT: Validate API responses
+function parseCustomerResponse(data: unknown): Customer {
+  if (!isCustomer(data)) {
+    throw new ValidationError('Invalid customer data');
+  }
+  return data;
+}
+
+function isCustomer(data: unknown): data is Customer {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'id' in data &&
+    'companyName' in data &&
+    typeof (data as Customer).id === 'string' &&
+    typeof (data as Customer).companyName === 'string'
+  );
+}
+```
+
+### Use Branded Types for IDs
+
+```typescript
+// ✅ CORRECT: Branded types prevent ID mixing
+type CustomerId = string & { __brand: 'CustomerId' };
+type ProjectId = string & { __brand: 'ProjectId' };
+
+function getCustomer(id: CustomerId): Customer {
+  // Implementation
+}
+
+// TypeScript will prevent:
+// getCustomer('project-123' as ProjectId); // Error!
+```
+
+### NEVER Use Type Assertions
+
+```typescript
+// ❌ WRONG: Type assertion
+const customer = response.data as Customer;
+
+// ✅ CORRECT: Type guard
+function isCustomer(data: unknown): data is Customer {
+  // Validation logic
+}
+
+const customer = isCustomer(response.data) ? response.data : null;
+```
+
+## Immutability Patterns
+
+### Use readonly for Immutable Properties
+
+```typescript
+// ✅ CORRECT: Readonly properties
+interface Config {
+  readonly apiUrl: string;
+  readonly timeout: number;
+}
+
+const config: Config = {
+  apiUrl: 'https://api.example.com',
+  timeout: 5000,
+};
+
+// config.apiUrl = 'new'; // Error: Cannot assign to readonly property
+```
+
+### Use Object.freeze() for Constants
+
+```typescript
+// ✅ CORRECT: Frozen constant
+const STATUSES = Object.freeze({
+  NEW: 'New',
+  ACTIVE: 'Active',
+  CLOSED: 'Closed',
+} as const);
+
+// STATUSES.NEW = 'Changed'; // Error: Cannot assign to readonly property
+```
+
+### Prefer Immutable Array Operations
+
+```typescript
+// ✅ CORRECT: Immutable operations
+const updatedCustomers = customers.map(customer =>
+  customer.id === id ? { ...customer, name: newName } : customer
+);
+
+// ❌ WRONG: Mutating array
+customers.forEach(customer => {
+  if (customer.id === id) {
+    customer.name = newName; // Mutation!
+  }
+});
+```
+
+### Use Spread Operators for Copying
+
+```typescript
+// ✅ CORRECT: Spread operator
+const updated = { ...original, field: newValue };
+
+// ❌ WRONG: Direct mutation
+original.field = newValue; // Mutation!
+```
+
+## Function Quality Standards
+
+### Single Responsibility Principle
+
+- Functions MUST have a single responsibility
+- Maximum function length: **50 lines** (excluding comments)
+- Maximum cyclomatic complexity: **10**
+- Extract complex conditions into named boolean functions
+- Use early returns to reduce nesting
+
+### Examples
+
+```typescript
+// ✅ CORRECT: Single responsibility, early returns
+function validateCustomer(customer: Customer): ValidationResult {
+  if (!customer.companyName) {
+    return { valid: false, error: 'Company name is required' };
+  }
+  
+  if (customer.companyName.length < 2) {
+    return { valid: false, error: 'Company name too short' };
+  }
+  
+  if (customer.vatNumber && !isValidVAT(customer.vatNumber)) {
+    return { valid: false, error: 'Invalid VAT number' };
+  }
+  
+  return { valid: true };
+}
+
+// ❌ WRONG: Multiple responsibilities, deep nesting
+function processCustomer(customer: Customer): void {
+  if (customer) {
+    if (customer.companyName) {
+      if (customer.companyName.length >= 2) {
+        if (customer.vatNumber) {
+          if (isValidVAT(customer.vatNumber)) {
+            // ... 50+ lines of logic
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+### Extract Complex Conditions
+
+```typescript
+// ✅ CORRECT: Named boolean functions
+function canEditCustomer(customer: Customer, user: User): boolean {
+  return (
+    hasPermission(user, 'Customer', 'UPDATE') &&
+    (user.role === 'GF' || customer.owner === user.id)
+  );
+}
+
+if (canEditCustomer(customer, currentUser)) {
+  // Edit logic
+}
+
+// ❌ WRONG: Complex condition inline
+if (
+  hasPermission(currentUser, 'Customer', 'UPDATE') &&
+  (currentUser.role === 'GF' || customer.owner === currentUser.id)
+) {
+  // Hard to read and test
+}
+```
+
+## Naming Conventions
+
+### Variables and Functions
+
+- **camelCase**: `getUserById`, `isActive`, `customerId`
+- Boolean variables/functions: prefix with `is`/`has`/`should`/`can`
+  - `isActive`, `hasPermission`, `shouldValidate`, `canEdit`
+
+### Classes and Interfaces
+
+- **PascalCase**: `Customer`, `ICustomerRepository`, `CustomerService`
+- Interfaces: prefix with `I` for interfaces (optional, but consistent)
+
+### Constants
+
+- **UPPER_SNAKE_CASE**: `MAX_RETRY_ATTEMPTS`, `DEFAULT_TIMEOUT`
+- MUST be in files named `*.constants.ts`
+
+### Private Class Members
+
+- Prefix with underscore: `_validateData`, `_internalState`
+
+## Examples
+
+### ✅ CORRECT: Well-Typed Function
+
+```typescript
+interface Customer {
+  readonly id: CustomerId;
+  readonly companyName: string;
+  readonly email?: string;
+}
+
+function findCustomerById(id: CustomerId): Promise<Customer | null> {
+  return customerRepository.findById(id);
+}
+```
+
+### ❌ WRONG: Using 'any' and Missing Types
+
+```typescript
+function findCustomer(id: any): any {
+  return repository.find(id);
+}
+```
+
+## References
+
+- TypeScript Handbook: https://www.typescriptlang.org/docs/handbook/
+- Project Architecture: `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md`

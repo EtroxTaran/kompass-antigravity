@@ -1,0 +1,241 @@
+---
+description: No file duplication rule, Conventional Commits format, branch naming conventions, PR requirements and template, pre-commit hooks, and branch protection rules
+globs: []
+alwaysApply: true
+---
+
+# Git Workflow & Version Control
+
+## No File Duplication
+
+### Use Git for Versioning
+
+NEVER create duplicate copies of files:
+
+```bash
+# ✅ CORRECT: Use git for versions
+git commit -m "feat(KOM-123): add customer validation"
+# If you need to revert:
+git revert HEAD
+
+# ❌ WRONG: Creating file copies
+customer.service.ts
+customer.service.backup.ts
+customer.service.old.ts
+customer.service.v2.ts
+# NEVER create these files!
+```
+
+### Prevent Duplication
+
+If Cursor suggests creating a duplicate file, respond:
+
+```
+"No, do not create a duplicate file. Instead:
+1. Make the changes directly to the existing file
+2. Commit the changes to git
+3. If this doesn't work, we'll revert via git"
+```
+
+## Commit Message Format (Conventional Commits)
+
+### Commit Message Structure
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Types
+
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code refactoring
+- `test`: Test additions/changes
+- `chore`: Build process, dependencies, etc.
+
+### ✅ CORRECT: Commit Messages
+
+```bash
+# Feature commit
+feat(KOM-123): add customer duplicate detection
+
+# Bug fix commit
+fix(KOM-456): correct invoice total calculation
+
+# Documentation commit
+docs(KOM-234): update OpenAPI spec
+
+# Refactor commit
+refactor(KOM-789): extract RBAC logic to guard
+
+# Test commit
+test(KOM-567): add status transition tests
+
+# Chore commit
+chore(KOM-890): update nestjs to v10
+```
+
+### ❌ WRONG: Commit Messages
+
+```bash
+# ❌ Vague commit messages
+git commit -m "fix stuff"
+git commit -m "updates"
+git commit -m "wip"
+
+# ❌ Missing Linear issue reference
+git commit -m "feat: add customer duplicate detection"
+
+# ❌ Wrong format
+git commit -m "feat KOM-123: add feature"
+```
+
+## Branch Naming
+
+### Branch Name Format
+
+```
+<type>/<linear-issue-id>-<short-description>
+```
+
+### ✅ CORRECT: Branch Names
+
+```bash
+feature/KOM-123-customer-duplicate-detection
+feature/KOM-456-invoice-gobd-compliance
+bugfix/KOM-789-opportunity-status-validation
+hotfix/KOM-234-security-jwt-expiration
+refactor/KOM-567-extract-rbac-logic
+docs/KOM-890-update-api-documentation
+```
+
+### ❌ WRONG: Branch Names
+
+```bash
+# ❌ Missing Linear issue ID
+feature/customer-duplicate-detection
+
+# ❌ Wrong format
+KOM-123-feature-customer-duplicate
+
+# ❌ Vague description
+bugfix/KOM-456-fix
+
+# ❌ No type
+KOM-123-customer-feature
+```
+
+## Pull Request Rules
+
+### PR Requirements
+
+- EVERY change MUST go through a pull request
+- NEVER commit directly to main/master
+- PR must have:
+  - Descriptive title (following conventional commit format)
+  - Description of changes
+  - Reference to Linear issue (required)
+  - Screenshots/videos for UI changes
+  - Test results (all tests passing)
+  - At least 1 code review approval (2 for critical changes)
+
+### PR Template
+
+```markdown
+## Description
+
+Brief description of changes. References [KOM-123](https://linear.app/kompass/issue/KOM-123).
+
+## Type of Change
+
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+
+## Testing
+
+- [ ] All tests passing
+- [ ] New tests added
+- [ ] Manual testing completed
+- [ ] E2E tests updated (if applicable)
+
+## Screenshots (if applicable)
+
+[Add screenshots here]
+
+## Related Issues
+
+Closes KOM-123
+```
+
+## Pre-Commit Hooks
+
+### Required Hooks
+
+Pre-commit hooks MUST run:
+
+1. **Linting**: ESLint checks
+2. **Formatting**: Prettier format check
+3. **Type Checking**: TypeScript type checking
+4. **Unit Tests**: Run affected unit tests
+5. **Secrets Check**: Scan for hardcoded secrets
+
+### Husky Configuration
+
+```json
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "*.{json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
+```
+
+## Git Workflow
+
+### Standard Workflow
+
+1. **Create Linear issue** → Status: "Todo"
+2. **Create branch** → `feature/KOM-123-description`
+3. **Make changes** → Write code, add tests
+4. **Commit changes** → `feat(KOM-123): description`
+5. **Push branch** → `git push origin feature/KOM-123-description`
+6. **Create PR** → Link to Linear issue
+7. **Update Linear** → Status: "In Review"
+8. **Code review** → Get approval
+9. **Merge PR** → Linear issue auto-updates to "Done"
+
+### Branch Protection
+
+Main branch MUST have:
+
+- Require pull request reviews
+- Require status checks to pass
+- Require branches to be up to date
+- Require linear issue reference in PR
+- Restrict pushes (no direct commits)
+
+## References
+
+- Linear Integration: `.cursor/rules/linear-integration.mdc`
+- Conventional Commits: https://www.conventionalcommits.org/

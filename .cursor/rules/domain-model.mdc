@@ -1,0 +1,560 @@
+---
+description: Entity structure for CouchDB documents, ID generation rules, validation rules for Customer/Opportunity/Project/Invoice, RBAC checks, and GoBD immutability patterns
+globs: ["**/*entity*.ts", "**/*dto*.ts", "**/*model*.ts"]
+alwaysApply: true
+---
+
+# Domain Model Rules
+
+## Entity Structure (CouchDB Documents)
+
+### Required Fields for ALL Entities
+
+Every CouchDB document MUST include these fields:
+
+```typescript
+interface BaseEntity {
+  _id: string;              // CouchDB document ID
+  _rev: string;             // CouchDB revision (for optimistic locking)
+  type: string;             // Document type discriminator (e.g., 'customer')
+  
+  // Audit trail (GoBD compliance)
+  createdBy: string;        // User ID who created
+  createdAt: Date;          // ISO 8601 timestamp
+  modifiedBy: string;       // User ID who last modified
+  modifiedAt: Date;         // ISO 8601 timestamp
+  version: number;          // Optimistic locking version
+  
+  // Offline sync support
+  _conflicts?: string[];    // CouchDB conflict array
+  lastSyncedAt?: Date;      // Last successful sync
+}
+```
+
+### ID Generation Rules
+
+- **Customer, Contact, Opportunity**: UUID format → `"customer-{uuid}"`
+- **Invoice**: Sequential GoBD-compliant → `"R-2024-00456"`
+- **Project**: Sequential GoBD-compliant → `"P-2024-B023"`
+- Use `packages/shared/utils/id-generator.ts` for all ID generation
+- NEVER generate IDs manually in business logic
+
+```typescript
+// ✅ CORRECT: Using shared ID generator
+import { generateCustomerId, generateGoBDNumber } from '@kompass/shared/utils/id-generator';
+
+const customerId = generateCustomerId(); // "customer-550e8400-e29b-41d4-a716-446655440000"
+const invoiceNumber = generateGoBDNumber('invoice'); // "R-2024-00456"
+
+// ❌ WRONG: Manual ID generation
+const customerId = `customer-${Math.random()}`; // Wrong!
+```
+
+## Validation Rules
+
+### Customer Entity Validation
+
+```typescript
+// companyName validation
+- Required: true
+- Min length: 2
+- Max length: 200
+- Pattern: /^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/
+- Error: "Company name must be 2-200 characters, letters, numbers, and basic punctuation only"
+
+// vatNumber validation (German VAT)
+- Required: false
+- Pattern: /^DE\d{9}$/
+- Error: "German VAT number must be format: DE123456789"
+
+// email validation
+- Required: false
+- Pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+- Error: "Invalid email format"
+
+// phone validation
+- Required: false
+- Pattern: /^[\+]?[0-9\s\-()]+$/
+- Min length: 7
+- Max length: 20
+- Error: "Invalid phone number format"
+
+// creditLimit validation
+- Required: false
+- Min: 0
+- Max: 1000000 (€1M)
+- Error: "Credit limit must be between €0 and €1,000,000"
+
+// owner validation
+- Required: true
+- Must reference existing User with role ADM
+- Error: "Owner must be a valid ADM user"
+```
+
+### Opportunity Entity Validation
+
+```typescript
+// estimatedValue validation
+- Required: true
+- Min: 0
+- Max: 10000000 (€10M)
+- Error: "Opportunity value must be between €0 and €10,000,000"
+
+// probability validation
+- Required: true
+- Min: 0
+- Max: 100
+- Step: 5 (must be multiple of 5)
+- Error: "Probability must be 0-100 in increments of 5"
+
+// status validation
+- Required: true
+- Enum: 'New' | 'Qualifying' | 'Proposal' | 'Negotiation' | 'Won' | 'Lost'
+- Transitions: Only specific transitions allowed
+
+// Status transition rules
+const VALID_TRANSITIONS = {
+  'New': ['Qualifying', 'Lost'],
+  'Qualifying': ['Proposal', 'Lost'],
+  'Proposal': ['Negotiation', 'Lost'],
+  'Negotiation': ['Won', 'Lost'],
+  'Won': [], // Terminal state
+  'Lost': []  // Terminal state
+};
+```
+
+### Project Entity Validation
+
+```typescript
+// projectNumber validation
+- Required: true
+- Unique: true
+- Pattern: /^P-\d{4}-[A-Z]\d{3}$/
+- Example: "P-2024-B023"
+- Error: "Project number must be format P-YYYY-X###"
+
+// contractValue validation
+- Required: true
+- Must match Offer totalPrice if created from opportunity
+- Min: 0
+- Warning if > €500,000 (requires GF approval)
+
+// budget validation
+- Required: true
+- Should be ≤ contractValue
+- Warning if budget > contractValue (negative margin)
+
+// plannedStartDate validation
+- Required: true
+- Min: -30 days from today (allow retroactive)
+- Max: +365 days from today
+- Error: "Project start date must be within -30 to +365 days from today"
+
+// plannedEndDate validation
+- Required: true
+- Must be > plannedStartDate
+- Error: "Project end date must be after start date"
+
+// projectManager validation
+- Required: true
+- Must be User with role PLAN
+- Error: "Project manager must be a Planning user"
+```
+
+### Invoice Entity (GoBD Compliance)
+
+```typescript
+// GoBD Immutability Rules
+const IMMUTABLE_FIELDS_AFTER_FINALIZATION = [
+  'invoiceNumber',
+  'invoiceDate',
+  'customer',
+  'lineItems',
+  'subtotal',
+  'taxAmount',
+  'totalAmount',
+  'immutableHash',
+];
+
+// invoiceNumber validation
+- Required: true
+- Immutable: true
+- Unique: true
+- Pattern: /^R-\d{4}-\d{5}$/
+- Example: "R-2024-00456"
+- Generated by: packages/shared/utils/id-generator.ts → generateGoBDNumber()
+
+// invoiceDate validation
+- Required: true
+- Immutable after finalization
+- Min: -7 days from today (allow 1 week retroactive)
+- Max: today
+- Error: "Invoice date must be within last 7 days"
+
+// totalAmount validation
+- Required: true
+- Must equal: subtotal + taxAmount - discountAmount
+- Calculated automatically
+- Tolerance: ±0.01 (1 cent rounding)
+
+// immutableHash generation
+- SHA-256 hash of all immutable fields
+- Generated on finalization
+- Used to detect tampering (GoBD requirement)
+```
+
+## Business Rule Validation
+
+### Cross-Field Validation
+
+```typescript
+// ✅ CORRECT: Opportunity Lost requires reason
+if (opportunity.status === 'Lost') {
+  if (!opportunity.lostReason || opportunity.lostReason.length < 10) {
+    throw new ValidationException('Lost opportunities must have a reason (min 10 characters)');
+  }
+}
+
+// ✅ CORRECT: Opportunity Won requires actual value
+if (opportunity.status === 'Won') {
+  if (!opportunity.actualValue || opportunity.actualValue <= 0) {
+    throw new ValidationException('Won opportunities must have actual contract value');
+  }
+}
+
+// ✅ CORRECT: Project end date after start date
+if (project.plannedEndDate <= project.plannedStartDate) {
+  throw new ValidationException('Project end date must be after start date');
+}
+
+// ✅ CORRECT: Project budget warning
+if (project.budget > project.contractValue) {
+  warnings.push({
+    level: 'warning',
+    message: `Budget (€${project.budget}) exceeds contract value (€${project.contractValue}). Margin will be negative.`
+  });
+}
+
+// ✅ CORRECT: Invoice total calculation check
+const calculatedTotal = invoice.subtotal + invoice.taxAmount - (invoice.discountAmount || 0);
+const diff = Math.abs(calculatedTotal - invoice.totalAmount);
+if (diff >= 0.01) {
+  throw new ValidationException('Invoice total does not match calculated total. Check line items.');
+}
+```
+
+### RBAC Permission Checks
+
+EVERY data access operation MUST check permissions:
+
+```typescript
+// ✅ CORRECT: Permission check before returning data
+async findCustomer(id: string, currentUser: User): Promise<Customer> {
+  const customer = await this.repository.findById(id);
+  
+  // Check entity-level permission
+  if (!hasPermission(currentUser.role, 'Customer', 'READ')) {
+    throw new ForbiddenException('You do not have permission to view customers');
+  }
+  
+  // Check record-level permission (ownership)
+  if (currentUser.role === 'ADM' && customer.owner !== currentUser.id) {
+    throw new ForbiddenException('You can only view your own customers');
+  }
+  
+  // Filter fields based on role
+  return this.filterFieldsByRole(customer, currentUser.role);
+}
+```
+
+## GoBD Immutability Pattern
+
+### Immutable Entities
+
+After finalization, these entities CANNOT be modified:
+- Invoice (after `finalized = true`)
+- Payment records (always immutable)
+- Protocol entries (after 24 hours)
+
+### Change Log Pattern
+
+```typescript
+interface ChangeLogEntry {
+  field: string;
+  oldValue: unknown;
+  newValue: unknown;
+  changedBy: string;     // User ID
+  changedAt: Date;
+  reason: string;        // REQUIRED for post-immutability changes
+  approvedBy?: string;   // GF approval for significant changes
+}
+
+// All immutable entities MUST have changeLog array
+interface GoBDEntity extends BaseEntity {
+  changeLog: ChangeLogEntry[];
+  immutableAt?: Date;        // When entity became immutable
+  immutableHash?: string;    // SHA-256 hash for tamper detection
+  finalized?: boolean;       // True = locked
+}
+```
+
+### Correction Pattern (GoBD Compliant)
+
+```typescript
+// ✅ CORRECT: Never directly modify immutable fields
+async correctInvoice(invoice: Invoice, correction: CorrectionDto, user: User): Promise<Invoice> {
+  if (invoice.finalized) {
+    // Require GF approval
+    if (user.role !== 'GF') {
+      throw new ForbiddenException('Invoice corrections require Geschäftsführer approval');
+    }
+    
+    // Log correction
+    invoice.changeLog.push({
+      field: correction.field,
+      oldValue: invoice[correction.field],
+      newValue: correction.value,
+      changedBy: user.id,
+      changedAt: new Date(),
+      reason: correction.reason, // REQUIRED
+      approvedBy: user.id
+    });
+    
+    // Best practice: Create correction invoice instead
+    return await this.createCorrectionInvoice(invoice, correction);
+  }
+  
+  // Draft invoices can be edited normally
+  return await this.repository.update(invoice);
+}
+
+// ❌ WRONG: Direct modification of immutable fields
+async updateInvoice(invoice: Invoice, updates: Partial<Invoice>): Promise<Invoice> {
+  if (invoice.finalized) {
+    // Wrong! Directly modifying immutable fields
+    return await this.repository.update({ ...invoice, ...updates });
+  }
+}
+```
+
+## Examples
+
+### ✅ CORRECT: Complete Entity with BaseEntity
+
+```typescript
+interface Customer extends BaseEntity {
+  type: 'customer';
+  companyName: string;
+  vatNumber?: string;
+  email?: string;
+  phone?: string;
+  address: Address;
+  creditLimit?: number;
+  owner: string; // User ID with role ADM
+  rating: 'A' | 'B' | 'C';
+}
+
+const customer: Customer = {
+  _id: generateCustomerId(),
+  _rev: '',
+  type: 'customer',
+  companyName: 'Hofladen Müller GmbH',
+  vatNumber: 'DE123456789',
+  email: 'info@hofladen-mueller.de',
+  address: { /* ... */ },
+  owner: 'user-123',
+  rating: 'A',
+  createdBy: 'user-123',
+  createdAt: new Date(),
+  modifiedBy: 'user-123',
+  modifiedAt: new Date(),
+  version: 1,
+};
+```
+
+### Location Entity Validation
+
+```typescript
+// locationName validation
+- Required: true
+- Min length: 2
+- Max length: 100
+- Pattern: /^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/
+- Error: "Location name must be 2-100 characters, letters, numbers, and basic punctuation only"
+
+// locationType validation
+- Required: true
+- Enum: 'headquarter' | 'branch' | 'warehouse' | 'project_site' | 'other'
+- Error: "Invalid location type"
+
+// deliveryAddress validation
+- Required: true
+- Must be valid Address structure
+- street: 2-100 chars (required)
+- zipCode: German 5-digit format (required)
+- city: 2-100 chars (required)
+- country: Default "Deutschland"
+
+// isActive validation
+- Required: true
+- Boolean value
+- Error: "Active status is required"
+
+// primaryContactPersonId validation
+- Optional
+- Must be in contactPersons array if set (LR-002)
+- Error: "Primary contact must be in the list of assigned contact persons"
+
+// customerId validation
+- Required: true
+- Must reference existing Customer
+- Error: "Customer ID is required"
+```
+
+**Business Rules:**
+- LR-001: Location name must be unique within customer (not globally)
+- LR-002: Primary contact must be in contactPersons array
+- At least one location should be active if customer has locations (warning)
+
+### Contact Entity Validation
+
+```typescript
+// firstName, lastName validation
+- Required: true
+- Min length: 2
+- Max length: 50
+- Pattern: Letters only
+- Error: "First/Last name must be 2-50 characters"
+
+// email validation
+- Optional
+- Valid email format
+- Error: "Invalid email format"
+
+// phone, mobile validation
+- Optional
+- Min length: 7
+- Max length: 20
+- Pattern: International format /^[\+]?[0-9\s\-()]+$/
+- Error: "Invalid phone number format"
+
+// customerId validation
+- Required: true
+- Must reference existing Customer
+- Error: "Customer ID is required"
+
+// decisionMakingRole validation
+- Required: true
+- Enum: 'decision_maker' | 'key_influencer' | 'recommender' | 'gatekeeper' | 'operational_contact' | 'informational'
+- Error: "Decision-making role is required"
+
+// authorityLevel validation
+- Required: true
+- Enum: 'low' | 'medium' | 'high' | 'final_authority'
+- Error: "Authority level is required"
+
+// canApproveOrders validation
+- Required: true
+- Boolean value
+- Error: "Can approve orders flag is required"
+
+// approvalLimitEur validation
+- Required if canApproveOrders=true (CO-001)
+- Min: 0
+- Max: 10000000 (€10M)
+- Error: "Contacts who can approve orders must have an approval limit > 0"
+
+// functionalRoles validation
+- Required array (can be empty)
+- Each value must be valid FunctionalRole enum
+- Enum values: 'owner_ceo' | 'purchasing_manager' | 'facility_manager' | 'store_manager' | 'project_coordinator' | 'financial_controller' | 'operations_manager' | 'administrative'
+
+// assignedLocationIds validation
+- Optional array
+- Each value must reference existing Location
+- Business rule CO-002: isPrimaryContactForLocations must be subset of assignedLocationIds
+
+// isPrimaryContactForLocations validation
+- Optional array
+- Must be subset of assignedLocationIds (CO-002)
+- Error: "Contact is primary for location X but not assigned to it"
+```
+
+**Business Rules:**
+- CO-001: Approval limit required if canApproveOrders=true
+- CO-002: Primary contact locations must be in assignedLocationIds
+- CO-003: Customer should have at least one decision maker or key influencer (warning)
+
+### Customer Entity Updates
+
+**BREAKING CHANGE: `address` renamed to `billingAddress`**
+
+```typescript
+// billingAddress validation (UPDATED from 'address')
+- Required: true
+- Must be valid Address structure
+- All existing address validation rules apply
+
+// locations validation (NEW)
+- Required array (can be empty)
+- Array of Location IDs
+- Each value must reference existing Location
+- Default: []
+
+// defaultDeliveryLocationId validation (NEW)
+- Optional
+- Must be in locations array if set (CR-001)
+- Error: "Default delivery location must be one of the customer's locations"
+
+// contactPersons validation (NEW)
+- Required array (can be empty)
+- Array of Contact IDs
+- Each value must reference existing ContactPerson
+- Default: []
+
+// customerBusinessType validation (NEW)
+- Optional
+- Enum: 'direct_marketer' | 'retail' | 'franchise' | 'cooperative' | 'other'
+```
+
+**Business Rules:**
+- CR-001: Default delivery location must be in locations array
+- Warn if no active locations when locations[] is not empty
+
+## Cross-Entity Validation
+
+### Location-Customer Relationship
+
+```typescript
+// When creating/updating Location
+- Customer must exist
+- Location name must be unique within customer (LR-001)
+- If primaryContactPersonId set, contact must belong to same customer
+- If primaryContactPersonId set, must be in contactPersons array (LR-002)
+```
+
+### Contact-Customer Relationship
+
+```typescript
+// When creating/updating Contact
+- Customer must exist
+- If assignedLocationIds set, each location must belong to same customer
+- isPrimaryContactForLocations must be subset of assignedLocationIds (CO-002)
+- Customer should have at least one decision maker/key influencer (CO-003 warning)
+```
+
+### Contact-Location Relationship
+
+```typescript
+// When assigning contact to location
+- Contact and Location must belong to same customer
+- Primary contact for location must be in location.contactPersons array
+- Contact.assignedLocationIds should include location._id
+```
+
+## References
+
+- Data Model Specification: `docs/reviews/DATA_MODEL_SPECIFICATION.md`
+- RBAC Permission Matrix: `docs/reviews/RBAC_PERMISSION_MATRIX.md`
+- Architecture Documentation: `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md`
+- Nested Resources Rule: `.cursor/rules/nested-resources.mdc`

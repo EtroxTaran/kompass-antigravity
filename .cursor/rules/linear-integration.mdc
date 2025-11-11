@@ -1,0 +1,338 @@
+---
+description: Linear issue tracking integration - commit message format, branch naming, PR requirements, and workflow automation
+globs: []
+alwaysApply: true
+---
+
+# Linear Integration Rules
+
+## Overview
+
+Linear is used for task tracking and issue management. All code changes MUST be linked to Linear issues for traceability and project management.
+
+## Commit Message Format
+
+### Required Format
+
+Every commit message MUST reference a Linear issue:
+
+```
+<type>(<linear-issue-id>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Format Details
+
+- **Type**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+- **Linear Issue ID**: Format `KOM-123` (project prefix + issue number)
+- **Subject**: Brief description (50 characters or less)
+- **Body**: Detailed explanation (optional but recommended)
+- **Footer**: Additional context (optional)
+
+### ✅ CORRECT: Commit Messages with Linear
+
+```bash
+# Feature commit
+feat(KOM-123): add customer duplicate detection
+
+Implement duplicate detection using fuzzy matching on company name
+and VAT number. Shows warning dialog when potential duplicate is found.
+
+# Bug fix commit
+fix(KOM-456): correct invoice total calculation
+
+Fixed issue where discount was not properly subtracted from total.
+Added validation to ensure total matches calculated value.
+
+# Refactor commit
+refactor(KOM-789): extract RBAC logic to guard
+
+Moved permission checking logic from services to reusable guard.
+Improves separation of concerns and testability.
+
+# Documentation commit
+docs(KOM-234): update API documentation
+
+Added OpenAPI examples for customer endpoints and error responses.
+
+# Test commit
+test(KOM-567): add E2E tests for offline sync
+
+Added Playwright tests for offline customer creation and conflict resolution.
+```
+
+### ❌ WRONG: Commit Messages Without Linear
+
+```bash
+# ❌ Missing Linear issue reference
+feat: add customer duplicate detection
+
+# ❌ Wrong format
+feat KOM-123: add customer duplicate detection
+
+# ❌ Vague description
+fix(KOM-456): fix stuff
+
+# ❌ No type
+KOM-123: add feature
+```
+
+## Branch Naming
+
+### Required Format
+
+Branches MUST include Linear issue ID:
+
+```
+<type>/<linear-issue-id>-<short-description>
+```
+
+### Format Details
+
+- **Type**: `feature`, `bugfix`, `hotfix`, `refactor`, `docs`
+- **Linear Issue ID**: `KOM-123`
+- **Description**: Short kebab-case description
+
+### ✅ CORRECT: Branch Names
+
+```bash
+feature/KOM-123-customer-duplicate-detection
+bugfix/KOM-456-invoice-total-calculation
+hotfix/KOM-789-security-jwt-expiration
+refactor/KOM-234-extract-rbac-logic
+docs/KOM-567-update-api-documentation
+```
+
+### ❌ WRONG: Branch Names
+
+```bash
+# ❌ Missing Linear issue ID
+feature/customer-duplicate-detection
+
+# ❌ Wrong format
+KOM-123-feature-customer-duplicate
+
+# ❌ Vague description
+bugfix/KOM-456-fix
+
+# ❌ No type
+KOM-123-customer-feature
+```
+
+## Pull Request Requirements
+
+### PR Description Must Reference Linear
+
+Every PR description MUST include:
+
+1. **Linear Issue Reference**: Link to Linear issue
+2. **Description**: What changes were made and why
+3. **Testing**: How the changes were tested
+4. **Screenshots**: For UI changes (if applicable)
+
+### ✅ CORRECT: PR Description
+
+```markdown
+## Description
+
+Implements customer duplicate detection as specified in [KOM-123](https://linear.app/kompass/issue/KOM-123).
+
+### Changes
+
+- Added fuzzy matching algorithm for company names
+- Implemented VAT number exact match check
+- Added warning dialog when duplicate is detected
+- Created reusable `useDuplicateDetection` hook
+
+### Testing
+
+- ✅ Unit tests for fuzzy matching algorithm
+- ✅ Integration tests for duplicate detection API
+- ✅ E2E test for duplicate warning dialog
+- ✅ Manual testing with various customer names
+
+### Screenshots
+
+[Add screenshots of duplicate warning dialog]
+
+### Related Issues
+
+Closes KOM-123
+```
+
+### ❌ WRONG: PR Description
+
+```markdown
+# ❌ Missing Linear reference
+## Description
+Added duplicate detection
+
+# ❌ No description
+## Description
+See KOM-123
+
+# ❌ No testing information
+## Description
+Implements KOM-123
+```
+
+## Linear Issue Status Checks
+
+### Before Merging PR
+
+1. **Linear issue MUST be in "In Review" or "Ready for Review" status**
+2. **All PR checks MUST pass** (tests, linting, type checking)
+3. **At least 1 code review approval required**
+4. **Linear issue MUST be linked in PR description**
+
+### Workflow
+
+```
+1. Create Linear issue → Status: "Todo"
+2. Create branch → feature/KOM-123-description
+3. Make changes and commit → feat(KOM-123): description
+4. Create PR → Link to KOM-123
+5. Update Linear issue → Status: "In Review"
+6. Code review → Get approval
+7. Merge PR → Linear issue auto-updates to "Done"
+```
+
+## Code Comments for Complex Features
+
+### Linking Linear Issues in Code
+
+For complex features or bug fixes, add Linear issue reference in code comments:
+
+```typescript
+// ✅ CORRECT: Linear issue reference in complex code
+/**
+ * Implements duplicate detection using fuzzy matching.
+ * 
+ * Algorithm: Levenshtein distance with threshold of 0.8
+ * Checks both company name and VAT number for duplicates.
+ * 
+ * @see KOM-123 - Customer Duplicate Detection
+ */
+export function detectDuplicates(
+  newCustomer: Customer,
+  existingCustomers: Customer[]
+): DuplicateMatch[] {
+  // Implementation
+}
+
+// ✅ CORRECT: Linear issue in TODO comments
+// TODO(KOM-456): Optimize fuzzy matching for large customer lists (>1000)
+// Current implementation is O(n²), consider using indexing
+
+// ✅ CORRECT: Linear issue in bug fix comments
+// Fix for KOM-789: Invoice total calculation was incorrect when discount > subtotal
+// Added validation to ensure: total = subtotal + tax - discount
+```
+
+## Linear Issue Types
+
+### Issue Type Mapping
+
+- **Feature**: `feat(KOM-XXX)` or `feature/KOM-XXX-*`
+- **Bug**: `fix(KOM-XXX)` or `bugfix/KOM-XXX-*`
+- **Hotfix**: `fix(KOM-XXX)` or `hotfix/KOM-XXX-*` (for production fixes)
+- **Refactor**: `refactor(KOM-XXX)` or `refactor/KOM-XXX-*`
+- **Documentation**: `docs(KOM-XXX)` or `docs/KOM-XXX-*`
+- **Test**: `test(KOM-XXX)` or `test/KOM-XXX-*`
+- **Chore**: `chore(KOM-XXX)` or `chore/KOM-XXX-*`
+
+## Linear Integration Best Practices
+
+### 1. Create Linear Issue First
+
+Always create Linear issue before starting work:
+
+1. Create issue in Linear with clear description
+2. Assign to yourself
+3. Set status to "In Progress"
+4. Create branch with issue ID
+5. Start coding
+
+### 2. Update Linear Issue Status
+
+Keep Linear issue status updated:
+
+- **Todo** → Issue created, not started
+- **In Progress** → Work started, branch created
+- **In Review** → PR created, waiting for review
+- **Done** → PR merged, work complete
+- **Canceled** → Work abandoned
+
+### 3. Link Related Issues
+
+If work relates to multiple issues, link them:
+
+```markdown
+## Related Issues
+
+- Implements KOM-123
+- Blocks KOM-456
+- Related to KOM-789
+```
+
+### 4. Use Linear Labels
+
+Use Linear labels for categorization:
+
+- `backend`, `frontend`, `shared`
+- `bug`, `feature`, `refactor`
+- `critical`, `high`, `medium`, `low`
+
+## Examples
+
+### Complete Workflow Example
+
+```bash
+# 1. Create Linear issue KOM-123: "Add customer duplicate detection"
+
+# 2. Create branch
+git checkout -b feature/KOM-123-customer-duplicate-detection
+
+# 3. Make changes and commit
+git add .
+git commit -m "feat(KOM-123): add customer duplicate detection
+
+Implement fuzzy matching algorithm for company names.
+Add VAT number exact match check.
+Create duplicate warning dialog component."
+
+# 4. Push and create PR
+git push origin feature/KOM-123-customer-duplicate-detection
+
+# 5. Update Linear issue status to "In Review"
+
+# 6. After review approval, merge PR
+# Linear issue auto-updates to "Done"
+```
+
+## Automation
+
+### GitHub Actions Integration
+
+Linear can be integrated with GitHub Actions to automatically:
+
+- Update Linear issue status when PR is created
+- Comment on Linear issue when PR is merged
+- Close Linear issue when PR is merged
+
+### Commit Hook Integration
+
+Pre-commit hooks can validate:
+
+- Commit message format includes Linear issue ID
+- Branch name includes Linear issue ID
+- Linear issue exists and is valid
+
+## References
+
+- Linear Documentation: https://linear.app/docs
+- Conventional Commits: https://www.conventionalcommits.org/
+- Git Workflow Rules: `.cursor/rules/git-workflow.mdc`

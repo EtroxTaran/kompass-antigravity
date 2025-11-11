@@ -1,0 +1,359 @@
+# ============================================================================
+# Dependencies
+# ============================================================================
+
+# Node modules
+node_modules/
+.pnp
+.pnp.js
+.pnp.cjs
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# pnpm
+.pnpm-store/
+.pnpm-debug.log*
+
+# ============================================================================
+# Build Outputs
+# ============================================================================
+
+# Production builds
+dist/
+build/
+out/
+.next/
+.vercel/
+
+# NestJS build outputs
+*.tsbuildinfo
+*.js.map
+
+# Vite build outputs
+.vite/
+vite.config.*.timestamp-*
+
+# ============================================================================
+# Environment Variables & Secrets
+# ============================================================================
+
+# Environment files (NEVER commit secrets!)
+.env
+.env.*
+!.env.example
+!.env.template
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Secrets and credentials
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+secrets/
+credentials/
+*.secret
+
+# ============================================================================
+# Testing & Coverage
+# ============================================================================
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+.nyc_output/
+
+# Playwright
+playwright-report/
+playwright/.cache/
+test-results/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Jest
+.jest-cache/
+
+# Vitest
+.vitest/
+coverage/
+
+# ============================================================================
+# Logs
+# ============================================================================
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log.*
+
+# ============================================================================
+# IDE & Editor Files
+# ============================================================================
+
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IntelliJ IDEA / WebStorm / PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Vim
+*.swp
+*.swo
+*~
+.vim/
+
+# Emacs
+*~
+\#*\#
+.\#*
+.DS_Store?
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ============================================================================
+# Operating System Files
+# ============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+.nfs*
+
+# ============================================================================
+# Monorepo & Build Tools
+# ============================================================================
+
+# Turbo
+.turbo/
+.turbo-cache/
+
+# Rush
+common/temp/
+common/autoinstallers/*/node_modules/
+
+# Nx
+.nx/cache/
+.nx/workspace-data/
+
+# ============================================================================
+# TypeScript
+# ============================================================================
+
+# TypeScript build info
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Next.js (if used)
+next-env.d.ts
+
+# ============================================================================
+# PWA & Service Workers
+# ============================================================================
+
+# Service workers (generated)
+public/sw.js
+public/workbox-*.js
+public/worker-*.js
+public/sw.js.map
+public/workbox-*.js.map
+public/worker-*.js.map
+sw.js
+workbox-*.js
+worker-*.js
+sw.js.map
+workbox-*.js.map
+worker-*.js.map
+
+# PWA manifests (if auto-generated)
+manifest.json.bak
+
+# ============================================================================
+# Databases
+# ============================================================================
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+
+# CouchDB / PouchDB
+.couch/
+*.couch
+.couchapprc
+.couchapprc.json
+
+# PouchDB local databases
+pouchdb-*/
+*.pouchdb
+
+# Database dumps
+*.sql
+*.dump
+*.backup
+
+# ============================================================================
+# Docker
+# ============================================================================
+
+# Docker volumes and data
+docker/data/
+docker/volumes/
+*.dockerignore.bak
+
+# ============================================================================
+# Temporary Files
+# ============================================================================
+
+# Temporary directories
+tmp/
+temp/
+.tmp/
+.temp/
+
+# OS temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+*.save
+
+# ============================================================================
+# Package Manager Locks (Keep pnpm-lock.yaml!)
+# ============================================================================
+
+# Note: pnpm-lock.yaml SHOULD be committed
+# Only ignore if you're using a different package manager
+# package-lock.json
+# yarn.lock
+
+# ============================================================================
+# Misc
+# ============================================================================
+
+# Storybook
+storybook-static/
+.out/
+
+# Sentry
+.sentryclirc
+
+# Local development
+.local/
+.localhost/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variable files
+.env.test
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# ============================================================================
+# Project Specific
+# ============================================================================
+
+# MeiliSearch data (if running locally)
+meilisearch-data/
+
+# CouchDB local data
+couchdb-data/
+couchdb/local.d/
+
+# Generated documentation
+docs/generated/
+docs/build/
+
+# Compiled translations
+*.mo
+*.pot
+
+# ============================================================================
+# Security
+# ============================================================================
+
+# Security scan results
+security-report.json
+.snyk
+
+# Dependency vulnerability reports
+audit-results.json

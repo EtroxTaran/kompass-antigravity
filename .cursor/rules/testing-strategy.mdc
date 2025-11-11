@@ -1,0 +1,466 @@
+---
+description: Test coverage requirements (80% overall, 90% business logic), 70/20/10 test pyramid (Unit/Integration/E2E), test file locations, structure examples, and mocking rules
+globs: ["**/*.spec.ts", "**/*.spec.tsx", "**/*.test.ts", "**/*.test.tsx", "**/*.e2e.spec.ts"]
+alwaysApply: true
+---
+
+# Testing Strategy (70/20/10 Pyramid)
+
+## Test Coverage Requirements
+
+### Coverage Targets
+
+- **Overall**: 80% minimum
+- **Business logic (services)**: 90% minimum
+- **React components**: 80% minimum
+- **Utilities**: 85% minimum
+- **Controllers/routes**: 70% minimum
+
+### Coverage Enforcement
+
+```typescript
+// jest.config.js
+module.exports = {
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+    './apps/backend/src/modules/*/services/*.ts': {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+    './apps/frontend/src/**/*.tsx': {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+    './packages/shared/src/**/*.ts': {
+      branches: 85,
+      functions: 85,
+      lines: 85,
+      statements: 85,
+    },
+  },
+};
+```
+
+## Test Pyramid Distribution
+
+### 70% Unit Tests
+
+Fast, isolated tests for individual functions, methods, and components.
+
+### 20% Integration Tests
+
+Tests that verify interactions between modules, services, and external systems.
+
+### 10% E2E Tests
+
+End-to-end tests that verify complete user workflows.
+
+## Unit Tests (70% of tests)
+
+### Test File Location
+
+Unit tests MUST be colocated with source files:
+
+```
+apps/backend/src/modules/customer/
+├── customer.service.ts
+├── customer.service.spec.ts          ✅ Colocated
+├── customer.controller.ts
+└── customer.controller.spec.ts       ✅ Colocated
+
+apps/frontend/src/features/customer/components/
+├── CustomerList.tsx
+└── CustomerList.spec.tsx             ✅ Colocated
+```
+
+### Unit Test Structure
+
+```typescript
+// ✅ CORRECT: Well-structured unit test
+import { Test } from '@nestjs/testing';
+import { CustomerService } from './customer.service';
+import { ICustomerRepository } from './customer.repository.interface';
+import { NotFoundException, ValidationException } from '@kompass/shared/exceptions';
+
+describe('CustomerService', () => {
+  let service: CustomerService;
+  let repository: jest.Mocked<ICustomerRepository>;
+
+  beforeEach(async () => {
+    // Mock repository
+    repository = {
+      findById: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    } as any;
+
+    const module = await Test.createTestingModule({
+      providers: [
+        CustomerService,
+        {
+          provide: 'ICustomerRepository',
+          useValue: repository,
+        },
+      ],
+    }).compile();
+
+    service = module.get<CustomerService>(CustomerService);
+  });
+
+  describe('findById', () => {
+    it('should return customer when found', async () => {
+      const mockCustomer = { id: '1', companyName: 'Test GmbH' };
+      repository.findById.mockResolvedValue(mockCustomer);
+
+      const result = await service.findById('1');
+
+      expect(result).toEqual(mockCustomer);
+      expect(repository.findById).toHaveBeenCalledWith('1');
+    });
+
+    it('should throw NotFoundException when not found', async () => {
+      repository.findById.mockResolvedValue(null);
+
+      await expect(service.findById('999')).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('create', () => {
+    it('should validate company name length', async () => {
+      const invalidCustomer = { companyName: 'A' }; // Too short
+
+      await expect(service.create(invalidCustomer)).rejects.toThrow(ValidationException);
+    });
+
+    it('should validate VAT number format', async () => {
+      const invalidCustomer = { 
+        companyName: 'Test GmbH',
+        vatNumber: 'INVALID' // Wrong format
+      };
+
+      await expect(service.create(invalidCustomer)).rejects.toThrow(ValidationException);
+    });
+  });
+});
+```
+
+### Frontend Unit Test Example
+
+```typescript
+// ✅ CORRECT: React component unit test
+import { render, screen, fireEvent } from '@testing-library/react';
+import { CustomerCard } from './CustomerCard';
+
+describe('CustomerCard', () => {
+  const mockCustomer = {
+    id: 'customer-123',
+    companyName: 'Test GmbH',
+    vatNumber: 'DE123456789',
+    address: { city: 'München' },
+  };
+
+  it('should render customer information', () => {
+    render(<CustomerCard customer={mockCustomer} />);
+    
+    expect(screen.getByText('Test GmbH')).toBeInTheDocument();
+    expect(screen.getByText('DE123456789')).toBeInTheDocument();
+    expect(screen.getByText('München')).toBeInTheDocument();
+  });
+
+  it('should call onSelect when clicked', () => {
+    const onSelect = jest.fn();
+    render(<CustomerCard customer={mockCustomer} onSelect={onSelect} />);
+    
+    fireEvent.click(screen.getByRole('button'));
+    expect(onSelect).toHaveBeenCalledWith('customer-123');
+  });
+});
+```
+
+## Integration Tests (20% of tests)
+
+### Integration Test Location
+
+```
+tests/integration/
+├── customer/
+│   ├── customer-api.integration.spec.ts
+│   └── customer-repository.integration.spec.ts
+└── opportunity/
+    └── opportunity-api.integration.spec.ts
+```
+
+### Integration Test Example
+
+```typescript
+// ✅ CORRECT: Integration test with real database
+import { Test } from '@nestjs/testing';
+import { INestApplication } from '@nestjs/common';
+import * as request from 'supertest';
+import { AppModule } from '../../src/app.module';
+
+describe('Customer API (Integration)', () => {
+  let app: INestApplication;
+  let authToken: string;
+
+  beforeAll(async () => {
+    const moduleFixture = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    await app.init();
+
+    // Get auth token
+    const loginResponse = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ email: 'test@example.com', password: 'test123' });
+    authToken = loginResponse.body.token;
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  describe('POST /api/v1/customers', () => {
+    it('should create customer with valid data', async () => {
+      const newCustomer = {
+        companyName: 'Test GmbH',
+        vatNumber: 'DE123456789',
+        address: {
+          street: 'Teststraße 1',
+          zipCode: '80331',
+          city: 'München',
+          country: 'Deutschland',
+        },
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/customers')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send(newCustomer)
+        .expect(201);
+
+      expect(response.body).toMatchObject({
+        id: expect.any(String),
+        companyName: 'Test GmbH',
+        vatNumber: 'DE123456789',
+      });
+    });
+
+    it('should return 401 without auth token', async () => {
+      await request(app.getHttpServer())
+        .post('/api/v1/customers')
+        .send({ companyName: 'Test' })
+        .expect(401);
+    });
+  });
+});
+```
+
+## E2E Tests (10% of tests)
+
+### E2E Test Location
+
+```
+tests/e2e/
+├── customer/
+│   ├── create-customer.spec.ts
+│   ├── search-customer.spec.ts
+│   └── duplicate-detection.spec.ts
+└── offline/
+    ├── offline-create.spec.ts
+    └── conflict-resolution.spec.ts
+```
+
+### E2E Test with Playwright
+
+```typescript
+// ✅ CORRECT: Playwright E2E test
+import { test, expect } from '@playwright/test';
+
+test.describe('Customer Management', () => {
+  test('should create new customer', async ({ page }) => {
+    // Login
+    await page.goto('/login');
+    await page.fill('[name="email"]', 'adm@example.com');
+    await page.fill('[name="password"]', 'password123');
+    await page.click('button[type="submit"]');
+
+    // Navigate to customers
+    await page.goto('/customers');
+    await expect(page.locator('h1')).toContainText('Customers');
+
+    // Create new customer
+    await page.click('button:has-text("New Customer")');
+    await page.fill('[name="companyName"]', 'Test Hofladen GmbH');
+    await page.fill('[name="vatNumber"]', 'DE123456789');
+    await page.fill('[name="address.street"]', 'Hauptstraße 15');
+    await page.fill('[name="address.zipCode"]', '80331');
+    await page.fill('[name="address.city"]', 'München');
+    await page.fill('[name="phone"]', '+49-89-1234567');
+    await page.fill('[name="email"]', 'info@testhofladen.de');
+
+    await page.click('button:has-text("Save")');
+
+    // Verify success
+    await expect(page.locator('.toast-success')).toContainText('Customer created');
+    await expect(page.locator('h1')).toContainText('Test Hofladen GmbH');
+  });
+
+  test('should detect duplicate customers', async ({ page }) => {
+    // Test duplicate detection workflow
+    await page.goto('/customers');
+    await page.click('button:has-text("New Customer")');
+    await page.fill('[name="companyName"]', 'Existing Customer GmbH');
+    await page.fill('[name="vatNumber"]', 'DE999999999');
+    await page.click('button:has-text("Save")');
+
+    // Should show duplicate warning
+    await expect(page.locator('.toast-warning')).toContainText('Duplicate detected');
+  });
+});
+```
+
+## Test Naming Conventions
+
+### ✅ CORRECT: Descriptive Test Names
+
+```typescript
+describe('CustomerService', () => {
+  describe('findById', () => {
+    it('should return customer when found', async () => {});
+    it('should throw NotFoundException when not found', async () => {});
+    it('should filter fields based on user role', async () => {});
+  });
+
+  describe('create', () => {
+    it('should validate company name length', async () => {});
+    it('should validate VAT number format', async () => {});
+    it('should set owner to current user', async () => {});
+  });
+});
+```
+
+### ❌ WRONG: Vague Test Names
+
+```typescript
+describe('CustomerService', () => {
+  it('test1', async () => {}); // What does this test?
+  it('works', async () => {}); // What works?
+  it('should work', async () => {}); // Too vague
+});
+```
+
+## Mocking Rules
+
+### What to Mock
+
+- External services (CouchDB, MeiliSearch, Keycloak, n8n)
+- HTTP requests (use MSW or nock)
+- Date/time functions (use `jest.useFakeTimers()`)
+- File system operations
+- Environment variables
+
+```typescript
+// ✅ CORRECT: Mocking external service
+jest.mock('@kompass/shared/services/meilisearch', () => ({
+  searchCustomers: jest.fn(),
+}));
+
+// ✅ CORRECT: Mocking date/time
+beforeEach(() => {
+  jest.useFakeTimers();
+  jest.setSystemTime(new Date('2024-01-01'));
+});
+
+afterEach(() => {
+  jest.useRealTimers();
+});
+```
+
+### What NOT to Mock
+
+- Pure functions
+- Simple utilities
+- The code under test itself
+- Shared validation functions
+
+```typescript
+// ❌ WRONG: Mocking pure function
+jest.mock('@kompass/shared/utils/format-currency', () => ({
+  formatCurrency: jest.fn(),
+}));
+
+// ✅ CORRECT: Test pure function directly
+import { formatCurrency } from '@kompass/shared/utils/format-currency';
+
+it('should format currency correctly', () => {
+  expect(formatCurrency(1000)).toBe('1.000,00 €');
+});
+```
+
+## Test Organization
+
+### Test Structure
+
+1. **Arrange**: Set up test data and mocks
+2. **Act**: Execute the code under test
+3. **Assert**: Verify the results
+
+```typescript
+it('should calculate total correctly', () => {
+  // Arrange
+  const lineItems = [
+    { quantity: 2, price: 10 },
+    { quantity: 3, price: 20 },
+  ];
+
+  // Act
+  const total = calculateTotal(lineItems);
+
+  // Assert
+  expect(total).toBe(80);
+});
+```
+
+## Running Tests
+
+### Test Commands
+
+```bash
+# Run all tests
+pnpm test
+
+# Run unit tests only
+pnpm test:unit
+
+# Run integration tests only
+pnpm test:integration
+
+# Run E2E tests only
+pnpm test:e2e
+
+# Run tests with coverage
+pnpm test:coverage
+
+# Run tests in watch mode
+pnpm test:watch
+```
+
+## References
+
+- Test Strategy Document: `docs/reviews/TEST_STRATEGY_DOCUMENT.md`
+- Architecture Documentation: `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md`
+- Playwright Documentation: https://playwright.dev/
+- Jest Documentation: https://jestjs.io/

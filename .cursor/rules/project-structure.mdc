@@ -1,0 +1,166 @@
+---
+description: Monorepo structure, domain-driven organization, file naming conventions, and module boundaries
+globs: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
+alwaysApply: true
+---
+
+# Project Structure & Organization
+
+## Monorepo Structure
+
+This is a **pnpm workspace monorepo** with strict directory boundaries:
+
+- **Backend**: `apps/backend/` (NestJS)
+- **Frontend**: `apps/frontend/` (React + Vite PWA)
+- **Shared**: `packages/shared/` (TypeScript types, utilities, validation)
+- **Tests**: `tests/` (E2E Playwright tests, integration tests, performance tests)
+
+### Rules
+
+- NEVER create files outside these designated directories
+- NEVER create duplicate copies of files - use git for versioning
+- All shared code MUST be in `packages/shared/`
+- All tests MUST be in `tests/` directory (E2E) or colocated with source (unit tests)
+
+## Domain-Driven Directory Organization
+
+### Backend Module Structure
+
+Backend modules MUST follow domain structure: `customer/`, `opportunity/`, `project/`, `invoice/`, etc.
+
+Each backend module MUST contain:
+
+```
+apps/backend/src/modules/{entity}/
+├── {entity}.module.ts          # NestJS module
+├── {entity}.controller.ts      # HTTP endpoints
+├── {entity}.service.ts         # Business logic
+├── {entity}.repository.ts      # Data access
+├── dto/                        # Data transfer objects
+│   ├── create-*.dto.ts
+│   ├── update-*.dto.ts
+│   └── response-*.dto.ts
+├── entities/                   # Domain entities
+│   └── {entity}.entity.ts
+└── __tests__/                 # Unit tests
+    └── *.spec.ts
+```
+
+### Frontend Feature Structure
+
+Frontend features MUST follow feature-based structure:
+
+```
+apps/frontend/src/features/{entity}/
+├── components/                 # React components using shadcn/ui
+├── hooks/                      # Custom hooks
+├── services/                   # API clients
+├── store/                      # Redux Toolkit slices or Zustand stores
+└── types/                      # TypeScript types
+```
+
+## Module Boundaries
+
+### Backend Module Boundaries
+
+- Backend services MUST NOT import from other module services directly
+- Use dependency injection and interfaces for cross-module communication
+- NEVER create circular dependencies between modules
+- Shared business logic MUST be extracted to `packages/shared/`
+
+### Frontend Feature Boundaries
+
+- Frontend features MUST NOT directly access other feature stores
+- Use shared state management (Redux Toolkit) for cross-feature data
+- Shared UI components MUST be in `apps/frontend/src/components/ui/` (shadcn)
+- Shared utilities MUST be in `packages/shared/`
+
+## File Naming Conventions
+
+### Backend Files
+
+- **kebab-case** for file names: `customer.service.ts`, `create-customer.dto.ts`
+- **PascalCase** for classes: `CustomerService`, `CreateCustomerDto`
+- **camelCase** for functions and variables: `getCustomerById`, `customerId`
+
+### Frontend Files
+
+- **PascalCase** for React components: `CustomerList.tsx`, `CustomerCard.tsx`
+- **camelCase** for hooks: `useCustomer.ts`, `useCustomerFilters.ts`
+- **kebab-case** for utility files: `api-client.ts`, `date-utils.ts`
+
+### Test Files
+
+- **Unit tests**: `*.spec.ts` (colocated with source)
+- **E2E tests**: `*.e2e.spec.ts` (in `tests/e2e/`)
+- **Integration tests**: `*.integration.spec.ts` (in `tests/integration/`)
+
+### Constants Files
+
+- **UPPER_SNAKE_CASE** for constants: `MAX_RETRY_ATTEMPTS`, `DEFAULT_TIMEOUT`
+- Constants MUST be in files named `*.constants.ts`
+
+## Examples
+
+### ✅ CORRECT: Proper Backend Module Structure
+
+```
+apps/backend/src/modules/customer/
+├── customer.module.ts
+├── customer.controller.ts
+├── customer.service.ts
+├── customer.repository.ts
+├── dto/
+│   ├── create-customer.dto.ts
+│   ├── update-customer.dto.ts
+│   └── response-customer.dto.ts
+├── entities/
+│   └── customer.entity.ts
+└── __tests__/
+    ├── customer.service.spec.ts
+    └── customer.controller.spec.ts
+```
+
+### ✅ CORRECT: Proper Frontend Feature Structure
+
+```
+apps/frontend/src/features/customer/
+├── components/
+│   ├── CustomerList.tsx
+│   ├── CustomerCard.tsx
+│   └── CustomerForm.tsx
+├── hooks/
+│   ├── useCustomer.ts
+│   └── useCustomerFilters.ts
+├── services/
+│   └── customer-api.ts
+├── store/
+│   └── customer-slice.ts
+└── types/
+    └── customer.types.ts
+```
+
+### ❌ WRONG: Files Outside Designated Directories
+
+```
+❌ src/customer.ts                    # Should be in apps/backend/src/modules/customer/
+❌ components/Customer.tsx           # Should be in apps/frontend/src/features/customer/components/
+❌ utils/date.ts                     # Should be in packages/shared/src/utils/
+```
+
+### ❌ WRONG: Circular Dependencies
+
+```typescript
+// ❌ customer.service.ts
+import { OpportunityService } from '../opportunity/opportunity.service';
+
+// ❌ opportunity.service.ts  
+import { CustomerService } from '../customer/customer.service';
+```
+
+**Solution**: Extract shared logic to `packages/shared/` or use interfaces/events.
+
+## References
+
+- Architecture Documentation: `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md`
+- Data Model: `docs/reviews/DATA_MODEL_SPECIFICATION.md`

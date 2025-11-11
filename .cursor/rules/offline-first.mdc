@@ -1,0 +1,347 @@
+---
+description: CouchDB/PouchDB offline-first patterns - repository pattern, sync queue, conflict detection/resolution, storage quota management (iOS 50MB limit), and bidirectional sync
+globs: ["**/*repository*.ts", "**/*sync*.ts", "**/*offline*.ts"]
+alwaysApply: true
+---
+
+# Offline-First Patterns (CouchDB/PouchDB)
+
+## Data Access Rules
+
+### Repository Pattern for Offline-First
+
+NEVER access CouchDB directly from services. ALWAYS use repositories:
+
+```typescript
+// ✅ CORRECT: Using repository
+@Injectable()
+export class CustomerService {
+  constructor(
+    @Inject('ICustomerRepository')
+    private readonly customerRepo: ICustomerRepository
+  ) {}
+  
+  async findById(id: string): Promise<Customer> {
+    return await this.customerRepo.findById(id);
+  }
+}
+
+// ❌ WRONG: Direct database access
+@Injectable()
+export class CustomerService {
+  constructor(private readonly nano: Nano) {}
+  
+  async findById(id: string): Promise<Customer> {
+    return await this.nano.use('kompass').get(id); // ❌ NEVER DO THIS
+  }
+}
+```
+
+## Sync Queue Pattern
+
+### Queued Changes Interface
+
+All offline changes MUST be queued for sync:
+
+```typescript
+interface QueuedChange {
+  id: string;
+  entity: string;
+  operation: 'CREATE' | 'UPDATE' | 'DELETE';
+  data: unknown;
+  timestamp: Date;
+  userId: string;
+  synced: boolean;
+  retries: number;
+  lastError?: string;
+}
+
+// ✅ CORRECT: Mark changes for sync
+async saveOffline(entity: Customer): Promise<void> {
+  entity._queuedForSync = true;
+  entity._offlineTimestamp = new Date();
+  await localDB.put(entity);
+  
+  // Trigger sync if online
+  if (navigator.onLine) {
+    this.syncService.triggerSync();
+  }
+}
+```
+
+## Conflict Detection and Resolution
+
+### Conflict Detection
+
+ALWAYS detect conflicts during sync:
+
+```typescript
+// ✅ CORRECT: Detect conflicts
+async detectConflicts(localDoc: Customer, remoteDoc: Customer): Promise<Conflict[]> {
+  const conflicts: Conflict[] = [];
+  
+  // Compare field by field
+  Object.keys(localDoc).forEach(field => {
+    if (field.startsWith('_')) return; // Skip metadata
+    
+    if (localDoc[field] !== remoteDoc[field]) {
+      conflicts.push({
+        field,
+        localValue: localDoc[field],
+        remoteValue: remoteDoc[field],
+        type: determineConflictType(field, localDoc, remoteDoc)
+      });
+    }
+  });
+  
+  return conflicts;
+}
+```
+
+### Conflict Resolution Strategies
+
+```typescript
+enum ConflictResolutionStrategy {
+  // Automatic resolutions (70% of conflicts)
+  LAST_WRITE_WINS = 'last-write-wins',
+  MERGE_NON_CONFLICTING = 'merge-non-conflicting',
+  
+  // Manual resolution (25% of conflicts)
+  USER_DECIDES = 'user-decides',
+  
+  // Escalation (5% of conflicts)
+  ESCALATE_TO_ADMIN = 'escalate-to-admin',
+}
+
+// ✅ CORRECT: Automatic conflict resolution
+async resolveConflict(
+  conflict: Conflict,
+  strategy: ConflictResolutionStrategy
+): Promise<Customer> {
+  switch (strategy) {
+    case ConflictResolutionStrategy.LAST_WRITE_WINS:
+      return conflict.localDoc.modifiedAt > conflict.remoteDoc.modifiedAt
+        ? conflict.localDoc
+        : conflict.remoteDoc;
+    
+    case ConflictResolutionStrategy.MERGE_NON_CONFLICTING:
+      return this.mergeDocuments(conflict.localDoc, conflict.remoteDoc);
+    
+    case ConflictResolutionStrategy.USER_DECIDES:
+      // Show UI dialog for user to choose
+      return await this.promptUserForResolution(conflict);
+    
+    default:
+      throw new Error('Unknown conflict resolution strategy');
+  }
+}
+```
+
+## Storage Quota Management
+
+### iOS 50MB Limit Awareness
+
+ALWAYS check quota before storing large data:
+
+```typescript
+// ✅ CORRECT: Check quota before storing
+async checkQuota(userId: string): Promise<QuotaStatus> {
+  const usage = await calculateOfflineUsage(userId);
+  const limit = 50 * 1024 * 1024; // 50 MB (iOS safe zone)
+  
+  return {
+    used: usage.bytes,
+    limit: limit,
+    percent: (usage.bytes / limit) * 100,
+    warning: usage.bytes > limit * 0.80, // 80% warning
+    critical: usage.bytes > limit * 0.95, // 95% block
+  };
+}
+
+// Warn user at 80%, block at 95%
+if (quotaStatus.warning) {
+  showNotification('Storage almost full. Sync or clear old data.');
+}
+if (quotaStatus.critical) {
+  throw new StorageQuotaException('Cannot save: Storage limit reached');
+}
+```
+
+### Tiered Data Strategy
+
+Implement 3-tier data storage strategy:
+
+```typescript
+enum DataTier {
+  ESSENTIAL = 'essential',    // Always synced (5 MB)
+  RECENT = 'recent',          // Last 30 days (10 MB)
+  PINNED = 'pinned',          // User-selected (35 MB)
+}
+
+// Prioritize essential data
+const ESSENTIAL_DATA = {
+  ownCustomers: true,
+  assignedOpportunities: true,
+  userProfile: true,
+  recentProtocols: true,
+};
+
+// ✅ CORRECT: Tier-based sync
+async syncTieredData(): Promise<void> {
+  // 1. Sync essential data first
+  await syncEssentialData();
+  
+  // 2. Sync recent data if quota allows
+  if (await hasQuotaAvailable(DataTier.RECENT)) {
+    await syncRecentData();
+  }
+  
+  // 3. Sync pinned data if quota allows
+  if (await hasQuotaAvailable(DataTier.PINNED)) {
+    await syncPinnedData();
+  }
+}
+```
+
+## Sync Implementation Rules
+
+### Bidirectional Sync
+
+```typescript
+// ✅ CORRECT: Bidirectional sync
+async syncOfflineChanges(): Promise<SyncResult> {
+  const changes = await localDB.find({ selector: { _queuedForSync: true } });
+  
+  const results = {
+    synced: 0,
+    failed: 0,
+    conflicts: 0,
+  };
+  
+  for (const change of changes.docs) {
+    try {
+      // Push to server
+      const response = await api.post('/sync', change);
+      
+      if (response.conflict) {
+        results.conflicts++;
+        await handleConflict(change, response.serverVersion);
+      } else {
+        results.synced++;
+        delete change._queuedForSync;
+        await localDB.put(change);
+      }
+    } catch (error) {
+      results.failed++;
+      await logSyncError(change, error);
+    }
+  }
+  
+  return results;
+}
+```
+
+### Sync Status Indicators
+
+Always show sync status to users:
+
+```typescript
+// ✅ CORRECT: Sync status UI
+function SyncStatus() {
+  const { isOnline, isSyncing, pendingChanges } = useSyncStatus();
+
+  return (
+    <div className="flex items-center gap-2">
+      {isOnline ? (
+        <>
+          {isSyncing && <Spinner />}
+          {pendingChanges > 0 && (
+            <Badge>{pendingChanges} pending</Badge>
+          )}
+        </>
+      ) : (
+        <Badge variant="warning">Offline</Badge>
+      )}
+    </div>
+  );
+}
+```
+
+## PouchDB Usage Patterns
+
+### Local Database Access
+
+```typescript
+// ✅ CORRECT: PouchDB local access
+import PouchDB from 'pouchdb';
+
+const localDB = new PouchDB('kompass-local');
+
+async function saveCustomerOffline(customer: Customer): Promise<void> {
+  customer._queuedForSync = true;
+  customer._offlineTimestamp = new Date();
+  await localDB.put(customer);
+}
+
+async function getCustomerOffline(id: string): Promise<Customer | null> {
+  try {
+    return await localDB.get(id);
+  } catch (error) {
+    if (error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+```
+
+### Replication Setup
+
+```typescript
+// ✅ CORRECT: CouchDB replication
+import PouchDB from 'pouchdb';
+import PouchDBReplication from 'pouchdb-replication';
+
+const localDB = new PouchDB('kompass-local');
+const remoteDB = new PouchDB('http://localhost:5984/kompass', {
+  auth: {
+    username: 'user',
+    password: 'pass',
+  },
+});
+
+// Sync options
+const syncOptions = {
+  live: true,
+  retry: true,
+  back_off_function: (delay: number) => {
+    if (delay === 0) {
+      return 1000;
+    }
+    return Math.min(delay * 2, 30000);
+  },
+};
+
+// Start replication
+const replication = localDB.sync(remoteDB, syncOptions);
+
+replication
+  .on('change', (info) => {
+    console.log('Sync change:', info);
+  })
+  .on('paused', () => {
+    console.log('Sync paused');
+  })
+  .on('active', () => {
+    console.log('Sync active');
+  })
+  .on('error', (error) => {
+    console.error('Sync error:', error);
+  });
+```
+
+## References
+
+- Architecture Documentation: `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md`
+- CouchDB Documentation: https://docs.couchdb.org/
+- PouchDB Documentation: https://pouchdb.com/
