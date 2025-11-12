@@ -858,12 +858,18 @@ Die Kundendetailansicht erhält eine **3-Tab-Struktur** für bessere Übersichtl
 Standard-Connector) ist noch zu klären – wir präferieren initial den manuellen Abgleich (Export), was
 simpler ist.
 
-**Datenmigration:** Als Teil des Lösungswegs planen wir, die **bestehenden Kontaktlisten** (Excel, Word,
+**Datenmigration (Initiale Überführung):** Als Teil des Lösungswegs planen wir, die **bestehenden Kontaktlisten** (Excel, Word,
 Outlook-Kontakte) einmalig ins System zu importieren. Dazu ist ein Bereinigungs-Lauf vorgesehen: wir
 extrahieren alle vorhandenen Kontakte aus Altdateien, führen Dublettenchecks durch und importieren sie
 als Startbestand. Dieser Schritt ist kritisch für Akzeptanz – wenn Nutzer ihre Daten nicht wiederfinden, sinkt
-Vertrauen. Wir definieren daher Migrations-Abnahmekriterien (z.B. “100% der in Word-Leadliste
-vorhandenen 120 Kontakte sind im neuen System, validiert durch Vertrieb”).
+Vertrauen. Wir definieren daher Migrations-Abnahmekriterien (z.B. "100% der in Word-Leadliste
+vorhandenen 120 Kontakte sind im neuen System, validiert durch Vertrieb").
+
+**Datenimport/Export (Laufender Betrieb):** Neben der initialen Migration ist Import/Export eine **laufende Funktion** für den täglichen Betrieb:
+- **Kundenimport:** PLAN/ADM/GF können jederzeit Kunden aus Excel/CSV-Dateien importieren. Das System unterstützt automatische und manuelle Feldzuordnung, Validierung, Duplikatsprüfung und Fehlerbehandlung. Dies ist nützlich für: Bulk-Kundenimporte (z.B. aus Marketing-Kampagnen), Datenaktualisierungen von externen Quellen, Migration zusätzlicher Datenbestände nach der initialen Migration.
+- **Kontaktprotokoll-Import:** PLAN/ADM/GF können Word-Dokumente mit tabellarischen Kontaktprotokollen importieren. Das System extrahiert automatisch Tabellen, parst verschiedene Datumsformate (mit Fallback auf manuelle Eingabe), ordnet Protokolle Kunden zu und validiert die Daten. Dies ist nützlich für: Import historischer Protokolle aus Word-Dokumenten, regelmäßige Protokoll-Importe von externen Quellen, Migration zusätzlicher Protokoll-Datenbestände.
+- **Datenexport:** PLAN/ADM/GF/BUCH können jederzeit Daten exportieren (CSV/Excel/JSON/DATEV für Kunden, CSV/Excel/Word/JSON für Protokolle). Exporte unterstützen Feldauswahl, Datumsbereichs-Filterung, Kunden-Filterung und RBAC-basierte Berechtigungen. Dies ist nützlich für: Backups, DSGVO-Exporte, DATEV-Integration (Lexware), Datenanalyse in externen Tools, Audit-Trails.
+- **Vollständige Spezifikation:** Siehe [Import/Export Specification](../../specifications/IMPORT_EXPORT_SPECIFICATION.md) für vollständige Details zu Import/Export-Endpoints, Business Rules, Date Parsing, Field Mapping und Performance-Überlegungen.
 
 **Trade-offs & Alternativen innerhalb des Kontexts:**
 - *Make vs Buy:* Ein erwähnter Punkt war der Marktvergleich mit bestehenden CRM+PM-Tools

@@ -5566,6 +5566,1038 @@ Get communication history.
 
 ---
 
+## 22. Import/Export Endpoints (NEW - MVP)
+
+**Added:** 2025-01-27  
+**Priority:** MVP - Required for data migration and ongoing operations
+
+### 22.1 Customer Import Endpoints
+
+#### 22.1.1 Upload Customer Import File
+
+**POST** `/api/v1/customers/import/upload`
+
+Upload Excel/CSV file for customer import.
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Customer.IMPORT
+
+**Request:**
+- **Content-Type:** `multipart/form-data`
+- **Body:** File (Excel `.xlsx`, `.xls` or CSV `.csv`)
+- **Max file size:** 10 MB
+- **Max rows:** 10,000
+
+**Response (200 OK):**
+```json
+{
+  "importId": "import-123",
+  "filename": "customers.xlsx",
+  "rowCount": 512,
+  "headers": ["companyName", "vatNumber", "email", "phone", "address_street", "address_zip", "address_city"],
+  "status": "uploaded",
+  "uploadedAt": "2025-01-27T10:00:00Z"
+}
+```
+
+**Error Response (400 Bad Request):**
+```json
+{
+  "type": "https://api.kompass.de/errors/validation-error",
+  "title": "File Validation Failed",
+  "status": 400,
+  "detail": "Invalid file type. Supported formats: .xlsx, .xls, .csv",
+  "instance": "/api/v1/customers/import/upload"
+}
+```
+
+#### 22.1.2 Map Customer Import Fields
+
+**POST** `/api/v1/customers/import/:importId/map`
+
+Map CSV/Excel columns to internal fields. Supports automatic mapping with manual override.
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Customer.IMPORT
+
+**Request Body:**
+```typescript
+{
+  "mappings": {
+    "company_name": "companyName",        // Required field
+    "vat_number": "vatNumber",            // Optional field
+    "email": "email",                     // Optional field
+    "phone": "phone",                     // Optional field
+    "address_street": "billingAddress.street",  // Required nested field
+    "address_zip": "billingAddress.zipCode",    // Required nested field
+    "address_city": "billingAddress.city"       // Required nested field
+  },
+  "autoDetect": true  // Try automatic mapping first
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "importId": "import-123",
+  "mappings": {
+    "company_name": "companyName",
+    "vat_number": "vatNumber",
+    "email": "email",
+    "phone": "phone",
+    "address_street": "billingAddress.street",
+    "address_zip": "billingAddress.zipCode",
+    "address_city": "billingAddress.city"
+  },
+  "unmappedColumns": ["custom_field_1", "notes"],
+  "requiredFieldsMapped": true,
+  "status": "mapped",
+  "mappedAt": "2025-01-27T10:05:00Z"
+}
+```
+
+**Error Response (400 Bad Request):**
+```json
+{
+  "type": "https://api.kompass.de/errors/validation-error",
+  "title": "Required Fields Not Mapped",
+  "status": 400,
+  "detail": "Required fields must be mapped: companyName, billingAddress.street, billingAddress.zipCode, billingAddress.city",
+  "instance": "/api/v1/customers/import/import-123/map",
+  "missingFields": ["companyName", "billingAddress.street"]
+}
+```
+
+#### 22.1.3 Validate Customer Import
+
+**POST** `/api/v1/customers/import/:importId/validate`
+
+Validate imported data and check for duplicates.
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Customer.IMPORT
+
+**Request Body:**
+```typescript
+{
+  "checkDuplicates": true,        // Check for duplicate customers
+  "duplicateMatchingFields": ["vatNumber", "email"]  // Fields to use for duplicate detection
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "importId": "import-123",
+  "totalRows": 512,
+  "validRows": 487,
+  "invalidRows": 15,
+  "duplicateRows": 10,
+  "validationResults": [
+    {
+      "row": 2,
+      "status": "error",
+      "field": "vatNumber",
+      "error": "Invalid VAT number format. Expected format: DE123456789",
+      "value": "123456789",
+      "suggestedValue": "DE123456789"
+    },
+    {
+      "row": 5,
+      "status": "warning",
+      "field": "email",
+      "error": "Invalid email format",
+      "value": "test@",
+      "suggestedValue": null
+    },
+    {
+      "row": 12,
+      "status": "error",
+      "field": "companyName",
+      "error": "Required field is missing",
+      "value": "",
+      "suggestedValue": null
+    },
+    {
+      "row": 25,
+      "status": "duplicate",
+      "field": "vatNumber",
+      "error": "Duplicate customer found",
+      "value": "DE123456789",
+      "existingCustomerId": "customer-456",
+      "existingCustomerName": "Existing Customer GmbH"
+    }
+  ],
+  "duplicates": [
+    {
+      "row": 25,
+      "importData": {
+        "companyName": "New Customer GmbH",
+        "vatNumber": "DE123456789"
+      },
+      "existingCustomer": {
+        "id": "customer-456",
+        "companyName": "Existing Customer GmbH",
+        "vatNumber": "DE123456789"
+      },
+      "matchConfidence": 0.95
+    }
+  ],
+  "status": "validated",
+  "validatedAt": "2025-01-27T10:10:00Z"
+}
+```
+
+#### 22.1.4 Execute Customer Import
+
+**POST** `/api/v1/customers/import/:importId/execute`
+
+Execute customer import with specified options.
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Customer.IMPORT
+
+**Request Body:**
+```typescript
+{
+  "options": {
+    "skipErrors": true,           // Skip rows with errors
+    "skipDuplicates": true,       // Skip duplicate rows
+    "updateDuplicates": false,    // Update existing customers if duplicate found
+    "defaultOwner": "user-123"    // Default owner for imported customers (ADM only)
+  }
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "importId": "import-123",
+  "importedCount": 487,
+  "skippedCount": 25,
+  "errorCount": 15,
+  "duplicateCount": 10,
+  "updatedCount": 0,
+  "importedCustomerIds": [
+    "customer-789",
+    "customer-790",
+    "customer-791"
+  ],
+  "status": "completed",
+  "completedAt": "2025-01-27T10:15:00Z",
+  "errorLogUrl": "/api/v1/customers/import/import-123/errors"
+}
+```
+
+#### 22.1.5 Get Customer Import Errors
+
+**GET** `/api/v1/customers/import/:importId/errors`
+
+Get error log for customer import (CSV format for download).
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Customer.IMPORT
+
+**Response (200 OK):**
+- **Content-Type:** `text/csv`
+- **Content-Disposition:** `attachment; filename="customer_import_errors_2025-01-27.csv"`
+- **Body:** CSV file with columns: `row`, `field`, `error`, `value`, `suggestedValue`
+
+### 22.2 Contact Protocol Import Endpoints
+
+#### 22.2.1 Upload Protocol Import File
+
+**POST** `/api/v1/protocols/import/upload`
+
+Upload Word document for protocol import.
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Protocol.IMPORT
+
+**Request:**
+- **Content-Type:** `multipart/form-data`
+- **Body:** File (Word `.docx`, `.doc`)
+- **Max file size:** 10 MB
+- **Max protocols:** 1,000
+
+**Response (200 OK):**
+```json
+{
+  "importId": "import-456",
+  "filename": "protocols.docx",
+  "tableCount": 1,
+  "rowCount": 150,
+  "status": "uploaded",
+  "uploadedAt": "2025-01-27T10:20:00Z"
+}
+```
+
+**Error Response (400 Bad Request):**
+```json
+{
+  "type": "https://api.kompass.de/errors/validation-error",
+  "title": "File Validation Failed",
+  "status": 400,
+  "detail": "Invalid file type. Supported formats: .docx, .doc",
+  "instance": "/api/v1/protocols/import/upload"
+}
+```
+
+#### 22.2.2 Extract Protocol Table
+
+**POST** `/api/v1/protocols/import/:importId/extract`
+
+Extract table from Word document. Supports multiple tables - user selects which table to import.
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Protocol.IMPORT
+
+**Request Body:**
+```typescript
+{
+  "tableIndex": 0,  // Index of table to extract (0-based)
+  "columnMappings": {
+    "date": 0,      // Column index for date (required)
+    "note": 1,      // Column index for note (required)
+    "action": 2     // Column index for action (optional)
+  }
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "importId": "import-456",
+  "tableIndex": 0,
+  "headers": ["Date", "Note", "Action"],
+  "rowCount": 150,
+  "sampleRows": [
+    {
+      "rowIndex": 0,
+      "date": "2024-01-15",
+      "note": "Customer visit - discussed new project",
+      "action": "Follow up next week"
+    },
+    {
+      "rowIndex": 1,
+      "date": "15.01.24",
+      "note": "Phone call - confirmed delivery date",
+      "action": "Send quote"
+    },
+    {
+      "rowIndex": 2,
+      "date": "15 Jan 24",
+      "note": "Email sent - project proposal",
+      "action": "Wait for response"
+    }
+  ],
+  "status": "extracted",
+  "extractedAt": "2025-01-27T10:25:00Z"
+}
+```
+
+**Error Response (400 Bad Request):**
+```json
+{
+  "type": "https://api.kompass.de/errors/validation-error",
+  "title": "Table Extraction Failed",
+  "status": 400,
+  "detail": "No table found in document or table index out of range",
+  "instance": "/api/v1/protocols/import/import-456/extract",
+  "availableTables": 0
+}
+```
+
+#### 22.2.3 Parse Protocol Dates
+
+**POST** `/api/v1/protocols/import/:importId/parse-dates`
+
+Parse dates from protocol import. Supports various date formats with fallback to manual entry.
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Protocol.IMPORT
+
+**Request Body:**
+```typescript
+{
+  "dateFormats": [  // Optional: specify expected formats
+    "DD.MM.YYYY",
+    "DD.MM.YY",
+    "YYYY-MM-DD",
+    "DD MMM YY"
+  ],
+  "locale": "de-DE"  // Optional: locale for date parsing (default: de-DE)
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "importId": "import-456",
+  "totalRows": 150,
+  "parsedCount": 140,
+  "failedCount": 10,
+  "dateParsingResults": [
+    {
+      "rowIndex": 0,
+      "originalValue": "2024-01-15",
+      "parsedValue": "2024-01-15T00:00:00Z",
+      "format": "YYYY-MM-DD",
+      "status": "success",
+      "confidence": 1.0
+    },
+    {
+      "rowIndex": 1,
+      "originalValue": "15.01.24",
+      "parsedValue": "2024-01-15T00:00:00Z",
+      "format": "DD.MM.YY",
+      "status": "success",
+      "confidence": 0.95
+    },
+    {
+      "rowIndex": 2,
+      "originalValue": "15 Jan 24",
+      "parsedValue": "2024-01-15T00:00:00Z",
+      "format": "DD MMM YY",
+      "status": "success",
+      "confidence": 0.90
+    },
+    {
+      "rowIndex": 25,
+      "originalValue": "invalid-date",
+      "parsedValue": null,
+      "format": null,
+      "status": "failed",
+      "confidence": 0.0,
+      "requiresManualEntry": true,
+      "suggestedFormats": ["DD.MM.YYYY", "YYYY-MM-DD", "DD MMM YYYY"]
+    }
+  ],
+  "status": "parsed",
+  "parsedAt": "2025-01-27T10:30:00Z"
+}
+```
+
+#### 22.2.4 Correct Protocol Dates
+
+**POST** `/api/v1/protocols/import/:importId/correct-dates`
+
+Manually correct dates that failed to parse.
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Protocol.IMPORT
+
+**Request Body:**
+```typescript
+{
+  "dateCorrections": [
+    {
+      "rowIndex": 25,
+      "correctedDate": "2024-01-15T00:00:00Z",  // ISO 8601 format
+      "originalValue": "invalid-date"
+    },
+    {
+      "rowIndex": 30,
+      "correctedDate": "2024-02-20T00:00:00Z",
+      "originalValue": "20.02.2024"
+    }
+  ]
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "importId": "import-456",
+  "correctedCount": 10,
+  "status": "corrected",
+  "correctedAt": "2025-01-27T10:35:00Z"
+}
+```
+
+#### 22.2.5 Assign Protocol Customers
+
+**POST** `/api/v1/protocols/import/:importId/assign-customers`
+
+Assign customers to protocols. Supports single customer assignment or per-row assignment.
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Protocol.IMPORT
+
+**Request Body:**
+```typescript
+{
+  "defaultCustomerId": "customer-123",  // Default customer for all protocols
+  "customerAssignments": [               // Optional: per-row assignments
+    {
+      "rowIndex": 5,
+      "customerId": "customer-123"
+    },
+    {
+      "rowIndex": 12,
+      "customerId": "customer-456"
+    }
+  ],
+  "autoMatchCustomers": true  // Optional: try to match customers by name from note field
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "importId": "import-456",
+  "assignedCount": 150,
+  "autoMatchedCount": 45,
+  "manualAssignedCount": 105,
+  "unassignedCount": 0,
+  "status": "assigned",
+  "assignedAt": "2025-01-27T10:40:00Z"
+}
+```
+
+#### 22.2.6 Validate Protocol Import
+
+**POST** `/api/v1/protocols/import/:importId/validate`
+
+Validate imported protocols.
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Protocol.IMPORT
+
+**Response (200 OK):**
+```json
+{
+  "importId": "import-456",
+  "totalRows": 150,
+  "validRows": 140,
+  "invalidRows": 10,
+  "validationResults": [
+    {
+      "rowIndex": 25,
+      "status": "error",
+      "field": "date",
+      "error": "Date is required",
+      "value": null
+    },
+    {
+      "rowIndex": 30,
+      "status": "error",
+      "field": "note",
+      "error": "Note is required. Minimum length: 2 characters",
+      "value": ""
+    },
+    {
+      "rowIndex": 35,
+      "status": "error",
+      "field": "customerId",
+      "error": "Customer is required",
+      "value": null
+    },
+    {
+      "rowIndex": 40,
+      "status": "warning",
+      "field": "date",
+      "error": "Date is in the future",
+      "value": "2026-01-15T00:00:00Z"
+    }
+  ],
+  "status": "validated",
+  "validatedAt": "2025-01-27T10:45:00Z"
+}
+```
+
+#### 22.2.7 Execute Protocol Import
+
+**POST** `/api/v1/protocols/import/:importId/execute`
+
+Execute protocol import with specified options.
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Protocol.IMPORT
+
+**Request Body:**
+```typescript
+{
+  "options": {
+    "skipErrors": true,              // Skip rows with errors
+    "defaultUserId": "user-123",     // Default user for imported protocols
+    "defaultProtocolType": "visit",  // Default protocol type
+    "defaultContactId": "contact-456" // Optional: default contact
+  }
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "importId": "import-456",
+  "importedCount": 140,
+  "skippedCount": 10,
+  "errorCount": 10,
+  "importedProtocolIds": [
+    "protocol-789",
+    "protocol-790",
+    "protocol-791"
+  ],
+  "status": "completed",
+  "completedAt": "2025-01-27T10:50:00Z",
+  "errorLogUrl": "/api/v1/protocols/import/import-456/errors"
+}
+```
+
+#### 22.2.8 Get Protocol Import Errors
+
+**GET** `/api/v1/protocols/import/:importId/errors`
+
+Get error log for protocol import (CSV format for download).
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Protocol.IMPORT
+
+**Response (200 OK):**
+- **Content-Type:** `text/csv`
+- **Content-Disposition:** `attachment; filename="protocol_import_errors_2025-01-27.csv"`
+- **Body:** CSV file with columns: `row`, `field`, `error`, `value`, `suggestedValue`
+
+### 22.3 Customer Export Endpoints
+
+#### 22.3.1 Export Customers
+
+**GET** `/api/v1/customers/export`
+
+Export customers to CSV/Excel/JSON/DATEV format.
+
+**Auth:** PLAN, ADM, GF, BUCH  
+**Permission:** Customer.EXPORT
+
+**Query Parameters:**
+- `format` (string, required): `csv` | `excel` | `json` | `datev`
+- `dateRange` (string, optional): `all` | `last30days` | `last90days` | `custom`
+- `startDate` (string, optional): ISO date (required if `dateRange=custom`)
+- `endDate` (string, optional): ISO date (required if `dateRange=custom`)
+- `fields` (string, optional): Comma-separated field list (default: all fields)
+- `filters` (string, optional): JSON-encoded filters
+  - `owner` (string): Filter by owner ID
+  - `rating` (string): Filter by rating (`A`, `B`, `C`)
+  - `status` (string): Filter by status
+
+**Response (200 OK):**
+- **Content-Type:** 
+  - `text/csv` (CSV format)
+  - `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` (Excel format)
+  - `application/json` (JSON format)
+  - `text/csv` (DATEV format - GoBD-compliant)
+- **Content-Disposition:** `attachment; filename="customers_export_2025-01-27.csv"`
+
+**Example Request:**
+```
+GET /api/v1/customers/export?format=csv&dateRange=last30days&fields=companyName,vatNumber,email,phone
+```
+
+**Example Response (CSV):**
+```csv
+companyName,vatNumber,email,phone
+Hofladen Müller GmbH,DE123456789,info@hofladen-mueller.de,+49-89-1234567
+REWE Store München,DE987654321,store@rewe.de,+49-89-9876543
+```
+
+**Error Response (400 Bad Request):**
+```json
+{
+  "type": "https://api.kompass.de/errors/validation-error",
+  "title": "Invalid Export Format",
+  "status": 400,
+  "detail": "Invalid format. Supported formats: csv, excel, json, datev",
+  "instance": "/api/v1/customers/export"
+}
+```
+
+### 22.4 Contact Protocol Export Endpoints
+
+#### 22.4.1 Export Contact Protocols
+
+**GET** `/api/v1/protocols/export`
+
+Export contact protocols to CSV/Excel/Word/JSON format.
+
+**Auth:** PLAN, ADM, GF  
+**Permission:** Protocol.EXPORT
+
+**Query Parameters:**
+- `format` (string, required): `csv` | `excel` | `word` | `json`
+- `customerId` (string, optional): Filter by customer ID
+- `contactId` (string, optional): Filter by contact ID
+- `dateRange` (string, optional): `all` | `last30days` | `last90days` | `custom`
+- `startDate` (string, optional): ISO date (required if `dateRange=custom`)
+- `endDate` (string, optional): ISO date (required if `dateRange=custom`)
+- `protocolType` (string, optional): Filter by protocol type (`visit`, `call`, `email`, `meeting`)
+- `fields` (string, optional): Comma-separated field list (default: all fields)
+
+**Response (200 OK):**
+- **Content-Type:**
+  - `text/csv` (CSV format)
+  - `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` (Excel format)
+  - `application/vnd.openxmlformats-officedocument.wordprocessingml.document` (Word format)
+  - `application/json` (JSON format)
+- **Content-Disposition:** `attachment; filename="protocols_export_2025-01-27.docx"`
+
+**Example Request:**
+```
+GET /api/v1/protocols/export?format=word&customerId=customer-123&dateRange=last30days
+```
+
+**Word Export Format:**
+- Table structure with headers: Date, Note, Action, Customer, Contact, User
+- Date format: `DD.MM.YYYY` (German format)
+- Professional table styling with headers
+- Supports multiple pages if needed
+
+**Error Response (400 Bad Request):**
+```json
+{
+  "type": "https://api.kompass.de/errors/validation-error",
+  "title": "Invalid Export Format",
+  "status": 400,
+  "detail": "Invalid format. Supported formats: csv, excel, word, json",
+  "instance": "/api/v1/protocols/export"
+}
+```
+
+### 22.5 Import/Export DTOs
+
+#### 22.5.1 Customer Import DTOs
+
+```typescript
+// Upload Response
+interface CustomerImportUploadDto {
+  importId: string;
+  filename: string;
+  rowCount: number;
+  headers: string[];
+  status: 'uploaded';
+  uploadedAt: Date;
+}
+
+// Map Request
+interface CustomerImportMapDto {
+  mappings: Record<string, string>;  // CSV column -> internal field
+  autoDetect?: boolean;
+}
+
+// Map Response
+interface CustomerImportMapResponseDto {
+  importId: string;
+  mappings: Record<string, string>;
+  unmappedColumns: string[];
+  requiredFieldsMapped: boolean;
+  status: 'mapped';
+  mappedAt: Date;
+}
+
+// Validate Response
+interface CustomerImportValidateDto {
+  importId: string;
+  totalRows: number;
+  validRows: number;
+  invalidRows: number;
+  duplicateRows: number;
+  validationResults: ValidationResult[];
+  duplicates?: DuplicateMatch[];
+  status: 'validated';
+  validatedAt: Date;
+}
+
+interface ValidationResult {
+  row: number;
+  status: 'valid' | 'warning' | 'error' | 'duplicate';
+  field: string;
+  error: string;
+  value: unknown;
+  suggestedValue?: unknown;
+}
+
+interface DuplicateMatch {
+  row: number;
+  importData: Partial<Customer>;
+  existingCustomer: Customer;
+  matchConfidence: number;
+}
+
+// Execute Request
+interface CustomerImportExecuteDto {
+  options: {
+    skipErrors?: boolean;
+    skipDuplicates?: boolean;
+    updateDuplicates?: boolean;
+    defaultOwner?: string;
+  };
+}
+
+// Execute Response
+interface CustomerImportExecuteResponseDto {
+  importId: string;
+  importedCount: number;
+  skippedCount: number;
+  errorCount: number;
+  duplicateCount: number;
+  updatedCount: number;
+  importedCustomerIds: string[];
+  status: 'completed';
+  completedAt: Date;
+  errorLogUrl: string;
+}
+```
+
+#### 22.5.2 Protocol Import DTOs
+
+```typescript
+// Upload Response
+interface ProtocolImportUploadDto {
+  importId: string;
+  filename: string;
+  tableCount: number;
+  rowCount: number;
+  status: 'uploaded';
+  uploadedAt: Date;
+}
+
+// Extract Request
+interface ProtocolImportExtractDto {
+  tableIndex: number;
+  columnMappings: {
+    date: number;
+    note: number;
+    action?: number;
+  };
+}
+
+// Extract Response
+interface ProtocolImportExtractResponseDto {
+  importId: string;
+  tableIndex: number;
+  headers: string[];
+  rowCount: number;
+  sampleRows: ProtocolImportRow[];
+  status: 'extracted';
+  extractedAt: Date;
+}
+
+interface ProtocolImportRow {
+  rowIndex: number;
+  date: string;
+  note: string;
+  action?: string;
+}
+
+// Parse Dates Request
+interface ProtocolImportParseDatesDto {
+  dateFormats?: string[];
+  locale?: string;
+}
+
+// Parse Dates Response
+interface ProtocolImportParseDatesResponseDto {
+  importId: string;
+  totalRows: number;
+  parsedCount: number;
+  failedCount: number;
+  dateParsingResults: DateParsingResult[];
+  status: 'parsed';
+  parsedAt: Date;
+}
+
+interface DateParsingResult {
+  rowIndex: number;
+  originalValue: string;
+  parsedValue: string | null;
+  format: string | null;
+  status: 'success' | 'failed';
+  confidence: number;
+  requiresManualEntry?: boolean;
+  suggestedFormats?: string[];
+}
+
+// Correct Dates Request
+interface ProtocolImportCorrectDatesDto {
+  dateCorrections: DateCorrection[];
+}
+
+interface DateCorrection {
+  rowIndex: number;
+  correctedDate: string;  // ISO 8601 format
+  originalValue: string;
+}
+
+// Assign Customers Request
+interface ProtocolImportAssignCustomersDto {
+  defaultCustomerId: string;
+  customerAssignments?: CustomerAssignment[];
+  autoMatchCustomers?: boolean;
+}
+
+interface CustomerAssignment {
+  rowIndex: number;
+  customerId: string;
+}
+
+// Assign Customers Response
+interface ProtocolImportAssignCustomersResponseDto {
+  importId: string;
+  assignedCount: number;
+  autoMatchedCount: number;
+  manualAssignedCount: number;
+  unassignedCount: number;
+  status: 'assigned';
+  assignedAt: Date;
+}
+
+// Validate Response
+interface ProtocolImportValidateDto {
+  importId: string;
+  totalRows: number;
+  validRows: number;
+  invalidRows: number;
+  validationResults: ValidationResult[];
+  status: 'validated';
+  validatedAt: Date;
+}
+
+// Execute Request
+interface ProtocolImportExecuteDto {
+  options: {
+    skipErrors?: boolean;
+    defaultUserId?: string;
+    defaultProtocolType?: string;
+    defaultContactId?: string;
+  };
+}
+
+// Execute Response
+interface ProtocolImportExecuteResponseDto {
+  importId: string;
+  importedCount: number;
+  skippedCount: number;
+  errorCount: number;
+  importedProtocolIds: string[];
+  status: 'completed';
+  completedAt: Date;
+  errorLogUrl: string;
+}
+```
+
+### 22.6 Import/Export Business Rules
+
+#### 22.6.1 Customer Import Business Rules
+
+1. **File Validation:**
+   - Maximum file size: 10 MB
+   - Maximum rows: 10,000
+   - Supported formats: `.xlsx`, `.xls`, `.csv`
+   - Encoding: UTF-8 (preferred), ISO-8859-1 (fallback)
+
+2. **Field Mapping:**
+   - Automatic mapping: Try exact match, fuzzy match, synonym matching
+   - Manual mapping: User can override automatic mapping
+   - Required fields: `companyName`, `billingAddress.street`, `billingAddress.zipCode`, `billingAddress.city`
+   - Optional fields: All other fields can be skipped
+
+3. **Validation:**
+   - Field-level validation: Validate each field against business rules
+   - Row-level validation: Validate entire row for consistency
+   - Duplicate detection: Check for duplicates using VAT number, email, or company name + address
+
+4. **Error Handling:**
+   - Skip errors: Import valid rows, skip invalid rows
+   - Abort on error: Stop import on first error
+   - Log errors: Generate error log CSV file
+
+5. **Duplicate Handling:**
+   - Skip duplicates: Don't import duplicate rows (default)
+   - Update duplicates: Update existing customers with new data
+   - Ask user: Show duplicate dialog for user decision
+
+#### 22.6.2 Protocol Import Business Rules
+
+1. **File Validation:**
+   - Maximum file size: 10 MB
+   - Maximum protocols: 1,000
+   - Supported formats: `.docx`, `.doc`
+   - Table structure: Must contain table with date, note, action columns
+
+2. **Table Extraction:**
+   - Detect tables: System detects all tables in Word document
+   - Select table: User selects which table to import (if multiple tables)
+   - Column mapping: Automatic mapping with manual override
+
+3. **Date Parsing:**
+   - Supported formats: ISO, German, text, numeric, mixed formats
+   - Parsing order: Try common formats first, then text, then numeric, then fuzzy
+   - Fallback: Manual entry via date picker if parsing fails
+   - Validation: Validate parsed dates (not in future, not too far in past)
+
+4. **Customer Assignment:**
+   - Single customer: User can assign one customer to all protocols
+   - Multiple customers: User can assign different customers to different protocols
+   - Auto-match: System can attempt to match customers by name from note field
+
+5. **Validation:**
+   - Field-level validation: Validate date, note, customer
+   - Row-level validation: Validate entire protocol for consistency
+   - Date validation: Date must be valid, not in future (warning), not too far in past (warning)
+
+6. **Error Handling:**
+   - Skip errors: Import valid protocols, skip invalid protocols
+   - Abort on error: Stop import on first error
+   - Log errors: Generate error log CSV file
+
+#### 22.6.3 Export Business Rules
+
+1. **Customer Export:**
+   - Format selection: CSV, Excel, JSON, DATEV
+   - Field selection: All fields or custom selection
+   - Date range filtering: All, last 30 days, last 90 days, custom range
+   - Customer filtering: By owner, by rating, by status
+   - RBAC: ADM can only export own customers, GF/PLAN can export all customers
+
+2. **Protocol Export:**
+   - Format selection: CSV, Excel, Word, JSON
+   - Field selection: All fields or custom selection
+   - Date range filtering: All, last 30 days, last 90 days, custom range
+   - Customer filtering: By customer ID, by contact ID
+   - Protocol type filtering: By protocol type (visit, call, email, meeting)
+   - RBAC: ADM can only export own protocols, GF/PLAN can export all protocols
+
+3. **Performance:**
+   - Large exports: Process in chunks (1000 rows at a time)
+   - Progress tracking: Show progress bar for long-running exports
+   - Background jobs: Use background jobs for exports >5000 rows
+   - Rate limiting: Limit export requests to prevent abuse
+
+### 22.7 Import/Export Performance Considerations
+
+1. **File Processing:**
+   - Large files: Process files in chunks (1000 rows at a time)
+   - Progress tracking: Show progress bar for long-running imports
+   - Background jobs: Use background jobs for imports >5000 rows
+   - Memory management: Stream file processing to avoid memory issues
+
+2. **Date Parsing:**
+   - Caching: Cache parsed dates to avoid re-parsing
+   - Batch processing: Process dates in batches for better performance
+   - Parallel processing: Parse dates in parallel for large imports
+
+3. **Export Generation:**
+   - Streaming: Stream export generation to avoid memory issues
+   - Compression: Compress large export files
+   - Caching: Cache export results for repeated requests
+
+4. **Error Handling:**
+   - Error logging: Log errors to file for large imports
+   - Error reporting: Generate error reports for user review
+   - Error recovery: Allow user to retry import with corrections
+
+---
+
 ## Document History
 
 | Version | Date       | Author | Changes |
@@ -5577,9 +6609,10 @@ Get communication history.
 | 1.4     | 2025-01-28 | System | **Added Calendar & Export Endpoints (MVP)**: Get calendar events (unified view of tasks, projects, opportunities), My calendar events (user-specific), Team calendar events (GF/PLAN only), ICS export (one-time download for Outlook/Google/Apple Calendar), complete CalendarEvent and CalendarQuery DTOs, business rules (date range validation, event density limits, RBAC filtering, ICS standards, color accessibility), performance considerations (caching, query optimization, export performance) |
 | 1.5     | 2025-01-28 | System | **Added Time Tracking & Project Cost Management Endpoints (Phase 1 MVP)**: TimeEntry endpoints (CRUD, timer start/stop, bulk approve/reject, labor cost reports, pending approval queue) with complete DTOs; ProjectCost endpoints (CRUD, approval workflow, material cost summaries, pending payment tracking) with complete DTOs. Includes comprehensive RBAC permissions, business rules, status lifecycle transitions, cost calculations, and GoBD compliance for approved/paid entries |
 | 1.6     | 2025-11-12 | System | **CRITICAL UPDATE - Added Supplier & Material Management Endpoints (Phase 1 MVP)**: Complete REST API for Supplier management (CRUD, approval, blacklist, contracts), Material catalog (CRUD, multi-supplier pricing, search), Project Material Requirements (BOM management, cost tracking), Purchase Orders (CRUD, approval workflow, delivery recording with real-time project cost updates), Supplier Invoices (CRUD, 3-way match, approval workflow, payment tracking), Supplier Communications (logging). Addresses Pre-Mortem Danger #3 (Critical Workflow Gaps). See [Supplier Management Spec](../../specifications/SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md) and [Material Management Spec](../../specifications/MATERIAL_INVENTORY_MANAGEMENT_SPEC.md) for complete business logic. |
+| 1.7     | 2025-01-27 | System | **Added Import/Export Endpoints (MVP)**: Customer import endpoints (upload Excel/CSV, map fields, validate, execute, error log) with automatic/manual field mapping, duplicate detection, and validation; Protocol import endpoints (upload Word document, extract table, parse dates with fallback to manual entry, assign customers, validate, execute, error log) with table extraction, date parsing (multiple formats), and customer assignment; Customer export endpoints (CSV/Excel/JSON/DATEV) with field selection and filtering; Protocol export endpoints (CSV/Excel/Word/JSON) with customer/protocol type filtering. Includes complete DTOs, business rules, performance considerations, and RBAC permissions. Required for data migration and ongoing operations. See [Import/Export Specification](../../specifications/IMPORT_EXPORT_SPECIFICATION.md) for complete details. |
 
 ---
 
-**End of API_SPECIFICATION.md v1.6**
+**End of API_SPECIFICATION.md v1.7**
 
 
