@@ -286,13 +286,20 @@ export class TimeEntryService {
   async findAll(
     filters: TimeEntryFilters,
     currentUserId: string,
+    userRole?: string,
   ): Promise<TimeEntryResponseDto[]> {
-    // TODO: Apply RBAC filters based on user role
-    // For now, filter to user's own entries
-    const userFilters: TimeEntryFilters = {
-      ...filters,
-      userId: currentUserId,
-    };
+    // Apply RBAC filters based on user role
+    // Managers (GF, PLAN) can see team entries
+    // Other roles can only see their own entries
+    const isManager = userRole === 'GF' || userRole === 'PLAN' || userRole === 'BUCH';
+    
+    const userFilters: TimeEntryFilters = { ...filters };
+    
+    // Non-managers can only see their own entries
+    if (!isManager) {
+      userFilters.userId = currentUserId;
+    }
+    // Managers can use the provided userId filter or see all entries
 
     const entries = await this.repository.findAll(userFilters);
     return entries.map((entry) => this.mapToResponseDto(entry));

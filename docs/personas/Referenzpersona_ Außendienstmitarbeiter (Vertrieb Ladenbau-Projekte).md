@@ -153,12 +153,37 @@ neuen Lösung soll dies möglichst **in Echtzeit oder zeitnah** nach jedem Termi
 Tool erlaubt es ihm z.B., **direkt nach dem Kundenbesuch im Auto die Gesprächsnotizen ins**
 **Tablet einzusprechen oder einzugeben** , wodurch die Zentrale sofort informiert ist. Weiterhin muss
 Markus
-**Spesen abrechnen** : Er sammelt Belege für Übernachtungen, Mahlzeiten,
-Kilometerpauschalen etc., und reicht diese meist monatlich ein. Hierfür wäre eine mobile Lösung
-ideal, bei der er **Belege einfach fotografiert und digital anhängt** , sowie die gefahrenen Kilometer
-pro Tour automatisch erfasst werden
-. So könnte er unterwegs schon alles Nötige
-dokumentieren, anstatt am Monatsende eine Zettelwirtschaft zu haben. Schließlich berichtet Markus
+**Spesenabrechnung & Ausgabenverwaltung (Phase 2):** Markus muss monatlich alle Geschäftsausgaben abrechnen. Die neue Lösung macht dies deutlich einfacher:
+
+**Unterwegs Ausgaben erfassen:**
+- **Belege fotografieren:** Nach dem Mittagessen fotografiert Markus die Quittung direkt mit der App. Die **OCR-Funktion** (Tesseract.js) erkennt automatisch Betrag, Datum und Händler. Markus prüft die erkannten Daten und korrigiert bei Bedarf.
+- **Automatische Zuordnung:** Die App schlägt automatisch vor, welche Tour oder welcher Kunde mit dieser Ausgabe verknüpft werden soll (basierend auf Datum und GPS-Standort).
+- **Kategorisierung:** Markus wählt die Kategorie (Mahlzeit, Parken, Maut, etc.) und die App speichert alles lokal (offline-fähig).
+
+**Kilometer automatisch erfassen:**
+- **GPS-Tracking:** Wenn Markus eine Tour startet, zeichnet die App automatisch seine Route auf (GPS-Tracking). Am Ende der Tour wird automatisch ein **Kilometerlog** erstellt mit:
+  - Gesamte gefahrene Distanz
+  - Route als GeoJSON (für Steuerprüfung)
+  - Automatische Kostenberechnung (€0.30/km, deutscher Standard)
+- **Manuelle Eingabe:** Falls GPS-Tracking nicht gewünscht ist (Datenschutz), kann Markus die Kilometer manuell eingeben.
+- **Validierung:** Die App vergleicht die eingegebene Distanz mit der GPS-Route (±5% Toleranz). Bei größeren Abweichungen kann der GF eine manuelle Übernahme genehmigen.
+
+**Hotelübernachtungen:**
+- **Vergangene Hotels:** Die App zeigt eine Liste aller Hotels, in denen Markus bereits übernachtet hat, mit Bewertungen und Preisen. Beim Planen einer neuen Tour kann er schnell ein bekanntes Hotel auswählen.
+- **Hotel-Suche:** Über die integrierte **Google Maps/Places API** kann Markus Hotels in der Nähe seiner Termine suchen. Die App zeigt Preise, Bewertungen und Entfernung zu seinen Kundenstandorten.
+- **Hotel hinzufügen:** Markus fügt das Hotel zu seiner Tour hinzu und die App erstellt automatisch einen **Expense-Eintrag** für die Übernachtung.
+
+**Monatliche Abrechnung:**
+- **Report-Generator:** Am Monatsende öffnet Markus die "Monatliche Spesenübersicht" und wählt den Zeitraum (z.B. Juni 2025). Die App generiert automatisch einen **PDF-Report** mit:
+  - Alle Ausgaben nach Kategorie gruppiert
+  - Kilometerpauschalen pro Tour
+  - Hotelkosten
+  - Gesamtsumme
+  - Alle Belege als Anhang (PDF mit allen Quittungen)
+- **Einreichung:** Markus kann den Report direkt per E-Mail an die Buchhaltung senden oder als PDF exportieren.
+- **Genehmigungsworkflow:** Ausgaben über €100 erfordern GF-Genehmigung. Die App zeigt den Status jeder Ausgabe (Entwurf, eingereicht, genehmigt, abgelehnt, bezahlt).
+
+**Zeitersparnis:** Durch mobile Spesenerfassung spart Markus **ca. 2-3 Stunden pro Monat** (statt Zettelwirtschaft und manueller Excel-Listen). Die monatliche Abrechnung dauert nur noch **5-10 Minuten** statt 2-3 Stunden. Schließlich berichtet Markus
 in Vertriebs-Meetings an die Geschäftsführung: z.B. über seine Umsätze, neu gewonnene Projekte,
 Angebotspipeline und Marktbeobachtungen. Diese **KPIs und Berichte** wird das neue System
 idealerweise automatisch mit aufbereiten – etwa in Form von Dashboards, die Umsatzziele vs. Ist
@@ -189,22 +214,36 @@ ländlichen Räumen
 . Sie stellt sicher, dass Markus auch „im Funkloch“ arbeiten kann, ohne
 Datenverluste oder Verzögerungen.
 
-# Mobile Tourenplanung & Routenoptimierung:
+# Mobile Tourenplanung & Routenoptimierung (Phase 2):
 
+**Wöchentliche Tourenplanung:** Markus plant seine Woche am Sonntagabend oder Montagmorgen. Er öffnet die KOMPASS-App und erstellt eine neue Tour für die kommende Woche (z.B. "Bayern Süd, 15.-17. Juni"). Das System analysiert automatisch:
 
-Idealerweise werden Geodaten und Kundenprioritäten genutzt, um automatisch Tourenvorschläge
-zu generieren
-. Beispielsweise könnte Markus eingeben, welche Region er kommende Woche
-bereist, und das System schlägt die passenden Kundenbesuche vor (unter Berücksichtigung von
-Öffnungszeiten, Besuchsintervallen und Umsatzpotenzial). Eine **GPS-gestützte Routenoptimierung**
-ist integraler Bestandteil: Sie spart Zeit und Fahrtkosten, indem die schnellste Route für alle Stopps
-errechnet wird
-. Zudem sollte die App Navigationssysteme integrieren, sodass Markus direkt zum
-nächsten Termin geführt wird. Relevante Details wie Verkehrslage oder notwendige Pufferzeiten
-(z.B. für Staus) wären ein Plus, um realistische Touren zu planen. Durch solch eine automatisierte
-Tourenplanung kann Markus mehr Kunden mit weniger Fahraufwand besuchen – ein großer
-Effizienzgewinn, wie Fallstudien belegen
-.
+- **Kundenprioritäten:** Welche Kunden haben seit längerem keinen Besuch? (basierend auf `lastVisitDate` und `visitFrequencyDays`)
+- **Geografische Nähe:** Welche Kunden liegen in der gewählten Region?
+- **Umsatzpotenzial:** Welche Opportunities sind aktiv und benötigen einen Vor-Ort-Termin?
+- **Öffnungszeiten:** Berücksichtigung von Kundenöffnungszeiten für realistische Terminplanung
+
+Das System schlägt automatisch **8-12 Kundenbesuche** vor, die Markus mit einem Klick zu seiner Tour hinzufügen kann. Er kann Vorschläge ablehnen oder manuell weitere Termine hinzufügen.
+
+**Automatische Routenoptimierung:** Sobald Markus mehrere Termine zu seiner Tour hinzugefügt hat, optimiert das System die Route automatisch (TSP-Algorithmus). Die optimierte Route zeigt:
+- **Reihenfolge der Besuche** (nummeriert: 1, 2, 3, ...)
+- **Geschätzte Fahrtzeiten** zwischen den Stopps
+- **Gesamte Distanz** der Tour (z.B. 450 km)
+- **Geschätzte Gesamtkosten** (Fahrtkosten + Übernachtungen + Verpflegung)
+
+Markus kann die Route manuell anpassen (z.B. wenn er einen Kunden zuerst besuchen möchte) und das System berechnet die neue Route neu.
+
+**GPS-gestützte Navigation:** Während der Tour zeigt die App eine **interaktive Karte** mit:
+- **Aktueller Standort** (blauer Punkt)
+- **Geplante Besuche** (nummerierte Marker)
+- **Route** (gestrichelte Linie zwischen Stopps)
+- **Nächster Termin** (hervorgehoben)
+
+Markus kann direkt aus der App heraus zur **Google Maps Navigation** wechseln ("Zum nächsten Termin navigieren"). Die App erkennt automatisch, wenn Markus am Zielort ankomft (GPS-basiert) und bietet einen **Check-In-Button** an.
+
+**Tourenverwaltung:** Markus kann mehrere Touren gleichzeitig planen (z.B. diese Woche Bayern, nächste Woche Norddeutschland). Die App zeigt eine **Kalenderansicht** mit allen geplanten Touren und Terminen. Beim Erstellen eines neuen Termins schlägt das System automatisch passende Touren vor (gleicher Tag ±1 Tag, Region <50km entfernt). Falls keine passende Tour existiert, bietet das System an, eine neue Tour zu erstellen.
+
+**Effizienzgewinn:** Durch automatisierte Tourenplanung spart Markus **ca. 20-30 Minuten pro Woche** bei der Planung und reduziert Fahrtkosten um **10-15%** durch optimierte Routen.
 
 # Kunden- und Kontaktmanagement (CRM): Das Herzstück bildet eine zentrale Kundendatenbank ,
 

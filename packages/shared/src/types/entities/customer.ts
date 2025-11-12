@@ -113,6 +113,17 @@ export interface Customer extends BaseEntity {
   /** Customer business type (NEW) */
   customerBusinessType?: CustomerBusinessType;
 
+  // ==================== Tour Planning (NEW) ====================
+  
+  /** Date of last visit by ADM (for tour planning) */
+  lastVisitDate?: Date;
+
+  /** Recommended visit frequency in days */
+  visitFrequencyDays?: number;
+
+  /** Preferred visit time (e.g., "morning", "afternoon") */
+  preferredVisitTime?: string;
+
   // ==================== Business Intelligence ====================
   
   /** Industry/sector */

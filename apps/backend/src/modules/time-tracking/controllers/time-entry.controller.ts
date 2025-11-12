@@ -100,7 +100,7 @@ export class TimeEntryController {
       startDate,
       endDate,
     };
-    return this.timeEntryService.findAll(filters, user.id);
+    return this.timeEntryService.findAll(filters, user.id, user.role);
   }
 
   /**
@@ -342,7 +342,7 @@ export class TimeEntryController {
       startDate,
       endDate,
     };
-    return this.timeEntryService.findAll(filters, user.id);
+    return this.timeEntryService.findAll(filters, user.id, user.role);
   }
 
   /**
@@ -367,14 +367,14 @@ export class TimeEntryController {
     @Query('endDate') endDate?: Date,
     @CurrentUser() user?: any,
   ): Promise<TimeEntryResponseDto[]> {
-    // TODO: Apply RBAC filters based on user role (PLAN can see all)
+    // RBAC filters applied in service (PLAN/GF/BUCH can see all team entries)
     const filters: TimeEntryFilters = {
       projectId,
       status,
       startDate,
       endDate,
     };
-    return this.timeEntryService.findAll(filters, user.id);
+    return this.timeEntryService.findAll(filters, user.id, user.role);
   }
 }
 

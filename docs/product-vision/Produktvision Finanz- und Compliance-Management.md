@@ -6,9 +6,10 @@
 **Purpose:** Vision und Anforderungen für Angebotsmanagement, Vertragsmanagement, und Lexware-Integration
 
 **⚡ Verknüpfte Spezifikationen:**
-- **NFRs:** `docs/reviews/NFR_SPECIFICATION.md` – §5.3 DSGVO-Compliance-Framework, §5.4 GoBD-Compliance
-- **Datenmodell:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` – Offer/Contract-Entities, GoBD-Immutabilität, Änderungsprotokollierung
-- **RBAC:** `docs/specifications/reviews/RBAC_PERMISSION_MATRIX.md` – Buchhaltung (Zugriff auf Finanzdaten), GF (lesend auf Margen)
+- **NFRs:** `docs/specifications/reviews/NFR_SPECIFICATION.md` – §5.3 DSGVO-Compliance-Framework, §5.4 GoBD-Compliance
+- **Datenmodell:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` – §24 Offer Entity (interfaces, validation rules, business rules, GoBD immutability), §25 Contract Entity (interfaces, validation rules, signing workflow, project conversion), GoBD-Immutabilität, Änderungsprotokollierung
+- **API-Spezifikation:** `docs/specifications/reviews/API_SPECIFICATION.md` – §13 Offer Management Endpoints (CRUD, send, accept, reject, supersede, PDF generation), §14 Contract Management Endpoints (CRUD, sign, create-project, complete, terminate), complete Opportunity→Offer→Contract→Project workflow
+- **RBAC:** `docs/specifications/reviews/RBAC_PERMISSION_MATRIX.md` – Offer/Contract permissions (INNEN: full CRUD, GF: approve/correct, PLAN: project creation from contracts), Buchhaltung (Zugriff auf Finanzdaten), GF (lesend auf Margen)
 - **Integration:** Lexware-Integration Specification (optional, Phase 2+)
 
 ---
@@ -27,6 +28,30 @@ Das Finanz- & Compliance-Management-Modul sichert die **zentrale Verwaltung von 
 
 **⚠️ WICHTIG: Rechnungserstellung erfolgt in Lexware**  
 KOMPASS erstellt **keine Rechnungen**. Lexware ist das führende System für Rechnungswesen. KOMPASS verwaltet Angebote und Verträge und ermöglicht optional die Anzeige von Rechnungsstatus aus Lexware (Phase 2+).
+
+**📋 Geschäftsprozess-Workflow (Opportunity → Offer → Contract → Project):**
+
+```
+1. Opportunity (INNEN) → Customer qualifies
+   ↓
+2. Offer (INNEN creates & sends) → PDF with line items, pricing
+   ↓ (Customer accepts)
+3. Contract (INNEN creates, customer signs) → Immutable after signature
+   ↓ (INNEN hands off to PLAN)
+4. Project (PLAN creates from contract) → Project execution
+   ↓
+5. Project Delivery (PLAN manages) → Time tracking, cost management
+   ↓
+6. Lexware Invoicing (Phase 2+, BUCH) → Invoices created in Lexware
+```
+
+**Paradigm: Contract-First, Not Invoice-First**  
+Unlike traditional systems that start with invoices, KOMPASS establishes a **signed contract** as the foundation for project work. This ensures:
+- ✅ Clear project scope before work begins (from Offer line items)
+- ✅ GoBD-compliant contract immutability after signature
+- ✅ Audit trail for all project changes
+- ✅ Financial tracking from contract value vs. actual costs
+- ✅ Seamless handover from INNEN (pre-sales) to PLAN (execution)
 
 ---
 
@@ -200,6 +225,8 @@ KOMPASS erstellt **keine Rechnungen**. Lexware ist das führende System für Rec
 
 **Phase 2+ (Optional): Read-only Lexware API-Integration**
 - **Wichtig:** KOMPASS erstellt **keine** Rechnungen, nur read-only Anzeige
+- **Workflow-Context:** Rechnungen werden in Lexware **nach** Vertragsabschluss und Projektdurchführung erstellt
+- **Data Flow:** KOMPASS (Angebot → Vertrag → Projekt) → Lexware (Rechnung)
 - REST API-Integration zu Lexware (read-only)
 - Anzeige von Rechnungsstatus im Projekt-Dashboard
 - API-Endpoints:
@@ -207,9 +234,25 @@ KOMPASS erstellt **keine Rechnungen**. Lexware ist das führende System für Rec
   - `GET /lexware/invoices/{invoiceId}/status` - Zeige Rechnungsstatus
   - `GET /lexware/invoices/{invoiceId}/payments` - Zeige Zahlungseingänge
 - **Use Case:** GF/PLAN sieht im Projekt-Dashboard: "Rechnung R-2024-00123: Bezahlt am 15.12.2024"
+- **Mapping:** Contract (KOMPASS) ← 1:n → Invoice (Lexware)
+  - Ein Vertrag kann mehrere Rechnungen haben (z.B. Teilrechnungen, Schlussrechnung)
+  - KOMPASS zeigt Vertragswert vs. fakturierter Betrag
+  - Financial Tracking: Vertragswert (KOMPASS) - Rechnungsbetrag (Lexware) = Offener Betrag
 - **Kosten-Nutzen:** €10-15k Implementierung, verbessert Transparenz
 
 **Entscheidung:** Optional, deferred to Phase 2+ (nur wenn Lexware API verfügbar)
+
+**Workflow-Beispiel mit Lexware:**
+```
+1. INNEN: Angebot A-2025-00042 erstellt (€59.500)
+2. Kunde: Angebot akzeptiert
+3. INNEN: Vertrag C-2025-00042 erstellt und signiert (€59.500)
+4. PLAN: Projekt P-2025-B042 erstellt aus Vertrag
+5. PLAN: Projekt durchgeführt (Timetracking, ProjectCost)
+6. BUCH: Rechnung R-2025-00123 in Lexware erstellt (€20.000 - Teilrechnung)
+7. BUCH: Rechnung R-2025-00124 in Lexware erstellt (€39.500 - Schlussrechnung)
+8. KOMPASS (Phase 2+): Zeigt "Vertrag C-2025-00042: €59.500 (€59.500 fakturiert)"
+```
 
 ### 6.2 PDF-Storage (MinIO/S3)
 

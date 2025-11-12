@@ -23,9 +23,13 @@
 6. [Permission Matrix Endpoints (NEW)](#6-permission-matrix-endpoints-new)
 7. [Location Management Endpoints](#7-location-management-endpoints)
 8. [Contact Decision Authority Endpoints](#8-contact-decision-authority-endpoints)
-9. [Request/Response DTOs](#9-requestresponse-dtos)
-10. [OpenAPI Documentation Patterns](#10-openapi-documentation-patterns)
-11. [Future Endpoints (Placeholders)](#11-future-endpoints-placeholders)
+9. [Task Management Endpoints](#9-task-management-endpoints-new)
+10. [Calendar & Export Endpoints](#10-calendar--export-endpoints-new)
+11. [Time Tracking Endpoints](#11-time-tracking-endpoints-new-phase-1-mvp)
+12. [Project Cost Management Endpoints](#12-project-cost-management-endpoints-new-phase-1-mvp)
+13. [Request/Response DTOs](#13-requestresponse-dtos)
+14. [OpenAPI Documentation Patterns](#14-openapi-documentation-patterns)
+15. [Future Endpoints (Placeholders)](#15-future-endpoints-placeholders)
 
 ---
 
@@ -1829,7 +1833,1039 @@ export class LocationController {
 
 ---
 
-## 8. Future Endpoints (Placeholders)
+## 9. Task Management Endpoints (NEW)
+
+**Updated:** 2025-01-28  
+**Status:** Planned for implementation (Phase 1 - MVP)
+
+### 9.1 UserTask Endpoints (Personal Todos)
+
+User tasks are personal todo items accessible under user resource hierarchy.
+
+---
+
+#### 9.1.1 List User's Tasks
+
+**GET** `/api/v1/users/{userId}/tasks`
+
+Retrieves all tasks assigned to a specific user.
+
+##### Request
+
+**Path Parameters:**
+- `userId` (string, required) - User ID
+
+**Query Parameters:**
+- `status` (string, optional) - Filter by status: 'open', 'in_progress', 'completed', 'cancelled'
+- `priority` (string, optional) - Filter by priority: 'low', 'medium', 'high', 'urgent'
+- `relatedTo` (string, optional) - Filter by related entity ID (customer/opportunity/project)
+- `sort` (string, optional) - Sort field (default: 'dueDate')
+- `order` (string, optional) - Sort order: 'asc' or 'desc' (default: 'asc')
+- `overdue` (boolean, optional) - Show only overdue tasks
+
+**Required Permission:** `UserTask.READ` (self for own tasks; GF for any user)
+
+**Example Request:**
+```http
+GET /api/v1/users/user-abc123/tasks?status=open&priority=high&sort=dueDate&order=asc HTTP/1.1
+Authorization: Bearer {jwt_token}
+```
+
+##### Response
+
+**200 OK:**
+```json
+{
+  "data": [
+    {
+      "_id": "usertask-12345",
+      "_rev": "1-abc",
+      "type": "user_task",
+      "title": "Call Hofladen Müller about delivery timeline",
+      "description": "Customer wants to confirm installation date for next month",
+      "status": "open",
+      "priority": "high",
+      "dueDate": "2025-02-05T00:00:00Z",
+      "assignedTo": "user-abc123",
+      "relatedCustomerId": "customer-98765",
+      "relatedCustomerName": "Hofladen Müller GmbH",
+      "relatedOpportunityId": "opportunity-54321",
+      "createdBy": "user-abc123",
+      "createdAt": "2025-01-28T14:30:00Z",
+      "modifiedBy": "user-abc123",
+      "modifiedAt": "2025-01-28T14:30:00Z",
+      "version": 1
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "limit": 20
+}
+```
+
+**Possible Errors:**
+- `401` - Unauthorized
+- `403` - Forbidden (cannot view other users' tasks unless GF)
+- `404` - User not found
+
+---
+
+#### 9.1.2 Get Single User Task
+
+**GET** `/api/v1/users/{userId}/tasks/{taskId}`
+
+Retrieves a specific user task by ID.
+
+##### Request
+
+**Path Parameters:**
+- `userId` (string, required) - User ID
+- `taskId` (string, required) - Task ID
+
+**Required Permission:** `UserTask.READ` (own task or GF)
+
+##### Response
+
+**200 OK:**
+```json
+{
+  "_id": "usertask-12345",
+  "_rev": "1-abc",
+  "type": "user_task",
+  "title": "Call Hofladen Müller about delivery timeline",
+  "description": "Customer wants to confirm installation date for next month",
+  "status": "open",
+  "priority": "high",
+  "dueDate": "2025-02-05T00:00:00Z",
+  "assignedTo": "user-abc123",
+  "relatedCustomerId": "customer-98765",
+  "relatedOpportunityId": "opportunity-54321",
+  "createdBy": "user-abc123",
+  "createdAt": "2025-01-28T14:30:00Z",
+  "modifiedBy": "user-abc123",
+  "modifiedAt": "2025-01-28T14:30:00Z",
+  "version": 1
+}
+```
+
+**Possible Errors:**
+- `403` - Forbidden
+- `404` - Task not found
+
+---
+
+#### 9.1.3 Create User Task
+
+**POST** `/api/v1/users/{userId}/tasks`
+
+Creates a new user task.
+
+##### Request
+
+**Path Parameters:**
+- `userId` (string, required) - User ID
+
+**Required Permission:** `UserTask.CREATE`
+
+**Request Body:**
+```json
+{
+  "title": "Follow up with customer about quote",
+  "description": "Discuss delivery timeline and finalize pricing",
+  "status": "open",
+  "priority": "high",
+  "dueDate": "2025-02-10T00:00:00Z",
+  "assignedTo": "user-abc123",
+  "relatedCustomerId": "customer-98765",
+  "relatedOpportunityId": "opportunity-54321"
+}
+```
+
+**Validation:**
+- `title`: Required, 5-200 chars
+- `status`: Required, enum ['open', 'in_progress', 'completed', 'cancelled']
+- `priority`: Required, enum ['low', 'medium', 'high', 'urgent']
+- `assignedTo`: Optional, defaults to current user; requires `ASSIGN_TO_OTHERS` permission if assigning to others
+- `dueDate`: Optional, cannot be in past
+
+##### Response
+
+**201 Created:**
+```json
+{
+  "_id": "usertask-12345",
+  "_rev": "1-abc",
+  "type": "user_task",
+  "title": "Follow up with customer about quote",
+  "description": "Discuss delivery timeline and finalize pricing",
+  "status": "open",
+  "priority": "high",
+  "dueDate": "2025-02-10T00:00:00Z",
+  "assignedTo": "user-abc123",
+  "relatedCustomerId": "customer-98765",
+  "relatedOpportunityId": "opportunity-54321",
+  "createdBy": "user-abc123",
+  "createdAt": "2025-01-28T15:00:00Z",
+  "modifiedBy": "user-abc123",
+  "modifiedAt": "2025-01-28T15:00:00Z",
+  "version": 1
+}
+```
+
+**Possible Errors:**
+- `400` - Validation error
+- `403` - Forbidden (trying to assign to other user without permission)
+- `404` - Related entity not found
+
+---
+
+#### 9.1.4 Update User Task
+
+**PUT** `/api/v1/users/{userId}/tasks/{taskId}`
+
+Updates an existing user task (full replacement).
+
+##### Request
+
+**Path Parameters:**
+- `userId` (string, required) - User ID
+- `taskId` (string, required) - Task ID
+
+**Required Permission:** `UserTask.UPDATE` (own task or GF)
+
+**Request Body:**
+```json
+{
+  "title": "Call Hofladen Müller - URGENT",
+  "description": "Customer needs confirmation by EOD tomorrow",
+  "status": "in_progress",
+  "priority": "urgent",
+  "dueDate": "2025-02-01T17:00:00Z"
+}
+```
+
+##### Response
+
+**200 OK:** (Returns updated task)
+
+**Possible Errors:**
+- `403` - Forbidden (cannot update other users' tasks)
+- `404` - Task not found
+
+---
+
+#### 9.1.5 Update User Task Status Only
+
+**PATCH** `/api/v1/users/{userId}/tasks/{taskId}/status`
+
+Quick endpoint to update only task status (common operation).
+
+##### Request
+
+**Path Parameters:**
+- `userId` (string, required) - User ID
+- `taskId` (string, required) - Task ID
+
+**Request Body:**
+```json
+{
+  "status": "completed"
+}
+```
+
+##### Response
+
+**200 OK:**
+```json
+{
+  "_id": "usertask-12345",
+  "status": "completed",
+  "completedAt": "2025-01-29T10:30:00Z",
+  "completedBy": "user-abc123",
+  "version": 2
+}
+```
+
+**Notes:**
+- Automatically sets `completedAt` and `completedBy` when marking completed
+- Status transitions are validated
+
+---
+
+#### 9.1.6 Delete User Task
+
+**DELETE** `/api/v1/users/{userId}/tasks/{taskId}`
+
+Deletes a user task.
+
+##### Request
+
+**Path Parameters:**
+- `userId` (string, required) - User ID
+- `taskId` (string, required) - Task ID
+
+**Required Permission:** `UserTask.DELETE` (own task or GF)
+
+##### Response
+
+**204 No Content**
+
+**Possible Errors:**
+- `403` - Forbidden
+- `404` - Task not found
+
+---
+
+### 9.2 ProjectTask Endpoints (Project Work Items)
+
+Project tasks are work items bound to projects, accessed under project resource hierarchy.
+
+---
+
+#### 9.2.1 List Project Tasks
+
+**GET** `/api/v1/projects/{projectId}/tasks`
+
+Retrieves all tasks for a specific project.
+
+##### Request
+
+**Path Parameters:**
+- `projectId` (string, required) - Project ID
+
+**Query Parameters:**
+- `status` (string, optional) - Filter by status: 'todo', 'in_progress', 'review', 'done', 'blocked'
+- `priority` (string, optional) - Filter by priority
+- `phase` (string, optional) - Filter by phase: 'planning', 'execution', 'delivery', 'closure'
+- `assignedTo` (string, optional) - Filter by assignee user ID
+- `sort` (string, optional) - Sort field (default: 'priority')
+- `order` (string, optional) - Sort order (default: 'desc')
+
+**Required Permission:** `ProjectTask.READ` AND `Project.READ`
+
+**Example Request:**
+```http
+GET /api/v1/projects/project-98765/tasks?status=in_progress&phase=planning&sort=dueDate&order=asc HTTP/1.1
+Authorization: Bearer {jwt_token}
+```
+
+##### Response
+
+**200 OK:**
+```json
+{
+  "data": [
+    {
+      "_id": "projecttask-11111",
+      "_rev": "2-def",
+      "type": "project_task",
+      "projectId": "project-98765",
+      "projectName": "Hofladen Müller Ladenbau",
+      "title": "Create technical drawings",
+      "description": "Complete CAD drawings for store layout",
+      "status": "in_progress",
+      "priority": "high",
+      "assignedTo": "user-plan-003",
+      "assignedToName": "Anna Weber",
+      "dueDate": "2025-02-15T00:00:00Z",
+      "phase": "planning",
+      "createdBy": "user-innen-001",
+      "createdAt": "2025-01-28T09:00:00Z",
+      "modifiedBy": "user-plan-003",
+      "modifiedAt": "2025-01-29T11:00:00Z",
+      "version": 2
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "limit": 20
+}
+```
+
+**Possible Errors:**
+- `403` - Forbidden (user cannot access this project)
+- `404` - Project not found
+
+---
+
+#### 9.2.2 Get Single Project Task
+
+**GET** `/api/v1/projects/{projectId}/tasks/{taskId}`
+
+Retrieves a specific project task by ID.
+
+##### Request
+
+**Path Parameters:**
+- `projectId` (string, required) - Project ID
+- `taskId` (string, required) - Task ID
+
+**Required Permission:** `ProjectTask.READ` AND `Project.READ`
+
+##### Response
+
+**200 OK:**
+```json
+{
+  "_id": "projecttask-11111",
+  "_rev": "2-def",
+  "type": "project_task",
+  "projectId": "project-98765",
+  "projectName": "Hofladen Müller Ladenbau",
+  "title": "Create technical drawings",
+  "description": "Complete CAD drawings for store layout, include furniture placement and electrical plan",
+  "status": "in_progress",
+  "priority": "high",
+  "assignedTo": "user-plan-003",
+  "assignedToName": "Anna Weber",
+  "dueDate": "2025-02-15T00:00:00Z",
+  "phase": "planning",
+  "milestone": null,
+  "blockingReason": null,
+  "completedAt": null,
+  "createdBy": "user-innen-001",
+  "createdAt": "2025-01-28T09:00:00Z",
+  "modifiedBy": "user-plan-003",
+  "modifiedAt": "2025-01-29T11:00:00Z",
+  "version": 2
+}
+```
+
+**Possible Errors:**
+- `403` - Forbidden
+- `404` - Task or Project not found
+
+---
+
+#### 9.2.3 Create Project Task
+
+**POST** `/api/v1/projects/{projectId}/tasks`
+
+Creates a new project task.
+
+##### Request
+
+**Path Parameters:**
+- `projectId` (string, required) - Project ID
+
+**Required Permission:** `ProjectTask.CREATE` AND `Project.READ`
+
+**Request Body:**
+```json
+{
+  "title": "Order custom furniture from supplier",
+  "description": "Order items per approved design: counter units, shelving, checkout desk",
+  "status": "todo",
+  "priority": "critical",
+  "assignedTo": "user-innen-001",
+  "dueDate": "2025-02-20T00:00:00Z",
+  "phase": "execution"
+}
+```
+
+**Validation:**
+- `title`: Required, 5-200 chars
+- `status`: Required, enum ['todo', 'in_progress', 'review', 'done', 'blocked']
+- `priority`: Required, enum ['low', 'medium', 'high', 'critical']
+- `assignedTo`: Required, must have Project.READ permission
+- `dueDate`: Optional, cannot be in past
+- `phase`: Optional, enum ['planning', 'execution', 'delivery', 'closure']
+
+##### Response
+
+**201 Created:**
+```json
+{
+  "_id": "projecttask-22222",
+  "_rev": "1-ghi",
+  "type": "project_task",
+  "projectId": "project-98765",
+  "title": "Order custom furniture from supplier",
+  "description": "Order items per approved design: counter units, shelving, checkout desk",
+  "status": "todo",
+  "priority": "critical",
+  "assignedTo": "user-innen-001",
+  "dueDate": "2025-02-20T00:00:00Z",
+  "phase": "execution",
+  "createdBy": "user-innen-001",
+  "createdAt": "2025-01-28T16:00:00Z",
+  "modifiedBy": "user-innen-001",
+  "modifiedAt": "2025-01-28T16:00:00Z",
+  "version": 1
+}
+```
+
+**Possible Errors:**
+- `400` - Validation error (invalid assignee, missing required fields)
+- `403` - Forbidden (cannot create tasks for this project)
+- `404` - Project not found
+
+---
+
+#### 9.2.4 Update Project Task
+
+**PUT** `/api/v1/projects/{projectId}/tasks/{taskId}`
+
+Updates an existing project task (full replacement).
+
+##### Request
+
+**Path Parameters:**
+- `projectId` (string, required) - Project ID
+- `taskId` (string, required) - Task ID
+
+**Required Permission:** `ProjectTask.UPDATE` AND `Project.READ`
+
+**Request Body:**
+```json
+{
+  "title": "Order custom furniture from supplier - BLOCKED",
+  "description": "Order items per approved design: counter units, shelving, checkout desk",
+  "status": "blocked",
+  "priority": "critical",
+  "assignedTo": "user-innen-001",
+  "dueDate": "2025-02-20T00:00:00Z",
+  "phase": "execution",
+  "blockingReason": "Waiting for final approval from customer on wood finish selection"
+}
+```
+
+**Validation:**
+- `blockingReason`: Required if status = 'blocked', 10-500 chars
+
+##### Response
+
+**200 OK:** (Returns updated task)
+
+**Possible Errors:**
+- `400` - Validation error (e.g., missing blockingReason when blocked)
+- `403` - Forbidden
+- `404` - Task or Project not found
+
+---
+
+#### 9.2.5 Update Project Task Status Only
+
+**PATCH** `/api/v1/projects/{projectId}/tasks/{taskId}/status`
+
+Quick endpoint to update only task status.
+
+##### Request
+
+**Path Parameters:**
+- `projectId` (string, required) - Project ID
+- `taskId` (string, required) - Task ID
+
+**Request Body:**
+```json
+{
+  "status": "done",
+  "blockingReason": null
+}
+```
+
+##### Response
+
+**200 OK:**
+```json
+{
+  "_id": "projecttask-11111",
+  "status": "done",
+  "completedAt": "2025-02-14T16:45:00Z",
+  "completedBy": "user-plan-003",
+  "version": 3
+}
+```
+
+**Notes:**
+- Automatically sets `completedAt` and `completedBy` when marking done
+- Validates status transitions
+
+---
+
+#### 9.2.6 Delete Project Task
+
+**DELETE** `/api/v1/projects/{projectId}/tasks/{taskId}`
+
+Deletes a project task.
+
+##### Request
+
+**Path Parameters:**
+- `projectId` (string, required) - Project ID
+- `taskId` (string, required) - Task ID
+
+**Required Permission:** `ProjectTask.DELETE` AND `Project.READ`
+
+##### Response
+
+**204 No Content**
+
+**Possible Errors:**
+- `403` - Forbidden (INNEN/KALK can only delete own created tasks)
+- `404` - Task or Project not found
+
+---
+
+#### 9.2.7 Group Project Tasks by Phase
+
+**GET** `/api/v1/projects/{projectId}/tasks/by-phase`
+
+Retrieves project tasks grouped by project phase.
+
+##### Request
+
+**Path Parameters:**
+- `projectId` (string, required) - Project ID
+
+**Required Permission:** `ProjectTask.READ` AND `Project.READ`
+
+##### Response
+
+**200 OK:**
+```json
+{
+  "projectId": "project-98765",
+  "projectName": "Hofladen Müller Ladenbau",
+  "tasksByPhase": {
+    "planning": [
+      {
+        "_id": "projecttask-11111",
+        "title": "Create technical drawings",
+        "status": "done",
+        "priority": "high",
+        "assignedTo": "user-plan-003",
+        "dueDate": "2025-02-15T00:00:00Z"
+      }
+    ],
+    "execution": [
+      {
+        "_id": "projecttask-22222",
+        "title": "Order custom furniture",
+        "status": "blocked",
+        "priority": "critical",
+        "assignedTo": "user-innen-001",
+        "dueDate": "2025-02-20T00:00:00Z"
+      }
+    ],
+    "delivery": [],
+    "closure": []
+  },
+  "total": 2
+}
+```
+
+---
+
+#### 9.2.8 Group Project Tasks by Assignee
+
+**GET** `/api/v1/projects/{projectId}/tasks/by-assignee`
+
+Retrieves project tasks grouped by assigned user (workload view).
+
+##### Request
+
+**Path Parameters:**
+- `projectId` (string, required) - Project ID
+
+**Required Permission:** `ProjectTask.READ` AND `Project.READ`
+
+##### Response
+
+**200 OK:**
+```json
+{
+  "projectId": "project-98765",
+  "tasksByAssignee": {
+    "user-plan-003": {
+      "userName": "Anna Weber",
+      "role": "PLAN",
+      "tasks": [
+        {
+          "_id": "projecttask-11111",
+          "title": "Create technical drawings",
+          "status": "done",
+          "priority": "high"
+        }
+      ],
+      "taskCount": 1,
+      "openTasks": 0,
+      "completedTasks": 1
+    },
+    "user-innen-001": {
+      "userName": "Michael Schmidt",
+      "role": "INNEN",
+      "tasks": [
+        {
+          "_id": "projecttask-22222",
+          "title": "Order custom furniture",
+          "status": "blocked",
+          "priority": "critical"
+        }
+      ],
+      "taskCount": 1,
+      "openTasks": 1,
+      "completedTasks": 0
+    }
+  },
+  "total": 2
+}
+```
+
+---
+
+### 9.3 Cross-Entity Task Endpoints (Dashboard Views)
+
+These endpoints aggregate tasks across multiple entities for dashboard views.
+
+---
+
+#### 9.3.1 Get My Tasks (Current User)
+
+**GET** `/api/v1/tasks/my-tasks`
+
+Retrieves all tasks (UserTask + ProjectTask) assigned to current user.
+
+##### Request
+
+**Query Parameters:**
+- `status` (string, optional) - Filter by status
+- `priority` (string, optional) - Filter by priority
+- `overdue` (boolean, optional) - Show only overdue tasks
+- `dueWithin` (number, optional) - Show tasks due within N days
+
+**Required Permission:** Authenticated user (self)
+
+**Example Request:**
+```http
+GET /api/v1/tasks/my-tasks?overdue=false&dueWithin=7 HTTP/1.1
+Authorization: Bearer {jwt_token}
+```
+
+##### Response
+
+**200 OK:**
+```json
+{
+  "userTasks": [
+    {
+      "_id": "usertask-12345",
+      "title": "Call Hofladen Müller",
+      "status": "open",
+      "priority": "high",
+      "dueDate": "2025-02-05T00:00:00Z",
+      "relatedCustomerName": "Hofladen Müller GmbH"
+    }
+  ],
+  "projectTasks": [
+    {
+      "_id": "projecttask-11111",
+      "title": "Create technical drawings",
+      "status": "in_progress",
+      "priority": "high",
+      "dueDate": "2025-02-15T00:00:00Z",
+      "projectName": "Hofladen Müller Ladenbau",
+      "phase": "planning"
+    }
+  ],
+  "summary": {
+    "totalOpen": 2,
+    "totalInProgress": 1,
+    "totalOverdue": 0,
+    "totalDueToday": 0,
+    "totalDueThisWeek": 2
+  }
+}
+```
+
+---
+
+#### 9.3.2 Get Team Tasks
+
+**GET** `/api/v1/tasks/team-tasks`
+
+Retrieves tasks for user's team (filtered by role permissions).
+
+##### Request
+
+**Query Parameters:**
+- `status` (string, optional) - Filter by status
+- `priority` (string, optional) - Filter by priority
+
+**Required Permission:** `ProjectTask.READ` (scope varies by role)
+
+##### Response
+
+**200 OK:**
+```json
+{
+  "projectTasks": [
+    {
+      "_id": "projecttask-11111",
+      "title": "Create technical drawings",
+      "status": "in_progress",
+      "priority": "high",
+      "assignedTo": "user-plan-003",
+      "assignedToName": "Anna Weber",
+      "projectName": "Hofladen Müller Ladenbau",
+      "dueDate": "2025-02-15T00:00:00Z"
+    }
+  ],
+  "summary": {
+    "totalTasks": 15,
+    "byStatus": {
+      "todo": 5,
+      "in_progress": 7,
+      "review": 2,
+      "done": 1,
+      "blocked": 0
+    },
+    "byPriority": {
+      "low": 3,
+      "medium": 6,
+      "high": 4,
+      "critical": 2
+    }
+  }
+}
+```
+
+**Notes:**
+- GF sees all project tasks across all projects
+- PLAN sees tasks for assigned projects
+- INNEN/KALK see all project tasks
+- ADM sees tasks for own customer projects only
+- BUCH sees all project tasks (read-only)
+
+---
+
+#### 9.3.3 Get Overdue Tasks
+
+**GET** `/api/v1/tasks/overdue`
+
+Retrieves all overdue tasks for current user (or team if GF/PLAN).
+
+##### Request
+
+**Required Permission:** Authenticated user
+
+##### Response
+
+**200 OK:**
+```json
+{
+  "userTasks": [
+    {
+      "_id": "usertask-99999",
+      "title": "Follow up on pending offer",
+      "priority": "medium",
+      "dueDate": "2025-01-25T00:00:00Z",
+      "daysOverdue": 3
+    }
+  ],
+  "projectTasks": [],
+  "total": 1
+}
+```
+
+---
+
+### 9.4 Task DTOs
+
+#### CreateUserTaskDto
+
+```typescript
+export class CreateUserTaskDto {
+  @ApiProperty({
+    description: 'Task title',
+    example: 'Call Hofladen Müller about delivery',
+    minLength: 5,
+    maxLength: 200
+  })
+  @IsString()
+  @Length(5, 200)
+  @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&(),!?]+$/)
+  title: string;
+
+  @ApiProperty({
+    description: 'Detailed description',
+    required: false,
+    maxLength: 2000
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
+  description?: string;
+
+  @ApiProperty({
+    description: 'Task status',
+    enum: ['open', 'in_progress', 'completed', 'cancelled'],
+    default: 'open'
+  })
+  @IsEnum(['open', 'in_progress', 'completed', 'cancelled'])
+  status: string;
+
+  @ApiProperty({
+    description: 'Task priority',
+    enum: ['low', 'medium', 'high', 'urgent']
+  })
+  @IsEnum(['low', 'medium', 'high', 'urgent'])
+  priority: string;
+
+  @ApiProperty({
+    description: 'Due date',
+    required: false
+  })
+  @IsOptional()
+  @IsDateString()
+  dueDate?: Date;
+
+  @ApiProperty({
+    description: 'User ID to assign task to (defaults to current user)',
+    required: false
+  })
+  @IsOptional()
+  @IsString()
+  assignedTo?: string;
+
+  @ApiProperty({
+    description: 'Related customer ID',
+    required: false
+  })
+  @IsOptional()
+  @IsString()
+  relatedCustomerId?: string;
+
+  @ApiProperty({
+    description: 'Related opportunity ID',
+    required: false
+  })
+  @IsOptional()
+  @IsString()
+  relatedOpportunityId?: string;
+
+  @ApiProperty({
+    description: 'Related project ID',
+    required: false
+  })
+  @IsOptional()
+  @IsString()
+  relatedProjectId?: string;
+}
+```
+
+#### CreateProjectTaskDto
+
+```typescript
+export class CreateProjectTaskDto {
+  @ApiProperty({
+    description: 'Task title',
+    example: 'Create technical drawings',
+    minLength: 5,
+    maxLength: 200
+  })
+  @IsString()
+  @Length(5, 200)
+  @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&(),!?]+$/)
+  title: string;
+
+  @ApiProperty({
+    description: 'Detailed description',
+    required: false,
+    maxLength: 2000
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
+  description?: string;
+
+  @ApiProperty({
+    description: 'Task status',
+    enum: ['todo', 'in_progress', 'review', 'done', 'blocked'],
+    default: 'todo'
+  })
+  @IsEnum(['todo', 'in_progress', 'review', 'done', 'blocked'])
+  status: string;
+
+  @ApiProperty({
+    description: 'Task priority',
+    enum: ['low', 'medium', 'high', 'critical']
+  })
+  @IsEnum(['low', 'medium', 'high', 'critical'])
+  priority: string;
+
+  @ApiProperty({
+    description: 'User ID to assign task to (must have Project.READ)',
+    required: true
+  })
+  @IsString()
+  assignedTo: string;
+
+  @ApiProperty({
+    description: 'Due date',
+    required: false
+  })
+  @IsOptional()
+  @IsDateString()
+  dueDate?: Date;
+
+  @ApiProperty({
+    description: 'Project phase',
+    enum: ['planning', 'execution', 'delivery', 'closure'],
+    required: false
+  })
+  @IsOptional()
+  @IsEnum(['planning', 'execution', 'delivery', 'closure'])
+  phase?: string;
+
+  @ApiProperty({
+    description: 'Milestone ID',
+    required: false
+  })
+  @IsOptional()
+  @IsString()
+  milestone?: string;
+
+  @ApiProperty({
+    description: 'Blocking reason (required if status = blocked)',
+    required: false,
+    minLength: 10,
+    maxLength: 500
+  })
+  @IsOptional()
+  @IsString()
+  @Length(10, 500)
+  blockingReason?: string;
+}
+```
+
+#### UpdateTaskStatusDto
+
+```typescript
+export class UpdateTaskStatusDto {
+  @ApiProperty({
+    description: 'New status',
+    enum: {
+      UserTask: ['open', 'in_progress', 'completed', 'cancelled'],
+      ProjectTask: ['todo', 'in_progress', 'review', 'done', 'blocked']
+    }
+  })
+  @IsString()
+  status: string;
+
+  @ApiProperty({
+    description: 'Blocking reason (required if status = blocked for ProjectTask)',
+    required: false
+  })
+  @IsOptional()
+  @IsString()
+  blockingReason?: string;
+}
+```
+
+---
+
+## 10. Future Endpoints (Placeholders)
 
 The following endpoints will be documented in future iterations:
 
@@ -1853,6 +2889,146 @@ POST   /api/v1/contacts                - Create new contact
 PUT    /api/v1/contacts/{id}           - Update contact
 DELETE /api/v1/contacts/{id}           - Delete contact
 ```
+
+### Tour Planning & Expense Management (NEW - Phase 2)
+
+**Added:** 2025-01-28  
+**Status:** Planned for Phase 2 (Q3 2025)  
+**Purpose:** Field sales tour planning, meeting scheduling, expense tracking with approval
+
+#### Tour Management
+
+```
+GET    /api/v1/tours                           - List user's tours
+POST   /api/v1/tours                           - Create new tour
+GET    /api/v1/tours/{tourId}                  - Get tour details
+PUT    /api/v1/tours/{tourId}                  - Update tour
+DELETE /api/v1/tours/{tourId}                  - Delete tour (planned only)
+POST   /api/v1/tours/{tourId}/complete         - Mark tour as completed
+GET    /api/v1/tours/{tourId}/cost-summary     - Get tour cost breakdown
+```
+
+**Query Parameters (GET /api/v1/tours):**
+- `status`: Filter by status (planned, active, completed, cancelled)
+- `startDate`, `endDate`: Date range filters
+- `userId`: Filter by user (GF/PLAN only)
+- `page`, `limit`: Pagination
+- `sort`, `order`: Sorting
+
+**Business Rules:**
+- ADM can only manage own tours
+- PLAN/GF can manage all tours
+- Cannot delete tour if expenses linked
+- Complete requires all meetings attended/cancelled
+
+#### Meeting Management
+
+```
+GET    /api/v1/meetings                        - List meetings
+POST   /api/v1/meetings                        - Create meeting
+GET    /api/v1/meetings/{meetingId}            - Get meeting details
+PUT    /api/v1/meetings/{meetingId}            - Update meeting
+DELETE /api/v1/meetings/{meetingId}            - Delete meeting (scheduled only)
+POST   /api/v1/meetings/{meetingId}/check-in  - GPS check-in at location
+PUT    /api/v1/meetings/{meetingId}/outcome   - Update meeting outcome
+POST   /api/v1/meetings/{meetingId}/link-tour - Link meeting to tour
+```
+
+**Query Parameters (GET /api/v1/meetings):**
+- `status`: Filter by status (scheduled, completed, cancelled)
+- `scheduledFrom`, `scheduledTo`: Date range
+- `customerId`, `tourId`: Relationship filters
+- `userId`: Filter by user (GF/PLAN only)
+
+**Business Rules:**
+- Auto-suggests tours on meeting creation (same day, <50km)
+- GPS check-in validates proximity (500m tolerance)
+- Check-in auto-creates activity protocol
+- Outcome required within 24h (ADM), anytime (PLAN/GF)
+
+#### Hotel Stay Management
+
+```
+GET    /api/v1/tours/{tourId}/hotel-stays                 - List hotel stays for tour
+POST   /api/v1/tours/{tourId}/hotel-stays                 - Add hotel stay
+GET    /api/v1/tours/{tourId}/hotel-stays/{hotelStayId}  - Get hotel stay details
+PUT    /api/v1/tours/{tourId}/hotel-stays/{hotelStayId}  - Update hotel stay
+DELETE /api/v1/tours/{tourId}/hotel-stays/{hotelStayId}  - Delete hotel stay
+GET    /api/v1/hotels/search                              - Search nearby hotels
+GET    /api/v1/hotels/my-preferences                      - Get user's preferred hotels
+```
+
+**Query Parameters (GET /api/v1/hotels/search):**
+- `latitude`, `longitude`: GPS coordinates (required)
+- `radius`: Search radius in km (default: 10)
+- `minRating`, `maxPrice`: Filtering
+- `userPreferences`: Include past hotels (default: true)
+
+**Business Rules:**
+- Auto-creates expense entry for hotel
+- Adds to preferences if rating ≥ 4
+- Cannot delete if expense approved/paid
+- Search integrates Google Places API
+
+#### Expense Management
+
+```
+GET    /api/v1/expenses                                - List expenses
+POST   /api/v1/expenses                                - Create expense
+GET    /api/v1/expenses/{expenseId}                    - Get expense details
+PUT    /api/v1/expenses/{expenseId}                    - Update expense (draft/rejected)
+DELETE /api/v1/expenses/{expenseId}                    - Delete expense (draft only)
+POST   /api/v1/expenses/{expenseId}/receipt           - Upload receipt image
+POST   /api/v1/expenses/{expenseId}/submit            - Submit for approval
+POST   /api/v1/expenses/{expenseId}/approve           - Approve expense (GF only)
+POST   /api/v1/expenses/{expenseId}/reject            - Reject expense (GF only)
+POST   /api/v1/expenses/{expenseId}/mark-paid         - Mark as paid (BUCH/GF)
+POST   /api/v1/expenses/bulk-approve                   - Bulk approve (GF only)
+GET    /api/v1/expenses/report                         - Generate expense report
+```
+
+**Query Parameters (GET /api/v1/expenses):**
+- `status`: Filter by status (draft, submitted, approved, rejected, paid)
+- `category`: Filter by category (mileage, hotel, meal, fuel, etc.)
+- `userId`, `tourId`, `meetingId`, `projectId`: Relationship filters
+- `expenseFrom`, `expenseTo`: Date range
+- `page`, `limit`: Pagination
+
+**Business Rules:**
+- Receipt required for amounts > €25 (except mileage)
+- OCR auto-extracts amount/vendor (user verifies)
+- Approval workflow: draft → submitted → approved → paid
+- GF-only approval for all expenses
+- Rejection reason required (min 10 chars)
+- Can resubmit after rejection
+- Audit log for all status changes
+
+**Expense Report Formats:**
+- `format=json`: JSON response
+- `format=pdf`: PDF download
+- `format=csv`: CSV download
+
+#### Mileage Log Management
+
+```
+GET    /api/v1/tours/{tourId}/mileage-logs                    - List mileage logs for tour
+POST   /api/v1/tours/{tourId}/mileage-logs                    - Create mileage log
+GET    /api/v1/tours/{tourId}/mileage-logs/{mileageLogId}    - Get mileage log details
+PUT    /api/v1/tours/{tourId}/mileage-logs/{mileageLogId}    - Update mileage log
+DELETE /api/v1/tours/{tourId}/mileage-logs/{mileageLogId}    - Delete mileage log
+POST   /api/v1/mileage-logs/{mileageLogId}/override-distance - Override GPS distance (GF only)
+GET    /api/v1/mileage-logs/{mileageLogId}/route             - Get GPS route audit trail
+```
+
+**Business Rules:**
+- Auto-creates expense entry for mileage
+- GPS distance vs. claimed distance validated (±5%)
+- If outside tolerance, manual override required (GF + reason)
+- Route stored as GeoJSON for audit
+- Cannot edit/delete if expense approved/paid
+- Standard rate: €0.30/km (Germany)
+
+---
 
 ### Opportunity Management (TBD)
 
@@ -1929,14 +3105,1885 @@ GET    /api/v1/projects/{projectId}/lexware-invoices  - List Lexware invoices fo
 
 ---
 
+## 10. Calendar & Export Endpoints (NEW)
+
+**Added:** 2025-01-28  
+**Status:** Planned for MVP - Calendar Views & Export  
+**Purpose:** Unified calendar views and ICS export for tasks, projects, opportunities, and resource planning
+
+### 10.1 Calendar Event Endpoints
+
+#### 10.1.1 Get Calendar Events
+
+**GET** `/api/v1/calendar/events`
+
+Retrieves calendar events aggregated from multiple sources (tasks, projects, opportunities) for specified date range.
+
+##### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `startDate` | ISO 8601 | Yes | Start date for event range (e.g., "2025-01-01T00:00:00Z") |
+| `endDate` | ISO 8601 | Yes | End date for event range (e.g., "2025-01-31T23:59:59Z") |
+| `types[]` | string[] | No | Filter by event types (user_task, project_task, project_deadline, opportunity_close) |
+| `assignedTo` | string | No | Filter events assigned to specific user ID |
+| `status[]` | string[] | No | Filter by status (open, in_progress, completed, etc.) |
+| `priority[]` | string[] | No | Filter by priority (low, medium, high, urgent, critical) |
+
+##### RBAC
+
+- **All Roles**: Can view calendar events (filtered by permissions)
+- **ADM**: Sees own UserTasks + ProjectTasks for assigned projects
+- **PLAN/GF**: Sees all team events
+- **BUCH/KALK**: Sees relevant project/financial events (read-only)
+
+##### Response
+
+**200 OK:**
+```json
+{
+  "events": [
+    {
+      "id": "usertask-123",
+      "type": "user_task",
+      "title": "Follow up with Hofladen Müller",
+      "description": "Discuss delivery timeline for Q2",
+      "color": "#3B82F6",
+      "icon": "CheckSquare",
+      "startDate": "2025-02-05T00:00:00Z",
+      "endDate": "2025-02-05T23:59:59Z",
+      "allDay": true,
+      "entityId": "usertask-123",
+      "entityType": "UserTask",
+      "status": "open",
+      "priority": "high",
+      "assignedTo": ["user-adm-001"],
+      "url": "/tasks/usertask-123"
+    },
+    {
+      "id": "project-456-end",
+      "type": "project_deadline",
+      "title": "Deadline: Hofladen Müller Ladenbau",
+      "description": "Project completion deadline",
+      "color": "#10B981",
+      "icon": "Flag",
+      "startDate": "2025-02-28T00:00:00Z",
+      "endDate": "2025-02-28T23:59:59Z",
+      "allDay": true,
+      "entityId": "project-456",
+      "entityType": "Project",
+      "status": "in_progress",
+      "url": "/projects/project-456"
+    }
+  ],
+  "meta": {
+    "startDate": "2025-01-01T00:00:00Z",
+    "endDate": "2025-01-31T23:59:59Z",
+    "totalEvents": 2,
+    "eventsByType": {
+      "user_task": 1,
+      "project_deadline": 1
+    }
+  }
+}
+```
+
+**400 Bad Request:**
+```json
+{
+  "type": "https://api.kompass.de/errors/validation-error",
+  "title": "Validation Failed",
+  "status": 400,
+  "detail": "Date range exceeds maximum allowed (90 days)",
+  "errors": [
+    {
+      "field": "endDate",
+      "message": "Date range must be 90 days or less"
+    }
+  ]
+}
+```
+
+##### Business Rules
+
+- Maximum date range: 90 days per request
+- Returns maximum 1000 events per request
+- Events are filtered by user permissions (RBAC)
+- Color coding follows CalendarEvent interface standards
+- Events sorted by startDate ascending
+
+---
+
+#### 10.1.2 Get My Calendar Events
+
+**GET** `/api/v1/calendar/my-events`
+
+Retrieves calendar events for the current authenticated user only.
+
+##### Query Parameters
+
+Same as `/api/v1/calendar/events` but filters automatically to current user.
+
+##### RBAC
+
+- **All Roles**: Can view own events
+
+##### Response
+
+Same structure as `/api/v1/calendar/events` but filtered to current user's tasks and assigned projects.
+
+---
+
+#### 10.1.3 Get Team Calendar Events
+
+**GET** `/api/v1/calendar/team-events`
+
+Retrieves team-wide calendar events for management overview.
+
+##### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `startDate` | ISO 8601 | Yes | Start date for event range |
+| `endDate` | ISO 8601 | Yes | End date for event range |
+| `teamMemberIds[]` | string[] | No | Filter to specific team members |
+| `types[]` | string[] | No | Filter by event types |
+
+##### RBAC
+
+- **GF, PLAN**: Full access
+- **Other Roles**: 403 Forbidden
+
+##### Response
+
+```json
+{
+  "events": [ /* CalendarEvent[] */ ],
+  "teamMembers": [
+    {
+      "userId": "user-plan-001",
+      "displayName": "Anna Weber",
+      "eventCount": 5,
+      "overdueCount": 1
+    }
+  ],
+  "meta": {
+    "startDate": "2025-01-01T00:00:00Z",
+    "endDate": "2025-01-31T23:59:59Z",
+    "totalEvents": 45,
+    "totalTeamMembers": 8
+  }
+}
+```
+
+---
+
+### 10.2 Calendar Export Endpoints
+
+#### 10.2.1 Export Calendar (One-Time Download)
+
+**GET** `/api/v1/calendar/export/ics`
+
+Generates and downloads an ICS file for importing into Outlook, Google Calendar, Apple Calendar, etc.
+
+##### Query Parameters
+
+Same as `/api/v1/calendar/events` for filtering events to export.
+
+##### RBAC
+
+- **All Roles**: Can export own calendar
+- **GF, PLAN**: Can export team calendar
+
+##### Response
+
+**200 OK:**
+- **Content-Type**: `text/calendar; charset=utf-8`
+- **Content-Disposition**: `attachment; filename="kompass-calendar-2025-01-28.ics"`
+
+```ics
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//KOMPASS CRM//Calendar Export//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:KOMPASS Kalender
+X-WR-TIMEZONE:Europe/Berlin
+
+BEGIN:VEVENT
+UID:usertask-123@kompass.de
+DTSTAMP:20250128T120000Z
+DTSTART;VALUE=DATE:20250205
+SUMMARY:Follow up with Hofladen Müller
+DESCRIPTION:Discuss delivery timeline for Q2
+STATUS:CONFIRMED
+PRIORITY:5
+END:VEVENT
+
+BEGIN:VEVENT
+UID:project-456-end@kompass.de
+DTSTAMP:20250128T120000Z
+DTSTART;VALUE=DATE:20250228
+SUMMARY:Deadline: Hofladen Müller Ladenbau
+DESCRIPTION:Project completion deadline
+STATUS:CONFIRMED
+END:VEVENT
+
+END:VCALENDAR
+```
+
+##### Business Rules
+
+- File naming: `kompass-calendar-{current-date}.ics`
+- ICS format follows RFC 5545 (iCalendar)
+- Events exported as-is (no real-time updates)
+- One-time download (not a subscription)
+- Maximum 1000 events per export
+
+---
+
+### 10.3 Calendar DTOs
+
+#### CalendarEventDto
+
+```typescript
+export class CalendarEventDto {
+  @ApiProperty({
+    description: 'Unique event ID',
+    example: 'usertask-123'
+  })
+  id: string;
+
+  @ApiProperty({
+    description: 'Event type',
+    enum: ['user_task', 'project_task', 'project_deadline', 'project_start', 'project_milestone', 'opportunity_close', 'invoice_due', 'activity_scheduled', 'user_vacation', 'holiday']
+  })
+  type: CalendarEventType;
+
+  @ApiProperty({
+    description: 'Event title',
+    example: 'Follow up with customer',
+    maxLength: 200
+  })
+  title: string;
+
+  @ApiProperty({
+    description: 'Event description',
+    required: false,
+    maxLength: 2000
+  })
+  description?: string;
+
+  @ApiProperty({
+    description: 'Hex color for visual coding',
+    example: '#3B82F6',
+    pattern: '^#[0-9A-F]{6}$'
+  })
+  color: string;
+
+  @ApiProperty({
+    description: 'Icon name for event type',
+    example: 'CheckSquare',
+    required: false
+  })
+  icon?: string;
+
+  @ApiProperty({
+    description: 'Event start date/time',
+    type: 'string',
+    format: 'date-time',
+    example: '2025-02-05T00:00:00Z'
+  })
+  startDate: Date;
+
+  @ApiProperty({
+    description: 'Event end date/time',
+    type: 'string',
+    format: 'date-time',
+    required: false
+  })
+  endDate?: Date;
+
+  @ApiProperty({
+    description: 'True if all-day event',
+    example: true
+  })
+  allDay: boolean;
+
+  @ApiProperty({
+    description: 'Reference to source entity ID',
+    example: 'usertask-123'
+  })
+  entityId: string;
+
+  @ApiProperty({
+    description: 'Source entity type',
+    enum: ['UserTask', 'ProjectTask', 'Project', 'Opportunity', 'Invoice', 'Activity', 'User', 'System']
+  })
+  entityType: CalendarEntityType;
+
+  @ApiProperty({
+    description: 'Entity-specific status',
+    example: 'open'
+  })
+  status: string;
+
+  @ApiProperty({
+    description: 'Priority level',
+    enum: ['low', 'medium', 'high', 'urgent', 'critical'],
+    required: false
+  })
+  priority?: CalendarPriority;
+
+  @ApiProperty({
+    description: 'User IDs assigned to event',
+    type: [String],
+    required: false
+  })
+  assignedTo?: string[];
+
+  @ApiProperty({
+    description: 'Physical location',
+    required: false
+  })
+  location?: string;
+
+  @ApiProperty({
+    description: 'Custom tags for filtering',
+    type: [String],
+    required: false
+  })
+  tags?: string[];
+
+  @ApiProperty({
+    description: 'Deep link to entity detail page',
+    example: '/tasks/usertask-123',
+    required: false
+  })
+  url?: string;
+}
+```
+
+#### CalendarQueryDto
+
+```typescript
+export class CalendarQueryDto {
+  @ApiProperty({
+    description: 'Start date for event range',
+    type: 'string',
+    format: 'date-time',
+    example: '2025-01-01T00:00:00Z'
+  })
+  @IsISO8601()
+  startDate: string;
+
+  @ApiProperty({
+    description: 'End date for event range',
+    type: 'string',
+    format: 'date-time',
+    example: '2025-01-31T23:59:59Z'
+  })
+  @IsISO8601()
+  endDate: string;
+
+  @ApiProperty({
+    description: 'Filter by event types',
+    type: [String],
+    required: false,
+    enum: ['user_task', 'project_task', 'project_deadline', 'opportunity_close']
+  })
+  @IsOptional()
+  @IsArray()
+  types?: CalendarEventType[];
+
+  @ApiProperty({
+    description: 'Filter events assigned to specific user',
+    required: false
+  })
+  @IsOptional()
+  @IsString()
+  assignedTo?: string;
+
+  @ApiProperty({
+    description: 'Filter by status',
+    type: [String],
+    required: false
+  })
+  @IsOptional()
+  @IsArray()
+  status?: string[];
+
+  @ApiProperty({
+    description: 'Filter by priority',
+    type: [String],
+    required: false,
+    enum: ['low', 'medium', 'high', 'urgent', 'critical']
+  })
+  @IsOptional()
+  @IsArray()
+  priority?: CalendarPriority[];
+}
+```
+
+---
+
+### 10.4 Calendar Business Rules
+
+**CR-001: Date Range Validation**
+- Maximum date range: 90 days per request
+- Dates must be in ISO 8601 format
+- endDate must be >= startDate
+
+**CR-002: Event Density Limits**
+- Maximum 1000 events per API response
+- If limit exceeded, return 413 Payload Too Large with suggestion to narrow date range
+- Events sorted by startDate ascending, then by priority descending
+
+**CR-003: RBAC Filtering**
+- Events automatically filtered by user permissions
+- ADM: Sees own tasks + assigned project tasks only
+- PLAN/GF: Sees all team events
+- Users never see events for entities they lack READ permission for
+
+**CR-004: ICS Export Standards**
+- Follows RFC 5545 (iCalendar) specification
+- UTF-8 encoding required
+- Timezone: Europe/Berlin (default)
+- UID format: `{entityId}@kompass.de`
+- DTSTAMP: Export generation time
+- STATUS: CONFIRMED for all events
+
+**CR-005: Color Accessibility**
+- All colors meet WCAG AA contrast ratio (4.5:1)
+- Color + icon combination (not color alone)
+- Default colors defined in CalendarEvent interface (DATA_MODEL_SPECIFICATION.md Section 17)
+
+---
+
+### 10.5 Calendar Performance Considerations
+
+**Caching:**
+- Calendar event aggregation cached for 5 minutes (TTL: 300s)
+- Cache key includes: userId, startDate, endDate, filters
+- Cache invalidation on task/project/opportunity updates
+
+**Query Optimization:**
+- Use CouchDB Mango queries with date range indexes
+- Parallel aggregation from UserTask, ProjectTask, Project, Opportunity collections
+- Limit database queries to date range +/- 1 day buffer
+
+**Export Performance:**
+- ICS generation should complete in <2 seconds for 1000 events
+- Stream large exports to avoid memory issues
+- Consider background job for exports >5000 events (Phase 2)
+
+---
+
+## 11. Time Tracking Endpoints (NEW - Phase 1 MVP)
+
+**Added:** 2025-01-28  
+**Purpose:** Time entry management for project work tracking with timer and manual entry support
+
+### 11.1 TimeEntry CRUD Operations
+
+#### POST /api/v1/time-entries
+
+Create a new time entry (start timer or manual entry).
+
+**Request Body:**
+```typescript
+{
+  "projectId": "project-abc123",
+  "taskId": "project-task-xyz789",        // Optional
+  "taskDescription": "Implemented customer authentication",
+  "startTime": "2025-01-28T09:00:00Z",
+  "endTime": null,                       // null = start timer, set value = manual entry
+  "isManualEntry": false,
+  "hourlyRateEur": 75.00                 // Optional, defaults to user's current rate
+}
+```
+
+**Success Response (201 Created):**
+```typescript
+{
+  "_id": "time-entry-550e8400-e29b-41d4-a716-446655440000",
+  "type": "time_entry",
+  "projectId": "project-abc123",
+  "projectName": "Hofladen Müller - Shop System",
+  "taskId": "project-task-xyz789",
+  "taskDescription": "Implemented customer authentication",
+  "userId": "user-123",
+  "userName": "Michael Schmidt",
+  "startTime": "2025-01-28T09:00:00Z",
+  "endTime": null,
+  "durationMinutes": 0,
+  "status": "in_progress",
+  "isManualEntry": false,
+  "hourlyRateEur": 75.00,
+  "totalCostEur": 0.00,
+  "createdBy": "user-123",
+  "createdAt": "2025-01-28T09:00:00Z",
+  "modifiedBy": "user-123",
+  "modifiedAt": "2025-01-28T09:00:00Z",
+  "version": 1
+}
+```
+
+**Error Responses:**
+- `400 Bad Request` - Validation error (taskDescription too short, invalid projectId)
+- `401 Unauthorized` - No authentication token
+- `403 Forbidden` - User lacks CREATE permission for TimeEntry
+- `409 Conflict` - User already has an active timer running
+
+**RBAC:**
+- PLAN: Can create time entries for assigned projects
+- INNEN: Can create time entries for any project
+- GF: Can create time entries for any project
+
+---
+
+#### GET /api/v1/time-entries
+
+List time entries with filtering and sorting.
+
+**Query Parameters:**
+```typescript
+?projectId=project-abc123           // Filter by project
+&userId=user-123                    // Filter by user
+&status=completed                   // Filter by status (in_progress|completed|approved|rejected)
+&startDate=2025-01-01              // Filter entries starting from this date
+&endDate=2025-01-31                // Filter entries ending before this date
+&isManualEntry=false               // Filter by entry type
+&sort=startTime                    // Sort field (startTime|durationMinutes|totalCostEur)
+&order=desc                        // Sort order (asc|desc)
+&page=1                            // Pagination page
+&limit=50                          // Results per page (max 200)
+```
+
+**Success Response (200 OK):**
+```typescript
+{
+  "data": [
+    {
+      "_id": "time-entry-550e8400-e29b-41d4-a716-446655440000",
+      "projectId": "project-abc123",
+      "projectName": "Hofladen Müller - Shop System",
+      "taskDescription": "Implemented customer authentication",
+      "userId": "user-123",
+      "userName": "Michael Schmidt",
+      "startTime": "2025-01-28T09:00:00Z",
+      "endTime": "2025-01-28T12:30:00Z",
+      "durationMinutes": 210,
+      "status": "completed",
+      "hourlyRateEur": 75.00,
+      "totalCostEur": 262.50,
+      "approvedBy": null,
+      "approvedAt": null
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageSize": 50,
+    "total": 127,
+    "totalPages": 3
+  }
+}
+```
+
+**RBAC:**
+- PLAN: Can view own entries + all entries for assigned projects
+- GF: Can view all entries
+- KALK: Can view all entries (read-only for cost estimation)
+- BUCH: Can view all entries (read-only for payroll)
+
+---
+
+#### GET /api/v1/time-entries/:id
+
+Get specific time entry details.
+
+**Success Response (200 OK):**
+```typescript
+{
+  "_id": "time-entry-550e8400-e29b-41d4-a716-446655440000",
+  "projectId": "project-abc123",
+  "projectName": "Hofladen Müller - Shop System",
+  "taskDescription": "Implemented customer authentication",
+  "userId": "user-123",
+  "userName": "Michael Schmidt",
+  "startTime": "2025-01-28T09:00:00Z",
+  "endTime": "2025-01-28T12:30:00Z",
+  "durationMinutes": 210,
+  "status": "approved",
+  "isManualEntry": false,
+  "hourlyRateEur": 75.00,
+  "totalCostEur": 262.50,
+  "approvedBy": "user-gf1",
+  "approvedByName": "Anna Weber",
+  "approvedAt": "2025-01-28T15:00:00Z",
+  "createdBy": "user-123",
+  "createdAt": "2025-01-28T09:00:00Z"
+}
+```
+
+**Error Responses:**
+- `404 Not Found` - Time entry does not exist
+
+---
+
+#### PUT /api/v1/time-entries/:id
+
+Update time entry (editable fields depend on status).
+
+**Request Body:**
+```typescript
+{
+  "taskDescription": "Implemented and tested customer authentication",
+  "startTime": "2025-01-28T09:15:00Z",     // Editable if status = completed
+  "endTime": "2025-01-28T12:45:00Z",       // Editable if status = completed
+  "hourlyRateEur": 80.00                   // Editable if status = in_progress/completed
+}
+```
+
+**Business Rules:**
+- `IN_PROGRESS`: Can edit taskDescription, hourlyRateEur
+- `COMPLETED`: Can edit taskDescription, startTime, endTime
+- `APPROVED`/`REJECTED`: Read-only, no edits allowed
+
+**Error Responses:**
+- `403 Forbidden` - Cannot edit approved/rejected entries
+- `409 Conflict` - Invalid status transition
+
+---
+
+#### DELETE /api/v1/time-entries/:id
+
+Delete time entry (only if status = IN_PROGRESS or COMPLETED).
+
+**Success Response (204 No Content)**
+
+**Error Responses:**
+- `403 Forbidden` - Cannot delete approved entries (GoBD compliance)
+- `404 Not Found` - Time entry does not exist
+
+---
+
+### 11.2 TimeEntry Timer Operations
+
+#### POST /api/v1/time-entries/:id/stop
+
+Stop running timer for a time entry.
+
+**Request Body:**
+```typescript
+{
+  "endTime": "2025-01-28T12:30:00Z"  // Optional, defaults to now
+}
+```
+
+**Success Response (200 OK):**
+```typescript
+{
+  "_id": "time-entry-550e8400-e29b-41d4-a716-446655440000",
+  "status": "completed",
+  "startTime": "2025-01-28T09:00:00Z",
+  "endTime": "2025-01-28T12:30:00Z",
+  "durationMinutes": 210,
+  "hourlyRateEur": 75.00,
+  "totalCostEur": 262.50
+}
+```
+
+**Business Rules:**
+- Automatically calculates durationMinutes
+- Fetches user's current hourlyRateEur and caches it
+- Calculates totalCostEur = (durationMinutes / 60) × hourlyRateEur
+- Updates status to COMPLETED
+
+**Error Responses:**
+- `400 Bad Request` - Timer not running (status != IN_PROGRESS)
+- `400 Bad Request` - endTime < startTime
+
+---
+
+#### GET /api/v1/time-entries/active
+
+Get active timer for current user (if any).
+
+**Success Response (200 OK):**
+```typescript
+{
+  "_id": "time-entry-550e8400-e29b-41d4-a716-446655440000",
+  "projectName": "Hofladen Müller - Shop System",
+  "taskDescription": "Implementing customer authentication",
+  "startTime": "2025-01-28T09:00:00Z",
+  "status": "in_progress",
+  "elapsedMinutes": 147           // Calculated: (now - startTime) in minutes
+}
+```
+
+**Success Response (204 No Content)** - No active timer
+
+---
+
+### 11.3 TimeEntry Approval Workflow
+
+#### POST /api/v1/time-entries/bulk-approve
+
+Approve multiple time entries at once (GF/PLAN managers only).
+
+**Request Body:**
+```typescript
+{
+  "entryIds": [
+    "time-entry-550e8400-e29b-41d4-a716-446655440000",
+    "time-entry-987e6543-e89b-12d3-a456-426614174000"
+  ]
+}
+```
+
+**Success Response (200 OK):**
+```typescript
+{
+  "approved": 2,
+  "failed": 0,
+  "results": [
+    {
+      "entryId": "time-entry-550e8400-e29b-41d4-a716-446655440000",
+      "status": "approved",
+      "approvedAt": "2025-01-28T15:00:00Z"
+    },
+    {
+      "entryId": "time-entry-987e6543-e89b-12d3-a456-426614174000",
+      "status": "approved",
+      "approvedAt": "2025-01-28T15:00:00Z"
+    }
+  ]
+}
+```
+
+**Business Rules:**
+- All entries must belong to same project
+- Requires APPROVE permission for TimeEntry
+- Cannot mix entries from different users or projects
+- Only COMPLETED entries can be approved
+
+**RBAC:**
+- PLAN: Can approve entries for assigned project team members
+- GF: Can approve all entries
+
+**Error Responses:**
+- `400 Bad Request` - Entries from different projects
+- `403 Forbidden` - User lacks APPROVE permission
+
+---
+
+#### POST /api/v1/time-entries/:id/reject
+
+Reject a time entry (with mandatory reason).
+
+**Request Body:**
+```typescript
+{
+  "rejectionReason": "Task not part of project scope. Please revise."
+}
+```
+
+**Success Response (200 OK):**
+```typescript
+{
+  "_id": "time-entry-550e8400-e29b-41d4-a716-446655440000",
+  "status": "rejected",
+  "rejectionReason": "Task not part of project scope. Please revise.",
+  "approvedBy": "user-gf1",
+  "approvedAt": "2025-01-28T15:00:00Z"
+}
+```
+
+**Error Responses:**
+- `400 Bad Request` - rejectionReason required (10-500 chars)
+
+---
+
+### 11.4 Labor Cost Reporting
+
+#### GET /api/v1/projects/:projectId/labor-costs
+
+Calculate labor cost summary for a project.
+
+**Success Response (200 OK):**
+```typescript
+{
+  "projectId": "project-abc123",
+  "totalHours": 142.5,
+  "totalCostEur": 10687.50,
+  "byUser": [
+    {
+      "userId": "user-123",
+      "userName": "Michael Schmidt",
+      "totalHours": 87.5,
+      "averageHourlyRateEur": 75.00,
+      "totalCostEur": 6562.50,
+      "entryCount": 12
+    },
+    {
+      "userId": "user-456",
+      "userName": "Sarah Müller",
+      "totalHours": 55.0,
+      "averageHourlyRateEur": 75.00,
+      "totalCostEur": 4125.00,
+      "entryCount": 8
+    }
+  ],
+  "byMonth": [
+    {
+      "year": 2025,
+      "month": 1,
+      "totalHours": 95.0,
+      "totalCostEur": 7125.00,
+      "entryCount": 14
+    },
+    {
+      "year": 2025,
+      "month": 2,
+      "totalHours": 47.5,
+      "totalCostEur": 3562.50,
+      "entryCount": 6
+    }
+  ]
+}
+```
+
+**Business Rules:**
+- Only APPROVED time entries included in calculations
+- Summary cached for 5 minutes (TTL: 300s)
+- Cache invalidated when entries are approved/rejected
+
+**RBAC:**
+- PLAN: Can view labor costs for assigned projects
+- GF: Can view labor costs for all projects
+- KALK: Can view labor costs (read-only for cost estimation)
+- BUCH: Can view labor costs (read-only for payroll)
+
+---
+
+#### GET /api/v1/time-entries/pending-approval
+
+Get all time entries pending approval (for managers).
+
+**Query Parameters:**
+```typescript
+?projectId=project-abc123        // Optional: Filter by project
+&userId=user-123                // Optional: Filter by user
+```
+
+**Success Response (200 OK):**
+```typescript
+{
+  "data": [
+    {
+      "_id": "time-entry-550e8400-e29b-41d4-a716-446655440000",
+      "projectName": "Hofladen Müller - Shop System",
+      "userName": "Michael Schmidt",
+      "taskDescription": "Implemented customer authentication",
+      "startTime": "2025-01-28T09:00:00Z",
+      "endTime": "2025-01-28T12:30:00Z",
+      "durationMinutes": 210,
+      "totalCostEur": 262.50,
+      "status": "completed"
+    }
+  ],
+  "total": 12
+}
+```
+
+**RBAC:**
+- PLAN: Sees pending entries for assigned projects only
+- GF: Sees all pending entries
+
+---
+
+## 12. Project Cost Management Endpoints (NEW - Phase 1 MVP)
+
+**Added:** 2025-01-28  
+**Purpose:** Non-labor project cost tracking (materials, contractors, services, equipment)
+
+### 12.1 ProjectCost CRUD Operations
+
+#### POST /api/v1/project-costs
+
+Create a new project cost entry.
+
+**Request Body:**
+```typescript
+{
+  "projectId": "project-abc123",
+  "costType": "material",
+  "description": "Oak wood planks for shelving (50 pieces)",
+  "supplierName": "Holz Schmidt GmbH",
+  "quantity": 50,
+  "unitPriceEur": 45.00,
+  "taxRate": 0.19,                    // Optional, defaults to 0.19 (19% VAT)
+  "invoiceNumber": "HS-2025-00123",   // Optional
+  "invoiceDate": "2025-01-25",        // Optional
+  "orderNumber": "PO-2025-00089",     // Optional
+  "status": "ordered"
+}
+```
+
+**Success Response (201 Created):**
+```typescript
+{
+  "_id": "project-cost-550e8400-e29b-41d4-a716-446655440000",
+  "type": "project_cost",
+  "projectId": "project-abc123",
+  "projectName": "Hofladen Müller - Shop System",
+  "costType": "material",
+  "description": "Oak wood planks for shelving (50 pieces)",
+  "supplierName": "Holz Schmidt GmbH",
+  "quantity": 50,
+  "unitPriceEur": 45.00,
+  "totalCostEur": 2250.00,           // Calculated: 50 × 45.00
+  "taxRate": 0.19,
+  "taxAmountEur": 427.50,            // Calculated: 2250.00 × 0.19
+  "totalWithTaxEur": 2677.50,        // Calculated: 2250.00 + 427.50
+  "invoiceNumber": "HS-2025-00123",
+  "invoiceDate": "2025-01-25",
+  "orderNumber": "PO-2025-00089",
+  "status": "ordered",
+  "paidAt": null,
+  "approvedBy": null,
+  "approvedAt": null,
+  "createdBy": "user-plan1",
+  "createdAt": "2025-01-28T10:00:00Z",
+  "version": 1
+}
+```
+
+**Error Responses:**
+- `400 Bad Request` - Validation error (invalid costType, quantity <= 0)
+- `403 Forbidden` - User lacks CREATE permission for ProjectCost
+
+**RBAC:**
+- PLAN: Can create costs for all projects
+- KALK: Can create costs (for cost estimation)
+- GF: Can create costs for all projects
+
+---
+
+#### GET /api/v1/project-costs
+
+List project costs with filtering and sorting.
+
+**Query Parameters:**
+```typescript
+?projectId=project-abc123           // Filter by project
+&costType=material                  // Filter by type (material|contractor|external_service|equipment|other)
+&status=invoiced                    // Filter by status (planned|ordered|received|invoiced|paid)
+&supplierName=Holz Schmidt         // Filter by supplier (partial match)
+&startDate=2025-01-01              // Filter costs from this date
+&endDate=2025-01-31                // Filter costs before this date
+&sort=totalCostEur                 // Sort field (totalCostEur|invoiceDate|createdAt)
+&order=desc                        // Sort order (asc|desc)
+&page=1                            // Pagination page
+&limit=50                          // Results per page (max 200)
+```
+
+**Success Response (200 OK):**
+```typescript
+{
+  "data": [
+    {
+      "_id": "project-cost-550e8400-e29b-41d4-a716-446655440000",
+      "projectName": "Hofladen Müller - Shop System",
+      "costType": "material",
+      "description": "Oak wood planks for shelving (50 pieces)",
+      "supplierName": "Holz Schmidt GmbH",
+      "totalCostEur": 2250.00,
+      "totalWithTaxEur": 2677.50,
+      "status": "invoiced",
+      "invoiceDate": "2025-01-25"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageSize": 50,
+    "total": 89,
+    "totalPages": 2
+  }
+}
+```
+
+**RBAC:**
+- PLAN: Can view costs for assigned projects
+- KALK: Can view all costs (read-only)
+- GF: Can view all costs
+- BUCH: Can view all costs (read-only)
+
+---
+
+#### GET /api/v1/project-costs/:id
+
+Get specific project cost details.
+
+**Success Response (200 OK):**
+```typescript
+{
+  "_id": "project-cost-550e8400-e29b-41d4-a716-446655440000",
+  "projectId": "project-abc123",
+  "projectName": "Hofladen Müller - Shop System",
+  "costType": "material",
+  "description": "Oak wood planks for shelving (50 pieces)",
+  "supplierName": "Holz Schmidt GmbH",
+  "quantity": 50,
+  "unitPriceEur": 45.00,
+  "totalCostEur": 2250.00,
+  "taxRate": 0.19,
+  "taxAmountEur": 427.50,
+  "totalWithTaxEur": 2677.50,
+  "invoiceNumber": "HS-2025-00123",
+  "invoiceDate": "2025-01-25",
+  "invoicePdfUrl": "https://minio.kompass.de/invoices/HS-2025-00123.pdf",
+  "orderNumber": "PO-2025-00089",
+  "status": "invoiced",
+  "paidAt": null,
+  "approvedBy": "user-gf1",
+  "approvedByName": "Anna Weber",
+  "approvedAt": "2025-01-26T14:00:00Z",
+  "createdBy": "user-plan1",
+  "createdAt": "2025-01-28T10:00:00Z"
+}
+```
+
+---
+
+#### PUT /api/v1/project-costs/:id
+
+Update project cost (editable fields depend on status).
+
+**Request Body:**
+```typescript
+{
+  "description": "Oak wood planks for shelving (55 pieces - updated)",
+  "quantity": 55,
+  "unitPriceEur": 45.00,
+  "invoiceNumber": "HS-2025-00123",
+  "invoiceDate": "2025-01-25",
+  "invoicePdfUrl": "https://minio.kompass.de/invoices/HS-2025-00123.pdf",
+  "status": "invoiced"
+}
+```
+
+**Business Rules:**
+- `PLANNED`: All fields editable
+- `ORDERED`: Can edit status, invoiceNumber, invoiceDate
+- `RECEIVED`/`INVOICED`: Can only update status and payment info
+- `PAID`: Read-only (GoBD compliance)
+
+**Error Responses:**
+- `403 Forbidden` - Cannot edit paid costs (GoBD compliance)
+- `409 Conflict` - Invalid status transition
+
+---
+
+#### DELETE /api/v1/project-costs/:id
+
+Delete project cost (only if status = PLANNED or ORDERED).
+
+**Success Response (204 No Content)**
+
+**Error Responses:**
+- `403 Forbidden` - Cannot delete received/invoiced/paid costs (GoBD compliance)
+- `404 Not Found` - Project cost does not exist
+
+---
+
+### 12.2 ProjectCost Approval Workflow
+
+#### POST /api/v1/project-costs/:id/approve
+
+Approve a project cost (required before marking as PAID).
+
+**Request Body:**
+```typescript
+{} // Empty body
+```
+
+**Success Response (200 OK):**
+```typescript
+{
+  "_id": "project-cost-550e8400-e29b-41d4-a716-446655440000",
+  "status": "invoiced",
+  "approvedBy": "user-gf1",
+  "approvedByName": "Anna Weber",
+  "approvedAt": "2025-01-26T14:00:00Z"
+}
+```
+
+**Business Rules:**
+- Costs < €500: PLAN can approve
+- Costs >= €500: Requires GF approval (dual control)
+- Approval required before status can move to PAID
+
+**RBAC:**
+- PLAN: Can approve costs < €500 for assigned projects
+- GF: Can approve all costs
+
+**Error Responses:**
+- `403 Forbidden` - Cost >= €500 requires GF approval
+
+---
+
+### 12.3 Material Cost Reporting
+
+#### GET /api/v1/projects/:projectId/material-costs
+
+Calculate material cost summary for a project.
+
+**Success Response (200 OK):**
+```typescript
+{
+  "projectId": "project-abc123",
+  "totalCostEur": 15240.00,
+  "totalWithTaxEur": 18135.60,
+  "pendingPaymentEur": 3240.00,        // Sum of INVOICED status costs
+  "byCostType": [
+    {
+      "costType": "material",
+      "totalCostEur": 8500.00,
+      "totalWithTaxEur": 10115.00,
+      "itemCount": 12
+    },
+    {
+      "costType": "contractor",
+      "totalCostEur": 4200.00,
+      "totalWithTaxEur": 4998.00,
+      "itemCount": 3
+    },
+    {
+      "costType": "equipment",
+      "totalCostEur": 2540.00,
+      "totalWithTaxEur": 3022.60,
+      "itemCount": 5
+    }
+  ],
+  "byStatus": [
+    {
+      "status": "paid",
+      "totalCostEur": 12000.00,
+      "totalWithTaxEur": 14280.00,
+      "itemCount": 15
+    },
+    {
+      "status": "invoiced",
+      "totalCostEur": 3240.00,
+      "totalWithTaxEur": 3855.60,
+      "itemCount": 5
+    }
+  ]
+}
+```
+
+**Business Rules:**
+- Summary cached for 5 minutes (TTL: 300s)
+- Cache invalidated when costs are added/updated
+- Pending payment includes all INVOICED status costs
+
+**RBAC:**
+- PLAN: Can view material costs for assigned projects
+- GF: Can view material costs for all projects
+- KALK: Can view material costs (read-only)
+- BUCH: Can view material costs (read-only)
+
+---
+
+#### GET /api/v1/project-costs/pending-payment
+
+Get all costs awaiting payment (INVOICED status).
+
+**Query Parameters:**
+```typescript
+?projectId=project-abc123        // Optional: Filter by project
+&supplierName=Holz Schmidt      // Optional: Filter by supplier
+```
+
+**Success Response (200 OK):**
+```typescript
+{
+  "data": [
+    {
+      "_id": "project-cost-550e8400-e29b-41d4-a716-446655440000",
+      "projectName": "Hofladen Müller - Shop System",
+      "description": "Oak wood planks for shelving",
+      "supplierName": "Holz Schmidt GmbH",
+      "totalWithTaxEur": 2677.50,
+      "invoiceNumber": "HS-2025-00123",
+      "invoiceDate": "2025-01-25",
+      "status": "invoiced"
+    }
+  ],
+  "totalPendingEur": 8450.00
+}
+```
+
+**RBAC:**
+- GF: Can view all pending payments
+- BUCH: Can view all pending payments (read-only)
+
+---
+
+### 12.4 ProjectCost DTOs
+
+#### CreateProjectCostDto
+
+```typescript
+export class CreateProjectCostDto {
+  @ApiProperty({ description: 'Project ID', example: 'project-abc123' })
+  @IsString()
+  projectId: string;
+
+  @ApiProperty({ 
+    description: 'Cost type', 
+    enum: ['material', 'contractor', 'external_service', 'equipment', 'other']
+  })
+  @IsEnum(ProjectCostType)
+  costType: ProjectCostType;
+
+  @ApiProperty({ 
+    description: 'Cost description', 
+    example: 'Oak wood planks for shelving',
+    minLength: 10,
+    maxLength: 500
+  })
+  @IsString()
+  @Length(10, 500)
+  description: string;
+
+  @ApiProperty({ description: 'Supplier name', required: false })
+  @IsOptional()
+  @IsString()
+  @Length(2, 200)
+  supplierName?: string;
+
+  @ApiProperty({ description: 'Quantity', example: 50 })
+  @IsNumber()
+  @Min(0.01)
+  quantity: number;
+
+  @ApiProperty({ description: 'Unit price in EUR', example: 45.00 })
+  @IsNumber()
+  @Min(0)
+  unitPriceEur: number;
+
+  @ApiProperty({ description: 'Tax rate (0-1)', example: 0.19, required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(1)
+  taxRate?: number;
+
+  @ApiProperty({ description: 'Invoice number', required: false })
+  @IsOptional()
+  @IsString()
+  invoiceNumber?: string;
+
+  @ApiProperty({ description: 'Invoice date', required: false })
+  @IsOptional()
+  @IsISO8601()
+  invoiceDate?: string;
+
+  @ApiProperty({ description: 'Purchase order number', required: false })
+  @IsOptional()
+  @IsString()
+  orderNumber?: string;
+
+  @ApiProperty({ 
+    description: 'Cost status', 
+    enum: ['planned', 'ordered', 'received', 'invoiced', 'paid']
+  })
+  @IsEnum(ProjectCostStatus)
+  status: ProjectCostStatus;
+}
+```
+
+---
+
+## 13. Offer Management Endpoints (NEW - Phase 1 MVP)
+
+Offer endpoints manage the Opportunity → Offer → Contract conversion workflow. Offers are formal price quotes sent to customers.
+
+### POST /api/v1/offers
+
+Create a new offer from an opportunity.
+
+**Request Body:**
+```typescript
+{
+  "opportunityId": "opportunity-abc123",
+  "customerId": "customer-xyz789",
+  "contactPersonId": "contact-person-456",
+  "offerDate": "2025-01-28",
+  "validityDays": 30,
+  "lineItems": [
+    {
+      "position": 1,
+      "description": "Ladeneinrichtung komplett",
+      "quantity": 1,
+      "unit": "Pauschal",
+      "unitPriceEur": 50000.00,
+      "taxRate": 0.19
+    }
+  ],
+  "discountPercent": 0,
+  "taxRate": 0.19,
+  "paymentTermsDays": 30,
+  "deliveryTimeDays": 60,
+  "terms": "<p>Standard terms and conditions...</p>",
+  "notes": "Internal notes for team"
+}
+```
+
+**Response** (201 Created):
+```typescript
+{
+  "_id": "offer-abc123",
+  "offerNumber": "A-2025-00042",
+  "status": "draft",
+  "subtotalEur": 50000.00,
+  "taxAmountEur": 9500.00,
+  "totalEur": 59500.00,
+  "validUntil": "2025-02-27",
+  "pdfUrl": null,
+  // ... full offer object
+}
+```
+
+**Business Rules:**
+- Only INNEN, GF, ADM (own customers), KALK can create offers
+- Opportunity must exist and be in eligible status
+- Line items must have at least 1 item
+- Total calculations validated server-side
+
+---
+
+### GET /api/v1/offers
+
+List offers with filtering and pagination.
+
+**Query Parameters:**
+- `customerId` - Filter by customer
+- `opportunityId` - Filter by opportunity
+- `status` - Filter by status (draft, sent, viewed, accepted, rejected, expired)
+- `page` (default: 1)
+- `pageSize` (default: 20)
+- `sortBy` (default: offerDate, options: offerNumber, totalEur, validUntil)
+- `sortOrder` (default: desc, options: asc, desc)
+
+**RBAC Filtering:**
+- INNEN, GF, KALK: All offers
+- ADM: Only offers for own customers
+- PLAN: Only offers related to their projects (post-acceptance)
+
+---
+
+### GET /api/v1/offers/:id
+
+Get single offer by ID.
+
+**Response** (200 OK):
+```typescript
+{
+  "_id": "offer-abc123",
+  "offerNumber": "A-2025-00042",
+  "opportunityId": "opportunity-xyz",
+  "customerId": "customer-123",
+  "contactPersonId": "contact-456",
+  "offerDate": "2025-01-28",
+  "validUntil": "2025-02-27",
+  "status": "sent",
+  "lineItems": [...],
+  "subtotalEur": 50000.00,
+  "discountAmountEur": 0,
+  "taxAmountEur": 9500.00,
+  "totalEur": 59500.00,
+  "pdfUrl": "https://minio.kompass.de/offers/A-2025-00042.pdf",
+  "sentAt": "2025-01-28T14:30:00Z",
+  "viewedAt": null,
+  "finalized": true,
+  "immutableHash": "a3b5c7d9...",
+  "createdAt": "2025-01-28T10:15:00Z",
+  "modifiedAt": "2025-01-28T14:30:00Z"
+}
+```
+
+---
+
+### PUT /api/v1/offers/:id
+
+Update offer (only if status = draft or not finalized).
+
+**Request Body:** Partial offer update (same structure as POST)
+
+**Business Rules:**
+- Cannot modify finalized offers (status >= sent)
+- Line item changes recalculate totals
+- INNEN/GF can update all fields
+- ADM can only update own customer offers
+
+---
+
+### DELETE /api/v1/offers/:id
+
+Delete offer (only drafts, requires GF approval for sent offers).
+
+**Response** (204 No Content)
+
+**Business Rules:**
+- Draft offers: INNEN/GF/ADM (own) can delete
+- Sent/Viewed offers: Only GF can delete with audit log
+- Accepted offers: Cannot delete (linked to contract)
+
+---
+
+### POST /api/v1/offers/:id/send
+
+Send offer to customer via email and finalize it (make immutable).
+
+**Request Body:**
+```typescript
+{
+  "recipientEmail": "customer@example.com",
+  "ccEmails": ["sales@kompass.de"],
+  "subject": "Angebot A-2025-00042 - Ladeneinrichtung",
+  "message": "Sehr geehrter Herr Müller, anbei unser Angebot..."
+}
+```
+
+**Response** (200 OK):
+```typescript
+{
+  "success": true,
+  "offerNumber": "A-2025-00042",
+  "sentAt": "2025-01-28T15:00:00Z",
+  "pdfUrl": "https://minio.kompass.de/offers/A-2025-00042.pdf",
+  "status": "sent",
+  "finalized": true
+}
+```
+
+**Business Rules:**
+- Offer must be in draft status
+- System generates PDF if not exists
+- Offer becomes finalized (immutable)
+- immutableHash generated for GoBD compliance
+- Tracking pixel embedded in PDF (optional)
+
+---
+
+### POST /api/v1/offers/:id/accept
+
+Accept offer and create contract.
+
+**Request Body:**
+```typescript
+{
+  "acceptedByContactId": "contact-person-456",
+  "contractStartDate": "2025-02-15",
+  "projectManagerId": "user-plan-123",
+  "notes": "Customer accepted via phone call"
+}
+```
+
+**Response** (201 Created):
+```typescript
+{
+  "offer": {
+    "_id": "offer-abc123",
+    "status": "accepted",
+    "acceptedAt": "2025-01-29T10:00:00Z",
+    "contractId": "contract-xyz789"
+  },
+  "contract": {
+    "_id": "contract-xyz789",
+    "contractNumber": "C-2025-00042",
+    "status": "draft",
+    "contractValueEur": 59500.00,
+    // ... full contract object
+  }
+}
+```
+
+**Business Rules:**
+- Only INNEN/GF can accept offers
+- Offer must be in sent/viewed status
+- Automatically creates Contract entity
+- Links offer.contractId to new contract
+- Updates original Opportunity status to "Won"
+
+---
+
+### POST /api/v1/offers/:id/reject
+
+Reject offer (customer declined).
+
+**Request Body:**
+```typescript
+{
+  "rejectionReason": "Preis zu hoch, Konkurrenzangebot günstiger",
+  "rejectedByContactId": "contact-person-456"
+}
+```
+
+**Response** (200 OK):
+```typescript
+{
+  "_id": "offer-abc123",
+  "status": "rejected",
+  "rejectedAt": "2025-01-29T11:00:00Z",
+  "rejectionReason": "Preis zu hoch, Konkurrenzangebot günstiger"
+}
+```
+
+**Business Rules:**
+- Updates Opportunity status to "Lost"
+- Requires rejection reason (min 10 characters)
+- Only INNEN/GF can reject offers
+
+---
+
+### POST /api/v1/offers/:id/supersede
+
+Create new offer version, marking current one as superseded.
+
+**Request Body:** (Same as POST /api/v1/offers)
+
+**Response** (201 Created):
+```typescript
+{
+  "oldOffer": {
+    "_id": "offer-abc123",
+    "status": "superseded"
+  },
+  "newOffer": {
+    "_id": "offer-def456",
+    "offerNumber": "A-2025-00043",
+    "status": "draft",
+    // ... updated offer data
+  }
+}
+```
+
+**Business Rules:**
+- Original offer marked as superseded
+- New offer created with incremented number
+- Line items copied and can be modified
+- Used for customer negotiations
+
+---
+
+### GET /api/v1/offers/:id/pdf
+
+Download offer PDF.
+
+**Response** (200 OK): PDF file
+
+**Business Rules:**
+- Generates PDF on-the-fly if not cached
+- Includes company branding, logo, terms
+- Tracking pixel embedded if sent status
+- Only accessible by INNEN/GF/ADM (own)/customer (via public link)
+
+---
+
+## 14. Contract Management Endpoints (NEW - Phase 1 MVP)
+
+Contract endpoints manage signed agreements and project creation workflow.
+
+### POST /api/v1/contracts
+
+Create contract (typically from accepted offer).
+
+**Request Body:**
+```typescript
+{
+  "offerId": "offer-abc123",
+  "opportunityId": "opportunity-xyz",
+  "customerId": "customer-123",
+  "contactPersonId": "contact-456",
+  "contractDate": "2025-01-29",
+  "startDate": "2025-02-15",
+  "endDate": "2025-06-30",
+  "contractValueEur": 59500.00,
+  "paymentTermsDays": 30,
+  "deliverySchedule": "<p>Milestone 1: Planning - Feb 15...</p>",
+  "terms": "<p>Contract terms and conditions...</p>",
+  "projectManagerId": "user-plan-123",
+  "estimatedDuration": 90
+}
+```
+
+**Response** (201 Created):
+```typescript
+{
+  "_id": "contract-xyz789",
+  "contractNumber": "C-2025-00042",
+  "status": "draft",
+  "finalized": false,
+  // ... full contract object
+}
+```
+
+**Business Rules:**
+- Only INNEN/GF can create contracts
+- Offer must be in accepted status
+- Contract value must match offer total
+- Sequential GoBD-compliant numbering
+
+---
+
+### GET /api/v1/contracts
+
+List contracts with filtering.
+
+**Query Parameters:**
+- `customerId` - Filter by customer
+- `offerId` - Filter by source offer
+- `status` - Filter by status (draft, pending_signature, signed, active, completed, terminated)
+- `projectManagerId` - Filter by assigned PLAN user
+- `page`, `pageSize`, `sortBy`, `sortOrder`
+
+**RBAC Filtering:**
+- INNEN, GF: All contracts
+- PLAN: All contracts (read-only, for project planning)
+- ADM: Own customer contracts only
+
+---
+
+### GET /api/v1/contracts/:id
+
+Get single contract by ID.
+
+**Response** (200 OK): Full contract object with embedded offer reference
+
+---
+
+### PUT /api/v1/contracts/:id
+
+Update contract (only if not finalized/signed).
+
+**Request Body:** Partial contract update
+
+**Business Rules:**
+- Cannot modify signed contracts (finalized = true)
+- GF can correct signed contracts with audit trail
+- INNEN can edit draft contracts
+
+---
+
+### DELETE /api/v1/contracts/:id
+
+Delete contract (drafts only).
+
+**Response** (204 No Content)
+
+**Business Rules:**
+- Only draft contracts can be deleted
+- GF approval required for pending_signature contracts
+- Signed contracts cannot be deleted (GoBD)
+
+---
+
+### POST /api/v1/contracts/:id/sign
+
+Mark contract as signed and finalize it (make immutable).
+
+**Request Body:**
+```typescript
+{
+  "customerSignature": "data:image/png;base64,iVBORw0KGgoAAAA...",
+  "ourSignature": "data:image/png;base64,iVBORw0KGgoAAAA...",
+  "signedPdfUrl": "https://minio.kompass.de/contracts/C-2025-00042-signed.pdf"
+}
+```
+
+**Response** (200 OK):
+```typescript
+{
+  "_id": "contract-xyz789",
+  "status": "signed",
+  "finalized": true,
+  "immutableHash": "a3b5c7d9...",
+  "customerSignature": "...",
+  "signedPdfUrl": "..."
+}
+```
+
+**Business Rules:**
+- Contract becomes immutable (GoBD compliance)
+- immutableHash generated from contract data
+- Status changes to signed
+- Notifies assigned project manager
+
+---
+
+### POST /api/v1/contracts/:id/create-project
+
+Convert signed contract into active project.
+
+**Request Body:**
+```typescript
+{
+  "projectNumber": "P-2025-B042",
+  "plannedStartDate": "2025-02-15",
+  "plannedEndDate": "2025-06-30",
+  "budget": 50000.00,
+  "projectManagerId": "user-plan-123"
+}
+```
+
+**Response** (201 Created):
+```typescript
+{
+  "contract": {
+    "_id": "contract-xyz789",
+    "status": "active",
+    "projectId": "project-p123",
+    "projectCreatedAt": "2025-01-30T09:00:00Z"
+  },
+  "project": {
+    "_id": "project-p123",
+    "projectNumber": "P-2025-B042",
+    "contractId": "contract-xyz789",
+    "status": "Planning",
+    "contractValue": 59500.00,
+    // ... full project object
+  }
+}
+```
+
+**Business Rules:**
+- Contract must be in signed status
+- Only PLAN or GF can create projects
+- Project linked back to contract (projectId)
+- Contract status changes to active
+- INNEN handover to PLAN complete
+
+---
+
+### POST /api/v1/contracts/:id/complete
+
+Mark contract as completed (project delivered).
+
+**Request Body:**
+```typescript
+{
+  "completionDate": "2025-06-30",
+  "completionNotes": "Project successfully delivered and accepted by customer"
+}
+```
+
+**Response** (200 OK):
+```typescript
+{
+  "_id": "contract-xyz789",
+  "status": "completed",
+  "endDate": "2025-06-30"
+}
+```
+
+**Business Rules:**
+- Contract must be in active status
+- Project must be in completed/delivered status
+- Only PLAN or GF can mark as completed
+
+---
+
+### POST /api/v1/contracts/:id/terminate
+
+Terminate contract early (cancellation).
+
+**Request Body:**
+```typescript
+{
+  "terminationReason": "Customer requested cancellation",
+  "terminationDate": "2025-05-15"
+}
+```
+
+**Response** (200 OK):
+```typescript
+{
+  "_id": "contract-xyz789",
+  "status": "terminated",
+  "endDate": "2025-05-15",
+  "terminationReason": "Customer requested cancellation"
+}
+```
+
+**Business Rules:**
+- Requires GF approval
+- Related project marked as cancelled
+- Audit trail logged
+
+---
+
+### GET /api/v1/contracts/:id/pdf
+
+Download signed contract PDF.
+
+**Response** (200 OK): PDF file
+
+---
+
+### Workflow Summary: Opportunity → Offer → Contract → Project
+
+```typescript
+// 1. INNEN creates offer from opportunity
+POST /api/v1/offers
+{ opportunityId: "opp-123" }
+
+// 2. INNEN sends offer to customer
+POST /api/v1/offers/:id/send
+{ recipientEmail: "customer@example.com" }
+
+// 3. Customer accepts (tracked externally or via system)
+// INNEN marks offer as accepted
+POST /api/v1/offers/:id/accept
+{ projectManagerId: "user-plan-123" }
+// → Auto-creates Contract
+
+// 4. Customer signs contract
+// INNEN uploads signed PDF
+POST /api/v1/contracts/:id/sign
+{ signedPdfUrl: "..." }
+
+// 5. PLAN user creates project from signed contract
+POST /api/v1/contracts/:id/create-project
+{ projectNumber: "P-2025-B042" }
+// → Creates Project entity
+
+// 6. PLAN manages project execution
+// (ProjectTask, TimeEntry, ProjectCost APIs)
+
+// 7. PLAN marks contract as completed
+POST /api/v1/contracts/:id/complete
+{ completionDate: "2025-06-30" }
+```
+
+---
+
 ## Document History
 
 | Version | Date       | Author | Changes |
 |---------|------------|--------|---------|
 | 1.0     | 2025-01-28 | System | Initial specification: RESTful conventions, versioning, RFC 7807 errors, Location management endpoints, Contact decision authority endpoints, complete DTOs |
 | 1.1     | 2025-01-27 | System | Added User Role Management endpoints (assign/revoke roles), Role Configuration endpoints (view/update role permissions), Permission Matrix endpoints (manage runtime permissions), updated section numbering |
+| 1.2     | 2025-01-28 | System | Added Task Management endpoints (UserTask and ProjectTask): CRUD operations, status updates, dashboard views (my-tasks, team-tasks, overdue), project task grouping (by-phase, by-assignee), cross-entity task queries, complete DTOs with validation decorators |
+| 1.3     | 2025-01-28 | System | **Added Tour Planning & Expense Management endpoints (Phase 2)**: Tour management (CRUD, completion, cost summary), Meeting management (CRUD, GPS check-in, outcome tracking, tour auto-suggestion), Hotel Stay management (nested under tours, search with Google Places API, preferences), Expense management (CRUD, receipt upload with OCR, approval workflow with GF-only approval, bulk operations, report generation in JSON/PDF/CSV), Mileage Log management (nested under tours, GPS tracking, distance validation, GF override with audit trail), complete query parameters, business rules, nested resource patterns |
+| 1.4     | 2025-01-28 | System | **Added Calendar & Export Endpoints (MVP)**: Get calendar events (unified view of tasks, projects, opportunities), My calendar events (user-specific), Team calendar events (GF/PLAN only), ICS export (one-time download for Outlook/Google/Apple Calendar), complete CalendarEvent and CalendarQuery DTOs, business rules (date range validation, event density limits, RBAC filtering, ICS standards, color accessibility), performance considerations (caching, query optimization, export performance) |
+| 1.5     | 2025-01-28 | System | **Added Time Tracking & Project Cost Management Endpoints (Phase 1 MVP)**: TimeEntry endpoints (CRUD, timer start/stop, bulk approve/reject, labor cost reports, pending approval queue) with complete DTOs; ProjectCost endpoints (CRUD, approval workflow, material cost summaries, pending payment tracking) with complete DTOs. Includes comprehensive RBAC permissions, business rules, status lifecycle transitions, cost calculations, and GoBD compliance for approved/paid entries |
 
 ---
 
-**End of API_SPECIFICATION.md**
+**End of API_SPECIFICATION.md v1.5**
 

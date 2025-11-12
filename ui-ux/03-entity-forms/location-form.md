@@ -2,7 +2,7 @@
 
 ## Context & Purpose
 - **Component Type**: Nested Entity Form (under Customer)
-- **User Roles**: GF, PLAN, ADM (own customers only)
+- **User Roles**: GF (full), INNEN (full), PLAN (create/edit), ADM (own customers only)
 - **Usage Context**: Add/edit customer locations within customer detail view
 - **Business Value**: Manage multiple delivery addresses and sites per customer
 
@@ -117,7 +117,63 @@ Label: "Lieferinformationen" - 18px, semibold
    - Placeholder: "z.B. Parkplätze vor dem Gebäude, Entladezone vorhanden"
    - Max length: 300 characters
 
-**Section 4: Zugeordnete Kontakte (Assigned Contacts)**
+**Section 4: GPS & Hotelangaben (GPS & Hotel Information - NEW)**
+Label: "Navigation & Unterkunft" - 18px, semibold
+**Visibility**: All roles can view; only GF/INNEN can edit
+
+**Fields (2-column layout on desktop):**
+
+1. **GPS-Koordinaten** (Optional):
+   - Label: "GPS-Koordinaten"
+   - Two inputs side-by-side:
+     - **Breitengrad (Latitude)**:
+       - Input: Number, left column
+       - Placeholder: "48.1351"
+       - Range: -90 to 90
+       - Icon: MapPin at left
+       - Error: "Breitengrad muss zwischen -90 und 90 liegen"
+     - **Längengrad (Longitude)**:
+       - Input: Number, right column
+       - Placeholder: "11.5820"
+       - Range: -180 to 180
+       - Icon: MapPin at left
+       - Error: "Längengrad muss zwischen -180 und 180 liegen"
+   - Help text: "GPS-Koordinaten für Navigation und Tourenplanung"
+   - **"Adresse geocodieren" button**: Auto-fills GPS from address (uses Google Maps Geocoding API)
+   - **"Auf Karte anzeigen" link**: Opens mini-map preview below inputs
+
+2. **Ist Hotel** (Optional):
+   - Label: "Hotel-Standort"
+   - Checkbox: "Dieser Standort ist ein Hotel"
+   - Default: unchecked
+   - Help text: "Markieren Sie dies, wenn der Standort für Übernachtungen genutzt werden kann"
+   - Business Logic: If checked, show hotelRating field
+
+3. **Hotel-Bewertung** (Conditional):
+   - Label: "Hotel-Bewertung"
+   - Visible only if "Ist Hotel" = true
+   - Radio group with star icons:
+     - ⭐ 1 Stern
+     - ⭐⭐ 2 Sterne
+     - ⭐⭐⭐ 3 Sterne
+     - ⭐⭐⭐⭐ 4 Sterne
+     - ⭐⭐⭐⭐⭐ 5 Sterne
+   - Visual: Large clickable star buttons
+   - Validation: Required if isHotel = true
+   - Error: "Bitte wählen Sie eine Bewertung für das Hotel"
+   - Help text: "Qualitätsbewertung für Übernachtungsplanung"
+
+**Map Preview (if GPS coordinates provided):**
+- Embedded mini-map: 100% width, 200px height
+- Shows pin at provided GPS coordinates
+- Map provider: OpenStreetMap or Google Maps
+- Zoom level: 15 (street level)
+- Click to open full-screen map
+- Fallback: "Karte nicht verfügbar" if coordinates invalid
+
+**Section Separator**
+
+**Section 5: Zugeordnete Kontakte (Assigned Contacts)**
 Label: "Kontakte" - 18px, semibold
 
 1. **Hauptansprechpartner** (Optional):
@@ -136,7 +192,7 @@ Label: "Kontakte" - 18px, semibold
    - Example chips: "Hans Müller ×", "Maria Schmidt ×"
    - Help text: "Ansprechpartner, die diesem Standort zugeordnet sind"
 
-**Section 5: Standortbeschreibung (Location Description)**
+**Section 6: Standortbeschreibung (Location Description)**
 Label: "Zusätzliche Informationen" - 18px, semibold
 
 1. **Standortbeschreibung** (Optional):

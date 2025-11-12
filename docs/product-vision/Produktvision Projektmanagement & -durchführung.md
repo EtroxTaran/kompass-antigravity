@@ -755,6 +755,22 @@ wird Folge-Aufgabe fällig. **Erfolgreich** , wenn Aufgaben übersichtlich im Pr
 dem Verantwortlichen in seiner persönlichen Liste auftauchen und Abhängigkeiten funktionieren
 (kein Erledigen möglich, solange Vorgänger offen; Warnhinweise korrekt).
 
+**⚡ AKTUALISIERUNG 2025-01-28 - Vollständige Task Management Integration (Phase 1 MVP):**
+
+Das System unterstützt nun **zwei Task-Typen** für unterschiedliche Anwendungsfälle:
+
+**A) UserTask (Persönliche Aufgaben):** Verfügbar für alle Rollen. Schnelle Erstellung persönlicher To-Dos (z.B. "Kunde zurückrufen in 3 Tagen"), optional verknüpfbar mit Kunde/Opportunity/Projekt. Status: Open, In Progress, Completed, Cancelled. Priorität: Low/Medium/High/Urgent. Mobile-optimiert mit Offline-Unterstützung und Swipe-Gesten.
+
+**B) ProjectTask (Projekt-Arbeitsaufgaben):** Für GF/PLAN/INNEN/KALK. Immer an Projekt gebunden, mit Phasenzuordnung (Planning/Execution/Delivery/Closure) und Meilenstein-Verknüpfung. Erweiterte Status: Todo, In Progress, Review, Done, Blocked (Blockierungsgrund erforderlich). Priorität: Low/Medium/High/Critical. Team-Sichtbarkeit für alle Projektteilnehmer.
+
+**Dashboards:** Rollenspezifische Ansichten - "Meine Aufgaben" (persönlicher Überblick), "Team-Aufgaben" (GF/PLAN Management-Sicht), Projekt-Board (Kanban-Ansicht in Phase 2). Automatische Warnungen für Überfällige Aufgaben.
+
+**RBAC-Integration:** GF sieht/ändert alle Aufgaben. PLAN: eigene + zugewiesene Projekte. ADM: nur eigene UserTasks + Lesezugriff auf eigene Kundenprojekte. INNEN/KALK: eigene UserTasks + ProjectTask-Zugriff auf alle Projekte. BUCH: eigene UserTasks + Lesezugriff auf alle ProjectTasks.
+
+**Phase 2+ Features (architektonisch vorbereitet, nicht MVP):** Aufgaben-Abhängigkeiten, Subtasks, Zeiterfassung, wiederkehrende Aufgaben, Gantt-Chart, Ressourcen-Auslastung.
+
+**Siehe vollständige Spezifikationen:** DATA_MODEL_SPECIFICATION.md (Entities), API_SPECIFICATION.md (Endpoints), RBAC_PERMISSION_MATRIX.md (Permissions), ui-ux/ (UI-Komponenten, Forms, Dashboards, Mobile).
+
 3.
 
 **Automatisierte Workflow-Trigger** – *Automatisches Anlegen von Aufgaben/Terminen bei definierten*

@@ -127,6 +127,16 @@ Touchpoint: Kapazitätsplanung/Forecast im PM-Tool.
 und Margen pro Projekt. Falls das CRM/PM-System hier integriert ist, möchte er Reportings daraus
 ziehen (z.B. *Umsatz pro Kunde* , *Deckungsbeitrag je Projekt* , *Offene Forderungen* ). Häufig exportiert er
 diese Zahlen für Quartalsberichte. Touchpoint: Controlling-Reports (evtl. BI-Integration).
+
+**Tour-Kosten-Übersicht (Phase 2):** Der GF benötigt Transparenz über die Kosten der Außendienst-Touren, um die Effizienz des Vertriebs zu bewerten. Im Dashboard sieht er:
+- **Monatliche Tour-Kosten:** Gesamtausgaben für Touren (Fahrtkosten, Übernachtungen, Verpflegung) pro Monat
+- **Kosten pro Tour:** Durchschnittliche Kosten pro Tour (z.B. €450/Tour) mit Trendanalyse
+- **Kosten pro Kundenbesuch:** Berechnung: Tour-Kosten ÷ Anzahl besuchter Kunden (z.B. €45/Besuch)
+- **Tour-ROI (zukünftig):** Vergleich Tour-Kosten vs. gewonnene Opportunities/Umsatz pro Tour
+- **Ausgaben-Genehmigungen:** Anzahl ausstehender Genehmigungen für Ausgaben >€100
+- **Top-Kostenverursacher:** Welche ADM-Mitarbeiter haben die höchsten Tour-Kosten? (zur Effizienzanalyse)
+
+Diese Metriken helfen dem GF zu erkennen, ob Touren kosteneffizient sind und wo Optimierungspotenzial besteht (z.B. Routenoptimierung, Hotelauswahl). Touchpoint: Dashboard-Widget "Tour-Kosten-Übersicht" und monatlicher Expense-Report.
 **Qualitäts- und Risiko-Management:** Der GF hat Interesse an aggregierten **Statistiken** aus dem
 System, die über das Tagesgeschäft hinausgehen. Beispielsweise möchte er auswerten können,
 **welche Vertriebskanäle** besonders erfolgreich sind (Messekontakte vs. Telefonakquise vs. E-Mail-
@@ -249,7 +259,7 @@ Aufbereitung der Daten übersichtlich ist, kann er effizient entscheiden.
 Dashboard muss **alle relevanten KPIs** bündeln – von Finanzen über Vertrieb bis Projekte
 .
 Konkret erwartet der GF Kennzahlen wie *Auftragseingang vs. Ziel* , *Umsatz (Ist vs. Plan)* , *Offene Angebote*
-*mit Wahrscheinlichkeit* , *Anzahl laufender Projekte nach Status* , *Fertigstellungsgrad wichtiger Projekte* etc.
+*mit Wahrscheinlichkeit* , *Anzahl laufender Projekte nach Status* , *Fertigstellungsgrad wichtiger Projekte* etc. Ab Phase 2 ergänzt um **Tour-Kosten-Metriken**: *Monatliche Tour-Ausgaben* , *Kosten pro Kundenbesuch* , *Ausstehende Expense-Genehmigungen* (für Ausgaben >€100).
 Auf einen Blick will er erkennen: *Wo stehen wir insgesamt diesen Monat/Quartal?* Entscheidungen
 sollen schneller und faktenbasiert möglich sein
 . Das Dashboard sollte visuell ansprechend und

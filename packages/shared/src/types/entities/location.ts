@@ -49,6 +49,20 @@ export interface Location extends BaseEntity {
   /** Full delivery address (REQUIRED, separate from billing) */
   deliveryAddress: Address;
 
+  // ==================== GPS Coordinates (NEW for Tour Planning) ====================
+  
+  /** GPS coordinates for navigation and route planning */
+  gpsCoordinates?: {
+    latitude: number;
+    longitude: number;
+  };
+
+  /** Whether this location is a hotel (for hotel stays) */
+  isHotel?: boolean;
+
+  /** Hotel rating (1-5 stars) if this is a hotel */
+  hotelRating?: number;
+
   // ==================== Location-Specific Contacts ====================
   
   /** Main contact at this location (optional) */

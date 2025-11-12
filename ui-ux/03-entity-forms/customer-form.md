@@ -183,7 +183,49 @@ Label: "Geschäftsdaten" - 18px, semibold
 
 **Section Separator**
 
-**Section 5: Inhaber & DSGVO (Owner & GDPR)**
+**Section 5: Tour-Planung (Tour Planning - NEW)**
+Label: "Tour-Planung" - 18px, semibold
+**Visibility**: Only for ADM, INNEN, GF roles (hidden from PLAN, KALK, BUCH)
+
+**Fields (2-column layout on desktop):**
+
+1. **Letzter Besuch** (Optional, Read-only):
+   - Label: "Letzter Besuch"
+   - Input: Date display (read-only), left column
+   - Format: "28.01.2025" (German date format)
+   - Icon: Calendar icon at left
+   - Value: Auto-updated when protocol created with on-site check-in
+   - Help text: "Wird automatisch bei Vor-Ort-Protokollen aktualisiert"
+   - Placeholder (if null): "Noch kein Besuch erfasst"
+
+2. **Besuchsfrequenz** (Optional):
+   - Label: "Besuchsfrequenz"
+   - Input: Number, right column
+   - Placeholder: "30"
+   - Suffix: "Tage" displayed inside input at right
+   - Validation: 1-365 days
+   - Error: "Besuchsfrequenz muss zwischen 1 und 365 Tagen liegen"
+   - Help text: "Empfohlenes Besuchsintervall für Tourenplanung"
+
+3. **Bevorzugte Besuchszeit** (Optional):
+   - Label: "Bevorzugte Besuchszeit"
+   - Select dropdown, left column
+   - Options: 
+     - "Vormittags (8-12 Uhr)" (value: 'morning')
+     - "Nachmittags (12-18 Uhr)" (value: 'afternoon')
+     - "Flexibel" (value: 'flexible', default)
+   - Default: "Flexibel"
+   - Help text: "Kundenwunsch für Besuchszeiten"
+
+**Business Logic:**
+- If `lastVisitDate` and `visitFrequencyDays` are set:
+  - Calculate next recommended visit date
+  - Display info badge: "Nächster Besuch empfohlen: 27.02.2025" (example)
+  - If overdue (past recommended date): Show warning badge "Besuch überfällig seit 5 Tagen" (red)
+
+**Section Separator**
+
+**Section 6: Inhaber & DSGVO (Owner & GDPR)**
 Label: "Inhaber & Datenschutz" - 18px, semibold
 
 **Fields:**
