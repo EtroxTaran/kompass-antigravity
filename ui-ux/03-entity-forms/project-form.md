@@ -74,11 +74,18 @@ Tabs: "Grunddaten" | "Budget" | "Zeitplan" | "Team" | "Dokumente"
    - If from opportunity: Pre-filled, read-only, with link to view
    - Example: "Ladeneinrichtung (€ 125.000)" with external link icon
 
-5. **Beschreibung** (Optional):
+5. **Projektbeschreibung** (Optional):
    - Label: "Projektbeschreibung"
-   - Textarea: 5 rows, full width
+   - **Rich Text Editor** (WYSIWYG): Advanced toolbar configuration
+     - Toolbar buttons: Bold, Italic, Underline, Strikethrough, H1, H2, H3, Bullet List, Numbered List, Task List, Blockquote, Code Block, Horizontal Rule, Link, Table, Undo, Redo
+     - See `ui-ux/02-core-components/rich-text-editor.md` for complete toolbar design
+   - Min height: 250px (content area)
    - Placeholder: "Detaillierte Beschreibung des Projekts, Leistungsumfang, besondere Anforderungen..."
-   - Max length: 2000 characters
+   - Max length: 5000 characters
+   - Character counter: "0 / 5000 Zeichen" (bottom-right corner)
+   - Help text: "Strukturierte Projektbeschreibung. Nutzen Sie Überschriften (H2) für Abschnitte und Tabellen für Spezifikationen."
+   - **Supports Tables**: Users can insert tables for technical specifications and requirements
+   - **Mobile**: Compact toolbar with expandable "Mehr" button
 
 **Tab 2: Budget (Budget)**
 
@@ -180,11 +187,15 @@ Visual layout: Large cards side-by-side
 
 3. **Externe Partner** (Optional):
    - Label: "Externe Partner"
-   - Textarea: 3 rows
+   - **Rich Text Editor** (WYSIWYG): Basic toolbar configuration
+     - Toolbar buttons: Bold, Italic, Bullet List, Numbered List, Link, Undo, Redo
+   - Min height: 100px
    - Placeholder: "Namen und Firmen externer Dienstleister..."
-   - Max length: 500 characters
+   - Max length: 1000 characters
+   - Character counter: "X / 1000 Zeichen"
+   - Help text: "Nutzen Sie Listen für übersichtliche Aufzählung"
 
-**Tab 5: Dokumente (Documents)**
+**Tab 5: Dokumente & Notizen (Documents & Notes)**
 
 1. **Projekt-Dokumente**:
    - Label: "Dokumente"
@@ -195,6 +206,19 @@ Visual layout: Large cards side-by-side
    - Accepted types: PDF, DOCX, XLSX, images
    - Max size: 10 MB per file
    - Help text: "Verträge, Pläne, Spezifikationen hochladen"
+
+2. **Projektnotizen** (Optional):
+   - Label: "Projektnotizen"
+   - **Rich Text Editor** (WYSIWYG): Advanced toolbar configuration
+     - Toolbar buttons: Bold, Italic, Underline, Strikethrough, H1, H2, H3, Bullet List, Numbered List, Task List (checkboxes), Blockquote, Code Block, Horizontal Rule, Link, Table, Undo, Redo
+     - See `ui-ux/02-core-components/rich-text-editor.md` for complete toolbar design
+   - Min height: 200px (content area)
+   - Placeholder: "Projektnotizen, Milestones, offene Punkte, Lessons Learned..."
+   - Max length: 5000 characters
+   - Character counter: "0 / 5000 Zeichen" (bottom-right corner)
+   - Help text: "Laufende Notizen zum Projekt. Nutzen Sie Aufgabenlisten (☐) für Milestones und offene Punkte."
+   - **Supports Task Lists & Tables**: Track milestones and project status updates
+   - **Mobile**: Compact toolbar with expandable "Mehr" button
 
 **Form Footer (Sticky, all tabs):**
 - Status indicator: "Schritt 2 von 4" (if wizard) or current tab name
@@ -322,6 +346,19 @@ npx shadcn-ui@latest add calendar
 npx shadcn-ui@latest add combobox
 npx shadcn-ui@latest add badge
 npx shadcn-ui@latest add progress
+npx shadcn-ui@latest add button    # For rich text editor toolbar
+npx shadcn-ui@latest add separator # For rich text editor toolbar
+npx shadcn-ui@latest add tooltip   # For rich text editor toolbar
+```
+
+### TipTap Rich Text Editor Installation
+```bash
+# Core TipTap packages for advanced toolbar (with tables, code blocks)
+pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-placeholder
+pnpm add @tiptap/extension-task-list @tiptap/extension-task-item
+pnpm add @tiptap/extension-link @tiptap/extension-underline
+pnpm add @tiptap/extension-table @tiptap/extension-table-row
+pnpm add @tiptap/extension-table-cell @tiptap/extension-table-header
 ```
 
 ### Component Dependencies

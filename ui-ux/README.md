@@ -1,10 +1,10 @@
 # KOMPASS UI/UX Design Prompts for Figma Make
 
-> **60 comprehensive Figma Make prompts** for designing the KOMPASS CRM & Project Management application
+> **61 comprehensive Figma Make prompts** for designing the KOMPASS CRM & Project Management application
 
 ## 📋 Overview
 
-This directory contains **60 ready-to-use Figma Make prompts** organized into 8 categories, covering the complete UI/UX design system for KOMPASS. Each prompt follows best practices for Figma Make generation and is tailored to the German market (MVP language: German).
+This directory contains **61 ready-to-use Figma Make prompts** organized into 8 categories, covering the complete UI/UX design system for KOMPASS. Each prompt follows best practices for Figma Make generation and is tailored to the German market (MVP language: German).
 
 ### Key Features
 - ✅ **shadcn/ui** and **RadixUI** component library exclusively
@@ -21,9 +21,12 @@ This directory contains **60 ready-to-use Figma Make prompts** organized into 8 
 
 ```
 ui-ux/
+├── 00-updates/             # Migration prompts for updating existing designs
+│   ├── FIGMA-UPDATE-ALL-TEXTAREAS-TO-RICH-TEXT.md (⭐ USE THIS ONE!)
+│   └── MIGRATION-001-rich-text-editor-integration.md (reference)
 ├── 01-foundation/          # 5 prompts - Design system foundations
-├── 02-core-components/     # 15 prompts - Reusable UI components
-├── 03-entity-forms/        # 8 prompts - Data entry forms
+├── 02-core-components/     # 16 prompts - Reusable UI components (includes rich text editor)
+├── 03-entity-forms/        # 8 prompts - Data entry forms (integrated with rich text editor)
 ├── 04-list-views/          # 7 prompts - Data tables and lists
 ├── 05-detail-pages/        # 6 prompts - 360° entity views
 ├── 06-dashboards/          # 5 prompts - Role-specific dashboards
@@ -32,13 +35,47 @@ ui-ux/
 └── README.md               # This file
 ```
 
-**Total: 60 Figma Make prompts**
+**Total: 61 Figma Make prompts**
 
 ---
 
 ## 🚀 Quick Start
 
-### How to Use These Prompts with Figma Make
+### 🔄 Updating Existing Designs (MIGRATION PROMPT)
+
+**If you already have existing KOMPASS designs in Figma and need to update them:**
+
+**⭐ USE THIS PROMPT:** `00-updates/FIGMA-UPDATE-ALL-TEXTAREAS-TO-RICH-TEXT.md`
+
+This is the **clearest, most complete prompt** that fixes ALL issues:
+- ✅ Replaces **ALL 14 textarea fields** across 7 forms
+- ✅ **FIXES vertical scrollbar issue** (toolbar uses horizontal scroll only)
+- ✅ Proper button sizing (32px desktop, 44px mobile)
+- ✅ No button wrapping (single horizontal row)
+- ✅ Complete field-by-field instructions for Figma Make
+
+**Updates Made:**
+- Activity Protocol: 2 fields (Beschreibung + Nächste Schritte) → Rich text
+- Customer: Adds Interne Notizen field → Rich text
+- Contact: Adds Interne Notizen field → Rich text  
+- Location: Adds Standortbeschreibung field → Rich text
+- Opportunity: 3 fields (Beschreibung + Nächster Schritt + Grund für Verlust) → Rich text
+- Project: 3 fields (Projektbeschreibung + Externe Partner + Projektnotizen) → Rich text
+- Invoice: Bemerkungen → Rich text (GoBD immutable with lock)
+
+**How to Apply:**
+1. Open your existing KOMPASS Figma file
+2. Navigate to the Forms page/section
+3. Copy the **ENTIRE PROMPT** from `FIGMA-UPDATE-ALL-TEXTAREAS-TO-RICH-TEXT.md`
+4. Paste into Figma Make (one big paste!)
+5. Figma Make will find and replace all textareas
+6. Review: NO vertical scrollbar, all fields updated
+
+**Alternative (detailed reference):** `00-updates/MIGRATION-001-rich-text-editor-integration.md` (first version, less clear for Figma Make)
+
+---
+
+### How to Use These Prompts with Figma Make (New Designs)
 
 1. **Open Figma** and create a new file or page
 2. **Access Figma Make**: Click "Make with AI" or use the prompt input
@@ -90,7 +127,7 @@ Design system fundamentals and core patterns.
 | 4 | `loading-states.md` | Skeletons, spinners, progress bars |
 | 5 | `error-empty-states.md` | Error messages, toasts, empty states |
 
-### 02. Core Components (15 prompts)
+### 02. Core Components (16 prompts)
 Reusable UI building blocks using shadcn/ui.
 
 | # | Prompt | Description |
@@ -110,20 +147,21 @@ Reusable UI building blocks using shadcn/ui.
 | 18 | `breadcrumbs.md` | Navigation trail, current location |
 | 19 | `tooltips-popovers.md` | Contextual help, hover/click popups |
 | 20 | `progress-indicators.md` | Linear progress, circular spinners |
+| 21 | `rich-text-editor.md` | WYSIWYG editor with toolbar, formatting, task lists, tables, accessibility |
 
 ### 03. Entity Forms (8 prompts)
 Data entry forms for core business entities.
 
 | # | Prompt | Description |
 |---|--------|-------------|
-| 21 | `customer-form.md` | Company name, VAT, email, billing address, DSGVO consent |
-| 22 | `location-form.md` | Location name, type, delivery address, contacts |
-| 23 | `contact-form.md` | Name, position, email, phone, decision authority |
-| 24 | `opportunity-form.md` | Customer, value, stage, probability, close date |
-| 25 | `project-form.md` | Project name, dates, budget, team, description |
-| 26 | `invoice-form.md` | Customer, items, totals, GoBD immutability |
-| 27 | `activity-protocol-form.md` | Type, entity, date, description, voice-to-text |
-| 28 | `bulk-import-form.md` | CSV upload, field mapping, validation, preview |
+| 22 | `customer-form.md` | Company name, VAT, email, billing address, DSGVO consent, internal notes (rich text) |
+| 23 | `location-form.md` | Location name, type, delivery address, contacts, description (rich text) |
+| 24 | `contact-form.md` | Name, position, email, phone, decision authority, internal notes (rich text) |
+| 25 | `opportunity-form.md` | Customer, value, stage, probability, close date, description (rich text with task lists) |
+| 26 | `project-form.md` | Project name, dates, budget, team, description (rich text with tables), notes (rich text) |
+| 27 | `invoice-form.md` | Customer, items, totals, GoBD immutability, remarks (rich text, immutable) |
+| 28 | `activity-protocol-form.md` | Type, entity, date, description (rich text with voice-to-text), task lists |
+| 29 | `bulk-import-form.md` | CSV upload, field mapping, validation, preview (imports rich text as plain text) |
 
 ### 04. List Views (7 prompts)
 Data tables and visualizations with RBAC filtering.
@@ -203,6 +241,19 @@ npx shadcn-ui@latest add select dropdown-menu toast alert skeleton
 npx shadcn-ui@latest add calendar popover tooltip progress avatar
 npx shadcn-ui@latest add separator label textarea switch slider
 ```
+
+### TipTap Rich Text Editor
+
+```bash
+# Core TipTap packages for rich text editing
+pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-placeholder
+pnpm add @tiptap/extension-task-list @tiptap/extension-task-item
+pnpm add @tiptap/extension-link @tiptap/extension-underline
+pnpm add @tiptap/extension-table @tiptap/extension-table-row
+pnpm add @tiptap/extension-table-cell @tiptap/extension-table-header
+```
+
+Used in: Activity Protocols (meeting notes with voice-to-text), Project Descriptions (structured content with tables), Customer/Contact/Location Notes (internal notes), Opportunity Descriptions (with task lists), Invoice Remarks (GoBD immutable after finalization).
 
 ### Color Palette (German Market)
 
@@ -454,10 +505,10 @@ Architecture supports future localization:
 ## 📅 Version
 
 - **Created**: November 2024
-- **Last Updated**: November 15, 2024
-- **Version**: 1.0.0
-- **Total Prompts**: 60
-- **Status**: ✅ Complete
+- **Last Updated**: January 27, 2025
+- **Version**: 1.1.0
+- **Total Prompts**: 61
+- **Status**: ✅ Complete (includes rich text editor integration)
 
 ---
 

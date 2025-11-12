@@ -35,6 +35,7 @@ alwaysApply: true  # Whether rule should always be active
 
 ### UI & Frontend
 - **ui-components.mdc** - shadcn/ui and RadixUI ONLY, accessibility (WCAG 2.1 AA), mobile-first
+- **ui-ux-documentation-sync.mdc** - CRITICAL: Dual updates (documentation + Figma prompts) for UI/UX changes
 - **reusable-components.mdc** - Code extraction patterns, shared utilities, anti-patterns
 
 ### Testing & Quality
@@ -153,9 +154,9 @@ These rules are automatically loaded by Cursor AI. When coding, Cursor will:
 
 ## Rule Statistics
 
-- **Total Rule Files**: 40 (17 project rules + 23 codeguard security rules)
-- **Code Examples**: 229 ✅ CORRECT / ❌ WRONG examples
-- **Coverage**: All major areas covered (architecture, security, testing, API design, etc.)
+- **Total Rule Files**: 41 (18 project rules + 23 codeguard security rules)
+- **Code Examples**: 229+ ✅ CORRECT / ❌ WRONG examples
+- **Coverage**: All major areas covered (architecture, security, testing, API design, UI/UX sync, etc.)
 - **Status**: ✅ Production-ready, fully audited
 
 ## Audit Information

@@ -136,6 +136,21 @@ Label: "Kontakte" - 18px, semibold
    - Example chips: "Hans Müller ×", "Maria Schmidt ×"
    - Help text: "Ansprechpartner, die diesem Standort zugeordnet sind"
 
+**Section 5: Standortbeschreibung (Location Description)**
+Label: "Zusätzliche Informationen" - 18px, semibold
+
+1. **Standortbeschreibung** (Optional):
+   - Label: "Standortbeschreibung"
+   - **Rich Text Editor** (WYSIWYG): Basic toolbar configuration
+     - Toolbar buttons: Bold, Italic, Underline, Bullet List, Numbered List, Link, Undo, Redo
+     - See `ui-ux/02-core-components/rich-text-editor.md` for complete toolbar design
+   - Min height: 150px (content area)
+   - Placeholder: "Besonderheiten des Standorts, Anfahrtsbeschreibung, Zugangsinformationen..."
+   - Max length: 2000 characters
+   - Character counter: "0 / 2000 Zeichen" (bottom-right corner)
+   - Help text: "Detaillierte Informationen zu diesem Standort für interne Zwecke"
+   - **Mobile**: Simplified toolbar (Bold, Italic, Lists only)
+
 **Form Footer:**
 - Buttons right-aligned:
   - "Abbrechen" (secondary, outlined)
@@ -260,6 +275,16 @@ npx shadcn-ui@latest add select
 npx shadcn-ui@latest add textarea
 npx shadcn-ui@latest add switch
 npx shadcn-ui@latest add badge
+npx shadcn-ui@latest add button    # For rich text editor toolbar
+npx shadcn-ui@latest add separator # For rich text editor toolbar
+npx shadcn-ui@latest add tooltip   # For rich text editor toolbar
+```
+
+### TipTap Rich Text Editor Installation
+```bash
+# Core TipTap packages for basic toolbar (location description)
+pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-placeholder
+pnpm add @tiptap/extension-link @tiptap/extension-underline
 ```
 
 ### Form Schema

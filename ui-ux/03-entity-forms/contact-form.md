@@ -184,6 +184,18 @@ Tabs: "Grunddaten" | "Entscheidungsbefugnis" | "Standortzuordnung"
    - Error: "Kontakt ist Hauptansprechpartner für Standort X, aber nicht zugewiesen"
    - Visual: Blue checkmark for primary locations
 
+3. **Interne Notizen** (Optional):
+   - Label: "Interne Notizen"
+   - **Rich Text Editor** (WYSIWYG): Basic toolbar configuration
+     - Toolbar buttons: Bold, Italic, Underline, Bullet List, Numbered List, Link, Undo, Redo
+     - See `ui-ux/02-core-components/rich-text-editor.md` for complete toolbar design
+   - Min height: 150px (content area)
+   - Placeholder: "Persönliche Präferenzen, Gesprächsnotizen, Besonderheiten..."
+   - Max length: 1000 characters
+   - Character counter: "0 / 1000 Zeichen" (bottom-right corner)
+   - Help text: "Interne Notizen zu diesem Kontakt (nur für Mitarbeiter sichtbar)"
+   - **Mobile**: Simplified toolbar (Bold, Italic, Lists only)
+
 **Form Footer (Sticky, spans all tabs):**
 - Buttons:
   - "Abbrechen" (cancel, outlined)
@@ -318,6 +330,16 @@ npx shadcn-ui@latest add input
 npx shadcn-ui@latest add select
 npx shadcn-ui@latest add checkbox
 npx shadcn-ui@latest add radio-group
+npx shadcn-ui@latest add button    # For rich text editor toolbar
+npx shadcn-ui@latest add separator # For rich text editor toolbar
+npx shadcn-ui@latest add tooltip   # For rich text editor toolbar
+```
+
+### TipTap Rich Text Editor Installation
+```bash
+# Core TipTap packages for basic toolbar (internal notes)
+pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-placeholder
+pnpm add @tiptap/extension-link @tiptap/extension-underline
 ```
 
 ### Contact Schema

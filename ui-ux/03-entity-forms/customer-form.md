@@ -169,12 +169,17 @@ Label: "Geschäftsdaten" - 18px, semibold
    - Placeholder: "Auswählen..."
    - Help text: "Standard-Zahlungsziel für Rechnungen"
 
-3. **Notizen** (Optional):
-   - Label: "Notizen"
-   - Textarea: Multi-line, full width, 4 rows
-   - Placeholder: "Zusätzliche Informationen zum Kunden..."
-   - Character counter: "0 / 500 Zeichen"
-   - Max length: 500 characters
+3. **Interne Notizen** (Optional):
+   - Label: "Interne Notizen"
+   - **Rich Text Editor** (WYSIWYG): Basic toolbar configuration
+     - Toolbar buttons: Bold, Italic, Underline, Bullet List, Numbered List, Link, Undo, Redo
+     - See `ui-ux/02-core-components/rich-text-editor.md` for complete toolbar design
+   - Min height: 150px (content area)
+   - Placeholder: "Besonderheiten, Präferenzen, historische Infos..."
+   - Max length: 1000 characters
+   - Character counter: "0 / 1000 Zeichen" (bottom-right corner)
+   - Help text: "Diese Notizen sind nur für interne Zwecke sichtbar"
+   - **Mobile**: Simplified toolbar (Bold, Italic, Lists only)
 
 **Section Separator**
 
@@ -337,11 +342,19 @@ Design with clear visual hierarchy, adequate whitespace, and German labels throu
 npx shadcn-ui@latest add form
 npx shadcn-ui@latest add input
 npx shadcn-ui@latest add select
-npx shadcn-ui@latest add textarea
 npx shadcn-ui@latest add checkbox
 npx shadcn-ui@latest add radio-group
 npx shadcn-ui@latest add dialog
 npx shadcn-ui@latest add button
+npx shadcn-ui@latest add separator # For rich text editor toolbar
+npx shadcn-ui@latest add tooltip   # For rich text editor toolbar
+```
+
+### TipTap Rich Text Editor Installation
+```bash
+# Core TipTap packages for basic toolbar (internal notes)
+pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-placeholder
+pnpm add @tiptap/extension-link @tiptap/extension-underline
 ```
 
 ### Form Usage (react-hook-form + zod)

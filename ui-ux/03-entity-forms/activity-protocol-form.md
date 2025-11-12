@@ -25,7 +25,7 @@
 - `Sheet` for mobile (slides from bottom)
 - `Dialog` for desktop
 - `Form` with minimal fields
-- `Textarea` with character counter
+- **Rich Text Editor** (`MeetingNotesEditor`) with standard toolbar for formatted notes
 - `ToggleGroup` for activity type
 
 ## Figma Make Prompt
@@ -91,17 +91,22 @@ Create a quick activity and protocol form for KOMPASS, a German CRM application.
 
 4. **Beschreibung** (Required):
    - Label: "Beschreibung *"
-   - Textarea: 5 rows, full width
+   - **Rich Text Editor** (WYSIWYG): Standard toolbar configuration
+     - Toolbar buttons: Bold, Italic, Underline, Strikethrough, H2, H3, Bullet List, Numbered List, Task List (checkboxes), Blockquote, Link, Undo, Redo
+     - See `ui-ux/02-core-components/rich-text-editor.md` for complete toolbar design
+   - Min height: 200px (content area)
    - Placeholder: "Was wurde besprochen oder vereinbart? Nächste Schritte..."
    - Min length: 10 characters
    - Max length: 2000 characters
-   - Character counter: "150 / 2000 Zeichen"
-   - **Voice Input Button**: Microphone icon at bottom-right of textarea
-     - Blue button, 40px
+   - Character counter: "150 / 2000 Zeichen" (bottom-right corner)
+   - **Voice Input Button**: Microphone icon at bottom-right of editor (below toolbar, above character counter)
+     - Blue button, 44px × 44px (touch-friendly)
      - Tooltip: "Spracheingabe starten"
      - Click: Activates voice-to-text
      - Recording: Pulsing red icon + "Hört zu..."
-   - Help text: "Detaillierte Notizen zur Aktivität"
+     - **Behavior**: Voice-to-text inserts plain text at cursor position, user can then format using toolbar
+   - Help text: "Detaillierte Notizen zur Aktivität. Nutzen Sie Formatierung für Struktur."
+   - **Mobile**: Compact toolbar with essential buttons (Bold, Italic, Lists), "Mehr" button to expand
 
 5. **Datum & Uhrzeit** (Required):
    - Label: "Datum & Uhrzeit *"
@@ -121,9 +126,13 @@ Create a quick activity and protocol form for KOMPASS, a German CRM application.
 
 7. **Nächste Schritte** (Optional):
    - Label: "Nächste Schritte"
-   - Textarea: 2 rows
+   - **Rich Text Editor** (WYSIWYG): Basic toolbar configuration
+     - Toolbar buttons: Bold, Italic, Bullet List, Numbered List, Task List (checkboxes), Link, Undo, Redo
+   - Min height: 100px
    - Placeholder: "Was sind die nächsten Schritte oder Folgetermine?"
    - Max length: 500 characters
+   - Character counter: "X / 500 Zeichen"
+   - Help text: "Nutzen Sie Aufgabenlisten (☐) für Action Items"
 
 8. **Follow-up Termin** (Optional):
    - Label: "Follow-up Termin"
@@ -293,14 +302,24 @@ Design optimized for speed, especially on mobile, with voice-to-text as primary 
 npx shadcn-ui@latest add sheet
 npx shadcn-ui@latest add dialog
 npx shadcn-ui@latest add form
-npx shadcn-ui@latest add textarea
 npx shadcn-ui@latest add toggle-group
 npx shadcn-ui@latest add calendar
+npx shadcn-ui@latest add button    # For rich text editor toolbar
+npx shadcn-ui@latest add separator # For rich text editor toolbar
+npx shadcn-ui@latest add tooltip   # For rich text editor toolbar
 ```
 
-### Voice-to-Text API
+### TipTap Rich Text Editor Installation
+```bash
+# Core TipTap packages for Meeting Notes Editor
+pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-placeholder
+pnpm add @tiptap/extension-task-list @tiptap/extension-task-item
+pnpm add @tiptap/extension-link @tiptap/extension-underline
+```
+
+### Voice-to-Text API Integration with Rich Text Editor
 ```typescript
-// Web Speech API for voice input
+// Web Speech API for voice input - integrates with TipTap editor
 const recognition = new webkitSpeechRecognition();
 recognition.lang = 'de-DE';
 recognition.continuous = true;
@@ -310,14 +329,33 @@ recognition.onresult = (event) => {
   const transcript = Array.from(event.results)
     .map(result => result[0].transcript)
     .join('');
-  setDescription(transcript);
+  
+  // Insert plain text at cursor position in TipTap editor
+  if (editor) {
+    editor.chain().focus().insertContent(transcript + ' ').run();
+  }
 };
+
+// Usage in MeetingNotesEditor component
+<MeetingNotesEditor
+  content={field.value}
+  onChange={field.onChange}
+  placeholder="Was wurde besprochen oder vereinbart?"
+  maxLength={2000}
+  config={{
+    toolbarLevel: 'standard',  // Standard toolbar for Activity Protocols
+    enableVoiceInput: true,    // Show microphone button
+  }}
+/>
 ```
 
 ### Component Dependencies
 - Customer/contact selection components
 - Date-time picker
-- Voice-to-text API (Web Speech API)
+- **Rich Text Editor** (`MeetingNotesEditor` component with standard toolbar)
+  - See `apps/frontend/src/components/editor/MeetingNotesEditor.tsx`
+  - See `ui-ux/02-core-components/rich-text-editor.md` for design specs
+- Voice-to-text API (Web Speech API) integrated with rich text editor
 - Offline storage for activity queue
 - Template library
 - Auto-save functionality

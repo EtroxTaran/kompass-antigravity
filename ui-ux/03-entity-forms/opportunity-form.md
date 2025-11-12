@@ -59,10 +59,16 @@ Create a comprehensive opportunity form for KOMPASS, a German CRM application. D
 
 3. **Beschreibung** (Optional):
    - Label: "Beschreibung"
-   - Textarea: 4 rows, full width
-   - Placeholder: "Detaillierte Beschreibung des Projekts, Kundenanforderungen, besondere Umstände..."
-   - Max length: 1000 characters
-   - Character counter: "150 / 1000 Zeichen"
+   - **Rich Text Editor** (WYSIWYG): Standard toolbar configuration
+     - Toolbar buttons: Bold, Italic, Underline, Strikethrough, H2, H3, Bullet List, Numbered List, Task List (checkboxes), Blockquote, Link, Undo, Redo
+     - See `ui-ux/02-core-components/rich-text-editor.md` for complete toolbar design
+   - Min height: 200px (content area)
+   - Placeholder: "Details zur Opportunity, Kundenanforderungen, nächste Schritte..."
+   - Max length: 5000 characters
+   - Character counter: "150 / 5000 Zeichen" (bottom-right corner)
+   - Help text: "Detaillierte Beschreibung. Nutzen Sie Aufgabenlisten (☐) für Action Items."
+   - **Supports Task Lists**: Users can create checkbox lists for next steps and action items
+   - **Mobile**: Compact toolbar with essential buttons, "Mehr" button to expand
 
 **Section 2: Wertermittlung (Value Assessment)**
 Label: "Wertermittlung" - 18px, semibold
@@ -123,18 +129,25 @@ Label: "Wertermittlung" - 18px, semibold
 
 3. **Nächster Schritt** (Optional):
    - Label: "Nächster Schritt"
-   - Textarea: 2 rows
+   - **Rich Text Editor** (WYSIWYG): Basic toolbar configuration
+     - Toolbar buttons: Bold, Italic, Bullet List, Numbered List, Link, Undo, Redo
+   - Min height: 100px
    - Placeholder: "z.B. Folgetermin vereinbaren, Angebot versenden..."
-   - Max length: 300 characters
+   - Max length: 500 characters
+   - Character counter: "X / 500 Zeichen"
 
 **Conditional Fields (Based on Status):**
 
 **If Status = "Verloren":**
 4. **Grund für Verlust** (Required):
    - Label: "Grund für Verlust *"
-   - Textarea: 3 rows
+   - **Rich Text Editor** (WYSIWYG): Basic toolbar configuration
+     - Toolbar buttons: Bold, Italic, Bullet List, Numbered List, Link, Undo, Redo
+   - Min height: 120px
    - Placeholder: "Bitte beschreiben Sie, warum die Opportunity verloren wurde..."
    - Min length: 10 characters
+   - Max length: 1000 characters
+   - Character counter: "X / 1000 Zeichen"
    - Error: "Bei verlorenen Opportunities muss ein Grund angegeben werden (min. 10 Zeichen)"
 
 5. **Verlorener Wettbewerber** (Optional):
@@ -288,6 +301,17 @@ npx shadcn-ui@latest add combobox
 npx shadcn-ui@latest add slider
 npx shadcn-ui@latest add calendar
 npx shadcn-ui@latest add badge
+npx shadcn-ui@latest add button    # For rich text editor toolbar
+npx shadcn-ui@latest add separator # For rich text editor toolbar
+npx shadcn-ui@latest add tooltip   # For rich text editor toolbar
+```
+
+### TipTap Rich Text Editor Installation
+```bash
+# Core TipTap packages for standard toolbar (with task lists)
+pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-placeholder
+pnpm add @tiptap/extension-task-list @tiptap/extension-task-item
+pnpm add @tiptap/extension-link @tiptap/extension-underline
 ```
 
 ### Component Dependencies

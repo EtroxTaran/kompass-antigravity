@@ -378,6 +378,22 @@ const validationResults = data.map((row, index) => {
 - Error report generator (CSV)
 - Duplicate detection service
 
+### Rich Text Fields Import
+**Note:** Rich text editor fields (Beschreibung, Notizen, Bemerkungen) are imported as **plain text** from CSV/Excel files. Users can add formatting after import using the rich text editor in the entity forms.
+
+**Import Behavior:**
+- Plain text from CSV column is stored as-is (no HTML tags)
+- After import, users can edit the field using rich text editor to add formatting
+- Example: CSV column "Kundenbeschreibung" → Imported as plain text → User opens Customer form → Edits "Interne Notizen" field with rich text editor → Adds Bold, Lists, etc.
+
+**CSV Column Mapping:**
+- `Kundenbeschreibung` → Customer `interne_notizen` (plain text)
+- `Kontaktnotizen` → Contact `interne_notizen` (plain text)
+- `Standortbeschreibung` → Location `beschreibung` (plain text)
+- `Opportunity-Details` → Opportunity `beschreibung` (plain text)
+
+**Future Enhancement:** Support HTML import from Excel files with rich text cells (Phase 2)
+
 ### State Management
 - Current wizard step
 - Uploaded file data

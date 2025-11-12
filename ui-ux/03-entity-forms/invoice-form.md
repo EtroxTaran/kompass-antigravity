@@ -178,11 +178,18 @@ Position: Right side card, sticky
    - Label: "Zahlungsart"
    - Select: "Überweisung" (Bank transfer), "Lastschrift" (Direct debit), "Bar" (Cash)
 
-3. **Rechnungstext** (Optional):
-   - Label: "Rechnungstext / Notizen"
-   - Textarea: 3 rows
-   - Placeholder: "Zusätzliche Hinweise für die Rechnung..."
-   - Max length: 500 characters
+3. **Bemerkungen / Zahlungsbedingungen** (Optional):
+   - Label: "Bemerkungen / Zahlungsbedingungen"
+   - **Rich Text Editor** (WYSIWYG): Basic toolbar configuration
+     - Toolbar buttons: Bold, Italic, Underline, Bullet List, Numbered List, Link, Undo, Redo
+     - See `ui-ux/02-core-components/rich-text-editor.md` for complete toolbar design
+   - Min height: 120px (content area)
+   - Placeholder: "Zahlungsbedingungen, Lieferbedingungen, rechtliche Hinweise..."
+   - Max length: 2000 characters
+   - Character counter: "0 / 2000 Zeichen" (bottom-right corner)
+   - Help text: "Wird auf gedruckter Rechnung angezeigt"
+   - **GoBD Immutable**: Lock icon appears after finalization (field becomes read-only)
+   - **Mobile**: Simplified toolbar (Bold, Italic, Lists only)
 
 **GoBD Immutability Section:**
 - Info card: Yellow background (#fef3c7)
@@ -327,6 +334,16 @@ npx shadcn-ui@latest add select
 npx shadcn-ui@latest add calendar
 npx shadcn-ui@latest add alert-dialog
 npx shadcn-ui@latest add card
+npx shadcn-ui@latest add button    # For rich text editor toolbar
+npx shadcn-ui@latest add separator # For rich text editor toolbar
+npx shadcn-ui@latest add tooltip   # For rich text editor toolbar
+```
+
+### TipTap Rich Text Editor Installation
+```bash
+# Core TipTap packages for basic toolbar (invoice remarks - GoBD immutable)
+pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-placeholder
+pnpm add @tiptap/extension-link @tiptap/extension-underline
 ```
 
 ### Component Dependencies

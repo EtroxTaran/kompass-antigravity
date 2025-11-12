@@ -593,3 +593,4 @@ docs/
 - File Organization: `.cursor/rules/file-organization.mdc`
 - Git Workflow: `.cursor/rules/git-workflow.mdc`
 - Project Structure: `.cursor/rules/project-structure.mdc`
+- UI/UX Documentation Sync: `.cursor/rules/ui-ux-documentation-sync.mdc`
