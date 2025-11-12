@@ -17,15 +17,18 @@
 ## Table of Contents
 
 1. [Base Entity Structure](#1-base-entity-structure)
-2. [Customer Entity](#2-customer-entity)
-3. [Location Entity](#3-location-entity-new)
-4. [Contact/ContactPerson Entity](#4-contactcontactperson-entity)
-5. [Decision-Making Enums](#5-decision-making-enums-new)
-6. [Address Structure](#6-address-structure)
-7. [Validation Rules](#7-validation-rules)
-8. [Business Rules](#8-business-rules)
-9. [Migration Strategy](#9-migration-strategy)
-10. [Future Entities (Placeholders)](#10-future-entities-placeholders)
+2. [User Entity (NEW)](#2-user-entity-new)
+3. [Role Entity (NEW)](#3-role-entity-new)
+4. [PermissionMatrix Entity (NEW)](#4-permissionmatrix-entity-new)
+5. [Customer Entity](#5-customer-entity)
+6. [Location Entity](#6-location-entity)
+7. [Contact/ContactPerson Entity](#7-contactcontactperson-entity)
+8. [Decision-Making Enums](#8-decision-making-enums)
+9. [Address Structure](#9-address-structure)
+10. [Validation Rules](#10-validation-rules)
+11. [Business Rules](#11-business-rules)
+12. [Migration Strategy](#12-migration-strategy)
+13. [Future Entities (Placeholders)](#13-future-entities-placeholders)
 
 ---
 
@@ -57,6 +60,9 @@ interface BaseEntity {
 
 ### ID Generation Rules
 
+- **User:** `user-{uuid}` (e.g., `user-a1b2c3d4-e5f6-7890-abcd-ef1234567890`)
+- **Role:** `role-{roleId}` (e.g., `role-plan`, `role-adm`, `role-gf`)
+- **PermissionMatrix:** `permission-matrix-{version}` (e.g., `permission-matrix-v2.0`)
 - **Customer:** `customer-{uuid}` (e.g., `customer-550e8400-e29b-41d4-a716-446655440000`)
 - **Location:** `location-{uuid}` (e.g., `location-123e4567-e89b-12d3-a456-426614174000`)
 - **Contact:** `contact-{uuid}` (e.g., `contact-98765432-e89b-12d3-a456-426614174000`)
@@ -65,7 +71,251 @@ Use `packages/shared/utils/id-generator.ts` for all ID generation. NEVER generat
 
 ---
 
-## 2. Customer Entity
+## 2. User Entity (NEW)
+
+**Updated:** 2025-01-27  
+**Status:** Planned for implementation
+
+The User entity represents a system user with authentication credentials and role assignments. Users can have multiple roles to accommodate real-world business scenarios.
+
+### User Interface
+
+```typescript
+interface User extends BaseEntity {
+  _id: string;                    // Format: "user-{uuid}"
+  type: 'user';                   // Fixed discriminator
+  
+  // Identity
+  email: string;                  // Unique email address (login username)
+  displayName: string;            // Full name for UI display
+  
+  // Role Management (Multiple Roles Support)
+  roles: UserRole[];              // Array of assigned roles (e.g., ['ADM', 'PLAN'])
+  primaryRole: UserRole;          // Default role for UI context (must be in roles[])
+  
+  // Authentication (Note: Hashed password stored separately in auth service)
+  active: boolean;                // Account active status
+  lastLoginAt?: Date;             // Last successful login timestamp
+  passwordChangedAt?: Date;       // Last password change timestamp
+  
+  // Profile
+  avatarUrl?: string;             // Profile picture URL
+  phoneNumber?: string;           // Contact phone
+  department?: string;            // Department/division
+  
+  // Preferences
+  language?: 'de' | 'en';         // UI language (default: 'de')
+  timezone?: string;              // User timezone (default: 'Europe/Berlin')
+  
+  // RBAC metadata (audit)
+  rolesAssignedBy?: string;       // User ID who assigned current roles
+  rolesAssignedAt?: Date;         // When current roles were assigned
+  roleChangeHistory?: RoleChangeEntry[]; // History of role assignments/revocations
+}
+
+interface RoleChangeEntry {
+  timestamp: Date;                // When role was changed
+  changedBy: string;              // User ID who made the change
+  action: 'ASSIGN' | 'REVOKE' | 'PRIMARY_CHANGED'; // What changed
+  role: UserRole;                 // Which role was affected
+  reason: string;                 // Why the change was made (required)
+}
+```
+
+### ID Generation
+- **User ID:** `user-{uuid}` (e.g., `user-a1b2c3d4-e5f6-7890-abcd-ef1234567890`)
+
+### Validation Rules
+
+| Field | Validation |
+|-------|------------|
+| `email` | Required, valid email format, unique across system |
+| `displayName` | Required, 2-100 chars |
+| `roles` | Required, non-empty array, all values must be valid UserRole enum |
+| `primaryRole` | Required, must be in `roles[]` array |
+| `active` | Required, boolean |
+| `language` | Optional, must be 'de' or 'en' |
+
+### Business Rules
+
+1. **Minimum Role Requirement:** User must have at least one role (cannot revoke all roles)
+2. **Primary Role Validation:** `primaryRole` must exist in `roles[]` array
+3. **Role Assignment Authorization:** Only GF and ADMIN can assign/revoke roles
+4. **Self Primary Role Change:** User can change their own `primaryRole` (if in `roles[]`)
+5. **Audit Trail:** All role changes must be logged with reason in `roleChangeHistory`
+6. **Email Uniqueness:** Email must be unique across all users
+
+---
+
+## 3. Role Entity (NEW)
+
+**Updated:** 2025-01-27  
+**Status:** Planned for implementation (Hybrid RBAC Phase 2)
+
+The Role entity represents a configurable role definition stored in CouchDB. This enables runtime permission configuration without code deployment.
+
+### Role Interface
+
+```typescript
+interface Role extends BaseEntity {
+  _id: string;                    // Format: "role-{roleId}" (e.g., "role-plan")
+  type: 'role';                   // Fixed discriminator
+  
+  // Role identification
+  roleId: UserRole;               // Role identifier matching UserRole enum (e.g., 'PLAN')
+  name: string;                   // Display name (e.g., "Planungsabteilung")
+  description: string;            // Role description and responsibilities
+  
+  // Permission configuration
+  permissions: Partial<Record<EntityType, Partial<Record<Permission, boolean>>>>; // Entity-action permissions
+  
+  // Role status
+  active: boolean;                // Is role currently active?
+  priority: number;               // Role priority for conflict resolution (1-100)
+  
+  // Metadata
+  version: number;                // Role definition version
+}
+```
+
+### Example Role Document
+
+```typescript
+{
+  _id: 'role-plan',
+  type: 'role',
+  roleId: 'PLAN',
+  name: 'Planungsabteilung',
+  description: 'Planning/design team responsible for project execution',
+  permissions: {
+    Customer: { READ: true, CREATE: false, UPDATE: false, DELETE: false },
+    Location: { READ: true, CREATE: true, UPDATE: true, DELETE: false },
+    Contact: { READ: true, CREATE: true, UPDATE: true, DELETE: false },
+    Project: { READ: true, CREATE: false, UPDATE: true, DELETE: false },
+    Task: { READ: true, CREATE: true, UPDATE: true, DELETE: true }
+  },
+  active: true,
+  priority: 50,
+  version: 1,
+  createdBy: 'user-admin',
+  createdAt: '2025-01-27T10:00:00Z',
+  modifiedBy: 'user-admin',
+  modifiedAt: '2025-01-27T10:00:00Z'
+}
+```
+
+### ID Generation
+- **Role ID:** `role-{roleId}` (e.g., `role-plan`, `role-adm`)
+
+### Validation Rules
+
+| Field | Validation |
+|-------|------------|
+| `roleId` | Required, must match UserRole enum |
+| `name` | Required, 2-100 chars |
+| `description` | Required, 10-500 chars |
+| `permissions` | Required, object with entity-action mappings |
+| `active` | Required, boolean |
+| `priority` | Required, 1-100 |
+
+### Business Rules
+
+1. **Enum Consistency:** `roleId` must match a value in `UserRole` enum
+2. **Single Role Definition:** Only one active Role document per `roleId`
+3. **Admin-Only Modification:** Only ADMIN role can create/update Role documents
+4. **Audit Requirement:** All role permission changes must be logged
+5. **Fallback to Static:** If Role document missing/corrupted, system falls back to static `PERMISSION_MATRIX`
+
+---
+
+## 4. PermissionMatrix Entity (NEW)
+
+**Updated:** 2025-01-27  
+**Status:** Planned for implementation (Hybrid RBAC Phase 2)
+
+The PermissionMatrix entity represents a versioned snapshot of the complete permission matrix. This allows atomic permission updates and rollback capabilities.
+
+### PermissionMatrix Interface
+
+```typescript
+interface PermissionMatrix extends BaseEntity {
+  _id: string;                    // Format: "permission-matrix-{version}" (e.g., "permission-matrix-v2.0")
+  type: 'permission_matrix';      // Fixed discriminator
+  
+  // Version control
+  version: string;                // Semantic version (e.g., "2.0", "2.1")
+  effectiveDate: Date;            // When this matrix becomes/became active
+  
+  // Permission data
+  matrix: Record<UserRole, Partial<Record<EntityType, Partial<Record<Permission, boolean>>>>>; // Complete permission matrix
+  
+  // Change tracking
+  previousVersion?: string;       // ID of previous matrix version
+  changelog: string;              // Human-readable description of changes
+  
+  // Status
+  active: boolean;                // Is this the active matrix?
+}
+```
+
+### Example PermissionMatrix Document
+
+```typescript
+{
+  _id: 'permission-matrix-v2.0',
+  type: 'permission_matrix',
+  version: '2.0',
+  effectiveDate: '2025-02-01T00:00:00Z',
+  matrix: {
+    GF: {
+      Customer: { READ: true, CREATE: true, UPDATE: true, DELETE: true },
+      Project: { READ: true, CREATE: true, UPDATE: true, DELETE: true },
+      // ... all entities
+    },
+    PLAN: {
+      Customer: { READ: true, CREATE: false, UPDATE: false, DELETE: false },
+      Project: { READ: true, CREATE: false, UPDATE: true, DELETE: false },
+      // ... all entities
+    },
+    // ... all roles
+  },
+  previousVersion: 'permission-matrix-v1.0',
+  changelog: 'Corrected PLAN role: removed Customer.CREATE and Customer.UPDATE permissions',
+  active: true,
+  createdBy: 'user-admin',
+  createdAt: '2025-01-27T10:00:00Z',
+  modifiedBy: 'user-admin',
+  modifiedAt: '2025-01-27T10:00:00Z',
+  version: 1
+}
+```
+
+### ID Generation
+- **Matrix ID:** `permission-matrix-{version}` (e.g., `permission-matrix-v2.0`)
+
+### Validation Rules
+
+| Field | Validation |
+|-------|------------|
+| `version` | Required, semantic version format (e.g., "2.0") |
+| `effectiveDate` | Required, ISO 8601 date |
+| `matrix` | Required, complete permission matrix for all roles |
+| `changelog` | Required, 10-500 chars |
+| `active` | Required, boolean |
+| `previousVersion` | Optional, must reference existing matrix if provided |
+
+### Business Rules
+
+1. **Single Active Matrix:** Only one PermissionMatrix document can have `active: true` at a time
+2. **Effective Date Validation:** Cannot activate matrix with future `effectiveDate`
+3. **Version Immutability:** Once created, matrix document cannot be modified (only active status)
+4. **Admin-Only Creation:** Only ADMIN role can create new permission matrices
+5. **Audit Requirement:** All matrix changes logged with changelog and user
+6. **Rollback Support:** Can activate previous version by setting its `active: true`
+
+---
+
+## 5. Customer Entity
 
 The Customer entity represents a company or organization. Customers can have multiple physical locations with separate delivery addresses.
 
@@ -879,11 +1129,24 @@ The following entities will be documented in future iterations:
 - **Location Integration:** Project delivery to specific customer location
 - Budget tracking, milestone management
 
-### Invoice Entity (TBD)
-- Extends BaseEntity with GoBD immutability
-- Links to Project and Customer
-- **Address Reference:** Uses customer's billing address (frozen at invoice creation)
-- Immutable after finalization
+### Offer Entity (Angebot)
+- Extends BaseEntity
+- Represents sales offers/quotes sent to customers
+- **PDF Upload:** Upload PDF of offer document
+- **Metadata:** Customer, totalAmount, offerDate, validUntil, status
+- **Status:** Draft → Sent → Accepted → Rejected
+- **Conversion:** Can be converted to Contract entity
+- Links to Customer and Opportunity
+
+### Contract Entity (Auftragsbestätigung)
+- Extends BaseEntity with GoBD compliance
+- Represents accepted contracts/purchase orders
+- **PDF Upload:** Upload PDF of signed contract
+- **Metadata:** Customer, totalAmount, contractDate, status
+- **Status:** Draft → Signed → InProgress → Completed
+- **Immutable after Signed status** (GoBD requirement)
+- Links to Customer, Opportunity, and Project
+- Source of project budget data for financial tracking
 
 ### Activity/Protocol Entity (TBD)
 - Extends BaseEntity
@@ -1041,6 +1304,7 @@ const duplicateLocation: Location = {
 | Version | Date       | Author | Changes |
 |---------|------------|--------|---------|
 | 1.0     | 2025-01-28 | System | Initial specification: BaseEntity, Customer (multi-location), Location entity, Contact (decision-making), validation rules, migration strategy |
+| 1.1     | 2025-01-27 | System | Added User entity (multiple roles support), Role entity (hybrid RBAC), PermissionMatrix entity (runtime configuration), updated ID generation rules |
 
 ---
 

@@ -2,64 +2,67 @@
 
 ## Context & Purpose
 - **User Role**: BUCH (Buchhalter / Accountant)
-- **Business Value**: Financial tracking, invoicing, payments, GoBD compliance
-- **Access**: ALL financial data (invoices, payments, reports)
-- **Key Focus**: Cash flow, outstanding invoices, GoBD audit trails
+- **Business Value**: Financial tracking via offers/contracts, Lexware integration, GoBD compliance
+- **Access**: ALL financial data (offers, contracts, project costs, reports)
+- **Key Focus**: Contract values, project costs, margins, budget tracking
+- **Note:** Invoicing happens in Lexware, not KOMPASS
 
 ## Figma Make Prompt
 
-Create a BUCH (Accountant) dashboard for KOMPASS showing financial overview, invoice status, payment tracking, GoBD compliance, and accounting reports with German labels.
+Create a BUCH (Accountant) dashboard for KOMPASS showing financial tracking via offers/contracts, project costs, margins, and optional Lexware integration status with German labels.
 
 **Header:**
-- "Finanzen & Buchhaltung" (28px, bold)
+- "Finanzen & Projekt-Controlling" (28px, bold)
 - Period selector: "Dieses Quartal" | "Dieses Jahr" | "Custom"
-- Export: "Export" button (PDF, CSV, DATEV)
+- Export: "Export" button (PDF, CSV)
 - User: Avatar + "Anna Weber (BUCH)"
+- **Note:** "Rechnungswesen in Lexware"
 
 **KPI Cards (Top Row - 4 cards):**
-1. **Offene Forderungen**
-   - Value: "€ 420.000" (36px, amber)
-   - Count: "28 Rechnungen"
-   - Overdue: "€ 85.000 (12)" (red badge)
+1. **Aktive Vertragswerte**
+   - Value: "€ 1.250.000" (36px, blue)
+   - Count: "12 aktive Verträge"
+   - This quarter: "+3 neue Verträge" (green)
    
-2. **Liquidität**
-   - Cash: "€ 850.000" (36px, green)
-   - This month in: "€ 450.000"
-   - This month out: "€ 380.000"
+2. **Projektmargen**
+   - Average margin: "28,5%" (36px, green)
+   - Target: "30% Ziel"
+   - Best project: "Projekt A: 42%" (link)
+   - Worst project: "Projekt C: 12%" (link, yellow warning)
    
-3. **Rechnungen (dieses Quartal)**
-   - Created: "64" (blue)
-   - Paid: "48" (green)
-   - Pending: "16" (amber)
+3. **Pipeline-Value (Angebote)**
+   - Open offers: "€ 350.000" (36px, amber)
+   - Count: "15 offene Angebote"
+   - Conversion rate: "53% (8 angenommen)"
    
-4. **GoBD-Status**
+4. **GoBD-Status (Verträge)**
    - Compliant: "✓ 100%" (green)
+   - Protected contracts: "12 von 12"
    - Last audit: "15.10.2024"
-   - Next: "15.01.2025"
 
-**Section: Zahlungsübersicht (Payment Tracking)**
-- **Fälligkeiten Timeline (Visual):**
-  - X-axis: This week, Next week, Next 30 days, Later
-  - Y-axis: € value
-  - Bars: Amount due in each period
-  - Colors: Red (overdue), Amber (this week), Blue (future)
+**Section: Vertragsstatus (Contract Status Overview)**
+- **Vertragsverteilung (Visual - Pie Chart):**
+  - Signed (Unterzeichnet): 5 contracts (green)
+  - InProgress (In Bearbeitung): 7 contracts (blue)
+  - Completed (Abgeschlossen): 32 contracts (gray)
   
-- **Überfällige Rechnungen (Alert Cards):**
-  - List of overdue invoices
-  - Each card: Invoice number, customer, amount, days overdue
-  - Actions: "Mahnung senden", "Zahlung buchen", "Kontakt"
-  - Example: "R-2024-00345, Hofladen Müller, € 12.500, 15 Tage überfällig, [Mahnung senden]"
+- **Budget-Warnungen (Alert Cards):**
+  - List of projects with budget issues
+  - Each card: Project number, contract value, actual costs, margin%
+  - Actions: "Projekt anzeigen", "Kosten analysieren"
+  - Example: "P-2025-M003, Vertragswert € 85.000, Ist-Kosten € 78.500 (92%), Marge: 7,6% (ROT - unter Ziel 20%)"
 
-**Section: Rechnungen (Invoice List)**
+**Section: Aktive Verträge (Contract List)**
 - Table with filters and search
-- Columns: Rechnungsnr., Kunde, Datum, Fälligkeit, Betrag, Status, GoBD, Aktionen
-- Rows: All invoices
-- Status badges: "Bezahlt" (green), "Ausstehend" (amber), "Überfällig" (red), "Entwurf" (gray)
-- GoBD icon: Lock (finalized), Unlock (draft)
-- Actions: "Details", "PDF", "Zahlung buchen", "Mahnung"
-- Filters: Status, date range, customer, amount
-- Sort: By due date, amount, customer
-- Search: Invoice number, customer name
+- Columns: Vertragsnr., Kunde, Projekt, Vertragswert, Ist-Kosten, Marge%, Status, GoBD, Aktionen
+- Rows: All active contracts (Signed + InProgress)
+- Status badges: "Unterzeichnet" (green), "In Bearbeitung" (blue), "Abgeschlossen" (gray)
+- GoBD icon: Lock (Signed+)
+- Margin color coding: Green (>20%), Yellow (10-20%), Red (<10%)
+- Actions: "Details", "PDF anzeigen", "Projekt anzeigen"
+- Filters: Status, customer, date range, margin%
+- Sort: By contract date, value, margin
+- Search: Contract number, customer name, project number
 
 **Section: Cashflow-Analyse (Charts)**
 - **Cashflow (Line Chart - last 12 months):**
@@ -105,11 +108,11 @@ Create a BUCH (Accountant) dashboard for KOMPASS showing financial overview, inv
 - Reports: "Gewinn & Verlust", "Bilanz", "Umsatzsteuer", "DATEV-Export", "Cashflow"
 
 **Quick Actions (Sidebar or FAB):**
-- "+ Rechnung erstellen"
-- "Zahlung buchen"
-- "Mahnung senden"
-- "Bericht erstellen"
-- "DATEV exportieren"
+- "+ Neues Angebot erstellen"
+- "+ Neuer Vertrag erstellen"
+- "Finanzberichte erstellen"
+- "Export (CSV/PDF)"
+- "Zu Lexware wechseln" (external link)
 
 **Mobile:** Cards stack, tables scroll horizontally, charts full-width, quick actions bottom bar
 

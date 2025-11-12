@@ -296,7 +296,9 @@ All prompts include:
 ### RBAC in UI/UX
 
 - **ADM**: Sees only own customers, edit own, read-only financial data
-- **GF/PLAN**: Full CRUD on all entities
+- **GF**: Full CRUD on all entities
+- **PLAN**: Full CRUD on projects/tasks, read-only customers, limited other entities
+- **INNEN**: Full CRUD on customers/opportunities/offers
 - **BUCH**: Full access to invoices, payments, financial reports
 - **KALK**: Read-only projects, create/edit estimates
 - Visual indicators: Role badges, disabled actions, permission tooltips

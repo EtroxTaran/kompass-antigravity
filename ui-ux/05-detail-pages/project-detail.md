@@ -78,7 +78,8 @@ Create a project detail view for KOMPASS showing project info, timeline, budget 
 - Quick Actions:
   - "Zeit erfassen"
   - "Bericht erstellen"
-  - "Rechnung erstellen"
+  - "Vertrag anzeigen" (if project has contract, links to contract detail)
+  - "Zu Lexware" (external link to Lexware, for invoicing)
 
 **Mobile:** Full-screen, tabs dropdown, progress prominent
 

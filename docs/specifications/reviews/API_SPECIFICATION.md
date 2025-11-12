@@ -18,11 +18,14 @@
 1. [API Design Principles](#1-api-design-principles)
 2. [Versioning Strategy](#2-versioning-strategy)
 3. [Error Response Format](#3-error-response-format-rfc-7807)
-4. [Location Management Endpoints](#4-location-management-endpoints-new)
-5. [Contact Decision Authority Endpoints](#5-contact-decision-authority-endpoints-new)
-6. [Request/Response DTOs](#6-requestresponse-dtos)
-7. [OpenAPI Documentation Patterns](#7-openapi-documentation-patterns)
-8. [Future Endpoints (Placeholders)](#8-future-endpoints-placeholders)
+4. [User Role Management Endpoints (NEW)](#4-user-role-management-endpoints-new)
+5. [Role Configuration Endpoints (NEW)](#5-role-configuration-endpoints-new)
+6. [Permission Matrix Endpoints (NEW)](#6-permission-matrix-endpoints-new)
+7. [Location Management Endpoints](#7-location-management-endpoints)
+8. [Contact Decision Authority Endpoints](#8-contact-decision-authority-endpoints)
+9. [Request/Response DTOs](#9-requestresponse-dtos)
+10. [OpenAPI Documentation Patterns](#10-openapi-documentation-patterns)
+11. [Future Endpoints (Placeholders)](#11-future-endpoints-placeholders)
 
 ---
 
@@ -216,9 +219,662 @@ interface ProblemDetails {
 
 ---
 
-## 4. Location Management Endpoints (NEW)
+## 4. User Role Management Endpoints (NEW)
 
-### 4.1 Create Location
+**Updated:** 2025-01-27  
+**Status:** Planned for implementation  
+**RBAC:** GF and ADMIN only (except GET own roles)
+
+### 4.1 Get User Roles
+
+**GET** `/api/v1/users/{userId}/roles`
+
+Retrieves all roles assigned to a user.
+
+#### Request
+
+**Path Parameters:**
+- `userId` (string, required) - User ID
+
+**Required Permission:** `User.READ_ROLES` (GF, ADMIN, or self)
+
+#### Response
+
+**200 OK:**
+```json
+{
+  "userId": "user-abc123",
+  "displayName": "Michael Schmidt",
+  "roles": ["ADM", "PLAN"],
+  "primaryRole": "ADM",
+  "rolesAssignedBy": "user-gf-001",
+  "rolesAssignedAt": "2025-01-15T10:30:00Z",
+  "roleChangeHistory": [
+    {
+      "timestamp": "2025-01-15T10:30:00Z",
+      "changedBy": "user-gf-001",
+      "action": "ASSIGN",
+      "role": "ADM",
+      "reason": "Initial role assignment"
+    },
+    {
+      "timestamp": "2025-01-20T14:00:00Z",
+      "changedBy": "user-gf-001",
+      "action": "ASSIGN",
+      "role": "PLAN",
+      "reason": "User now responsible for project planning"
+    }
+  ]
+}
+```
+
+**403 Forbidden:** User cannot view other users' roles (unless GF/ADMIN)
+**404 Not Found:** User ID does not exist
+
+---
+
+### 4.2 Assign Roles to User
+
+**PUT** `/api/v1/users/{userId}/roles`
+
+Assigns multiple roles to a user. Only GF and ADMIN can assign roles.
+
+#### Request
+
+**Path Parameters:**
+- `userId` (string, required) - User ID
+
+**Required Permission:** `User.ASSIGN_ROLES` (GF, ADMIN only)
+
+**Request Body:**
+```json
+{
+  "roles": ["ADM", "PLAN"],
+  "primaryRole": "ADM",
+  "reason": "User now handles both sales and project planning"
+}
+```
+
+**Validation:**
+- `roles`: Required, non-empty array, all values must be valid `UserRole` enum
+- `primaryRole`: Required, must be in `roles[]` array
+- `reason`: Required, 10-500 characters
+
+#### Response
+
+**200 OK:**
+```json
+{
+  "userId": "user-abc123",
+  "displayName": "Michael Schmidt",
+  "roles": ["ADM", "PLAN"],
+  "primaryRole": "ADM",
+  "rolesAssignedBy": "user-gf-001",
+  "rolesAssignedAt": "2025-01-27T11:00:00Z",
+  "message": "Roles successfully assigned"
+}
+```
+
+**400 Bad Request:** Invalid request (e.g., primaryRole not in roles array, empty roles array)
+**403 Forbidden:** User does not have permission to assign roles
+**404 Not Found:** User ID does not exist
+
+#### Notes
+- All existing roles are **replaced** with new roles array
+- Audit log entry created with reason
+- User's `roleChangeHistory` updated
+
+---
+
+### 4.3 Revoke Role from User
+
+**DELETE** `/api/v1/users/{userId}/roles/{roleId}`
+
+Removes a specific role from a user. Only GF and ADMIN can revoke roles.
+
+#### Request
+
+**Path Parameters:**
+- `userId` (string, required) - User ID
+- `roleId` (string, required) - Role to revoke (e.g., "PLAN")
+
+**Required Permission:** `User.REVOKE_ROLES` (GF, ADMIN only)
+
+**Request Body:**
+```json
+{
+  "reason": "User transferred to different department"
+}
+```
+
+**Validation:**
+- `reason`: Required, 10-500 characters
+- User must have at least one role remaining (cannot revoke last role)
+
+#### Response
+
+**200 OK:**
+```json
+{
+  "userId": "user-abc123",
+  "displayName": "Michael Schmidt",
+  "roles": ["ADM"],
+  "primaryRole": "ADM",
+  "revokedRole": "PLAN",
+  "revokedBy": "user-gf-001",
+  "revokedAt": "2025-01-27T11:30:00Z",
+  "message": "Role successfully revoked"
+}
+```
+
+**400 Bad Request:** Cannot revoke last role
+**403 Forbidden:** User does not have permission to revoke roles
+**404 Not Found:** User ID or role ID does not exist
+
+#### Notes
+- If revoked role was `primaryRole`, system automatically sets `primaryRole` to first remaining role
+- Audit log entry created with reason
+
+---
+
+### 4.4 Change User Primary Role
+
+**PUT** `/api/v1/users/{userId}/primary-role`
+
+Changes the user's primary role. Users can change their own primary role if the new role is in their `roles[]` array.
+
+#### Request
+
+**Path Parameters:**
+- `userId` (string, required) - User ID
+
+**Required Permission:** Self (for own primary role), GF, ADMIN (for any user)
+
+**Request Body:**
+```json
+{
+  "primaryRole": "PLAN"
+}
+```
+
+**Validation:**
+- `primaryRole`: Required, must be valid `UserRole` enum
+- `primaryRole` must be in user's `roles[]` array
+
+#### Response
+
+**200 OK:**
+```json
+{
+  "userId": "user-abc123",
+  "primaryRole": "PLAN",
+  "message": "Primary role successfully changed"
+}
+```
+
+**400 Bad Request:** Primary role not in user's roles array
+**403 Forbidden:** User cannot change another user's primary role (unless GF/ADMIN)
+**404 Not Found:** User ID does not exist
+
+---
+
+## 5. Role Configuration Endpoints (NEW)
+
+**Updated:** 2025-01-27  
+**Status:** Planned for implementation (Hybrid RBAC Phase 2)  
+**RBAC:** ADMIN only (except GET endpoints)
+
+### 5.1 List All Roles
+
+**GET** `/api/v1/roles`
+
+Retrieves all role definitions.
+
+#### Request
+
+**Required Permission:** `Role.READ` (all roles can view)
+
+**Query Parameters:**
+- `active` (boolean, optional) - Filter by active status
+
+#### Response
+
+**200 OK:**
+```json
+{
+  "roles": [
+    {
+      "roleId": "GF",
+      "name": "Geschäftsführer",
+      "description": "Business owners and top management with full system access",
+      "active": true,
+      "priority": 100
+    },
+    {
+      "roleId": "PLAN",
+      "name": "Planungsabteilung",
+      "description": "Planning/design team responsible for project execution",
+      "active": true,
+      "priority": 50
+    }
+    // ... all roles
+  ]
+}
+```
+
+---
+
+### 5.2 Get Role Details
+
+**GET** `/api/v1/roles/{roleId}`
+
+Retrieves detailed information about a specific role.
+
+#### Request
+
+**Path Parameters:**
+- `roleId` (string, required) - Role identifier (e.g., "PLAN")
+
+**Required Permission:** `Role.READ` (all roles can view)
+
+#### Response
+
+**200 OK:**
+```json
+{
+  "_id": "role-plan",
+  "roleId": "PLAN",
+  "name": "Planungsabteilung",
+  "description": "Planning/design team responsible for project execution",
+  "permissions": {
+    "Customer": {
+      "READ": true,
+      "CREATE": false,
+      "UPDATE": false,
+      "DELETE": false
+    },
+    "Project": {
+      "READ": true,
+      "CREATE": false,
+      "UPDATE": true,
+      "DELETE": false
+    }
+    // ... all entity permissions
+  },
+  "active": true,
+  "priority": 50,
+  "version": 1,
+  "createdAt": "2025-01-27T10:00:00Z",
+  "modifiedAt": "2025-01-27T10:00:00Z"
+}
+```
+
+**404 Not Found:** Role ID does not exist
+
+---
+
+### 5.3 Get Role Permissions
+
+**GET** `/api/v1/roles/{roleId}/permissions`
+
+Retrieves the permission matrix for a specific role.
+
+#### Request
+
+**Path Parameters:**
+- `roleId` (string, required) - Role identifier
+
+**Required Permission:** `Role.READ`
+
+#### Response
+
+**200 OK:**
+```json
+{
+  "roleId": "PLAN",
+  "permissions": {
+    "Customer": {
+      "READ": true,
+      "CREATE": false,
+      "UPDATE": false,
+      "DELETE": false
+    },
+    "Location": {
+      "READ": true,
+      "CREATE": true,
+      "UPDATE": true,
+      "DELETE": false
+    },
+    "Contact": {
+      "READ": true,
+      "CREATE": true,
+      "UPDATE": true,
+      "DELETE": false,
+      "UPDATE_DECISION_ROLE": true
+    },
+    "Project": {
+      "READ": true,
+      "CREATE": false,
+      "UPDATE": true,
+      "DELETE": false
+    },
+    "Task": {
+      "READ": true,
+      "CREATE": true,
+      "UPDATE": true,
+      "DELETE": true
+    }
+  }
+}
+```
+
+---
+
+### 5.4 Update Role Permissions
+
+**PUT** `/api/v1/roles/{roleId}/permissions`
+
+Updates the permission matrix for a role. Only ADMIN can modify role permissions.
+
+#### Request
+
+**Path Parameters:**
+- `roleId` (string, required) - Role identifier
+
+**Required Permission:** `Role.UPDATE_PERMISSIONS` (ADMIN only)
+
+**Request Body:**
+```json
+{
+  "permissions": {
+    "Customer": {
+      "READ": true,
+      "CREATE": false,
+      "UPDATE": false,
+      "DELETE": false
+    }
+    // ... updated permissions
+  },
+  "reason": "Removed Customer.UPDATE permission from PLAN role per security review"
+}
+```
+
+**Validation:**
+- `permissions`: Required, valid entity-permission mapping
+- `reason`: Required, 10-500 characters
+
+#### Response
+
+**200 OK:**
+```json
+{
+  "roleId": "PLAN",
+  "permissions": {
+    // ... updated permissions
+  },
+  "updatedBy": "user-admin-001",
+  "updatedAt": "2025-01-27T12:00:00Z",
+  "message": "Role permissions successfully updated"
+}
+```
+
+**400 Bad Request:** Invalid permissions structure
+**403 Forbidden:** User is not ADMIN
+**404 Not Found:** Role ID does not exist
+
+#### Notes
+- Changes take effect immediately for all users with this role
+- Audit log entry created with reason
+- All active users notified of permission changes
+
+---
+
+## 6. Permission Matrix Endpoints (NEW)
+
+**Updated:** 2025-01-27  
+**Status:** Planned for implementation (Hybrid RBAC Phase 2)  
+**RBAC:** ADMIN only (except GET current matrix)
+
+### 6.1 Get Current Permission Matrix
+
+**GET** `/api/v1/permissions/matrix`
+
+Retrieves the currently active permission matrix.
+
+#### Request
+
+**Required Permission:** `Role.READ` (all roles can view)
+
+**Query Parameters:**
+- `version` (string, optional) - Specific version to retrieve (default: active version)
+
+#### Response
+
+**200 OK:**
+```json
+{
+  "_id": "permission-matrix-v2.0",
+  "version": "2.0",
+  "effectiveDate": "2025-02-01T00:00:00Z",
+  "active": true,
+  "matrix": {
+    "GF": {
+      "Customer": {
+        "READ": true,
+        "CREATE": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+      // ... all entities
+    },
+    "PLAN": {
+      "Customer": {
+        "READ": true,
+        "CREATE": false,
+        "UPDATE": false,
+        "DELETE": false
+      }
+      // ... all entities
+    }
+    // ... all roles
+  },
+  "previousVersion": "permission-matrix-v1.0",
+  "changelog": "Corrected PLAN role permissions",
+  "createdAt": "2025-01-27T10:00:00Z",
+  "createdBy": "user-admin-001"
+}
+```
+
+---
+
+### 6.2 Create New Permission Matrix Version
+
+**POST** `/api/v1/permissions/matrix`
+
+Creates a new version of the permission matrix. Previous version is deactivated.
+
+#### Request
+
+**Required Permission:** `Role.UPDATE_PERMISSIONS` (ADMIN only)
+
+**Request Body:**
+```json
+{
+  "version": "2.1",
+  "matrix": {
+    // ... complete permission matrix for all roles
+  },
+  "effectiveDate": "2025-02-15T00:00:00Z",
+  "changelog": "Added Invoice.APPROVE permission for BUCH role",
+  "activateImmediately": true
+}
+```
+
+**Validation:**
+- `version`: Required, semantic version format, must be unique
+- `matrix`: Required, complete permission matrix for all roles
+- `effectiveDate`: Required, cannot be in the past if activating immediately
+- `changelog`: Required, 10-500 characters
+- `activateImmediately`: Optional, boolean (default: false)
+
+#### Response
+
+**201 Created:**
+```json
+{
+  "_id": "permission-matrix-v2.1",
+  "version": "2.1",
+  "active": true,
+  "effectiveDate": "2025-02-15T00:00:00Z",
+  "previousVersion": "permission-matrix-v2.0",
+  "message": "Permission matrix version 2.1 created and activated"
+}
+```
+
+**400 Bad Request:** Invalid matrix structure or version already exists
+**403 Forbidden:** User is not ADMIN
+
+#### Notes
+- If `activateImmediately: true`, previous matrix version is deactivated
+- Changes take effect immediately for all users
+- All active users notified of permission changes
+- Complete audit log entry created
+
+---
+
+### 6.3 Update Permission Matrix (Shorthand)
+
+**PUT** `/api/v1/permissions/matrix`
+
+Updates the active permission matrix (creates new version automatically).
+
+#### Request
+
+**Required Permission:** `Role.UPDATE_PERMISSIONS` (ADMIN only)
+
+**Request Body:**
+```json
+{
+  "updates": {
+    "PLAN": {
+      "Customer": {
+        "UPDATE": false
+      }
+    }
+  },
+  "changelog": "Removed PLAN Customer.UPDATE permission per security review"
+}
+```
+
+**Validation:**
+- `updates`: Required, partial matrix updates
+- `changelog`: Required, 10-500 characters
+
+#### Response
+
+**200 OK:**
+```json
+{
+  "version": "2.2",
+  "active": true,
+  "message": "Permission matrix updated successfully",
+  "affectedRoles": ["PLAN"],
+  "affectedUsers": 8
+}
+```
+
+#### Notes
+- Automatically increments minor version (e.g., 2.1 → 2.2)
+- Merges updates with current matrix
+- Creates new matrix version and activates it
+
+---
+
+### 6.4 List Permission Matrix Versions
+
+**GET** `/api/v1/permissions/matrix/versions`
+
+Lists all permission matrix versions with metadata.
+
+#### Request
+
+**Required Permission:** `Role.READ`
+
+**Query Parameters:**
+- `limit` (integer, optional) - Max results (default: 50)
+- `includeInactive` (boolean, optional) - Include inactive versions (default: false)
+
+#### Response
+
+**200 OK:**
+```json
+{
+  "versions": [
+    {
+      "_id": "permission-matrix-v2.0",
+      "version": "2.0",
+      "active": true,
+      "effectiveDate": "2025-02-01T00:00:00Z",
+      "changelog": "Corrected PLAN role permissions",
+      "createdBy": "user-admin-001",
+      "createdAt": "2025-01-27T10:00:00Z"
+    },
+    {
+      "_id": "permission-matrix-v1.0",
+      "version": "1.0",
+      "active": false,
+      "effectiveDate": "2025-01-01T00:00:00Z",
+      "changelog": "Initial permission matrix",
+      "createdBy": "system",
+      "createdAt": "2025-01-01T00:00:00Z"
+    }
+  ],
+  "totalCount": 2
+}
+```
+
+---
+
+### 6.5 Activate Permission Matrix Version (Rollback)
+
+**PUT** `/api/v1/permissions/matrix/{version}/activate`
+
+Activates a previous permission matrix version (rollback functionality).
+
+#### Request
+
+**Path Parameters:**
+- `version` (string, required) - Version to activate (e.g., "1.0")
+
+**Required Permission:** `Role.UPDATE_PERMISSIONS` (ADMIN only)
+
+**Request Body:**
+```json
+{
+  "reason": "Rolling back due to issues with v2.0 - PLAN users reporting access problems"
+}
+```
+
+#### Response
+
+**200 OK:**
+```json
+{
+  "version": "1.0",
+  "active": true,
+  "previousActiveVersion": "2.0",
+  "message": "Permission matrix rolled back to version 1.0"
+}
+```
+
+**403 Forbidden:** User is not ADMIN
+**404 Not Found:** Version does not exist
+
+---
+
+## 7. Location Management Endpoints
+
+### 7.1 Create Location
 
 **POST** `/api/v1/customers/{customerId}/locations`
 
@@ -440,7 +1096,7 @@ Authorization: Bearer {jwt_token}
 
 ---
 
-### 4.4 Update Location
+### 7.4 Update Location
 
 **PUT** `/api/v1/customers/{customerId}/locations/{locationId}`
 
@@ -530,7 +1186,7 @@ Content-Type: application/json
 
 ---
 
-### 4.5 Delete Location
+### 7.5 Delete Location
 
 **DELETE** `/api/v1/customers/{customerId}/locations/{locationId}`
 
@@ -1216,6 +1872,61 @@ PUT    /api/v1/projects/{id}           - Update project
 GET    /api/v1/projects/{id}/delivery-location - Get project delivery location
 ```
 
+### Offer Management (Angebot)
+
+**Note:** Invoicing is handled by Lexware, not KOMPASS. Offers are managed in KOMPASS for financial tracking only.
+
+```
+GET    /api/v1/customers/{customerId}/offers           - List offers for customer
+POST   /api/v1/customers/{customerId}/offers           - Create new offer (with PDF upload)
+GET    /api/v1/customers/{customerId}/offers/{id}      - Get offer details
+PUT    /api/v1/customers/{customerId}/offers/{id}      - Update offer (metadata only)
+DELETE /api/v1/customers/{customerId}/offers/{id}      - Delete offer (Draft only)
+POST   /api/v1/customers/{customerId}/offers/{id}/convert-to-contract - Convert offer to contract
+GET    /api/v1/customers/{customerId}/offers/{id}/pdf  - Download offer PDF
+```
+
+**Business Rules:**
+- Offers can be created as PDF upload OR form-based entry
+- Status: Draft → Sent → Accepted → Rejected
+- Only Draft offers can be deleted
+- Accepted offers can be converted to Contract
+
+### Contract Management (Auftragsbestätigung)
+
+**Note:** Contracts are GoBD-compliant after signing. Invoicing happens in Lexware.
+
+```
+GET    /api/v1/customers/{customerId}/contracts        - List contracts for customer
+POST   /api/v1/customers/{customerId}/contracts        - Create new contract (with PDF upload)
+GET    /api/v1/customers/{customerId}/contracts/{id}   - Get contract details
+PUT    /api/v1/customers/{customerId}/contracts/{id}   - Update contract (metadata only, before Signed)
+DELETE /api/v1/customers/{customerId}/contracts/{id}   - Delete contract (Draft only)
+GET    /api/v1/customers/{customerId}/contracts/{id}/pdf - Download contract PDF
+```
+
+**Business Rules:**
+- Contracts are **immutable after Signed status** (GoBD compliance)
+- Status: Draft → Signed → InProgress → Completed
+- Only Draft contracts can be deleted or modified
+- Signed contracts can only have status updates (InProgress → Completed)
+- Contract totalAmount is used for project budget tracking
+
+### Lexware Integration (Phase 2+, Optional)
+
+**Note:** Phase 1 has NO Lexware integration. Phase 2+ may add read-only API access.
+
+```
+GET    /api/v1/lexware/invoices/{invoiceId}/status    - Get invoice status from Lexware (Read-only)
+GET    /api/v1/projects/{projectId}/lexware-invoices  - List Lexware invoices for project (Read-only)
+```
+
+**Business Rules:**
+- Phase 1: No integration, manual workflows in Lexware
+- Phase 2+: Read-only API to fetch invoice status (sent/paid) for project dashboards
+- KOMPASS does NOT create invoices in Lexware via API
+- Buchhaltung creates invoices directly in Lexware
+
 ---
 
 ## Document History
@@ -1223,6 +1934,7 @@ GET    /api/v1/projects/{id}/delivery-location - Get project delivery location
 | Version | Date       | Author | Changes |
 |---------|------------|--------|---------|
 | 1.0     | 2025-01-28 | System | Initial specification: RESTful conventions, versioning, RFC 7807 errors, Location management endpoints, Contact decision authority endpoints, complete DTOs |
+| 1.1     | 2025-01-27 | System | Added User Role Management endpoints (assign/revoke roles), Role Configuration endpoints (view/update role permissions), Permission Matrix endpoints (manage runtime permissions), updated section numbering |
 
 ---
 

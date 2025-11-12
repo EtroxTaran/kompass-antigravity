@@ -75,7 +75,7 @@ Create RBAC permission indicators for KOMPASS showing role-based access restrict
 - Text: White, 14px
 - Icon: Lock icon (red)
 - Message: "Keine Berechtigung"
-- Detail: "Nur GF und PLAN können Kunden löschen"
+- Detail: "Nur GF kann Kunden löschen"
 - Action: "Kontaktieren Sie Ihren Administrator"
 
 **Conditional Tooltip (Ownership):**
@@ -195,10 +195,11 @@ Create RBAC permission indicators for KOMPASS showing role-based access restrict
 - Actions: "Bearbeiten" (disabled with lock), "Löschen" (disabled with lock)
 - Banner: "Kunde von Anna Weber - Kontaktieren Sie PLAN für Zugriff"
 
-**Scenario 3: PLAN views any customer**
-- All fields: Editable
-- Actions: All enabled
-- Financial data: Visible but read-only (BUCH permission needed to edit)
+**Scenario 3: PLAN views any customer (Project-Related)**
+- All fields: Read-only (PLAN has no customer edit permission)
+- Actions: "Bearbeiten" (disabled with lock icon), "Löschen" (disabled with lock icon)
+- Financial data: Hidden (no access)
+- Note banner: "Sie haben Lesezugriff auf Kundendaten für Projektplanung. Für Änderungen kontaktieren Sie INNEN oder GF."
 
 ## Implementation Notes
 ```bash

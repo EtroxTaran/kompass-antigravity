@@ -3,8 +3,9 @@
 ## Context & Purpose
 - **User Role**: PLAN (Planer / Planning)
 - **Business Value**: Project management, resource allocation, scheduling
-- **Access**: ALL projects and customers
+- **Access**: ALL projects (full CRUD), ALL customers (read-only for project context)
 - **Key Focus**: Project timelines, team workload, capacity planning
+- **Note**: PLAN is internal service role for project execution, not customer management
 
 ## Figma Make Prompt
 

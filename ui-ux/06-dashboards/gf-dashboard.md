@@ -61,17 +61,24 @@ Create a GF (CEO) dashboard for KOMPASS showing high-level KPIs, financial overv
   - Margin indicators
 
 **Section: Finanzübersicht**
-- **Monatlicher Umsatz (Line Chart - last 12 months):**
+- **Vertrags- und Projektumsatz (Line Chart - last 12 months):**
   - X-axis: Months
   - Y-axis: € value
-  - Blue line: Revenue
-  - Green fill: Profit margin
+  - Blue line: Vertragswerte (Contract values)
+  - Green line: Abgeschlossene Projekte (Completed project revenue)
+  - Gray dashed line: Durchschnittliche Marge (Average margin%)
   - Trend line
 
-- **Offene Rechnungen (Cards):**
-  - Überfällig: "€ 85.000" (red) - "12 Rechnungen"
-  - Fällig (diese Woche): "€ 120.000" (amber)
-  - Kommend: "€ 215.000" (blue)
+- **Financial Status (Cards):**
+  - Pipeline-Value (Angebote): "€ 350.000" (amber) - "15 offene Angebote"
+  - Aktive Verträge: "€ 1.250.000" (blue) - "12 Verträge"
+  - Durchschnittliche Marge: "28,5%" (green if >25%, yellow if 15-25%, red if <15%)
+  
+- **Lexware Integration Status (Optional, Phase 2+):**
+  - Card: "Lexware-Integration"
+  - Status: "Nicht verbunden" (gray, Phase 1) OR "✓ Verbunden" (green, Phase 2+)
+  - Last sync: "—" OR timestamp (Phase 2+)
+  - Actions: "Lexware öffnen" (external link)
 
 **Section: Team-Performance**
 - **Top-Performers (Table):**
@@ -87,8 +94,12 @@ Create a GF (CEO) dashboard for KOMPASS showing high-level KPIs, financial overv
 
 **Section: Aktivitäten & Alerts**
 - Recent important activities
-- Alerts: Overdue invoices, delayed projects, high-value opportunities closing soon
+- Alerts: Budget overruns, delayed projects, high-value offers expiring soon, low margins
 - Each alert: Icon, message, timestamp, action link
+- Examples:
+  - "⚠️ Projekt P-2025-M003: Budget um 15% überschritten (€ 12.500)"
+  - "🔴 Angebot A-2025-00089 läuft morgen ab (€ 45.000)"
+  - "⚠️ Projekt B: Marge nur 8% (unter Ziel 20%)"
 
 **Quick Actions (Sidebar or FAB):**
 - "+ Neuer Kunde"

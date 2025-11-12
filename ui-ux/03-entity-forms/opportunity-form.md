@@ -2,7 +2,7 @@
 
 ## Context & Purpose
 - **Component Type**: Entity Creation/Edit Form  
-- **User Roles**: GF, PLAN, ADM (create own), KALK (read-only)
+- **User Roles**: GF, INNEN, ADM (create own), PLAN (read for projects), KALK (read-only)
 - **Usage Context**: Create/edit sales opportunities and track pipeline
 - **Business Value**: Sales pipeline management and revenue forecasting
 
@@ -175,9 +175,9 @@ Label: "Wertermittlung" - 18px, semibold
 
 1. **Verantwortlicher Mitarbeiter** (Required):
    - Label: "Verantwortlicher Mitarbeiter *"
-   - Select: ADM or PLAN users
+   - Select: ADM or INNEN users
    - For ADM creating: Pre-filled with self, disabled
-   - For GF/PLAN: Can assign to any ADM/PLAN user
+   - For GF/INNEN: Can assign to any ADM/INNEN user
    - Avatar + name displayed
 
 2. **Tags/Kategorien** (Optional):

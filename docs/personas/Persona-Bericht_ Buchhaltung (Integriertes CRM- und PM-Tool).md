@@ -5,19 +5,22 @@
 *Last Updated: 2025-11-10*
 
 **⚡ Relevante Spezifikationen für Buchhaltung-Rolle:**
-- **Offline-Speicher:** 25 MB ✅ (unter iOS 50MB-Limit) – Alle Kunden (1000×2KB=2MB), Rechnungen (150×3KB=450KB), Files (2×10MB=20MB)
+- **Offline-Speicher:** 25 MB ✅ (unter iOS 50MB-Limit) – Alle Kunden (1000×2KB=2MB), Angebote/Verträge (150×50KB=7.5MB), Files (2×10MB=20MB)
 - **RBAC-Berechtigungen (RISK-JOURNEY-001):** Siehe RBAC_PERMISSION_MATRIX.md §4
   - Alle Kunden: Lesezugriff (Basis-Daten), keine Edit-Rechte
-  - Alle Projekte: Lesezugriff (für Rechnungserstellung)
-  - Alle Rechnungen: Voller Zugriff (CRUD), **exklusiv** – andere Rollen nur Lesezugriff
+  - Alle Projekte: Lesezugriff (für Finanztracking)
+  - Alle Angebote/Verträge: Lesezugriff (für Kalkulationen und Budgetübersichten)
   - Finanzdaten: Exklusiver Zugriff auf creditLimit, accountBalance, profitMargin, paymentMethod
-  - **Konflikt-Resolution:** Buchhaltung sieht Zahlungsstatus, aber ADM sieht keine Detail-Beträge (nur Bezahlt/Offen)
+  - **Konflikt-Resolution:** Buchhaltung sieht Projektstatus, aber ADM sieht keine Detail-Margen (nur Status)
 - **User Journeys:** Siehe USER_JOURNEY_MAPS.md
-  - Journey 2: Projekt → Rechnung → Zahlung (BUCH-Hauptrolle: Rechnungserstellung, Mahnwesen, Zahlungs-Tracking)
+  - Journey 2: Projekt → Angebot/Vertrag → Abrechnung in Lexware (BUCH-Hauptrolle: Finanztracking, Budgetkontrolle, Zahlungsüberwachung)
 - **GoBD-Compliance:** Siehe DATA_MODEL_SPECIFICATION.md §7
-  - Rechnungs-Finalisierung (immutable nach Versand)
-  - 10-Jahres-Archivierung mit Change-Log
+  - Vertrags-Archivierung (immutable nach Unterzeichnung)
+  - 10-Jahres-Aufbewahrung mit Dokumentation
   - DSGVO/GoBD-Konflikt gelöst: Pseudonymisierung nach Löschantrag
+- **Lexware Integration:** Siehe Finanz- und Compliance-Management Produktvision
+  - Phase 1: KOMPASS verwaltet Angebote/Verträge, Lexware erstellt Rechnungen
+  - Phase 2 (Optional): Read-only API-Zugriff auf Lexware für Rechnungsstatus-Tracking
 
 ---
 
@@ -53,31 +56,10 @@ Vorgaben.
 Die **Kernaufgaben** der Buchhaltung umfassen vor allem das **Rechnungswesen im Projektgeschäft** sowie
 allgemeine finanzwirtschaftliche Tätigkeiten:
 
-**Rechnungsstellung** : Die Buchhalterin erstellt Kundenrechnungen für Projekte, einschließlich
-**Abschlagsrechnungen (Anzahlungen)** und **Schlussrechnungen (Endabrechnungen)**
-. Sie
-sorgt dafür, dass Rechnungen **fristgerecht** und zum richtigen Projektzeitpunkt gestellt werden. Im
-aktuellen Prozess gibt der Außendienst (ADM) oft per Zuruf Bescheid, wann eine Rechnung raus soll,
-was inkonsistent ist
-. Ziel ist es, dieses Vorgehen zu verbessern und im System abzubilden.
-Geplant ist etwa, **16 Wochen vor Montage, 4 Wochen vor Montage und zum Liefertermin** je eine
-Rechnung automatisch einzuplanen
-– so wird die Gesamtsumme typischerweise auf drei
-Teilzahlungen verteilt. Diese Praxis gewährleistet Liquidität und transparente Abrechnung im Projekt
-.
+**Angebots- und Vertragserfassung**: Die Buchhalterin benötigt Zugriff auf Angebote und Verträge für Finanzplanung und Budgetüberwachung. Im KOMPASS-System werden Angebote und Auftragsbestätigungen als PDF hochgeladen oder als Formular erfasst, inklusive Gesamtkosten und Zahlungsplänen. Diese Daten dienen als Grundlage für Projektkalkulationen und finanzielle Berichte. Die **tatsächliche Rechnungsstellung** erfolgt jedoch in Lexware – KOMPASS ist nur für die Übersicht und Budgetverwaltung zuständig. Im aktuellen Prozess gibt der Außendienst oft per Zuruf Bescheid, wann eine Rechnung in Lexware erstellt werden soll, was inkonsistent ist. Ziel ist es, dass Angebote und Verträge im System dokumentiert sind, sodass die Buchhaltung diese Informationen für Finanzplanung nutzen kann.
 
 
-**Zahlungseingang und Mahnwesen** : Die Buchhaltung überwacht eingehende Zahlungen zu
-gestellten Rechnungen. Sie registriert, **ob und wann Kunden zahlen** , und informiert bei
-Verzögerungen den Vertrieb, damit dieser beim Kunden nachhaken kann
-. Bleibt eine
-Zahlung aus, ist sie für das **Mahnwesen** verantwortlich – vom freundlichen Zahlungserinnern bis zur
-formalen Mahnung. Dieses **Forderungsmanagement** gehört zu den Kernaufgaben vieler
-Buchhalter
-. Aktuell erfolgen Zahlungserinnerungen und Mahnungen noch weitgehend manuell.
-In Zukunft soll das Tool hier unterstützen, etwa durch **automatisierte Mahnstufen** und
-Benachrichtigungen bei überschrittenen Zahlungsfristen
-.
+**Zahlungseingang und Mahnwesen** : Die Buchhaltung überwacht eingehende Zahlungen zu Rechnungen, die in Lexware erstellt wurden. Sie registriert, **ob und wann Kunden zahlen** , und informiert bei Verzögerungen den Vertrieb, damit dieser beim Kunden nachhaken kann. Bleibt eine Zahlung aus, ist sie für das **Mahnwesen** verantwortlich – vom freundlichen Zahlungserinnern bis zur formalen Mahnung. Dieses **Forderungsmanagement** gehört zu den Kernaufgaben vieler Buchhalter und erfolgt vollständig in Lexware. In Zukunft könnte KOMPASS optional (Phase 2+) den Zahlungsstatus aus Lexware via API abrufen, um im Projekt-Dashboard anzuzeigen, ob Rechnungen bezahlt wurden.
 
 # Projektbezogene Kostenverwaltung : In der Buchhaltung laufen auch die Kosten eines Projekts
 
@@ -88,14 +70,13 @@ Benachrichtigungen bei überschrittenen Zahlungsfristen
 # Allgemeine Buchhaltungsaufgaben : Neben den projektspezifischen Tätigkeiten verantwortet die
 
 
-**Rechnungen müssen vollständig vorliegen**
-, damit die Buchhalterin sie in der
-Finanzbuchhaltung weiterverarbeiten und archivieren kann. Die Buchhaltung stellt sicher, dass das
-Unternehmen jederzeit auskunftsfähig ist über **Einnahmen, Ausgaben, offene Posten und**
-**Projektbudgets** – Informationen, die im integrierten Tool idealerweise jederzeit abrufbar sind für
-die Geschäftsführung und andere Berechtigte.
+**Angebote und Verträge müssen vollständig dokumentiert sein**
+, damit die Buchhalterin sie für Finanzplanung und Budgetverfolgung nutzen kann. Die Buchhaltung stellt sicher, dass das
+Unternehmen jederzeit auskunftsfähig ist über **Einnahmen, Ausgaben, Projektbudgets und**
+**Vertragswerte** – Informationen, die im integrierten Tool idealerweise jederzeit abrufbar sind für
+die Geschäftsführung und andere Berechtigte. Die eigentliche Rechnungsstellung geschieht in Lexware.
 
-# Zusammengefasst sorgt die Buchhaltung dafür, dass Rechnungen korrekt und pünktlich geschrieben ,
+# Zusammengefasst sorgt die Buchhaltung dafür, dass Angebote/Verträge dokumentiert sind und Projektkosten überwacht werden,
 
 # Typische Pain Points (Schmerzpunkte)
 
@@ -103,20 +84,15 @@ Aktuell bestehen mehrere Problemstellen im Arbeitsalltag der Buchhaltung, die du
 System adressiert werden sollen:
 
 **Manuelle und inkonsistente Abläufe** : Viele Prozesse erfolgen noch per Zuruf, E-Mail oder Excel.
-Beispielsweise gibt es keinen automatisierten Trigger für Teilrechnungen – der Vertrieb meldet sich
-irgendwann bei der Buchhaltung, sobald er meint, es sei Zeit für eine Rechnung
-. Dadurch
-können Rechnungen verspätet oder gar nicht gestellt werden, wenn die Info untergeht. Dieser
-händische Informationsfluss ist ineffizient und fehleranfällig
-. Gleiches gilt für Zahlungseingänge:
-Ohne Integration muss die Buchhalterin regelmäßig Bankkonten prüfen und manuell im CRM-Team
-rückmelden, wer bezahlt hat. Es fehlt ein **klarer, systemgestützter Prozess** , was zu Unklarheiten
-und Mehraufwand führt
-.
+Beispielsweise gibt es keine systematische Dokumentation von Angeboten und Verträgen – der Vertrieb meldet sich
+irgendwann bei der Buchhaltung mit Auftragsdaten, oft unvollständig oder verspätet. Ohne zentrale Erfassung von Angebots- und Vertragswerten im System kann die Buchhaltung keine zuverlässigen Finanzprognosen erstellen. Dieser
+händische Informationsfluss ist ineffizient und fehleranfällig. Gleiches gilt für Projektkosten:
+Ohne Integration muss die Buchhalterin verschiedene Datenquellen zusammenführen, um Budget vs. Ist-Kosten zu vergleichen. Es fehlt ein **klarer, systemgestützter Prozess** für Angebots-/Vertragsdokumentation, was zu Unklarheiten
+und Mehraufwand führt.
 
 # Informationssilos & doppelte Datenhaltung : Wichtige Daten liegen in getrennten Systemen.
 
-# Fehlende Automatisierung im Mahnwesen : Aktuell gibt es keine integrierte Lösung, die die
+# Fehlende Verknüpfung mit Lexware : Aktuell ist KOMPASS nicht mit Lexware verbunden. Die Buchhaltung arbeitet primär in Lexware für Rechnungserstellung und Mahnwesen. Optional könnte in Zukunft (Phase 2+) eine API-Integration den Zahlungsstatus aus Lexware ins KOMPASS-System übernehmen, um Projektmanagern anzuzeigen, ob Rechnungen bezahlt wurden. Diese Integration ist jedoch nachrangig und nicht MVP-kritisch.
 
 
 **Intransparenz**

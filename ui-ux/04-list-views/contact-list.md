@@ -2,7 +2,7 @@
 
 ## Context & Purpose
 - **Component Type**: Nested List View (under Customer)
-- **User Roles**: All (read), GF/PLAN (full edit), ADM (basic edit on own customers)
+- **User Roles**: All (read), GF/INNEN (full edit), PLAN (edit including decision authority), ADM (basic edit on own customers, no decision authority)
 - **Usage Context**: View and manage contact persons within customer context
 - **Business Value**: Track decision makers and influencers for sales strategy
 

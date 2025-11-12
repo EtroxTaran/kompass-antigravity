@@ -2,7 +2,7 @@
 
 ## Context & Purpose
 - **Component Type**: Nested List View (under Customer)
-- **User Roles**: All (read), GF/PLAN (create/edit/delete), ADM (create/edit own customers only)
+- **User Roles**: All (read), GF/INNEN (full CRUD), PLAN (create/edit), ADM (create/edit own customers only)
 - **Usage Context**: View and manage customer locations within customer detail page
 - **Business Value**: Track multiple delivery addresses and sites per customer
 

@@ -2,7 +2,7 @@
 
 ## Context & Purpose
 - **Component Type**: Entity Creation/Edit Form
-- **User Roles**: GF, PLAN, ADM (create own), KALK (read-only), BUCH (read-only)
+- **User Roles**: GF, INNEN (full), ADM (create own), PLAN (read-only), KALK (read-only), BUCH (read-only)
 - **Usage Context**: Create new customer or edit existing customer data
 - **Business Value**: Central data entry point for customer management, ensures data quality through validation
 

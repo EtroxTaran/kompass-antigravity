@@ -19,7 +19,7 @@
 - **[AI & Automation Features Vision](./product-vision/Produktvision%20KI%20&%20Automation-Features.md)** – ✨ NEW: RAG-basiertes Wissensmanagement, n8n Intelligent Automation, Predictive Forecasting & BI-Dashboards, Strategic ROI (2025 Extensions)
 - **[Projektmanagement Vision](./product-vision/Produktvision%20Projektmanagement%20&%20-durchführung.md)** – Project Management Features, Workflows, Phase 2 AI Risk Assessment
 - **[CRM Vision](./product-vision/Produktvision%20&%20Zielbild%20–%20Kontakt-%20&%20Kundenverwaltung%20(CRM-Basis).md)** – Customer/Contact/Opportunity Management
-- **[Finanz & Compliance Vision](./product-vision/Produktvision%20Finanz-%20und%20Compliance-Management.md)** – Invoicing, GoBD, DSGVO, Phase 2 Observability
+- **[Finanz & Compliance Vision](./product-vision/Produktvision%20Finanz-%20und%20Compliance-Management.md)** – Offers/Contracts Management, Lexware Integration (Phase 2+), GoBD, DSGVO
 
 ### 👥 For UX/Product Design
 - **[CEO Persona](./personas/Persona-Profil_%20Geschäftsführer%20(CEO)%20im%20Projektgeschäft.md)** – GF Needs, Dashboards, Advanced Analytics (Phase 2.2) + ✨ Executive Intelligence & Forecasts, RAG-based Q&A (2025)
@@ -53,7 +53,7 @@
 
 ### 🗓️ For Project Management
 - **[Delivery Plan](./specifications/DELIVERY_PLAN.md)** – 16 Wochen MVP, 6.75 FTE, €230K Budget, Training & Rollout
-- **[User Journey Maps](./specifications/USER_JOURNEY_MAPS.md)** – 5 End-to-End Journeys (Lead→Projekt, Projekt→Rechnung, GF-Review, Offline-Sync)
+- **[User Journey Maps](./specifications/USER_JOURNEY_MAPS.md)** – 5 End-to-End Journeys (Lead→Projekt, Angebot→Vertrag→Projekt, GF-Review, Offline-Sync)
 - **[Technology Roadmap](./product-vision/TECHNOLOGY_ROADMAP.md)** – Timeline & KPIs für Phases 2-3 (€538-608K Total Budget)
 
 ---
@@ -192,7 +192,7 @@ docs/
 ### ✨ Phase 2.1 Features (AI Extensions Q2 2025)
 🔍 **RAG Foundation:** Weaviate Vector DB + LlamaIndex → Semantic Search über alle Dokumente  
 💬 **Conversational Q&A:** Natural Language Queries → "Zeige mir ähnliche Hofladen-Projekte mit regionalem Sortiment"  
-🤖 **n8n Basic Automation:** Automated Follow-Up Sequences, Invoice Reminders, Project Kickoff Workflows  
+🤖 **n8n Basic Automation:** Automated Follow-Up Sequences, Offer Expiry Reminders, Project Kickoff Workflows  
 🔒 **On-Premise LLM:** Llama 3 70B lokal → 100% DSGVO-konform  
 📚 **Knowledge Base Ingestion:** Projekte, Protokolle, Angebote, CAD-Beschreibungen werden embedded
 
@@ -239,7 +239,7 @@ docs/
 ## 📊 Success Metrics (KPIs)
 
 ### MVP KPIs
-- 360°-Sicht auf Kunden: ✅ Alle Daten in 1 Tool (CRM + PM + Rechnungen)
+- 360°-Sicht auf Kunden: ✅ Alle Daten in 1 Tool (CRM + PM + Angebote/Verträge)
 - Offline-Fähigkeit: ✅ iOS 50MB Quota Management, Sync-Konflikte <5%
 - Nutzerakzeptanz: ✅ >80% User Adoption nach 3 Monaten
 - Performance: ✅ API P95 <1.5s, Dashboard-Load <3s

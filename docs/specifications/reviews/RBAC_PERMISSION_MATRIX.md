@@ -15,14 +15,17 @@
 ## Table of Contents
 
 1. [RBAC Overview](#1-rbac-overview)
-2. [Role Definitions](#2-role-definitions)
-3. [Permission Model](#3-permission-model)
-4. [Customer Permissions](#4-customer-permissions)
-5. [Location Permissions (NEW)](#5-location-permissions-new)
-6. [Contact Permissions (NEW)](#6-contact-permissions-new)
-7. [Permission Matrix](#7-permission-matrix)
-8. [Record-Level Permissions](#8-record-level-permissions)
-9. [Future Entity Permissions (Placeholders)](#9-future-entity-permissions-placeholders)
+2. [Multiple Roles Per User (NEW)](#2-multiple-roles-per-user-new)
+3. [Hybrid RBAC Architecture (NEW)](#3-hybrid-rbac-architecture-new)
+4. [Role Definitions](#4-role-definitions)
+5. [Permission Model](#5-permission-model)
+6. [Customer Permissions](#6-customer-permissions)
+7. [Location Permissions](#7-location-permissions)
+8. [Contact Permissions](#8-contact-permissions)
+9. [Permission Matrix](#9-permission-matrix)
+10. [Record-Level Permissions](#10-record-level-permissions)
+11. [Role Assignment and Management](#11-role-assignment-and-management-new)
+12. [Future Entity Permissions (Placeholders)](#12-future-entity-permissions-placeholders)
 
 ---
 
@@ -52,7 +55,308 @@ async findCustomer(@Param('id') id: string, @CurrentUser() user: User) {
 
 ---
 
-## 2. Role Definitions
+## 2. Multiple Roles Per User (NEW)
+
+**Updated:** 2025-01-27  
+**Status:** Planned for implementation
+
+### Overview
+
+KOMPASS will support **multiple roles per user** to accommodate real-world business scenarios where individuals perform multiple functions, especially in smaller organizations.
+
+### User Role Model
+
+```typescript
+interface User {
+  _id: string;
+  email: string;
+  displayName: string;
+  
+  // Multiple roles support
+  roles: UserRole[];        // Array of assigned roles (e.g., ['ADM', 'PLAN'])
+  primaryRole: UserRole;    // Default role for UI context (e.g., 'ADM')
+  
+  // ... other fields
+}
+```
+
+### Permission Checking Logic
+
+**OR Logic (Permissive):**
+- A user has a permission if **ANY** of their roles grants that permission
+- Example: User with roles `['ADM', 'PLAN']` can perform ANY action that either ADM OR PLAN can perform
+
+```typescript
+function hasPermission(
+  roles: UserRole[],
+  entity: EntityType,
+  action: Permission
+): boolean {
+  // Check if ANY role has the permission
+  return roles.some(role => {
+    const rolePermissions = PERMISSION_MATRIX[role];
+    return rolePermissions?.[entity]?.[action] === true;
+  });
+}
+```
+
+### Primary Role
+
+The **primary role** determines:
+- Default UI context and navigation
+- Which dashboard the user sees on login
+- Role badge displayed in the UI
+- Default filtering and views
+
+**Example:** User with roles `['ADM', 'PLAN']` and `primaryRole: 'ADM'`:
+- Sees ADM dashboard by default
+- Can switch to PLAN view via role selector
+- Has combined permissions of both roles
+
+### Use Cases
+
+**Small Company Scenario:**
+- One person acts as both INNEN (cost estimation) and BUCH (accounting)
+- Roles: `['INNEN', 'BUCH']`, `primaryRole: 'INNEN'`
+- Can create offers AND manage invoices
+
+**Growing Company Scenario:**
+- GF also performs sales activities in early stages
+- Roles: `['GF', 'ADM']`, `primaryRole: 'GF'`
+- Has full GF access but also appears in ADM lists
+
+**Specialist Scenario:**
+- Senior planner also handles complex cost estimation
+- Roles: `['PLAN', 'KALK']`, `primaryRole: 'PLAN'`
+- Can manage projects AND create detailed cost estimates
+
+### Constraints
+
+1. **Minimum One Role:** User must have at least one role
+2. **Primary Role Validation:** `primaryRole` must be in `roles[]` array
+3. **Role Compatibility:** Certain role combinations may be restricted (TBD based on business rules)
+4. **Audit Trail:** All role assignments/revocations are logged with reason and timestamp
+
+### UI Considerations
+
+**Role Switcher:**
+- Top-right corner near user avatar
+- Dropdown showing all user's roles
+- Current role highlighted
+- Switching role updates dashboard, navigation, filters
+
+**Permission Indicators:**
+- Show combined permissions in user profile
+- "Via ADM role" or "Via PLAN role" annotations in permission lists
+- Clear indication of which role grants which permission
+
+### API Impact
+
+**Endpoints:**
+- `PUT /api/v1/users/:userId/roles` - Assign multiple roles (GF/ADMIN only)
+- `DELETE /api/v1/users/:userId/roles/:roleId` - Revoke specific role
+- `PUT /api/v1/users/:userId/primary-role` - Change primary role (user can do for self)
+
+**Authorization Checks:**
+- All existing `@RequirePermission` decorators automatically support multiple roles
+- Record-level checks (e.g., ADM ownership) apply based on ANY applicable role
+
+---
+
+## 3. Hybrid RBAC Architecture (NEW)
+
+**Updated:** 2025-01-27  
+**Status:** Planned for implementation
+
+### Overview
+
+KOMPASS will use a **hybrid RBAC architecture** that combines:
+1. **Static TypeScript definitions** for compile-time safety and defaults
+2. **Dynamic CouchDB storage** for runtime configuration and flexibility
+
+### Architecture Components
+
+#### Static Layer (Compile-Time)
+
+**Purpose:** Type safety, IDE autocomplete, default fallback
+
+**Location:** `packages/shared/src/constants/rbac.constants.ts`
+
+```typescript
+// TypeScript enums remain for type safety
+export enum UserRole {
+  GF = 'GF',
+  PLAN = 'PLAN',
+  ADM = 'ADM',
+  INNEN = 'INNEN',
+  KALK = 'KALK',
+  BUCH = 'BUCH',
+}
+
+export enum EntityType {
+  Customer = 'Customer',
+  Project = 'Project',
+  // ... etc
+}
+
+export enum Permission {
+  CREATE = 'CREATE',
+  READ = 'READ',
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE',
+  // ... etc
+}
+
+// Static permission matrix as fallback
+export const PERMISSION_MATRIX: Record<UserRole, EntityPermissions> = {
+  // ... default permissions
+};
+```
+
+#### Dynamic Layer (Runtime)
+
+**Purpose:** Configurable permissions without code deployment
+
+**CouchDB Documents:**
+
+```typescript
+// Role configuration document
+{
+  _id: 'role-plan',
+  type: 'role',
+  roleId: 'PLAN',
+  name: 'Planungsabteilung',
+  description: 'Planning/design team for project execution',
+  permissions: {
+    Customer: { READ: true, CREATE: false, UPDATE: false, DELETE: false },
+    Project: { READ: true, CREATE: false, UPDATE: true, DELETE: false },
+    Task: { READ: true, CREATE: true, UPDATE: true, DELETE: true },
+    // ... entity permissions
+  },
+  active: true,
+  priority: 50,
+  version: 1,
+  createdAt: '2025-01-27T...',
+  modifiedBy: 'admin-user-id'
+}
+
+// Permission matrix version document
+{
+  _id: 'permission-matrix-v2.0',
+  type: 'permission_matrix',
+  version: '2.0',
+  effectiveDate: '2025-02-01T00:00:00Z',
+  matrix: {
+    GF: { /* full permissions */ },
+    PLAN: { /* limited permissions */ },
+    // ... all roles
+  },
+  previousVersion: 'permission-matrix-v1.0',
+  changelog: 'Added Invoice.APPROVE permission for BUCH role',
+  createdBy: 'admin-user-id',
+  createdAt: '2025-01-27T...'
+}
+```
+
+### Permission Resolution Flow
+
+```typescript
+// RbacGuard checks permissions at runtime
+@Injectable()
+export class RbacGuard implements CanActivate {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const user = context.switchToHttp().getRequest().user;
+    const requiredPermission = this.reflector.get('permission', context.getHandler());
+    
+    // 1. Fetch runtime permission matrix from CouchDB
+    let permissionMatrix: PermissionMatrix;
+    try {
+      permissionMatrix = await this.roleService.getActivePermissionMatrix();
+    } catch (error) {
+      // 2. Fallback to static matrix if database unavailable
+      console.warn('Using static permission matrix (DB unavailable)');
+      permissionMatrix = PERMISSION_MATRIX;
+    }
+    
+    // 3. Check if ANY of user's roles has the required permission
+    return hasPermission(user.roles, requiredPermission.entity, requiredPermission.action, permissionMatrix);
+  }
+}
+```
+
+### Sync Mechanism
+
+**Code to Database:**
+- On application startup, check if role definitions exist in CouchDB
+- If missing or outdated, seed from static `PERMISSION_MATRIX`
+- Log differences between code and database
+
+**Database to Code:**
+- Runtime permission checks ALWAYS use database matrix (with fallback)
+- Changes in database take effect immediately (no restart required)
+- Static matrix serves as documentation and type definitions
+
+**Conflict Resolution:**
+- Database matrix overrides static matrix at runtime
+- If database matrix missing/corrupted, use static fallback
+- Admin can "reset to defaults" which copies static matrix to database
+
+### Benefits
+
+**Flexibility:**
+- Adjust permissions without code deployment
+- Test permission changes in staging before production
+- Emergency permission revocation without restart
+
+**Safety:**
+- Static enums prevent typos (compile-time checking)
+- Fallback ensures system never breaks if database unavailable
+- Permission changes require admin authentication and are audited
+
+**Scalability:**
+- Multi-tenant support (different permission matrices per tenant)
+- A/B testing of permission models
+- Gradual rollout of permission changes
+
+### Admin UI
+
+**Permission Matrix Editor:**
+- Visual table: Entities (rows) × Roles (columns)
+- Checkboxes for each permission
+- "Reset to defaults" button (copies from static matrix)
+- "Preview changes" before applying
+- Requires ADMIN role to access
+
+**Audit Log:**
+- All permission matrix changes logged
+- Shows: Who, When, What changed, Why (reason field)
+- Ability to revert to previous version
+
+**Role Configuration:**
+- Create custom roles (beyond the 5 standard roles)
+- Clone existing role as starting point
+- Set role priority for conflict resolution
+
+### Migration Path
+
+**Phase 1 (MVP):**
+- Implement multiple roles support in User entity
+- Keep using static `PERMISSION_MATRIX` only
+
+**Phase 2 (Post-MVP):**
+- Implement `Role` and `PermissionMatrix` entities in CouchDB
+- Create RoleService to fetch runtime permissions
+- Update RbacGuard to use runtime matrix with fallback
+- Seed database with static matrix on first run
+
+**Phase 3 (Future):**
+- Build admin UI for permission matrix editing
+- Implement audit log viewer
+- Add custom role creation
+
+---
+
+## 4. Role Definitions
 
 KOMPASS has **five primary roles** based on business functions:
 
@@ -66,9 +370,11 @@ KOMPASS has **five primary roles** based on business functions:
 ### PLAN (Planung / Planning Department)
 - **Full Name:** Planungsabteilung / Interior Design Planning
 - **Description:** Planning/design team responsible for project execution
-- **Access Level:** Full access to projects, customers, and opportunities; limited financial data access
+- **Access Level:** Full access to projects and tasks; **read-only** access to customers (project-related); limited financial data access
+- **Key Restrictions:** Cannot create/edit/delete customers; cannot approve large offers; cannot access full financial data
 - **User Count:** 5-8 users
 - **Examples:** Interior Designers, Project Planners, Technical Architects
+- **Note:** PLAN is an **internal service role** that executes projects after sales handoff, not a sales or customer management role
 
 ### ADM (Außendienst-Mitarbeiter / Sales Field Agents)
 - **Full Name:** Außendienst / Sales Field Representatives
@@ -126,10 +432,12 @@ Permissions follow the format: `Entity.Action`
 | Permission | Description | Who Has It |
 |------------|-------------|------------|
 | `Customer.READ` | View customer data | All roles |
-| `Customer.CREATE` | Create new customers | GF, PLAN, ADM |
-| `Customer.UPDATE` | Modify customer information | GF, PLAN, ADM (own only) |
+| `Customer.CREATE` | Create new customers | GF, INNEN, ADM |
+| `Customer.UPDATE` | Modify customer information | GF, INNEN, ADM (own only) |
 | `Customer.DELETE` | Delete/archive customers | GF only |
 | `Customer.VIEW_FINANCIAL` | View financial data (credit limit, payment terms) | GF, BUCH |
+
+**Note:** PLAN role has READ-ONLY access to customers for project-related needs. They cannot create, update, or delete customers.
 
 ### Record-Level Rules
 
@@ -166,9 +474,9 @@ async findCustomer(id: string, user: User): Promise<Customer> {
 | Permission | Description | Who Has It |
 |------------|-------------|------------|
 | `Location.READ` | View location data | All roles |
-| `Location.CREATE` | Create new locations for customer | GF, PLAN, ADM (own customers) |
-| `Location.UPDATE` | Modify location information | GF, PLAN, ADM (own customers) |
-| `Location.DELETE` | Remove locations | GF, PLAN |
+| `Location.CREATE` | Create new locations for customer | GF, INNEN, PLAN, ADM (own customers) |
+| `Location.UPDATE` | Modify location information | GF, INNEN, PLAN, ADM (own customers) |
+| `Location.DELETE` | Remove locations | GF, INNEN |
 | `Location.VIEW_ALL` | View all locations regardless of assignment | GF, PLAN, KALK, BUCH |
 | `Location.VIEW_ASSIGNED` | View only assigned locations | ADM (locations for their customers) |
 
@@ -413,7 +721,190 @@ function filterCustomerForNonOwner(customer: Customer): Partial<Customer> {
 
 ---
 
-## 9. Future Entity Permissions (Placeholders)
+## 9. Permission Matrix
+
+**Corrected Permission Matrix (Updated 2025-01-27):**
+
+| Entity | Action | GF | PLAN | INNEN | ADM | KALK | BUCH |
+|--------|--------|----|----|-------|-----|------|------|
+| **Customer** | READ | ✅ All | ✅ All (read-only) | ✅ All | ✅ All (own full, others basic) | ✅ All | ✅ All |
+| | CREATE | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ |
+| | UPDATE | ✅ | ❌ | ✅ | ✅ (own only) | ❌ | ❌ |
+| | DELETE | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Location** | READ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| | CREATE | ✅ | ✅ | ✅ | ✅ (own customers) | ❌ | ❌ |
+| | UPDATE | ✅ | ✅ | ✅ | ✅ (own customers) | ❌ | ❌ |
+| | DELETE | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| **Contact** | READ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| | CREATE | ✅ | ✅ | ✅ | ✅ (own customers) | ❌ | ❌ |
+| | UPDATE | ✅ (all fields) | ✅ (including decision) | ✅ | ✅ (basic, own customers) | ❌ | ❌ |
+| | DELETE | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| **Project** | READ | ✅ | ✅ All | ✅ | ✅ | ✅ | ✅ |
+| | CREATE | ✅ | ❌ (from oppty) | ❌ | ❌ | ❌ | ❌ |
+| | UPDATE | ✅ | ✅ (assigned) | ❌ | ❌ | ❌ | ❌ |
+| | DELETE | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Invoice** | READ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| | CREATE | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| | UPDATE | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ (pre-final) |
+| | DELETE | ✅ (drafts) | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+**Key:**
+- ✅ = Permission granted
+- ❌ = Permission denied
+- (own only) = Only for records user owns
+- (own customers) = Only for locations/contacts of owned customers
+- (assigned) = Only for projects where user is assigned
+- INNEN = Internal Sales / Cost Estimation (previously sometimes called KALK)
+
+---
+
+## 10. Record-Level Permissions
+
+### Multiple Roles Impact on Record-Level Permissions
+
+When a user has multiple roles, record-level permissions are evaluated using **OR logic**:
+
+**Example:** User has roles `['ADM', 'PLAN']`
+- Can access **own customers** (via ADM role)
+- Can also access **all customers read-only** (via PLAN role)
+- Can edit **assigned projects** (via PLAN role)
+- Effectively has permissions from both roles combined
+
+### Ownership Model
+
+Ownership applies primarily to **ADM** role:
+- ADM owns customers they created or were assigned
+- ADM can only UPDATE/DELETE their own customers
+- ADM can only create/edit locations/contacts for own customers
+
+If user has ADM + another role (e.g., PLAN), they retain ADM ownership restrictions for customer editing but gain PLAN's broader read access.
+
+---
+
+## 11. Role Assignment and Management (NEW)
+
+**Updated:** 2025-01-27  
+**Status:** Planned for implementation
+
+### Role Assignment Permissions
+
+| Permission | Description | Who Has It |
+|------------|-------------|------------|
+| `User.READ_ROLES` | View user's assigned roles | GF, ADMIN, Self |
+| `User.ASSIGN_ROLES` | Assign roles to users | GF, ADMIN only |
+| `User.REVOKE_ROLES` | Remove roles from users | GF, ADMIN only |
+| `User.CHANGE_PRIMARY_ROLE` | Change primary role | Self (from own roles), GF, ADMIN |
+| `Role.READ` | View role definitions | All roles |
+| `Role.UPDATE_PERMISSIONS` | Modify permission matrix | ADMIN only |
+
+### Role Assignment Rules
+
+1. **Who Can Assign Roles:**
+   - Only **GF** and **ADMIN** can assign/revoke roles
+   - Users can change their own `primaryRole` (must be in `roles[]` array)
+
+2. **Validation:**
+   - User must have at least one role (cannot revoke all roles)
+   - `primaryRole` must be in `roles[]` array
+   - Role assignment requires reason (audit trail)
+
+3. **Audit Trail:**
+   - All role assignments logged with: who, when, which roles, why
+   - All role revocations logged with: who, when, which role, why
+   - Permission matrix changes logged with: who, when, what changed, why
+
+### Role Assignment API
+
+```typescript
+// Assign multiple roles to user
+PUT /api/v1/users/:userId/roles
+{
+  "roles": ["ADM", "PLAN"],
+  "primaryRole": "ADM",
+  "reason": "User now handles both sales and project planning"
+}
+
+// Revoke specific role
+DELETE /api/v1/users/:userId/roles/:roleId
+{
+  "reason": "User transferred to different department"
+}
+
+// Change primary role (user can do for self)
+PUT /api/v1/users/:userId/primary-role
+{
+  "primaryRole": "PLAN"  // Must be in user's roles[]
+}
+```
+
+### Role Assignment Business Rules
+
+1. **GF Role:**
+   - Can only be assigned by existing GF or ADMIN
+   - Requires special approval (security consideration)
+
+2. **ADMIN Role:**
+   - Can only be assigned/revoked by GF
+   - Cannot revoke own ADMIN role (prevent lockout)
+
+3. **Role Combinations:**
+   - Most combinations allowed (e.g., ADM + PLAN, INNEN + BUCH)
+   - Some combinations may be restricted (TBD based on business needs)
+
+4. **Automatic Role Transitions:**
+   - When user leaves company: All roles set to inactive (soft delete)
+   - When user changes department: Roles updated with reason logged
+
+### Permission Matrix Management
+
+**Who Can Modify:**
+- Only **ADMIN** role can modify the permission matrix
+- GF can request changes but cannot directly edit
+
+**Change Process:**
+1. ADMIN accesses permission matrix editor
+2. Makes changes (e.g., grant BUCH role Invoice.APPROVE permission)
+3. Provides reason for change
+4. System creates new permission matrix version
+5. Change takes effect immediately (no restart needed)
+6. All users see updated permissions on next request
+
+**Rollback:**
+- Admin can revert to previous matrix version
+- Shows diff of what changed
+- Requires reason for rollback
+
+### UI Components
+
+**Role Badge (User Profile):**
+```
+Michael Schmidt (ADM, PLAN)
+Primary: Außendienst
+```
+
+**Role Switcher (Dropdown):**
+```
+Currently: Außendienst (ADM) ✓
+Switch to: Planung (PLAN)
+```
+
+**Role Assignment Dialog (Admin Only):**
+- Multi-select checkboxes for roles
+- Primary role dropdown (from selected roles)
+- Reason text area (required)
+- Preview of combined permissions
+- Save/Cancel buttons
+
+**Permission Matrix Editor (Admin Only):**
+- Table: Entities (rows) × Roles (columns)
+- Checkboxes for each permission
+- Color coding: Green (granted), Red (denied)
+- "Reset to defaults" button
+- Audit log viewer below table
+
+---
+
+## 12. Future Entity Permissions (Placeholders)
 
 The following permission sets will be defined in future iterations:
 
@@ -468,6 +959,7 @@ Activity.DELETE          - GF only
 | Version | Date       | Author | Changes |
 |---------|------------|--------|---------|
 | 1.0     | 2025-01-28 | System | Initial specification: Role definitions, Customer/Location/Contact permissions, permission matrix, record-level rules, decision-making role restrictions |
+| 1.1     | 2025-01-27 | System | Added multiple roles per user support, hybrid RBAC architecture, role assignment/management section, corrected PLAN role permissions (read-only customers), updated permission matrix |
 
 ---
 

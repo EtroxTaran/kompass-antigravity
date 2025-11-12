@@ -2,7 +2,7 @@
 
 ## Context & Purpose
 - **Component Type**: Data Import Wizard
-- **User Roles**: GF, PLAN (full access), ADM (own data only)
+- **User Roles**: GF, INNEN (full access), ADM (own data only), PLAN (read-only, no import)
 - **Usage Context**: Import customers, contacts from CSV/Excel
 - **Business Value**: Efficient onboarding of existing customer data
 
@@ -225,8 +225,9 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
 **RBAC Import Restrictions:**
 - ADM users: Can only import customers assigned to self
 - "Inhaber" field auto-set to current user for ADM
-- GF/PLAN: Can assign imported customers to any ADM user
+- GF/INNEN: Can assign imported customers to any ADM user
 - Setting: "Alle importierten Kunden zuweisen zu:" dropdown (select ADM user)
+- PLAN users: Cannot access bulk import (read-only access to customers)
 
 **Import History:**
 - Link in header: "Frühere Importe anzeigen"
