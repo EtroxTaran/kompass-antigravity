@@ -4972,6 +4972,600 @@ POST /api/v1/contracts/:id/complete
 
 ---
 
+## 16. Supplier Management Endpoints (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Status:** Critical - Addresses Pre-Mortem Danger #3  
+**Priority:** Phase 1 MVP
+
+### POST /api/v1/suppliers
+
+Create new supplier.
+
+**Auth:** INN, PLAN, KALK, GF  
+**Permission:** Supplier.CREATE
+
+**Request Body:**
+```typescript
+{
+  "companyName": "Schreinerei Müller GmbH",
+  "supplierType": "subcontractor",
+  "serviceCategories": ["carpentry", "furniture", "installation"],
+  "serviceDescription": "Spezialisiert auf hochwertige Ladeneinrichtungen...",
+  "email": "info@mueller-schreinerei.de",
+  "phone": "+49 89 1234567",
+  "billingAddress": { "street": "Industriestr. 42", "zipCode": "80331", "city": "München", "country": "Deutschland" },
+  "paymentTerms": { "paymentMethod": "Invoice", "daysUntilDue": 30, "discountPercentage": 2, "discountDays": 10, "partialPaymentAllowed": true },
+  "accountManagerId": "user-inn-123"
+}
+```
+
+**Response** (201 Created):
+```typescript
+{
+  "_id": "supplier-abc123",
+  "status": "PendingApproval",  // Awaits GF approval
+  ...
+}
+```
+
+### GET /api/v1/suppliers
+
+List suppliers with filtering.
+
+**Auth:** All authenticated users  
+**Permission:** Supplier.READ
+
+**Query Parameters:**
+- `status` (string): 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval'
+- `supplierType` (string): Filter by type
+- `serviceCategory` (string): Filter by service category
+- `search` (string): Search name, city, service description
+- `sort` (string): 'name' | 'rating' | 'activeProjects' | 'lastActivity'
+- `order` ('asc' | 'desc'): Sort order
+
+**Response** (200 OK):
+```typescript
+[
+  {
+    "_id": "supplier-abc123",
+    "companyName": "Schreinerei Müller GmbH",
+    "supplierType": "subcontractor",
+    "rating": { "overall": 4.8, "reviewCount": 12 },
+    "activeProjectCount": 5,
+    "status": "Active"
+  }
+]
+```
+
+### GET /api/v1/suppliers/:id
+
+Get supplier details.
+
+**Auth:** All  
+**Permission:** Supplier.READ
+
+**Response** (200 OK): Full SupplierResponseDto
+
+### PUT /api/v1/suppliers/:id
+
+Update supplier.
+
+**Auth:** INN, GF  
+**Permission:** Supplier.UPDATE
+
+### PUT /api/v1/suppliers/:id/approve
+
+Approve pending supplier.
+
+**Auth:** GF only  
+**Permission:** Supplier.APPROVE
+
+**Response** (200 OK):
+```typescript
+{
+  "_id": "supplier-abc123",
+  "status": "Active",
+  "approvedBy": "user-gf-456",
+  "approvedAt": "2025-11-12T10:30:00Z"
+}
+```
+
+### PUT /api/v1/suppliers/:id/blacklist
+
+Blacklist supplier.
+
+**Auth:** GF only  
+**Permission:** Supplier.BLACKLIST
+
+**Request Body:**
+```typescript
+{
+  "reason": "Multiple quality issues and missed deadlines"
+}
+```
+
+### POST /api/v1/suppliers/:supplierId/contracts
+
+Create supplier contract.
+
+**Auth:** INN, PLAN, GF  
+**Permission:** SupplierContract.CREATE
+
+**Request Body:**
+```typescript
+{
+  "projectId": "project-123",  // Optional, null for framework contract
+  "contractType": "project",
+  "title": "Elektrik Installation REWE München",
+  "description": "Vollständige Elektroinstallation...",
+  "scope": ["Verkabelung", "Steckdosen", "Beleuchtung"],
+  "contractValue": 35000,
+  "valueType": "Fixed",
+  "startDate": "2025-02-01",
+  "endDate": "2025-02-15",
+  "paymentSchedule": [
+    { "description": "50% Anzahlung", "percentage": 50, "amount": 17500, "dueCondition": "Bei Auftragserteilung" },
+    { "description": "50% Restzahlung", "percentage": 50, "amount": 17500, "dueCondition": "Nach Abnahme" }
+  ]
+}
+```
+
+**Response** (201 Created): SupplierContractDto
+
+### GET /api/v1/suppliers/:supplierId/contracts
+
+List supplier contracts.
+
+**Auth:** All  
+**Permission:** SupplierContract.READ
+
+---
+
+## 17. Material Management Endpoints (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Status:** Critical - Addresses Pre-Mortem Danger #3  
+**Priority:** Phase 1 MVP
+
+### POST /api/v1/materials
+
+Create new material in catalog.
+
+**Auth:** INN, PLAN, KALK, GF  
+**Permission:** Material.CREATE
+
+**Request Body:**
+```typescript
+{
+  "materialCode": "MAT-LED-001",
+  "materialName": "LED-Panel 60x60cm warmweiß",
+  "description": "Hochwertiges LED-Panel für abgehängte Decken...",
+  "category": "ceiling_lights",
+  "unit": "piece",
+  "dimensions": { "length": 60, "width": 60, "height": 2, "unit": "cm" },
+  "manufacturerName": "Osram",
+  "manufacturerSKU": "LED-60X60-WW-40W",
+  "supplierPrices": [
+    {
+      "supplierId": "supplier-123",
+      "unitPrice": 145.00,
+      "minimumOrderQuantity": 10,
+      "leadTimeDays": 14,
+      "isPreferred": true
+    }
+  ],
+  "tags": ["LED", "Panel", "Decke", "warmweiß", "dimmbar"]
+}
+```
+
+**Response** (201 Created):
+```typescript
+{
+  "_id": "material-xyz123",
+  "materialCode": "MAT-LED-001",
+  "averagePrice": 145.00,
+  "lowestPrice": 145.00,
+  "status": "Active"
+}
+```
+
+### GET /api/v1/materials
+
+Search material catalog.
+
+**Auth:** All  
+**Permission:** Material.READ
+
+**Query Parameters:**
+- `category` (string): Filter by category
+- `search` (string): Search name, description, tags
+- `supplierId` (string): Materials from specific supplier
+- `status` ('Active' | 'Discontinued'): Filter by status
+- `sort` ('name' | 'price' | 'timesUsed'): Sort by
+- `order` ('asc' | 'desc'): Sort order
+
+**Response** (200 OK):
+```typescript
+[
+  {
+    "_id": "material-xyz123",
+    "materialCode": "MAT-LED-001",
+    "materialName": "LED-Panel 60x60cm warmweiß",
+    "category": "ceiling_lights",
+    "unit": "piece",
+    "averagePrice": 145.00,
+    "lowestPrice": 138.00,
+    "supplierCount": 2,
+    "timesUsed": 12
+  }
+]
+```
+
+### POST /api/v1/materials/:id/supplier-prices
+
+Add or update supplier pricing.
+
+**Auth:** INN, KALK, GF  
+**Permission:** Material.UPDATE_PRICES
+
+**Request Body:**
+```typescript
+{
+  "supplierId": "supplier-456",
+  "unitPrice": 138.00,
+  "minimumOrderQuantity": 20,
+  "leadTimeDays": 7,
+  "bulkDiscounts": [
+    { "quantityFrom": 50, "discountPercentage": 5, "unitPrice": 131.10 }
+  ],
+  "isPreferred": false,
+  "notes": "Preis gültig bis 31.12.2025"
+}
+```
+
+**Response** (200 OK): Updated MaterialDto with new price
+
+---
+
+## 18. Project Material Management Endpoints (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Priority:** Phase 1 MVP
+
+### POST /api/v1/projects/:projectId/material-requirements
+
+Add material to project BOM.
+
+**Auth:** KALK (estimate), PLAN (planning), INN, GF  
+**Permission:** ProjectMaterial.CREATE
+
+**Request Body:**
+```typescript
+{
+  "materialId": "material-xyz123",
+  "phase": "installation",
+  "estimatedQuantity": 24,
+  "estimatedUnitPrice": 145.00,  // From material or specific supplier
+  "workPackage": "Deckenbeleuchtung Verkaufsraum",
+  "description": "LED-Panels für Hauptverkaufsfläche"
+}
+```
+
+**Response** (201 Created): ProjectMaterialRequirementDto
+
+### GET /api/v1/projects/:projectId/material-requirements
+
+Get project BOM.
+
+**Auth:** PLAN, INN, KALK, BUCH, GF  
+**Permission:** ProjectMaterial.READ
+
+**Query Parameters:**
+- `phase` (string): Filter by project phase
+- `status` (string): Filter by requirement status
+- `supplierId` (string): Filter by supplier
+
+**Response** (200 OK):
+```typescript
+[
+  {
+    "_id": "project-material-123",
+    "materialId": "material-xyz123",
+    "materialName": "LED-Panel 60x60cm",
+    "phase": "installation",
+    "estimatedQuantity": 24,
+    "actualQuantity": 24,
+    "estimatedTotalCost": 3480.00,
+    "actualTotalCost": 3408.00,
+    "costVariance": -72.00,
+    "costVariancePercentage": -2.1,
+    "deliveryStatus": "delivered",
+    "requirementStatus": "delivered"
+  }
+]
+```
+
+### GET /api/v1/projects/:projectId/material-costs
+
+Get material cost summary.
+
+**Auth:** PLAN, KALK, BUCH, GF  
+**Permission:** ProjectMaterial.READ
+
+**Response** (200 OK):
+```typescript
+{
+  "projectId": "project-123",
+  "estimatedTotalCost": 125000.00,
+  "actualTotalCost": 95200.00,
+  "costVariance": -29800.00,
+  "costVariancePercentage": -23.8,
+  "materialCount": 12,
+  "orderedCount": 8,
+  "deliveredCount": 5,
+  "notOrderedCount": 4,
+  "byCategory": [
+    { "category": "shelving", "estimated": 43000, "actual": 41200, "variance": -1800 },
+    { "category": "lighting", "estimated": 35000, "actual": 33850, "variance": -1150 }
+  ]
+}
+```
+
+---
+
+## 19. Purchase Order Endpoints (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Priority:** Phase 1 MVP
+
+### POST /api/v1/purchase-orders
+
+Create purchase order.
+
+**Auth:** INN, PLAN (≤€10k), GF  
+**Permission:** PurchaseOrder.CREATE
+
+**Request Body:**
+```typescript
+{
+  "projectId": "project-123",
+  "supplierId": "supplier-abc123",
+  "requiredByDate": "2025-02-15",
+  "deliveryAddress": { /* project site address */ },
+  "lineItems": [
+    {
+      "materialId": "material-xyz123",
+      "description": "LED-Panel 60x60cm warmweiß",
+      "quantity": 24,
+      "unit": "piece",
+      "unitPrice": 145.00,
+      "taxRate": 19,
+      "projectMaterialReqId": "project-material-123"
+    }
+  ],
+  "shippingCost": 150.00
+}
+```
+
+**Response** (201 Created):
+```typescript
+{
+  "_id": "purchase-order-456",
+  "poNumber": "PO-2025-00234",
+  "totalAmount": 4274.60,
+  "poStatus": "draft",  // or "pending_approval" if >€1k
+  "approvalRequired": true
+}
+```
+
+### PUT /api/v1/purchase-orders/:id/approve
+
+Approve purchase order.
+
+**Auth:** BUCH (≤€10k), GF (>€10k)  
+**Permission:** PurchaseOrder.APPROVE
+
+**Response** (200 OK):
+```typescript
+{
+  "_id": "purchase-order-456",
+  "poStatus": "approved",
+  "approvedBy": "user-buch-789",
+  "approvedAt": "2025-11-12T14:30:00Z"
+}
+```
+
+### PUT /api/v1/purchase-orders/:id/send
+
+Send PO to supplier.
+
+**Auth:** INN, GF  
+**Permission:** PurchaseOrder.SEND
+
+**Request Body:**
+```typescript
+{
+  "orderMethod": "Email",
+  "orderDate": "2025-11-12"
+}
+```
+
+**Response** (200 OK):
+```typescript
+{
+  "_id": "purchase-order-456",
+  "poStatus": "sent_to_supplier",
+  "orderDate": "2025-11-12"
+}
+```
+
+### PUT /api/v1/purchase-orders/:id/receive-delivery
+
+Record material delivery.
+
+**Auth:** INN, PLAN, GF  
+**Permission:** PurchaseOrder.RECEIVE_DELIVERY
+
+**Request Body:**
+```typescript
+{
+  "lineItems": [
+    {
+      "materialId": "material-xyz123",
+      "deliveredQuantity": 24,
+      "deliveryDate": "2025-02-15"
+    }
+  ],
+  "deliveryNotes": "Vollständige Lieferung, einwandfrei"
+}
+```
+
+**Response** (200 OK):
+```typescript
+{
+  "_id": "purchase-order-456",
+  "poStatus": "delivered",
+  "actualDeliveryDate": "2025-02-15",
+  "projectCostsUpdated": true,
+  "projectBudgetStatus": "OnTrack"
+}
+```
+
+**Side Effects:**
+- Updates ProjectMaterialRequirement.actualQuantity and actualTotalCost
+- Recalculates project.actualMaterialCosts
+- Triggers budget alert if project exceeds budget threshold
+
+---
+
+## 20. Supplier Invoice Endpoints (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Priority:** Phase 1 MVP
+
+### POST /api/v1/supplier-invoices
+
+Create supplier invoice record.
+
+**Auth:** INN, BUCH, GF  
+**Permission:** SupplierInvoice.CREATE
+
+**Request Body:**
+```typescript
+{
+  "invoiceNumber": "R-SUP-24-456",  // Supplier's invoice number
+  "supplierId": "supplier-abc123",
+  "projectId": "project-123",
+  "invoiceDate": "2025-02-15",
+  "dueDate": "2025-03-17",
+  "lineItems": [
+    { "description": "LED-Panel Installation", "quantity": 24, "unit": "piece", "unitPrice": 145.00, "taxRate": 19 }
+  ],
+  "netAmount": 3480.00,
+  "taxRate": 19,
+  "taxAmount": 661.20,
+  "grossAmount": 4141.20
+}
+```
+
+**Response** (201 Created):
+```typescript
+{
+  "_id": "supplier-invoice-789",
+  "paymentStatus": "Pending",  // or "Approved" if <€1k and 3-way match passes
+  "approvalRequired": true
+}
+```
+
+### PUT /api/v1/supplier-invoices/:id/approve
+
+Approve invoice for payment.
+
+**Auth:** BUCH (≤€10k), GF (>€10k)  
+**Permission:** SupplierInvoice.APPROVE
+
+**Response** (200 OK):
+```typescript
+{
+  "_id": "supplier-invoice-789",
+  "paymentStatus": "Approved",
+  "approvedBy": "user-buch-101",
+  "approvedAt": "2025-02-16T09:00:00Z"
+}
+```
+
+### PUT /api/v1/supplier-invoices/:id/pay
+
+Mark invoice as paid.
+
+**Auth:** BUCH, GF  
+**Permission:** SupplierInvoice.MARK_PAID
+
+**Request Body:**
+```typescript
+{
+  "paidDate": "2025-02-20",
+  "paidAmount": 4141.20
+}
+```
+
+**Response** (200 OK):
+```typescript
+{
+  "_id": "supplier-invoice-789",
+  "paymentStatus": "Paid",
+  "paidDate": "2025-02-20",
+  "paidAmount": 4141.20
+}
+```
+
+**Side Effects:**
+- Updates project.actualSupplierCosts
+- Updates supplier.outstandingInvoices
+- Syncs to Lexware (Phase 2+)
+
+---
+
+## 21. Supplier Communication Endpoints (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Priority:** Phase 1 MVP
+
+### POST /api/v1/suppliers/:supplierId/communications
+
+Log communication with supplier.
+
+**Auth:** INN, PLAN, GF  
+**Permission:** Communication.CREATE
+
+**Request Body:**
+```typescript
+{
+  "projectId": "project-123",  // Optional
+  "communicationType": "Email",
+  "direction": "Outbound",
+  "subject": "Angebot für Projekt REWE München",
+  "content": "Sehr geehrter Herr Müller, hiermit senden wir Ihnen...",
+  "communicationDate": "2025-11-12T14:00:00Z",
+  "requiresFollowUp": true,
+  "followUpDate": "2025-11-20"
+}
+```
+
+**Response** (201 Created): SupplierCommunicationDto
+
+### GET /api/v1/suppliers/:supplierId/communications
+
+Get communication history.
+
+**Auth:** INN, PLAN, GF  
+**Permission:** Communication.READ
+
+**Response** (200 OK): Array of SupplierCommunicationDto
+
+---
+
 ## Document History
 
 | Version | Date       | Author | Changes |
@@ -4982,8 +5576,10 @@ POST /api/v1/contracts/:id/complete
 | 1.3     | 2025-01-28 | System | **Added Tour Planning & Expense Management endpoints (Phase 2)**: Tour management (CRUD, completion, cost summary), Meeting management (CRUD, GPS check-in, outcome tracking, tour auto-suggestion), Hotel Stay management (nested under tours, search with Google Places API, preferences), Expense management (CRUD, receipt upload with OCR, approval workflow with GF-only approval, bulk operations, report generation in JSON/PDF/CSV), Mileage Log management (nested under tours, GPS tracking, distance validation, GF override with audit trail), complete query parameters, business rules, nested resource patterns |
 | 1.4     | 2025-01-28 | System | **Added Calendar & Export Endpoints (MVP)**: Get calendar events (unified view of tasks, projects, opportunities), My calendar events (user-specific), Team calendar events (GF/PLAN only), ICS export (one-time download for Outlook/Google/Apple Calendar), complete CalendarEvent and CalendarQuery DTOs, business rules (date range validation, event density limits, RBAC filtering, ICS standards, color accessibility), performance considerations (caching, query optimization, export performance) |
 | 1.5     | 2025-01-28 | System | **Added Time Tracking & Project Cost Management Endpoints (Phase 1 MVP)**: TimeEntry endpoints (CRUD, timer start/stop, bulk approve/reject, labor cost reports, pending approval queue) with complete DTOs; ProjectCost endpoints (CRUD, approval workflow, material cost summaries, pending payment tracking) with complete DTOs. Includes comprehensive RBAC permissions, business rules, status lifecycle transitions, cost calculations, and GoBD compliance for approved/paid entries |
+| 1.6     | 2025-11-12 | System | **CRITICAL UPDATE - Added Supplier & Material Management Endpoints (Phase 1 MVP)**: Complete REST API for Supplier management (CRUD, approval, blacklist, contracts), Material catalog (CRUD, multi-supplier pricing, search), Project Material Requirements (BOM management, cost tracking), Purchase Orders (CRUD, approval workflow, delivery recording with real-time project cost updates), Supplier Invoices (CRUD, 3-way match, approval workflow, payment tracking), Supplier Communications (logging). Addresses Pre-Mortem Danger #3 (Critical Workflow Gaps). See [Supplier Management Spec](../../specifications/SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md) and [Material Management Spec](../../specifications/MATERIAL_INVENTORY_MANAGEMENT_SPEC.md) for complete business logic. |
 
 ---
 
-**End of API_SPECIFICATION.md v1.5**
+**End of API_SPECIFICATION.md v1.6**
+
 

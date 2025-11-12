@@ -13,10 +13,121 @@
 - **API-Spezifikation:** `docs/reviews/API_SPECIFICATION.md` – OpenAPI 3.0, Versionierung, Authentifizierung
 - **RBAC-Matrix:** `docs/reviews/RBAC_PERMISSION_MATRIX.md` – Rollen-/Feldebene-Berechtigungen, Eskalationsregeln
 
-**📋 MVP Scope Freeze (ISS-010):**
-- ✅ **MVP:** CRM-Basis (Customer/Contact/Location/Protocol CRUD + Import/Export) – 16 Wochen, €180-220k
-- ⚠️ **Phase 2 (Deferred):** KI-Features (Whisper Transkription, AI-Analyse), Lexware-API-Sync, Erweiterte PM-Features
-- 🎯 **Fokus:** Schneller Markteintritt mit Kern-CRM-Funktionalität, bewährte Offline-First-Architektur
+---
+
+## 🚨 KRITISCHE AKTUALISIERUNG: Post-Pre-Mortem Strategie (2025-11-12)
+
+**Status:** AKTIV - Strategische Neuausrichtung nach Pre-Mortem-Analyse
+
+### Hintergrund
+
+Eine umfassende Pre-Mortem-Analyse ([siehe Dokument](../reviews/PROJECT_KOMPASS_PRE-MORTEM_ANALYSIS.md)) hat **vier existenzielle Risiken** identifiziert, die ohne sofortige Kurskorrektur zum Scheitern von KOMPASS führen würden:
+
+1. **Fatale Überreichweite:** Shift von fokussiertem CRM zu "Autonomem Business Partner" überdehnt Ressourcen
+2. **"AI Magic" Trugschluss:** KI-Features setzen Daten voraus, die nicht existieren
+3. **Kritische Workflow-Lücken:** Keine Module für Lieferanten- und Materialverwaltung
+4. **Brüchige Integration:** Manuelle Lexware-CSV-Integration ist Ausfallpunkt
+
+### Strategische Antwort: Phasenweise Roadmap zum "Autonomen Partner"
+
+**Kernbotschaft:** Die KI-Vision bleibt bestehen, aber als **Reise** über 3 Jahre, nicht als Launch-Feature.
+
+#### Phase 1 (Monate 0-6): Fundament - "Zuverlässig, Vollständig, Benutzbar"
+
+**Priorität:** Offline-First CRM/PM mit **vollständigen Workflows** für Ladenbau-Geschäft.
+
+**Was wird geliefert:**
+- ✅ Customer/Contact/Location Management (wie geplant)
+- ✅ Opportunity/Offer/Contract Management
+- ✅ **NEU: Supplier & Subcontractor Management** (komplett)
+- ✅ **NEU: Material & Inventory Management** (komplett)
+- ✅ Project execution with real-time cost tracking
+- ✅ Time tracking & expense management
+- ✅ **Phase 1 AI:** RAG-basierte Suche (Projekte, Materialien, Notizen) + Audio-Transkription (Deutsch)
+- ✅ Lexware Integration Phase 1 (manuelles CSV mit Reconciliation-Tools)
+- ✅ Offline-First PWA mit Tiered Storage (iOS 50MB-sicher)
+
+**Was NICHT geliefert wird:**
+- ❌ Prädiktive Analysen (Lead Scoring, Risk Assessment, Cashflow Forecasting)
+- ❌ Automatisierte Empfehlungen (Routenoptimierung, Team-Zuweisungen)
+- ❌ Anomalie-Erkennung
+- ❌ Alle "AI-gestützte" Dashboard-Sektionen (Phase 3 markiert)
+
+**Wert-Proposition (Jahr 1):**
+- "Single Source of Truth" für Ladenbau-Geschäft (nicht nur CRM)
+- INN-Persona kann **100% der Beschaffungs-Workflows** in KOMPASS ausführen (kein Excel mehr)
+- PLAN-Persona sieht **Echtzeit-Projektkosten** aus Material-Lieferungen
+- ADM-Persona hat **zuverlässige Offline-App** mit Voice-Input (keine Datenverluste)
+
+#### Phase 2 (Monate 6-12): Einfache Intelligenz - "Verstärken, nicht Ersetzen"
+
+**Priorität:** Pattern-basierte Intelligenz (kein ML), Lexware-Automatisierung.
+
+**Was wird geliefert:**
+- ✅ Smart Template Recommendations (Pattern Matching, kein ML)
+- ✅ Duplicate Detection (Fuzzy Matching)
+- ✅ Material Price Trends (↑↓→ basierend auf historischen Daten)
+- ✅ Similar Project Finder (Vector-Similarity, kein ML)
+- ✅ **Lexware Integration Phase 2:** Semi-automatische Synchronisation (90% automatisiert, 4h Latenz)
+- ✅ Inventory Management (Lagerbestand-Tracking)
+- ✅ RFQ Workflow (Request for Quotes)
+
+**Datenanforderung:**
+- 3-6 Monate KOMPASS-Betriebsdaten
+- 30+ abgeschlossene Projekte
+- 50+ Angebote mit Template-Zuordnung
+
+**Wert-Proposition (Jahr 1-2):**
+- BUCH-Persona: Lexware-Synchronisation **unter 15 Minuten pro Woche** (statt 60 Minuten)
+- KALK-Persona: Material-Preisvergleich **automatisch** (spare 30 Minuten pro Kalkulation)
+- INN-Persona: Lagerbestand-Alerts **automatisch** (verhindert Fehlbestellungen)
+
+#### Phase 3 (Monate 12-24+): Prädiktive Analysen - "Intelligente Vorhersage"
+
+**Priorität:** ML-basierte Vorhersagen **NUR wenn Datenqualitäts-Gates bestanden**.
+
+**Voraussetzung (HARTE ANFORDERUNG):**
+- ✅ 12+ Monate saubere KOMPASS-Daten
+- ✅ 100+ abgeschlossene Opportunities (50 gewonnen, 50 verloren)
+- ✅ 50+ abgeschlossene Projekte mit vollständigem Kosten-Tracking
+- ✅ 90%+ Feldausfüllrate (alle kritischen Felder)
+- ✅ <5% Fehlerrate in Datenqualitäts-Audit
+- ✅ **Validierung:** ML-Backtesting zeigt ≥75% Genauigkeit
+
+**Was wird geliefert (NUR wenn Gates bestanden):**
+- Lead Scoring & Win Probability
+- Project Risk Assessment
+- Cashflow Forecasting
+- Route Optimization
+- Anomaly Detection
+
+**Wert-Proposition (Jahr 2-3):**
+- GF-Persona: **Datenbasierte Forecasts** statt Bauchgefühl
+- PLAN-Persona: **Frühwarnung für Budget-Überschreitungen** (2+ Wochen im Voraus)
+- ADM-Persona: **Optimierte Routen** (15% Kraftstoff-Ersparnis)
+
+**Wenn Gates NICHT bestanden:**
+- Phase 3 Features bleiben **gesperrt**
+- Dashboard zeigt: "KI-Features noch nicht verfügbar. Datenqualität: 78% (Ziel: 90%). Weiter Daten sammeln."
+- Keine Ausnahmen. Keine vorzeitigen Launches.
+
+### Siehe Detaillierte Dokumentation
+
+- [AI Strategy & Phasing](AI_STRATEGY_AND_PHASING.md) - Vollständige Phasen-Roadmap mit Datenqualitäts-Gates
+- [AI Data Requirements](../specifications/AI_DATA_REQUIREMENTS.md) - Exakte Datenanforderungen pro Feature
+- [Supplier Management Spec](../specifications/SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md) - Lieferanten-Modul (Phase 1)
+- [Material Management Spec](../specifications/MATERIAL_INVENTORY_MANAGEMENT_SPEC.md) - Material-Modul (Phase 1)
+- [Lexware Integration Strategy](../specifications/LEXWARE_INTEGRATION_STRATEGY.md) - 4-Phasen Integrations-Roadmap
+- [Revised Implementation Roadmap](../implementation/REVISED_IMPLEMENTATION_ROADMAP.md) - Sprint-Level Planung
+- [User Adoption Strategy](USER_ADOPTION_STRATEGY.md) - Adoptions-Strategien pro Persona
+
+---
+
+**📋 MVP Scope (AKTUALISIERT nach Pre-Mortem):**
+- ✅ **Phase 1 (Monate 0-6):** CRM-Basis + Supplier-Modul + Material-Modul + Lexware CSV + RAG Search + Audio STT - €190k, 6 Sprints
+- ✅ **Phase 2 (Monate 6-12):** Pattern-basierte Intelligenz + Lexware Semi-Auto - €120k, 6 Sprints
+- ⚠️ **Phase 3 (Monate 12-24+):** ML-Vorhersagen **NUR wenn Datenqualität ≥90%** - €150k, 12 Sprints
+- 🎯 **Fokus:** Jahr 1 Wert **ohne KI-Vorhersagen**. KI ist Enhancement, nicht Requirement.
 
 **🌍 Internationalisierung (i18n) - Strategie (GAP-SCOPE-003):**
 - **MVP:** Deutsch-only (hardcoded strings, keine i18n-Bibliothek)

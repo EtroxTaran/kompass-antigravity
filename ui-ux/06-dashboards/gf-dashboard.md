@@ -16,26 +16,47 @@ Create a GF (CEO) dashboard for KOMPASS showing high-level KPIs, financial overv
 - Quick filters: "Alle Kunden", "Alle Projekte", "Alle Mitarbeiter"
 - User: Avatar + "Dr. Schmidt (GF)"
 
-**KPI Cards (Top Row - 4 cards):**
+**AI Feature Toggle (Top-right corner):**
+- Switch: "KI-Features anzeigen" (default: OFF until Phase 3 data gates passed)
+- Info icon: "KI-Features erfordern Mindestdatenqualität - siehe Dokumentation"
+- Link: [AI Strategy](../../docs/product-vision/AI_STRATEGY_AND_PHASING.md)
+
+**KPI Cards (Top Row - 6 cards):**
 1. **Umsatz (aktuelles Quartal)**
    - Large value: "€ 2.450.000" (36px, blue)
    - Trend: "+15% ↗" (green) vs last quarter
+   - **[Phase 3]** AI prediction: "🔮 €2.8M erwartet" (purple)
    - Sparkline chart (small)
    
 2. **Offene Opportunities**
    - Value: "€ 3.200.000" (36px, amber)
    - Count: "24 Opportunities"
    - Conversion rate: "42%"
+   - **[Phase 3]** AI insight: "⚡ 3 Deals mit hoher Wahrscheinlichkeit"
    
 3. **Aktive Projekte**
    - Value: "18" (36px, blue)
    - On time: "16" (green), delayed: "2" (red)
    - Progress: Small circular progress
+   - **[Phase 3]** AI risk: "⚠️ 2 Projekte gefährdet"
    
 4. **Liquidität**
    - Cash: "€ 850.000" (36px, green)
    - Outstanding: "€ 420.000"
    - Runway: "6 Monate"
+   - **[Phase 3]** AI forecast: "📈 Positiver Cashflow nächsten Monat"
+   
+5. **Toureneffizienz**
+   - Avg stops/tour: "4.2" (36px, blue)
+   - Distance saved: "312 km" (green)
+   - Fuel costs: "€1,247" this month
+   - Trend: "+12% ↗" efficiency
+   
+6. **Offene Aufträge**
+   - Value: "€ 425.000" (36px, purple)
+   - Count: "23 Aufträge"
+   - Avg. processing: "3.5 Tage"
+   - Trend: "15% schneller"
 
 **Section: Vertriebsübersicht (Sales Overview)**
 - **Opportunity Pipeline (Visual Funnel):**
@@ -80,17 +101,51 @@ Create a GF (CEO) dashboard for KOMPASS showing high-level KPIs, financial overv
   - Last sync: "—" OR timestamp (Phase 2+)
   - Actions: "Lexware öffnen" (external link)
 
+**Section: AI-gestützte Einblicke [Phase 3] (AI-Powered Insights)**
+- **Visibility:** Hidden by default until Phase 3 data gates passed. Toggle: "KI-Features anzeigen"
+- **Data Requirement:** 12+ months of data, 100+ completed opportunities, 50+ completed projects
+- **See:** [AI Data Requirements](../../docs/specifications/AI_DATA_REQUIREMENTS.md)
+
+- **[Phase 3] Predictive Analytics Card:**
+  - Title: "🔮 KI-Prognosen für Q1 2025"
+  - Content:
+    - "Erwarteter Umsatz: €2.8M (+15%)"
+    - "Wahrscheinliche Abschlüsse: 12 von 24 Opportunities"
+    - "Kritische Kunden: 3 mit Abwanderungsrisiko"
+    - "Empfohlene Aktionen: 5 dringende Maßnahmen"
+  - **Confidence:** "85% Konfidenz" (shown only if >70%)
+  - Action: "Details anzeigen →"
+
+- **[Phase 3] Anomalie-Erkennung:**
+  - Title: "⚡ Ungewöhnliche Muster erkannt"
+  - Items:
+    - "🔴 Projekt Phoenix: Kostenüberschreitung wahrscheinlich (85% Sicherheit)"
+    - "⚠️ Kunde Hofladen Müller: Bestellverhalten abweichend (-40%)"
+    - "📈 Opportunity Baumarkt Weber: Abschluss wahrscheinlicher als erwartet (+30%)"
+  - Each with: Confidence score (min 70%), recommended action, **explainability link**
+  - **Feedback:** "Nicht hilfreich?" link for user feedback
+
+- **[Phase 3] Intelligente Empfehlungen:**
+  - "💡 Basierend auf Ihren Daten empfehlen wir:"
+  - List of 3-5 actionable recommendations:
+    - "Route München-Nord optimieren: 15% Kraftstoffersparnis möglich"
+    - "Mitarbeiter Schmidt für Projekt Y einsetzen (beste Erfolgsquote)"
+    - "Angebot A-2025-089 nachfassen: Hohe Abschlusswahrscheinlichkeit"
+  - Each with: Expected benefit, confidence score, "Warum?" explanation link
+
 **Section: Team-Performance**
 - **Top-Performers (Table):**
-  - Columns: Name, Rolle, Opportunities, Umsatz, Conversion Rate
+  - Columns: Name, Rolle, Opportunities, Umsatz, Conversion Rate, **[Phase 3]** AI-Score
   - Rows: Top 5 employees by revenue
   - Avatars, badges for roles
+  - **[Phase 3]** AI-Score: Performance prediction (1-100) - only shown if toggle ON
   - Sorting by column
 
 - **Auslastung (Heatmap):**
   - Team members (Y-axis)
   - Weeks (X-axis)
   - Color: Green (under 80%), Amber (80-100%), Red (over 100%)
+  - **[Phase 3]** AI overlay: Predicted bottlenecks (purple dots) - only shown if toggle ON
 
 **Section: Aktivitäten & Alerts**
 - Recent important activities

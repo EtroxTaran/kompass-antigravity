@@ -8,7 +8,16 @@
 
 ## Overview
 
-Task dashboards provide role-specific views of tasks across the KOMPASS application. Each role sees tasks relevant to their responsibilities with appropriate widgets and filters.
+Task dashboards provide role-specific views of tasks across the KOMPASS application with AI-powered prioritization, smart assignment suggestions, and predictive analytics. Each role sees tasks relevant to their responsibilities with appropriate widgets and filters.
+
+**AI Features by Phase:**
+- **[Phase 1] Natural Language Processing:** Create tasks with voice commands or text parsing (speech-to-text)
+- **[Phase 2] Smart Prioritization:** AI suggests task priorities based on deadlines and dependencies (pattern matching)
+- **[Phase 3] Predictive Completion:** Machine learning predicts realistic completion times based on historical data
+- **[Phase 3] Auto-Assignment:** AI suggests best team member based on skills, workload, and past performance
+- **[Phase 3] Anomaly Detection:** Alerts for unusual patterns (overdue tasks, bottlenecks, etc.)
+
+**Note:** All Phase 3 AI features require minimum data thresholds - see [AI Data Requirements](../../docs/specifications/AI_DATA_REQUIREMENTS.md)
 
 ---
 
@@ -70,60 +79,100 @@ Management view of all team tasks across projects.
 
 ---
 
-## Task Overview Widgets
+## Task Overview Widgets (AI-Enhanced)
 
-### Widget 1: Open Tasks Count
+### Widget 1: Open Tasks Count + AI Priority
 ```
 ┌──────────────┐
 │   📊 OPEN    │
 │              │
 │      12      │
 │   tasks      │
+│ 🎯 3 urgent  │
 └──────────────┘
 ```
 - **Metric:** Count of tasks with status = "open" or "todo"
-- **Color:** Gray (#6B7280)
+- **AI Insight:** Shows AI-identified urgent tasks
+- **Color:** Gray (#6B7280), purple for AI text
 - **Click:** Filter list to open tasks only
 
-### Widget 2: In Progress Count
+### Widget 2: In Progress Count + Velocity
 ```
 ┌──────────────┐
 │ 🔄 PROGRESS  │
 │              │
 │       5      │
 │   tasks      │
+│ 📈 +2 today  │
 └──────────────┘
 ```
 - **Metric:** Tasks with status = "in_progress"
-- **Color:** Blue (#3B82F6)
+- **AI Insight:** Shows completion velocity
+- **Color:** Blue (#3B82F6), green for positive trend
 - **Click:** Filter to in-progress tasks
 
-### Widget 3: Overdue Count
+### Widget 3: Overdue Count + Risk Analysis
 ```
 ┌──────────────┐
 │ ⚠️ OVERDUE   │
 │              │
 │       2      │
 │   tasks      │
+│ 🔴 1 blocked │
 └──────────────┘
 ```
 - **Metric:** Tasks past due date
+- **AI Analysis:** Shows blockers and dependencies
 - **Color:** Red (#EF4444) if > 0, otherwise gray
-- **Click:** Show overdue tasks list
-- **Alert:** Blink animation if count > 5
+- **Click:** Show overdue tasks list with resolution suggestions
+- **Alert:** Pulse animation if count > 5
 
-### Widget 4: This Week Count
+### Widget 4: This Week Count + Prediction
 ```
 ┌──────────────┐
 │ 📅 THIS WEEK │
 │              │
 │       8      │
 │ due soon     │
+│ 🤖 6 likely  │
 └──────────────┘
 ```
 - **Metric:** Tasks due in next 7 days
+- **AI Prediction:** Shows realistic completion forecast
 - **Color:** Orange (#F59E0B) if > 10
 - **Click:** Filter to this week's tasks
+
+### Widget 5: AI Insights [Phase 3] (NEW)
+```
+┌──────────────┐
+│ 🤖 INSIGHTS  │
+│              │
+│   💡 Tips    │
+│ 3 available  │
+│ View all →   │
+└──────────────┘
+```
+- **[Phase 3]** **Metric:** AI-generated insights and suggestions
+- **Examples:** "2h saved by reordering", "Anna available for urgent task"
+- **Color:** Purple gradient
+- **Click:** Open AI insights panel
+- **Visibility:** Hidden if AI toggle OFF or data requirements not met
+
+### Widget 6: Team Load (NEW - for managers)
+```
+┌──────────────┐
+│ 👥 TEAM LOAD │
+│              │
+│    85%       │
+│  capacity    │
+│ ⚡ Optimal   │
+└──────────────┘
+```
+- **Metric:** Team utilization percentage
+- **Status:** Optimal/Warning/Critical (calculated from hours)
+- **[Phase 3]** AI enhancement: Predictive status - only if toggle ON
+- **Color:** Green/Amber/Red based on load
+- **Click:** Open team workload view
 
 ---
 
@@ -180,6 +229,70 @@ Management view of all team tasks across projects.
 ### Default Sort
 - **My Tasks:** Due Date Ascending (overdue tasks first)
 - **Project Tasks:** Priority High to Low, then Due Date
+- **[Phase 3] AI Sort (NEW):** AI-optimized order based on urgency, dependencies, and user patterns (only if toggle ON)
+
+---
+
+## AI-Powered Task Management Features (NEW)
+
+### Smart Task Creation
+```
+┌─────────────────────────────────────────────┐
+│ 🎤 "Neue Aufgabe erstellen..."             │
+│                                             │
+│ AI erkannt:                                │
+│ ✓ Typ: Kundenanruf                         │
+│ ✓ Kunde: Hofladen Müller                   │
+│ ✓ Fälligkeit: Morgen 15:00                 │
+│ ✓ Priorität: Hoch                          │
+│                                             │
+│ [Anpassen] [Erstellen]                     │
+└─────────────────────────────────────────────┘
+```
+- **[Phase 1] Voice Input:** Speak or type naturally in German (speech-to-text)
+- **[Phase 1] NLP Parsing:** Extracts task details automatically (basic parsing)
+- **[Phase 2] Context Awareness:** Links to relevant entities (pattern matching)
+- **[Phase 1] Quick Confirm:** One-click task creation
+
+### [Phase 3] AI Task Suggestions Panel
+```
+┌─────────────────────────────────────────────┐
+│ 💡 AI-Empfehlungen                          │
+├─────────────────────────────────────────────┤
+│ 🎯 Hohe Priorität                          │
+│ "Angebot für REWE nachfassen"              │
+│ Grund: 3 Tage ohne Antwort                 │
+│ [Aufgabe erstellen]                        │
+├─────────────────────────────────────────────┤
+│ ⚡ Effizienz-Tipp                         │
+│ "3 Aufgaben können kombiniert werden"      │
+│ Zeitsparung: ~45 Minuten                   │
+│ [Details anzeigen]                         │
+├─────────────────────────────────────────────┤
+│ 👥 Team-Empfehlung                         │
+│ "Anna hat Kapazität für Projekt-Review"    │
+│ Verfügbar: Ab 14:00                        │
+│ [Aufgabe zuweisen]                         │
+└─────────────────────────────────────────────┘
+```
+- **Visibility:** Only shown if AI toggle ON and Phase 3 data met
+- **Data Requirement:** 6+ months of task completion patterns
+
+### [Phase 3] Predictive Task Timeline
+```
+┌─────────────────────────────────────────────┐
+│ 📊 Aufgaben-Vorhersage diese Woche          │
+├─────────────────────────────────────────────┤
+│ Mo  █████████░ 9h (voll)                   │
+│ Di  ██████░░░░ 6h                          │
+│ Mi  ████████░░ 8h                          │
+│ Do  ███░░░░░░░ 3h + Tour                   │
+│ Fr  █████░░░░░ 5h                          │
+│                                             │
+│ 🤖 Empfehlung: Di/Do für neue Aufgaben     │
+└─────────────────────────────────────────────┘
+```
+- **Visibility:** Only shown if AI toggle ON and Phase 3 data met
 
 ---
 
@@ -307,12 +420,81 @@ Management view of all team tasks across projects.
 └─────────────────────────────────┘
 ```
 
-### Mobile Optimizations
+### Mobile Optimizations (Enhanced PWA)
 - **Collapsible Sections:** Tap to expand/collapse
-- **Swipeable Cards:** Swipe for quick actions
-- **Bottom Tab Bar:** Quick access to My Tasks, Team Tasks, Projects
-- **Pull to Refresh:** Refresh task list
-- **Floating Action Button:** + button for quick task creation
+- **Swipeable Cards:** Swipe actions with haptic feedback
+  - Swipe right: Mark complete
+  - Swipe left: Actions menu (reassign, postpone, delete)
+- **Bottom Tab Bar (NEW):**
+  ```
+  ┌───┬───┬───┬───┬───┐
+  │ 📋│ 🗺️│ ➕│ 🤖│ 👤│
+  │Tas│Tou│Add│ AI│Me │
+  └───┴───┴───┴───┴───┘
+  ```
+- **Pull to Refresh:** Refresh with skeleton loader
+- **Floating Action Button:** Multi-action speed dial
+  - Voice input
+  - Quick task
+  - Photo task
+  - Tour task
+
+### PWA-Specific Features
+- **Push Notifications:**
+  - "📅 Meeting mit Hofladen Müller in 30 Min"
+  - "✅ 3 Aufgaben heute abgeschlossen"
+  - "🚨 Überfällige Aufgabe: Angebot erstellen"
+  
+- **Offline Mode:**
+  - All tasks cached locally
+  - Create/edit tasks offline
+  - Queue sync indicator
+  - Conflict resolution UI
+  
+- **Voice Commands:**
+  - "Neue Aufgabe: Morgen REWE anrufen"
+  - "Zeige meine überfälligen Aufgaben"
+  - "Aufgabe erledigt"
+  
+- **Quick Actions (Long Press):**
+  - Copy task
+  - Share task
+  - Convert to tour stop
+  - Add to calendar
+
+### Tour Integration (NEW)
+```
+┌─────────────────────────────────┐
+│ 🗺️ Tour-Aufgaben heute         │
+├─────────────────────────────────┤
+│ 📍 Hofladen Müller (10:00)      │
+│    • Vertrag unterschreiben     │
+│    • Maße kontrollieren        │
+├─────────────────────────────────┤
+│ 📍 REWE Zentrale (14:00)        │
+│    • Angebot präsentieren       │
+├─────────────────────────────────┤
+│ [Tour optimieren] [Navigation]  │
+└─────────────────────────────────┘
+```
+
+### [Phase 3] Mobile AI Assistant (NEW)
+```
+┌─────────────────────────────────┐
+│ 🤖 KI-Assistent                 │
+├─────────────────────────────────┤
+│ "Was sollte ich zuerst machen?" │
+│                                 │
+│ 1. Hofladen anrufen (überfällig)│
+│ 2. Angebot fertigstellen        │
+│ 3. Team-Meeting vorbereiten     │
+│                                 │
+│ 💡 Tipp: Kombiniere Aufgaben    │
+│ 2 & 3 für Zeitersparnis        │
+└─────────────────────────────────┘
+```
+- **Visibility:** Only shown if AI toggle ON and Phase 3 data met
+- **Data Requirement:** 6+ months of task and productivity patterns
 
 ---
 
@@ -381,17 +563,74 @@ Management view of all team tasks across projects.
 
 ---
 
-## Performance Considerations
+## Performance Considerations (Enhanced)
 
 ### Lazy Loading
-- **Initial Load:** Show first 20 tasks
-- **Infinite Scroll:** Load more as user scrolls
-- **Virtualization:** For lists >100 tasks
+- **Initial Load:** Show first 20 tasks with skeleton loaders
+- **Infinite Scroll:** Load more as user scrolls with predictive fetch
+- **Virtualization:** For lists >100 tasks using react-window
+- **Progressive Enhancement:** Core features work on slow connections
 
-### Real-Time Updates (Phase 2)
-- **WebSocket:** Live task status updates
+### Real-Time Updates (Enhanced)
+- **WebSocket:** Live task status updates with reconnection
+- **Server-Sent Events:** Fallback for restricted networks
 - **Optimistic UI:** Update UI immediately, sync with server
-- **Conflict Resolution:** Show notification if task changed by another user
+- **Conflict Resolution:** AI-powered merge suggestions
+- **Background Sync:** PWA background sync API
+- **Delta Updates:** Only sync changed fields
+
+### Performance Metrics
+- **First Contentful Paint:** < 1.5s on 3G
+- **Time to Interactive:** < 3s on 3G
+- **Offline Mode:** Instant with cached data
+- **Search Response:** < 200ms (local index)
+
+---
+
+## AI Analytics & Insights [Phase 3] (NEW)
+
+**Global Visibility:** All AI insights hidden by default. Require AI toggle ON + Phase 3 data requirements.
+
+### [Phase 3] Task Completion Patterns
+```
+┌─────────────────────────────────────────────┐
+│ 📊 Ihre Produktivitätsmuster               │
+├─────────────────────────────────────────────┤
+│ Beste Zeit: 9:00-11:00 (85% erledigt)      │
+│ Aufgabentyp: Planung am effizientesten      │
+│ Durchschnitt: 4.2 Aufgaben/Tag             │
+│                                             │
+│ 💡 Empfehlung: Wichtige Aufgaben morgens   │
+└─────────────────────────────────────────────┘
+```
+- **Data Requirement:** 3+ months of task completion history per user
+
+### [Phase 3] Predictive Workload
+```
+┌─────────────────────────────────────────────┐
+│ 🔮 Workload-Vorhersage nächste 2 Wochen    │
+├─────────────────────────────────────────────┤
+│ KW 7: ████████░░ Normal                    │
+│ KW 8: ██████████ Hoch (Messe-Vorbereitung) │
+│                                             │
+│ ⚠️ Warnung: KW 8 über Kapazität            │
+│ 🤖 Vorschlag: 3 Aufgaben vorziehen         │
+└─────────────────────────────────────────────┘
+```
+- **Data Requirement:** 6+ months of task and calendar data
+
+### Smart Notifications
+- **[Phase 2] Basic Alerts:** (pattern-based, no ML)
+  - "Diese Aufgabe blockiert 3 andere" (dependency analysis)
+  - "Kunde wartet seit 2 Tagen auf Antwort" (time-based)
+  
+- **[Phase 3] Proactive Alerts:** (ML-based predictions)
+  - "Ähnliche Aufgabe vor 2 Wochen: 3h benötigt" (duration prediction)
+  
+- **[Phase 3] Context-Aware Reminders:**
+  - Location-based: "In der Nähe von Kunde X" (GPS + routing)
+  - Time-based: "Beste Zeit für Anrufe" (pattern learning)
+  - Workload-based: "Freie Zeit in 30 Min" (schedule prediction)
 
 ---
 

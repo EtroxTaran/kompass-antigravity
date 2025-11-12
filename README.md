@@ -15,10 +15,69 @@ KOMPASS is an integrated CRM and Project Management system specifically designed
 - **360° Customer View** - All customer data in one place
 - **Offline-First Architecture** - Work anywhere, sync automatically
 - **Integrated CRM & PM** - Seamless transition from lead to project
+- **Supplier & Material Management** - Complete procurement workflows (Phase 1)
+- **Real-Time Cost Tracking** - Project budgets update from deliveries
 - **GoBD Compliant** - German tax compliance for invoices and projects
 - **DSGVO/GDPR Ready** - Privacy by design
 - **Role-Based Access Control** - Fine-grained permissions
 - **Mobile-Optimized** - iOS and Android PWA support
+
+---
+
+## 🚨 Addressing Pre-Mortem Concerns
+
+A comprehensive [pre-mortem analysis](docs/reviews/PROJECT_KOMPASS_PRE-MORTEM_ANALYSIS.md) identified **four critical risks** that could lead to project failure. We've addressed each risk with concrete mitigation strategies:
+
+### Danger #1: AI Overreach
+
+**Risk:** Shifting from focused CRM to "Autonomous Business Partner" creates feature bloat.
+
+**Mitigation:** 
+- ✅ [AI Strategy & Phasing](docs/product-vision/AI_STRATEGY_AND_PHASING.md) - 3-phase roadmap with data quality gates
+- ✅ Phase 1 delivers full value **without** predictive AI
+- ✅ All AI features marked with phase indicators and user-controlled toggles
+- ✅ [AI Data Requirements](docs/specifications/AI_DATA_REQUIREMENTS.md) - Exact thresholds prevent premature AI launches
+
+### Danger #2: Data Desert
+
+**Risk:** AI predictions require historical data that doesn't exist, leading to inaccurate predictions.
+
+**Mitigation:**
+- ✅ System functional with **zero historical data** (Phase 1 works on day 1)
+- ✅ Confidence thresholds: No predictions shown if <70% confidence
+- ✅ Explainability required for all predictions (user trust through transparency)
+- ✅ [Offline PWA Strategy](docs/specifications/OFFLINE_PWA_DATA_STRATEGY.md) - Tiered storage ensures reliability
+
+### Danger #3: Critical Workflow Gaps
+
+**Risk:** Missing Supplier and Material Management modules make KOMPASS incomplete for INN and PLAN personas.
+
+**Mitigation:**
+- ✅ [Supplier Management Module](docs/specifications/SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md) - Complete supplier lifecycle (Phase 1)
+- ✅ [Material Management Module](docs/specifications/MATERIAL_INVENTORY_MANAGEMENT_SPEC.md) - Material catalog, procurement, real-time cost tracking (Phase 1)
+- ✅ [INN Dashboard](ui-ux/06-dashboards/inn-dashboard.md) - Dedicated dashboard for procurement workflows
+- ✅ Real-time project cost updates from material deliveries (<2s latency)
+
+### Danger #4: Brittle Lexware Integration
+
+**Risk:** Manual CSV integration creates data integrity issues and operational frustration.
+
+**Mitigation:**
+- ✅ [Lexware Integration Strategy](docs/specifications/LEXWARE_INTEGRATION_STRATEGY.md) - 4-phase roadmap with automation commitment
+- ✅ Phase 1: CSV with validation tools and reconciliation dashboard (acknowledge pain, minimize it)
+- ✅ Phase 2 (Month 3-6): Semi-automated sync (90% automation, 4h latency)
+- ✅ Phase 3 (Month 6-12): Real-time bidirectional sync (99% automation, <10min latency)
+- ✅ [Financial Data Flow](docs/specifications/FINANCIAL_DATA_FLOW.md) - Complete revenue/expense flows documented
+
+### Validation & Testing
+
+- ✅ [Pre-Mortem Validation Checklist](docs/reviews/PRE_MORTEM_VALIDATION_CHECKLIST.md) - Specific tests for all 4 dangers
+- ✅ [User Adoption Strategy](docs/product-vision/USER_ADOPTION_STRATEGY.md) - Adoption tactics per persona
+- ✅ [Revised Implementation Roadmap](docs/implementation/REVISED_IMPLEMENTATION_ROADMAP.md) - Sprint-level priorities
+
+**Bottom Line:** We've transformed pre-mortem warnings into actionable mitigation strategies. KOMPASS will be **reliable, complete, and user-friendly** before adding intelligence.
+
+---
 
 ## Quick Start
 

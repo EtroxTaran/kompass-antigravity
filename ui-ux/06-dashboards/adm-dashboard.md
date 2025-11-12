@@ -16,6 +16,7 @@ Create an ADM (Sales Field) dashboard for KOMPASS showing personal customers, op
 - Date: "Heute, 15. Nov. 2024"
 - User: Avatar + "Michael Schmidt (ADM)"
 - Weather (optional): "12°C, bewölkt" (small)
+- **AI Toggle:** Switch "KI-Features" (top-right, default OFF until Phase 3)
 
 **KPI Cards (Top Row - 3 cards, mobile-friendly):**
 1. **Meine Kunden**
@@ -33,16 +34,38 @@ Create an ADM (Sales Field) dashboard for KOMPASS showing personal customers, op
    - Abgeschlossen: "2" (green)
    - Überfällig: "1" (red)
 
-**Section: Heutige Route (Map View)**
-- Embedded map showing:
-  - Current location: Blue dot
-  - Planned visits: Numbered markers (1, 2, 3, 4, 5)
-  - Customer locations: Building icons
-  - Route: Dotted line connecting visits
-- Visit list below map:
-  - Each visit: Time, customer name, location, distance, "Navigate" button
-  - Example: "10:00 - Hofladen Müller, Industriestr. 42, 8 km, [Navigate →]"
-- Add button: "+ Besuch hinzufügen"
+**Section: Heutige Tour & Route (Enhanced Map View)**
+- **Tour-Widget (Collapsible):**
+  - Title: "München Nord Tour - Heute"
+  - Progress: "████████████░░░░░ 2 von 4 Stopps"
+  - Status: "🔴 Live • 31km gefahren"
+  - Quick actions: [Route optimieren] [Tour beenden]
+  
+- **Embedded map showing:**
+  - Current location: Blue pulsing dot with accuracy circle
+  - Planned visits: Numbered markers (1, 2, 3, 4)
+  - Completed visits: Green checkmarks
+  - Customer locations: Building icons with status
+  - Route: Blue line for driven, dotted for planned
+  - Traffic overlay: Red/amber/green segments
+  
+- **[Phase 3] AI Route Optimization Banner:**
+  - **Data Requirement:** 3+ months GPS tracking, 50+ tours - See [AI Data Requirements](../../docs/specifications/AI_DATA_REQUIREMENTS.md)
+  - "🔮 Route optimiert: 12 km gespart!"
+  - "Neue Reihenfolge: 2→4→3 statt 2→3→4"
+  - Actions: [Anwenden] [Original behalten]
+  - **User Control:** Can be permanently disabled in settings
+  
+- **Visit list below map:**
+  - Each visit: Time, customer name, status, distance, actions
+  - Example:
+    - "✅ 09:00 - Bio-Markt Schmidt, 12 km, Check-in: 09:15"
+    - "🔵 10:15 - Hofladen Müller, 8 km, ETA: 10:22 [Navigate →]"
+    - "⏳ 11:30 - Gartencenter Grün, 15 km [Details]"
+  - Swipe right: Complete visit
+  - Swipe left: Skip/reschedule
+  
+- Actions: "+ Stopp hinzufügen" | "Route exportieren"
 
 **Section: Meine Aufgaben (Todo List)**
 - Priority tasks for today
@@ -52,14 +75,22 @@ Create an ADM (Sales Field) dashboard for KOMPASS showing personal customers, op
 - Add button: "+ Aufgabe"
 
 **Section: Opportunities (diese Woche schließend)**
+- **[Phase 3] AI Insights Banner:**
+  - "💡 3 Opportunities mit hoher Abschlusswahrscheinlichkeit"
+  - "Empfohlen: REWE München zuerst kontaktieren (85% Erfolg)"
+  - **Only shown:** If AI toggle ON and data requirements met (100+ historical opportunities)
+  
 - List of opportunities closing this week
 - Each card:
   - Customer name, opportunity name
-  - Value, probability
-  - Close date
+  - Value, probability (user estimate)
+  - **[Phase 3]** AI adjustment: "75% (AI: 85% ↑)" - shown only if AI toggle ON
+  - Close date with urgency indicator
   - Status badge
+  - **[Phase 3]** AI recommendation: "📞 Anrufen empfohlen" - shown only if AI toggle ON
   - Quick actions: "Anrufen", "Aktivität hinzufügen", "Details"
 - Swipe left on mobile: Quick actions
+- **[Phase 3]** AI priority marker: "🎯" - shown only if AI toggle ON
 
 **Section: Kürzlich besuchte Kunden**
 - List of recent customer visits
@@ -73,20 +104,63 @@ Create an ADM (Sales Field) dashboard for KOMPASS showing personal customers, op
 - Prompt: "Neuen Kontakt hinzugefügt?"
 - Quick add button: "+ Kontakt erfassen" (camera icon for business card scan)
 
+**Section: Ausgaben & Kilometer (Quick Access)**
+- **Heute erfasst:**
+  - Kilometer: "67 km" (auto-tracked)
+  - Ausgaben: "€ 45,80" (2 Belege)
+  - Status: "🟢 GPS-Tracking aktiv"
+  
+- Quick action cards:
+  - [📸 Beleg fotografieren] - Opens camera
+  - [🚗 Fahrt beenden] - Stop GPS tracking
+  - [📊 Ausgaben-Übersicht] - View month summary
+
 **Quick Actions (Floating Action Button / Bottom Bar):**
-- Large FAB: "+ Aktivität" (primary action)
-- Bottom bar icons:
-  - "Anrufen" (phone icon)
-  - "Notiz" (note icon, voice-to-text)
-  - "Foto" (camera for project photos)
-  - "Navigation" (map icon)
+- Large FAB: Contextual action
+  - During tour: "📍 Check-in"
+  - Otherwise: "+ Aktivität"
+  
+- Bottom bar (5 icons):
+  - "Tour" (map icon) - Active tour view
+  - "Kunden" (building icon) - Customer list
+  - "📸" (camera) - Quick expense capture
+  - "Aufgaben" (checkbox icon) - Tasks
+  - "Mehr" (dots icon) - Menu
 
 **Mobile-Specific Features:**
-- **Voice-to-Text:** For quick note taking
-- **Camera:** Business card scan, project photos
-- **GPS:** Auto-detect customer location
-- **Call Integration:** Tap phone to call
-- **Navigation:** "Route starten" opens Google Maps
+- **[Phase 1] Voice-to-Text:** 
+  - German speech recognition for notes (Whisper or similar)
+  - Voice commands: "Neue Notiz", "Kunde anrufen"
+  - **Always available** - works offline
+  
+- **Camera Integration:** 
+  - **[Phase 1]** Business card OCR scan (auto-fill contact) - Basic OCR
+  - **[Phase 2]** Receipt capture with AI categorization - Smart categorization
+  - **[Phase 1]** Project photo documentation - Basic camera
+  - **[Phase 2]** QR code scanning for customer check-in - Smart matching
+  
+- **GPS & Location:**
+  - Auto-detect customer location
+  - Background mileage tracking (GoBD compliant)
+  - Real-time route optimization
+  - Proximity alerts: "200m von Kunde XYZ"
+  
+- **PWA Capabilities:**
+  - Install prompt: "App installieren" banner
+  - Push notifications for tasks/appointments
+  - Background sync with queue indicator
+  - Home screen icon with badge count
+  - Offline-first data access
+  
+- **Enhanced Phone Features:**
+  - Click-to-call with call logging
+  - SMS/WhatsApp integration
+  - Contact sync with phone
+  
+- **Navigation:** 
+  - "Route starten" opens preferred maps app
+  - Turn-by-turn directions overlay
+  - Multi-stop route optimization
 
 **Sidebar (Desktop) / Drawer (Mobile):**
 - Filters: "Alle Kunden", "Heute besucht", "Opportunities"

@@ -4205,6 +4205,648 @@ Opportunity (INNEN)
 
 ---
 
+## 26. Supplier Entity (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Status:** Critical - Addresses Pre-Mortem Danger #3 (Workflow Gap)  
+**Priority:** Phase 1 MVP - Required for INN persona workflow
+
+### Supplier Interface
+
+```typescript
+interface Supplier extends BaseEntity {
+  _id: string;                     // Format: "supplier-{uuid}"
+  _rev: string;
+  type: 'supplier';
+  
+  // Basic Information
+  companyName: string;             // Required, 2-200 chars
+  legalForm?: string;              // "GmbH", "e.K.", "GbR", etc.
+  vatNumber?: string;              // Optional, format: DE123456789
+  taxId?: string;                  // Steuernummer
+  
+  // Contact Information
+  email: string;                   // Required
+  phone: string;                   // Required
+  mobile?: string;
+  website?: string;
+  
+  // Address
+  billingAddress: Address;         // Required
+  deliveryAddresses?: Address[];   // Optional multiple
+  
+  // Supplier Classification
+  supplierType: 'material_supplier' | 'service_provider' | 'subcontractor' | 'craftsman' | 'logistics' | 'mixed';
+  serviceCategories: string[];     // Required, min 1
+  serviceDescription: string;      // Required, 50-1000 chars
+  
+  // Business Details
+  paymentTerms: {
+    paymentMethod: 'Invoice' | 'DirectDebit' | 'CreditCard' | 'Cash' | 'BankTransfer';
+    daysUntilDue: number;          // 0-120
+    discountPercentage?: number;   // Skonto
+    discountDays?: number;
+    partialPaymentAllowed: boolean;
+  };
+  minimumOrderValue?: number;      // € minimum
+  deliveryLeadTime?: number;       // Days
+  workingRadius?: number;          // km
+  
+  // Performance Tracking
+  rating: {
+    overall: number;               // 1-5 stars, calculated
+    quality: number;
+    reliability: number;
+    communication: number;
+    priceValue: number;
+    reviewCount: number;
+    lastUpdated: Date;
+  };
+  
+  // Financial
+  totalContractValue: number;      // Sum of all contracts
+  outstandingInvoices: number;     // Sum of unpaid invoices
+  activeProjectCount: number;      // Current assignments
+  
+  // Status
+  status: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval';
+  blacklistReason?: string;
+  approvedBy?: string;             // User ID (GF)
+  approvedAt?: Date;
+  
+  // Relationships
+  accountManagerId: string;        // INN user managing supplier
+  
+  // Audit Trail
+  createdBy: string;
+  createdAt: Date;
+  modifiedBy: string;
+  modifiedAt: Date;
+  version: number;
+}
+```
+
+### Validation Rules: Supplier
+
+- **companyName:** Required, 2-200 chars, pattern: `/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/`
+- **email:** Required, valid email format
+- **phone:** Required, 7-20 chars, pattern: `/^[\+]?[0-9\s\-()]+$/`
+- **supplierType:** Required, enum
+- **serviceCategories:** Required, min 1, max 10
+- **serviceDescription:** Required, 50-1000 chars
+- **paymentTerms.daysUntilDue:** Required, 0-120 days
+
+### Business Rules: Supplier
+
+- **SU-001:** INN is primary owner (account manager required)
+- **SU-002:** New suppliers require GF approval (status = PendingApproval initially)
+- **SU-003:** Only GF can blacklist suppliers (requires reason)
+- **SU-004:** Rating calculated from project ratings (post-completion)
+- **SU-005:** Blacklisted suppliers cannot be assigned to new projects
+
+### RBAC Permissions: Supplier
+
+| Role | Permissions |
+|------|-------------|
+| INN | Full CRUD, Assign to projects |
+| PLAN | Read, Create, Assign to projects |
+| BUCH | Read, View invoices |
+| GF | Full CRUD, Approve, Blacklist |
+| ADM | Read (limited) |
+| KALK | Read (for cost estimation) |
+
+---
+
+## 27. Material Entity (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Status:** Critical - Addresses Pre-Mortem Danger #3 (Workflow Gap)  
+**Priority:** Phase 1 MVP - Required for project cost tracking
+
+### Material Interface
+
+```typescript
+interface Material extends BaseEntity {
+  _id: string;                     // Format: "material-{uuid}"
+  _rev: string;
+  type: 'material';
+  
+  // Basic Information
+  materialCode: string;            // Required, unique, "MAT-XXX-###"
+  materialName: string;            // Required, 5-200 chars
+  description: string;             // Required, 20-1000 chars
+  category: string;                // Required, MaterialCategory enum
+  subcategory?: string;
+  
+  // Specifications
+  unit: 'piece' | 'square_meter' | 'linear_meter' | 'cubic_meter' | 'kilogram' | 'liter' | 'package' | 'set' | 'hour';
+  dimensions?: {
+    length?: number;               // cm
+    width?: number;
+    height?: number;
+    diameter?: number;
+    unit: 'cm' | 'mm' | 'm';
+  };
+  color?: string;
+  finish?: string;                 // "Matt", "Glänzend", etc.
+  material?: string;               // "Holz", "Metall", "Glas"
+  weight?: number;                 // kg
+  
+  // Catalog
+  manufacturerSKU?: string;
+  manufacturerName?: string;
+  productLine?: string;
+  eanCode?: string;                // Barcode
+  
+  // Multi-Supplier Pricing
+  supplierPrices: Array<{
+    supplierId: string;
+    supplierName: string;          // Denormalized
+    unitPrice: number;             // € per unit
+    minimumOrderQuantity: number;
+    leadTimeDays: number;
+    bulkDiscounts?: Array<{
+      quantityFrom: number;
+      discountPercentage: number;
+      unitPrice: number;
+    }>;
+    lastUpdated: Date;
+    isPreferred: boolean;          // Star supplier
+  }>;
+  averagePrice: number;            // Calculated
+  lowestPrice: number;             // Calculated
+  lastPriceUpdate: Date;
+  
+  // Inventory (Phase 2)
+  trackInventory: boolean;
+  currentStock?: number;
+  minimumStock?: number;
+  maximumStock?: number;
+  stockLocation?: string;
+  
+  // Usage
+  timesUsed: number;               // Project count
+  lastUsedDate?: Date;
+  
+  // Status
+  status: 'Active' | 'Discontinued' | 'OutOfStock';
+  alternativeMaterialId?: string;  // Replacement
+  
+  // Audit Trail
+  createdBy: string;
+  createdAt: Date;
+  modifiedBy: string;
+  modifiedAt: Date;
+  version: number;
+}
+```
+
+### Validation Rules: Material
+
+- **materialName:** Required, 5-200 chars
+- **materialCode:** Required, unique, pattern: `/^MAT-[A-Z]{3}-\d{3}$/`
+- **description:** Required, 20-1000 chars
+- **category:** Required, enum
+- **unit:** Required, enum
+- **supplierPrices:** Required, min 1 supplier
+
+### Business Rules: Material
+
+- **MAT-001:** At least one supplier price required
+- **MAT-002:** Material catalog shared by all users (read access)
+- **MAT-003:** Only INN/KALK can add materials
+- **MAT-004:** Only INN/GF can discontinue materials
+- **MAT-005:** Price updates trigger notification to KALK for active estimates
+
+---
+
+## 28. ProjectMaterialRequirement Entity (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Status:** Critical - Real-time project cost tracking  
+**Priority:** Phase 1 MVP
+
+### Interface
+
+```typescript
+interface ProjectMaterialRequirement extends BaseEntity {
+  _id: string;                     // Format: "project-material-{uuid}"
+  _rev: string;
+  type: 'project_material_requirement';
+  
+  // Assignment
+  projectId: string;               // Required
+  materialId: string;              // Required
+  
+  // Details
+  phase: 'planning' | 'preparation' | 'construction' | 'installation' | 'finishing' | 'handover';
+  workPackage?: string;
+  description?: string;
+  
+  // Quantity
+  estimatedQuantity: number;       // From KALK
+  actualQuantity?: number;         // After delivery
+  unit: string;                    // From Material
+  
+  // Pricing
+  estimatedUnitPrice: number;      // From material.averagePrice or supplier
+  actualUnitPrice?: number;        // After purchase
+  estimatedTotalCost: number;      // estimatedQuantity * estimatedUnitPrice
+  actualTotalCost?: number;        // actualQuantity * actualUnitPrice
+  
+  // Procurement
+  supplierId?: string;
+  purchaseOrderId?: string;
+  orderedDate?: Date;
+  expectedDeliveryDate?: Date;
+  actualDeliveryDate?: Date;
+  deliveryStatus: 'not_ordered' | 'ordered' | 'in_transit' | 'delivered' | 'delayed' | 'cancelled';
+  
+  // Status
+  requirementStatus: 'estimated' | 'confirmed' | 'ordered' | 'delivered' | 'installed' | 'returned';
+  
+  // Audit Trail
+  createdBy: string;
+  createdAt: Date;
+  modifiedBy: string;
+  modifiedAt: Date;
+  version: number;
+}
+```
+
+### Business Rules: ProjectMaterialRequirement
+
+- **PMR-001:** KALK creates during estimate (status = estimated)
+- **PMR-002:** PLAN confirms during planning (status = confirmed)
+- **PMR-003:** INN procures (status = ordered)
+- **PMR-004:** Delivery updates project.actualMaterialCosts real-time
+- **PMR-005:** Significant variance (>10%) requires KALK review
+
+---
+
+## 29. PurchaseOrder Entity (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Status:** Critical - Procurement workflow  
+**Priority:** Phase 1 MVP
+
+### Interface
+
+```typescript
+interface PurchaseOrder extends BaseEntity {
+  _id: string;                     // Format: "purchase-order-{uuid}"
+  _rev: string;
+  type: 'purchase_order';
+  
+  // PO Basics
+  poNumber: string;                // Required, unique, "PO-2025-00234"
+  projectId: string;               // Required
+  supplierId: string;              // Required
+  
+  // Financial
+  lineItems: Array<{
+    materialId: string;
+    materialName: string;          // Denormalized
+    description: string;
+    quantity: number;
+    unit: string;
+    unitPrice: number;
+    netAmount: number;
+    taxRate: number;
+    projectMaterialReqId?: string;
+  }>;
+  subtotal: number;                // Sum of line items
+  taxAmount: number;               // Calculated
+  shippingCost?: number;
+  totalAmount: number;             // subtotal + tax + shipping
+  
+  // Approval
+  approvalRequired: boolean;       // True if >€1k
+  approvedBy?: string;             // BUCH (≤€10k) or GF (>€10k)
+  approvedAt?: Date;
+  
+  // Delivery
+  requiredByDate: Date;            // When materials needed
+  expectedDeliveryDate?: Date;
+  actualDeliveryDate?: Date;
+  deliveryAddress: Address;
+  
+  // Status
+  poStatus: 'draft' | 'pending_approval' | 'approved' | 'sent_to_supplier' | 'confirmed_by_supplier' | 'partially_delivered' | 'delivered' | 'cancelled';
+  
+  // Payment
+  invoiceReceived: boolean;
+  supplierInvoiceId?: string;
+  
+  // Audit Trail
+  createdBy: string;
+  createdAt: Date;
+  modifiedBy: string;
+  modifiedAt: Date;
+  version: number;
+}
+```
+
+### Validation Rules: PurchaseOrder
+
+- **lineItems:** Required, min 1, max 50
+- **totalAmount:** Must equal subtotal + taxAmount + (shippingCost || 0), tolerance ±€0.01
+- **requiredByDate:** Required, must be ≥today and ≤project.plannedEndDate
+- **approvedBy:** Required if totalAmount >€1k
+
+### Business Rules: PurchaseOrder
+
+- **PO-001:** Auto-approve if ≤€1k
+- **PO-002:** BUCH approves €1k-€10k
+- **PO-003:** GF approves >€10k
+- **PO-004:** Delivery updates project costs real-time
+- **PO-005:** Cannot delete after status = sent_to_supplier
+
+### RBAC Permissions: PurchaseOrder
+
+| Role | Permissions |
+|------|-------------|
+| INN | Create, Update (pre-send), Send to supplier, Record delivery |
+| PLAN | Create (≤€10k), View |
+| BUCH | Approve (€1k-€10k), View all |
+| GF | Approve (>€10k), View all |
+| KALK | View (for cost context) |
+
+---
+
+## 30. SupplierContract Entity (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Priority:** Phase 1 MVP
+
+### Interface
+
+```typescript
+interface SupplierContract extends BaseEntity {
+  _id: string;                     // Format: "supplier-contract-{uuid}"
+  _rev: string;
+  type: 'supplier_contract';
+  
+  // Contract Basics
+  contractNumber: string;          // Required, unique, "SC-2025-00123"
+  supplierId: string;              // Required
+  projectId?: string;              // Optional, null = framework contract
+  
+  // Details
+  contractType: 'framework' | 'project' | 'service_agreement' | 'purchase_order';
+  title: string;                   // Required, 10-200 chars
+  description: string;             // Required, 50-2000 chars
+  scope: string[];                 // Work packages
+  
+  // Financial
+  contractValue: number;           // Required, € total
+  valueType: 'Fixed' | 'TimeAndMaterial' | 'UnitPrice' | 'CostPlus';
+  paymentSchedule: Array<{
+    description: string;
+    percentage: number;
+    amount: number;
+    dueCondition: string;
+    dueDate?: Date;
+    invoiceId?: string;
+    paidDate?: Date;
+    status: 'Pending' | 'Invoiced' | 'Paid';
+  }>;
+  retentionPercentage?: number;    // Gewährleistungseinbehalt
+  
+  // Timeline
+  startDate: Date;                 // Required
+  endDate: Date;                   // Required
+  noticePeriod?: number;           // Days
+  
+  // Status
+  status: 'draft' | 'pending_approval' | 'sent_to_supplier' | 'under_negotiation' | 'signed' | 'in_execution' | 'completed' | 'terminated' | 'cancelled';
+  signedBySupplier: boolean;
+  signedByUs: boolean;
+  signedDate?: Date;
+  approvedBy?: string;             // GF for >€50k
+  
+  // Performance
+  actualValue?: number;
+  actualEndDate?: Date;
+  
+  // Audit Trail
+  createdBy: string;
+  createdAt: Date;
+  modifiedBy: string;
+  modifiedAt: Date;
+  version: number;
+}
+```
+
+### Business Rules: SupplierContract
+
+- **SC-001:** Contracts <€50k auto-approved
+- **SC-002:** Contracts ≥€50k require GF approval
+- **SC-003:** Contracts >€200k require GF + BUCH approval
+- **SC-004:** Payment milestones must total 100% of contract value
+- **SC-005:** Cannot delete after status = signed
+
+---
+
+## 31. ProjectSubcontractor Entity (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Priority:** Phase 1 MVP - Links suppliers to projects
+
+### Interface
+
+```typescript
+interface ProjectSubcontractor extends BaseEntity {
+  _id: string;                     // Format: "project-subcontractor-{uuid}"
+  _rev: string;
+  type: 'project_subcontractor';
+  
+  // Assignment
+  projectId: string;               // Required
+  supplierId: string;              // Required
+  contractId?: string;             // Optional
+  
+  // Work Details
+  workPackage: string;             // Required
+  serviceCategory: string;         // Required
+  description: string;             // Required
+  
+  // Schedule
+  plannedStartDate: Date;
+  plannedEndDate: Date;
+  actualStartDate?: Date;
+  actualEndDate?: Date;
+  
+  // Financial
+  estimatedCost: number;
+  actualCost?: number;
+  budgetStatus: 'OnTrack' | 'Warning' | 'Exceeded';
+  
+  // Status
+  status: 'Planned' | 'Confirmed' | 'InProgress' | 'Completed' | 'Cancelled';
+  completionPercentage: number;    // 0-100
+  
+  // Performance
+  qualityRating?: number;          // 1-5, after completion
+  timelinessRating?: number;
+  communicationRating?: number;
+  notes?: string;
+  
+  // Audit Trail
+  assignedBy: string;
+  assignedAt: Date;
+  modifiedBy: string;
+  modifiedAt: Date;
+  version: number;
+}
+```
+
+### Business Rules: ProjectSubcontractor
+
+- **PS-001:** Only INN and PLAN can assign subcontractors
+- **PS-002:** Rating required after status = Completed
+- **PS-003:** Actual costs update project.actualSupplierCosts real-time
+- **PS-004:** Cannot delete assignment if invoices exist
+
+---
+
+## 32. SupplierInvoice Entity (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Priority:** Phase 1 MVP - Supplier payment workflow
+
+### Interface
+
+```typescript
+interface SupplierInvoice extends BaseEntity {
+  _id: string;                     // Format: "supplier-invoice-{uuid}"
+  _rev: string;
+  type: 'supplier_invoice';
+  
+  // Invoice Basics
+  invoiceNumber: string;           // Supplier's invoice number
+  supplierId: string;              // Required
+  contractId?: string;
+  projectId: string;               // Required
+  
+  // Financial
+  invoiceDate: Date;               // Required
+  dueDate: Date;                   // Required
+  netAmount: number;
+  taxRate: number;
+  taxAmount: number;
+  grossAmount: number;             // netAmount + taxAmount
+  
+  // Line Items
+  lineItems: Array<{
+    description: string;
+    quantity: number;
+    unit: string;
+    unitPrice: number;
+    netAmount: number;
+    taxRate: number;
+    materialId?: string;
+  }>;
+  
+  // Payment
+  paymentStatus: 'Pending' | 'Approved' | 'Paid' | 'Disputed';
+  approvedBy?: string;             // BUCH or GF
+  approvedAt?: Date;
+  paidDate?: Date;
+  paidAmount?: number;
+  
+  // Audit Trail
+  createdBy: string;               // INN
+  createdAt: Date;
+  modifiedBy: string;
+  modifiedAt: Date;
+  version: number;
+}
+```
+
+### Business Rules: SupplierInvoice
+
+- **SI-001:** Auto-approve if <€1k AND 3-way match OK
+- **SI-002:** BUCH approves €1k-€10k
+- **SI-003:** GF approves >€10k
+- **SI-004:** 3-way match: Invoice vs. PO vs. Delivery confirmation
+- **SI-005:** Payment updates project.actualSupplierCosts real-time
+
+---
+
+## 33. SupplierCommunication Entity (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Priority:** Phase 1 MVP - Supplier relationship tracking
+
+### Interface
+
+```typescript
+interface SupplierCommunication extends BaseEntity {
+  _id: string;                     // Format: "supplier-comm-{uuid}"
+  _rev: string;
+  type: 'supplier_communication';
+  
+  // Context
+  supplierId: string;              // Required
+  projectId?: string;
+  contractId?: string;
+  
+  // Communication
+  communicationType: 'Email' | 'Phone' | 'InPerson' | 'Video' | 'SMS';
+  direction: 'Inbound' | 'Outbound';
+  subject: string;                 // Required, 10-200 chars
+  content: string;                 // Required, 20-5000 chars
+  
+  // Metadata
+  communicationDate: Date;         // Required
+  participants: string[];          // User IDs
+  attachments?: Document[];
+  
+  // Follow-up
+  requiresFollowUp: boolean;
+  followUpDate?: Date;
+  followUpCompleted?: boolean;
+  
+  // Audit Trail
+  createdBy: string;
+  createdAt: Date;
+  modifiedBy: string;
+  modifiedAt: Date;
+  version: number;
+}
+```
+
+---
+
+## 34. Entity Relationships (Updated)
+
+### New Relationships Added
+
+**Supplier Relationships:**
+- Supplier ↔ Materials: Many-to-many via Material.supplierPrices[]
+- Supplier ↔ Projects: Many-to-many via ProjectSubcontractor
+- Supplier ↔ Contracts: One-to-many (Supplier has many SupplierContracts)
+- Supplier ↔ Invoices: One-to-many (Supplier has many SupplierInvoices)
+- Supplier ↔ PurchaseOrders: One-to-many
+- Supplier ↔ Communications: One-to-many
+
+**Material Relationships:**
+- Material ↔ Suppliers: Many-to-many via Material.supplierPrices[]
+- Material ↔ Projects: Many-to-many via ProjectMaterialRequirement
+- Material ↔ PurchaseOrders: Many-to-many via PO.lineItems[]
+
+**Project Relationships (Extended):**
+- Project ↔ Materials: One-to-many (ProjectMaterialRequirement)
+- Project ↔ Suppliers: Many-to-many (ProjectSubcontractor)
+- Project ↔ PurchaseOrders: One-to-many
+- Project Cost Tracking:
+  - project.actualMaterialCosts = sum(ProjectMaterialRequirement.actualTotalCost)
+  - project.actualSupplierCosts = sum(SupplierInvoice.grossAmount WHERE paid)
+  - project.actualCost = actualLaborCosts + actualMaterialCosts + actualSupplierCosts
+
+---
+
 ## Document History (Updated)
 
 | Version | Date       | Author | Changes |
@@ -4214,7 +4856,8 @@ Opportunity (INNEN)
 | 1.2     | 2025-01-28 | System | Added UserTask entity (personal todos), ProjectTask entity (project work items), task validation rules, business rules, use cases |
 | 1.3     | 2025-01-28 | System | **Added Tour Planning & Expense Management entities (Phase 2)**: Tour, Meeting, HotelStay, Expense, MileageLog with complete validation rules, business rules, RBAC permissions, offline-first considerations, and security compliance |
 | 1.4     | 2025-01-28 | System | **Added Time Tracking & Project Cost Management entities (Phase 1 MVP)**: TimeEntry (timer-based & manual time tracking with approval workflow), ProjectCost (materials, contractors, services with invoice tracking & payment status). Includes complete validation rules, business rules, RBAC permissions, cost calculations, and GoBD compliance |
+| 1.5     | 2025-11-12 | System | **CRITICAL UPDATE - Added Supplier & Material Management entities (Phase 1 MVP)**: Supplier, Material, ProjectMaterialRequirement, PurchaseOrder, SupplierContract, ProjectSubcontractor, SupplierInvoice, SupplierCommunication. Addresses Pre-Mortem Danger #3 (Critical Workflow Gaps). Includes complete validation rules, business rules, RBAC permissions, real-time cost tracking, and INN persona workflows. See [Supplier Management Spec](../../specifications/SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md) and [Material Management Spec](../../specifications/MATERIAL_INVENTORY_MANAGEMENT_SPEC.md) for full details. |
 
 ---
 
-**End of DATA_MODEL_SPECIFICATION.md v1.4**
+**End of DATA_MODEL_SPECIFICATION.md v1.5**

@@ -2096,6 +2096,201 @@ Activity.DELETE          - GF only
 
 ---
 
+## 15. Supplier Management Permissions (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Status:** Critical - Addresses Pre-Mortem Danger #3  
+**Priority:** Phase 1 MVP
+
+### Supplier Entity Permissions
+
+| Permission | INN | PLAN | KALK | BUCH | ADM | GF |
+|------------|-----|------|------|------|-----|-----|
+| **Supplier.READ** | ✓ All | ✓ All | ✓ All | ✓ All | ✓ Limited | ✓ All |
+| **Supplier.CREATE** | ✓ | ✓ | ✓ | ❌ | ❌ | ✓ |
+| **Supplier.UPDATE** | ✓ | ❌ | ❌ | ❌ | ❌ | ✓ |
+| **Supplier.DELETE** | ❌ | ❌ | ❌ | ❌ | ❌ | ✓ |
+| **Supplier.APPROVE** | ❌ | ❌ | ❌ | ❌ | ❌ | ✓ |
+| **Supplier.BLACKLIST** | ❌ | ❌ | ❌ | ❌ | ❌ | ✓ |
+| **Supplier.RATE** | ✓ | ✓ | ❌ | ❌ | ❌ | ✓ |
+
+### SupplierContract Permissions
+
+| Permission | INN | PLAN | KALK | BUCH | ADM | GF |
+|------------|-----|------|------|------|-----|-----|
+| **SupplierContract.READ** | ✓ All | ✓ All | ✓ All | ✓ All | ❌ | ✓ All |
+| **SupplierContract.CREATE** | ✓ | ✓ | ❌ | ❌ | ❌ | ✓ |
+| **SupplierContract.UPDATE** | ✓ Draft | ✓ Draft | ❌ | ❌ | ❌ | ✓ All |
+| **SupplierContract.DELETE** | ✓ Draft | ✓ Draft | ❌ | ❌ | ❌ | ✓ |
+| **SupplierContract.APPROVE** | ❌ | ❌ | ❌ | ✓ Review | ❌ | ✓ >€50k |
+| **SupplierContract.SIGN** | ✓ | ❌ | ❌ | ❌ | ❌ | ✓ |
+
+### SupplierInvoice Permissions
+
+| Permission | INN | PLAN | KALK | BUCH | ADM | GF |
+|------------|-----|------|------|------|-----|-----|
+| **SupplierInvoice.READ** | ✓ All | ✓ Project | ✓ Project | ✓ All | ❌ | ✓ All |
+| **SupplierInvoice.CREATE** | ✓ | ❌ | ❌ | ✓ | ❌ | ✓ |
+| **SupplierInvoice.UPDATE** | ✓ Pending | ❌ | ❌ | ✓ Pending | ❌ | ✓ |
+| **SupplierInvoice.DELETE** | ✓ Pending | ❌ | ❌ | ✓ Pending | ❌ | ✓ |
+| **SupplierInvoice.APPROVE** | ❌ | ❌ | ❌ | ✓ ≤€10k | ❌ | ✓ >€10k |
+| **SupplierInvoice.MARK_PAID** | ❌ | ❌ | ❌ | ✓ | ❌ | ✓ |
+| **SupplierInvoice.DISPUTE** | ✓ | ❌ | ❌ | ✓ | ❌ | ✓ |
+
+### Business Rules: Supplier Permissions
+
+**SU-RBAC-001:** INN Role Enhancement
+- INN is the primary supplier relationship manager
+- INN has full CRUD on suppliers (except blacklist)
+- INN can create contracts, assign to projects, log communications
+- INN receives and processes supplier invoices
+
+**SU-RBAC-002:** Supplier Approval Workflow
+- New suppliers status = 'PendingApproval'
+- Only GF can approve new suppliers (sets status = 'Active')
+- Blacklisting requires GF + reason (cannot be undone without GF)
+
+**SU-RBAC-003:** Contract Approval Thresholds
+- <€50k: Auto-approved after INN creates
+- €50k-€200k: GF approval required
+- >€200k: GF + BUCH pre-approval required
+
+**SU-RBAC-004:** Invoice Approval Thresholds
+- <€1k: Auto-approved if 3-way match passes
+- €1k-€10k: BUCH approval required
+- >€10k: GF approval required
+
+**SU-RBAC-005:** Supplier Rating Authority
+- INN and PLAN can rate suppliers after project completion
+- Ratings visible to all users (transparency)
+- GF can edit ratings if demonstrably incorrect
+
+---
+
+## 16. Material & Inventory Permissions (NEW - Phase 1 MVP)
+
+**Added:** 2025-11-12  
+**Status:** Critical - Addresses Pre-Mortem Danger #3  
+**Priority:** Phase 1 MVP
+
+### Material Entity Permissions
+
+| Permission | INN | PLAN | KALK | BUCH | ADM | GF |
+|------------|-----|------|------|------|-----|-----|
+| **Material.READ** | ✓ All | ✓ All | ✓ All | ✓ All | ✓ Limited | ✓ All |
+| **Material.CREATE** | ✓ | ✓ | ✓ | ❌ | ❌ | ✓ |
+| **Material.UPDATE** | ✓ | ❌ | ✓ Prices | ❌ | ❌ | ✓ |
+| **Material.DELETE** | ❌ | ❌ | ❌ | ❌ | ❌ | ✓ |
+| **Material.DISCONTINUE** | ✓ | ❌ | ❌ | ❌ | ❌ | ✓ |
+| **Material.UPDATE_PRICES** | ✓ | ❌ | ✓ | ❌ | ❌ | ✓ |
+
+### ProjectMaterialRequirement Permissions
+
+| Permission | INN | PLAN | KALK | BUCH | ADM | GF |
+|------------|-----|------|------|------|-----|-----|
+| **ProjectMaterial.READ** | ✓ All | ✓ All | ✓ All | ✓ All | ❌ | ✓ All |
+| **ProjectMaterial.CREATE** | ✓ | ✓ | ✓ Estimate | ❌ | ❌ | ✓ |
+| **ProjectMaterial.UPDATE** | ✓ | ✓ | ✓ Estimate | ❌ | ❌ | ✓ |
+| **ProjectMaterial.DELETE** | ✓ | ✓ | ❌ | ❌ | ❌ | ✓ |
+| **ProjectMaterial.CONFIRM** | ❌ | ✓ | ❌ | ❌ | ❌ | ✓ |
+
+### PurchaseOrder Permissions
+
+| Permission | INN | PLAN | KALK | BUCH | ADM | GF |
+|------------|-----|------|------|------|-----|-----|
+| **PurchaseOrder.READ** | ✓ All | ✓ Project | ✓ Project | ✓ All | ❌ | ✓ All |
+| **PurchaseOrder.CREATE** | ✓ | ✓ ≤€10k | ❌ | ❌ | ❌ | ✓ |
+| **PurchaseOrder.UPDATE** | ✓ Pre-send | ✓ Draft | ❌ | ❌ | ❌ | ✓ |
+| **PurchaseOrder.DELETE** | ✓ Draft | ✓ Draft | ❌ | ❌ | ❌ | ✓ |
+| **PurchaseOrder.APPROVE** | ❌ | ❌ | ❌ | ✓ ≤€10k | ❌ | ✓ >€10k |
+| **PurchaseOrder.SEND** | ✓ | ❌ | ❌ | ❌ | ❌ | ✓ |
+| **PurchaseOrder.RECEIVE_DELIVERY** | ✓ | ✓ | ❌ | ❌ | ❌ | ✓ |
+| **PurchaseOrder.CANCEL** | ✓ | ✓ Project | ❌ | ✓ | ❌ | ✓ |
+
+### Business Rules: Material Permissions
+
+**MAT-RBAC-001:** Material Catalog is Shared Resource
+- All users can read materials (for reference)
+- KALK creates materials during estimate preparation
+- INN creates materials during procurement
+- Only INN/GF can discontinue materials
+
+**MAT-RBAC-002:** Project Material Requirements
+- KALK creates initial requirements during estimate (status = estimated)
+- PLAN confirms/adjusts requirements (status = confirmed)
+- INN procures based on confirmed requirements
+- Actual quantities/costs update project budget real-time
+
+**MAT-RBAC-003:** Purchase Order Approval
+- ≤€1k: Auto-approved (no manual approval)
+- €1k-€10k: BUCH approval required
+- >€10k: GF approval required
+- PLAN can create small POs (≤€10k) for urgent needs
+
+**MAT-RBAC-004:** Delivery Recording
+- INN primarily records deliveries
+- PLAN can record if received on-site
+- Delivery updates project costs immediately (triggers budget alerts if needed)
+
+**MAT-RBAC-005:** Price Update Authority
+- INN updates prices when receiving supplier quotes
+- KALK updates prices during market research
+- Price changes trigger notification to KALK for active estimates
+
+---
+
+## 17. INN Role Definition (UPDATED)
+
+**Updated:** 2025-11-12  
+**Status:** Expanded role definition
+
+### Role: INN (INNEN - Internal Services Coordination)
+
+**German Name:** Innendienst / Interne Dienstleistungen  
+**English Name:** Internal Services / Coordination  
+**Badge Color:** Purple
+
+**Primary Responsibilities:**
+- Supplier & subcontractor relationship management
+- Material procurement and purchase order processing
+- Contract coordination (supplier contracts)
+- Delivery tracking and invoice processing
+- Project support and logistics coordination
+
+**Dashboard Focus:**
+- Supplier performance overview
+- Active purchase orders and deliveries
+- Pending supplier invoices (approval queue)
+- Material procurement status
+- Communication and follow-up tasks
+
+**Permissions Summary:**
+
+| Entity Category | Permissions |
+|-----------------|-------------|
+| **Customers** | READ all |
+| **Suppliers** | Full CRUD (except blacklist), Approve workflow, Rate performance |
+| **Materials** | Full CRUD (except delete), Update prices, Manage inventory |
+| **Purchase Orders** | Create, Send, Track, Record delivery |
+| **Supplier Contracts** | Create, Update (draft), Sign |
+| **Supplier Invoices** | Create, Update (pending), Flag for approval |
+| **Projects** | READ all (for context), Update material/supplier assignments |
+| **Communications** | CREATE (log supplier communications), READ |
+
+**Key Workflows:**
+1. Onboard new suppliers → GF approval
+2. Create purchase orders → Approval workflow (BUCH/GF)
+3. Record deliveries → Update project costs real-time
+4. Process supplier invoices → Approval routing (BUCH/GF)
+5. Manage supplier relationships → Log communications, track performance
+
+**Record-Level Rules:**
+- INN is account manager for assigned suppliers
+- INN can view all projects (for procurement context)
+- INN cannot view customer financial details unless project-related
+
+---
+
 ## Document History
 
 | Version | Date       | Author | Changes |
@@ -2105,8 +2300,10 @@ Activity.DELETE          - GF only
 | 1.2     | 2025-01-28 | System | Added Task Management permissions (UserTask and ProjectTask), complete task permission matrix, record-level rules for task access, dashboard query patterns, task-specific authorization examples |
 | 1.3     | 2025-01-28 | System | **Added Tour Planning & Expense Management permissions (Phase 2)**: Tour, Meeting, HotelStay, Expense, MileageLog with complete permission matrix, approval workflows, GPS validation, record-level rules, authorization examples, security/compliance considerations |
 | 1.4     | 2025-01-28 | System | **Added Time Tracking & Project Cost Management permissions (Phase 1 MVP)**: TimeEntry (CRUD, approval workflow, cost visibility) and ProjectCost (CRUD, approval thresholds, payment management) with detailed RBAC rules, authorization examples, GoBD compliance requirements, role-specific access patterns |
+| 1.5     | 2025-11-12 | System | **CRITICAL UPDATE - Added Supplier & Material Management permissions (Phase 1 MVP)**: Complete permission matrix for Supplier, Material, ProjectMaterialRequirement, PurchaseOrder, SupplierContract, ProjectSubcontractor, SupplierInvoice, SupplierCommunication. Updated INN role definition with expanded responsibilities. Approval workflows: Supplier (GF), Contracts (<€50k auto, ≥€50k GF, >€200k GF+BUCH), Purchase Orders (≤€1k auto, €1k-€10k BUCH, >€10k GF), Invoices (<€1k auto, €1k-€10k BUCH, >€10k GF). Addresses Pre-Mortem Danger #3 (Critical Workflow Gaps). |
 
 ---
 
-**End of RBAC_PERMISSION_MATRIX.md v1.4**
+**End of RBAC_PERMISSION_MATRIX.md v1.5**
+
 
