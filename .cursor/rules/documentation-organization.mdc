@@ -229,6 +229,32 @@ docs/
 
 **Important**: Implementation reports are historical - never update, only archive
 
+**❌ FORBIDDEN in `docs/implementation/` - Temporary Files:**
+
+**NEVER place temporary files in `docs/implementation/`:**
+
+- ❌ Linear issue search results → Must be in `/tmp` and deleted after use
+- ❌ Planning prompts → Must be in `/tmp` and deleted after use
+- ❌ Audit findings → Should be in Linear issues, not markdown files
+- ❌ Date-stamped status reports → Must be in `/tmp` and deleted after use
+- ❌ Bug fix summaries → Should be in git commits and Linear issues
+- ❌ Temporary summaries → Must be in `/tmp` and deleted after use
+- ❌ Design notes → Should be in ADRs (`docs/architecture/decisions/`) or Linear issues
+- ❌ Completion reports → Must be in `/tmp` and deleted after use
+
+**✅ PERMANENT Files in `docs/implementation/`:**
+
+- ✅ `*_IMPLEMENTATION_COMPLETE.md` - Permanent implementation documentation
+- ✅ `*_IMPLEMENTATION_GUIDE.md` - Permanent implementation guides
+- ✅ `*_INTEGRATION_GUIDE.md` - Permanent integration guides
+- ✅ `*_IMPLEMENTATION_SUMMARY.md` - Permanent implementation summaries (not date-stamped)
+- ✅ `*_ROADMAP.md` - Permanent roadmap documents
+- ✅ `MIGRATION_GUIDE.md` - Permanent migration guides
+
+**Rule**: If a file is temporary (search results, planning prompts, audit findings, status reports, bug fix summaries), it MUST be created in `/tmp` and deleted after use. NEVER commit temporary files to git.
+
+**See Also**: `.cursor/rules/temporary-files-prevention.mdc` for complete temporary file rules
+
 ### 8. Processes (`docs/processes/`)
 
 **Purpose**: Development processes and workflows.
@@ -284,18 +310,28 @@ docs/
 - Format: `PascalCase.md` or `kebab-case.md` (consistent within folder)
 - Examples: `ProductVision.md` or `product-vision.md`
 
-### Versioning Documentation
+### CRITICAL RULE: No Versioned Documentation Files
 
 **NEVER create versioned documentation files:**
-- ❌ `API_v2.md`, `API_v1.md`
-- ❌ `specification_v2.md`
-- ❌ `guide_2024.md`
+- ❌ `API_v2.md`, `API_v1.md`, `API_v3.md`
+- ❌ `specification_v2.md`, `architecture_v2.md`
+- ❌ `guide_2024.md`, `plan_v1.md`
+- ❌ `architecture-v1-comprehensive.md`, `architecture-v2-pragmatic.md`
+
+**Rule**: If you want to create a file with `v1`, `v2`, `_version`, `-version`, or any year suffix, **STOP** and update the existing file instead.
 
 **INSTEAD:**
-- ✅ Use `CHANGELOG.md` for version history
-- ✅ Update existing document and note changes in changelog
-- ✅ Use Git history to see previous versions
-- ✅ Archive old versions in `docs/implementation/archive/` if needed
+- ✅ **Update existing document** and note changes in changelog
+- ✅ Use `CHANGELOG.md` for version history tracking
+- ✅ Use **Git history** to see previous versions (`git log --follow file.md`)
+- ✅ Archive old content in `docs/implementation/archive/` only if absolutely necessary
+- ✅ **Single Source of Truth**: One current document per topic
+
+**Why This Rule Exists:**
+- Prevents confusion about which document to follow
+- Eliminates duplicate maintenance overhead  
+- Follows "no file duplication" principle from git workflow
+- Ensures everyone works from same reference
 
 ## Preventing Duplicates
 

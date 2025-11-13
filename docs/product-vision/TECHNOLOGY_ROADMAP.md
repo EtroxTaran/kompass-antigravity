@@ -5,8 +5,8 @@
 **Status:** ✅ Fully Specified (Including 2025 AI & Automation Extensions)
 
 **Cross-References:**
-- `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md` – Technical Architecture (incl. 2025 Extensions)
-- `docs/architectur/AI-Extensions Architektur & Implementierungs-Guide.md` – ✨ NEW: AI/RAG/n8n Implementation Guide
+- `docs/architecture/system-architecture.md` – Complete Technical Architecture Specification
+- `docs/architecture/ai-extensions/AI-Extensions Architektur & Implementierungs-Guide.md` – ✨ NEW: AI/RAG/n8n Implementation Guide
 - `docs/product-vision/Produktvision für Projekt KOMPASS (Nordstern-Direktive).md` – Product Vision (incl. Pillar 4: 2025 Intelligence)
 - `docs/product-vision/Produktvision KI & Automation-Features.md` – ✨ NEW: AI & Automation Vision
 - `docs/product-vision/Gesamtkonzept_Integriertes_CRM_und_PM_Tool_final.md` – Phase 2/3 Strategic Outlook
@@ -95,7 +95,7 @@ MVP ohne Observability = Blindflug im Produktiv-Betrieb. Daher parallel implemen
 **Strategic Context:** This phase lays the foundation for intelligent knowledge management and automation, transforming KOMPASS from a data repository into an intelligent co-pilot that proactively surfaces insights and automates routine tasks.
 
 **Cross-References:**
-- `docs/architectur/AI-Extensions Architektur & Implementierungs-Guide.md` – Complete Implementation Guide
+- `docs/architecture/ai-extensions/AI-Extensions Architektur & Implementierungs-Guide.md` – Complete Implementation Guide
 - `docs/product-vision/Produktvision KI & Automation-Features.md` – AI & Automation Vision
 - Architecture Doc → "Erweiterte Architektur 2025: AI, Automation & Intelligence Layer"
 
@@ -724,9 +724,9 @@ MVP ohne Observability = Blindflug im Produktiv-Betrieb. Daher parallel implemen
 **Sign-Off Required:** GF, Product Owner, Tech Lead, Finance
 
 **See Also:**
-- `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md` – Complete Technical Architecture (incl. 2025 AI Extensions)
-- `docs/architectur/AI-Extensions Architektur & Implementierungs-Guide.md` – ✨ NEW: Step-by-Step Implementation Guide for RAG, n8n, Neo4j, ML, BI
-- `docs/architectur/ARCHITECTURE_EVOLUTION_GUIDE.md` – Migration Path from MVP to Full Vision
+- `docs/architecture/system-architecture.md` – Complete Technical Architecture (incl. 2025 AI Extensions)
+- `docs/architecture/ai-extensions/AI-Extensions Architektur & Implementierungs-Guide.md` – ✨ NEW: Step-by-Step Implementation Guide for RAG, n8n, Neo4j, ML, BI
+- `docs/architecture/evolution/ARCHITECTURE_EVOLUTION_GUIDE.md` – Migration Path from MVP to Full Vision
 - `docs/product-vision/Produktvision für Projekt KOMPASS (Nordstern-Direktive).md` – North Star Product Vision (incl. Pillar 4: 2025 Intelligence)
 - `docs/product-vision/Produktvision KI & Automation-Features.md` – ✨ NEW: AI & Automation Extensions Product Vision
 - `docs/README.md` – Complete Documentation Index

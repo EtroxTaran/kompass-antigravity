@@ -39,6 +39,15 @@ export interface ExpenseFilters {
 }
 
 /**
+ * CouchDB Mango Selector
+ * Represents a CouchDB Mango query selector
+ */
+type CouchDBMangoSelector = {
+  type: string;
+  [key: string]: unknown;
+};
+
+/**
  * Expense Repository Implementation
  */
 @Injectable()
@@ -54,8 +63,8 @@ export class ExpenseRepository implements IExpenseRepository {
         return null;
       }
       return doc;
-    } catch (error: any) {
-      if (error.statusCode === 404) {
+    } catch (error: unknown) {
+      if (this.isCouchDBError(error) && error.statusCode === 404) {
         return null;
       }
       this.logger.error(`Error finding expense ${id}:`, error);
@@ -63,9 +72,21 @@ export class ExpenseRepository implements IExpenseRepository {
     }
   }
 
+  /**
+   * Type guard for CouchDB errors
+   */
+  private isCouchDBError(error: unknown): error is { statusCode: number; message?: string } {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'statusCode' in error &&
+      typeof (error as { statusCode: unknown }).statusCode === 'number'
+    );
+  }
+
   async findByUser(userId: string, filters?: ExpenseFilters): Promise<Expense[]> {
     try {
-      const selector: any = {
+      const selector: CouchDBMangoSelector = {
         type: 'expense',
         userId,
       };
@@ -93,10 +114,10 @@ export class ExpenseRepository implements IExpenseRepository {
       if (filters?.startDate || filters?.endDate) {
         selector.expenseDate = {};
         if (filters.startDate) {
-          selector.expenseDate.$gte = filters.startDate.toISOString();
+          (selector.expenseDate as Record<string, unknown>).$gte = filters.startDate.toISOString();
         }
         if (filters.endDate) {
-          selector.expenseDate.$lte = filters.endDate.toISOString();
+          (selector.expenseDate as Record<string, unknown>).$lte = filters.endDate.toISOString();
         }
       }
 
@@ -166,7 +187,7 @@ export class ExpenseRepository implements IExpenseRepository {
 
   async findByStatus(status: Expense['status'], userId?: string): Promise<Expense[]> {
     try {
-      const selector: any = {
+      const selector: CouchDBMangoSelector = {
         type: 'expense',
         status,
       };
@@ -190,7 +211,7 @@ export class ExpenseRepository implements IExpenseRepository {
 
   async findByDateRange(startDate: Date, endDate: Date, userId?: string): Promise<Expense[]> {
     try {
-      const selector: any = {
+      const selector: CouchDBMangoSelector = {
         type: 'expense',
         expenseDate: {
           $gte: startDate.toISOString(),

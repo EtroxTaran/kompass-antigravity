@@ -47,6 +47,12 @@ Every code review MUST check:
    - README updated if needed
    - Linear issue referenced
 
+6. **Architecture**
+   - No versioned files created (architecture-v2.md, spec-v1.md, etc.)
+   - ADR exists for significant architectural changes
+   - Single source of truth maintained
+   - Architecture document updated if patterns change
+
 ## Review Focus Areas
 
 ### Security-Critical Areas

@@ -106,7 +106,9 @@ export function RoleAssignmentDialog({
     // TODO: Show loading state
     // TODO: Show success/error toast
     // TODO: Call onSuccess callback
-    console.log('Assign roles:', { selectedRoles, primaryRole, reason });
+    setIsLoading(true);
+    // API call will be implemented here
+    setIsLoading(false);
   };
 
   return (

@@ -114,7 +114,7 @@ export function TeamTimesheetsPage() {
    */
   function handleExport() {
     // TODO: Implement CSV export
-    console.log('Export team timesheets');
+    // Export functionality will be implemented here
   }
 
   /**

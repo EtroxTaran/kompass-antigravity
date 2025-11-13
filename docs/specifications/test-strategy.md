@@ -1,15 +1,15 @@
-# KOMPASS Test Strategy Document
+# Test Strategy
 
 **Version:** 1.0  
 **Last Updated:** 2025-01-28  
-**Status:** Draft
+**Status:** ✅ Finalized
 
 ## Cross-References
 
-- **Data Model:** `docs/reviews/DATA_MODEL_SPECIFICATION.md` - Entity structures for test fixtures
-- **API Specification:** `docs/reviews/API_SPECIFICATION.md` - Endpoints to test
-- **RBAC Matrix:** `docs/reviews/RBAC_PERMISSION_MATRIX.md` - Permission scenarios to test
-- **Architecture Rules:** `.cursorrules` - Test pyramid (70/20/10), coverage targets
+- **Data Model:** `docs/specifications/data-model.md` - Entity structures for test fixtures
+- **API Specification:** `docs/specifications/api-specification.md` - Endpoints to test
+- **RBAC Matrix:** `docs/specifications/rbac-permissions.md` - Permission scenarios to test
+- **Architecture Rules:** `.cursor/rules/*.mdc` - Test pyramid (70/20/10), coverage targets
 
 ---
 

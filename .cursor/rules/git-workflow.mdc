@@ -43,6 +43,9 @@ file_v2.0.ts
 file_v1.ts
 file.version2.ts
 file.new.ts
+file-v2.ts                   # Hyphen-based versioning
+architecture-v1-comprehensive.md  # Documentation versioning
+specification-v2-updated.md
 
 # ❌ WRONG: Status suffixes
 file_fixed.ts
@@ -86,13 +89,15 @@ file.try.ts
 **These patterns are FORBIDDEN in the entire codebase:**
 
 - `*_backup*`, `*.backup*`, `*.bak`, `*~`, `*.swp`, `*.tmp`
-- `*_v[0-9]*`, `*.v[0-9]*`, `*_version*`, `*.version*`
+- `*_v[0-9]*`, `*.v[0-9]*`, `*-v[0-9]*`, `*_version*`, `*.version*`
 - `*_fixed*`, `*.fixed*`, `*_final*`, `*.final*`, `*_working*`, `*.working*`
 - `*_old*`, `*.old*`, `*_temp*`, `*.temp*`, `*_tmp*`, `*.tmp*`
 - `*_copy*`, `*.copy*`, `*_copy[0-9]*`
 - `*_[0-9]{4}-[0-9]{2}-[0-9]{2}*` (date suffixes)
 - `*_test.ts`, `*.test.ts` (use `__tests__/` directory instead)
 - `*_experimental*`, `*.experimental*`, `*_try*`, `*.try*`
+- `*-comprehensive*`, `*-pragmatic*`, `*-detailed*` (architecture versioning)
+- `*_new*`, `*_latest*`, `*_current*` (status-based duplicates)
 
 ### Prevent Duplication
 
@@ -159,9 +164,10 @@ git checkout -b experiment/KOM-123-new-approach
 ```bash
 # .husky/pre-commit should include:
 # Check for forbidden patterns
-if git diff --cached --name-only | grep -E '(_backup|\.backup|\.bak|_old|\.old|_v[0-9]|\.v[0-9]|_fixed|\.fixed|_copy|\.copy|_temp|\.temp|~$|\.swp$|\.tmp$)'; then
+if git diff --cached --name-only | grep -E '(_backup|\.backup|\.bak|_old|\.old|_v[0-9]|\.v[0-9]|-v[0-9]|_fixed|\.fixed|_copy|\.copy|_temp|\.temp|_comprehensive|_pragmatic|_detailed|_new|_latest|_current|~$|\.swp$|\.tmp$)'; then
   echo "❌ ERROR: Forbidden file pattern detected!"
   echo "Use Git for versioning instead of creating duplicate files."
+  echo "Specifically forbidden: version suffixes (-v1, -v2, -comprehensive, -pragmatic, etc.)"
   exit 1
 fi
 ```

@@ -3,6 +3,7 @@ import type {
   TimeEntry,
   CreateTimeEntryDto,
 } from '@kompass/shared/types/entities/time-entry';
+import { TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
 import { timeTrackingApi } from '../services/time-tracking-api';
 
 /**
@@ -154,7 +155,7 @@ export function useTimer() {
           userId: 'current-user', // TODO: Get from auth context
           startTime: dto.startTime,
           durationMinutes: 0,
-          status: 'in_progress' as any,
+          status: TimeEntryStatus.IN_PROGRESS,
           isManualEntry: dto.isManualEntry,
           createdBy: 'current-user',
           createdAt: new Date(),

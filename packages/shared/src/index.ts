@@ -7,7 +7,9 @@
 
 // Types
 export type { BaseEntity, ImmutableEntity, ChangeLogEntry, SoftDeletable } from './types/base.entity';
-export type { Customer, Address, DSGVOConsent } from './types/entities/customer';
+export type { Address } from './types/common/address';
+export { isValidAddress, createDefaultAddress, formatAddress, formatAddressMultiLine } from './types/common/address';
+export type { Customer, DSGVOConsent } from './types/entities/customer';
 export { isCustomer, createCustomer } from './types/entities/customer';
 
 // Constants

@@ -75,12 +75,12 @@ export class CreateCustomerDto {
   vatNumber?: string;
 
   @ApiProperty({
-    description: 'Company address',
+    description: 'Primary billing address (UPDATED: renamed from "address")',
     type: AddressDto,
   })
   @ValidateNested()
   @Type(() => AddressDto)
-  address: AddressDto;
+  billingAddress: AddressDto;
 
   @ApiProperty({
     description: 'Phone number',

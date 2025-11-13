@@ -64,7 +64,7 @@ export function TimeTrackingPage() {
    */
   function handleExport() {
     // TODO: Implement CSV export
-    console.log('Export to CSV');
+    // Export functionality will be implemented here
   }
 
   /**

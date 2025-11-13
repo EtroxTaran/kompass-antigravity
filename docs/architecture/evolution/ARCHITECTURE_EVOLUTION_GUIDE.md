@@ -1,12 +1,13 @@
 # KOMPASS Architecture Evolution Guide
 
-**Document Version:** 1.0  
-**Last Updated:** 2025-01-11  
+**Document Version:** 2.0  
+**Last Updated:** 2025-01-28  
 **Purpose:** Practical migration path from MVP (Phase 1) to Full Vision (Phases 2-3)
 
 **Cross-References:**
-- `docs/TECHNOLOGY_ROADMAP.md` – Timeline & Budget
-- `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md` – Technical Architecture
+- `docs/product-vision/TECHNOLOGY_ROADMAP.md` – Timeline & Budget
+- `docs/architecture/system-architecture.md` – Complete Technical Specification
+- `docs/architecture/README.md` – Architecture Overview and Implementation Guidance
 
 ---
 

@@ -110,7 +110,7 @@ export function MyTimesheetsPage() {
    */
   function handleExport() {
     // TODO: Implement CSV export
-    console.log('Export timesheets');
+    // Export functionality will be implemented here
   }
 
   return (

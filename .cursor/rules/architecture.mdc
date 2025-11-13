@@ -1,10 +1,106 @@
 ---
-description: Layered architecture patterns for NestJS backend and React frontend, dependency injection, guards, interceptors, and component structure
-globs: ["**/*.ts", "**/*.tsx"]
+description: Layered architecture patterns for NestJS backend and React frontend, dependency injection, guards, interceptors, component structure, and architectural decision requirements
+globs: ["**/*.ts", "**/*.tsx", "docs/architecture/**/*.md"]
 alwaysApply: true
 ---
 
 # Architecture Enforcement
+
+## Architecture Decision Records (ADRs) - REQUIRED
+
+### MANDATORY for All Architecture Changes
+
+**Every significant architectural decision MUST be documented as an ADR:**
+
+- Technology choices (changing databases, frameworks, libraries)
+- Pattern changes (modifying layered architecture, adding new patterns)
+- Integration decisions (adding new external services)
+- Performance architecture (caching strategies, scaling approaches)
+- Security architecture (authentication methods, authorization patterns)
+
+### ADR Creation Rules
+
+**WHEN to create an ADR:**
+- Adding new technology to the stack
+- Changing existing technology (e.g., CouchDB → PostgreSQL)
+- Modifying architectural patterns
+- Making trade-off decisions with multiple valid options
+- Any decision that affects multiple teams or modules
+
+**WHERE to create ADRs:**
+- File location: `docs/architecture/decisions/adr-###-short-description.md`
+- Naming format: `adr-001-use-nestjs.md`, `adr-002-couchdb-offline-first.md`
+- Sequential numbering (no gaps)
+
+**ADR Template (REQUIRED):**
+```markdown
+# ADR-###: [Decision Title]
+
+**Status**: Proposed | Accepted | Deprecated | Superseded  
+**Date**: YYYY-MM-DD  
+**Deciders**: [Names/Roles]
+
+## Context
+
+[Describe the situation that requires a decision]
+
+## Decision
+
+[State the decision clearly]
+
+## Rationale
+
+[Explain why this decision was made]
+
+## Alternatives Considered
+
+[List other options evaluated and why they were rejected]
+
+## Consequences
+
+[Positive and negative consequences of this decision]
+
+## Implementation
+
+[How to implement this decision]
+
+## Monitoring
+
+[How to measure if this decision is working]
+```
+
+**NO ARCHITECTURAL DECISIONS WITHOUT ADRs:**
+- Never make significant architectural changes without documentation
+- Code reviews MUST verify ADR exists for architectural changes
+- ADR must be approved before implementation begins
+
+### Versioned Documentation is FORBIDDEN
+
+**NEVER create versioned architecture files:**
+- ❌ `architecture-v1.md`, `architecture-v2.md`
+- ❌ `system-design-new.md`, `system-design-updated.md`  
+- ❌ `api-spec-2024.md`, `data-model-v2.md`
+
+**INSTEAD:**
+- ✅ Create ADR documenting the change: `adr-015-updated-system-architecture.md`
+- ✅ Update existing architecture document
+- ✅ Reference ADR in commit message: `docs(KOM-456): update architecture per ADR-015`
+
+### Single Source of Truth Enforcement
+
+**One architecture document only:**
+- Primary: `docs/architecture/system-architecture.md`
+- Supporting: ADRs in `docs/architecture/decisions/`
+- Never multiple "current" architecture documents
+
+**If major architecture change needed:**
+1. Create ADR documenting change
+2. Update existing architecture document 
+3. Archive old sections in ADR if significant
+4. Update all cross-references
+5. Notify all teams of changes
+
+## Layered Architecture Enforcement
 
 ## Backend Architecture (NestJS)
 

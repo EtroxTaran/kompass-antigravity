@@ -221,14 +221,16 @@ export default {{ENTITY_NAME_LOWER}}Slice.reducer;
 
 /**
  * Select all {{ENTITY_NAME}}s
+ * 
+ * @note RootState type should be imported from your store configuration
  */
-export const selectAll{{ENTITY_NAME_PLURAL}} = (state: RootState) => 
+export const selectAll{{ENTITY_NAME_PLURAL}} = (state: { {{ENTITY_NAME_LOWER}}: {{ENTITY_NAME}}State }) => 
   state.{{ENTITY_NAME_LOWER}}.entities;
 
 /**
  * Select currently selected {{ENTITY_NAME}}
  */
-export const selectCurrent{{ENTITY_NAME}} = (state: RootState) => {
+export const selectCurrent{{ENTITY_NAME}} = (state: { {{ENTITY_NAME_LOWER}}: {{ENTITY_NAME}}State }) => {
   const { entities, selectedId } = state.{{ENTITY_NAME_LOWER}};
   return entities.find((e) => e._id === selectedId) || null;
 };
@@ -236,7 +238,7 @@ export const selectCurrent{{ENTITY_NAME}} = (state: RootState) => {
 /**
  * Select filtered {{ENTITY_NAME}}s
  */
-export const selectFiltered{{ENTITY_NAME_PLURAL}} = (state: RootState) => {
+export const selectFiltered{{ENTITY_NAME_PLURAL}} = (state: { {{ENTITY_NAME_LOWER}}: {{ENTITY_NAME}}State }) => {
   const { entities, filters } = state.{{ENTITY_NAME_LOWER}};
   
   return entities.filter((entity) => {
@@ -265,12 +267,12 @@ export const selectFiltered{{ENTITY_NAME_PLURAL}} = (state: RootState) => {
 /**
  * Select loading state
  */
-export const select{{ENTITY_NAME}}Loading = (state: RootState) => 
+export const select{{ENTITY_NAME}}Loading = (state: { {{ENTITY_NAME_LOWER}}: {{ENTITY_NAME}}State }) => 
   state.{{ENTITY_NAME_LOWER}}.loading;
 
 /**
  * Select error state
  */
-export const select{{ENTITY_NAME}}Error = (state: RootState) => 
+export const select{{ENTITY_NAME}}Error = (state: { {{ENTITY_NAME_LOWER}}: {{ENTITY_NAME}}State }) => 
   state.{{ENTITY_NAME_LOWER}}.error;
 

@@ -386,3 +386,68 @@ audit-results.json
 *_fixed
 *_copy
 *_temp
+
+# ============================================================================
+# Temporary Documentation Files - NEVER COMMIT
+# ============================================================================
+# See: .cursor/rules/temporary-files-prevention.mdc
+
+# Linear issue search results and analysis
+**/LINEAR_ISSUE*.md
+**/LINEAR_ISSUES*.md
+**/*linear-issue*.md
+
+# Audit findings and reports (should be in Linear/issues)
+**/*AUDIT*.md
+**/*AUDIT_FINDINGS*.md
+**/*FINDINGS*.md
+
+# Planning prompts (temporary work products)
+**/*PLANNING_PROMPT*.md
+**/*PLANNING*.md
+# Exception: Figma migration prompts are permanent
+!**/ui-ux/00-updates/FIGMA-UPDATE*.md
+!**/ui-ux/00-updates/MIGRATION-*.md
+
+# Date-stamped status reports
+**/*STATUS_*.md
+**/*_STATUS_*.md
+
+# Bug fix summaries (should be in git commits)
+**/*BUG_FIX*.md
+**/*BUG_FIX_SUMMARY*.md
+
+# Temporary summaries (exceptions: *_IMPLEMENTATION_SUMMARY.md are permanent)
+**/*_SUMMARY_*.md
+**/SUMMARY_*.md
+!**/*_IMPLEMENTATION_SUMMARY.md
+!**/*_INTEGRATION_SUMMARY.md
+
+# Search results
+**/*SEARCH_RESULTS*.md
+**/*RESULTS*.md
+
+# Temporary analysis files
+**/*ANALYSIS*.md
+**/*ANALYZ*.md
+
+# Design documents that should be in ADRs or Linear
+**/*DESIGN_DOCUMENTS*.md
+**/*DESIGN*.md
+
+# Implementation notes (temporary)
+**/IMPLEMENTATION_NOTES*.md
+**/*NOTES*.md
+
+# Cleanup files
+**/CLEANUP_*.md
+**/*CLEANUP*.md
+**/*_CLEANUP*.md
+
+# Validation reports (temporary)
+**/validation-report.md
+**/*validation-report*.md
+
+# Completion reports (temporary)
+**/FINAL_DELIVERABLES*.md
+**/*FINAL_DELIVERABLES*.md

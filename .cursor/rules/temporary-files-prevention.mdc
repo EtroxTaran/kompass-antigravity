@@ -1,0 +1,271 @@
+---
+description: Strict rules preventing temporary files from being committed to git. All temporary work products must be in /tmp and deleted after use.
+globs: ["**/*.md", "**/*.tmp", "**/*.temp"]
+alwaysApply: true
+---
+
+# Temporary Files Prevention - STRICT RULE
+
+## CRITICAL RULE: No Temporary Files in Repository
+
+**NEVER commit temporary files to git. Temporary files MUST be in `/tmp` directory and deleted after use.**
+
+## What is a Temporary File?
+
+A temporary file is any file created for:
+- **Linear issue search results** - Search queries and results
+- **Planning prompts** - Prompts for AI assistance or planning
+- **Audit findings** - Audit reports and findings
+- **Status reports with dates** - Date-stamped status updates
+- **Bug fix summaries** - Bug fix documentation (should be in git commits/Linear)
+- **Analysis reports** - Analysis and research findings
+- **Design notes** - Design documents (should be in ADRs or Linear issues)
+- **Completion reports** - Reports marking completion of temporary tasks
+- **Cleanup plans/scripts** - Cleanup documentation
+- **Validation reports** - Validation and testing reports
+
+## Forbidden Temporary File Patterns
+
+**NEVER create files matching these patterns:**
+
+### Linear Issue Files
+- `LINEAR_ISSUE*.md`
+- `LINEAR_ISSUES*.md`
+- `*linear-issue*.md`
+- `*LINEAR*.md` (unless it's permanent documentation)
+
+### Audit and Findings
+- `*AUDIT*.md`
+- `*AUDIT_FINDINGS*.md`
+- `*FINDINGS*.md`
+- `*_FINDINGS*.md`
+
+### Planning and Prompts
+- `*PLANNING_PROMPT*.md`
+- `*PLANNING*.md` (unless it's a permanent planning document)
+- `*PROMPT*.md` (unless it's a permanent template)
+
+### Status Reports
+- `*STATUS_*.md`
+- `*_STATUS_*.md`
+- `*STATUS_YYYY-MM-DD*.md`
+
+### Bug Fix Summaries
+- `*BUG_FIX*.md`
+- `*BUG_FIX_SUMMARY*.md`
+- Bug fixes should be documented in git commits and Linear issues, not markdown files
+
+### Temporary Summaries
+- `*_SUMMARY_*.md` (unless it's a permanent implementation summary)
+- `SUMMARY_*.md` (unless it's a permanent implementation summary)
+- `*_COMPLETE.md` (unless it's a permanent implementation report)
+
+### Search Results
+- `*SEARCH_RESULTS*.md`
+- `*RESULTS*.md` (unless it's a permanent specification)
+
+### Analysis Files
+- `*ANALYSIS*.md` (unless it's a permanent analysis document)
+- `*ANALYZ*.md`
+
+### Design Documents (Should be in ADRs)
+- `*DESIGN_DOCUMENTS*.md`
+- `*DESIGN*.md` (unless it's a permanent design specification)
+
+### Cleanup Files
+- `CLEANUP_*.md`
+- `*CLEANUP*.md`
+- `*_CLEANUP*.md`
+
+### Validation Reports
+- `validation-report.md`
+- `*validation*.md` (unless it's a permanent validation specification)
+
+### Status Reports
+- `*STATUS*.md` (unless it's a permanent status specification)
+- `*_STATUS*.md`
+
+## Where Temporary Files MUST Go
+
+**ALL temporary files MUST be created in `/tmp` directory:**
+
+```bash
+# ✅ CORRECT: Temporary file in /tmp
+/tmp/linear-issue-search-results.md
+/tmp/documentation-audit-2025-01-28.md
+/tmp/planning-prompt-rbac.md
+
+# ❌ WRONG: Temporary file in docs/
+docs/implementation/LINEAR_ISSUE_SEARCH_RESULTS.md
+docs/implementation/DOCUMENTATION_AUDIT_REPORT_2025-01-28.md
+```
+
+## Temporary File Lifecycle
+
+### 1. Creation
+- Create temporary files ONLY in `/tmp` directory
+- Use descriptive names with dates if needed
+- NEVER commit temporary files to git
+
+### 2. Usage
+- Use temporary files for immediate work
+- Reference them in Linear issues if needed
+- Copy relevant information to permanent locations (Linear, ADRs, git commits)
+
+### 3. Deletion
+- **DELETE temporary files immediately after use**
+- Do NOT leave temporary files in `/tmp` for more than one session
+- Clean up `/tmp` directory regularly
+
+## Permanent Documentation vs Temporary Files
+
+### ✅ PERMANENT Documentation (Keep in Repository)
+
+**Implementation Reports:**
+- `*_IMPLEMENTATION_COMPLETE.md` - Permanent implementation documentation
+- `*_IMPLEMENTATION_GUIDE.md` - Permanent implementation guides
+- `*_INTEGRATION_GUIDE.md` - Permanent integration guides
+- `*_IMPLEMENTATION_SUMMARY.md` - Permanent implementation summaries (not date-stamped)
+
+**Roadmaps:**
+- `*_ROADMAP.md` - Permanent roadmap documents
+- `*_STRATEGY.md` - Permanent strategy documents
+
+**Specifications:**
+- `*_SPECIFICATION.md` - Permanent specifications
+- `*_SPEC.md` - Permanent specifications
+
+**Architecture:**
+- `*_ARCHITECTURE.md` - Permanent architecture documents
+- ADRs in `docs/architecture/decisions/`
+
+### ❌ TEMPORARY Files (Delete Immediately)
+
+**Search Results:**
+- `LINEAR_ISSUE_SEARCH_RESULTS.md` - Search results
+- `*SEARCH_RESULTS*.md` - Any search results
+
+**Planning:**
+- `*PLANNING_PROMPT*.md` - Planning prompts
+- `*_PLANNING*.md` - Temporary planning documents
+
+**Audits:**
+- `*AUDIT_REPORT*.md` - Date-stamped audit reports
+- `*AUDIT_FINDINGS*.md` - Audit findings
+
+**Status:**
+- `*STATUS_YYYY-MM-DD*.md` - Date-stamped status reports
+- `*_STATUS_*.md` - Temporary status reports
+
+**Summaries:**
+- `*_SUMMARY_*.md` - Temporary summaries (unless permanent implementation summary)
+- `FINAL_DELIVERABLES_SUMMARY.md` - Completion reports
+
+**Bug Fixes:**
+- `*BUG_FIX_SUMMARY*.md` - Bug fix summaries (should be in git commits)
+
+**Design Notes:**
+- `*DESIGN_DOCUMENTS*.md` - Design notes (should be in ADRs)
+
+**Cleanup:**
+- `CLEANUP_*.md` - Cleanup documentation
+- `*CLEANUP*.md` - Cleanup plans/scripts
+
+## Enforcement
+
+### Pre-Commit Hook
+
+The pre-commit hook MUST reject commits containing temporary file patterns:
+
+```bash
+# .husky/pre-commit should check for:
+- LINEAR_ISSUE*.md
+- *AUDIT*.md
+- *PLANNING_PROMPT*.md
+- *STATUS_*.md
+- *BUG_FIX*.md
+- *_SUMMARY_*.md (with exceptions)
+- *SEARCH_RESULTS*.md
+- *DESIGN_DOCUMENTS*.md
+- CLEANUP_*.md
+- validation-report.md
+```
+
+### .gitignore
+
+`.gitignore` MUST include patterns to prevent temporary files:
+
+```gitignore
+# Temporary Documentation Files - NEVER COMMIT
+**/LINEAR_ISSUE*.md
+**/*AUDIT*.md
+**/*PLANNING_PROMPT*.md
+**/*STATUS_*.md
+**/*BUG_FIX*.md
+**/*_SUMMARY_*.md
+**/*SEARCH_RESULTS*.md
+**/*DESIGN_DOCUMENTS*.md
+**/CLEANUP_*.md
+**/validation-report.md
+```
+
+## Examples
+
+### ✅ CORRECT: Permanent Documentation
+
+```bash
+# Permanent implementation report
+docs/implementation/TIME_TRACKING_IMPLEMENTATION_COMPLETE.md
+
+# Permanent implementation guide
+docs/implementation/TIME_TRACKING_IMPLEMENTATION_GUIDE.md
+
+# Permanent roadmap
+docs/implementation/REVISED_IMPLEMENTATION_ROADMAP.md
+
+# Permanent integration guide
+docs/implementation/TIMECARD_INTEGRATION_GUIDE.md
+```
+
+### ❌ WRONG: Temporary Files
+
+```bash
+# ❌ Search results (should be in /tmp)
+docs/implementation/LINEAR_ISSUE_SEARCH_RESULTS.md
+
+# ❌ Planning prompt (should be in /tmp)
+docs/implementation/DOCUMENTATION_FIX_PLANNING_PROMPT.md
+
+# ❌ Audit findings (should be in Linear)
+docs/implementation/UI_UX_RBAC_AUDIT_FINDINGS.md
+
+# ❌ Date-stamped status (should be in /tmp)
+docs/implementation/CALENDAR_STATUS_2025-01-28.md
+
+# ❌ Bug fix summary (should be in git commits)
+docs/implementation/TIME_TRACKING_BUG_FIX_SUMMARY.md
+
+# ❌ Temporary summary (should be in /tmp)
+docs/implementation/TASK_MANAGEMENT_SUMMARY.md
+
+# ❌ Design notes (should be in ADRs)
+docs/implementation/COUCHDB_RBAC_DESIGN_DOCUMENTS.md
+```
+
+## Cleanup Script
+
+Use `scripts/cleanup-temporary-files.sh` to identify and delete temporary files:
+
+```bash
+# Scan for temporary files
+./scripts/cleanup-temporary-files.sh --scan
+
+# Delete temporary files (with confirmation)
+./scripts/cleanup-temporary-files.sh --delete
+```
+
+## References
+
+- File Organization: `.cursor/rules/file-organization.mdc`
+- Documentation Organization: `.cursor/rules/documentation-organization.mdc`
+- Git Workflow: `.cursor/rules/git-workflow.mdc`

@@ -63,10 +63,55 @@ fi
 echo "   ✅ No forbidden file patterns found"
 
 # ============================================================================
-# 3. Run lint-staged (linting, formatting, type checking)
+# 3. Check for temporary documentation files
 # ============================================================================
 echo ""
-echo "3️⃣  Running lint-staged checks..."
+echo "3️⃣  Checking for temporary documentation files..."
+
+# Temporary file patterns (from .cursor/rules/temporary-files-prevention.mdc)
+TEMP_PATTERNS=$(git diff --cached --name-only | grep -E "(LINEAR_ISSUE|LINEAR_ISSUES|linear-issue|AUDIT|AUDIT_FINDINGS|FINDINGS|PLANNING_PROMPT|PLANNING|STATUS_|_STATUS_|BUG_FIX|BUG_FIX_SUMMARY|SEARCH_RESULTS|RESULTS|ANALYSIS|ANALYZ|DESIGN_DOCUMENTS|DESIGN|IMPLEMENTATION_NOTES|NOTES|CLEANUP|_CLEANUP|validation-report|FINAL_DELIVERABLES)" | grep -E "\.md$" || true)
+
+# Exceptions (permanent files that match patterns)
+EXCEPTIONS="IMPLEMENTATION_SUMMARY|INTEGRATION_SUMMARY|IMPLEMENTATION_COMPLETE|IMPLEMENTATION_GUIDE|INTEGRATION_GUIDE|ROADMAP|STRATEGY|SPECIFICATION|SPEC|ARCHITECTURE|ui-ux/00-updates/FIGMA-UPDATE|ui-ux/00-updates/MIGRATION-"
+
+# Filter out exceptions
+TEMP_FILES=$(echo "$TEMP_PATTERNS" | grep -vE "$EXCEPTIONS" || true)
+
+if [ -n "$TEMP_FILES" ]; then
+    echo "   ❌ Temporary documentation files detected:"
+    echo "$TEMP_FILES" | while read file; do
+        echo "      - $file"
+    done
+    echo ""
+    echo "   📋 RULE: Temporary files MUST be in /tmp and deleted after use"
+    echo "      ❌ NEVER commit: search results, planning prompts, audit findings,"
+    echo "         status reports, bug fix summaries, design notes, cleanup files"
+    echo ""
+    echo "   ✅ CORRECT:"
+    echo "      - Create temporary files in /tmp directory"
+    echo "      - Delete temporary files after use"
+    echo "      - Put permanent documentation in appropriate docs/ subfolders"
+    echo ""
+    echo "   📁 Temporary files should be:"
+    echo "      - Linear issue search results → /tmp (then delete)"
+    echo "      - Planning prompts → /tmp (then delete)"
+    echo "      - Audit findings → Linear issues (not markdown files)"
+    echo "      - Status reports → /tmp (then delete)"
+    echo "      - Bug fix summaries → git commits and Linear issues"
+    echo "      - Design notes → ADRs (docs/architecture/decisions/) or Linear"
+    echo ""
+    echo "   See: .cursor/rules/temporary-files-prevention.mdc"
+    echo ""
+    exit 1
+fi
+
+echo "   ✅ No temporary documentation files found"
+
+# ============================================================================
+# 4. Run lint-staged (linting, formatting, type checking)
+# ============================================================================
+echo ""
+echo "4️⃣  Running lint-staged checks..."
 
 pnpm lint-staged
 

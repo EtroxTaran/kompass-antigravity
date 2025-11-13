@@ -1,15 +1,16 @@
-# KOMPASS API Specification
+# API Specification
 
 **Version:** 1.0  
 **Last Updated:** 2025-01-28  
-**Status:** Draft
+**Status:** ✅ Finalized
 
 ## Cross-References
 
-- **Data Model:** `docs/reviews/DATA_MODEL_SPECIFICATION.md` - Entity definitions and validation rules
-- **RBAC Matrix:** `docs/reviews/RBAC_PERMISSION_MATRIX.md` - Permission requirements for endpoints
-- **Test Strategy:** `docs/reviews/TEST_STRATEGY_DOCUMENT.md` - API test scenarios
-- **Architecture Rules:** `.cursorrules` - API design patterns and OpenAPI standards
+- **System Architecture:** `docs/architecture/system-architecture.md` - Complete technical specification and patterns
+- **Data Model:** `docs/specifications/data-model.md` - Entity definitions and validation rules
+- **RBAC Matrix:** `docs/specifications/rbac-permissions.md` - Permission requirements for endpoints
+- **Test Strategy:** `docs/specifications/test-strategy.md` - API test scenarios
+- **Architecture Rules:** `.cursor/rules/*.mdc` - API design patterns and OpenAPI standards
 
 ---
 

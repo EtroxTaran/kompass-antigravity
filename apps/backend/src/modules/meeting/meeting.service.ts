@@ -31,6 +31,8 @@ import {
   createMeeting,
   MeetingOutcome as MeetingOutcomeEnum,
 } from '@kompass/shared/types/entities/meeting';
+import type { Location } from '@kompass/shared/types/entities/location';
+import type { Tour } from '@kompass/shared/types/entities/tour';
 import { IMeetingRepository, MeetingFilters } from './meeting.repository';
 import { CreateMeetingDto, MeetingStatus } from './dto/create-meeting.dto';
 import { UpdateMeetingDto, CheckInDto } from './dto/update-meeting.dto';
@@ -48,21 +50,40 @@ interface User {
  * Location Service Interface (placeholder)
  */
 interface ILocationService {
-  findById(id: string): Promise<any>;
+  findById(id: string): Promise<Location | null>;
 }
 
 /**
  * Tour Service Interface (placeholder)
  */
 interface ITourService {
-  suggestToursForMeeting(meetingDate: Date, locationId: string, userId: string): Promise<any[]>;
+  suggestToursForMeeting(meetingDate: Date, locationId: string, userId: string): Promise<Tour[]>;
+}
+
+/**
+ * Audit Log Entry
+ */
+interface AuditLogEntry {
+  entityType: string;
+  entityId: string;
+  action: string;
+  userId: string;
+  timestamp: Date;
+  changes?: string[];
+  gpsCoordinates?: {
+    latitude: number;
+    longitude: number;
+  };
+  distanceFromLocation?: number;
+  tourId?: string;
+  [key: string]: unknown;
 }
 
 /**
  * Audit Service Interface (placeholder)
  */
 interface IAuditService {
-  log(entry: any): Promise<void>;
+  log(entry: AuditLogEntry): Promise<void>;
 }
 
 /**
@@ -480,7 +501,7 @@ export class MeetingService {
     meetingDate: Date,
     locationId: string,
     user: User,
-  ): Promise<any[]> {
+  ): Promise<Tour[]> {
     return this.tourService.suggestToursForMeeting(meetingDate, locationId, user.id);
   }
 

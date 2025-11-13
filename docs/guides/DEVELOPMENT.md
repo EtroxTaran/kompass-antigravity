@@ -663,12 +663,12 @@ DELETE /api/v1/customers/:id  # Delete
 
 ## Resources
 
-- **Architecture:** `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md`
-- **Data Model:** `docs/reviews/DATA_MODEL_SPECIFICATION.md`
-- **API Spec:** `docs/reviews/API_SPECIFICATION.md`
-- **Test Strategy:** `docs/reviews/TEST_STRATEGY_DOCUMENT.md`
-- **NFRs:** `docs/reviews/NFR_SPECIFICATION.md`
-- **RBAC Matrix:** `docs/reviews/RBAC_PERMISSION_MATRIX.md`
+- **Architecture:** `docs/architecture/README.md` (see v1 comprehensive & v2 pragmatic)
+- **Data Model:** `docs/specifications/data-model.md`
+- **API Spec:** `docs/specifications/api-specification.md`
+- **Test Strategy:** `docs/specifications/test-strategy.md`
+- **NFRs:** `docs/specifications/nfr-specification.md`
+- **RBAC Matrix:** `docs/specifications/rbac-permissions.md`
 
 ---
 

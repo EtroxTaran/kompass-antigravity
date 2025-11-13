@@ -6,16 +6,20 @@ Handles all customer-related operations including CRUD, validation, RBAC, and du
 ## Structure
 ```
 customer/
-├── customer.module.ts       # NestJS module definition
-├── customer.controller.ts   # HTTP endpoints with RBAC guards
-├── customer.service.ts      # Business logic
-├── customer.repository.ts   # Data access (CouchDB)
-├── dto/                     # Data transfer objects
+├── customer.module.ts       # NestJS module definition (TODO: uncomment when implemented)
+├── dto/                     # Data transfer objects ✅
 │   ├── create-customer.dto.ts
 │   ├── update-customer.dto.ts
 │   └── customer-response.dto.ts
-└── __tests__/
-    └── customer.service.spec.ts
+├── entities/                # Domain entities ✅
+│   └── customer.entity.ts
+└── README.md                # Module documentation ✅
+
+TODO: Implement:
+- customer.controller.ts   # HTTP endpoints with RBAC guards
+- customer.service.ts      # Business logic
+- customer.repository.ts   # Data access (CouchDB)
+- __tests__/               # Unit and integration tests
 ```
 
 ## API Endpoints
@@ -83,22 +87,32 @@ pnpm test:cov customer
 pnpm test:integration customer
 ```
 
-## Features
+## Current Status
 
-- ✅ CRUD operations
-- ✅ RBAC enforcement (entity and field level)
-- ✅ Duplicate detection (fuzzy matching)
-- ✅ Offline sync support
-- ✅ Audit trail
-- ✅ DSGVO compliance (consent, data retention)
-- ✅ Validation (backend + frontend)
-- ✅ Search integration (MeiliSearch)
+### ✅ Implemented
+- DTOs with validation (CreateCustomerDto, UpdateCustomerDto, CustomerResponseDto)
+- Entity types (Customer interface in shared package)
+- Module structure (DTOs, entities, README)
+
+### 📋 Planned (Not Yet Implemented)
+- CRUD operations (controller, service, repository)
+- RBAC enforcement (entity and field level)
+- Duplicate detection (fuzzy matching)
+- Offline sync support
+- Audit trail
+- DSGVO compliance (consent, data retention)
+- Search integration (MeiliSearch)
 
 ## TODO
 
+- [ ] Implement CustomerController with HTTP endpoints
+- [ ] Implement CustomerService with business logic
+- [ ] Implement CustomerRepository with CouchDB operations
 - [ ] Implement duplicate detection algorithm
 - [ ] Add MeiliSearch indexing
+- [ ] Add unit tests
 - [ ] Add integration tests
 - [ ] Add E2E tests
 - [ ] Configure CouchDB views/indexes
+- [ ] Uncomment module imports in customer.module.ts
 

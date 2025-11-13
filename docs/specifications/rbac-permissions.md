@@ -1,14 +1,14 @@
-# KOMPASS RBAC Permission Matrix
+# RBAC Permissions Matrix
 
 **Version:** 1.0  
 **Last Updated:** 2025-01-28  
-**Status:** Draft
+**Status:** ✅ Finalized
 
 ## Cross-References
 
-- **Data Model:** `docs/reviews/DATA_MODEL_SPECIFICATION.md` - Entity definitions
-- **API Specification:** `docs/reviews/API_SPECIFICATION.md` - Endpoint permission requirements
-- **Architecture Rules:** `.cursorrules` - RBAC enforcement patterns
+- **Data Model:** `docs/specifications/data-model.md` - Entity definitions
+- **API Specification:** `docs/specifications/api-specification.md` - Endpoint permission requirements
+- **Architecture Rules:** `.cursor/rules/*.mdc` - RBAC enforcement patterns
 
 ---
 

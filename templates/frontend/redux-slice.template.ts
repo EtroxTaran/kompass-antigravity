@@ -74,11 +74,12 @@ const initialState: {{EntityName}}State = {
  */
 export const fetch{{EntityName}}s = createAsyncThunk(
   '{{entityName}}/fetchAll',
-  async (filters: any, { rejectWithValue }) => {
+  async (filters: Record<string, unknown>, { rejectWithValue }) => {
     try {
       return await {{entityName}}Api.getAll(filters);
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      return rejectWithValue(message);
     }
   }
 );
@@ -91,8 +92,9 @@ export const fetch{{EntityName}} = createAsyncThunk(
   async (id: string, { rejectWithValue }) => {
     try {
       return await {{entityName}}Api.getById(id);
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      return rejectWithValue(message);
     }
   }
 );

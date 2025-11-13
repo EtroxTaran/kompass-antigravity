@@ -66,7 +66,7 @@ const ROLE_LABELS: Record<UserRole, string> = {
 
 export function PermissionMatrixEditor() {
   const [activeMatrix, setActiveMatrix] = useState<PermissionMatrix | null>(null);
-  const [editedMatrix, setEditedMatrix] = useState<Record<UserRole, Record<EntityType, Partial<Record<Permission, boolean>>>>>({} as any);
+  const [editedMatrix, setEditedMatrix] = useState<Record<UserRole, Record<EntityType, Partial<Record<Permission, boolean>>>>>({} as Record<UserRole, Record<EntityType, Partial<Record<Permission, boolean>>>>);
   const [changeReason, setChangeReason] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -87,7 +87,7 @@ export function PermissionMatrixEditor() {
     // TODO: Implement permission toggle logic
     // TODO: Mark as dirty
     setIsDirty(true);
-    console.log('Toggle permission:', { role, entity, permission, checked });
+    // Permission toggle logic will be implemented here
   };
 
   const handleSave = async () => {
@@ -96,7 +96,9 @@ export function PermissionMatrixEditor() {
     // TODO: Show confirmation dialog
     // TODO: Show loading state
     // TODO: Show success/error toast
-    console.log('Save permission matrix:', { editedMatrix, changeReason });
+    setIsLoading(true);
+    // API call will be implemented here
+    setIsLoading(false);
   };
 
   const handleReset = () => {

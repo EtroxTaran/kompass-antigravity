@@ -88,7 +88,7 @@ export function CustomerList(): JSX.Element {
                 <dl className="space-y-1 text-sm">
                   <div>
                     <dt className="text-muted-foreground inline">City: </dt>
-                    <dd className="inline">{customer.address.city}</dd>
+                    <dd className="inline">{customer.billingAddress.city}</dd>
                   </div>
                   {customer.email && (
                     <div>

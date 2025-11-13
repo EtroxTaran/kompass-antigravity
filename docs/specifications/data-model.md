@@ -10,7 +10,8 @@
 - **RBAC Matrix:** `docs/specifications/rbac-permissions.md` - Permissions for entities
 - **Test Strategy:** `docs/specifications/test-strategy.md` - Test scenarios and coverage
 - **Product Vision:** `docs/product-vision/Produktvision & Zielbild – Kontakt- & Kundenverwaltung (CRM-Basis).md` - Business requirements
-- **Architecture Rules:** `.cursorrules` - Entity structure patterns and validation standards
+- **System Architecture:** `docs/architecture/system-architecture.md` - Complete technical specification
+- **Architecture Rules:** `.cursor/rules/*.mdc` - Entity structure patterns and validation standards
 
 ---
 

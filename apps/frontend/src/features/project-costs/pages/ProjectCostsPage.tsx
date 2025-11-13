@@ -49,7 +49,7 @@ export function ProjectCostsPage({ projectId }: ProjectCostsPageProps) {
    */
   function handleExport() {
     // TODO: Implement CSV export
-    console.log('Export project costs');
+    // Export functionality will be implemented here
   }
 
   return (
