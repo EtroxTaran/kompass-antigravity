@@ -1,16 +1,19 @@
 /**
  * Location Controller Unit Tests
- * 
+ *
  * Tests HTTP request handling for Location endpoints
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
+
+import { LocationType } from '@kompass/shared/types/enums';
+
+import type { CreateLocationDto } from '../dto/create-location.dto';
+import type { LocationResponseDto } from '../dto/location-response.dto';
+import type { UpdateLocationDto } from '../dto/update-location.dto';
 import { LocationController } from '../location.controller';
 import { LocationService } from '../location.service';
-import { LocationType } from '@kompass/shared/types/enums';
-import { CreateLocationDto } from '../dto/create-location.dto';
-import { UpdateLocationDto } from '../dto/update-location.dto';
-import { LocationResponseDto } from '../dto/location-response.dto';
 
 describe('LocationController', () => {
   let controller: LocationController;
@@ -82,10 +85,18 @@ describe('LocationController', () => {
     it('should create location and return 201', async () => {
       service.create.mockResolvedValue(mockLocationResponse);
 
-      const result = await controller.createLocation('customer-123', createDto, mockUser);
+      const result = await controller.createLocation(
+        'customer-123',
+        createDto,
+        mockUser
+      );
 
       expect(result).toEqual(mockLocationResponse);
-      expect(service.create).toHaveBeenCalledWith('customer-123', createDto, mockUser);
+      expect(service.create).toHaveBeenCalledWith(
+        'customer-123',
+        createDto,
+        mockUser
+      );
     });
   });
 
@@ -93,22 +104,43 @@ describe('LocationController', () => {
     it('should return all locations for customer', async () => {
       service.findByCustomer.mockResolvedValue([mockLocationResponse]);
 
-      const result = await controller.listLocations('customer-123', undefined, undefined, undefined, undefined, mockUser);
+      const result = await controller.listLocations(
+        'customer-123',
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        mockUser
+      );
 
       expect(result).toHaveLength(1);
-      expect(service.findByCustomer).toHaveBeenCalledWith('customer-123', mockUser);
+      expect(service.findByCustomer).toHaveBeenCalledWith(
+        'customer-123',
+        mockUser
+      );
     });
 
     it('should filter by locationType', async () => {
       service.findByCustomer.mockResolvedValue([
         mockLocationResponse,
-        { ...mockLocationResponse, _id: 'location-789', locationType: LocationType.WAREHOUSE },
+        {
+          ...mockLocationResponse,
+          _id: 'location-789',
+          locationType: LocationType.WAREHOUSE,
+        },
       ]);
 
-      const result = await controller.listLocations('customer-123', LocationType.BRANCH, undefined, undefined, undefined, mockUser);
+      const result = await controller.listLocations(
+        'customer-123',
+        LocationType.BRANCH,
+        undefined,
+        undefined,
+        undefined,
+        mockUser
+      );
 
       expect(result).toHaveLength(1);
-      expect(result[0].locationType).toBe(LocationType.BRANCH);
+      expect(result[0]!.locationType).toBe(LocationType.BRANCH);
     });
 
     it('should filter by isActive', async () => {
@@ -117,10 +149,17 @@ describe('LocationController', () => {
         { ...mockLocationResponse, _id: 'location-789', isActive: false },
       ]);
 
-      const result = await controller.listLocations('customer-123', undefined, true, undefined, undefined, mockUser);
+      const result = await controller.listLocations(
+        'customer-123',
+        undefined,
+        true,
+        undefined,
+        undefined,
+        mockUser
+      );
 
       expect(result).toHaveLength(1);
-      expect(result[0].isActive).toBe(true);
+      expect(result[0]!.isActive).toBe(true);
     });
 
     it('should sort locations by name', async () => {
@@ -129,10 +168,17 @@ describe('LocationController', () => {
         { ...mockLocationResponse, _id: 'location-789', locationName: 'Alpha' },
       ]);
 
-      const result = await controller.listLocations('customer-123', undefined, undefined, 'locationName', 'asc', mockUser);
+      const result = await controller.listLocations(
+        'customer-123',
+        undefined,
+        undefined,
+        'locationName',
+        'asc',
+        mockUser
+      );
 
-      expect(result[0].locationName).toBe('Alpha');
-      expect(result[1].locationName).toBe('Zebra');
+      expect(result[0]!.locationName).toBe('Alpha');
+      expect(result[1]!.locationName).toBe('Zebra');
     });
   });
 
@@ -140,7 +186,11 @@ describe('LocationController', () => {
     it('should return single location', async () => {
       service.findOne.mockResolvedValue(mockLocationResponse);
 
-      const result = await controller.getLocation('customer-123', 'location-456', mockUser);
+      const result = await controller.getLocation(
+        'customer-123',
+        'location-456',
+        mockUser
+      );
 
       expect(result).toEqual(mockLocationResponse);
     });
@@ -157,10 +207,20 @@ describe('LocationController', () => {
         locationName: 'Updated Name',
       });
 
-      const result = await controller.updateLocation('customer-123', 'location-456', updateDto, mockUser);
+      const result = await controller.updateLocation(
+        'customer-123',
+        'location-456',
+        updateDto,
+        mockUser
+      );
 
       expect(result.locationName).toBe('Updated Name');
-      expect(service.update).toHaveBeenCalledWith('customer-123', 'location-456', updateDto, mockUser);
+      expect(service.update).toHaveBeenCalledWith(
+        'customer-123',
+        'location-456',
+        updateDto,
+        mockUser
+      );
     });
   });
 
@@ -169,11 +229,14 @@ describe('LocationController', () => {
       service.delete.mockResolvedValue();
 
       await expect(
-        controller.deleteLocation('customer-123', 'location-456', mockUser),
+        controller.deleteLocation('customer-123', 'location-456', mockUser)
       ).resolves.toBeUndefined();
 
-      expect(service.delete).toHaveBeenCalledWith('customer-123', 'location-456', mockUser);
+      expect(service.delete).toHaveBeenCalledWith(
+        'customer-123',
+        'location-456',
+        mockUser
+      );
     });
   });
 });
-

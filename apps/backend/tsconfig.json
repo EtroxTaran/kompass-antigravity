@@ -20,7 +20,8 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "@/*": ["src/*"],
-      "@kompass/shared": ["../../packages/shared/src"]
+      "@kompass/shared": ["../../packages/shared/src"],
+      "@kompass/shared/*": ["../../packages/shared/src/*"]
     }
   },
   "include": ["src/**/*"],

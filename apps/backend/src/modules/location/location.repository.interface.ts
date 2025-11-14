@@ -1,6 +1,6 @@
 /**
  * Location Repository Interface
- * 
+ *
  * Defines contract for Location data access
  * Following Clean Architecture pattern - service layer depends on interface, not implementation
  */
@@ -24,7 +24,10 @@ export interface ILocationRepository {
   /**
    * Find location by customer and name (for uniqueness check)
    */
-  findByCustomerAndName(customerId: string, locationName: string): Promise<Location | null>;
+  findByCustomerAndName(
+    customerId: string,
+    locationName: string
+  ): Promise<Location | null>;
 
   /**
    * Find active locations from a list of IDs
@@ -34,7 +37,7 @@ export interface ILocationRepository {
   /**
    * Create a new location
    */
-  create(location: Location): Promise<Location>;
+  create(location: Omit<Location, '_rev'>): Promise<Location>;
 
   /**
    * Update an existing location
@@ -51,4 +54,3 @@ export interface ILocationRepository {
    */
   isLocationInUse(locationId: string): Promise<boolean>;
 }
-

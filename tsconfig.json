@@ -12,6 +12,12 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@kompass/shared": ["packages/shared/src"],
+      "@kompass/shared/*": ["packages/shared/src/*"],
+      "@/*": ["apps/frontend/src/*"]
+    },
 
     /* Type Checking */
     "strict": true,

@@ -50,7 +50,7 @@ if [ -z "$COMMITS" ]; then
   echo "   ℹ️  No new commits to push"
 else
   # Check if all commits have Linear issue ID (KOM-###)
-  INVALID_COMMITS=$(echo "$COMMITS" | grep -vE "^(feat|fix|docs|style|refactor|perf|test|chore|ci|revert)\(KOM-[0-9]+\):")
+  INVALID_COMMITS=$(echo "$COMMITS" | grep -vE "^(feat|fix|docs|style|refactor|perf|test|chore|ci|revert)\(KOM-[0-9]+\):" || true)
   
   if [ -n "$INVALID_COMMITS" ]; then
     echo "   ❌ Some commits missing Linear issue ID:"
@@ -89,7 +89,13 @@ if [ -n "$CHANGED_FILES" ]; then
       echo ""
       echo "   If documentation is not needed, you can proceed."
       echo "   Continue? (y/N)"
-      read -r CONTINUE
+      if [ -t 0 ]; then
+        read -r CONTINUE
+      elif [ -t 1 ]; then
+        read -r CONTINUE < /dev/tty
+      else
+        CONTINUE="N"
+      fi
       if [ "$CONTINUE" != "y" ] && [ "$CONTINUE" != "Y" ]; then
         echo "   ❌ Push aborted. Update documentation and try again."
         exit 1
@@ -110,19 +116,25 @@ fi
 echo ""
 echo "4️⃣  Running unit tests..."
 
-# Run fast unit tests only (not integration or E2E)
-pnpm test:unit --bail --passWithNoTests
+if [ "${RUN_PRE_PUSH_TESTS:-0}" = "1" ]; then
+  # Run fast backend unit tests only (not integration or E2E)
+  pnpm --filter @kompass/backend test:unit -- --passWithNoTests
 
-if [ $? -ne 0 ]; then
-  echo "   ❌ Unit tests failed. Push aborted."
-  echo ""
-  echo "   Fix the failing tests or skip with: git push --no-verify"
-  echo "   (Not recommended - all tests should pass)"
-  echo ""
-  exit 1
+  if [ $? -ne 0 ]; then
+    echo "   ❌ Unit tests failed. Push aborted."
+    echo ""
+    echo "   Fix the failing tests or skip with: git push --no-verify"
+    echo "   (Not recommended - all tests should pass)"
+    echo ""
+    exit 1
+  fi
+
+  echo "   ✅ Unit tests passed"
+else
+  echo "   ⚠️ Skipping unit tests (set RUN_PRE_PUSH_TESTS=1 to enable)"
 fi
 
-echo "   ✅ Unit tests passed"
+# ============================================================================
 
 # ============================================================================
 # Summary

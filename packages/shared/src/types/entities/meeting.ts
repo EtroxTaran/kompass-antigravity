@@ -1,9 +1,9 @@
 /**
  * Meeting/Appointment Entity for KOMPASS
- * 
+ *
  * Represents a scheduled customer visit/meeting
  * Linked to tours for travel planning and expense tracking
- * 
+ *
  * Validation rules:
  * - scheduledAt: Required, future date (or within last 7 days for retroactive)
  * - duration: 15-480 minutes
@@ -11,7 +11,7 @@
  * - customerId: Must reference existing Customer
  * - locationId: Must reference existing Location
  * - outcome: Required if attended = true
- * 
+ *
  * Business Rules:
  * - MT-001: Auto-suggest tours when creating meeting (same day ±1, region <50km)
  * - MT-002: Meeting can only be marked attended if scheduledAt is in past
@@ -20,6 +20,7 @@
  */
 
 import type { BaseEntity } from '../base.entity';
+
 import type { GPSCoordinates } from './tour';
 
 /**
@@ -53,7 +54,7 @@ export interface Meeting extends BaseEntity {
   type: 'meeting';
 
   // ==================== Meeting Identity ====================
-  
+
   /** Meeting title/subject */
   title: string;
 
@@ -61,7 +62,7 @@ export interface Meeting extends BaseEntity {
   description?: string;
 
   // ==================== Schedule ====================
-  
+
   /** Scheduled date and time */
   scheduledAt: Date;
 
@@ -72,7 +73,7 @@ export interface Meeting extends BaseEntity {
   meetingType: MeetingType;
 
   // ==================== Location & Participants ====================
-  
+
   /** Customer ID (REQUIRED) */
   customerId: string;
 
@@ -83,12 +84,12 @@ export interface Meeting extends BaseEntity {
   attendees?: string[];
 
   // ==================== Tour Association ====================
-  
+
   /** Tour ID this meeting belongs to (optional, can be auto-assigned) */
   tourId?: string;
 
   // ==================== Project/Opportunity Linkage ====================
-  
+
   /** Related opportunity ID */
   opportunityId?: string;
 
@@ -96,7 +97,7 @@ export interface Meeting extends BaseEntity {
   projectId?: string;
 
   // ==================== Meeting Execution ====================
-  
+
   /** Whether meeting was attended */
   attended?: boolean;
 
@@ -110,7 +111,7 @@ export interface Meeting extends BaseEntity {
   checkInGPS?: GPSCoordinates;
 
   // ==================== Meeting Outcome ====================
-  
+
   /** Meeting outcome */
   outcome?: MeetingOutcome;
 
@@ -127,7 +128,7 @@ export interface Meeting extends BaseEntity {
   followUpDate?: Date;
 
   // ==================== Preparation ====================
-  
+
   /** Agenda items */
   agenda?: string[];
 
@@ -135,7 +136,7 @@ export interface Meeting extends BaseEntity {
   preparationNotes?: string;
 
   // ==================== Reminders ====================
-  
+
   /** Reminder sent flag */
   reminderSent?: boolean;
 
@@ -205,16 +206,28 @@ export interface MeetingValidationError {
 /**
  * Validates meeting data
  */
-export function validateMeeting(meeting: Partial<Meeting>): MeetingValidationError[] {
+export function validateMeeting(
+  meeting: Partial<Meeting>
+): MeetingValidationError[] {
   const errors: MeetingValidationError[] = [];
 
   // Required fields
-  if (!meeting.title || meeting.title.length < 2 || meeting.title.length > 200) {
-    errors.push({ field: 'title', message: 'Meeting title must be 2-200 characters' });
+  if (
+    !meeting.title ||
+    meeting.title.length < 2 ||
+    meeting.title.length > 200
+  ) {
+    errors.push({
+      field: 'title',
+      message: 'Meeting title must be 2-200 characters',
+    });
   }
 
   if (!meeting.scheduledAt) {
-    errors.push({ field: 'scheduledAt', message: 'Scheduled date is required' });
+    errors.push({
+      field: 'scheduledAt',
+      message: 'Scheduled date is required',
+    });
   }
 
   if (!meeting.duration) {
@@ -236,23 +249,28 @@ export function validateMeeting(meeting: Partial<Meeting>): MeetingValidationErr
   // Duration validation
   if (meeting.duration !== undefined) {
     if (meeting.duration < 15) {
-      errors.push({ field: 'duration', message: 'Duration must be at least 15 minutes' });
+      errors.push({
+        field: 'duration',
+        message: 'Duration must be at least 15 minutes',
+      });
     }
     if (meeting.duration > 480) {
-      errors.push({ field: 'duration', message: 'Duration cannot exceed 480 minutes (8 hours)' });
+      errors.push({
+        field: 'duration',
+        message: 'Duration cannot exceed 480 minutes (8 hours)',
+      });
     }
   }
 
   // Scheduled date validation
   if (meeting.scheduledAt && !meeting._id) {
-    const now = new Date();
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
     if (new Date(meeting.scheduledAt) < sevenDaysAgo) {
-      errors.push({ 
-        field: 'scheduledAt', 
-        message: 'Scheduled date cannot be more than 7 days in the past' 
+      errors.push({
+        field: 'scheduledAt',
+        message: 'Scheduled date cannot be more than 7 days in the past',
       });
     }
   }
@@ -262,7 +280,8 @@ export function validateMeeting(meeting: Partial<Meeting>): MeetingValidationErr
     if (new Date(meeting.scheduledAt) > new Date()) {
       errors.push({
         field: 'attended',
-        message: 'Cannot mark meeting as attended if scheduled date is in the future',
+        message:
+          'Cannot mark meeting as attended if scheduled date is in the future',
       });
     }
   }
@@ -325,4 +344,3 @@ export function isGPSWithinProximity(
 
   return distance <= maxDistanceMeters;
 }
-

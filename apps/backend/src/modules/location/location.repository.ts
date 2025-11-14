@@ -1,24 +1,24 @@
 /**
  * Location Repository Implementation (CouchDB)
- * 
+ *
  * Handles Location CRUD operations with CouchDB
  * Implements ILocationRepository interface for dependency inversion
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-import { ILocationRepository } from './location.repository.interface';
+import type { DocumentScope } from 'nano';
+
 import type { Location } from '@kompass/shared/types/entities/location';
-import { DocumentScope, ServerScope } from 'nano';
+
+import type { ILocationRepository } from './location.repository.interface';
 
 @Injectable()
 export class LocationRepository implements ILocationRepository {
   private readonly logger = new Logger(LocationRepository.name);
   private db: DocumentScope<Location>;
 
-  constructor(
-    // Inject CouchDB connection - actual injection happens in module
-    // For now, this is a placeholder pattern
-  ) {
+  constructor() // For now, this is a placeholder pattern // Inject CouchDB connection - actual injection happens in module
+  {
     // TODO: Inject Nano instance and get database
     // this.db = nano.use<Location>('kompass');
   }
@@ -29,12 +29,16 @@ export class LocationRepository implements ILocationRepository {
   async findById(id: string): Promise<Location | null> {
     try {
       const location = await this.db.get(id);
-      
-      if (location.type !== 'location') {
-        this.logger.warn(`Document ${id} is not a location (type: ${location.type})`);
+
+      const documentType = location.type as string;
+
+      if (documentType !== 'location') {
+        this.logger.warn(
+          `Document ${id} is not a location (type: ${documentType})`
+        );
         return null;
       }
-      
+
       return location;
     } catch (error) {
       if (error.statusCode === 404) {
@@ -61,7 +65,10 @@ export class LocationRepository implements ILocationRepository {
 
       return result.docs;
     } catch (error) {
-      this.logger.error(`Error finding locations for customer ${customerId}:`, error);
+      this.logger.error(
+        `Error finding locations for customer ${customerId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -71,7 +78,7 @@ export class LocationRepository implements ILocationRepository {
    */
   async findByCustomerAndName(
     customerId: string,
-    locationName: string,
+    locationName: string
   ): Promise<Location | null> {
     try {
       const result = await this.db.find({
@@ -85,7 +92,10 @@ export class LocationRepository implements ILocationRepository {
 
       return result.docs.length > 0 ? result.docs[0] : null;
     } catch (error) {
-      this.logger.error(`Error finding location by name for customer ${customerId}:`, error);
+      this.logger.error(
+        `Error finding location by name for customer ${customerId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -118,10 +128,10 @@ export class LocationRepository implements ILocationRepository {
   /**
    * Create a new location
    */
-  async create(location: Location): Promise<Location> {
+  async create(location: Omit<Location, '_rev'>): Promise<Location> {
     try {
       const response = await this.db.insert(location);
-      
+
       if (!response.ok) {
         throw new Error('Failed to create location');
       }
@@ -160,7 +170,7 @@ export class LocationRepository implements ILocationRepository {
 
       // Save
       const response = await this.db.insert(updated);
-      
+
       if (!response.ok) {
         throw new Error('Failed to update location');
       }
@@ -226,4 +236,3 @@ export class LocationRepository implements ILocationRepository {
     }
   }
 }
-

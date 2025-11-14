@@ -1,36 +1,42 @@
 /**
  * Contact Service
- * 
+ *
  * Business logic for Contact/ContactPerson management
- * 
+ *
  * Responsibilities:
  * - Validate contact data and business rules
  * - Check RBAC permissions (especially for decision roles)
  * - Orchestrate repository calls
  * - Log audit trail
- * 
+ *
  * Business Rules:
  * - CO-001: Approval limit required if canApproveOrders=true
  * - CO-002: Primary contact locations must be in assignedLocationIds
  * - CO-003: Customer should have at least one decision maker (warning)
- * 
+ *
  * CRITICAL RBAC:
  * - Only PLAN and GF can update decision-making roles
  * - ADM can update basic contact info for their customers
  */
 
 import {
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
   BadRequestException,
+  ForbiddenException,
   Inject,
+  Injectable,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
+
 import type { ContactPerson } from '@kompass/shared/types/entities/contact';
-import { getContactDisplayName, validateContact } from '@kompass/shared/types/entities/contact';
-import { UpdateDecisionAuthorityDto } from './dto/update-decision-authority.dto';
-import { DecisionAuthorityResponseDto } from './dto/decision-authority-response.dto';
+import {
+  getContactDisplayName,
+  validateContact,
+} from '@kompass/shared/types/entities/contact';
+import { DecisionMakingRole } from '@kompass/shared/types/enums';
+
+import type { DecisionAuthorityResponseDto } from './dto/decision-authority-response.dto';
+import type { UpdateDecisionAuthorityDto } from './dto/update-decision-authority.dto';
 
 /**
  * Placeholder User type
@@ -52,8 +58,18 @@ interface IContactRepository {
 /**
  * Audit Service Interface (placeholder)
  */
+interface AuditLogEntry {
+  entityType: string;
+  entityId: string;
+  action: string;
+  oldValue: Record<string, unknown>;
+  newValue: Record<string, unknown>;
+  userId: string;
+  timestamp: Date;
+}
+
 interface IAuditService {
-  log(entry: any): Promise<void>;
+  log(entry: AuditLogEntry): Promise<void>;
 }
 
 /**
@@ -67,15 +83,24 @@ export class ContactService {
     @Inject('IContactRepository')
     private readonly contactRepository: IContactRepository,
     @Inject('IAuditService')
-    private readonly auditService: IAuditService,
+    private readonly auditService: IAuditService
   ) {}
 
   /**
    * Get decision authority information for a contact
-   * 
+   *
    * RBAC: All roles can VIEW decision authority
    */
-  async getDecisionAuthority(contactId: string, user: User): Promise<DecisionAuthorityResponseDto> {
+  async getDecisionAuthority(
+    contactId: string,
+    user: User
+  ): Promise<DecisionAuthorityResponseDto> {
+    if (!user) {
+      throw new ForbiddenException(
+        'User context is required to view decision authority'
+      );
+    }
+
     const contact = await this.contactRepository.findById(contactId);
 
     if (!contact) {
@@ -100,19 +125,19 @@ export class ContactService {
 
   /**
    * Update decision authority for a contact
-   * 
+   *
    * CRITICAL RBAC: Only PLAN and GF can update decision-making roles
    * This is a restricted operation due to business impact
    */
   async updateDecisionAuthority(
     contactId: string,
     dto: UpdateDecisionAuthorityDto,
-    user: User,
+    user: User
   ): Promise<DecisionAuthorityResponseDto> {
     // CRITICAL: Check restricted permission
     if (user.role !== 'PLAN' && user.role !== 'GF') {
       throw new ForbiddenException(
-        'Only ADM+ users (PLAN, GF) can update contact decision-making roles',
+        'Only ADM+ users (PLAN, GF) can update contact decision-making roles'
       );
     }
 
@@ -126,7 +151,7 @@ export class ContactService {
     if (dto.canApproveOrders === true) {
       if (!dto.approvalLimitEur || dto.approvalLimitEur <= 0) {
         throw new BadRequestException(
-          'Contacts who can approve orders must have an approval limit > 0',
+          'Contacts who can approve orders must have an approval limit > 0'
         );
       }
     }
@@ -206,23 +231,25 @@ export class ContactService {
    * Check if customer has at least one decision maker
    * Returns warning if not (business rule CO-003)
    */
-  async validateCustomerHasDecisionMaker(customerId: string): Promise<{ hasDecisionMaker: boolean; warning?: string }> {
+  async validateCustomerHasDecisionMaker(
+    customerId: string
+  ): Promise<{ hasDecisionMaker: boolean; warning?: string }> {
     const contacts = await this.contactRepository.findByCustomer(customerId);
 
     const hasDecisionMaker = contacts.some(
       (c) =>
         c.decisionMakingRole === DecisionMakingRole.DECISION_MAKER ||
-        c.decisionMakingRole === DecisionMakingRole.KEY_INFLUENCER,
+        c.decisionMakingRole === DecisionMakingRole.KEY_INFLUENCER
     );
 
     if (!hasDecisionMaker) {
       return {
         hasDecisionMaker: false,
-        warning: 'Customer should have at least one decision maker or key influencer',
+        warning:
+          'Customer should have at least one decision maker or key influencer',
       };
     }
 
     return { hasDecisionMaker: true };
   }
 }
-

@@ -1,8 +1,8 @@
 /**
  * Customer Entity for KOMPASS
- * 
+ *
  * Represents a business customer (B2B focus)
- * 
+ *
  * Validation rules from DATA_MODEL_SPECIFICATION.md:
  * - companyName: 2-200 chars, letters/numbers/basic punctuation
  * - vatNumber: DE\d{9} format (optional)
@@ -14,7 +14,11 @@
 
 import type { BaseEntity } from '../base.entity';
 import type { Address } from '../common/address';
-import { CustomerType, CustomerBusinessType, type CustomerRating } from '../enums';
+import type {
+  CustomerType,
+  CustomerBusinessType,
+  type CustomerRating,
+} from '../enums';
 
 /**
  * DSGVO consent structure
@@ -35,7 +39,7 @@ export interface Customer extends BaseEntity {
   type: 'customer';
 
   // ==================== Basic Information ====================
-  
+
   /** Company name (2-200 chars) */
   companyName: string;
 
@@ -52,7 +56,7 @@ export interface Customer extends BaseEntity {
   registrationNumber?: string;
 
   // ==================== Address & Locations (UPDATED) ====================
-  
+
   /** Primary billing address (REQUIRED) */
   billingAddress: Address;
 
@@ -63,7 +67,7 @@ export interface Customer extends BaseEntity {
   defaultDeliveryLocationId?: string;
 
   // ==================== Contact Information ====================
-  
+
   /** Phone number (international format) */
   phone?: string;
 
@@ -74,7 +78,7 @@ export interface Customer extends BaseEntity {
   website?: string;
 
   // ==================== Financial Data (RBAC Restricted) ====================
-  
+
   /** Credit limit in EUR (Buchhaltung/GF only) */
   creditLimit?: number;
 
@@ -91,7 +95,7 @@ export interface Customer extends BaseEntity {
   profitMargin?: number;
 
   // ==================== Relationship Management ====================
-  
+
   /** User ID of assigned ADM (owner) */
   owner: string;
 
@@ -114,7 +118,7 @@ export interface Customer extends BaseEntity {
   customerBusinessType?: CustomerBusinessType;
 
   // ==================== Tour Planning (NEW) ====================
-  
+
   /** Date of last visit by ADM (for tour planning) */
   lastVisitDate?: Date;
 
@@ -125,7 +129,7 @@ export interface Customer extends BaseEntity {
   preferredVisitTime?: string;
 
   // ==================== Business Intelligence ====================
-  
+
   /** Industry/sector */
   industry?: string;
 
@@ -136,7 +140,7 @@ export interface Customer extends BaseEntity {
   annualRevenue?: number;
 
   // ==================== Tags & Notes ====================
-  
+
   /** Flexible tags (e.g., ["VIP", "Referral"]) */
   tags?: string[];
 
@@ -147,7 +151,7 @@ export interface Customer extends BaseEntity {
   internalNotes?: string;
 
   // ==================== DSGVO Compliance ====================
-  
+
   /** DSGVO consent tracking */
   dsgvoConsent?: DSGVOConsent;
 
@@ -161,7 +165,7 @@ export interface Customer extends BaseEntity {
   anonymizedAt?: Date;
 
   // ==================== Search Optimization ====================
-  
+
   /** Denormalized text for full-text search (MeiliSearch) */
   searchableText?: string;
 }
@@ -202,13 +206,15 @@ export function createCustomer(
   userId: string
 ): Omit<Customer, '_rev'> {
   const now = new Date();
-  
+
+  const { locations = [], contactPersons = [], ...rest } = data;
+
   return {
     _id: `customer-${crypto.randomUUID()}`,
     type: 'customer',
-    locations: data.locations || [],
-    contactPersons: data.contactPersons || [],
-    ...data,
+    locations,
+    contactPersons,
+    ...rest,
     createdBy: userId,
     createdAt: now,
     modifiedBy: userId,
@@ -228,16 +234,28 @@ export interface CustomerValidationError {
 /**
  * Validates customer data
  */
-export function validateCustomer(customer: Partial<Customer>): CustomerValidationError[] {
+export function validateCustomer(
+  customer: Partial<Customer>
+): CustomerValidationError[] {
   const errors: CustomerValidationError[] = [];
 
   // Required fields
-  if (!customer.companyName || customer.companyName.length < 2 || customer.companyName.length > 200) {
-    errors.push({ field: 'companyName', message: 'Company name must be 2-200 characters' });
+  if (
+    !customer.companyName ||
+    customer.companyName.length < 2 ||
+    customer.companyName.length > 200
+  ) {
+    errors.push({
+      field: 'companyName',
+      message: 'Company name must be 2-200 characters',
+    });
   }
 
   if (!customer.billingAddress) {
-    errors.push({ field: 'billingAddress', message: 'Billing address is required' });
+    errors.push({
+      field: 'billingAddress',
+      message: 'Billing address is required',
+    });
   }
 
   if (!customer.owner) {
@@ -249,11 +267,11 @@ export function validateCustomer(customer: Partial<Customer>): CustomerValidatio
     if (!customer.locations.includes(customer.defaultDeliveryLocationId)) {
       errors.push({
         field: 'defaultDeliveryLocationId',
-        message: 'Default delivery location must be one of the customer\'s locations',
+        message:
+          "Default delivery location must be one of the customer's locations",
       });
     }
   }
 
   return errors;
 }
-

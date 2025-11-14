@@ -1,12 +1,22 @@
 /**
  * DTO for creating a new Location
- * 
+ *
  * Based on API_SPECIFICATION.md and DATA_MODEL_SPECIFICATION.md
  */
 
-import { IsString, IsEnum, IsBoolean, IsOptional, Length, Matches, ValidateNested, IsArray } from 'class-validator';
-import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import {
+  IsString,
+  IsEnum,
+  IsBoolean,
+  IsOptional,
+  Length,
+  Matches,
+  ValidateNested,
+  IsArray,
+} from 'class-validator';
+
 import { LocationType } from '@kompass/shared/types/enums';
 
 /**
@@ -21,7 +31,7 @@ export class AddressDto {
   })
   @IsString()
   @Length(2, 100)
-  street: string;
+  street!: string;
 
   @ApiProperty({
     description: 'House/building number',
@@ -49,7 +59,7 @@ export class AddressDto {
   })
   @IsString()
   @Matches(/^\d{5}$/, { message: 'German postal code must be 5 digits' })
-  zipCode: string;
+  zipCode!: string;
 
   @ApiProperty({
     description: 'City name',
@@ -59,7 +69,7 @@ export class AddressDto {
   })
   @IsString()
   @Length(2, 100)
-  city: string;
+  city!: string;
 
   @ApiProperty({
     description: 'State/Bundesland',
@@ -78,7 +88,7 @@ export class AddressDto {
   })
   @IsString()
   @Length(2, 100)
-  country: string;
+  country!: string;
 
   @ApiProperty({
     description: 'GPS latitude',
@@ -90,7 +100,7 @@ export class AddressDto {
 
   @ApiProperty({
     description: 'GPS longitude',
-    example: 11.5820,
+    example: 11.582,
     required: false,
   })
   @IsOptional()
@@ -109,10 +119,11 @@ export class CreateLocationDto {
   })
   @IsString()
   @Length(2, 100)
-  @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/, {
-    message: 'Location name can only contain letters, numbers, and basic punctuation',
+  @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s.&()-]+$/, {
+    message:
+      'Location name can only contain letters, numbers, and basic punctuation',
   })
-  locationName: string;
+  locationName!: string;
 
   @ApiProperty({
     description: 'Type of location',
@@ -120,7 +131,7 @@ export class CreateLocationDto {
     example: LocationType.BRANCH,
   })
   @IsEnum(LocationType)
-  locationType: LocationType;
+  locationType!: LocationType;
 
   @ApiProperty({
     description: 'Delivery address for this location',
@@ -128,14 +139,14 @@ export class CreateLocationDto {
   })
   @ValidateNested()
   @Type(() => AddressDto)
-  deliveryAddress: AddressDto;
+  deliveryAddress!: AddressDto;
 
   @ApiProperty({
     description: 'Whether the location is currently operational',
     example: true,
   })
   @IsBoolean()
-  isActive: boolean;
+  isActive!: boolean;
 
   @ApiProperty({
     description: 'Primary contact person ID for this location',
@@ -190,4 +201,3 @@ export class CreateLocationDto {
   @Length(0, 300)
   parkingInstructions?: string;
 }
-

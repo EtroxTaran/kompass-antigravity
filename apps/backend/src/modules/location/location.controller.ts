@@ -1,13 +1,13 @@
 /**
  * Location Controller
- * 
+ *
  * Handles HTTP requests for Location management
  * Implements nested REST API pattern: /customers/{customerId}/locations
- * 
+ *
  * All endpoints require:
  * - JwtAuthGuard: User must be authenticated
  * - RbacGuard: User must have required permissions
- * 
+ *
  * Permissions:
  * - Location.CREATE: GF, PLAN, ADM (own customers)
  * - Location.READ: All roles
@@ -37,11 +37,13 @@ import {
   ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
-import { LocationService } from './location.service';
-import { CreateLocationDto } from './dto/create-location.dto';
-import { UpdateLocationDto } from './dto/update-location.dto';
-import { LocationResponseDto, LocationListResponseDto } from './dto/location-response.dto';
+
 import { LocationType } from '@kompass/shared/types/enums';
+
+import { CreateLocationDto } from './dto/create-location.dto';
+import { LocationResponseDto } from './dto/location-response.dto';
+import { UpdateLocationDto } from './dto/update-location.dto';
+import { LocationService } from './location.service';
 
 // Placeholder guards - should be imported from guards directory
 // import { JwtAuthGuard, RbacGuard } from '@/guards';
@@ -56,11 +58,29 @@ interface User {
   role: 'GF' | 'PLAN' | 'ADM' | 'KALK' | 'BUCH';
 }
 
+const SORTABLE_LOCATION_FIELDS = [
+  'locationName',
+  'locationType',
+  'customerId',
+] as const;
+type SortableLocationField = (typeof SORTABLE_LOCATION_FIELDS)[number];
+const isSortableLocationField = (
+  value?: string
+): value is SortableLocationField =>
+  !!value && (SORTABLE_LOCATION_FIELDS as readonly string[]).includes(value);
+
 /**
  * Placeholder decorator - replace with actual implementation
  */
-const CurrentUser = () => (target: any, propertyKey: string, parameterIndex: number) => {};
-const RequirePermission = (entity: string, action: string) => (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {};
+const CurrentUser =
+  () => (_target: unknown, _propertyKey: string, _parameterIndex: number) => {};
+const RequirePermission =
+  (_entity: string, _action: string) =>
+  (
+    _target: unknown,
+    _propertyKey: string,
+    _descriptor: PropertyDescriptor
+  ) => {};
 const JwtAuthGuard = class {};
 const RbacGuard = class {};
 
@@ -120,7 +140,7 @@ export class LocationController {
   async createLocation(
     @Param('customerId') customerId: string,
     @Body() createLocationDto: CreateLocationDto,
-    @CurrentUser() user: User,
+    @CurrentUser() user: User
   ): Promise<LocationResponseDto> {
     return this.locationService.create(customerId, createLocationDto, user);
   }
@@ -184,11 +204,11 @@ export class LocationController {
   @RequirePermission('Location', 'READ')
   async listLocations(
     @Param('customerId') customerId: string,
-    @Query('locationType') locationType?: LocationType,
-    @Query('isActive') isActive?: boolean,
-    @Query('sort') sort?: string,
-    @Query('order') order?: 'asc' | 'desc',
-    @CurrentUser() user?: User,
+    @Query('locationType') locationType: LocationType | undefined,
+    @Query('isActive') isActive: boolean | undefined,
+    @Query('sort') sort: string | undefined,
+    @Query('order') order: 'asc' | 'desc' | undefined,
+    @CurrentUser() user: User
   ): Promise<LocationResponseDto[]> {
     let locations = await this.locationService.findByCustomer(customerId, user);
 
@@ -202,15 +222,17 @@ export class LocationController {
     }
 
     // Apply sorting
-    const sortField = sort || 'locationName';
-    const sortOrder = order || 'asc';
+    const sortField: SortableLocationField = isSortableLocationField(sort)
+      ? sort
+      : 'locationName';
+    const sortOrder = order === 'desc' ? 'desc' : 'asc';
 
     locations.sort((a, b) => {
-      const aVal = a[sortField] || '';
-      const bVal = b[sortField] || '';
+      const aVal = String(a[sortField] ?? '');
+      const bVal = String(b[sortField] ?? '');
       return sortOrder === 'asc'
-        ? aVal > bVal ? 1 : -1
-        : aVal < bVal ? 1 : -1;
+        ? aVal.localeCompare(bVal)
+        : bVal.localeCompare(aVal);
     });
 
     return locations;
@@ -255,7 +277,7 @@ export class LocationController {
   async getLocation(
     @Param('customerId') customerId: string,
     @Param('locationId') locationId: string,
-    @CurrentUser() user: User,
+    @CurrentUser() user: User
   ): Promise<LocationResponseDto> {
     return this.locationService.findOne(customerId, locationId, user);
   }
@@ -309,9 +331,14 @@ export class LocationController {
     @Param('customerId') customerId: string,
     @Param('locationId') locationId: string,
     @Body() updateLocationDto: UpdateLocationDto,
-    @CurrentUser() user: User,
+    @CurrentUser() user: User
   ): Promise<LocationResponseDto> {
-    return this.locationService.update(customerId, locationId, updateLocationDto, user);
+    return this.locationService.update(
+      customerId,
+      locationId,
+      updateLocationDto,
+      user
+    );
   }
 
   /**
@@ -351,15 +378,15 @@ export class LocationController {
   })
   @ApiResponse({
     status: 409,
-    description: 'Conflict - location is referenced in active projects or quotes',
+    description:
+      'Conflict - location is referenced in active projects or quotes',
   })
   @RequirePermission('Location', 'DELETE')
   async deleteLocation(
     @Param('customerId') customerId: string,
     @Param('locationId') locationId: string,
-    @CurrentUser() user: User,
+    @CurrentUser() user: User
   ): Promise<void> {
     return this.locationService.delete(customerId, locationId, user);
   }
 }
-

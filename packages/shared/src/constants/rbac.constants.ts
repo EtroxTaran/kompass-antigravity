@@ -1,6 +1,6 @@
 /**
  * RBAC Constants for KOMPASS
- * 
+ *
  * Defines roles, permissions, and access control rules
  * Based on: docs/reviews/RBAC_PERMISSION_MATRIX.md
  */
@@ -11,22 +11,22 @@
 export enum UserRole {
   /** Außendienst - Field Sales Representatives */
   ADM = 'ADM',
-  
+
   /** Innendienst - Inside Sales & Quoting */
   INNEN = 'INNEN',
-  
+
   /** Planungsabteilung - Project Planning & Execution */
   PLAN = 'PLAN',
-  
+
   /** Kalkulation - Cost Calculation & Time Tracking */
   KALK = 'KALK',
-  
+
   /** Buchhaltung - Accounting & Invoicing */
   BUCH = 'BUCH',
-  
+
   /** Geschäftsführer - Executive Management */
   GF = 'GF',
-  
+
   /** System Administrator */
   ADMIN = 'ADMIN',
 }
@@ -59,13 +59,13 @@ export enum EntityType {
   Protocol = 'Protocol',
   Document = 'Document',
   User = 'User',
-  TimeEntry = 'TimeEntry',      // Time tracking entries
-  ProjectCost = 'ProjectCost',  // Project cost records
+  TimeEntry = 'TimeEntry', // Time tracking entries
+  ProjectCost = 'ProjectCost', // Project cost records
 }
 
 /**
  * Permission matrix
- * 
+ *
  * Structure: permissions[Role][EntityType][Permission] = boolean
  */
 export const PERMISSION_MATRIX: Record<
@@ -75,8 +75,8 @@ export const PERMISSION_MATRIX: Record<
   [UserRole.ADM]: {
     [EntityType.Customer]: {
       [Permission.CREATE]: true,
-      [Permission.READ]: true,   // Own customers only
-      [Permission.UPDATE]: true,  // Own customers only
+      [Permission.READ]: true, // Own customers only
+      [Permission.UPDATE]: true, // Own customers only
       [Permission.DELETE]: false,
     },
     [EntityType.Contact]: {
@@ -87,26 +87,26 @@ export const PERMISSION_MATRIX: Record<
     },
     [EntityType.Opportunity]: {
       [Permission.CREATE]: true,
-      [Permission.READ]: true,   // Own opportunities only
-      [Permission.UPDATE]: true,  // Own opportunities only
+      [Permission.READ]: true, // Own opportunities only
+      [Permission.UPDATE]: true, // Own opportunities only
       [Permission.DELETE]: false,
     },
     [EntityType.Protocol]: {
       [Permission.CREATE]: true,
       [Permission.READ]: true,
-      [Permission.UPDATE]: true,  // Within 24 hours only
+      [Permission.UPDATE]: true, // Within 24 hours only
       [Permission.DELETE]: false,
     },
     [EntityType.TimeEntry]: {
       [Permission.CREATE]: true,
-      [Permission.READ]: true,   // Own time entries only
-      [Permission.UPDATE]: true,  // Own time entries only
+      [Permission.READ]: true, // Own time entries only
+      [Permission.UPDATE]: true, // Own time entries only
       [Permission.DELETE]: false,
       [Permission.APPROVE]: false,
     },
     [EntityType.ProjectCost]: {
       [Permission.CREATE]: false,
-      [Permission.READ]: true,   // Own projects only
+      [Permission.READ]: true, // Own projects only
       [Permission.UPDATE]: false,
       [Permission.DELETE]: false,
       [Permission.APPROVE]: false,
@@ -116,8 +116,8 @@ export const PERMISSION_MATRIX: Record<
   [UserRole.INNEN]: {
     [EntityType.Customer]: {
       [Permission.CREATE]: true,
-      [Permission.READ]: true,   // All customers
-      [Permission.UPDATE]: true,  // All customers
+      [Permission.READ]: true, // All customers
+      [Permission.UPDATE]: true, // All customers
       [Permission.DELETE]: false,
     },
     [EntityType.Opportunity]: {
@@ -129,7 +129,7 @@ export const PERMISSION_MATRIX: Record<
     [EntityType.Offer]: {
       [Permission.CREATE]: true,
       [Permission.READ]: true,
-      [Permission.UPDATE]: true,  // Draft only
+      [Permission.UPDATE]: true, // Draft only
       [Permission.DELETE]: false,
       [Permission.APPROVE]: false, // Requires GF for >€50k
     },
@@ -141,8 +141,8 @@ export const PERMISSION_MATRIX: Record<
     },
     [EntityType.TimeEntry]: {
       [Permission.CREATE]: true,
-      [Permission.READ]: true,   // Own time entries only
-      [Permission.UPDATE]: true,  // Own time entries only
+      [Permission.READ]: true, // Own time entries only
+      [Permission.UPDATE]: true, // Own time entries only
       [Permission.DELETE]: false,
       [Permission.APPROVE]: false,
     },
@@ -151,8 +151,8 @@ export const PERMISSION_MATRIX: Record<
   [UserRole.PLAN]: {
     [EntityType.Project]: {
       [Permission.CREATE]: false, // Created from opportunities
-      [Permission.READ]: true,   // All projects
-      [Permission.UPDATE]: true,  // Assigned projects only
+      [Permission.READ]: true, // All projects
+      [Permission.UPDATE]: true, // Assigned projects only
       [Permission.DELETE]: false,
     },
     [EntityType.Task]: {
@@ -163,21 +163,21 @@ export const PERMISSION_MATRIX: Record<
     },
     [EntityType.Customer]: {
       [Permission.CREATE]: false,
-      [Permission.READ]: true,  // Related to projects only
+      [Permission.READ]: true, // Related to projects only
       [Permission.UPDATE]: false,
       [Permission.DELETE]: false,
     },
     [EntityType.TimeEntry]: {
       [Permission.CREATE]: true,
-      [Permission.READ]: true,   // All time entries
-      [Permission.UPDATE]: true,  // Own time entries only
+      [Permission.READ]: true, // All time entries
+      [Permission.UPDATE]: true, // Own time entries only
       [Permission.DELETE]: false,
-      [Permission.APPROVE]: true,  // Own team time entries
+      [Permission.APPROVE]: true, // Own team time entries
     },
     [EntityType.ProjectCost]: {
       [Permission.CREATE]: true,
-      [Permission.READ]: true,   // All project costs
-      [Permission.UPDATE]: true,  // Own project costs
+      [Permission.READ]: true, // All project costs
+      [Permission.UPDATE]: true, // Own project costs
       [Permission.DELETE]: false,
       [Permission.APPROVE]: false,
     },
@@ -186,14 +186,14 @@ export const PERMISSION_MATRIX: Record<
   [UserRole.KALK]: {
     [EntityType.TimeEntry]: {
       [Permission.CREATE]: true,
-      [Permission.READ]: true,   // Own time entries only
-      [Permission.UPDATE]: true,  // Own time entries only
+      [Permission.READ]: true, // Own time entries only
+      [Permission.UPDATE]: true, // Own time entries only
       [Permission.DELETE]: false,
       [Permission.APPROVE]: false,
     },
     [EntityType.Project]: {
       [Permission.CREATE]: false,
-      [Permission.READ]: true,   // Can view project costs
+      [Permission.READ]: true, // Can view project costs
       [Permission.UPDATE]: false,
       [Permission.DELETE]: false,
     },
@@ -203,7 +203,7 @@ export const PERMISSION_MATRIX: Record<
     [EntityType.Invoice]: {
       [Permission.CREATE]: true,
       [Permission.READ]: true,
-      [Permission.UPDATE]: true,  // Draft only, immutable after finalization
+      [Permission.UPDATE]: true, // Draft only, immutable after finalization
       [Permission.DELETE]: false,
       [Permission.APPROVE]: true, // Can finalize invoices
     },
@@ -215,23 +215,23 @@ export const PERMISSION_MATRIX: Record<
     },
     [EntityType.Customer]: {
       [Permission.CREATE]: false,
-      [Permission.READ]: true,  // Financial data access
-      [Permission.UPDATE]: true,  // Financial fields only
+      [Permission.READ]: true, // Financial data access
+      [Permission.UPDATE]: true, // Financial fields only
       [Permission.DELETE]: false,
     },
     [EntityType.TimeEntry]: {
       [Permission.CREATE]: false,
-      [Permission.READ]: true,   // All time entries (for accounting)
+      [Permission.READ]: true, // All time entries (for accounting)
       [Permission.UPDATE]: false,
       [Permission.DELETE]: false,
       [Permission.APPROVE]: false,
     },
     [EntityType.ProjectCost]: {
       [Permission.CREATE]: true,
-      [Permission.READ]: true,   // All project costs
-      [Permission.UPDATE]: true,  // All project costs
+      [Permission.READ]: true, // All project costs
+      [Permission.UPDATE]: true, // All project costs
       [Permission.DELETE]: true,
-      [Permission.APPROVE]: true,  // Can approve expenses
+      [Permission.APPROVE]: true, // Can approve expenses
     },
   },
 
@@ -264,25 +264,25 @@ export const PERMISSION_MATRIX: Record<
     [EntityType.Invoice]: {
       [Permission.CREATE]: true,
       [Permission.READ]: true,
-      [Permission.UPDATE]: true,  // Can correct finalized invoices
+      [Permission.UPDATE]: true, // Can correct finalized invoices
       [Permission.DELETE]: true,
       [Permission.APPROVE]: true,
       [Permission.EXPORT]: true,
     },
     [EntityType.TimeEntry]: {
       [Permission.CREATE]: true,
-      [Permission.READ]: true,   // All time entries
-      [Permission.UPDATE]: true,  // All time entries
+      [Permission.READ]: true, // All time entries
+      [Permission.UPDATE]: true, // All time entries
       [Permission.DELETE]: true,
-      [Permission.APPROVE]: true,  // All time entries
+      [Permission.APPROVE]: true, // All time entries
       [Permission.EXPORT]: true,
     },
     [EntityType.ProjectCost]: {
       [Permission.CREATE]: true,
-      [Permission.READ]: true,   // All project costs
-      [Permission.UPDATE]: true,  // All project costs
+      [Permission.READ]: true, // All project costs
+      [Permission.UPDATE]: true, // All project costs
       [Permission.DELETE]: true,
-      [Permission.APPROVE]: true,  // All project costs
+      [Permission.APPROVE]: true, // All project costs
       [Permission.EXPORT]: true,
     },
   },
@@ -353,12 +353,12 @@ export function canAccessRecord(
 /**
  * Check if ANY of the user's roles have the specified permission (OR logic)
  * This is the primary function for multiple roles support.
- * 
+ *
  * @param roles - Array of roles assigned to the user
  * @param entity - The entity type to check
  * @param action - The permission action to check
  * @returns true if ANY role grants the permission
- * 
+ *
  * TODO: Update to check runtime permission matrix from CouchDB when available
  */
 export function hasAnyRolePermission(
@@ -371,18 +371,18 @@ export function hasAnyRolePermission(
   }
 
   // OR logic: if ANY role grants the permission, allow access
-  return roles.some(role => hasPermission(role, entity, action));
+  return roles.some((role) => hasPermission(role, entity, action));
 }
 
 /**
  * Check if ALL of the user's roles have the specified permission (AND logic)
  * Use this for operations requiring all roles to agree.
- * 
+ *
  * @param roles - Array of roles assigned to the user
  * @param entity - The entity type to check
  * @param action - The permission action to check
  * @returns true if ALL roles grant the permission
- * 
+ *
  * TODO: Update to check runtime permission matrix from CouchDB when available
  */
 export function hasAllRolesPermission(
@@ -395,15 +395,15 @@ export function hasAllRolesPermission(
   }
 
   // AND logic: ALL roles must grant the permission
-  return roles.every(role => hasPermission(role, entity, action));
+  return roles.every((role) => hasPermission(role, entity, action));
 }
 
 /**
  * Get all permissions for multiple roles (union of permissions)
- * 
+ *
  * @param roles - Array of roles assigned to the user
  * @returns Combined permissions from all roles
- * 
+ *
  * TODO: Update to check runtime permission matrix from CouchDB when available
  */
 export function getPermissionsForRoles(
@@ -413,7 +413,9 @@ export function getPermissionsForRoles(
     return {};
   }
 
-  const combinedPermissions: Partial<Record<EntityType, Partial<Record<Permission, boolean>>>> = {};
+  const combinedPermissions: Partial<
+    Record<EntityType, Partial<Record<Permission, boolean>>>
+  > = {};
 
   for (const role of roles) {
     const rolePermissions = PERMISSION_MATRIX[role];
@@ -430,7 +432,7 @@ export function getPermissionsForRoles(
           const perm = permKey as Permission;
           // OR logic: if any role allows, set to true
           if (allowed === true) {
-            combinedPermissions[entity]![perm] = true;
+            combinedPermissions[entity][perm] = true;
           }
         }
       }
@@ -442,13 +444,13 @@ export function getPermissionsForRoles(
 
 /**
  * Check if user can access record with multiple roles (ownership check)
- * 
+ *
  * @param roles - Array of roles assigned to the user
  * @param entityType - The entity type to check
  * @param record - The record to access (must have owner field)
  * @param userId - The current user's ID
  * @returns true if ANY role grants access to the record
- * 
+ *
  * TODO: Update to check runtime permission matrix from CouchDB when available
  */
 export function canAccessRecordWithRoles(
@@ -462,6 +464,7 @@ export function canAccessRecordWithRoles(
   }
 
   // If ANY role grants access, allow
-  return roles.some(role => canAccessRecord(role, entityType, record, userId));
+  return roles.some((role) =>
+    canAccessRecord(role, entityType, record, userId)
+  );
 }
-

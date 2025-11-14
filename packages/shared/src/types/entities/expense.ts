@@ -1,16 +1,16 @@
 /**
  * Expense Entity for KOMPASS
- * 
+ *
  * Represents business expenses including receipts, mileage, meals, etc.
  * Part of tour expense management and monthly reporting
- * 
+ *
  * Validation rules:
  * - expenseDate: Required, cannot be more than 90 days in past
  * - category: Valid enum value
  * - amount: > 0, max 10,000 EUR
  * - receiptImageUrl: Required if amount > €25
  * - description: 5-500 chars if provided
- * 
+ *
  * Business Rules:
  * - EX-001: Receipt required for expenses > €25
  * - EX-002: Expenses > €100 require GF approval
@@ -56,7 +56,7 @@ export interface Expense extends BaseEntity {
   type: 'expense';
 
   // ==================== Expense Identity ====================
-  
+
   /** Expense title/description */
   title: string;
 
@@ -64,7 +64,7 @@ export interface Expense extends BaseEntity {
   description?: string;
 
   // ==================== Category & Date ====================
-  
+
   /** Expense date */
   expenseDate: Date;
 
@@ -72,7 +72,7 @@ export interface Expense extends BaseEntity {
   category: ExpenseCategory;
 
   // ==================== Amount & Currency ====================
-  
+
   /** Amount in EUR */
   amount: number;
 
@@ -86,7 +86,7 @@ export interface Expense extends BaseEntity {
   vatRate?: number;
 
   // ==================== Receipt ====================
-  
+
   /** Receipt image URL (MinIO storage) */
   receiptImageUrl?: string;
 
@@ -103,7 +103,7 @@ export interface Expense extends BaseEntity {
   ocrVerified?: boolean;
 
   // ==================== Ownership & Associations ====================
-  
+
   /** User ID who incurred the expense (typically ADM) */
   userId: string;
 
@@ -120,7 +120,7 @@ export interface Expense extends BaseEntity {
   customerId?: string;
 
   // ==================== Category-Specific Data ====================
-  
+
   /** Mileage-specific: Distance in km */
   distance?: number;
 
@@ -134,7 +134,7 @@ export interface Expense extends BaseEntity {
   numberOfNights?: number;
 
   // ==================== Approval Workflow ====================
-  
+
   /** Current status */
   status: ExpenseStatus;
 
@@ -160,7 +160,7 @@ export interface Expense extends BaseEntity {
   paymentReference?: string;
 
   // ==================== Notes ====================
-  
+
   /** Internal notes */
   notes?: string;
 
@@ -208,11 +208,13 @@ export function createExpense(
 ): Omit<Expense, '_rev'> {
   const now = new Date();
 
+  const { currency = 'EUR', ...rest } = data;
+
   return {
     _id: `expense-${crypto.randomUUID()}`,
     type: 'expense',
-    currency: data.currency || 'EUR',
-    ...data,
+    currency,
+    ...rest,
     createdBy: userId,
     createdAt: now,
     modifiedBy: userId,
@@ -232,12 +234,21 @@ export interface ExpenseValidationError {
 /**
  * Validates expense data
  */
-export function validateExpense(expense: Partial<Expense>): ExpenseValidationError[] {
+export function validateExpense(
+  expense: Partial<Expense>
+): ExpenseValidationError[] {
   const errors: ExpenseValidationError[] = [];
 
   // Required fields
-  if (!expense.title || expense.title.length < 2 || expense.title.length > 200) {
-    errors.push({ field: 'title', message: 'Expense title must be 2-200 characters' });
+  if (
+    !expense.title ||
+    expense.title.length < 2 ||
+    expense.title.length > 200
+  ) {
+    errors.push({
+      field: 'title',
+      message: 'Expense title must be 2-200 characters',
+    });
   }
 
   if (!expense.expenseDate) {
@@ -275,15 +286,26 @@ export function validateExpense(expense: Partial<Expense>): ExpenseValidationErr
   // Amount validation
   if (expense.amount !== undefined) {
     if (expense.amount <= 0) {
-      errors.push({ field: 'amount', message: 'Amount must be greater than 0' });
+      errors.push({
+        field: 'amount',
+        message: 'Amount must be greater than 0',
+      });
     }
     if (expense.amount > 10000) {
-      errors.push({ field: 'amount', message: 'Amount cannot exceed €10,000. For larger expenses, contact GF.' });
+      errors.push({
+        field: 'amount',
+        message:
+          'Amount cannot exceed €10,000. For larger expenses, contact GF.',
+      });
     }
   }
 
   // Business rule EX-001: Receipt required for expenses > €25
-  if (expense.amount !== undefined && expense.amount > 25 && !expense.receiptImageUrl) {
+  if (
+    expense.amount !== undefined &&
+    expense.amount > 25 &&
+    !expense.receiptImageUrl
+  ) {
     errors.push({
       field: 'receiptImageUrl',
       message: 'Receipt image is required for expenses greater than €25',
@@ -301,14 +323,21 @@ export function validateExpense(expense: Partial<Expense>): ExpenseValidationErr
   // Category-specific validation
   if (expense.category === ExpenseCategory.MILEAGE) {
     if (!expense.distance || expense.distance <= 0) {
-      errors.push({ field: 'distance', message: 'Distance is required for mileage expenses' });
+      errors.push({
+        field: 'distance',
+        message: 'Distance is required for mileage expenses',
+      });
     }
     if (!expense.mileageRate || expense.mileageRate <= 0) {
-      errors.push({ field: 'mileageRate', message: 'Mileage rate is required for mileage expenses' });
+      errors.push({
+        field: 'mileageRate',
+        message: 'Mileage rate is required for mileage expenses',
+      });
     }
     // Validate mileage calculation
     if (expense.distance && expense.mileageRate && expense.amount) {
-      const expectedAmount = Math.round(expense.distance * expense.mileageRate * 100) / 100;
+      const expectedAmount =
+        Math.round(expense.distance * expense.mileageRate * 100) / 100;
       const tolerance = 0.01;
       if (Math.abs(expense.amount - expectedAmount) > tolerance) {
         errors.push({
@@ -320,8 +349,14 @@ export function validateExpense(expense: Partial<Expense>): ExpenseValidationErr
   }
 
   // Description validation
-  if (expense.description && (expense.description.length < 5 || expense.description.length > 500)) {
-    errors.push({ field: 'description', message: 'Description must be 5-500 characters if provided' });
+  if (
+    expense.description &&
+    (expense.description.length < 5 || expense.description.length > 500)
+  ) {
+    errors.push({
+      field: 'description',
+      message: 'Description must be 5-500 characters if provided',
+    });
   }
 
   // Rejection reason required if status is rejected
@@ -344,7 +379,11 @@ export function isValidExpenseStatusTransition(
 ): boolean {
   const validTransitions: Record<ExpenseStatus, ExpenseStatus[]> = {
     [ExpenseStatus.DRAFT]: [ExpenseStatus.SUBMITTED],
-    [ExpenseStatus.SUBMITTED]: [ExpenseStatus.APPROVED, ExpenseStatus.REJECTED, ExpenseStatus.DRAFT],
+    [ExpenseStatus.SUBMITTED]: [
+      ExpenseStatus.APPROVED,
+      ExpenseStatus.REJECTED,
+      ExpenseStatus.DRAFT,
+    ],
     [ExpenseStatus.APPROVED]: [ExpenseStatus.PAID],
     [ExpenseStatus.REJECTED]: [ExpenseStatus.DRAFT], // Can resubmit
     [ExpenseStatus.PAID]: [], // Terminal state
@@ -363,7 +402,9 @@ export function requiresGFApproval(expense: Expense): boolean {
 /**
  * Calculates mileage expense amount
  */
-export function calculateMileageAmount(distance: number, rate: number = 0.30): number {
+export function calculateMileageAmount(
+  distance: number,
+  rate: number = 0.3
+): number {
   return Math.round(distance * rate * 100) / 100; // Round to 2 decimals
 }
-

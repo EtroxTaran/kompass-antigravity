@@ -1,14 +1,14 @@
 /**
  * Location Service
- * 
+ *
  * Business logic for Location management
- * 
+ *
  * Responsibilities:
  * - Validate location data and business rules
  * - Check RBAC permissions
  * - Orchestrate repository calls
  * - Log audit trail
- * 
+ *
  * Business Rules:
  * - LR-001: Location names must be unique per customer
  * - LR-002: Primary contact must be in contactPersons array
@@ -25,12 +25,18 @@ import {
   Inject,
   Logger,
 } from '@nestjs/common';
-import { ILocationRepository } from './location.repository.interface';
+
+import type { Customer } from '@kompass/shared/types/entities/customer';
 import type { Location } from '@kompass/shared/types/entities/location';
-import { createLocation, validateLocation } from '@kompass/shared/types/entities/location';
-import { CreateLocationDto } from './dto/create-location.dto';
-import { UpdateLocationDto } from './dto/update-location.dto';
-import { LocationResponseDto } from './dto/location-response.dto';
+import {
+  createLocation,
+  validateLocation,
+} from '@kompass/shared/types/entities/location';
+
+import type { CreateLocationDto } from './dto/create-location.dto';
+import type { LocationResponseDto } from './dto/location-response.dto';
+import type { UpdateLocationDto } from './dto/update-location.dto';
+import { ILocationRepository } from './location.repository.interface';
 
 /**
  * Placeholder User type - should be imported from auth module
@@ -44,7 +50,7 @@ interface User {
  * Placeholder CustomerService - should be injected
  */
 interface ICustomerService {
-  findById(id: string, user: User): Promise<any>;
+  findById(id: string, user: User): Promise<Customer | null>;
 }
 
 /**
@@ -58,18 +64,18 @@ export class LocationService {
     @Inject('ILocationRepository')
     private readonly locationRepository: ILocationRepository,
     @Inject('ICustomerService')
-    private readonly customerService: ICustomerService,
+    private readonly customerService: ICustomerService
   ) {}
 
   /**
    * Create a new location for a customer
-   * 
+   *
    * RBAC: ADM (own customers only), PLAN, GF
    */
   async create(
     customerId: string,
     dto: CreateLocationDto,
-    user: User,
+    user: User
   ): Promise<LocationResponseDto> {
     // Check if user can access parent customer
     const customer = await this.customerService.findById(customerId, user);
@@ -79,23 +85,36 @@ export class LocationService {
 
     // RBAC: ADM can only create locations for their own customers
     if (user.role === 'ADM' && customer.owner !== user.id) {
-      throw new ForbiddenException('You can only create locations for your own customers');
+      throw new ForbiddenException(
+        'You can only create locations for your own customers'
+      );
     }
 
     // Business rule LR-001: Check location name uniqueness per customer
-    const existingLocation = await this.locationRepository.findByCustomerAndName(
-      customerId,
-      dto.locationName,
-    );
+    const existingLocation =
+      await this.locationRepository.findByCustomerAndName(
+        customerId,
+        dto.locationName
+      );
 
     if (existingLocation) {
       throw new ConflictException(
-        `Location name "${dto.locationName}" already exists for this customer`,
+        `Location name "${dto.locationName}" already exists for this customer`
       );
     }
 
     // Create location entity
-    const locationData: Omit<Location, '_id' | '_rev' | 'type' | 'createdBy' | 'createdAt' | 'modifiedBy' | 'modifiedAt' | 'version'> = {
+    const locationData: Omit<
+      Location,
+      | '_id'
+      | '_rev'
+      | 'type'
+      | 'createdBy'
+      | 'createdAt'
+      | 'modifiedBy'
+      | 'modifiedAt'
+      | 'version'
+    > = {
       customerId,
       locationName: dto.locationName,
       locationType: dto.locationType,
@@ -123,7 +142,7 @@ export class LocationService {
     if (location.primaryContactPersonId && location.contactPersons) {
       if (!location.contactPersons.includes(location.primaryContactPersonId)) {
         throw new BadRequestException(
-          'Primary contact must be in the list of assigned contact persons',
+          'Primary contact must be in the list of assigned contact persons'
         );
       }
     }
@@ -142,12 +161,18 @@ export class LocationService {
 
   /**
    * Get all locations for a customer
-   * 
+   *
    * RBAC: All roles can READ
    */
-  async findByCustomer(customerId: string, user: User): Promise<LocationResponseDto[]> {
+  async findByCustomer(
+    customerId: string,
+    user: User
+  ): Promise<LocationResponseDto[]> {
     // Verify customer access
-    await this.customerService.findById(customerId, user);
+    const customer = await this.customerService.findById(customerId, user);
+    if (!customer) {
+      throw new NotFoundException(`Customer ${customerId} not found`);
+    }
 
     const locations = await this.locationRepository.findByCustomer(customerId);
     return locations.map((loc) => this.mapToResponseDto(loc));
@@ -155,26 +180,28 @@ export class LocationService {
 
   /**
    * Get a single location
-   * 
+   *
    * RBAC: All roles can READ
    */
   async findOne(
     customerId: string,
     locationId: string,
-    user: User,
+    user: User
   ): Promise<LocationResponseDto> {
     // Verify customer access
     await this.customerService.findById(customerId, user);
 
     const location = await this.locationRepository.findById(locationId);
-    
+
     if (!location) {
       throw new NotFoundException(`Location ${locationId} not found`);
     }
 
     // Verify location belongs to customer
     if (location.customerId !== customerId) {
-      throw new NotFoundException(`Location ${locationId} not found for customer ${customerId}`);
+      throw new NotFoundException(
+        `Location ${locationId} not found for customer ${customerId}`
+      );
     }
 
     return this.mapToResponseDto(location);
@@ -182,21 +209,26 @@ export class LocationService {
 
   /**
    * Update a location
-   * 
+   *
    * RBAC: ADM (own customers only), PLAN, GF
    */
   async update(
     customerId: string,
     locationId: string,
     dto: UpdateLocationDto,
-    user: User,
+    user: User
   ): Promise<LocationResponseDto> {
     // Check customer access
     const customer = await this.customerService.findById(customerId, user);
+    if (!customer) {
+      throw new NotFoundException(`Customer ${customerId} not found`);
+    }
 
     // RBAC: ADM can only update locations for their own customers
     if (user.role === 'ADM' && customer.owner !== user.id) {
-      throw new ForbiddenException('You can only update locations for your own customers');
+      throw new ForbiddenException(
+        'You can only update locations for your own customers'
+      );
     }
 
     // Get existing location
@@ -207,19 +239,21 @@ export class LocationService {
 
     // Verify location belongs to customer
     if (existing.customerId !== customerId) {
-      throw new NotFoundException(`Location ${locationId} not found for customer ${customerId}`);
+      throw new NotFoundException(
+        `Location ${locationId} not found for customer ${customerId}`
+      );
     }
 
     // Business rule LR-001: Check name uniqueness if name is being changed
     if (dto.locationName && dto.locationName !== existing.locationName) {
       const duplicate = await this.locationRepository.findByCustomerAndName(
         customerId,
-        dto.locationName,
+        dto.locationName
       );
 
       if (duplicate) {
         throw new ConflictException(
-          `Location name "${dto.locationName}" already exists for this customer`,
+          `Location name "${dto.locationName}" already exists for this customer`
         );
       }
     }
@@ -229,7 +263,7 @@ export class LocationService {
       const contactPersons = dto.contactPersons || existing.contactPersons;
       if (!contactPersons.includes(dto.primaryContactPersonId)) {
         throw new BadRequestException(
-          'Primary contact must be in the list of assigned contact persons',
+          'Primary contact must be in the list of assigned contact persons'
         );
       }
     }
@@ -254,14 +288,20 @@ export class LocationService {
 
   /**
    * Delete a location
-   * 
+   *
    * RBAC: PLAN, GF only
    * Cannot delete if location is in use by projects/quotes
    */
-  async delete(customerId: string, locationId: string, user: User): Promise<void> {
+  async delete(
+    customerId: string,
+    locationId: string,
+    user: User
+  ): Promise<void> {
     // RBAC: Only PLAN and GF can delete
     if (user.role !== 'PLAN' && user.role !== 'GF') {
-      throw new ForbiddenException('Only PLAN and GF users can delete locations');
+      throw new ForbiddenException(
+        'Only PLAN and GF users can delete locations'
+      );
     }
 
     // Check customer access
@@ -275,14 +315,16 @@ export class LocationService {
 
     // Verify location belongs to customer
     if (existing.customerId !== customerId) {
-      throw new NotFoundException(`Location ${locationId} not found for customer ${customerId}`);
+      throw new NotFoundException(
+        `Location ${locationId} not found for customer ${customerId}`
+      );
     }
 
     // Business rule: Cannot delete if in use
     const inUse = await this.locationRepository.isLocationInUse(locationId);
     if (inUse) {
       throw new ConflictException(
-        'Cannot delete location: it is referenced in active projects or quotes',
+        'Cannot delete location: it is referenced in active projects or quotes'
       );
     }
 
@@ -321,4 +363,3 @@ export class LocationService {
     };
   }
 }
-

@@ -1,10 +1,18 @@
+const tsProjects = [
+  './tsconfig.eslint.json',
+  './apps/backend/tsconfig.json',
+  './apps/frontend/tsconfig.json',
+  './packages/shared/tsconfig.json',
+];
+
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2022,
     sourceType: 'module',
-    project: './tsconfig.json',
+    project: tsProjects,
+    tsconfigRootDir: __dirname,
   },
   ignorePatterns: ['.eslintrc.js'],
   plugins: ['@typescript-eslint', 'import'],
@@ -61,6 +69,24 @@ module.exports = {
           order: 'asc',
           caseInsensitive: true,
         },
+        pathGroups: [
+          {
+            pattern: '@kompass/**',
+            group: 'external',
+            position: 'after',
+          },
+          {
+            pattern: '@/components/**',
+            group: 'internal',
+            position: 'after',
+          },
+          {
+            pattern: '../ui/**',
+            group: 'parent',
+            position: 'after',
+          },
+        ],
+        pathGroupsExcludedImportTypes: ['builtin'],
       },
     ],
     'import/no-cycle': 'error',
@@ -77,10 +103,22 @@ module.exports = {
     'no-var': 'error',
   },
   settings: {
+    'import/ignore': ['@/components/ui/.*', '\\.\\./ui/.*'],
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
-        project: './tsconfig.json',
+        project: tsProjects,
+        tsconfigRootDir: __dirname,
+      },
+      alias: {
+        map: [
+          ['@/', './apps/frontend/src/'],
+          ['@kompass/shared', './packages/shared/src'],
+        ],
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+      },
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },
   },
@@ -97,6 +135,37 @@ module.exports = {
         'import/no-named-as-default': 'off',
         'import/no-named-as-default-member': 'off',
         'no-console': 'off',
+      },
+    },
+    {
+      files: [
+        '**/__tests__/**/*.ts',
+        '**/*.spec.ts',
+        '**/*.spec.tsx',
+        'tests/**/*.ts',
+        'tests/**/*.tsx',
+      ],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/require-await': 'off',
+        '@typescript-eslint/no-unused-vars': [
+          'warn',
+          {
+            argsIgnorePattern: '^_',
+            varsIgnorePattern: '^_',
+          },
+        ],
+      },
+    },
+    {
+      files: ['apps/frontend/src/components/**/*.{ts,tsx}'],
+      rules: {
+        'import/no-unresolved': 'off',
       },
     },
   ],

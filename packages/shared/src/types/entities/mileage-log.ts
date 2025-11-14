@@ -1,9 +1,9 @@
 /**
  * Mileage Log Entity for KOMPASS
- * 
+ *
  * Tracks GPS-recorded mileage for tour expense calculation
  * Provides accurate distance tracking for tax reporting
- * 
+ *
  * Validation rules:
  * - tourId: Required
  * - startLocation: Required with GPS coordinates
@@ -12,7 +12,7 @@
  * - endTime: Required, must be after startTime
  * - distance: >= 0, should match GPS route ±5%
  * - calculatedCost: distance × rate (€0.30/km default)
- * 
+ *
  * Business Rules:
  * - ML-001: Distance must match GPS route calculation ±5%
  * - ML-002: Cost = distance × rate (€0.30/km Germany standard)
@@ -21,6 +21,7 @@
  */
 
 import type { BaseEntity } from '../base.entity';
+
 import type { GPSCoordinates } from './tour';
 
 /**
@@ -52,7 +53,7 @@ export interface MileageLog extends BaseEntity {
   type: 'mileage_log';
 
   // ==================== Tour Association ====================
-  
+
   /** Tour ID this mileage belongs to */
   tourId: string;
 
@@ -60,7 +61,7 @@ export interface MileageLog extends BaseEntity {
   userId: string;
 
   // ==================== Journey Details ====================
-  
+
   /** Start location with GPS */
   startLocation: LocationSnapshot;
 
@@ -77,7 +78,7 @@ export interface MileageLog extends BaseEntity {
   duration?: number;
 
   // ==================== Distance & Route ====================
-  
+
   /** Distance in kilometers */
   distance: number;
 
@@ -97,7 +98,7 @@ export interface MileageLog extends BaseEntity {
   overrideReason?: string;
 
   // ==================== Cost Calculation ====================
-  
+
   /** Rate per kilometer (€0.30 default for Germany) */
   ratePerKm: number;
 
@@ -108,7 +109,7 @@ export interface MileageLog extends BaseEntity {
   currency: string;
 
   // ==================== Vehicle Information ====================
-  
+
   /** Vehicle used */
   vehicle?: VehicleInfo;
 
@@ -119,7 +120,7 @@ export interface MileageLog extends BaseEntity {
   odometerEnd?: number;
 
   // ==================== Purpose ====================
-  
+
   /** Purpose of journey */
   purpose?: string;
 
@@ -127,7 +128,7 @@ export interface MileageLog extends BaseEntity {
   passengers?: string[];
 
   // ==================== Linked Entities ====================
-  
+
   /** Meeting IDs visited during this journey */
   meetingIds?: string[];
 
@@ -138,7 +139,7 @@ export interface MileageLog extends BaseEntity {
   expenseId?: string;
 
   // ==================== Tracking Metadata ====================
-  
+
   /** GPS tracking enabled */
   gpsTracking: boolean;
 
@@ -208,15 +209,18 @@ export function createMileageLog(
   }
 
   // Calculate cost
-  const calculatedCost = data.calculatedCost ?? calculateMileageCost(data.distance, data.ratePerKm);
+  const calculatedCost =
+    data.calculatedCost ?? calculateMileageCost(data.distance, data.ratePerKm);
+
+  const { currency = 'EUR', ...rest } = data;
 
   return {
     _id: `mileage-log-${crypto.randomUUID()}`,
     type: 'mileage_log',
-    currency: data.currency || 'EUR',
+    currency,
     duration,
     calculatedCost,
-    ...data,
+    ...rest,
     createdBy: userId,
     createdAt: now,
     modifiedBy: userId,
@@ -236,7 +240,9 @@ export interface MileageLogValidationError {
 /**
  * Validates mileage log data
  */
-export function validateMileageLog(log: Partial<MileageLog>): MileageLogValidationError[] {
+export function validateMileageLog(
+  log: Partial<MileageLog>
+): MileageLogValidationError[] {
   const errors: MileageLogValidationError[] = [];
 
   // Required fields
@@ -249,7 +255,10 @@ export function validateMileageLog(log: Partial<MileageLog>): MileageLogValidati
   }
 
   if (!log.startLocation) {
-    errors.push({ field: 'startLocation', message: 'Start location is required' });
+    errors.push({
+      field: 'startLocation',
+      message: 'Start location is required',
+    });
   }
 
   if (!log.endLocation) {
@@ -275,7 +284,10 @@ export function validateMileageLog(log: Partial<MileageLog>): MileageLogValidati
   // Time validation
   if (log.startTime && log.endTime) {
     if (new Date(log.endTime) <= new Date(log.startTime)) {
-      errors.push({ field: 'endTime', message: 'End time must be after start time' });
+      errors.push({
+        field: 'endTime',
+        message: 'End time must be after start time',
+      });
     }
   }
 
@@ -285,27 +297,35 @@ export function validateMileageLog(log: Partial<MileageLog>): MileageLogValidati
   }
 
   if (log.distance !== undefined && log.distance > 2000) {
-    errors.push({ 
-      field: 'distance', 
-      message: 'Distance exceeds 2000 km. Please verify this is correct.' 
+    errors.push({
+      field: 'distance',
+      message: 'Distance exceeds 2000 km. Please verify this is correct.',
     });
   }
 
   // Rate validation
   if (log.ratePerKm !== undefined && log.ratePerKm < 0) {
-    errors.push({ field: 'ratePerKm', message: 'Rate per km cannot be negative' });
+    errors.push({
+      field: 'ratePerKm',
+      message: 'Rate per km cannot be negative',
+    });
   }
 
   if (log.ratePerKm !== undefined && log.ratePerKm > 1) {
-    errors.push({ 
-      field: 'ratePerKm', 
-      message: 'Rate per km exceeds €1.00. Standard rate is €0.30. Please verify.' 
+    errors.push({
+      field: 'ratePerKm',
+      message:
+        'Rate per km exceeds €1.00. Standard rate is €0.30. Please verify.',
     });
   }
 
   // Business rule ML-001: Distance should match GPS route ±5%
   // Skip this validation if manual override is applied (GF has approved the override)
-  if (log.distance !== undefined && log.gpsDistance !== undefined && log.manualOverride !== true) {
+  if (
+    log.distance !== undefined &&
+    log.gpsDistance !== undefined &&
+    log.manualOverride !== true
+  ) {
     const tolerance = 0.05; // 5%
     const minDistance = log.gpsDistance * (1 - tolerance);
     const maxDistance = log.gpsDistance * (1 + tolerance);
@@ -327,7 +347,11 @@ export function validateMileageLog(log: Partial<MileageLog>): MileageLogValidati
   }
 
   // Cost calculation validation
-  if (log.distance !== undefined && log.ratePerKm !== undefined && log.calculatedCost !== undefined) {
+  if (
+    log.distance !== undefined &&
+    log.ratePerKm !== undefined &&
+    log.calculatedCost !== undefined
+  ) {
     const expectedCost = calculateMileageCost(log.distance, log.ratePerKm);
     const tolerance = 0.01; // 1 cent
 
@@ -370,14 +394,20 @@ export function validateMileageLog(log: Partial<MileageLog>): MileageLogValidati
 /**
  * Calculates mileage cost
  */
-export function calculateMileageCost(distance: number, ratePerKm: number = 0.30): number {
+export function calculateMileageCost(
+  distance: number,
+  ratePerKm: number = 0.3
+): number {
   return Math.round(distance * ratePerKm * 100) / 100; // Round to 2 decimals
 }
 
 /**
  * Calculates distance between two GPS coordinates using Haversine formula
  */
-export function calculateGPSDistance(from: GPSCoordinates, to: GPSCoordinates): number {
+export function calculateGPSDistance(
+  from: GPSCoordinates,
+  to: GPSCoordinates
+): number {
   const R = 6371; // Earth radius in kilometers
   const φ1 = (from.latitude * Math.PI) / 180;
   const φ2 = (to.latitude * Math.PI) / 180;
@@ -406,4 +436,3 @@ export function validateGPSRouteDistance(
   const maxDistance = gpsDistance * (1 + tolerance);
   return claimedDistance >= minDistance && claimedDistance <= maxDistance;
 }
-

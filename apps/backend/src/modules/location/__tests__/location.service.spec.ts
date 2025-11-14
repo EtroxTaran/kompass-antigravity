@@ -1,17 +1,25 @@
 /**
  * Location Service Unit Tests
- * 
+ *
  * Tests business logic for Location management
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { NotFoundException, ForbiddenException, ConflictException, BadRequestException } from '@nestjs/common';
-import { LocationService } from '../location.service';
-import { ILocationRepository } from '../location.repository.interface';
+import {
+  NotFoundException,
+  ForbiddenException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
+import { Test } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+
 import type { Location } from '@kompass/shared/types/entities/location';
 import { LocationType } from '@kompass/shared/types/enums';
-import { CreateLocationDto } from '../dto/create-location.dto';
-import { UpdateLocationDto } from '../dto/update-location.dto';
+
+import type { CreateLocationDto } from '../dto/create-location.dto';
+import type { UpdateLocationDto } from '../dto/update-location.dto';
+import type { ILocationRepository } from '../location.repository.interface';
+import { LocationService } from '../location.service';
 
 describe('LocationService', () => {
   let service: LocationService;
@@ -118,9 +126,9 @@ describe('LocationService', () => {
     it('should throw NotFoundException if customer not found', async () => {
       customerService.findById.mockResolvedValue(null);
 
-      await expect(service.create('customer-999', createDto, mockUser)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.create('customer-999', createDto, mockUser)
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw ForbiddenException if ADM tries to create location for non-owned customer', async () => {
@@ -129,9 +137,9 @@ describe('LocationService', () => {
         owner: 'other-user',
       });
 
-      await expect(service.create('customer-123', createDto, mockUser)).rejects.toThrow(
-        ForbiddenException,
-      );
+      await expect(
+        service.create('customer-123', createDto, mockUser)
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should allow GF to create location for any customer', async () => {
@@ -142,16 +150,18 @@ describe('LocationService', () => {
       repository.findByCustomerAndName.mockResolvedValue(null);
       repository.create.mockResolvedValue(mockLocation);
 
-      await expect(service.create('customer-123', createDto, mockGFUser)).resolves.toBeDefined();
+      await expect(
+        service.create('customer-123', createDto, mockGFUser)
+      ).resolves.toBeDefined();
     });
 
     it('should throw ConflictException if location name already exists', async () => {
       customerService.findById.mockResolvedValue(mockCustomer);
       repository.findByCustomerAndName.mockResolvedValue(mockLocation);
 
-      await expect(service.create('customer-123', createDto, mockUser)).rejects.toThrow(
-        ConflictException,
-      );
+      await expect(
+        service.create('customer-123', createDto, mockUser)
+      ).rejects.toThrow(ConflictException);
     });
 
     it('should validate primary contact is in contactPersons array', async () => {
@@ -164,9 +174,9 @@ describe('LocationService', () => {
         contactPersons: ['contact-222'], // Different contact!
       };
 
-      await expect(service.create('customer-123', invalidDto, mockUser)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        service.create('customer-123', invalidDto, mockUser)
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -178,13 +188,15 @@ describe('LocationService', () => {
       const result = await service.findByCustomer('customer-123', mockUser);
 
       expect(result).toHaveLength(1);
-      expect(result[0].locationName).toBe(mockLocation.locationName);
+      expect(result[0]!.locationName).toBe(mockLocation.locationName);
     });
 
     it('should verify customer access first', async () => {
       customerService.findById.mockResolvedValue(null);
 
-      await expect(service.findByCustomer('customer-999', mockUser)).rejects.toThrow();
+      await expect(
+        service.findByCustomer('customer-999', mockUser)
+      ).rejects.toThrow();
       expect(repository.findByCustomer).not.toHaveBeenCalled();
     });
   });
@@ -201,7 +213,12 @@ describe('LocationService', () => {
       repository.findByCustomerAndName.mockResolvedValue(null);
       repository.update.mockResolvedValue({ ...mockLocation, ...updateDto });
 
-      const result = await service.update('customer-123', 'location-456', updateDto, mockUser);
+      const result = await service.update(
+        'customer-123',
+        'location-456',
+        updateDto,
+        mockUser
+      );
 
       expect(result.locationName).toBe(updateDto.locationName);
       expect(repository.update).toHaveBeenCalled();
@@ -214,7 +231,7 @@ describe('LocationService', () => {
       });
 
       await expect(
-        service.update('customer-123', 'location-456', updateDto, mockUser),
+        service.update('customer-123', 'location-456', updateDto, mockUser)
       ).rejects.toThrow(ForbiddenException);
     });
 
@@ -227,7 +244,7 @@ describe('LocationService', () => {
       });
 
       await expect(
-        service.update('customer-123', 'location-456', updateDto, mockUser),
+        service.update('customer-123', 'location-456', updateDto, mockUser)
       ).rejects.toThrow(ConflictException);
     });
   });
@@ -235,7 +252,7 @@ describe('LocationService', () => {
   describe('delete', () => {
     it('should throw ForbiddenException if ADM tries to delete', async () => {
       await expect(
-        service.delete('customer-123', 'location-456', mockUser),
+        service.delete('customer-123', 'location-456', mockUser)
       ).rejects.toThrow(ForbiddenException);
     });
 
@@ -246,7 +263,7 @@ describe('LocationService', () => {
       repository.delete.mockResolvedValue();
 
       await expect(
-        service.delete('customer-123', 'location-456', mockGFUser),
+        service.delete('customer-123', 'location-456', mockGFUser)
       ).resolves.toBeUndefined();
     });
 
@@ -256,9 +273,8 @@ describe('LocationService', () => {
       repository.isLocationInUse.mockResolvedValue(true);
 
       await expect(
-        service.delete('customer-123', 'location-456', mockGFUser),
+        service.delete('customer-123', 'location-456', mockGFUser)
       ).rejects.toThrow(ConflictException);
     });
   });
 });
-

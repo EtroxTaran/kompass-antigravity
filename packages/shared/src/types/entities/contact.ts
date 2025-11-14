@@ -1,9 +1,9 @@
 /**
  * Contact/ContactPerson Entity for KOMPASS
- * 
+ *
  * Represents an individual person associated with a customer
  * Contacts can have decision-making roles and authority levels for business processes
- * 
+ *
  * Validation rules from DATA_MODEL_SPECIFICATION.md:
  * - firstName, lastName: 2-50 chars, letters only
  * - email: Valid email format (optional)
@@ -13,7 +13,7 @@
  * - authorityLevel: Required, valid level
  * - canApproveOrders: Required boolean
  * - approvalLimitEur: Required if canApproveOrders=true, 0-€10M
- * 
+ *
  * Business Rules:
  * - CO-001: Approval limit required if canApproveOrders=true
  * - CO-002: Primary contact locations must be in assignedLocationIds
@@ -21,7 +21,12 @@
  */
 
 import type { BaseEntity } from '../base.entity';
-import { DecisionMakingRole, FunctionalRole, type AuthorityLevel, type PreferredContactMethod } from '../enums';
+import { DecisionMakingRole } from '../enums';
+import type {
+  FunctionalRole,
+  type AuthorityLevel,
+  type PreferredContactMethod,
+} from '../enums';
 
 /**
  * ContactPerson entity
@@ -30,7 +35,7 @@ export interface ContactPerson extends BaseEntity {
   type: 'contact';
 
   // ==================== Basic Information ====================
-  
+
   /** First name (REQUIRED) */
   firstName: string;
 
@@ -44,7 +49,7 @@ export interface ContactPerson extends BaseEntity {
   position?: string;
 
   // ==================== Contact Details ====================
-  
+
   /** Email address */
   email?: string;
 
@@ -55,12 +60,12 @@ export interface ContactPerson extends BaseEntity {
   mobile?: string;
 
   // ==================== Relationship ====================
-  
+
   /** Parent customer ID (REQUIRED) */
   customerId: string;
 
   // ==================== Decision-Making & Authority (NEW) ====================
-  
+
   /** Role in decision-making process (REQUIRED) */
   decisionMakingRole: DecisionMakingRole;
 
@@ -74,7 +79,7 @@ export interface ContactPerson extends BaseEntity {
   approvalLimitEur?: number;
 
   // ==================== Role & Responsibilities (NEW) ====================
-  
+
   /** Multiple roles possible (e.g., purchasing + facility) */
   functionalRoles: FunctionalRole[];
 
@@ -82,7 +87,7 @@ export interface ContactPerson extends BaseEntity {
   departmentInfluence: string[];
 
   // ==================== Location Assignment (NEW) ====================
-  
+
   /** Locations this contact is responsible for */
   assignedLocationIds: string[];
 
@@ -90,7 +95,7 @@ export interface ContactPerson extends BaseEntity {
   isPrimaryContactForLocations: string[];
 
   // ==================== Communication Preferences ====================
-  
+
   /** Preferred contact method */
   preferredContactMethod?: PreferredContactMethod;
 
@@ -98,7 +103,7 @@ export interface ContactPerson extends BaseEntity {
   language?: string;
 
   // ==================== Notes ====================
-  
+
   /** General notes about contact */
   notes?: string;
 }
@@ -142,14 +147,22 @@ export function createContact(
 ): Omit<ContactPerson, '_rev'> {
   const now = new Date();
 
+  const {
+    functionalRoles = [],
+    departmentInfluence = [],
+    assignedLocationIds = [],
+    isPrimaryContactForLocations = [],
+    ...rest
+  } = data;
+
   return {
     _id: `contact-${crypto.randomUUID()}`,
     type: 'contact',
-    functionalRoles: data.functionalRoles || [],
-    departmentInfluence: data.departmentInfluence || [],
-    assignedLocationIds: data.assignedLocationIds || [],
-    isPrimaryContactForLocations: data.isPrimaryContactForLocations || [],
-    ...data,
+    functionalRoles,
+    departmentInfluence,
+    assignedLocationIds,
+    isPrimaryContactForLocations,
+    ...rest,
     createdBy: userId,
     createdAt: now,
     modifiedBy: userId,
@@ -169,16 +182,32 @@ export interface ContactValidationError {
 /**
  * Validates contact data
  */
-export function validateContact(contact: Partial<ContactPerson>): ContactValidationError[] {
+export function validateContact(
+  contact: Partial<ContactPerson>
+): ContactValidationError[] {
   const errors: ContactValidationError[] = [];
 
   // Required fields
-  if (!contact.firstName || contact.firstName.length < 2 || contact.firstName.length > 50) {
-    errors.push({ field: 'firstName', message: 'First name must be 2-50 characters' });
+  if (
+    !contact.firstName ||
+    contact.firstName.length < 2 ||
+    contact.firstName.length > 50
+  ) {
+    errors.push({
+      field: 'firstName',
+      message: 'First name must be 2-50 characters',
+    });
   }
 
-  if (!contact.lastName || contact.lastName.length < 2 || contact.lastName.length > 50) {
-    errors.push({ field: 'lastName', message: 'Last name must be 2-50 characters' });
+  if (
+    !contact.lastName ||
+    contact.lastName.length < 2 ||
+    contact.lastName.length > 50
+  ) {
+    errors.push({
+      field: 'lastName',
+      message: 'Last name must be 2-50 characters',
+    });
   }
 
   if (!contact.customerId) {
@@ -186,15 +215,24 @@ export function validateContact(contact: Partial<ContactPerson>): ContactValidat
   }
 
   if (!contact.decisionMakingRole) {
-    errors.push({ field: 'decisionMakingRole', message: 'Decision-making role is required' });
+    errors.push({
+      field: 'decisionMakingRole',
+      message: 'Decision-making role is required',
+    });
   }
 
   if (!contact.authorityLevel) {
-    errors.push({ field: 'authorityLevel', message: 'Authority level is required' });
+    errors.push({
+      field: 'authorityLevel',
+      message: 'Authority level is required',
+    });
   }
 
   if (contact.canApproveOrders === undefined) {
-    errors.push({ field: 'canApproveOrders', message: 'Can approve orders flag is required' });
+    errors.push({
+      field: 'canApproveOrders',
+      message: 'Can approve orders flag is required',
+    });
   }
 
   // Business rule CO-001: Approval limit required if canApproveOrders=true
@@ -202,7 +240,8 @@ export function validateContact(contact: Partial<ContactPerson>): ContactValidat
     if (!contact.approvalLimitEur || contact.approvalLimitEur <= 0) {
       errors.push({
         field: 'approvalLimitEur',
-        message: 'Contacts who can approve orders must have an approval limit > 0',
+        message:
+          'Contacts who can approve orders must have an approval limit > 0',
       });
     }
   }
@@ -227,14 +266,14 @@ export function validateContact(contact: Partial<ContactPerson>): ContactValidat
  */
 export function getContactDisplayName(contact: ContactPerson): string {
   const parts: string[] = [];
-  
+
   if (contact.title) {
     parts.push(contact.title);
   }
-  
+
   parts.push(contact.firstName);
   parts.push(contact.lastName);
-  
+
   return parts.join(' ');
 }
 
@@ -277,4 +316,3 @@ export function getDecisionMakingRoleLabel(role: DecisionMakingRole): string {
       return role;
   }
 }
-

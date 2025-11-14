@@ -1,19 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { IRoleRepository } from './role.repository.interface';
-import { Role, PermissionMatrix } from '@kompass/shared/types/entities/role';
+
+import type {
+  Role,
+  PermissionMatrix,
+} from '@kompass/shared/types/entities/role';
+
+import type { IRoleRepository } from './role.repository.interface';
 // TODO: Import CouchDB nano client when available
 // import { Nano } from 'nano';
 
 /**
  * Role Repository Implementation
- * 
+ *
  * CouchDB data access for Role and PermissionMatrix entities.
- * 
+ *
  * TODO: Inject CouchDB nano client
  * TODO: Implement all repository methods
  * TODO: Add error handling and logging
  * TODO: Add indexes for efficient queries
- * 
+ *
  * @see docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md#role-entity
  */
 @Injectable()
@@ -23,11 +28,12 @@ export class RoleRepository implements IRoleRepository {
 
   /**
    * Find all roles with optional filtering
-   * 
+   *
    * TODO: Implement CouchDB Mango query
    * Query: { selector: { type: 'role', active: true/false } }
    */
-  async findAll(activeOnly: boolean = false): Promise<Role[]> {
+  findAll(activeOnly: boolean = false): Promise<Role[]> {
+    void activeOnly;
     // TODO: Implement CouchDB query
     // const db = this.nano.use('kompass');
     // const query = {
@@ -39,16 +45,17 @@ export class RoleRepository implements IRoleRepository {
     // };
     // const result = await db.find(query);
     // return result.docs as Role[];
-    throw new Error('Not implemented');
+    return Promise.reject(new Error('Not implemented'));
   }
 
   /**
    * Find role by roleId
-   * 
+   *
    * TODO: Implement CouchDB get by document ID
    * Document ID format: 'role-{roleId}' (e.g., 'role-ADM')
    */
-  async findByRoleId(roleId: string): Promise<Role | null> {
+  findByRoleId(roleId: string): Promise<Role | null> {
+    void roleId;
     // TODO: Implement CouchDB get
     // const db = this.nano.use('kompass');
     // try {
@@ -60,29 +67,30 @@ export class RoleRepository implements IRoleRepository {
     //   }
     //   throw error;
     // }
-    throw new Error('Not implemented');
+    return Promise.reject(new Error('Not implemented'));
   }
 
   /**
    * Save role configuration (create or update)
-   * 
+   *
    * TODO: Implement CouchDB insert/update
    */
-  async save(role: Role): Promise<Role> {
+  save(role: Role): Promise<Role> {
+    void role;
     // TODO: Implement CouchDB save
     // const db = this.nano.use('kompass');
     // const result = await db.insert(role);
     // return { ...role, _rev: result.rev };
-    throw new Error('Not implemented');
+    return Promise.reject(new Error('Not implemented'));
   }
 
   /**
    * Find active permission matrix
-   * 
+   *
    * TODO: Implement CouchDB Mango query
    * Query: { selector: { type: 'permission_matrix', active: true } }
    */
-  async findActivePermissionMatrix(): Promise<PermissionMatrix | null> {
+  findActivePermissionMatrix(): Promise<PermissionMatrix | null> {
     // TODO: Implement CouchDB query
     // const db = this.nano.use('kompass');
     // const query = {
@@ -94,63 +102,68 @@ export class RoleRepository implements IRoleRepository {
     // };
     // const result = await db.find(query);
     // return result.docs.length > 0 ? (result.docs[0] as PermissionMatrix) : null;
-    throw new Error('Not implemented');
+    return Promise.reject(new Error('Not implemented'));
   }
 
   /**
-   * Find permission matrix by version number
-   * 
+   * Find permission matrix by semantic version
+   *
    * TODO: Implement CouchDB Mango query
-   * Query: { selector: { type: 'permission_matrix', version: X } }
+   * Query: { selector: { type: 'permission_matrix', matrixVersion: X } }
    */
-  async findPermissionMatrixByVersion(version: number): Promise<PermissionMatrix | null> {
+  findPermissionMatrixByVersion(
+    matrixVersion: string
+  ): Promise<PermissionMatrix | null> {
+    void matrixVersion;
     // TODO: Implement CouchDB query
     // const db = this.nano.use('kompass');
     // const query = {
     //   selector: {
     //     type: 'permission_matrix',
-    //     version,
+    //     matrixVersion,
     //   },
     //   limit: 1,
     // };
     // const result = await db.find(query);
     // return result.docs.length > 0 ? (result.docs[0] as PermissionMatrix) : null;
-    throw new Error('Not implemented');
+    return Promise.reject(new Error('Not implemented'));
   }
 
   /**
    * Create permission matrix version
-   * 
+   *
    * TODO: Implement CouchDB insert
    */
-  async createPermissionMatrix(matrix: PermissionMatrix): Promise<PermissionMatrix> {
+  createPermissionMatrix(matrix: PermissionMatrix): Promise<PermissionMatrix> {
+    void matrix;
     // TODO: Implement CouchDB insert
     // const db = this.nano.use('kompass');
     // const result = await db.insert(matrix);
     // return { ...matrix, _rev: result.rev };
-    throw new Error('Not implemented');
+    return Promise.reject(new Error('Not implemented'));
   }
 
   /**
    * Update permission matrix
-   * 
+   *
    * TODO: Implement CouchDB update
    */
-  async updatePermissionMatrix(matrix: PermissionMatrix): Promise<PermissionMatrix> {
+  updatePermissionMatrix(matrix: PermissionMatrix): Promise<PermissionMatrix> {
+    void matrix;
     // TODO: Implement CouchDB update
     // const db = this.nano.use('kompass');
     // const result = await db.insert(matrix);
     // return { ...matrix, _rev: result.rev };
-    throw new Error('Not implemented');
+    return Promise.reject(new Error('Not implemented'));
   }
 
   /**
    * List all permission matrix versions
-   * 
+   *
    * TODO: Implement CouchDB Mango query
    * Query: { selector: { type: 'permission_matrix' }, sort: [{ version: 'desc' }] }
    */
-  async listPermissionMatrixVersions(): Promise<PermissionMatrix[]> {
+  listPermissionMatrixVersions(): Promise<PermissionMatrix[]> {
     // TODO: Implement CouchDB query
     // const db = this.nano.use('kompass');
     // const query = {
@@ -161,7 +174,6 @@ export class RoleRepository implements IRoleRepository {
     // };
     // const result = await db.find(query);
     // return result.docs as PermissionMatrix[];
-    throw new Error('Not implemented');
+    return Promise.reject(new Error('Not implemented'));
   }
 }
-

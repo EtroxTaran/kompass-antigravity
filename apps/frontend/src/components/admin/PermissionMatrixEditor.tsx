@@ -1,20 +1,39 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { UserRole, EntityType, Permission } from '@kompass/shared/constants/rbac.constants';
-import { PermissionMatrix } from '@kompass/shared/types/entities/role';
+import { Fragment, useEffect, useState } from 'react';
+import type { ChangeEvent } from 'react';
+
+import type {
+  UserRole,
+  EntityType,
+  Permission,
+} from '@kompass/shared/constants/rbac.constants';
+import type { PermissionMatrix } from '@kompass/shared/types/entities/role';
+
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../ui/card';
+import { Checkbox } from '../ui/checkbox';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../ui/table';
+import { Textarea } from '../ui/textarea';
 
 /**
  * Permission Matrix Editor Component
- * 
+ *
  * Allows GF users to edit the permission matrix and create new versions.
  * Displays the current active permission matrix and allows editing.
- * 
+ *
  * TODO: Implement permission matrix API calls
  * TODO: Add version history view
  * TODO: Add version activation/rollback functionality
@@ -23,7 +42,7 @@ import { PermissionMatrix } from '@kompass/shared/types/entities/role';
  * TODO: Add success/error toast notifications
  * TODO: Add diff view for changes
  * TODO: Add confirmation dialog for changes
- * 
+ *
  * @see docs/specifications/reviews/API_SPECIFICATION.md#permission-matrix-endpoints
  * @see docs/specifications/reviews/RBAC_PERMISSION_MATRIX.md
  */
@@ -64,33 +83,59 @@ const ROLE_LABELS: Record<UserRole, string> = {
   ADMIN: 'Administrator',
 };
 
-export function PermissionMatrixEditor() {
-  const [activeMatrix, setActiveMatrix] = useState<PermissionMatrix | null>(null);
-  const [editedMatrix, setEditedMatrix] = useState<Record<UserRole, Record<EntityType, Partial<Record<Permission, boolean>>>>>({} as Record<UserRole, Record<EntityType, Partial<Record<Permission, boolean>>>>);
+export function PermissionMatrixEditor(): JSX.Element {
+  const [activeMatrix, _setActiveMatrix] = useState<PermissionMatrix | null>(
+    null
+  );
+  const [editedMatrix, setEditedMatrix] = useState<
+    Record<UserRole, Record<EntityType, Partial<Record<Permission, boolean>>>>
+  >(
+    {} as Record<
+      UserRole,
+      Record<EntityType, Partial<Record<Permission, boolean>>>
+    >
+  );
   const [changeReason, setChangeReason] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
 
   // TODO: Load active permission matrix on mount
   useEffect(() => {
-    // TODO: Fetch active permission matrix from API
-    // setActiveMatrix(data);
-    // setEditedMatrix(data.matrix);
-  }, []);
+    if (activeMatrix) {
+      setEditedMatrix(activeMatrix.matrix);
+    }
+  }, [activeMatrix]);
 
   const handlePermissionToggle = (
     role: UserRole,
     entity: EntityType,
     permission: Permission,
     checked: boolean
-  ) => {
-    // TODO: Implement permission toggle logic
-    // TODO: Mark as dirty
+  ): void => {
+    setEditedMatrix((previous) => {
+      const updatedRoleMatrix: Record<
+        EntityType,
+        Partial<Record<Permission, boolean>>
+      > = {
+        ...(previous[role] ?? {}),
+      };
+
+      const updatedEntityMatrix: Partial<Record<Permission, boolean>> = {
+        ...(updatedRoleMatrix[entity] ?? {}),
+        [permission]: checked,
+      };
+
+      updatedRoleMatrix[entity] = updatedEntityMatrix;
+
+      return {
+        ...previous,
+        [role]: updatedRoleMatrix,
+      };
+    });
     setIsDirty(true);
-    // Permission toggle logic will be implemented here
   };
 
-  const handleSave = async () => {
+  const handleSave = (): void => {
     // TODO: Implement API call to create new permission matrix version
     // TODO: Validate changes
     // TODO: Show confirmation dialog
@@ -101,9 +146,10 @@ export function PermissionMatrixEditor() {
     setIsLoading(false);
   };
 
-  const handleReset = () => {
-    // TODO: Reset edited matrix to active matrix
-    // TODO: Clear dirty flag
+  const handleReset = (): void => {
+    if (activeMatrix) {
+      setEditedMatrix(activeMatrix.matrix);
+    }
     setIsDirty(false);
   };
 
@@ -121,9 +167,12 @@ export function PermissionMatrixEditor() {
         <CardContent>
           {activeMatrix && (
             <div className="flex items-center gap-4">
-              <Badge>Version {activeMatrix.version}</Badge>
+              <Badge>Version {activeMatrix.matrixVersion}</Badge>
               <span className="text-sm text-muted-foreground">
-                Aktiv seit: {new Date(activeMatrix.effectiveDate).toLocaleDateString('de-DE')}
+                Aktiv seit:{' '}
+                {new Date(activeMatrix.effectiveDate).toLocaleDateString(
+                  'de-DE'
+                )}
               </span>
               {isDirty && (
                 <Badge variant="warning">Ungespeicherte Änderungen</Badge>
@@ -157,39 +206,47 @@ export function PermissionMatrixEditor() {
               </TableHeader>
               <TableBody>
                 {Object.entries(ENTITY_LABELS).map(([entity, entityLabel]) => (
-                  <>
+                  <Fragment key={entity}>
                     {/* Entity Header Row */}
-                    <TableRow key={`${entity}-header`}>
+                    <TableRow>
                       <TableCell colSpan={8} className="bg-muted font-semibold">
                         {entityLabel}
                       </TableCell>
                     </TableRow>
 
                     {/* Permission Rows */}
-                    {Object.entries(PERMISSION_LABELS).map(([permission, permLabel]) => (
-                      <TableRow key={`${entity}-${permission}`}>
-                        <TableCell className="pl-8">{permLabel}</TableCell>
-                        {Object.keys(ROLE_LABELS).map((role) => (
-                          <TableCell key={`${entity}-${permission}-${role}`} className="text-center">
-                            <Checkbox
-                              checked={
-                                editedMatrix[role as UserRole]?.[entity as EntityType]?.[permission as Permission] ||
-                                false
-                              }
-                              onCheckedChange={(checked) =>
-                                handlePermissionToggle(
-                                  role as UserRole,
-                                  entity as EntityType,
-                                  permission as Permission,
-                                  checked as boolean
-                                )
-                              }
-                            />
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
-                  </>
+                    {Object.entries(PERMISSION_LABELS).map(
+                      ([permission, permLabel]) => (
+                        <TableRow key={`${entity}-${permission}`}>
+                          <TableCell className="pl-8">{permLabel}</TableCell>
+                          {(Object.keys(ROLE_LABELS) as UserRole[]).map(
+                            (role) => (
+                              <TableCell
+                                key={`${entity}-${permission}-${role}`}
+                                className="text-center"
+                              >
+                                <Checkbox
+                                  checked={
+                                    editedMatrix[role]?.[
+                                      entity as EntityType
+                                    ]?.[permission as Permission] ?? false
+                                  }
+                                  onCheckedChange={(checked) =>
+                                    handlePermissionToggle(
+                                      role,
+                                      entity as EntityType,
+                                      permission as Permission,
+                                      checked as boolean
+                                    )
+                                  }
+                                />
+                              </TableCell>
+                            )
+                          )}
+                        </TableRow>
+                      )
+                    )}
+                  </Fragment>
                 ))}
               </TableBody>
             </Table>
@@ -203,14 +260,21 @@ export function PermissionMatrixEditor() {
           <CardHeader>
             <CardTitle>Grund für die Änderung</CardTitle>
             <CardDescription>
-              Bitte geben Sie einen Grund für die Änderungen an. Dies wird im Änderungsprotokoll gespeichert.
+              Bitte geben Sie einen Grund für die Änderungen an. Dies wird im
+              Änderungsprotokoll gespeichert.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Textarea
               placeholder="z.B. Neue Rolle hinzugefügt, Berechtigungen für PLAN-Rolle angepasst..."
               value={changeReason}
-              onChange={(e) => setChangeReason(e.target.value)}
+              onChange={(event) => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const nextValue = (event as ChangeEvent<HTMLTextAreaElement>)
+                  .currentTarget.value;
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                setChangeReason(nextValue);
+              }}
               rows={3}
             />
           </CardContent>
@@ -240,4 +304,3 @@ export function PermissionMatrixEditor() {
     </div>
   );
 }
-

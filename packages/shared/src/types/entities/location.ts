@@ -1,9 +1,9 @@
 /**
  * Location Entity for KOMPASS
- * 
+ *
  * Represents a physical location for a customer (e.g., headquarters, branch, warehouse, project site)
  * Each location has its own delivery address and can have assigned contact persons
- * 
+ *
  * Validation rules from DATA_MODEL_SPECIFICATION.md:
  * - locationName: 2-100 chars, unique within customer
  * - locationType: Enum of valid location types
@@ -11,7 +11,7 @@
  * - isActive: Boolean (required)
  * - primaryContactPersonId: Must be in contactPersons array if set
  * - customerId: Must reference existing Customer
- * 
+ *
  * Business Rules:
  * - LR-001: Location names must be unique per customer
  * - LR-002: Primary contact must be in contactPersons array
@@ -20,7 +20,7 @@
 
 import type { BaseEntity } from '../base.entity';
 import type { Address } from '../common/address';
-import { LocationType } from '../enums';
+import type { LocationType } from '../enums';
 
 /**
  * Location entity
@@ -29,12 +29,12 @@ export interface Location extends BaseEntity {
   type: 'location';
 
   // ==================== Parent Reference ====================
-  
+
   /** Parent customer ID (REQUIRED) */
   customerId: string;
 
   // ==================== Location Identity ====================
-  
+
   /** Descriptive name (e.g., "Filiale München", "Hauptstandort") */
   locationName: string;
 
@@ -45,12 +45,12 @@ export interface Location extends BaseEntity {
   isActive: boolean;
 
   // ==================== Delivery Address ====================
-  
+
   /** Full delivery address (REQUIRED, separate from billing) */
   deliveryAddress: Address;
 
   // ==================== GPS Coordinates (NEW for Tour Planning) ====================
-  
+
   /** GPS coordinates for navigation and route planning */
   gpsCoordinates?: {
     latitude: number;
@@ -64,7 +64,7 @@ export interface Location extends BaseEntity {
   hotelRating?: number;
 
   // ==================== Location-Specific Contacts ====================
-  
+
   /** Main contact at this location (optional) */
   primaryContactPersonId?: string;
 
@@ -72,7 +72,7 @@ export interface Location extends BaseEntity {
   contactPersons: string[];
 
   // ==================== Operational Details ====================
-  
+
   /** Special delivery instructions */
   deliveryNotes?: string;
 
@@ -121,11 +121,13 @@ export function createLocation(
 ): Omit<Location, '_rev'> {
   const now = new Date();
 
+  const { contactPersons = [], ...rest } = data;
+
   return {
     _id: `location-${crypto.randomUUID()}`,
     type: 'location',
-    contactPersons: data.contactPersons || [],
-    ...data,
+    contactPersons,
+    ...rest,
     createdBy: userId,
     createdAt: now,
     modifiedBy: userId,
@@ -145,7 +147,9 @@ export interface LocationValidationError {
 /**
  * Validates location data
  */
-export function validateLocation(location: Partial<Location>): LocationValidationError[] {
+export function validateLocation(
+  location: Partial<Location>
+): LocationValidationError[] {
   const errors: LocationValidationError[] = [];
 
   // Required fields
@@ -153,12 +157,22 @@ export function validateLocation(location: Partial<Location>): LocationValidatio
     errors.push({ field: 'customerId', message: 'Customer ID is required' });
   }
 
-  if (!location.locationName || location.locationName.length < 2 || location.locationName.length > 100) {
-    errors.push({ field: 'locationName', message: 'Location name must be 2-100 characters' });
+  if (
+    !location.locationName ||
+    location.locationName.length < 2 ||
+    location.locationName.length > 100
+  ) {
+    errors.push({
+      field: 'locationName',
+      message: 'Location name must be 2-100 characters',
+    });
   }
 
   if (!location.locationType) {
-    errors.push({ field: 'locationType', message: 'Location type is required' });
+    errors.push({
+      field: 'locationType',
+      message: 'Location type is required',
+    });
   }
 
   if (location.isActive === undefined) {
@@ -166,7 +180,10 @@ export function validateLocation(location: Partial<Location>): LocationValidatio
   }
 
   if (!location.deliveryAddress) {
-    errors.push({ field: 'deliveryAddress', message: 'Delivery address is required' });
+    errors.push({
+      field: 'deliveryAddress',
+      message: 'Delivery address is required',
+    });
   }
 
   // Business rule: Primary contact must be in contactPersons array
@@ -174,11 +191,11 @@ export function validateLocation(location: Partial<Location>): LocationValidatio
     if (!location.contactPersons.includes(location.primaryContactPersonId)) {
       errors.push({
         field: 'primaryContactPersonId',
-        message: 'Primary contact must be in the list of assigned contact persons',
+        message:
+          'Primary contact must be in the list of assigned contact persons',
       });
     }
   }
 
   return errors;
 }
-

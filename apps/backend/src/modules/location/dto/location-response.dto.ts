@@ -1,19 +1,20 @@
 /**
  * Response DTO for Location entity
- * 
+ *
  * Returns full Location data to API consumers
  */
 
 import { ApiProperty } from '@nestjs/swagger';
+
+import { Address } from '@kompass/shared/types/common/address';
 import { LocationType } from '@kompass/shared/types/enums';
-import type { Address } from '@kompass/shared/types/common/address';
 
 /**
  * Address response DTO
  */
 export class AddressResponseDto {
   @ApiProperty()
-  street: string;
+  street!: string;
 
   @ApiProperty({ required: false })
   streetNumber?: string;
@@ -22,16 +23,16 @@ export class AddressResponseDto {
   addressLine2?: string;
 
   @ApiProperty()
-  zipCode: string;
+  zipCode!: string;
 
   @ApiProperty()
-  city: string;
+  city!: string;
 
   @ApiProperty({ required: false })
   state?: string;
 
   @ApiProperty()
-  country: string;
+  country!: string;
 
   @ApiProperty({ required: false })
   latitude?: number;
@@ -48,49 +49,49 @@ export class LocationResponseDto {
     description: 'Location ID',
     example: 'location-67890',
   })
-  _id: string;
+  _id!: string;
 
   @ApiProperty({
     description: 'CouchDB revision',
     example: '1-abc123',
   })
-  _rev: string;
+  _rev!: string;
 
   @ApiProperty({
     description: 'Document type',
     example: 'location',
   })
-  type: 'location';
+  type!: 'location';
 
   @ApiProperty({
     description: 'Parent customer ID',
     example: 'customer-12345',
   })
-  customerId: string;
+  customerId!: string;
 
   @ApiProperty({
     description: 'Location name',
     example: 'Filiale München Süd',
   })
-  locationName: string;
+  locationName!: string;
 
   @ApiProperty({
     description: 'Location type',
     enum: LocationType,
     example: LocationType.BRANCH,
   })
-  locationType: LocationType;
+  locationType!: LocationType;
 
   @ApiProperty({
     description: 'Operational status',
   })
-  isActive: boolean;
+  isActive!: boolean;
 
   @ApiProperty({
     description: 'Delivery address',
     type: AddressResponseDto,
   })
-  deliveryAddress: Address;
+  deliveryAddress!: Address;
 
   @ApiProperty({
     description: 'Primary contact person ID',
@@ -102,7 +103,7 @@ export class LocationResponseDto {
     description: 'Array of contact person IDs',
     type: [String],
   })
-  contactPersons: string[];
+  contactPersons!: string[];
 
   @ApiProperty({
     description: 'Delivery notes',
@@ -125,27 +126,27 @@ export class LocationResponseDto {
   @ApiProperty({
     description: 'Created by user ID',
   })
-  createdBy: string;
+  createdBy!: string;
 
   @ApiProperty({
     description: 'Creation timestamp',
   })
-  createdAt: Date;
+  createdAt!: Date;
 
   @ApiProperty({
     description: 'Last modified by user ID',
   })
-  modifiedBy: string;
+  modifiedBy!: string;
 
   @ApiProperty({
     description: 'Last modification timestamp',
   })
-  modifiedAt: Date;
+  modifiedAt!: Date;
 
   @ApiProperty({
     description: 'Version number',
   })
-  version: number;
+  version!: number;
 }
 
 /**
@@ -156,21 +157,20 @@ export class LocationListResponseDto {
     description: 'Location data',
     type: [LocationResponseDto],
   })
-  data: LocationResponseDto[];
+  data!: LocationResponseDto[];
 
   @ApiProperty({
     description: 'Total count',
   })
-  total: number;
+  total!: number;
 
   @ApiProperty({
     description: 'Current page',
   })
-  page: number;
+  page!: number;
 
   @ApiProperty({
     description: 'Items per page',
   })
-  limit: number;
+  limit!: number;
 }
-
