@@ -27,6 +27,10 @@
       "dependsOn": ["build"],
       "outputs": ["playwright-report/**", "test-results/**"]
     },
+    "test:performance": {
+      "dependsOn": ["build"],
+      "outputs": ["tests/performance/.artifacts/**"]
+    },
     "lint": {
       "outputs": []
     },
@@ -38,4 +42,3 @@
     }
   }
 }
-

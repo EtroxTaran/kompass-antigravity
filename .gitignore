@@ -77,6 +77,7 @@ test-results/
 test-results/
 playwright-report/
 playwright/.cache/
+tests/performance/.artifacts/
 
 # Jest
 .jest-cache/

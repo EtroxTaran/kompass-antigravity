@@ -6,6 +6,7 @@ module.exports = {
     sourceType: 'module',
     project: './tsconfig.json',
   },
+  ignorePatterns: ['.eslintrc.js'],
   plugins: ['@typescript-eslint', 'import'],
   extends: [
     'eslint:recommended',
@@ -83,4 +84,20 @@ module.exports = {
       },
     },
   },
+  overrides: [
+    {
+      files: ['tests/performance/**/*.ts'],
+      rules: {
+        'import/no-unresolved': 'off',
+        'import/no-cycle': 'off',
+        'import/no-self-import': 'off',
+        'import/namespace': 'off',
+        'import/order': 'off',
+        'import/default': 'off',
+        'import/no-named-as-default': 'off',
+        'import/no-named-as-default-member': 'off',
+        'no-console': 'off',
+      },
+    },
+  ],
 };

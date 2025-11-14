@@ -5,48 +5,43 @@ module.exports = {
       2,
       'always',
       [
-        'feat',     // New feature
-        'fix',      // Bug fix
-        'docs',     // Documentation changes
-        'style',    // Code style changes (formatting, etc.)
-        'refactor', // Code refactoring
-        'perf',     // Performance improvements
-        'test',     // Test additions/changes
-        'build',    // Build system changes
-        'ci',       // CI configuration changes
-        'chore',    // Other changes that don't modify src or test files
-        'revert',   // Revert a previous commit
-      ],
-    ],
-    'scope-enum': [
-      2,
-      'always',
-      [
-        'backend',
-        'frontend',
-        'shared',
-        'customer',
-        'contact',
-        'opportunity',
-        'offer',
-        'project',
-        'task',
-        'invoice',
-        'payment',
-        'protocol',
-        'auth',
-        'sync',
-        'search',
-        'workflow',
-        'config',
-        'deps',
+        'feat',
+        'fix',
         'docs',
+        'style',
+        'refactor',
+        'perf',
+        'test',
+        'chore',
+        'ci',
+        'revert',
       ],
     ],
-    'subject-case': [2, 'never', ['upper-case']],
+    'scope-enum': [0],
+    'scope-empty': [2, 'never'],
+    'scope-case': [2, 'always', 'upper-case'],
+    'scope-pattern': [2, 'always', /^KOM-\d+$/],
+    'subject-case': [2, 'always', 'sentence-case'],
     'subject-empty': [2, 'never'],
-    'subject-full-stop': [2, 'never', '.'],
-    'header-max-length': [2, 'always', 100],
+    'subject-min-length': [2, 'always', 10],
+    'subject-max-length': [2, 'always', 100],
+    'header-max-length': [2, 'always', 120],
+    'body-leading-blank': [2, 'always'],
+    'body-max-line-length': [2, 'always', 200],
+    'footer-leading-blank': [2, 'always'],
   },
+  plugins: [
+    {
+      rules: {
+        'scope-pattern': ({ scope }) => {
+          const pattern = /^KOM-\d+$/;
+          const isValid = pattern.test(scope);
+          return [
+            isValid,
+            `Scope must be Linear issue ID (KOM-###). Got: ${scope || 'empty'}`,
+          ];
+        },
+      },
+    },
+  ],
 };
-
