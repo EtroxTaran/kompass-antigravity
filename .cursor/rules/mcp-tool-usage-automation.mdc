@@ -62,6 +62,7 @@ Intelligent web crawler and scraper for extracting structured or unstructured da
 **Prioritization:**
 Prefer Firecrawl over Playwright when interaction isn't required. Firecrawl is more efficient for batch scraping operations.
 
+
 ```typescript
 // ✅ CORRECT: Use Firecrawl for batch web scraping
 // User asks: "Extract all customer data from external API documentation"
