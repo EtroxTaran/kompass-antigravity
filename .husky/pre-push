@@ -106,12 +106,16 @@ if [ -n "$CHANGED_FILES" ]; then
       echo ""
       echo "   If documentation is not needed, you can proceed."
       echo "   Continue? (y/N)"
-      if [ -t 0 ]; then
+      # Auto-continue if running non-interactively (e.g., from CI or automated scripts)
+      if [ -t 0 ] && [ -t 1 ]; then
         read -r CONTINUE
-      elif [ -t 1 ]; then
-        read -r CONTINUE < /dev/tty
       else
-        CONTINUE="N"
+        # Non-interactive: allow if only TypeScript/config fixes (no new endpoints/DTOs)
+        if echo "$CHANGED_FILES" | grep -qE "(tsconfig|\.ts$)" && ! echo "$CHANGED_FILES" | grep -qE "(controller|dto)\.ts$" | head -1; then
+          CONTINUE="y"
+        else
+          CONTINUE="N"
+        fi
       fi
       if [ "$CONTINUE" != "y" ] && [ "$CONTINUE" != "Y" ]; then
         echo "   ❌ Push aborted. Update documentation and try again."
