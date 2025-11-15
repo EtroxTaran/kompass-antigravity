@@ -21,6 +21,7 @@ jobs:
     name: Dependency Review
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    continue-on-error: true # Allow to fail if GitHub Advanced Security is not enabled
 
     permissions:
       actions: read
@@ -36,6 +37,7 @@ jobs:
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: high
+          allow-licenses: MIT, Apache-2.0, ISC, BSD-2-Clause, BSD-3-Clause
 
   pnpm-audit:
     name: pnpm Audit & Outdated
