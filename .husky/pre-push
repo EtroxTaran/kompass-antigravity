@@ -96,33 +96,39 @@ CHANGED_FILES=$(git diff --name-only "$BASE_REF"..HEAD 2>/dev/null || echo "")
 
 if [ -n "$CHANGED_FILES" ]; then
   # Check if API changes were made
-  if echo "$CHANGED_FILES" | grep -qE "apps/backend/src/.*\.(controller|dto|guard|module)\.ts$"; then
-    # Check if docs were updated
-    if ! echo "$CHANGED_FILES" | grep -qE "^docs/(api/|specifications/API)"; then
-      echo "   ⚠️  WARNING: API changes detected but no documentation updates"
-      echo "   Consider updating:"
-      echo "     - docs/api/reference/"
-      echo "     - docs/specifications/API_SPECIFICATION.md"
-      echo ""
-      echo "   If documentation is not needed, you can proceed."
-      echo "   Continue? (y/N)"
-      # Auto-continue if running non-interactively (e.g., from CI or automated scripts)
-      if [ -t 0 ] && [ -t 1 ]; then
-        read -r CONTINUE
-      else
-        # Non-interactive: allow if only TypeScript/config fixes (no new endpoints/DTOs)
-        if echo "$CHANGED_FILES" | grep -qE "(tsconfig|\.ts$)" && ! echo "$CHANGED_FILES" | grep -qE "(controller|dto)\.ts$" | head -1; then
-          CONTINUE="y"
+  API_FILES=$(echo "$CHANGED_FILES" | grep -E "apps/backend/src/.*\.(controller|dto|guard|module)\.ts$" || true)
+  
+  if [ -n "$API_FILES" ]; then
+    # Check if actual new endpoints/DTOs were added (not just type fixes)
+    NEW_ENDPOINTS=$(git diff "$BASE_REF"..HEAD -- $API_FILES 2>/dev/null | grep -E "^\+.*@(Get|Post|Put|Patch|Delete)\(\)" | wc -l || echo "0")
+    NEW_DTOS=$(git diff "$BASE_REF"..HEAD -- $API_FILES 2>/dev/null | grep -E "^\+.*export (class|interface).*Dto" | wc -l || echo "0")
+    
+    # Only require docs if new endpoints or DTOs were added
+    if [ "$NEW_ENDPOINTS" -gt 0 ] || [ "$NEW_DTOS" -gt 0 ]; then
+      # Check if docs were updated
+      if ! echo "$CHANGED_FILES" | grep -qE "^docs/(api/|specifications/API)"; then
+        echo "   ⚠️  WARNING: New API endpoints/DTOs detected but no documentation updates"
+        echo "   Consider updating:"
+        echo "     - docs/api/reference/"
+        echo "     - docs/specifications/API_SPECIFICATION.md"
+        echo ""
+        echo "   If documentation is not needed, you can proceed."
+        echo "   Continue? (y/N)"
+        # Auto-continue if running non-interactively (e.g., from CI or automated scripts)
+        if [ -t 0 ] && [ -t 1 ]; then
+          read -r CONTINUE
         else
           CONTINUE="N"
         fi
-      fi
-      if [ "$CONTINUE" != "y" ] && [ "$CONTINUE" != "Y" ]; then
-        echo "   ❌ Push aborted. Update documentation and try again."
-        exit 1
+        if [ "$CONTINUE" != "y" ] && [ "$CONTINUE" != "Y" ]; then
+          echo "   ❌ Push aborted. Update documentation and try again."
+          exit 1
+        fi
+      else
+        echo "   ✅ Documentation updated with API changes"
       fi
     else
-      echo "   ✅ Documentation updated with API changes"
+      echo "   ✅ API files changed but only type fixes (no new endpoints/DTOs)"
     fi
   else
     echo "   ✅ No API changes requiring documentation"
