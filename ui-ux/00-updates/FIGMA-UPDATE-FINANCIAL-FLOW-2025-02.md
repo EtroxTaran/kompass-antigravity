@@ -19,10 +19,12 @@ Transform the KOMPASS financial workflow from direct invoice creation to a prope
 ### Form Title and Flow Indicator
 
 **FIND in Invoice Form:**
+
 - Title "Neue Rechnung"
 - Header section
 
 **REPLACE WITH:**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Neues Angebot                          [×] │
@@ -34,6 +36,7 @@ Transform the KOMPASS financial workflow from direct invoice creation to a prope
 ```
 
 **Specifications:**
+
 - Title: "Neues Angebot" (24px semibold)
 - Flow steps: Pills with 36px height
 - Active step: Primary blue (#3B82F6) with white text
@@ -43,10 +46,12 @@ Transform the KOMPASS financial workflow from direct invoice creation to a prope
 ### Document Number Field Update
 
 **FIND:**
+
 - Field labeled "Rechnungsnummer"
 - Pattern "R-YYYY-#####"
 
 **REPLACE WITH:**
+
 ```
 Angebotsnummer
 [A-2025-00123] (automatisch)
@@ -57,10 +62,12 @@ Angebotsnummer
 ### Validity Period Addition
 
 **FIND:**
+
 - After customer selection
 - Before line items
 
 **ADD NEW FIELD:**
+
 ```
 Gültigkeitsdauer
 [30 Tage ▼]
@@ -69,6 +76,7 @@ Gültig bis: 08.03.2025
 ```
 
 **Specifications:**
+
 - Dropdown: Standard 48px height
 - Helper text: Inter 12px regular (#6B7280)
 - Auto-calculate end date based on creation date
@@ -76,9 +84,11 @@ Gültig bis: 08.03.2025
 ### Status Field Update
 
 **FIND:**
+
 - Status field with invoice statuses
 
 **REPLACE WITH:**
+
 ```
 Status
 • Entwurf (Draft)
@@ -92,9 +102,11 @@ Status
 ### Action Buttons Update
 
 **FIND:**
+
 - Submit/Save buttons at form bottom
 
 **REPLACE WITH:**
+
 ```
 [Entwurf speichern] [Angebot versenden]
 
@@ -109,6 +121,7 @@ Nach Versand:
 ### Contract Conversion Dialog
 
 **NEW DIALOG (600px × 400px):**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Angebot in Auftrag umwandeln           [×] │
@@ -153,9 +166,11 @@ Status: Auftrag bestätigt
 ### Invoice from Contract
 
 **FIND:**
+
 - Invoice creation from scratch
 
 **REPLACE WITH:**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Rechnung aus Auftrag erstellen         [×] │
@@ -188,10 +203,12 @@ Status: Auftrag bestätigt
 ### GF Dashboard - Contract Metrics
 
 **FIND:**
+
 - "Offene Rechnungen" metric card
 - Invoice-based KPIs
 
 **REPLACE WITH:**
+
 ```
 ┌─────────────────────────────────────┐
 │ Offene Aufträge                     │
@@ -211,9 +228,11 @@ Status: Auftrag bestätigt
 ### Sales Pipeline Widget Update
 
 **FIND:**
+
 - Direct opportunity to invoice flow
 
 **REPLACE WITH:**
+
 ```
 Pipeline-Übersicht
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -235,9 +254,11 @@ Conversion: 22% (Opp → Auftrag)
 ### Transform Invoice List to Multi-Document List
 
 **FIND:**
+
 - Invoice list view
 
 **REPLACE WITH TABS:**
+
 ```
 [Angebote] [Aufträge] [Rechnungen]
 
@@ -262,9 +283,11 @@ Status-Filter:
 ### Export Dialog Update
 
 **FIND:**
+
 - Generic export options
 
 **ADD:**
+
 ```
 Export nach Lexware
 ┌─────────────────────────────────────┐
@@ -316,16 +339,19 @@ Export nach Lexware
 ### Status Transitions
 
 **Offer (Angebot):**
+
 - Draft → Sent (one-way)
 - Sent → In Negotiation → Accepted/Rejected
 - Any → Expired (automatic after validity)
 
 **Contract (Auftrag):**
+
 - Can only be created from accepted offer
 - In Progress → Partially Delivered → Completed
 - Completed → Create Invoice (one-way)
 
 **Invoice (Rechnung):**
+
 - Can only be created from contract
 - Maintains reference to contract and original offer
 - Immutable after finalization (GoBD)
@@ -335,6 +361,7 @@ Export nach Lexware
 ## QUALITY CHECKLIST
 
 After applying this prompt, verify:
+
 - [ ] All "Invoice" forms renamed to "Offer" forms
 - [ ] Flow indicator shows 3-step process
 - [ ] Offer number format: A-YYYY-#####

@@ -1,0 +1,206 @@
+---
+description: MCP tool usage overview - prioritization hierarchy, decision tree, best practices, and references to detailed tool-specific rules
+globs: []
+alwaysApply: true
+---
+
+# MCP Tool Usage Guidelines
+
+## Overview
+
+This document defines best practices for using Model Context Protocol (MCP) tools in the KOMPASS workspace. MCP tools extend Cursor AI capabilities with specialized functions for documentation lookup, code analysis, web automation, design extraction, and more.
+
+**Core Principle:** ALWAYS check Graphiti memory and project rules BEFORE guessing or hallucinating. Use MCP tools to retrieve accurate, current information rather than relying on assumptions.
+
+**Note:** Detailed guidelines for specific tools are in separate rule files:
+- **mcp-tool-usage-documentation.mdc** - Ref, Context7, Perplexity (documentation tools)
+- **mcp-tool-usage-code-analysis.mdc** - Semgrep (code analysis)
+- **mcp-tool-usage-automation.mdc** - Playwright, Firecrawl, n8n (automation tools)
+- **mcp-tool-usage-ui-integration.mdc** - ShadCN, Figma, GitHub, Linear, Graphiti (UI and integration tools)
+
+## Tool Prioritization Hierarchy
+
+When you need information, follow this priority order:
+
+1. **Graphiti Memory** → Check stored architectural decisions, patterns, and fixes
+2. **Project Rules** → Review `.cursor/rules/*.mdc` files for coding standards
+3. **Ref (ref.tools)** → Lookup API/library documentation
+4. **Context7** → Get version-specific documentation when precision matters
+5. **Perplexity** → Search the web for current facts or general knowledge
+6. **Codebase Search** → Search existing code for patterns and examples
+
+**NEVER guess when a tool can provide accurate information.**
+
+## Tool Prioritization Decision Tree
+
+When you need information, follow this decision tree:
+
+```
+1. Do I have this information in Graphiti memory?
+   ├─ YES → Use stored information
+   └─ NO → Continue
+
+2. Is this covered in project rules (.cursor/rules/*.mdc)?
+   ├─ YES → Use rule documentation
+   └─ NO → Continue
+
+3. Is this an API/library documentation question?
+   ├─ YES → Use Ref (ref.tools) - see mcp-tool-usage-documentation.mdc
+   └─ NO → Continue
+
+4. Do I need version-specific or bleeding-edge documentation?
+   ├─ YES → Use Context7 - see mcp-tool-usage-documentation.mdc
+   └─ NO → Continue
+
+5. Is this current events, recent changes, or general knowledge?
+   ├─ YES → Use Perplexity - see mcp-tool-usage-documentation.mdc
+   └─ NO → Continue
+
+6. Is this a security or code analysis question?
+   ├─ YES → Use Semgrep - see mcp-tool-usage-code-analysis.mdc
+   └─ NO → Continue
+
+7. Is this a UI/component question?
+   ├─ Design file referenced? → Use Figma, then ShadCN - see mcp-tool-usage-ui-integration.mdc
+   ├─ Component generation? → Use ShadCN - see mcp-tool-usage-ui-integration.mdc
+   └─ NO → Check project rules
+
+8. Is this a workflow/automation question?
+   ├─ YES → Use n8n - see mcp-tool-usage-automation.mdc
+   └─ NO → Continue
+
+9. Is this web automation/testing?
+   ├─ Requires interaction? → Use Playwright - see mcp-tool-usage-automation.mdc
+   ├─ Static scraping? → Use Firecrawl - see mcp-tool-usage-automation.mdc
+   └─ NO → Continue
+
+10. Is this GitHub/Linear operations?
+    ├─ External repo? → Use GitHub MCP - see mcp-tool-usage-ui-integration.mdc
+    ├─ Issue management? → Use Linear MCP - see mcp-tool-usage-ui-integration.mdc
+    └─ Local repo → Use local tools
+```
+
+## Anti-Patterns
+
+### ❌ WRONG: Guessing Instead of Using Tools
+
+```typescript
+// ❌ WRONG: Guessing API syntax
+@Query() // Is this correct? Should check Ref first
+
+// ✅ CORRECT: Check Ref for NestJS @Query() documentation
+// Then generate code based on accurate documentation
+```
+
+### ❌ WRONG: Using Wrong Tool for Task
+
+```typescript
+// ❌ WRONG: Using Perplexity for API documentation
+// Perplexity search: "How to use NestJS @Query() decorator"
+// Better: Use Ref for structured API documentation
+
+// ❌ WRONG: Using Playwright for static scraping
+// Playwright to scrape static documentation pages
+// Better: Use Firecrawl for batch scraping
+```
+
+### ❌ WRONG: Skipping Tool Prioritization
+
+```typescript
+// ❌ WRONG: Searching web before checking memory/rules
+// Step 1: Search Perplexity for "customer validation rules"
+// Should check domain-model.mdc first!
+
+// ✅ CORRECT: Check project rules first
+// Step 1: Check domain-model.mdc for validation rules
+// Step 2: If not found, then search with tools
+```
+
+### ❌ WRONG: Not Checking Graphiti Memory
+
+```typescript
+// ❌ WRONG: Making architectural decisions without checking memory
+// Deciding to use new pattern without checking if it conflicts
+// with existing decisions stored in Graphiti
+
+// ✅ CORRECT: Always check Graphiti first
+// Step 1: Search Graphiti for related decisions
+// Step 2: Review stored context
+// Step 3: Make informed decision
+// Step 4: Store new decision in Graphiti
+```
+
+### ❌ WRONG: Creating Custom UI Without ShadCN
+
+```typescript
+// ❌ WRONG: Creating custom components
+function CustomButton() { /* NEVER */ }
+
+// ✅ CORRECT: Use ShadCN to generate shadcn/ui components
+// All UI must use shadcn/ui as per project rules
+```
+
+## Best Practices
+
+### Always Check Graphiti Memory First
+
+Before answering questions or making decisions:
+1. Search Graphiti memory for related context
+2. Review stored architectural decisions
+3. Check for similar patterns or fixes
+4. Use stored information if available
+
+### Use Tools Before Guessing
+
+NEVER guess when a tool can provide accurate information:
+- API syntax → Use Ref
+- Version-specific docs → Use Context7
+- Current best practices → Use Perplexity
+- Security analysis → Use Semgrep
+
+### Follow Tool Priority
+
+Respect the prioritization hierarchy:
+1. Graphiti Memory
+2. Project Rules
+3. Ref/Context7
+4. Perplexity
+5. Specialized tools (Semgrep, Playwright, etc.)
+
+### Store Significant Decisions
+
+After making architectural decisions or fixing complex bugs:
+1. Store context in Graphiti memory
+2. Reference ADR files if applicable
+3. Link to Linear issues
+4. Document for future reference
+
+## Integration with Project Rules
+
+MCP tool usage integrates with existing project rules:
+
+- **graphiti-memory.mdc** - Detailed Graphiti usage guidelines
+- **linear-integration.mdc** - Linear issue tracking requirements
+- **ui-components.mdc** - ShadCN component requirements
+- **security-best-practices.mdc** - Semgrep security scanning
+- **git-workflow.mdc** - GitHub operations guidelines
+
+Always refer to specific rule files for detailed requirements.
+
+## References
+
+### MCP Tool-Specific Rules
+
+- **mcp-tool-usage-documentation.mdc** - Ref, Context7, Perplexity (documentation tools)
+- **mcp-tool-usage-code-analysis.mdc** - Semgrep (code analysis)
+- **mcp-tool-usage-automation.mdc** - Playwright, Firecrawl, n8n (automation tools)
+- **mcp-tool-usage-ui-integration.mdc** - ShadCN, Figma, GitHub, Linear, Graphiti (UI and integration tools)
+
+### Related Project Rules
+
+- Graphiti Memory Rules: `.cursor/rules/graphiti-memory.mdc`
+- Linear Integration Rules: `.cursor/rules/linear-integration.mdc`
+- UI Components Rules: `.cursor/rules/ui-components.mdc`
+- Security Best Practices: `.cursor/rules/security-best-practices.mdc`
+- Git Workflow: `.cursor/rules/git-workflow.mdc`
+- MCP Configuration: `.cursor/mcp.json`

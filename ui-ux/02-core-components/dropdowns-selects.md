@@ -1,6 +1,7 @@
 # Dropdowns & Selects - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Dropdown Menus and Select Components
 - **User Roles**: All (GF, PLAN, ADM, KALK, BUCH)
 - **Usage Context**: Form selections, action menus, filters
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Trigger**: Clear button/input that opens menu
 - **Menu**: Floating panel with options
 - **Selected**: Visual indication of current selection
 - **Grouping**: Logical organization of options
 
 ### Layout Structure
+
 - Trigger: 40px height, full width or auto
 - Menu: Max height 300px, scrollable, dropdown shadow
 - Options: 40px height each, full width
 - Menu positioning: Below trigger (or above if no space)
 
 ### shadcn/ui Components
+
 - `DropdownMenu` for action menus
 - `Select` for form selections
 - `Combobox` for searchable selections
@@ -33,6 +37,7 @@ Create comprehensive dropdown menu and select components for KOMPASS, a German C
 **Standard Select (Form Field):**
 
 **Closed State:**
+
 - Width: Full width or fixed (e.g., 240px)
 - Height: 40px
 - Border: 1px solid gray (#d1d5db)
@@ -45,6 +50,7 @@ Create comprehensive dropdown menu and select components for KOMPASS, a German C
 - Focus: Blue border (2px, #3b82f6)
 
 **Open State:**
+
 - Dropdown menu appears below (or above if no space)
 - Menu width: Matches trigger width
 - Menu background: White
@@ -54,6 +60,7 @@ Create comprehensive dropdown menu and select components for KOMPASS, a German C
 - Max-height: 300px, scrollable if more options
 
 **Select Options:**
+
 - Height: 40px each
 - Padding: 12px horizontal
 - Font: 14px
@@ -64,6 +71,7 @@ Create comprehensive dropdown menu and select components for KOMPASS, a German C
 
 **German Country Select Example:**
 Options:
+
 - Deutschland (selected, blue background, check icon)
 - Österreich
 - Schweiz
@@ -72,6 +80,7 @@ Options:
 - ...more countries (scrollable)
 
 **Multi-Select:**
+
 - Each option has checkbox (20px) at left
 - Selected options: Checkmark in checkbox, light blue background
 - Trigger shows: "3 ausgewählt" or list of selected
@@ -79,6 +88,7 @@ Options:
 - Clear button: "Alle abwählen" (text link)
 
 **Searchable Select (Combobox):**
+
 - Trigger: Input field with search icon at left
 - Type to search: Filters options in real-time
 - Placeholder: "Kunde suchen..."
@@ -87,6 +97,7 @@ Options:
 - Example: Customer search returning "Hofladen Müller GmbH", "REWE Köln"
 
 **Grouped Select:**
+
 - Options organized in groups with headers
 - Group headers: 12px uppercase gray labels
 - Dividers between groups
@@ -101,11 +112,13 @@ Options:
 **Dropdown Menu (Actions):**
 
 **Trigger:**
+
 - Button with text: "Aktionen" + ChevronDown icon
 - Or icon-only: MoreVertical (three dots)
 - Height: 40px (or 32px for icon-only)
 
 **Menu Structure:**
+
 - Menu items: 40px height, left-aligned
 - Icon: 20px at left (optional)
 - Text: 14px
@@ -115,6 +128,7 @@ Options:
 
 **Action Menu Example (Customer Row):**
 Items:
+
 1. Eye icon + "Details anzeigen" (Cmd+D)
 2. Pencil icon + "Bearbeiten" (Cmd+E)
 3. Copy icon + "Duplizieren"
@@ -124,17 +138,20 @@ Items:
 7. Trash icon + "Löschen" (red text/icon)
 
 **Nested Dropdown Menu:**
+
 - Parent item has ChevronRight icon at right
 - Hover parent: Submenu appears to the right
 - Submenu: Same styling as parent menu
 - Example: "Export" → "CSV", "Excel", "PDF"
 
 **Context Menu (Right-Click):**
+
 - Appears at cursor position on right-click
 - Same menu styling as dropdown
 - Use for: Table rows, cards, elements
 
 **Filter Dropdown:**
+
 - Trigger: "Filter" button with badge if filters active
 - Menu contains:
   - Search input at top
@@ -144,12 +161,14 @@ Items:
 - Active filters shown as badges on trigger
 
 **Select with Create Option:**
+
 - Regular select options listed
 - Bottom option: "+ Neu hinzufügen" (blue text)
 - Clicking opens create dialog
 - Example: Status select with "+ Neuer Status"
 
 **Select with Icons:**
+
 - Each option has icon at left (20px)
 - Gap: 8px between icon and text
 - Example: Priority select
@@ -158,22 +177,26 @@ Items:
   - Circle (gray) + "Niedrig"
 
 **Cascading Select:**
+
 - Multiple selects where second depends on first
 - Example: Country → State/Region → City
 - Second select disabled until first selected
 - Options in second update based on first selection
 
 **Select Loading State:**
+
 - Spinner (16px) in place of chevron
 - Options show: "Wird geladen..." message
 - Disabled appearance during loading
 
 **Select Error State:**
+
 - Red border (2px, #ef4444)
 - Error message below: "Bitte wählen Sie eine Option"
 - Error icon (AlertCircle) at right
 
 **Mobile Select:**
+
 - On mobile: Native select picker (iOS/Android)
 - Or: Full-screen overlay with options
 - Large touch-friendly options (56px height)
@@ -184,6 +207,7 @@ Design with smooth animations (200ms) for menu open/close and option hover state
 ## Interaction Patterns
 
 ### Select Interaction
+
 1. User clicks trigger
 2. Menu animates open (scale + fade, 200ms)
 3. User scrolls or searches for option
@@ -193,6 +217,7 @@ Design with smooth animations (200ms) for menu open/close and option hover state
 7. Trigger shows selected value
 
 ### Multi-Select Interaction
+
 1. User clicks trigger
 2. Menu opens
 3. User clicks multiple checkboxes
@@ -201,6 +226,7 @@ Design with smooth animations (200ms) for menu open/close and option hover state
 6. Menu closes, selections confirmed
 
 ### Searchable Select
+
 1. User clicks trigger
 2. Focus moves to search input
 3. User types query
@@ -209,6 +235,7 @@ Design with smooth animations (200ms) for menu open/close and option hover state
 6. Menu closes, selection made
 
 ### Keyboard Navigation
+
 - Arrow Down: Open menu / move to next option
 - Arrow Up: Move to previous option
 - Enter/Space: Select focused option
@@ -218,6 +245,7 @@ Design with smooth animations (200ms) for menu open/close and option hover state
 ## German Labels & Content
 
 ### Select Placeholders
+
 - **Auswählen...**: Select...
 - **Land auswählen**: Select country
 - **Status auswählen**: Select status
@@ -225,6 +253,7 @@ Design with smooth animations (200ms) for menu open/close and option hover state
 - **Option wählen**: Choose option
 
 ### Multi-Select
+
 - **X ausgewählt**: X selected
 - **Alle auswählen**: Select all
 - **Alle abwählen**: Deselect all
@@ -232,11 +261,13 @@ Design with smooth animations (200ms) for menu open/close and option hover state
 - **Abbrechen**: Cancel
 
 ### Search
+
 - **Suchen...**: Search...
 - **Keine Ergebnisse für '[X]'**: No results for '[X]'
 - **Wird geladen...**: Loading...
 
 ### Action Menu
+
 - **Aktionen**: Actions
 - **Details anzeigen**: Show details
 - **Bearbeiten**: Edit
@@ -246,6 +277,7 @@ Design with smooth animations (200ms) for menu open/close and option hover state
 - **Mehr Optionen**: More options
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Select: role="combobox", aria-expanded, aria-controls
 - Options: role="option", aria-selected
@@ -256,6 +288,7 @@ Design with smooth animations (200ms) for menu open/close and option hover state
 - Disabled options: aria-disabled="true"
 
 ## Mobile Considerations
+
 - Native select on mobile (better UX)
 - Or full-screen overlay for custom select
 - Touch-friendly options (48px+ height)
@@ -266,24 +299,29 @@ Design with smooth animations (200ms) for menu open/close and option hover state
 ## Example Data
 
 **Country Select:**
+
 - Selected: "Deutschland"
 - Options: Deutschland, Österreich, Schweiz, ...
 
 **Status Select:**
+
 - Selected: "In Bearbeitung"
 - Options: Neu, In Bearbeitung, Abgeschlossen, Storniert
 
 **Customer Select (Searchable):**
+
 - Search: "Hofladen"
 - Results: "Hofladen Müller GmbH", "Hofladen Schmidt KG"
 
 **Priority Multi-Select:**
+
 - Selected: Hoch, Mittel (2 ausgewählt)
 - Options: Hoch, Mittel, Niedrig
 
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add select
 npx shadcn-ui@latest add dropdown-menu
@@ -292,6 +330,7 @@ npx shadcn-ui@latest add command
 ```
 
 ### Select Usage
+
 ```typescript
 <Select>
   <SelectTrigger>
@@ -306,6 +345,7 @@ npx shadcn-ui@latest add command
 ```
 
 ### Dropdown Menu Usage
+
 ```typescript
 <DropdownMenu>
   <DropdownMenuTrigger>Aktionen</DropdownMenuTrigger>
@@ -324,15 +364,16 @@ npx shadcn-ui@latest add command
 ```
 
 ### Component Dependencies
+
 - Design tokens (colors, spacing, shadows)
 - Icons from lucide-react (ChevronDown, Check, Search)
 - Floating UI for menu positioning
 - Virtual scrolling for long option lists
 
 ### State Management
+
 - Selected value(s) state
 - Menu open/close state
 - Search query state (combobox)
 - Filter states (multi-select)
 - Loading state for async options
-

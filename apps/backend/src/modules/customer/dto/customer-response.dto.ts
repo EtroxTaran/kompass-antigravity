@@ -1,7 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CustomerType, CustomerBusinessType, type CustomerRating } from '@kompass/shared/types/enums';
-import type { Address } from '@kompass/shared/types/common/address';
 import { Expose, Type } from 'class-transformer';
+
+import { Address } from '@kompass/shared/types/common/address';
+import {
+  CustomerType,
+  CustomerBusinessType,
+  type CustomerRating,
+} from '@kompass/shared/types/enums';
 
 /**
  * Address response DTO
@@ -39,17 +44,17 @@ class AddressResponseDto {
   @Expose()
   latitude?: number;
 
-  @ApiProperty({ example: 11.5820, required: false })
+  @ApiProperty({ example: 11.582, required: false })
   @Expose()
   longitude?: number;
 }
 
 /**
  * Response DTO for Customer
- * 
+ *
  * Filters fields based on user role (RBAC)
  * Hides internal CouchDB fields (_rev, _conflicts)
- * 
+ *
  * UPDATED: billingAddress replaces address, added locations array
  */
 export class CustomerResponseDto {

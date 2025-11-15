@@ -1,0 +1,199 @@
+---
+description: MCP UI and integration tool usage - ShadCN for component generation, Figma for design extraction, GitHub/Linear for project management, and Graphiti for memory
+globs: []
+alwaysApply: false
+---
+
+# MCP UI and Integration Tools
+
+This rule covers UI component tools and integration tools: **ShadCN**, **Figma**, **GitHub**, **Linear**, and **Graphiti**. Use these tools for component generation, design extraction, project management, and memory storage.
+
+**See also:** `.cursor/rules/mcp-tool-usage.mdc` for prioritization hierarchy and decision tree.
+
+## UI Component Tools
+
+### ShadCN
+
+**What it's used for:**
+Frontend component generator for the `shadcn/ui` design system that generates accurate, production-ready React components.
+
+**When to use:**
+- User asks to "add a component" or "build a UI block" using ShadCN
+- Generating React components that follow shadcn design patterns
+- Need proper TypeScript props, structure, and styling conventions
+- Adding common UI primitives (dialogs, tables, dropdowns, forms)
+- Ensuring components match project UI standards
+
+**When NOT to use:**
+- Custom UI components (project rules forbid - must use shadcn/ui)
+- Components already exist in codebase
+- Design extraction from Figma (use Figma tool first, then ShadCN)
+- Documentation lookup (use Ref/Context7)
+
+**Prioritization:**
+ALWAYS use ShadCN for UI component generation. Project rules require shadcn/ui components exclusively - never create custom UI components.
+
+```typescript
+// ✅ CORRECT: Use ShadCN to generate shadcn/ui components
+// User asks: "Add a customer dialog form"
+// Use ShadCN to generate Dialog, Form, Input, Button components
+
+// ❌ WRONG: Creating custom UI components
+// Project rules forbid custom UI - must use shadcn/ui only
+function CustomDialog() { /* NEVER DO THIS */ }
+```
+
+### Figma
+
+**What it's used for:**
+Design and component context tool that extracts layout, spacing, color tokens, and component structure from Figma or FigJam files.
+
+**When to use:**
+- User says "from the design…" or references mockups
+- Translating design specs into code
+- Ensuring pixel-perfect spacing, component nesting, or consistent styling
+- Generating skeletons for UI based on design artifacts
+- Extracting color tokens, typography, or spacing systems from designs
+
+**When NOT to use:**
+- No Figma design file referenced
+- General UI questions (check project rules or Ref)
+- Code generation without design context (use ShadCN directly)
+- Documentation lookup (use Ref/Context7)
+
+**Prioritization:**
+Always use Figma tool FIRST when design files are referenced, THEN use ShadCN to generate components matching the design.
+
+```typescript
+// ✅ CORRECT: Use Figma to extract design specs, then ShadCN for components
+// Step 1: Extract design from Figma file
+// Step 2: Generate ShadCN components matching design specs
+// Step 3: Apply extracted spacing, colors, typography
+
+// ❌ WRONG: Generating components without checking design
+// Always extract Figma specs first when design files are available
+```
+
+## Integration Tools
+
+### GitHub
+
+**What it's used for:**
+Integration for GitHub repositories and their metadata, including file contents, commits, issue threads, PR comments, or CI statuses.
+
+**When to use:**
+- Pulling file contents, commits, or PR data from external repositories
+- Understanding the structure of an external repository or specific files
+- Automating issue or pull request creation or interaction
+- Retrieving GitHub Actions CI/CD status
+- Accessing GitHub API for repository metadata
+
+**When NOT to use:**
+- Local codebase operations (use codebase tools directly)
+- Documentation lookup (use Ref/Context7)
+- General Git questions (check project git-workflow.mdc)
+- Code analysis (use Semgrep or local tools)
+
+**Prioritization:**
+Use GitHub MCP tool for external repository operations. For local repository, use standard Git commands or Cursor's built-in Git features.
+
+```typescript
+// ✅ CORRECT: Use GitHub MCP for external repository access
+// User asks: "Get the latest version of a library from GitHub"
+// Use GitHub MCP to fetch file from external repository
+
+// ❌ WRONG: Using GitHub MCP for local repository
+// Use local file system tools for codebase operations
+```
+
+### Linear
+
+**What it's used for:**
+Project management tool integration for retrieving or updating project issues, feature requests, bug reports, or tasks.
+
+**When to use:**
+- Retrieve Linear issues for context
+- Update issue status after completing work
+- Link code changes to Linear issues
+- Create new issues for bugs or features
+- Get issue details, comments, or assignees
+- Search for related issues
+
+**When NOT to use:**
+- Commit message format (covered in linear-integration.mdc)
+- Branch naming (covered in linear-integration.mdc)
+- General project questions (check project documentation)
+
+**Prioritization:**
+Use Linear MCP tool when actively working on issues or need issue context. Always link commits and PRs to Linear issues as per project rules.
+
+```typescript
+// ✅ CORRECT: Use Linear to retrieve issue context
+// Before starting work on KOM-123, use Linear to get issue details
+// After completing work, update Linear issue status to "Done"
+
+// ❌ WRONG: Working on code without checking Linear issue
+// Always reference Linear issues in commits and PRs
+```
+
+### Graphiti
+
+**What it's used for:**
+Persistent, project-scoped long-term memory for storing architectural decisions, infrastructure changes, routing updates, refactors, and bug fixes.
+
+**When to use:**
+- Storing architectural decisions and ADR context
+- Documenting Docker and container infrastructure changes
+- Recording routing and navigation updates
+- Saving important implementation patterns and refactors
+- Documenting non-trivial bugs and fixes
+
+**When NOT to use:**
+- Temporary information (don't clutter memory)
+- Code that's self-explanatory
+- Information already in ADRs or documentation
+- General knowledge (use Perplexity)
+
+**Prioritization:**
+ALWAYS check Graphiti memory FIRST before answering questions or making decisions. Store significant decisions and patterns in Graphiti for future reference.
+
+**Note:** Detailed Graphiti usage rules are in `.cursor/rules/graphiti-memory.mdc`. Always refer to that file for specific storage requirements.
+
+```typescript
+// ✅ CORRECT: Check Graphiti before making architectural decisions
+// Step 1: Search Graphiti for previous decisions
+// Step 2: If not found, make decision and store in Graphiti
+// Step 3: Reference Graphiti memory in future similar decisions
+
+// ❌ WRONG: Making decisions without checking Graphiti memory
+// Always check stored context before deciding on architecture
+```
+
+## Tool Integration Workflow
+
+### Design to Code Flow
+
+1. **Figma** → Extract design specs (colors, spacing, typography, layout)
+2. **ShadCN** → Generate components matching design specs
+3. **Project Rules** → Verify compliance with UI component standards
+
+### Issue to Code Flow
+
+1. **Linear** → Retrieve issue details and requirements
+2. **Graphiti** → Check for related architectural decisions
+3. **Code Generation** → Use Cursor AI with context
+4. **Linear** → Update issue status after completion
+
+### External Reference Flow
+
+1. **GitHub** → Fetch external library or reference code
+2. **Ref/Context7** → Lookup library documentation
+3. **Codebase** → Integrate with project code
+
+## References
+
+- Main MCP Tool Usage: `.cursor/rules/mcp-tool-usage.mdc`
+- Graphiti Memory: `.cursor/rules/graphiti-memory.mdc`
+- Linear Integration: `.cursor/rules/linear-integration.mdc`
+- UI Components: `.cursor/rules/ui-components.mdc`
+- Git Workflow: `.cursor/rules/git-workflow.mdc`

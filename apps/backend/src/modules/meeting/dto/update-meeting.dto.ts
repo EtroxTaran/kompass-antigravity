@@ -1,4 +1,5 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsDate,
@@ -10,7 +11,7 @@ import {
   Max,
   Length,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+
 import { MeetingType, MeetingStatus } from './create-meeting.dto';
 
 /**
@@ -39,7 +40,8 @@ export class UpdateMeetingDto {
 
   @ApiPropertyOptional({
     description: 'Meeting description',
-    example: 'Detaillierte Besprechung der Anforderungen für den neuen Ladenbau',
+    example:
+      'Detaillierte Besprechung der Anforderungen für den neuen Ladenbau',
     maxLength: 500,
   })
   @IsString()
@@ -67,10 +69,10 @@ export class UpdateMeetingDto {
   @IsOptional()
   meetingType?: MeetingType;
 
-
   @ApiPropertyOptional({
     description: 'Meeting outcome/summary',
-    example: 'Kunde zeigt großes Interesse an neuem Ladenbau-Konzept. Nächster Schritt: Angebotserstellung.',
+    example:
+      'Kunde zeigt großes Interesse an neuem Ladenbau-Konzept. Nächster Schritt: Angebotserstellung.',
     minLength: 10,
     maxLength: 2000,
   })
@@ -133,4 +135,3 @@ export class CheckInDto {
   @IsNumber()
   longitude: number;
 }
-

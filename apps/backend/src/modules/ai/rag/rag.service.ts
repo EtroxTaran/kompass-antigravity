@@ -1,15 +1,15 @@
 /**
  * RAG Service (Stub)
- * 
+ *
  * Retrieval-Augmented Generation using LlamaIndex + Weaviate
- * 
+ *
  * Phase 2.1: RAG Implementation
  * - Semantic search across customer documents, emails, protocols
  * - Context-aware insights generation
  * - Document Q&A
- * 
+ *
  * Feature Flag: AI_RAG_ENABLED
- * 
+ *
  * TODO: Implement in Phase 2.1
  * - Integrate LlamaIndex for document chunking and indexing
  * - Connect to Weaviate vector database
@@ -18,6 +18,7 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
+
 import { FEATURE_FLAGS } from '@kompass/shared/constants/feature-flags';
 
 /**
@@ -61,7 +62,7 @@ export class RagService {
 
   /**
    * Index a document for semantic search
-   * 
+   *
    * TODO Phase 2.1:
    * - Chunk document into smaller pieces
    * - Generate embeddings using LlamaIndex
@@ -78,7 +79,7 @@ export class RagService {
 
   /**
    * Semantic search across indexed documents
-   * 
+   *
    * TODO Phase 2.1:
    * - Generate query embedding
    * - Perform vector similarity search in Weaviate
@@ -87,7 +88,7 @@ export class RagService {
    */
   async search(
     query: string,
-    options?: {
+    _options?: {
       entityType?: string;
       limit?: number;
       minRelevance?: number;
@@ -102,7 +103,7 @@ export class RagService {
 
   /**
    * Ask a question about a specific document or customer
-   * 
+   *
    * TODO Phase 2.1:
    * - Retrieve relevant document chunks
    * - Construct prompt with context
@@ -111,7 +112,7 @@ export class RagService {
    */
   async semanticQuery(
     query: string,
-    context?: {
+    _context?: {
       customerId?: string;
       opportunityId?: string;
     }
@@ -120,12 +121,14 @@ export class RagService {
 
     this.logger.log(`[STUB] Semantic query: "${query}"`);
     // TODO: Implement in Phase 2.1
-    throw new Error('RAG semantic query not yet implemented. Coming in Phase 2.1');
+    throw new Error(
+      'RAG semantic query not yet implemented. Coming in Phase 2.1'
+    );
   }
 
   /**
    * Delete document from index
-   * 
+   *
    * TODO Phase 2.1:
    * - Remove document vectors from Weaviate
    * - Update index
@@ -142,8 +145,9 @@ export class RagService {
    */
   private ensureEnabled(): void {
     if (!FEATURE_FLAGS.AI_RAG_ENABLED) {
-      throw new Error('RAG feature is not enabled. Set AI_RAG_ENABLED=true in environment');
+      throw new Error(
+        'RAG feature is not enabled. Set AI_RAG_ENABLED=true in environment'
+      );
     }
   }
 }
-

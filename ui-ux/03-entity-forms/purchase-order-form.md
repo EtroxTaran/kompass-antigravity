@@ -1,6 +1,7 @@
 # Purchase Order Form - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Entity:** Purchase Order (PO)
 - **Users:** INN (primary creator), PLAN (can create small POs)
 - **Purpose:** Create purchase orders for materials from suppliers
@@ -13,6 +14,7 @@ Create a purchase order form for KOMPASS for ordering materials from suppliers w
 **Form Title:** "Bestellung erstellen"
 
 **Form Actions:**
+
 - **Save Draft:** "Entwurf speichern" (secondary button) - Status: Draft
 - **Submit for Approval:** "Zur Freigabe senden" (primary button) - If >€1k
 - **Send to Supplier:** "An Lieferant senden" (primary button) - If ≤€1k (auto-approved)
@@ -116,7 +118,7 @@ Create a purchase order form for KOMPASS for ordering materials from suppliers w
 
 6. **Nettobetrag** (Net Amount)
    - Type: Currency (read-only, calculated)
-   - Formula: quantity * unitPrice
+   - Formula: quantity \* unitPrice
    - Value: "€ 3.480,00"
    - Color: Blue
 
@@ -127,6 +129,7 @@ Create a purchase order form for KOMPASS for ordering materials from suppliers w
    - Default: 19%
 
 **Actions per line item:**
+
 - **Remove:** Red "X" button (if >1 line item)
 - **Duplicate:** Copy icon (creates duplicate line)
 - **Add:** "+ Weitere Position hinzufügen" button below
@@ -154,7 +157,7 @@ Create a purchase order form for KOMPASS for ordering materials from suppliers w
    - Auto-calculated
 
 2. **MwSt.** (Tax Amount)
-   - Sum of (netAmount * taxRate) for all lines
+   - Sum of (netAmount \* taxRate) for all lines
    - Auto-calculated
 
 3. **Versandkosten** (Shipping Cost)
@@ -227,6 +230,7 @@ Create a purchase order form for KOMPASS for ordering materials from suppliers w
 ```
 
 **Colors:**
+
 - Green: Well within budget (<80%)
 - Blue: On track (80-100%)
 - Amber: Over budget but <10% (warning)
@@ -313,6 +317,7 @@ Create a purchase order form for KOMPASS for ordering materials from suppliers w
 ## Line Item Input Pattern
 
 **Material Selection:**
+
 1. User clicks "+ Weitere Position hinzufügen"
 2. New line item row appears
 3. User selects material from dropdown (searchable)
@@ -323,9 +328,10 @@ Create a purchase order form for KOMPASS for ordering materials from suppliers w
    - Tax rate (default 19%)
    - Quantity (from project requirement if linked)
 5. User can edit: Quantity, unit price, description
-6. System calculates: Net amount = quantity * unitPrice
+6. System calculates: Net amount = quantity \* unitPrice
 
 **Quick Add from Project Materials:**
+
 - If user came from "Create PO" on project materials page
 - Line items pre-filled with selected materials
 - User reviews and adjusts if needed
@@ -458,7 +464,7 @@ Required field: Justification for budget overrun
 
 2. **Totals:**
    - Subtotal = sum of line items
-   - Tax = sum of (line net * tax rate)
+   - Tax = sum of (line net \* tax rate)
    - Total = subtotal + tax + shipping
    - Tolerance: ±€0.01 for rounding
 
@@ -497,7 +503,7 @@ Required field: Justification for budget overrun
 - Check approval requirements:
   - ≤€1k: Status = 'Approved' (auto), show "An Lieferant senden"
   - €1k-€10k: Status = 'PendingApproval', route to BUCH
-  - >€10k: Status = 'PendingApproval', route to GF
+  - > €10k: Status = 'PendingApproval', route to GF
 - Create notification for approver
 - Success: "Bestellung zur Freigabe gesendet"
 - Redirect: PO detail (view-only until approved)
@@ -543,6 +549,7 @@ Required field: Justification for budget overrun
 ```
 
 **Actions:**
+
 - **Genehmigen:** Status = 'Approved', INN notified, can send to supplier
 - **Ablehnen:** Status = 'Draft', requires reason, INN notified to revise
 - **Rückfragen:** Send message to INN for clarification, status unchanged
@@ -581,4 +588,3 @@ npx shadcn-ui@latest add form input select table button card alert separator dia
 ---
 
 **End of purchase-order-form.md**
-

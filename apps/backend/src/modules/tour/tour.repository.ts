@@ -1,9 +1,9 @@
 /**
  * Tour Repository
- * 
+ *
  * Data access layer for Tour entities
  * Handles CouchDB operations for tours
- * 
+ *
  * Responsibilities:
  * - CRUD operations for tours
  * - Query tours by user, date range, status
@@ -12,8 +12,9 @@
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
+import { ServerScope as Nano } from 'nano';
+
 import type { Tour } from '@kompass/shared/types/entities/tour';
-import type { Nano } from 'nano';
 
 /**
  * Tour Repository Interface
@@ -21,12 +22,20 @@ import type { Nano } from 'nano';
 export interface ITourRepository {
   findById(id: string): Promise<Tour | null>;
   findByUser(userId: string, filters?: TourFilters): Promise<Tour[]>;
-  findByDateRange(startDate: Date, endDate: Date, userId?: string): Promise<Tour[]>;
+  findByDateRange(
+    startDate: Date,
+    endDate: Date,
+    userId?: string
+  ): Promise<Tour[]>;
   findByStatus(status: Tour['status'], userId?: string): Promise<Tour[]>;
   create(tour: Omit<Tour, '_rev'>): Promise<Tour>;
   update(tour: Tour): Promise<Tour>;
   delete(id: string): Promise<void>;
-  findSuggestionsForMeeting(meetingDate: Date, locationId: string, userId: string): Promise<Tour[]>;
+  findSuggestionsForMeeting(
+    meetingDate: Date,
+    locationId: string,
+    userId: string
+  ): Promise<Tour[]>;
 }
 
 /**
@@ -53,7 +62,7 @@ export class TourRepository implements ITourRepository {
    */
   async findById(id: string): Promise<Tour | null> {
     try {
-      const doc = await this.nano.use('kompass').get<Tour>(id);
+      const doc = (await this.nano.use('kompass').get(id)) as Tour;
       if (doc.type !== 'tour') {
         return null;
       }
@@ -87,7 +96,10 @@ export class TourRepository implements ITourRepository {
           selector.startDate.$gte = filters.startDate.toISOString();
         }
         if (filters.endDate) {
-          selector.endDate = { ...selector.endDate, $lte: filters.endDate.toISOString() };
+          selector.endDate = {
+            ...selector.endDate,
+            $lte: filters.endDate.toISOString(),
+          };
         }
       }
 
@@ -111,7 +123,11 @@ export class TourRepository implements ITourRepository {
   /**
    * Find tours by date range
    */
-  async findByDateRange(startDate: Date, endDate: Date, userId?: string): Promise<Tour[]> {
+  async findByDateRange(
+    startDate: Date,
+    endDate: Date,
+    userId?: string
+  ): Promise<Tour[]> {
     try {
       const selector: any = {
         type: 'tour',
@@ -217,15 +233,15 @@ export class TourRepository implements ITourRepository {
 
   /**
    * Find tour suggestions for a meeting
-   * 
+   *
    * Business Rule MT-001: Auto-tour suggestion
    * - Same day ±1 day
    * - Region <50km from meeting location
    */
   async findSuggestionsForMeeting(
     meetingDate: Date,
-    locationId: string,
-    userId: string,
+    _locationId: string,
+    userId: string
   ): Promise<Tour[]> {
     try {
       // Calculate date range: meetingDate ±1 day
@@ -242,7 +258,7 @@ export class TourRepository implements ITourRepository {
 
       // Filter by status: only planned or active tours
       return tours.filter(
-        (tour) => tour.status === 'planned' || tour.status === 'active',
+        (tour) => tour.status === 'planned' || tour.status === 'active'
       );
     } catch (error) {
       this.logger.error(`Error finding tour suggestions:`, error);
@@ -250,4 +266,3 @@ export class TourRepository implements ITourRepository {
     }
   }
 }
-

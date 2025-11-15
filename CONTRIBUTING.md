@@ -105,6 +105,7 @@ git push origin feature/customer-duplicate-detection
 ### TypeScript
 
 **✅ DO:**
+
 ```typescript
 // Explicit return types
 function calculateTotal(items: Item[]): number {
@@ -126,27 +127,32 @@ function processData(data: unknown): void {
 ```
 
 **❌ DON'T:**
+
 ```typescript
 // No implicit any
-function calculateTotal(items) {  // ❌ Missing types
+function calculateTotal(items) {
+  // ❌ Missing types
   return items.reduce((sum, item) => sum + item.price, 0);
 }
 
 // No any type
-function processData(data: any) {  // ❌ Use unknown instead
+function processData(data: any) {
+  // ❌ Use unknown instead
   console.log(data);
 }
 
 // No type alias for objects
-type Customer = {  // ❌ Use interface
+type Customer = {
+  // ❌ Use interface
   id: string;
   name: string;
-}
+};
 ```
 
 ### React Components
 
 **✅ DO:**
+
 ```tsx
 // Use shadcn/ui components
 import { Button } from '@/components/ui/button';
@@ -162,9 +168,11 @@ export function MyComponent(): JSX.Element {
 ```
 
 **❌ DON'T:**
+
 ```tsx
 // Never create custom UI components
-const CustomButton = styled.button`  // ❌ Use shadcn/ui Button
+const CustomButton = styled.button`
+  // ❌ Use shadcn/ui Button
   background: blue;
 `;
 ```
@@ -172,13 +180,14 @@ const CustomButton = styled.button`  // ❌ Use shadcn/ui Button
 ### Backend Services
 
 **✅ DO:**
+
 ```typescript
 // Follow layered architecture
 @Injectable()
 export class CustomerService {
   constructor(
-    private readonly repository: CustomerRepository,  // ✅ Inject repository
-    private readonly rbacService: RbacService,
+    private readonly repository: CustomerRepository, // ✅ Inject repository
+    private readonly rbacService: RbacService
   ) {}
 
   async findById(id: string, user: User): Promise<Customer> {
@@ -186,7 +195,7 @@ export class CustomerService {
     if (!this.rbacService.hasPermission(user.role, 'Customer', 'READ')) {
       throw new ForbiddenException();
     }
-    
+
     // ✅ Use repository
     return await this.repository.findById(id);
   }
@@ -194,12 +203,13 @@ export class CustomerService {
 ```
 
 **❌ DON'T:**
+
 ```typescript
 // Don't access database directly from service
 @Injectable()
 export class CustomerService {
   async findById(id: string): Promise<Customer> {
-    return await nano.get(id);  // ❌ Use repository pattern
+    return await nano.get(id); // ❌ Use repository pattern
   }
 }
 ```
@@ -272,27 +282,33 @@ Before creating a PR, ensure:
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Related Issues
+
 Fixes #123
 
 ## Testing
+
 - [ ] All unit tests passing
 - [ ] Integration tests added/updated
 - [ ] E2E tests added/updated
 - [ ] Manual testing completed
 
 ## Screenshots (if applicable)
+
 [Add screenshots here]
 
 ## Checklist
+
 - [ ] Code follows coding standards
 - [ ] Tests added for new functionality
 - [ ] Documentation updated
@@ -383,7 +399,7 @@ test('User can create customer', async ({ page }) => {
   await page.click('button:has-text("New Customer")');
   await page.fill('[name="name"]', 'Test Customer');
   await page.click('button:has-text("Save")');
-  
+
   await expect(page.locator('.toast-success')).toBeVisible();
 });
 ```
@@ -393,6 +409,7 @@ test('User can create customer', async ({ page }) => {
 ### When to Create ADR
 
 Create an Architecture Decision Record (ADR) when:
+
 - Choosing between significant technical alternatives
 - Making decisions that impact multiple modules
 - Establishing new patterns or practices
@@ -464,6 +481,7 @@ pnpm dev
 ### Versioning
 
 Follow [Semantic Versioning](https://semver.org/):
+
 - **MAJOR:** Breaking changes
 - **MINOR:** New features (backward compatible)
 - **PATCH:** Bug fixes
@@ -482,4 +500,3 @@ Follow [Semantic Versioning](https://semver.org/):
 ---
 
 **Questions?** Contact the Tech Lead or refer to comprehensive documentation in `docs/`.
-

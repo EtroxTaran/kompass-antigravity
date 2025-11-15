@@ -1,13 +1,24 @@
 /**
  * DTO for updating an existing Location
- * 
+ *
  * All fields are optional (partial update)
  */
 
-import { IsString, IsEnum, IsBoolean, IsOptional, Length, Matches, ValidateNested, IsArray } from 'class-validator';
-import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import {
+  IsString,
+  IsEnum,
+  IsBoolean,
+  IsOptional,
+  Length,
+  Matches,
+  ValidateNested,
+  IsArray,
+} from 'class-validator';
+
 import { LocationType } from '@kompass/shared/types/enums';
+
 import { AddressDto } from './create-location.dto';
 
 /**
@@ -25,7 +36,8 @@ export class UpdateLocationDto {
   @IsString()
   @Length(2, 100)
   @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/, {
-    message: 'Location name can only contain letters, numbers, and basic punctuation',
+    message:
+      'Location name can only contain letters, numbers, and basic punctuation',
   })
   locationName?: string;
 
@@ -101,4 +113,3 @@ export class UpdateLocationDto {
   @Length(0, 300)
   parkingInstructions?: string;
 }
-

@@ -1,6 +1,7 @@
 # Material Catalog Form - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Entity:** Material (Catalog Item)
 - **Users:** KALK (primary creator during estimates), INN (procurement), PLAN (project requirements)
 - **Purpose:** Add materials to searchable catalog with specifications, pricing, and supplier information
@@ -13,6 +14,7 @@ Create a material catalog entry form for KOMPASS for adding construction/retail 
 **Form Title:** "Material erfassen"
 
 **Form Actions:**
+
 - **Save:** "Speichern" (primary button, right)
 - **Save & Add Another:** "Speichern & Weiteres hinzufügen" (secondary button)
 - **Cancel:** "Abbrechen" (text link)
@@ -240,10 +242,12 @@ Create a material catalog entry form for KOMPASS for adding construction/retail 
    - Placeholder: "z.B. Preis gilt bis 31.12.2025"
 
 **Actions per supplier:**
+
 - **Remove:** Red "X" button (if >1 supplier)
 - **Add Another:** "+ Weiteren Lieferanten hinzufügen" button below
 
 **Price Summary Display:**
+
 ```
 Preisspanne: € 138 - € 152 (3 Lieferanten)
 Durchschnitt: € 145
@@ -320,6 +324,7 @@ Bevorzugt: Schreinerei Müller (€ 145) ⭐
    - Drag to reorder images
 
 **Upload UI:**
+
 - Drag-and-drop zone
 - Click to select files
 - Progress bar during upload
@@ -493,6 +498,7 @@ Bevorzugt: Schreinerei Müller (€ 145) ⭐
 ```
 
 **Mobile Optimizations:**
+
 - Collapsible sections (only 1 expanded at a time)
 - Sticky save button at bottom
 - Camera icon for barcode scan (direct device camera access)
@@ -513,9 +519,11 @@ Bevorzugt: Schreinerei Müller (€ 145) ⭐
 
 ```typescript
 // Automatic calculations:
-averagePrice = sum(supplierPrices.map(p => p.unitPrice)) / supplierPrices.length;
-lowestPrice = min(supplierPrices.map(p => p.unitPrice));
-preferredPrice = supplierPrices.find(p => p.isPreferred)?.unitPrice || averagePrice;
+averagePrice =
+  sum(supplierPrices.map((p) => p.unitPrice)) / supplierPrices.length;
+lowestPrice = min(supplierPrices.map((p) => p.unitPrice));
+preferredPrice =
+  supplierPrices.find((p) => p.isPreferred)?.unitPrice || averagePrice;
 
 // Bulk discount calculation per supplier:
 for (discount of bulkDiscounts) {
@@ -526,6 +534,7 @@ for (discount of bulkDiscounts) {
 ### Save Behavior
 
 **Speichern:**
+
 - Full validation
 - Status: 'Active'
 - lastPriceUpdate: today
@@ -533,6 +542,7 @@ for (discount of bulkDiscounts) {
 - Redirect: Material detail page
 
 **Speichern & Weiteres hinzufügen:**
+
 - Full validation
 - Status: 'Active'
 - Success toast: "Material gespeichert. Weiteres Material erfassen..."
@@ -546,6 +556,7 @@ for (discount of bulkDiscounts) {
 **Trigger:** On material name blur or category change
 
 **Logic:**
+
 - Search catalog for similar materials (fuzzy matching):
   - Same category
   - Similar name (Levenshtein distance < 3)
@@ -635,4 +646,3 @@ const supplierPriceSchema = z.object({
 ---
 
 **End of material-catalog-form.md**
-

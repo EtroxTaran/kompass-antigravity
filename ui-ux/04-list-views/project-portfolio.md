@@ -1,6 +1,7 @@
 # Project Portfolio View - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Project Portfolio Table/Board
 - **User Roles**: GF (all), PLAN (all), ADM (assigned projects), KALK (cost data), BUCH (financial)
 - **Usage Context**: Overview of all active and completed projects
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Project Status**: Color-coded badges and progress bars
 - **Timeline**: Visual date range indicators
 - **Budget vs Actual**: Financial health indicators
 - **Project Manager**: Avatar and team size
 
 ### Layout Structure
+
 - Table view (default) or Board view (cards)
 - Filtering by status, manager, customer
 - Sortable columns
 - Progress indicators per project
 
 ### shadcn/ui Components
+
 - `Table` for portfolio view
 - `Card` for board view
 - `Progress` for project completion
@@ -32,17 +36,20 @@
 Create a comprehensive project portfolio view for KOMPASS, a German CRM application. Design a table showing all projects with status, timeline, budget tracking, progress, and team information using German labels.
 
 **Page Layout:**
+
 - Breadcrumb: "Dashboard > Projekte"
 - Page title: "Projekte" (32px, bold) with count "23"
 
 **Portfolio Summary Cards (Top):**
 4 KPI cards in row:
+
 1. **Aktive Projekte**: "18" (large, bold) with Briefcase icon
 2. **Gesamtbudget**: "€ 5.2M" with TrendingUp icon
 3. **Durchschn. Marge**: "+14,5%" (green) with Percent icon
 4. **Überfällige**: "2" (red text) with AlertCircle icon
 
 **Controls Bar:**
+
 - Left: Search "Projekte durchsuchen..."
 - Filter button with badge if active
 - View toggle: Table | Board | Timeline
@@ -51,6 +58,7 @@ Create a comprehensive project portfolio view for KOMPASS, a German CRM applicat
 **Table View (Default):**
 
 **Columns:**
+
 1. **☐** (Checkbox, 48px)
 
 2. **Projektnr.** (Project Number, 120px, sortable):
@@ -106,17 +114,20 @@ Create a comprehensive project portfolio view for KOMPASS, a German CRM applicat
     - Menu: "Zeiterfassung", "Bericht", "Archivieren", "Löschen"
 
 **Sample Rows:**
+
 1. ☐ | P-2024-B023 | REWE München | Ladeneinrichtung | In Bearbeitung | [65%] ▓▓▓▓▓░░░ | 01.12-28.02 | € 450K | T. Fischer |
 2. ☐ | P-2024-A015 | Hofladen Müller | Renovierung | Abgeschlossen | [100%] ▓▓▓▓▓▓▓▓ | 01.09-30.10 | € 85K | M. Schmidt |
 3. ☐ | P-2024-C042 | Biomarkt HD | Neubau | In Planung | [15%] ▓░░░░░░░ | 01.02-30.06.25 | € 680K | A. Weber |
 
 **Board View (Alternative):**
+
 - Similar to opportunity pipeline
 - Columns: Status groups (Neu, In Bearbeitung, Abgeschlossen, etc.)
 - Project cards: Larger than opportunity cards
 - Cards show: Number, customer, timeline, progress, budget, manager
 
 **Timeline View (Alternative):**
+
 - Gantt-chart style
 - Y-axis: Project list
 - X-axis: Timeline (months)
@@ -125,6 +136,7 @@ Create a comprehensive project portfolio view for KOMPASS, a German CRM applicat
 - Dependencies: Connecting lines between projects
 
 **Filter Sheet:**
+
 - Status: Multi-select checkboxes
 - Projektleiter: Multi-select users (PLAN users)
 - Kunde: Searchable select
@@ -133,6 +145,7 @@ Create a comprehensive project portfolio view for KOMPASS, a German CRM applicat
 - Team-Größe: Min/max inputs
 
 **Sort Options:**
+
 - Start date (newest/oldest)
 - Budget (highest/lowest)
 - Progress (least/most complete)
@@ -140,6 +153,7 @@ Create a comprehensive project portfolio view for KOMPASS, a German CRM applicat
 - Customer name (A-Z)
 
 **Bulk Actions (When Selected):**
+
 - "Status ändern" dropdown
 - "Projektleiter zuweisen"
 - "Berichte erstellen" (PDF)
@@ -147,6 +161,7 @@ Create a comprehensive project portfolio view for KOMPASS, a German CRM applicat
 - "Archivieren"
 
 **RBAC Filtering:**
+
 - ADM: See only projects where assigned as team member
 - PLAN: See all projects
 - GF: See all projects
@@ -154,6 +169,7 @@ Create a comprehensive project portfolio view for KOMPASS, a German CRM applicat
 - BUCH: See projects for invoicing
 
 **Empty State:**
+
 - Icon: Briefcase (120px, gray)
 - Heading: "Noch keine Projekte vorhanden"
 - Description: "Projekte werden aus gewonnenen Opportunities erstellt"
@@ -162,6 +178,7 @@ Create a comprehensive project portfolio view for KOMPASS, a German CRM applicat
   - "Offene Opportunities anzeigen" (outlined)
 
 **Mobile Layout:**
+
 - Card view (not table)
 - Each project = vertical card
 - Key info: Number, customer, status badge, progress bar
@@ -174,30 +191,36 @@ Design with clear timeline visualization, budget health indicators, and easy dra
 ## Interaction Patterns
 
 ### View Switch
+
 - Click table/board/timeline icons
 - View changes with animation
 - State persists (saved in user preferences)
 
 ### Row Click
+
 - Click project number or anywhere on row: Open project detail
 - Shift+Click: Select multiple for bulk actions
 
 ### Progress Interaction
+
 - Hover progress bar: Tooltip shows "12 von 18 Meilensteine abgeschlossen"
 - Click: Opens milestone view
 
 ### Status Change
+
 - Drag card to new status column (board view)
 - Or: Dropdown in actions menu (table view)
 
 ## German Labels & Content
 
 ### Page
+
 - **Projekte**: Projects
 - **Projektportfolio**: Project portfolio
 - **Neues Projekt**: New project
 
 ### Columns
+
 - **Projektnr.**: Project number
 - **Kunde**: Customer
 - **Projektname**: Project name
@@ -209,6 +232,7 @@ Design with clear timeline visualization, budget health indicators, and easy dra
 - **Aktionen**: Actions
 
 ### Status
+
 - **Neu**: New
 - **In Planung**: In planning
 - **In Bearbeitung**: In progress
@@ -217,18 +241,21 @@ Design with clear timeline visualization, budget health indicators, and easy dra
 - **Storniert**: Cancelled
 
 ### Summary
+
 - **Gesamtwert Pipeline**: Total pipeline value
 - **Aktive Projekte**: Active projects
 - **Durchschn. Marge**: Average margin
 - **Überfällige**: Overdue
 
 ### Actions
+
 - **Zeiterfassung**: Time tracking
 - **Bericht erstellen**: Create report
 - **Archivieren**: Archive
 - **Status ändern**: Change status
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Table: Semantic markup
 - Sortable columns: aria-sort
@@ -237,6 +264,7 @@ Design with clear timeline visualization, budget health indicators, and easy dra
 - Drag-and-drop: Keyboard alternative (move buttons)
 
 ## Mobile Considerations
+
 - Card view on mobile
 - Vertical scrolling
 - Pull-to-refresh
@@ -247,6 +275,7 @@ Design with clear timeline visualization, budget health indicators, and easy dra
 ## Example Data
 
 **Project 1:**
+
 - Number: P-2024-B023
 - Customer: REWE München Süd
 - Name: Ladeneinrichtung
@@ -258,6 +287,7 @@ Design with clear timeline visualization, budget health indicators, and easy dra
 - Team: 5 Mitarbeiter
 
 **Project 2:**
+
 - Number: P-2024-A015
 - Customer: Hofladen Müller GmbH
 - Name: Renovierung
@@ -271,6 +301,7 @@ Design with clear timeline visualization, budget health indicators, and easy dra
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add table
 npx shadcn-ui@latest add card
@@ -280,11 +311,13 @@ npx shadcn-ui@latest add avatar
 ```
 
 ### Drag-and-Drop
+
 ```bash
 pnpm add @dnd-kit/core @dnd-kit/sortable
 ```
 
 ### Component Dependencies
+
 - Project API with filtering
 - User list for manager filter
 - Customer list for customer filter
@@ -293,10 +326,10 @@ pnpm add @dnd-kit/core @dnd-kit/sortable
 - RBAC for visibility
 
 ### State Management
+
 - Project list (React Query)
 - View mode (table/board/timeline)
 - Filter criteria
 - Sort state
 - Selected projects
 - RBAC context
-

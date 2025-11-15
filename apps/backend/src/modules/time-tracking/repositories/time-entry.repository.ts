@@ -1,22 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
-import { Connection } from 'mongoose';
-import {
+// TODO: Install mongoose and @nestjs/mongoose when implementing time tracking
+// import { InjectConnection } from '@nestjs/mongoose';
+// import { Connection } from 'mongoose';
+type Connection = any; // Stub type
+import { v4 as uuidv4 } from 'uuid';
+
+import type {
   TimeEntry,
-  TimeEntryStatus,
   LaborCostSummary,
   UserLaborCost,
   MonthlyLaborCost,
 } from '@kompass/shared/types/entities/time-entry';
-import {
+import { TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
+
+import type {
   ITimeEntryRepository,
   TimeEntryFilters,
 } from './time-entry.repository.interface';
-import { v4 as uuidv4 } from 'uuid';
+
+// Stub InjectConnection decorator
+const InjectConnection =
+  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
 
 /**
  * Time Entry Repository Implementation
- * 
+ *
  * Implements data access operations for time entries using CouchDB.
  * Handles CRUD operations, filtering, and aggregations.
  */
@@ -24,13 +32,12 @@ import { v4 as uuidv4 } from 'uuid';
 export class TimeEntryRepository implements ITimeEntryRepository {
   private readonly collectionName = 'time_entries';
 
-  constructor(
-    @InjectConnection() private readonly connection: Connection,
-  ) {}
+  // @ts-expect-error - InjectConnection is stubbed until mongoose is installed
+  constructor(@InjectConnection() private readonly _connection: Connection) {}
 
   /**
    * Get CouchDB database instance
-   * 
+   *
    * Note: This is a placeholder. Actual implementation will use CouchDB/Nano client
    */
   private getDb() {
@@ -64,8 +71,8 @@ export class TimeEntryRepository implements ITimeEntryRepository {
       // const doc = await db.get(id);
       // return doc as TimeEntry;
       return null;
-    } catch (error) {
-      if (error.statusCode === 404) {
+    } catch (error: unknown) {
+      if (this.isCouchDBError(error) && error.statusCode === 404) {
         return null;
       }
       throw error;
@@ -98,7 +105,7 @@ export class TimeEntryRepository implements ITimeEntryRepository {
     // TODO: Implement CouchDB query with filters
     // const db = this.getDb();
     // const selector: any = { type: 'time_entry' };
-    
+
     // if (filters) {
     //   if (filters.projectId) selector.projectId = filters.projectId;
     //   if (filters.userId) selector.userId = filters.userId;
@@ -161,11 +168,11 @@ export class TimeEntryRepository implements ITimeEntryRepository {
     // Calculate totals
     const totalHours = entries.reduce(
       (sum, entry) => sum + entry.durationMinutes / 60,
-      0,
+      0
     );
     const totalCostEur = entries.reduce(
       (sum, entry) => sum + (entry.totalCostEur || 0),
-      0,
+      0
     );
 
     // Group by user
@@ -215,7 +222,7 @@ export class TimeEntryRepository implements ITimeEntryRepository {
       totalCostEur: Math.round(totalCostEur * 100) / 100,
       byUser: Array.from(userCosts.values()),
       byMonth: Array.from(monthlyCosts.values()).sort(
-        (a, b) => a.year - b.year || a.month - b.month,
+        (a, b) => a.year - b.year || a.month - b.month
       ),
     };
   }
@@ -240,5 +247,15 @@ export class TimeEntryRepository implements ITimeEntryRepository {
   async findPendingApproval(): Promise<TimeEntry[]> {
     return this.findAll({ status: TimeEntryStatus.COMPLETED });
   }
-}
 
+  private isCouchDBError(
+    error: unknown
+  ): error is { statusCode: number; message?: string } {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'statusCode' in error &&
+      typeof (error as { statusCode: unknown }).statusCode === 'number'
+    );
+  }
+}

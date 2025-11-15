@@ -1,5 +1,9 @@
-import { useState } from 'react';
 import { Download, Filter, Plus } from 'lucide-react';
+import { useState } from 'react';
+
+import type { TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
+
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,7 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -15,17 +20,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+
 import { TimeEntryList } from '../components/TimeEntryList';
 import { useTimeTracking } from '../hooks/useTimeTracking';
-import type { TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
 
 /**
  * Time Tracking Page
- * 
+ *
  * Main page for time tracking with filtering, export, and bulk actions.
- * 
+ *
  * @see Phase 1.3 of Time Tracking Implementation Plan
  */
 export function TimeTrackingPage() {
@@ -50,11 +53,11 @@ export function TimeTrackingPage() {
    */
   const totalHours = entries.reduce(
     (sum, entry) => sum + entry.durationMinutes / 60,
-    0,
+    0
   );
   const totalCost = entries.reduce(
     (sum, entry) => sum + (entry.totalCostEur || 0),
-    0,
+    0
   );
   const approvedCount = entries.filter((e) => e.status === 'approved').length;
   const pendingCount = entries.filter((e) => e.status === 'completed').length;
@@ -159,7 +162,10 @@ export function TimeTrackingPage() {
             {/* Status filter */}
             <div className="space-y-2">
               <Label htmlFor="filter-status">Status</Label>
-              <Select value={status} onValueChange={(v) => setStatus(v as TimeEntryStatus | '')}>
+              <Select
+                value={status}
+                onValueChange={(v) => setStatus(v as TimeEntryStatus | '')}
+              >
                 <SelectTrigger id="filter-status">
                   <SelectValue placeholder="Alle Status" />
                 </SelectTrigger>
@@ -197,7 +203,11 @@ export function TimeTrackingPage() {
 
             {/* Apply filter button */}
             <div className="flex items-end">
-              <Button onClick={() => refetch()} disabled={loading} className="w-full">
+              <Button
+                onClick={() => refetch()}
+                disabled={loading}
+                className="w-full"
+              >
                 <Filter className="mr-2 h-4 w-4" />
                 Filtern
               </Button>
@@ -229,4 +239,3 @@ export function TimeTrackingPage() {
     </div>
   );
 }
-

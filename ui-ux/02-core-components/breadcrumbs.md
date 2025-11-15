@@ -1,6 +1,7 @@
 # Breadcrumbs - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Breadcrumb Navigation
 - **User Roles**: All (GF, PLAN, ADM, KALK, BUCH)
 - **Usage Context**: Page navigation, showing current location hierarchy
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Horizontal path**: Home → Section → Subsection → Current
 - **Separators**: Chevron or slash between items
 - **Current page**: Bold or plain text (not linked)
 - **Links**: Previous pages are clickable
 
 ### Layout Structure
+
 - Height: 32px
 - Position: Top of page, below header
 - Font: 14px
@@ -22,6 +25,7 @@
 - Max items: 5-6 before truncation
 
 ### shadcn/ui Components
+
 - `Breadcrumb`, `BreadcrumbList`, `BreadcrumbItem`, `BreadcrumbLink`, `BreadcrumbSeparator`, `BreadcrumbPage`
 
 ## Figma Make Prompt
@@ -31,12 +35,14 @@ Create breadcrumb navigation components for KOMPASS, a German CRM application. D
 **Standard Breadcrumb:**
 
 **Structure:**
+
 - Horizontal layout, left-aligned
 - Items separated by chevron-right icon (16px, gray)
 - Font: 14px
 - Color: Gray (#6b7280) for links, dark (#1f2937) for current page
 
 **Breadcrumb Items:**
+
 1. **Home/Dashboard (First Item):**
    - Icon: Home (16px) or text "Dashboard"
    - Color: Gray
@@ -81,6 +87,7 @@ Dashboard > Rechnungen > R-2024-00456
 Dashboard > Einstellungen > Profil
 
 **Truncated Breadcrumb (Long Paths):**
+
 - When breadcrumb exceeds 6 items or 800px width
 - Middle items collapsed to ellipsis "..."
 - Example: Dashboard > Kunden > ... > Standorte > Standort München Süd
@@ -88,6 +95,7 @@ Dashboard > Einstellungen > Profil
 - Always show: Home, parent, current (3 items minimum)
 
 **Ellipsis Dropdown:**
+
 - Trigger: "..." text (clickable)
 - Dropdown menu appears below
 - Menu shows hidden breadcrumb items as list
@@ -99,6 +107,7 @@ Dashboard > Einstellungen > Profil
   - Hans Müller
 
 **Responsive Breadcrumb (Mobile):**
+
 - On small screens (<640px):
   - Option 1: Show only last 2 items "< Parent Name"
   - Option 2: Collapse to back button "< Zurück"
@@ -108,12 +117,14 @@ Dashboard > Einstellungen > Profil
   - Takes less space than full breadcrumb
 
 **Breadcrumb with Icons:**
+
 - Each item can have icon at left (20px)
 - Gap: 8px between icon and text
 - Icons: Home, Users (Kunden), Briefcase (Projekte), FileText (Rechnungen)
 - Example: 🏠 Dashboard > 👥 Kunden > [Company Name]
 
 **Dropdown Breadcrumb Item:**
+
 - Some items expandable to show siblings
 - ChevronDown icon after item name
 - Click to open dropdown with sibling pages
@@ -141,12 +152,14 @@ Dashboard > Einstellungen > Profil
    - Use in: Important pages, headers
 
 **Breadcrumb Positioning:**
+
 - Below top navigation bar
 - Above page title
 - Or: Beside page title on same line
 - Margin-bottom: 16px (space before content)
 
 **Keyboard Navigation:**
+
 - Tab: Focus on first breadcrumb link
 - Tab again: Move to next link
 - Enter: Activate focused link
@@ -157,12 +170,14 @@ Design with clear hierarchy and easy-to-click links.
 ## Interaction Patterns
 
 ### Navigation
+
 1. User clicks breadcrumb link
 2. Navigate to that page
 3. Breadcrumb updates to reflect new location
 4. Previous page now appears in breadcrumb trail
 
 ### Ellipsis Dropdown
+
 1. User clicks "..." ellipsis
 2. Dropdown opens showing hidden items
 3. User clicks item from dropdown
@@ -170,6 +185,7 @@ Design with clear hierarchy and easy-to-click links.
 5. Dropdown closes
 
 ### Hover States
+
 - Link hover: Underline, darker color
 - No hover on current page (not clickable)
 - Separator: No hover state
@@ -177,6 +193,7 @@ Design with clear hierarchy and easy-to-click links.
 ## German Labels & Content
 
 ### Common Breadcrumb Labels
+
 - **Dashboard**: Dashboard
 - **Kunden**: Customers
 - **Standorte**: Locations
@@ -191,10 +208,12 @@ Design with clear hierarchy and easy-to-click links.
 - **Zurück**: Back
 
 ### Entity Names
+
 - Use actual entity names: "Hofladen Müller GmbH", "P-2024-B023", "R-2024-00456"
 - Truncate long names: "Hofladen Müller GmbH und..." (with tooltip showing full name)
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Nav element: aria-label="Breadcrumb"
 - List: <ol> for semantic ordering
@@ -205,6 +224,7 @@ Design with clear hierarchy and easy-to-click links.
 - Sufficient color contrast: 4.5:1
 
 ## Mobile Considerations
+
 - Collapse to back button on mobile
 - Or horizontal scroll for full breadcrumb
 - Larger touch targets (44px height)
@@ -214,32 +234,38 @@ Design with clear hierarchy and easy-to-click links.
 ## Example Data
 
 **Customer Detail Page:**
+
 - Breadcrumb: Dashboard > Kunden > Hofladen Müller GmbH
 - Clickable: Dashboard, Kunden
 - Current: Hofladen Müller GmbH
 
 **Location Detail (Deep):**
+
 - Breadcrumb: Dashboard > Kunden > Hofladen Müller GmbH > Standorte > Standort München Süd
 - Clickable: Dashboard, Kunden, Hofladen Müller GmbH, Standorte
 - Current: Standort München Süd
 
 **Settings Profile:**
+
 - Breadcrumb: Dashboard > Einstellungen > Profil
 - Clickable: Dashboard, Einstellungen
 - Current: Profil
 
 **Mobile (Customer Detail):**
+
 - Breadcrumb: < Kunden
 - Clicking: Returns to customer list
 
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add breadcrumb
 ```
 
 ### Breadcrumb Usage
+
 ```typescript
 <Breadcrumb>
   <BreadcrumbList>
@@ -259,6 +285,7 @@ npx shadcn-ui@latest add breadcrumb
 ```
 
 ### With Dropdown
+
 ```typescript
 <BreadcrumbItem>
   <DropdownMenu>
@@ -274,13 +301,14 @@ npx shadcn-ui@latest add breadcrumb
 ```
 
 ### Component Dependencies
+
 - Design tokens (colors, spacing)
 - Icons from lucide-react (Home, ChevronRight, ChevronDown, ChevronLeft)
 - Next.js Link or React Router Link for navigation
 - Dropdown menu for ellipsis expansion
 
 ### State Management
+
 - Breadcrumb trail derived from current route/page
 - No internal state needed (presentation only)
 - Ellipsis dropdown open/close state (local)
-

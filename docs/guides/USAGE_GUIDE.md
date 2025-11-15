@@ -9,6 +9,7 @@ This guide demonstrates how the `.cursorrules` file enforces KOMPASS architectur
 ### 1. No File Duplication ✅
 
 **❌ PREVENTED:**
+
 ```
 customer.service.ts
 customer.service.old.ts      # ❌ Cursor will warn
@@ -17,6 +18,7 @@ customer.service.v2.ts       # ❌ Cursor will suggest git
 ```
 
 **✅ GUIDED:**
+
 ```bash
 # Cursor will suggest:
 "Use git for versioning instead:
@@ -28,17 +30,21 @@ git revert HEAD  # Undo if needed"
 ### 2. No `any` Type ✅
 
 **❌ PREVENTED:**
+
 ```typescript
 // Cursor will show error
-function processData(data: any) {  // ❌
+function processData(data: any) {
+  // ❌
   console.log(data);
 }
 ```
 
 **✅ GUIDED:**
+
 ```typescript
 // Cursor will suggest:
-function processData(data: unknown): void {  // ✅
+function processData(data: unknown): void {
+  // ✅
   if (typeof data === 'string') {
     console.log(data);
   }
@@ -48,17 +54,21 @@ function processData(data: unknown): void {  // ✅
 ### 3. Explicit Return Types ✅
 
 **❌ PREVENTED:**
+
 ```typescript
 // Cursor will warn
-async function getCustomer(id: string) {  // ❌ Missing return type
+async function getCustomer(id: string) {
+  // ❌ Missing return type
   return await repository.findById(id);
 }
 ```
 
 **✅ GUIDED:**
+
 ```typescript
 // Cursor will suggest:
-async function getCustomer(id: string): Promise<Customer> {  // ✅
+async function getCustomer(id: string): Promise<Customer> {
+  // ✅
   return await repository.findById(id);
 }
 ```
@@ -66,22 +76,26 @@ async function getCustomer(id: string): Promise<Customer> {  // ✅
 ### 4. shadcn/ui Components Only ✅
 
 **❌ PREVENTED:**
+
 ```tsx
 // Cursor will block
-const CustomButton = styled.button`  // ❌
+const CustomButton = styled.button`
+  // ❌
   background: blue;
   padding: 10px;
 `;
 
-function MyButton() {  // ❌
+function MyButton() {
+  // ❌
   return <button className="my-custom-btn">Click</button>;
 }
 ```
 
 **✅ GUIDED:**
+
 ```tsx
 // Cursor will suggest:
-import { Button } from '@/components/ui/button';  // ✅
+import { Button } from '@/components/ui/button'; // ✅
 
 function MyComponent() {
   return <Button variant="default">Click</Button>;
@@ -94,27 +108,29 @@ function MyComponent() {
 ### 5. Repository Pattern Required ✅
 
 **❌ PREVENTED:**
+
 ```typescript
 // Cursor will warn
 @Injectable()
 export class CustomerService {
   async findById(id: string) {
-    return await nano.get(id);  // ❌ Direct DB access
+    return await nano.get(id); // ❌ Direct DB access
   }
 }
 ```
 
 **✅ GUIDED:**
+
 ```typescript
 // Cursor will suggest:
 @Injectable()
 export class CustomerService {
   constructor(
-    private readonly repository: CustomerRepository  // ✅
+    private readonly repository: CustomerRepository // ✅
   ) {}
-  
+
   async findById(id: string): Promise<Customer> {
-    return await this.repository.findById(id);  // ✅
+    return await this.repository.findById(id); // ✅
   }
 }
 ```
@@ -122,11 +138,12 @@ export class CustomerService {
 ### 6. RBAC Guards Required ✅
 
 **❌ PREVENTED:**
+
 ```typescript
 // Cursor will warn
 @Controller('customers')
 export class CustomerController {
-  @Get(':id')  // ❌ No guards!
+  @Get(':id') // ❌ No guards!
   async findOne(@Param('id') id: string) {
     return this.service.findById(id);
   }
@@ -134,16 +151,17 @@ export class CustomerController {
 ```
 
 **✅ GUIDED:**
+
 ```typescript
 // Cursor will suggest:
 @Controller('customers')
-@UseGuards(JwtAuthGuard, RbacGuard)  // ✅
+@UseGuards(JwtAuthGuard, RbacGuard) // ✅
 export class CustomerController {
   @Get(':id')
-  @RequirePermission('Customer', 'READ')  // ✅
+  @RequirePermission('Customer', 'READ') // ✅
   async findOne(
     @Param('id') id: string,
-    @CurrentUser() user: User  // ✅
+    @CurrentUser() user: User // ✅
   ) {
     return this.service.findById(id, user);
   }
@@ -153,35 +171,39 @@ export class CustomerController {
 ### 7. Audit Fields Required ✅
 
 **❌ PREVENTED:**
+
 ```typescript
 // Cursor will warn
 interface Customer {
   _id: string;
   _rev: string;
-  name: string;  // ❌ Missing audit fields
+  name: string; // ❌ Missing audit fields
 }
 ```
 
 **✅ GUIDED:**
+
 ```typescript
 // Cursor will suggest:
-interface Customer extends BaseEntity {  // ✅
+interface Customer extends BaseEntity {
+  // ✅
   _id: string;
   _rev: string;
-  type: 'customer';  // ✅
+  type: 'customer'; // ✅
   name: string;
   // Audit fields inherited from BaseEntity:
-  createdBy: string;  // ✅
-  createdAt: Date;  // ✅
-  modifiedBy: string;  // ✅
-  modifiedAt: Date;  // ✅
-  version: number;  // ✅
+  createdBy: string; // ✅
+  createdAt: Date; // ✅
+  modifiedBy: string; // ✅
+  modifiedAt: Date; // ✅
+  version: number; // ✅
 }
 ```
 
 ### 8. Test Colocation ✅
 
 **❌ PREVENTED:**
+
 ```
 src/
 ├── services/
@@ -191,6 +213,7 @@ src/
 ```
 
 **✅ GUIDED:**
+
 ```
 src/
 └── services/
@@ -201,17 +224,19 @@ src/
 ### 9. Immutability for Finalized Entities ✅
 
 **❌ PREVENTED:**
+
 ```typescript
 // Cursor will warn
 async function updateInvoice(invoice: Invoice) {
   if (invoice.finalized) {
-    invoice.totalAmount = 5000;  // ❌ Modifying immutable field
+    invoice.totalAmount = 5000; // ❌ Modifying immutable field
     await db.put(invoice);
   }
 }
 ```
 
 **✅ GUIDED:**
+
 ```typescript
 // Cursor will suggest:
 async function updateInvoice(
@@ -223,16 +248,18 @@ async function updateInvoice(
     // Check immutable fields
     const immutableFields = ['invoiceNumber', 'totalAmount'];
     const changedImmutable = immutableFields.filter(
-      field => updates[field] !== undefined
+      (field) => updates[field] !== undefined
     );
-    
+
     if (changedImmutable.length > 0) {
-      if (user.role !== 'GF') {  // ✅
+      if (user.role !== 'GF') {
+        // ✅
         throw new ForbiddenException('Requires GF approval');
       }
-      
+
       // Log correction
-      invoice.changeLog.push({  // ✅
+      invoice.changeLog.push({
+        // ✅
         field: changedImmutable[0],
         oldValue: invoice[changedImmutable[0]],
         newValue: updates[changedImmutable[0]],
@@ -249,20 +276,22 @@ async function updateInvoice(
 ### 10. Offline-First Pattern ✅
 
 **❌ PREVENTED:**
+
 ```typescript
 // Cursor will warn
 async function getCustomer(id: string) {
-  return fetch(`/api/customers/${id}`);  // ❌ No offline support
+  return fetch(`/api/customers/${id}`); // ❌ No offline support
 }
 ```
 
 **✅ GUIDED:**
+
 ```typescript
 // Cursor will suggest:
 async function getCustomer(id: string) {
   // Try local first (offline-first)  // ✅
   const local = await localDB.get(id);
-  
+
   if (local) {
     if (navigator.onLine) {
       // Sync in background
@@ -270,15 +299,15 @@ async function getCustomer(id: string) {
     }
     return local;
   }
-  
+
   // Fetch from API if not in local
   if (!navigator.onLine) {
     throw new Error('Customer not available offline');
   }
-  
+
   const remote = await fetch(`/api/customers/${id}`);
-  await localDB.put(remote);  // Save for offline
-  
+  await localDB.put(remote); // Save for offline
+
   return remote;
 }
 ```
@@ -290,6 +319,7 @@ async function getCustomer(id: string) {
 **You ask:** "Create a button component for saving customers"
 
 **Cursor will:**
+
 1. ❌ Refuse to create custom button
 2. ✅ Suggest using shadcn/ui Button
 3. ✅ Provide installation command
@@ -308,7 +338,7 @@ import { Button } from '@/components/ui/button';
 
 export function SaveCustomerButton({ onClick, isLoading }) {
   return (
-    <Button 
+    <Button
       onClick={onClick}
       disabled={isLoading}
       aria-label='Save customer'
@@ -325,6 +355,7 @@ export function SaveCustomerButton({ onClick, isLoading }) {
 **You ask:** "Create a service to fetch customers"
 
 **Cursor will:**
+
 1. ✅ Follow repository pattern
 2. ✅ Add RBAC checks
 3. ✅ Include offline support
@@ -336,6 +367,7 @@ export function SaveCustomerButton({ onClick, isLoading }) {
 **You ask:** "Create a Product entity"
 
 **Cursor will:**
+
 1. ✅ Suggest using scaffold: `./scripts/generate-entity.sh product`
 2. ✅ Include all audit fields
 3. ✅ Add validation comments
@@ -476,6 +508,7 @@ git push --no-verify  # Not recommended!
 **Task:** Add `website` field to Customer
 
 **Steps:**
+
 1. Update shared type: `packages/shared/src/types/entities/customer.ts`
 2. Update DTO: `apps/backend/src/modules/customer/dto/create-customer.dto.ts`
 3. Update form: `apps/frontend/src/features/customer/components/CustomerForm.tsx`
@@ -483,6 +516,7 @@ git push --no-verify  # Not recommended!
 5. Run validation: `pnpm test && pnpm type-check`
 
 **Cursor will:**
+
 - ✅ Validate type safety
 - ✅ Suggest validation decorators
 - ✅ Warn if tests missing
@@ -493,6 +527,7 @@ git push --no-verify  # Not recommended!
 **Task:** Add Task entity for project management
 
 **Steps:**
+
 ```bash
 # 1. Generate scaffolding
 ./scripts/generate-entity.sh task
@@ -514,6 +549,7 @@ pnpm test task
 ```
 
 **Cursor will:**
+
 - ✅ Validate all imports
 - ✅ Check module registration
 - ✅ Ensure guards present
@@ -524,12 +560,14 @@ pnpm test task
 **Task:** Make opportunities work offline
 
 **Steps:**
+
 1. Use React Query hook from template
 2. Implement PouchDB storage
 3. Add sync queue logic
 4. Handle conflicts
 
 **Cursor will:**
+
 - ✅ Suggest offline-first patterns
 - ✅ Guide conflict detection
 - ✅ Remind about sync queue
@@ -540,6 +578,7 @@ pnpm test task
 ### Example 1: Missing Audit Fields
 
 **You write:**
+
 ```typescript
 interface Product {
   _id: string;
@@ -548,6 +587,7 @@ interface Product {
 ```
 
 **Cursor will warn:**
+
 ```
 ❌ Entity missing required fields:
 - _rev (CouchDB revision)
@@ -568,6 +608,7 @@ interface Product extends BaseEntity {
 ### Example 2: Missing RBAC Guard
 
 **You write:**
+
 ```typescript
 @Controller('products')
 export class ProductController {
@@ -579,6 +620,7 @@ export class ProductController {
 ```
 
 **Cursor will warn:**
+
 ```
 ❌ Missing RBAC guards and permission decorator
 
@@ -597,17 +639,17 @@ export class ProductController {
 ### Example 3: Custom UI Component
 
 **You write:**
+
 ```tsx
 function MyCard({ children }) {
   return (
-    <div style={{ border: '1px solid gray', padding: '10px' }}>
-      {children}
-    </div>
+    <div style={{ border: '1px solid gray', padding: '10px' }}>{children}</div>
   );
 }
 ```
 
 **Cursor will prevent:**
+
 ```
 ❌ Custom UI component detected
 
@@ -647,6 +689,7 @@ apps/backend/src/modules/
 ```
 
 **❌ Cursor will warn against:**
+
 ```
 src/
 ├── controllers/       # ❌ Not domain-driven
@@ -679,7 +722,7 @@ Add tests in: customer.service.spec.ts
 function CustomerList({ customers }) {
   // ❌ No memoization for expensive calculation
   const statistics = calculateStatistics(customers);
-  
+
   return <div>{statistics.total}</div>;
 }
 
@@ -688,7 +731,7 @@ function CustomerList({ customers }) {
   const statistics = useMemo(() => {
     return calculateStatistics(customers);
   }, [customers]);  // ✅ Memoized
-  
+
   return <div>{statistics.total}</div>;
 }
 ```
@@ -698,6 +741,7 @@ function CustomerList({ customers }) {
 ### Cursor Not Enforcing Rules?
 
 1. **Check .cursorrules exists:**
+
    ```bash
    ls -la .cursorrules
    ```
@@ -713,15 +757,17 @@ function CustomerList({ customers }) {
 ### Rules Too Strict?
 
 The rules are intentionally strict to enforce:
+
 - Architecture patterns
 - Security requirements
 - Compliance (GoBD, DSGVO)
 - Code quality
 
 If you need to bypass a rule temporarily:
+
 ```typescript
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const data: any = unknownData;  // Only in exceptional cases!
+const data: any = unknownData; // Only in exceptional cases!
 ```
 
 **But generally: Don't bypass. Follow the pattern.**
@@ -729,6 +775,7 @@ const data: any = unknownData;  // Only in exceptional cases!
 ### False Positives?
 
 If Cursor warns incorrectly:
+
 1. Check if you're following patterns correctly
 2. Review `.cursorrules` for the specific rule
 3. Update rule if legitimately wrong
@@ -814,4 +861,3 @@ open http://localhost:8000
 ---
 
 **The rules exist to help you write better, safer, more maintainable code. Trust them!** 🚀
-

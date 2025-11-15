@@ -12,15 +12,15 @@ Complete API reference and usage guides.
 
 ## Documents
 
-| Document | Description | Last Updated |
-|----------|-------------|--------------|
-| [API Updates](./updates/API_UPDATES.md) | API changes and version history | 2025-01-27 |
+| Document                                | Description                     | Last Updated |
+| --------------------------------------- | ------------------------------- | ------------ |
+| [API Updates](./updates/API_UPDATES.md) | API changes and version history | 2025-01-27   |
 
 ---
 
 ## Related Documentation
 
-- [API Specification](../specifications/API_SPECIFICATION.md) - Complete API specification
+- [API Specification](../specifications/api-specification.md) - Complete API specification
 - [Architecture Documentation](../architecture/) - System architecture
 - [Main Documentation Index](../README.md) - Complete documentation navigation
 
@@ -29,4 +29,3 @@ Complete API reference and usage guides.
 **Last Updated**: 2025-01-27  
 **Owner**: Backend Team  
 **Status**: Active
-

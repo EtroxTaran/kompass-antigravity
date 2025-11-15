@@ -1,6 +1,7 @@
 # Supplier Detail Page - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Entity:** Supplier / Subcontractor Profile
 - **Users:** All authenticated users (read), INN/GF (edit)
 - **Purpose:** Complete supplier profile, contracts, performance history, project assignments
@@ -13,9 +14,11 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 **Page Title:** Company name as H1, e.g., "Schreinerei Müller GmbH"
 
 **Breadcrumb:**
+
 - "Lieferanten" > "Schreinerei Müller GmbH"
 
 **Header Actions:**
+
 - **Edit:** "Bearbeiten" button (INN/GF only)
 - **Quick Actions Dropdown:**
   - "Vertrag erstellen"
@@ -87,6 +90,7 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 ### Left Column: Contact & Services
 
 **Kontaktdaten (Contact Information):**
+
 - Email: Clickable mailto: link
 - Phone: Clickable tel: link
 - Mobile: If available
@@ -94,11 +98,13 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 - Address: Full address with map icon (opens Google Maps)
 
 **Leistungskategorien (Service Categories):**
+
 - All selected categories as blue pill badges
 - **Leistungsbeschreibung:** Full text, expandable if >300 chars
 - **Arbeitsradius:** "50 km" (if set)
 
 **Geschäftsbedingungen (Business Terms):**
+
 - Payment method + terms
 - Minimum order value (if set)
 - Delivery lead time (if set)
@@ -107,29 +113,34 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 ### Right Column: Performance & Activity
 
 **Performance Card:**
+
 - Overall rating: Large stars + numeric (4.8/5.0)
 - Breakdown: 4 dimensions with small stars
 - Based on: "Basiert auf 12 Bewertungen"
 - Trend: "↗ +0.3 vs. letztes Quartal" (green)
 
 **Projektkennzahlen (Project Metrics):**
+
 - Total projects: 12
 - Active projects: 5
 - Completion rate: "92% pünktlich" (green if >85%)
 - Average project value: "€ 37.500"
 
 **Finanzkennzahlen (Financial Metrics):**
+
 - Total contract volume: "€ 450.000" (all-time)
 - Outstanding invoices: "€ 12.500" (current)
 - Average invoice: "€ 8.400"
 - Payment reliability: "95%" (% paid on time)
 
 **Aktivität (Activity Timeline):**
+
 - Created: Date + by whom
 - Last contract: Date + project reference
 - Last contact: Date + communication summary
 
 **Interne Notizen (Internal Notes - Collapsible):**
+
 - Rich text display (Phase 2) or plain text (Phase 1)
 - Last edited by + date
 - [Bearbeiten] button → Opens inline editor
@@ -140,13 +151,14 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 
 **Contract List Table:**
 
-| Vertragsnr. | Typ | Projekt | Wert | Status | Laufzeit | Aktionen |
-|-------------|-----|---------|------|--------|----------|----------|
-| SC-2025-00123 | Projekt | P-2025-M003 | € 45.000 | In Ausführung | 01.02-28.02 | [...] |
-| SC-2024-00098 | Rahmenvertrag | — | € 200.000 | Unterzeichnet | 01/24-12/25 | [...] |
-| SC-2024-00067 | Projekt | P-2024-B015 | € 38.000 | Abgeschlossen | 15.11-20.12 | [...] |
+| Vertragsnr.   | Typ           | Projekt     | Wert      | Status        | Laufzeit    | Aktionen |
+| ------------- | ------------- | ----------- | --------- | ------------- | ----------- | -------- |
+| SC-2025-00123 | Projekt       | P-2025-M003 | € 45.000  | In Ausführung | 01.02-28.02 | [...]    |
+| SC-2024-00098 | Rahmenvertrag | —           | € 200.000 | Unterzeichnet | 01/24-12/25 | [...]    |
+| SC-2024-00067 | Projekt       | P-2024-B015 | € 38.000  | Abgeschlossen | 15.11-20.12 | [...]    |
 
 **Columns:**
+
 - **Vertragsnr.:** Contract number (link to contract detail)
 - **Typ:** Framework / Project / ServiceAgreement / PurchaseOrder
 - **Projekt:** Project number (link) or "—" for framework
@@ -156,6 +168,7 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 - **Aktionen:** [...] menu → View PDF, Edit (if Draft), Terminate
 
 **Status Badges:**
+
 - **Entwurf (Draft):** Gray
 - **Freigabe ausstehend (PendingApproval):** Amber
 - **Gesendet (SentToSupplier):** Blue
@@ -166,11 +179,13 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 - **Storniert (Cancelled):** Gray strikethrough
 
 **Actions:**
+
 - [+ Neuer Vertrag] button (top-right, INN/PLAN)
 - Filter: Status, Project, Date range
 - Sort: By date (newest first), by value (highest first)
 
 **Empty State:**
+
 - "Noch keine Verträge mit diesem Lieferanten"
 - [+ Ersten Vertrag erstellen] button
 
@@ -180,13 +195,14 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 
 **Project Assignment List:**
 
-| Projekt | Arbeitspaket | Zeitraum | Kosten (Plan/Ist) | Status | Bewertung | Aktionen |
-|---------|--------------|----------|-------------------|--------|-----------|----------|
-| P-2025-M003 | Elektrik Installation | 01.02-15.02 | € 12.000 / € 11.800 | In Arbeit (85%) | - | [...] |
-| P-2024-B015 | Kühlraumtüren | 15.11-20.12 | € 38.000 / € 37.200 | Abgeschlossen | ⭐⭐⭐⭐⭐ 5.0 | [...] |
-| P-2024-M007 | Ladenregale | 05.09-30.09 | € 22.000 / € 24.500 | Abgeschlossen | ⭐⭐⭐☆☆ 3.5 | [...] |
+| Projekt     | Arbeitspaket          | Zeitraum    | Kosten (Plan/Ist)   | Status          | Bewertung      | Aktionen |
+| ----------- | --------------------- | ----------- | ------------------- | --------------- | -------------- | -------- |
+| P-2025-M003 | Elektrik Installation | 01.02-15.02 | € 12.000 / € 11.800 | In Arbeit (85%) | -              | [...]    |
+| P-2024-B015 | Kühlraumtüren         | 15.11-20.12 | € 38.000 / € 37.200 | Abgeschlossen   | ⭐⭐⭐⭐⭐ 5.0 | [...]    |
+| P-2024-M007 | Ladenregale           | 05.09-30.09 | € 22.000 / € 24.500 | Abgeschlossen   | ⭐⭐⭐☆☆ 3.5   | [...]    |
 
 **Columns:**
+
 - **Projekt:** Project number + name (link)
 - **Arbeitspaket:** Work package description
 - **Zeitraum:** Planned dates (actual if completed)
@@ -196,11 +212,13 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 - **Aktionen:** [...] menu → View details, Rate performance, View invoice
 
 **Actions:**
+
 - [+ Projekt zuweisen] button (top-right, INN/PLAN)
 - Filter: Status, Date range, Project
 - Sort: By date (newest first), by status
 
 **Empty State:**
+
 - "Dieser Lieferant ist noch keinem Projekt zugewiesen"
 - [+ Projekt zuweisen] button
 
@@ -242,6 +260,7 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 ```
 
 **Communication Card:**
+
 - Icon: Type (📧 Email, 📞 Phone, 🤝 InPerson, 💬 SMS, 📹 Video)
 - Direction: "Eingehend" / "Ausgehend"
 - Date: DD.MM.YYYY (right-aligned)
@@ -253,6 +272,7 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 - Actions: [Details anzeigen] [Antworten] [Follow-up hinzufügen]
 
 **Add Communication:**
+
 - Opens modal form
 - Fields: Type, Date, Subject, Content, Attachments, Follow-up required
 - Quick templates: "Angebot angefordert", "Rechnung erhalten", "Qualitätsproblem gemeldet"
@@ -263,13 +283,14 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 
 **Invoice List Table:**
 
-| Rechnungsnr. | Projekt | Rechnungsdatum | Fälligkeit | Betrag | Status | Bezahlt | Aktionen |
-|--------------|---------|----------------|------------|--------|--------|---------|----------|
-| R-SUP-24-456 | P-2025-M003 | 05.02.2025 | 07.03.2025 | € 12.000 | Genehmigt | — | [...] |
-| R-SUP-24-423 | P-2024-B015 | 22.12.2024 | 21.01.2025 | € 38.000 | Bezahlt | 15.01.25 | [...] |
-| R-SUP-24-398 | P-2024-M007 | 05.10.2024 | 04.11.2024 | € 24.500 | Bezahlt | 28.10.24 | [...] |
+| Rechnungsnr. | Projekt     | Rechnungsdatum | Fälligkeit | Betrag   | Status    | Bezahlt  | Aktionen |
+| ------------ | ----------- | -------------- | ---------- | -------- | --------- | -------- | -------- |
+| R-SUP-24-456 | P-2025-M003 | 05.02.2025     | 07.03.2025 | € 12.000 | Genehmigt | —        | [...]    |
+| R-SUP-24-423 | P-2024-B015 | 22.12.2024     | 21.01.2025 | € 38.000 | Bezahlt   | 15.01.25 | [...]    |
+| R-SUP-24-398 | P-2024-M007 | 05.10.2024     | 04.11.2024 | € 24.500 | Bezahlt   | 28.10.24 | [...]    |
 
 **Columns:**
+
 - **Rechnungsnr.:** Supplier's invoice number
 - **Projekt:** Project number (link)
 - **Rechnungsdatum:** Invoice date
@@ -280,17 +301,20 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 - **Aktionen:** [...] menu → View PDF, Approve, Mark paid, Dispute
 
 **Status Badges:**
+
 - **Ausstehend (Pending):** Amber
 - **Genehmigt (Approved):** Blue + checkmark
 - **Bezahlt (Paid):** Green + checkmark
 - **Umstritten (Disputed):** Red + warning
 
 **Summary Cards (top):**
+
 - **Offene Rechnungen:** "€ 12.500" (2 Rechnungen) - Amber
 - **Überfällige Rechnungen:** "€ 0" (0 Rechnungen) - Green
 - **Dieses Jahr bezahlt:** "€ 248.000" (18 Rechnungen) - Blue
 
 **Actions:**
+
 - [+ Rechnung erfassen] button (top-right, INN/BUCH)
 
 ---
@@ -324,6 +348,7 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 ```
 
 **Document Categories:**
+
 - Versicherungsnachweise (Insurance certificates)
 - Lizenzen & Genehmigungen (Licenses & permits)
 - Qualifikationen (Qualifications)
@@ -333,11 +358,13 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 - Sonstige (Other)
 
 **Document Indicators:**
+
 - **Gültig (Valid):** Green checkmark + expiry date
 - **Abgelaufen (Expired):** Red warning + "Erneuern erforderlich"
 - **Läuft bald ab (Expiring):** Amber warning (within 30 days)
 
 **Upload:**
+
 - [+ Dokument hochladen] button
 - Select category, upload file, add notes
 - Automatic categorization for known document types
@@ -347,6 +374,7 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 ## Performance Chart (Übersicht Tab)
 
 **Rating Trend (Line Chart - last 12 months):**
+
 - X-axis: Months
 - Y-axis: Overall rating (0-5 stars)
 - Blue line: Rating trend
@@ -354,6 +382,7 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 - Hover: Shows project name + specific rating
 
 **Project Completion Timeline (Gantt-style):**
+
 - Shows last 6 projects
 - Bars: Planned vs. actual timeline
 - Color: Green (on-time), Red (delayed)
@@ -399,6 +428,7 @@ Create a detailed supplier profile page for KOMPASS showing supplier information
 ```
 
 **Mobile Optimizations:**
+
 - Collapsible sections (accordion)
 - Swipeable tabs for main sections
 - Click-to-call phone numbers
@@ -501,6 +531,7 @@ npx shadcn-ui@latest add card badge button table tabs dialog separator progress
 ```
 
 ### Charts (recharts)
+
 - Line chart: Rating trend
 - Bar chart: Project completion timeline
 
@@ -529,4 +560,3 @@ npx shadcn-ui@latest add card badge button table tabs dialog separator progress
 ---
 
 **End of supplier-detail.md**
-

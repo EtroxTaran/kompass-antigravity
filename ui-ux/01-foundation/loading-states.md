@@ -1,6 +1,7 @@
 # Loading States - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Loading & Skeleton Screens
 - **User Roles**: All (GF, PLAN, ADM, KALK, BUCH)
 - **Usage Context**: Display during data fetching, page transitions, and background sync operations
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Skeleton screens** for content placeholders (preferred over spinners)
 - **Progress indicators** for multi-step operations (e.g., bulk import)
 - **Inline spinners** for button loading states
 - **Overlay loaders** for full-page operations
 
 ### Layout Structure
+
 - Skeleton screens match actual content layout
 - Loading indicators positioned contextually
 - Non-blocking UI where possible (background loading)
 - Clear visual distinction between loading and loaded states
 
 ### shadcn/ui Components
+
 - `Skeleton` for placeholder content
 - `Progress` for determinate operations
 - Custom spinner component for indeterminate loading
@@ -102,6 +106,7 @@ Design skeleton placeholders for common content types:
 
 **Button Loading States:**
 Show button variants during loading:
+
 - Primary button: Blue background, white spinner (16px), text changes to "Wird gespeichert..."
 - Secondary button: Outlined, blue spinner, text changes
 - Disabled appearance: Reduced opacity, cursor not-allowed
@@ -109,6 +114,7 @@ Show button variants during loading:
 
 **Offline Sync Loading:**
 Design a persistent sync indicator in top bar:
+
 - Small icon (20px): Cloud with circular arrow
 - Color states:
   - Green: "Synchronisiert" (synced)
@@ -118,6 +124,7 @@ Design a persistent sync indicator in top bar:
 - Clicking opens popover with details
 
 **Micro-interactions:**
+
 - Skeleton shimmer: Linear gradient moving left-to-right
 - Spinner: Smooth rotation, easing function
 - Progress bar: Animated fill with transition
@@ -128,6 +135,7 @@ Design in light mode with professional aesthetic. All text in German. Ensure ani
 ## Interaction Patterns
 
 ### Loading Sequence
+
 1. User triggers action (click button, navigate page)
 2. Immediate visual feedback (button loading state or skeleton appears)
 3. Loading indicator shown (spinner, skeleton, progress bar)
@@ -135,6 +143,7 @@ Design in light mode with professional aesthetic. All text in German. Ensure ani
 5. Optional: Success confirmation toast
 
 ### States
+
 - **Idle**: No loading indicator visible
 - **Loading (Indeterminate)**: Spinner or skeleton shown, no time estimate
 - **Loading (Determinate)**: Progress bar with percentage
@@ -142,6 +151,7 @@ Design in light mode with professional aesthetic. All text in German. Ensure ani
 - **Error**: Loading state removed, error message shown (see error-empty-states.md)
 
 ### Skeleton Behavior
+
 - Appears immediately (<100ms) when navigation starts
 - Matches exact layout of loaded content
 - Shimmer animation loops continuously
@@ -149,6 +159,7 @@ Design in light mode with professional aesthetic. All text in German. Ensure ani
 - No layout shift when content loads
 
 ### Button Loading States
+
 - Click triggers loading state immediately
 - Text changes: "Speichern" → "Wird gespeichert..."
 - Spinner appears to left of text
@@ -158,6 +169,7 @@ Design in light mode with professional aesthetic. All text in German. Ensure ani
 ## German Labels & Content
 
 ### Loading Messages
+
 - **Wird geladen...**: Loading...
 - **Daten werden geladen...**: Data is loading...
 - **Wird gespeichert...**: Saving...
@@ -166,17 +178,20 @@ Design in light mode with professional aesthetic. All text in German. Ensure ani
 - **X% abgeschlossen**: X% complete
 
 ### Sync Status
+
 - **Synchronisiert**: Synchronized
 - **Offline**: Offline
 - **X Änderungen ausstehend**: X changes pending
 - **Synchronisierung fehlgeschlagen**: Sync failed
 
 ### Progress Messages
+
 - **Kunden werden importiert...**: Importing customers...
 - **Rechnung wird erstellt...**: Creating invoice...
 - **Projekt wird aktualisiert...**: Updating project...
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - ARIA live regions for dynamic content updates
 - `role="status"` on loading indicators
@@ -187,6 +202,7 @@ Design in light mode with professional aesthetic. All text in German. Ensure ani
 - Keyboard focus preserved during loading
 
 ## Mobile Considerations
+
 - Smaller spinners on mobile (12px in buttons, 32px full-screen)
 - Skeleton screens adapt to mobile layout (single column)
 - Touch-friendly progress indicators (thicker bars, 12px height)
@@ -197,22 +213,26 @@ Design in light mode with professional aesthetic. All text in German. Ensure ani
 ## Example Data
 
 **Customer List Loading:**
+
 - Skeleton: 8 rows of customer data placeholders
 - Duration: ~500ms typical load time
 - Transition: Fade-in as rows load progressively
 
 **Form Submission:**
+
 - Button text: "Kunde anlegen" → "Wird gespeichert..."
 - Spinner: 16px white spinner on blue background
 - Duration: 300-800ms
 - Success: Toast "Kunde wurde erfolgreich angelegt"
 
 **Bulk Import:**
+
 - Progress bar: "127 von 500 Kunden importiert (25%)"
 - Estimated time: "Geschätzte verbleibende Zeit: 2 Minuten"
 - Cancellable with "Abbrechen" button
 
 **Offline Sync (ADM User):**
+
 - Badge: Amber dot with "3"
 - Tooltip: "3 Änderungen ausstehend - Automatische Synchronisierung bei Online-Verbindung"
 - Manual sync button: "Jetzt synchronisieren" with blue spinner when active
@@ -220,6 +240,7 @@ Design in light mode with professional aesthetic. All text in German. Ensure ani
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add skeleton
 npx shadcn-ui@latest add progress
@@ -227,6 +248,7 @@ npx shadcn-ui@latest add button
 ```
 
 ### Skeleton Component Usage
+
 ```typescript
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -238,6 +260,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 ```
 
 ### Button Loading State
+
 ```typescript
 <Button disabled={isLoading}>
   {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -246,6 +269,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 ```
 
 ### Progress Bar Usage
+
 ```typescript
 import { Progress } from '@/components/ui/progress';
 
@@ -258,13 +282,14 @@ import { Progress } from '@/components/ui/progress';
 ```
 
 ### Component Dependencies
+
 - Design tokens (colors, animations)
 - Icons from lucide-react (Loader2, CloudSync)
 - Animation utilities from Tailwind CSS
 
 ### State Management
+
 - Loading states tracked in React component state
 - Async operations use React Query loading states
 - Offline sync status from service worker
 - Progress tracked in backend during bulk operations
-

@@ -1,6 +1,7 @@
 # Dialogs & Modals - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Modal Dialogs and Sheets
 - **User Roles**: All (GF, PLAN, ADM, KALK, BUCH)
 - **Usage Context**: Forms, confirmations, alerts, detail views
@@ -9,6 +10,7 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Overlay**: Semi-transparent backdrop blocking main content
 - **Dialog Container**: Centered modal with clear boundaries
 - **Header**: Title and close button
@@ -16,6 +18,7 @@
 - **Footer**: Action buttons (primary + secondary)
 
 ### Layout Structure
+
 - Overlay: Full-screen, semi-transparent black (50% opacity)
 - Dialog widths: Small (400px), Medium (600px), Large (800px), Full-screen (mobile)
 - Max-height: 90vh with vertical scroll
@@ -23,6 +26,7 @@
 - Shadow: Heavy elevation (0px 8px 24px rgba(0,0,0,0.15))
 
 ### shadcn/ui Components
+
 - `Dialog`, `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogFooter`
 - `AlertDialog` for confirmations
 - `Sheet` for slide-in panels
@@ -34,6 +38,7 @@ Create comprehensive dialog and modal components for KOMPASS, a German CRM appli
 **Standard Dialog (Form Modal):**
 
 **Structure:**
+
 1. **Overlay**: Full-screen, rgba(0,0,0,0.5), blur effect (optional)
 2. **Dialog Container**:
    - Width: 600px (medium), centered on screen
@@ -87,6 +92,7 @@ Create comprehensive dialog and modal components for KOMPASS, a German CRM appli
 **Alert Dialog (Confirmation):**
 
 **Destructive Confirmation:**
+
 - Width: 400px
 - Icon: Alert triangle (64px, red) at top
 - Title: "Kunde löschen?" (20px, bold, centered)
@@ -96,12 +102,14 @@ Create comprehensive dialog and modal components for KOMPASS, a German CRM appli
   - Destructive: "Löschen" (red)
 
 **Success Confirmation:**
+
 - Icon: Check circle (64px, green)
 - Title: "Kunde erfolgreich gespeichert"
 - Description: "Die Kundendaten wurden aktualisiert."
 - Button: "OK" (primary blue, centered)
 
 **Warning Dialog:**
+
 - Icon: Alert triangle (64px, amber)
 - Title: "Ungespeicherte Änderungen"
 - Description: "Sie haben ungespeicherte Änderungen. Möchten Sie die Änderungen speichern, bevor Sie fortfahren?"
@@ -113,6 +121,7 @@ Create comprehensive dialog and modal components for KOMPASS, a German CRM appli
 **Sheet (Slide-in Panel):**
 
 **Right Sheet (Sidebar Panel):**
+
 - Slides in from right
 - Width: 480px (desktop), 90% (mobile)
 - Full height
@@ -123,6 +132,7 @@ Create comprehensive dialog and modal components for KOMPASS, a German CRM appli
 - Footer: Optional actions
 
 **Bottom Sheet (Mobile):**
+
 - Slides up from bottom
 - Height: Auto (content-based), max 80vh
 - Border-radius: 20px 20px 0 0
@@ -131,6 +141,7 @@ Create comprehensive dialog and modal components for KOMPASS, a German CRM appli
 - Swipe down to close
 
 **Filter Sheet Example:**
+
 - Title: "Filter"
 - Content:
   - Status filter: Checkboxes "Aktiv", "Inaktiv"
@@ -142,6 +153,7 @@ Create comprehensive dialog and modal components for KOMPASS, a German CRM appli
   - "Anwenden" (primary blue, right)
 
 **Multi-Step Dialog (Wizard):**
+
 - Progress indicator at top: Step 1 of 3 (dots or numbers)
 - Steps: "Grunddaten" → "Adresse" → "Zusammenfassung"
 - Content changes per step
@@ -150,6 +162,7 @@ Create comprehensive dialog and modal components for KOMPASS, a German CRM appli
   - "Weiter" / "Abschließen" (primary, right-aligned)
 
 **Dialog with Tabs:**
+
 - Tab navigation below header, above content
 - Example: "Kundendetails" dialog
 - Tabs: "Info", "Standorte", "Kontakte", "Aktivitäten"
@@ -157,23 +170,27 @@ Create comprehensive dialog and modal components for KOMPASS, a German CRM appli
 - Single footer for all tabs
 
 **Nested Dialogs:**
+
 - Second dialog opens on top of first
 - Darker overlay (60% opacity) for second dialog
 - Higher z-index
 - Example: "Kunde bearbeiten" → "Standort hinzufügen" (nested)
 
 **Scrollable Content Indicators:**
+
 - Top: Gradient fade when content scrollable above
 - Bottom: Gradient fade when content scrollable below
 - Scroll shadows for depth perception
 
 **Loading Dialog:**
+
 - Width: 300px
 - Content: Spinner (48px) + "Wird verarbeitet..." text
 - No footer, no close button
 - Auto-closes when operation completes
 
 **Dialog Animations:**
+
 - Overlay: Fade in (200ms)
 - Dialog: Scale up from 0.95 to 1.0 + fade in (300ms, ease-out)
 - Sheet: Slide in from direction (300ms, ease-out)
@@ -184,6 +201,7 @@ Design in light mode with professional aesthetic. Ensure keyboard navigation wor
 ## Interaction Patterns
 
 ### Opening Dialog
+
 1. User triggers action (button click)
 2. Overlay fades in
 3. Dialog scales up and fades in
@@ -191,6 +209,7 @@ Design in light mode with professional aesthetic. Ensure keyboard navigation wor
 5. Background content becomes inert (no interaction)
 
 ### Closing Dialog
+
 - Click close "×" button
 - Click overlay backdrop (optional, configurable)
 - Press Escape key
@@ -199,6 +218,7 @@ Design in light mode with professional aesthetic. Ensure keyboard navigation wor
 - Focus returns to trigger element
 
 ### Keyboard Navigation
+
 - Tab: Move through dialog elements
 - Shift+Tab: Move backward
 - Escape: Close dialog
@@ -206,12 +226,14 @@ Design in light mode with professional aesthetic. Ensure keyboard navigation wor
 - Arrow keys: Navigate radio/checkboxes (if focused)
 
 ### Focus Management
+
 - Focus trapped within dialog (can't tab out to background)
 - Focus moves to first focusable element on open
 - Focus returns to trigger element on close
 - Close button always reachable via Tab
 
 ### States
+
 - **Open**: Visible, overlay active, content interactive
 - **Closed**: Not rendered in DOM
 - **Loading**: Content loading, spinner shown, buttons disabled
@@ -220,6 +242,7 @@ Design in light mode with professional aesthetic. Ensure keyboard navigation wor
 ## German Labels & Content
 
 ### Dialog Titles
+
 - **[X] bearbeiten**: Edit [X]
 - **Neuer [X]**: New [X]
 - **[X] löschen?**: Delete [X]?
@@ -232,6 +255,7 @@ Design in light mode with professional aesthetic. Ensure keyboard navigation wor
 - **Einstellungen**: Settings
 
 ### Dialog Actions
+
 - **Speichern**: Save
 - **Abbrechen**: Cancel
 - **Schließen**: Close
@@ -244,6 +268,7 @@ Design in light mode with professional aesthetic. Ensure keyboard navigation wor
 - **Verwerfen**: Discard
 
 ### Dialog Messages
+
 - **Sind Sie sicher?**: Are you sure?
 - **Diese Aktion kann nicht rückgängig gemacht werden**: This action cannot be undone
 - **Ungespeicherte Änderungen**: Unsaved changes
@@ -251,6 +276,7 @@ Design in light mode with professional aesthetic. Ensure keyboard navigation wor
 - **Wird verarbeitet...**: Processing...
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Dialog has role="dialog" or role="alertdialog"
 - Title has id referenced by aria-labelledby
@@ -263,6 +289,7 @@ Design in light mode with professional aesthetic. Ensure keyboard navigation wor
 - Focus returns to trigger on close
 
 ## Mobile Considerations
+
 - Full-screen dialogs on mobile (<640px)
 - Header with back arrow (not "×") on mobile
 - Footer buttons stack vertically if needed
@@ -274,18 +301,21 @@ Design in light mode with professional aesthetic. Ensure keyboard navigation wor
 ## Example Data
 
 **Edit Customer Dialog:**
+
 - Title: "Kunde bearbeiten"
 - Description: "Ändern Sie die Kundendaten"
 - Form fields: Company name, VAT, Email, Phone
 - Buttons: "Abbrechen", "Speichern"
 
 **Delete Confirmation:**
+
 - Icon: Red alert triangle
 - Title: "Kunde löschen?"
 - Description: "Sind Sie sicher, dass Sie 'Hofladen Müller GmbH' löschen möchten?"
 - Buttons: "Abbrechen", "Löschen"
 
 **Filter Sheet:**
+
 - Title: "Filter"
 - Filters: Status (Aktiv/Inaktiv), Date range, Location, Rating
 - Buttons: "Filter zurücksetzen", "Anwenden"
@@ -293,6 +323,7 @@ Design in light mode with professional aesthetic. Ensure keyboard navigation wor
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add dialog
 npx shadcn-ui@latest add alert-dialog
@@ -300,6 +331,7 @@ npx shadcn-ui@latest add sheet
 ```
 
 ### Basic Dialog
+
 ```typescript
 <Dialog>
   <DialogTrigger asChild>
@@ -322,6 +354,7 @@ npx shadcn-ui@latest add sheet
 ```
 
 ### Alert Dialog
+
 ```typescript
 <AlertDialog>
   <AlertDialogTrigger asChild>
@@ -343,6 +376,7 @@ npx shadcn-ui@latest add sheet
 ```
 
 ### Sheet
+
 ```typescript
 <Sheet>
   <SheetTrigger>Filter</SheetTrigger>
@@ -359,6 +393,7 @@ npx shadcn-ui@latest add sheet
 ```
 
 ### Component Dependencies
+
 - Design tokens (colors, spacing, shadows)
 - Icons from lucide-react (X, AlertTriangle, CheckCircle)
 - Button component for actions
@@ -366,9 +401,9 @@ npx shadcn-ui@latest add sheet
 - Focus trap utility for accessibility
 
 ### State Management
+
 - Dialog open/close state
 - Form data in dialog
 - Loading/submitting states
 - Multi-step wizard progress
 - Filter state in filter sheet
-

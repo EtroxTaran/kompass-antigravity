@@ -1,5 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
 import { Play, Pause, Square, Clock } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+
+import type { TimeEntry } from '@kompass/shared/types/entities/time-entry';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -8,6 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -15,15 +20,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
+
 import { useTimer } from '../hooks/useTimer';
-import type { TimeEntry } from '@kompass/shared/types/entities/time-entry';
+
+import { useToast } from '@/hooks/use-toast';
 
 /**
  * TimerWidget Component
- * 
+ *
  * Quick-access timer widget for time tracking.
  * Features:
  * - Start/stop/pause timer
@@ -31,7 +35,7 @@ import type { TimeEntry } from '@kompass/shared/types/entities/time-entry';
  * - Real-time elapsed time display
  * - Offline support with localStorage
  * - Automatic save on stop
- * 
+ *
  * @see Phase 1.2 of Time Tracking Implementation Plan
  */
 export function TimerWidget() {
@@ -74,7 +78,8 @@ export function TimerWidget() {
     if (!taskDescription || taskDescription.length < 10) {
       toast({
         title: 'Fehler',
-        description: 'Aufgabenbeschreibung muss mindestens 10 Zeichen lang sein',
+        description:
+          'Aufgabenbeschreibung muss mindestens 10 Zeichen lang sein',
         variant: 'destructive',
       });
       return;
@@ -291,4 +296,3 @@ export function TimerWidget() {
     </Button>
   );
 }
-

@@ -1,6 +1,7 @@
 # Tour Planning Form - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Entity Creation/Edit Form
 - **User Roles**: ADM (create/edit own), INNEN (full), GF (full), PLAN (read-only)
 - **Usage Context**: Plan multi-stop customer visits with route optimization
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Clear multi-stop workflow**: Sequential stop management
 - **Route optimization**: Visual route preview on map
 - **Cost estimation**: Real-time calculation of distance/time/cost
 - **Mobile-optimized**: Quick stop addition via GPS/customer search
 
 ### Form Structure
+
 - Header with tour date and status
 - Stop management section with drag-and-drop reordering
 - Route preview map
@@ -22,6 +25,7 @@
 - Action buttons (Save, Optimize Route, Start Tour)
 
 ### shadcn/ui Components
+
 - Card, Form, Input, Button, Select, DatePicker
 - Draggable list components
 - Map integration component
@@ -33,12 +37,14 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 **Form Layout (Desktop - 1200px):**
 
 **Header Section:**
+
 - Title: "Tourenplanung" (24px, semibold)
 - Tour date selector: Calendar icon + "Do., 6. Februar 2025" (click to change)
 - Status badge: "Geplant" (gray) | "Aktiv" (blue) | "Abgeschlossen" (green)
 - Quick actions: "Route optimieren" (blue button), "Tour starten" (green button, disabled until saved)
 
 **Tour Information Card:**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Allgemeine Informationen                    │
@@ -55,6 +61,7 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 ```
 
 **Stops Management Section (Left Column - 600px):**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Stopps (4)                   [+ Stopp]      │
@@ -82,6 +89,7 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 ```
 
 **Route Preview (Right Column - 600px):**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Routenübersicht                             │
@@ -102,6 +110,7 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 ```
 
 **Add Stop Modal (600px × 500px):**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Stopp hinzufügen                       [×] │
@@ -129,6 +138,7 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 ```
 
 **Stop Detail Fields:**
+
 - Customer selection (searchable dropdown)
 - Planned arrival time (time picker)
 - Visit duration (15/30/45/60/90 min presets or custom)
@@ -137,6 +147,7 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 - Priority indicator (if overdue or urgent)
 
 **Mobile Layout (375px):**
+
 - Stacked layout: Info → Stops → Summary
 - Bottom sheet for map preview
 - Swipe actions on stops (reorder/delete)
@@ -144,17 +155,20 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 - Collapsible route summary
 
 **Route Optimization Logic:**
+
 - "Route optimieren" button triggers optimization algorithm
 - Shows before/after comparison: "Sie sparen 12 km und 18 Minuten"
 - Allows manual override of optimized order
 - Considers customer time preferences (morning/afternoon)
 
 **Cost Calculation:**
+
 - Distance-based: €0.50/km (configurable)
 - Time-based allowance: €25/day (if tour > 4 hours)
 - Automatic hotel suggestion if tour end > 200km from start
 
 **Validation & Business Rules:**
+
 - Minimum 1 stop required
 - Maximum 12 stops per day (configurable)
 - Warning if total duration > 10 hours
@@ -162,6 +176,7 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 - Block overlapping time slots
 
 ## Interaction Patterns
+
 - **Drag handles**: Reorder stops by dragging ≡ icon
 - **Delete confirmation**: "Stopp entfernen?" dialog
 - **Route optimization**: Animated reordering on optimization
@@ -169,6 +184,7 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 - **Start tour**: Switches to tour execution mode (mobile)
 
 ## German Labels & Content
+
 - **Stopp**: Stop/waypoint
 - **Route optimieren**: Optimize route
 - **Geplante Ankunft**: Planned arrival
@@ -178,6 +194,7 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 - **Tour kann nicht leer sein**: Tour cannot be empty
 
 ## Accessibility Requirements
+
 - Drag-and-drop alternative: up/down arrow buttons
 - ARIA labels for all interactive elements
 - Keyboard navigation for stop management
@@ -185,6 +202,7 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 - High contrast mode support
 
 ## Mobile Considerations
+
 - **Touch targets**: 48px minimum for all buttons
 - **Swipe gestures**: Left swipe to delete, hold to reorder
 - **Bottom sheet**: Map preview slides up from bottom
@@ -192,6 +210,7 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 - **Offline mode**: Cache route data for offline navigation
 
 ## Integration Points
+
 - **Customer data**: Pull latest customer info and visit history
 - **Calendar**: Check for conflicts with other appointments
 - **Navigation**: Export to Google Maps/Apple Maps
@@ -199,6 +218,7 @@ Create a comprehensive tour planning form for KOMPASS that enables field sales (
 - **Analytics**: Track planned vs actual routes
 
 ## Implementation Notes
+
 ```bash
 # Required shadcn/ui components
 npx shadcn-ui@latest add form card button input select
@@ -215,6 +235,7 @@ npx shadcn-ui@latest add sortable-list # For drag-and-drop
 ```
 
 ## State Management
+
 - Tour draft state (local storage)
 - Stop list array with positions
 - Optimization status (idle/processing/complete)
@@ -222,18 +243,21 @@ npx shadcn-ui@latest add sortable-list # For drag-and-drop
 - Cost calculation state
 
 ## Performance Requirements
+
 - Route optimization < 3 seconds for 10 stops
 - Map renders < 1 second
 - Smooth drag-and-drop at 60fps
 - Auto-save debounced to 1 second
 
 ## Error Handling
+
 - "Kunde nicht gefunden" - Customer not found
 - "Route konnte nicht berechnet werden" - Route calculation failed
 - "Keine Internetverbindung" - No internet (use cached data)
 - "Maximale Anzahl Stopps erreicht" - Maximum stops reached
 
 ## Analytics Events
+
 - tour_created
 - stop_added / stop_removed
 - route_optimized (before/after metrics)

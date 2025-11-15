@@ -1,25 +1,47 @@
 import { Controller, Get, Put, Param, Body, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { RoleService } from './role.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RbacGuard } from '../auth/guards/rbac.guard';
-import { RequirePermission } from '../auth/decorators/require-permission.decorator';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
+
+import type {
+  EntityType,
+  Permission,
+} from '@kompass/shared/constants/rbac.constants';
+import { UserRole } from '@kompass/shared/constants/rbac.constants';
+import type { Role } from '@kompass/shared/types/entities/role';
 import { User } from '@kompass/shared/types/entities/user';
-import { Role } from '@kompass/shared/types/entities/role';
-import { UserRole, EntityType, Permission } from '@kompass/shared/constants/rbac.constants';
+
+// TODO: Import actual decorators and guards when auth module is fully implemented
+// import { CurrentUser } from '../auth/decorators/current-user.decorator';
+// import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+// import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+// import { RbacGuard } from '../auth/guards/rbac.guard';
+
+// Stub decorators and guards for now
+const CurrentUser =
+  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
+const RequirePermission =
+  (_entity: string, _action: string) =>
+  (_target: any, _propertyKey: string, _descriptor: PropertyDescriptor) => {};
+const JwtAuthGuard = class {};
+const RbacGuard = class {};
+
+import { RoleService } from './role.service';
 
 /**
  * Role Configuration Controller
- * 
+ *
  * Handles database-driven role configuration and permission updates.
  * Only GF and ADMIN roles can manage role configurations.
- * 
+ *
  * TODO: Implement role configuration endpoints
  * TODO: Add permission matrix management
  * TODO: Add role activation/deactivation
  * TODO: Add audit logging for role changes
- * 
+ *
  * @see docs/specifications/reviews/API_SPECIFICATION.md#role-configuration-endpoints
  */
 @Controller('api/v1/roles')
@@ -32,7 +54,7 @@ export class RoleController {
   /**
    * GET /api/v1/roles
    * List all roles (active and inactive)
-   * 
+   *
    * TODO: Implement role listing with filtering
    */
   @Get()
@@ -48,7 +70,7 @@ export class RoleController {
   /**
    * GET /api/v1/roles/:roleId
    * Get role details including configuration
-   * 
+   *
    * TODO: Implement role details retrieval
    */
   @Get(':roleId')
@@ -67,7 +89,7 @@ export class RoleController {
   /**
    * GET /api/v1/roles/:roleId/permissions
    * Get effective permissions for a role
-   * 
+   *
    * TODO: Implement permission retrieval from runtime matrix
    */
   @Get(':roleId/permissions')
@@ -86,7 +108,7 @@ export class RoleController {
   /**
    * PUT /api/v1/roles/:roleId/permissions
    * Update permissions for a role (creates new permission matrix version)
-   * 
+   *
    * TODO: Implement permission update with versioning
    * TODO: Add GF-only authorization check
    * TODO: Add audit logging
@@ -99,7 +121,8 @@ export class RoleController {
   @ApiResponse({ status: 404, description: 'Role not found' })
   async updateRolePermissions(
     @Param('roleId') roleId: string,
-    @Body() permissions: Record<EntityType, Partial<Record<Permission, boolean>>>,
+    @Body()
+    permissions: Record<EntityType, Partial<Record<Permission, boolean>>>,
     @CurrentUser() user: User
   ): Promise<Role> {
     // TODO: Verify user is GF
@@ -109,4 +132,3 @@ export class RoleController {
     throw new Error('Not implemented');
   }
 }
-

@@ -1,20 +1,23 @@
 import { Injectable, Inject } from '@nestjs/common';
-import {
+
+import type {
   Project,
   ProfitabilityReport,
+} from '@kompass/shared/types/entities/project';
+import {
   CostTrackingStatus,
   calculateCostTrackingStatus,
   calculateProfitMargin,
 } from '@kompass/shared/types/entities/project';
-import { LaborCostSummary } from '@kompass/shared/types/entities/time-entry';
-import { MaterialCostSummary } from '@kompass/shared/types/entities/project-cost';
+import type { MaterialCostSummary } from '@kompass/shared/types/entities/project-cost';
+import type { LaborCostSummary } from '@kompass/shared/types/entities/time-entry';
 
 /**
  * Project Cost Calculator Service
- * 
+ *
  * Calculates project costs, profitability, and budget status.
  * Triggers automatic recalculations when time entries or costs change.
- * 
+ *
  * @see Phase 3 of Time Tracking Implementation Plan
  */
 @Injectable()
@@ -26,12 +29,12 @@ export class ProjectCostCalculatorService {
     private readonly timeEntryRepository: any, // TODO: Replace with actual interface
     @Inject('IProjectCostRepository')
     private readonly projectCostRepository: any, // TODO: Replace with actual interface
-    private readonly budgetAlertService: any, // TODO: Import BudgetAlertService
+    private readonly budgetAlertService: any // TODO: Import BudgetAlertService
   ) {}
 
   /**
    * Calculate labor costs for a project
-   * 
+   *
    * Aggregates approved time entries and calculates total labor cost.
    */
   async calculateLaborCosts(projectId: string): Promise<LaborCostSummary> {
@@ -41,20 +44,24 @@ export class ProjectCostCalculatorService {
 
   /**
    * Calculate material costs for a project
-   * 
+   *
    * Aggregates all project costs (materials, contractors, services).
    */
-  async calculateMaterialCosts(projectId: string): Promise<MaterialCostSummary> {
+  async calculateMaterialCosts(
+    projectId: string
+  ): Promise<MaterialCostSummary> {
     // Delegate to project cost repository
     return this.projectCostRepository.calculateMaterialCosts(projectId);
   }
 
   /**
    * Calculate profitability for a project
-   * 
+   *
    * Returns comprehensive profitability report with budget variance analysis.
    */
-  async calculateProfitability(projectId: string): Promise<ProfitabilityReport> {
+  async calculateProfitability(
+    projectId: string
+  ): Promise<ProfitabilityReport> {
     // Get project
     const project = await this.projectRepository.findById(projectId);
     if (!project) {
@@ -80,18 +87,19 @@ export class ProjectCostCalculatorService {
         : 0;
 
     const laborVarianceEur = project.budgetedLaborCostEur - actualLaborCostEur;
-    const materialVarianceEur = project.budgetedMaterialCostEur - actualMaterialCostEur;
+    const materialVarianceEur =
+      project.budgetedMaterialCostEur - actualMaterialCostEur;
 
     // Calculate profitability
     const { profitEur, marginPercent } = calculateProfitMargin(
       project.contractValueEur,
-      actualTotalCostEur,
+      actualTotalCostEur
     );
 
     // Determine cost tracking status
     const costTrackingStatus = calculateCostTrackingStatus(
       actualTotalCostEur,
-      project.budgetedTotalCostEur,
+      project.budgetedTotalCostEur
     );
 
     // Determine if alerts needed
@@ -131,7 +139,7 @@ export class ProjectCostCalculatorService {
 
   /**
    * Update project costs
-   * 
+   *
    * Recalculates all cost fields and updates project entity.
    * Should be called when time entries are approved or costs are added/updated.
    */
@@ -177,13 +185,13 @@ export class ProjectCostCalculatorService {
 
   /**
    * Trigger budget alert
-   * 
+   *
    * Sends notifications when project budget thresholds are exceeded.
    * Delegates to BudgetAlertService for actual alert handling.
    */
   private async triggerBudgetAlert(
     project: Project,
-    profitability: ProfitabilityReport,
+    profitability: ProfitabilityReport
   ): Promise<void> {
     // Delegate to budget alert service
     await this.budgetAlertService.checkAndAlert(project, profitability);
@@ -191,7 +199,7 @@ export class ProjectCostCalculatorService {
 
   /**
    * Get budget status percentage
-   * 
+   *
    * Returns what percentage of budget has been used.
    */
   async getBudgetUsagePercent(projectId: string): Promise<number> {
@@ -208,12 +216,12 @@ export class ProjectCostCalculatorService {
 
   /**
    * Calculate project ROI
-   * 
+   *
    * Return on Investment calculation.
    */
   calculateROI(
     contractValueEur: number,
-    actualCostEur: number,
+    actualCostEur: number
   ): { roi: number; roiPercent: number } {
     const profit = contractValueEur - actualCostEur;
     const roiPercent = actualCostEur > 0 ? (profit / actualCostEur) * 100 : 0;
@@ -226,14 +234,17 @@ export class ProjectCostCalculatorService {
 
   /**
    * Batch update costs for all active projects
-   * 
+   *
    * Can be run as nightly batch job to ensure all projects are up-to-date.
    */
-  async batchUpdateAllProjects(): Promise<{ updated: number; errors: string[] }> {
+  async batchUpdateAllProjects(): Promise<{
+    updated: number;
+    errors: string[];
+  }> {
     // TODO: Implement batch update
     // Get all active projects
     // const activeProjects = await this.projectRepository.findByStatus('active');
-    
+
     const updated = 0;
     const errors: string[] = [];
 
@@ -249,4 +260,3 @@ export class ProjectCostCalculatorService {
     return { updated, errors };
   }
 }
-

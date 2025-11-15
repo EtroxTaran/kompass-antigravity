@@ -1,6 +1,7 @@
 # Expense List View - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: List View with Approval Workflow
 - **User Roles**: ADM (own expenses), INNEN/GF (all), BUCH (approve/export)
 - **Usage Context**: View expense reports, track approval status, export for accounting
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Status-based grouping**: Pending approval prominent
 - **Photo thumbnails**: Quick receipt verification
 - **Approval actions**: Clear approve/reject buttons
 - **Export options**: Visible for BUCH role
 
 ### List Structure
+
 - Filter by status, date, employee, category
 - Sort by date, amount, status
 - Bulk selection for approval/export
 - Summary totals visible
 
 ### shadcn/ui Components
+
 - Table, Card, Badge, Button, Filter
 - Image preview in popover
 - Checkbox for bulk selection
@@ -33,6 +37,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 **Desktop Layout (1440px):**
 
 **Header Section:**
+
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │ Ausgabenübersicht                                                │
@@ -42,6 +47,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 ```
 
 **Summary Cards:**
+
 ```
 ┌─────────────────┬─────────────────┬─────────────────┬──────────────┐
 │ Offen           │ Diesen Monat    │ Ø Bearbeitungs- │ Export bereit│
@@ -51,6 +57,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 ```
 
 **List View (Pending Approval - BUCH View):**
+
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │ [□] Zur Genehmigung (12)                          [Alle auswählen]│
@@ -73,6 +80,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 ```
 
 **Employee View (ADM):**
+
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │ Meine Ausgaben                                                   │
@@ -95,6 +103,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 ```
 
 **Mobile View (375px):**
+
 ```
 ┌─────────────────────────────┐
 │ [☰] Ausgaben    [Filter] [+]│
@@ -124,6 +133,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 ```
 
 **Receipt Preview (Popover - 400px):**
+
 ```
 ┌─────────────────────────────┐
 │ Beleg                  [×] │
@@ -145,6 +155,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 ```
 
 **Filter Panel:**
+
 ```
 ┌─────────────────────────────┐
 │ Filter                 [×] │
@@ -175,6 +186,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 ```
 
 **Bulk Actions (BUCH):**
+
 ```
 ┌─────────────────────────────────────┐
 │ 3 Ausgaben ausgewählt (€216,30)     │
@@ -187,6 +199,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 ```
 
 **Export Dialog:**
+
 ```
 ┌─────────────────────────────┐
 │ Ausgaben exportieren   [×] │
@@ -207,6 +220,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 ```
 
 **Status Badges:**
+
 - ⏳ **Ausstehend** (blue): Pending approval
 - ✓ **Genehmigt** (green): Approved
 - ✗ **Abgelehnt** (red): Rejected
@@ -214,6 +228,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 - ⚠️ **Warnung** (amber): Needs attention
 
 ## Interaction Patterns
+
 - **Row click**: Expand to show details
 - **Image click**: Preview receipt full screen
 - **Swipe left**: Quick approve (mobile)
@@ -221,6 +236,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 - **Bulk select**: Checkbox + action bar
 
 ## German Labels & Content
+
 - **Genehmigen**: Approve
 - **Ablehnen**: Reject
 - **Ausstehend**: Pending
@@ -230,6 +246,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 - **Über Limit**: Over limit
 
 ## Accessibility Requirements
+
 - Keyboard shortcuts for approve/reject
 - Status announced by screen reader
 - Image alt text describes receipt
@@ -237,6 +254,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 - High contrast mode support
 
 ## Mobile Considerations
+
 - **Card layout**: Better than table on small screens
 - **Swipe gestures**: Quick approve/reject
 - **Bottom sheet**: Filters and bulk actions
@@ -244,6 +262,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 - **Offline caching**: View previously loaded
 
 ## BUCH Role Features
+
 - Approve/reject buttons visible
 - Bulk approval capabilities
 - Export to accounting software
@@ -251,6 +270,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 - Add accounting notes
 
 ## Implementation Notes
+
 ```bash
 # State Management
 - Filter/sort preferences
@@ -272,6 +292,7 @@ Create a comprehensive expense list view for KOMPASS that displays submitted exp
 ```
 
 ## Analytics Events
+
 - expense_approved / expense_rejected
 - bulk_action_performed
 - average_approval_time

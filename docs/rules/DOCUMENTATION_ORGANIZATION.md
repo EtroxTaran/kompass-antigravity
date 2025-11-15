@@ -24,6 +24,7 @@ This guide defines the standard structure for organizing all KOMPASS documentati
 ### ⚠️ Needs Organization
 
 **Root Level Files:**
+
 - `API_UPDATES.md` → Should be in `api/updates/`
 - `CHANGELOG.md` → ✅ Can stay (standard location)
 - `FILE_ORGANIZATION_RULES.md` → Should be in `rules/`
@@ -131,6 +132,7 @@ docs/
 ### Phase 1: Create New Structure (No File Moves Yet)
 
 1. Create new category folders:
+
    ```bash
    mkdir -p docs/{guides,api/{reference,updates,examples},architecture/{decisions,evolution,ai-extensions,diagrams/images},specifications,implementation/{reports,migrations,setup},processes,rules,assets/{images,diagrams,templates}}
    ```
@@ -140,6 +142,7 @@ docs/
 ### Phase 2: Move Files to New Locations
 
 **Root Level Files:**
+
 ```bash
 # API documentation
 mv docs/API_UPDATES.md docs/api/updates/
@@ -159,6 +162,7 @@ mv docs/ROOT_DIRECTORY_CLEANUP.md docs/rules/
 ```
 
 **Architecture Files:**
+
 ```bash
 # Main architecture stays in architecture/
 # But rename folder from architectur/ to architecture/
@@ -172,6 +176,7 @@ mv docs/architecture/ARCHITECTURE_EVOLUTION_GUIDE.md docs/architecture/evolution
 ```
 
 **Specifications:**
+
 ```bash
 # Move reviews/ to specifications/
 mv docs/reviews/* docs/specifications/
@@ -194,6 +199,7 @@ mv docs/specifications/TEST_STRATEGY_DOCUMENT.md docs/specifications/testing.md
 ### Phase 4: Create Category README Files
 
 Each category folder needs a README.md with:
+
 - Category overview
 - Document list with descriptions
 - Quick links
@@ -206,21 +212,25 @@ Each category folder needs a README.md with:
 ### File Naming Conventions
 
 **Guides:** `kebab-case.md`
+
 - `getting-started.md`
 - `development.md`
 - `deployment.md`
 
 **Specifications:** `kebab-case.md` (renamed from UPPER_SNAKE_CASE)
+
 - `data-model.md` (was `DATA_MODEL_SPECIFICATION.md`)
 - `rbac.md` (was `RBAC_PERMISSION_MATRIX.md`)
 - `api.md` (was `API_SPECIFICATION.md`)
 
 **Implementation Reports:** `UPPER_SNAKE_CASE.md`
+
 - `IMPLEMENTATION_COMPLETE.md`
 - `IMPLEMENTATION_SUMMARY.md`
 - `MIGRATION_GUIDE.md`
 
 **Architecture:** `kebab-case.md` or `UPPER_SNAKE_CASE.md` (consistent within folder)
+
 - `system-design.md`
 - `ARCHITECTURE_EVOLUTION_GUIDE.md`
 
@@ -254,16 +264,16 @@ Each category folder needs a README.md with:
 
 ### Review Schedule
 
-| Category | Owner | Review Frequency |
-|----------|-------|------------------|
-| Guides | Development Team | With code changes |
-| API | Backend Team | With API changes |
-| Architecture | Tech Leads | Quarterly |
-| Specifications | Architects | With releases |
-| Product Vision | Product Team | Quarterly |
-| Personas | UX/Product | When roles change |
+| Category       | Owner               | Review Frequency         |
+| -------------- | ------------------- | ------------------------ |
+| Guides         | Development Team    | With code changes        |
+| API            | Backend Team        | With API changes         |
+| Architecture   | Tech Leads          | Quarterly                |
+| Specifications | Architects          | With releases            |
+| Product Vision | Product Team        | Quarterly                |
+| Personas       | UX/Product          | When roles change        |
 | Implementation | Implementation Team | Archive after completion |
-| Processes | DevOps/Engineering | With process changes |
+| Processes      | DevOps/Engineering  | With process changes     |
 
 ### Update Checklist
 
@@ -294,10 +304,10 @@ Brief description of category purpose.
 
 ## Documents
 
-| Document | Description | Last Updated | Owner |
-|----------|-------------|--------------|-------|
-| [Document 1](./document-1.md) | Description | 2025-01-27 | Team |
-| [Document 2](./document-2.md) | Description | 2025-01-27 | Team |
+| Document                      | Description | Last Updated | Owner |
+| ----------------------------- | ----------- | ------------ | ----- |
+| [Document 1](./document-1.md) | Description | 2025-01-27   | Team  |
+| [Document 2](./document-2.md) | Description | 2025-01-27   | Team  |
 
 ## Related Documentation
 
@@ -335,4 +345,3 @@ Brief description of category purpose.
 
 **Status**: ✅ Standards defined  
 **Next Step**: Execute migration plan (optional but recommended)
-

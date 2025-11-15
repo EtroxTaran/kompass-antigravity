@@ -1,6 +1,6 @@
 /**
  * Base Entity Interface for KOMPASS
- * 
+ *
  * All CouchDB documents must extend this interface
  * Ensures GoBD compliance and offline-first support
  */
@@ -105,4 +105,3 @@ export interface SoftDeletable {
   /** True if soft deleted */
   _deleted?: boolean;
 }
-

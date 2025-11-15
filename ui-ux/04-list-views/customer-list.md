@@ -1,6 +1,7 @@
 # Customer List View - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Data Table List View
 - **User Roles**: All (GF/PLAN see all, ADM see own only)
 - **Usage Context**: Main customer list page with search, filter, sort
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Search Bar**: Prominent at top-left
 - **Action Buttons**: Top-right (Filter, Export, New Customer)
 - **Data Table**: Main content with sortable columns
 - **Pagination**: Bottom controls
 
 ### Layout Structure
+
 - Full-width page layout
 - Controls bar: 64px height
 - Table: Flexible height, scrollable
@@ -22,6 +25,7 @@
 - RBAC filtering: ADM sees only owned customers
 
 ### shadcn/ui Components
+
 - `Input` for search
 - `Table` with sortable columns
 - `Button`, `Badge`, `DropdownMenu`
@@ -33,6 +37,7 @@
 Create a comprehensive customer list view for KOMPASS, a German CRM application. Design a data table with search, filtering, sorting, multi-select, and RBAC-based data access where ADM users see only their own customers while PLAN/GF see all customers.
 
 **Page Layout:**
+
 - Full-width container (max-width: 1440px)
 - Breadcrumb: "Dashboard > Kunden"
 - Page title: "Kunden" (32px, bold) with count badge: "147"
@@ -40,6 +45,7 @@ Create a comprehensive customer list view for KOMPASS, a German CRM application.
 **Controls Bar (Top):**
 
 **Left Side:**
+
 1. **Search Input:**
    - Width: 400px
    - Placeholder: "Kunden durchsuchen..."
@@ -59,6 +65,7 @@ Create a comprehensive customer list view for KOMPASS, a German CRM application.
    - Default: Table view
 
 **Right Side:**
+
 1. **Bulk Actions Dropdown:**
    - Button: "Aktionen" + dropdown icon
    - Visible when rows selected
@@ -77,6 +84,7 @@ Create a comprehensive customer list view for KOMPASS, a German CRM application.
    - Prominent placement
 
 **Active Filters Bar (Below Controls):**
+
 - Appears when filters active
 - Horizontal chip list:
   - "Status: Aktiv ×"
@@ -89,12 +97,14 @@ Create a comprehensive customer list view for KOMPASS, a German CRM application.
 **Data Table:**
 
 **Table Header:**
+
 - Background: Light gray (#f9fafb)
 - Border-bottom: 1px solid #e5e7eb
 - Sticky: Remains visible when scrolling
 - Height: 48px
 
 **Columns:**
+
 1. **☐** (Checkbox, 48px):
    - Header: Select all checkbox
    - Rows: Individual selection
@@ -147,6 +157,7 @@ Create a comprehensive customer list view for KOMPASS, a German CRM application.
    - Dropdown menu for "More": "Duplizieren", "Deaktivieren", "Löschen"
 
 **Table Rows:**
+
 - Height: 56px
 - Padding: 12px per cell
 - Border-bottom: 1px solid #f3f4f6
@@ -155,11 +166,13 @@ Create a comprehensive customer list view for KOMPASS, a German CRM application.
 - Zebra striping: Optional alternating row colors
 
 **Sample Rows:**
+
 1. ☐ | Hofladen Müller GmbH | DE123456789 | München (+2) | Aktiv | A ⭐⭐⭐⭐⭐ | 12.10.2024 | M. Schmidt | [Actions]
 2. ☐ | REWE Köln Süd | DE987654321 | Köln | Aktiv | A ⭐⭐⭐⭐⭐ | 08.11.2024 | A. Weber | [Actions]
 3. ☐ | Biomarkt Heidelberg | DE555666777 | Heidelberg | Inaktiv | B ⭐⭐⭐ | 01.09.2024 | T. Fischer | [Actions]
 
 **Empty State (No Customers):**
+
 - Centered in table area
 - Icon: Users (120px, gray)
 - Heading: "Noch keine Kunden vorhanden"
@@ -169,6 +182,7 @@ Create a comprehensive customer list view for KOMPASS, a German CRM application.
   - Secondary: "Aus CSV importieren" (outlined)
 
 **Empty State (Search/Filter No Results):**
+
 - Icon: Search (100px, gray)
 - Heading: "Keine Kunden gefunden"
 - Description: "Keine Ergebnisse für '[Suchbegriff]' mit aktiven Filtern"
@@ -177,6 +191,7 @@ Create a comprehensive customer list view for KOMPASS, a German CRM application.
   - "Neue Suche starten"
 
 **Bulk Selection Bar:**
+
 - Appears above table when rows selected
 - Background: Blue (#eff6ff)
 - Border: 1px solid blue (#3b82f6)
@@ -191,11 +206,13 @@ Create a comprehensive customer list view for KOMPASS, a German CRM application.
 **Filter Sheet (Slides from Right):**
 
 **Header:**
+
 - Title: "Filter"
 - "Filter zurücksetzen" link (gray)
 - Close "×"
 
 **Filter Controls:**
+
 1. **Status**: Checkboxes (Aktiv, Inaktiv)
 2. **Bewertung**: Checkboxes (A, B, C)
 3. **Bundesland**: Dropdown select
@@ -204,32 +221,38 @@ Create a comprehensive customer list view for KOMPASS, a German CRM application.
 6. **Umsatz**: Range slider (0 - 1.000.000 €)
 
 **Footer:**
+
 - "X Kunden entsprechen Filtern"
 - Buttons: "Abbrechen" (secondary), "Anwenden" (primary blue)
 
 **RBAC Indicators:**
+
 - ADM users: "Inhaber" filter disabled, locked to current user
 - Filter help text: "Sie sehen nur Ihre eigenen Kunden" (ADM)
 - Lock icon next to disabled filters
 
 **Pagination (Table Footer):**
+
 - Background: Light gray (#f9fafb)
 - Left: "Zeige 1-20 von 147 Kunden"
 - Center: Page numbers « 1 2 [3] 4 5 ... 8 »
 - Right: "Zeilen pro Seite: 20 ▾"
 
 **Sort Indicators:**
+
 - Unsorted: No icon or subtle double arrow
 - Ascending: Blue up arrow ↑
 - Descending: Blue down arrow ↓
 - Click header to toggle sort
 
 **Quick Actions (Row Hover):**
+
 - Eye icon: "Details anzeigen"
 - Pencil icon: "Bearbeiten"
 - MoreVertical: Opens menu with "Duplizieren", "E-Mail senden", "Deaktivieren", "Löschen"
 
 **Mobile Layout:**
+
 - Search: Full width at top
 - Filter: Button opens bottom sheet
 - Table: Becomes card list view
@@ -238,6 +261,7 @@ Create a comprehensive customer list view for KOMPASS, a German CRM application.
 - No pagination: Infinite scroll or "Mehr laden"
 
 **Keyboard Shortcuts:**
+
 - Cmd/Ctrl+K: Focus search
 - Cmd/Ctrl+N: New customer
 - Cmd/Ctrl+F: Open filters
@@ -247,6 +271,7 @@ Create a comprehensive customer list view for KOMPASS, a German CRM application.
 - Delete: Delete selected (with confirmation)
 
 **Loading State:**
+
 - Skeleton: 8 table rows with shimmer animation
 - Header remains visible
 - Controls disabled during load
@@ -256,6 +281,7 @@ Design with clear RBAC indicators, efficient keyboard navigation, and responsive
 ## Interaction Patterns
 
 ### Search Flow
+
 1. User types in search: "Hofladen"
 2. 300ms debounce
 3. Table updates with matching results
@@ -263,6 +289,7 @@ Design with clear RBAC indicators, efficient keyboard navigation, and responsive
 5. Clear search: All customers shown again
 
 ### Filter Flow
+
 1. Click "Filter"
 2. Sheet slides in from right
 3. Select filter criteria
@@ -272,6 +299,7 @@ Design with clear RBAC indicators, efficient keyboard navigation, and responsive
 7. Filter chips appear, badge shows count
 
 ### Bulk Select Flow
+
 1. Click header checkbox: Select all visible
 2. Or: Click individual checkboxes
 3. Bulk action bar appears
@@ -280,6 +308,7 @@ Design with clear RBAC indicators, efficient keyboard navigation, and responsive
 6. Action executes, feedback shown
 
 ### Sort Flow
+
 1. Click column header
 2. Sort indicator updates (arrow)
 3. Table re-orders rows
@@ -289,6 +318,7 @@ Design with clear RBAC indicators, efficient keyboard navigation, and responsive
 ## German Labels & Content
 
 ### Page Elements
+
 - **Kunden**: Customers
 - **Suchen...**: Search...
 - **Filter**: Filters
@@ -297,6 +327,7 @@ Design with clear RBAC indicators, efficient keyboard navigation, and responsive
 - **Aktionen**: Actions
 
 ### Table Headers
+
 - **Firmenname**: Company name
 - **USt-ID**: VAT ID
 - **Standort**: Location
@@ -307,10 +338,12 @@ Design with clear RBAC indicators, efficient keyboard navigation, and responsive
 - **Aktionen**: Actions
 
 ### Status
+
 - **Aktiv**: Active
 - **Inaktiv**: Inactive
 
 ### Actions
+
 - **Details anzeigen**: Show details
 - **Bearbeiten**: Edit
 - **Duplizieren**: Duplicate
@@ -318,11 +351,13 @@ Design with clear RBAC indicators, efficient keyboard navigation, and responsive
 - **X ausgewählt**: X selected
 
 ### Results
+
 - **Zeige X-Y von Z Kunden**: Showing X-Y of Z customers
 - **X Kunden gefunden**: X customers found
 - **Keine Kunden gefunden**: No customers found
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Table: Semantic markup, proper headers
 - Sort: aria-sort attribute
@@ -332,6 +367,7 @@ Design with clear RBAC indicators, efficient keyboard navigation, and responsive
 - Screen reader announces: Row count, selections, sort changes
 
 ## Mobile Considerations
+
 - Card view instead of table
 - Swipe gestures for actions
 - Pull-to-refresh
@@ -340,6 +376,7 @@ Design with clear RBAC indicators, efficient keyboard navigation, and responsive
 - Bottom sheet for filters
 
 ## Example Data
+
 - 147 total customers
 - Page 1: Rows 1-20
 - Filters: Status=Aktiv, Bundesland=Bayern
@@ -350,6 +387,7 @@ Design with clear RBAC indicators, efficient keyboard navigation, and responsive
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add table
 npx shadcn-ui@latest add input
@@ -362,6 +400,7 @@ npx shadcn-ui@latest add pagination
 ```
 
 ### Component Dependencies
+
 - Customer API with filtering, search, pagination
 - RBAC context for owner filtering (ADM)
 - Search debounce hook
@@ -369,6 +408,7 @@ npx shadcn-ui@latest add pagination
 - Multi-select state
 
 ### State Management
+
 - Customer list data (React Query)
 - Search query (debounced)
 - Active filters
@@ -376,4 +416,3 @@ npx shadcn-ui@latest add pagination
 - Selected rows (multi-select)
 - Pagination (page, page size)
 - RBAC: Current user role and ID
-

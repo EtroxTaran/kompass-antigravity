@@ -1,6 +1,7 @@
 # AI Insight Card - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: AI-powered suggestion display component
 - **User Roles**: All users (context-aware insights)
 - **Usage Context**: Display AI-generated recommendations, predictions, and actionable insights
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Clear AI indicator**: Purple accent color and icon
 - **Actionable content**: Primary action prominent
 - **Confidence display**: Show AI certainty level
 - **Dismissible**: Allow users to hide/acknowledge
 
 ### Card Variants
+
 - Suggestion (recommendations)
 - Prediction (forecasts)
 - Alert (anomalies)
 - Tip (optimization ideas)
 
 ### shadcn/ui Components
+
 - Card, Button, Badge, Progress
 - Custom AI icon/animation
 - Dismissible wrapper
@@ -66,6 +70,7 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 ```
 
 **Specifications:**
+
 - Background: Light purple (#F3E8FF)
 - Border: 1px solid #9333EA20
 - Icon: 20px, purple (#9333EA)
@@ -112,6 +117,7 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 ```
 
 **Specifications:**
+
 - Background: Light amber (#FEF3C7) for warnings
 - Border: 1px solid #F59E0B40
 - Icon animation: Subtle pulse for alerts
@@ -163,23 +169,27 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 ## Animation & Interaction
 
 ### Entry Animation
+
 - Slide in from right (desktop)
 - Slide up from bottom (mobile)
 - Fade in with slight scale (0.95 → 1)
 - Duration: 300ms ease-out
 
 ### Hover States
+
 - Slight elevation increase
 - Border color intensifies
 - Action buttons show underline
 
 ### Dismissal
+
 - Swipe right to dismiss (mobile)
 - Click X or outside card
 - Fade out + slide away
 - Remember dismissal preference
 
 ### Loading State
+
 ```
 ┌─────────────────────────────────────────────┐
 │ 🤖 KI analysiert...                    [×] │
@@ -195,12 +205,14 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 ## Confidence Indicators
 
 ### Visual Confidence Scale
+
 - 90-100%: Solid purple bar, "Sehr sicher"
-- 70-89%: Purple gradient, "Sicher"  
+- 70-89%: Purple gradient, "Sicher"
 - 50-69%: Purple to gray, "Wahrscheinlich"
 - <50%: Dashed gray, "Unsicher"
 
 ### Textual Indicators
+
 - Include percentage when relevant
 - Show data points supporting insight
 - Display calculation factors
@@ -209,6 +221,7 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 ## Accessibility
 
 ### Screen Reader
+
 ```html
 <div role="complementary" aria-label="KI-Empfehlung">
   <h3>Route optimieren spart 45 Minuten</h3>
@@ -220,12 +233,14 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 ```
 
 ### Keyboard Navigation
+
 - Tab: Focus actions
 - Enter/Space: Activate primary action
 - Escape: Dismiss card
 - Arrow keys: Navigate between multiple cards
 
 ### Reduced Motion
+
 - No slide animations
 - Instant fade in/out
 - No pulsing or continuous animations
@@ -233,6 +248,7 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 ## Integration Patterns
 
 ### Dashboard Integration
+
 ```typescript
 <AIInsightCard
   type="suggestion"
@@ -245,12 +261,14 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 ```
 
 ### Contextual Placement
+
 - Below related metric widgets
 - Inline with data tables
 - Modal for critical insights
 - Toast for time-sensitive alerts
 
 ### Stacking & Grouping
+
 ```
 ┌─────────────────────────────┐
 │ 3 KI-Einblicke verfügbar    │
@@ -264,6 +282,7 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 ```
 
 ## German Labels
+
 - **KI-Empfehlung**: AI recommendation
 - **Vertrauen**: Confidence
 - **Sicherheit**: Certainty
@@ -276,6 +295,7 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 ## Do's and Don'ts
 
 ### ✅ DO's
+
 - Show clear value proposition
 - Include confidence level
 - Provide actionable buttons
@@ -283,6 +303,7 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 - Explain reasoning when possible
 
 ### ❌ DON'T's
+
 - Don't overwhelm with too many cards
 - Don't show low-confidence insights prominently
 - Don't auto-apply suggestions
@@ -290,6 +311,7 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 - Don't animate excessively
 
 ## Performance
+
 - Lazy load insight generation
 - Cache dismissed insights
 - Prioritize high-confidence insights
@@ -297,6 +319,7 @@ Create AI insight card components for KOMPASS that display intelligent suggestio
 - Progressive disclosure for details
 
 ## Analytics Events
+
 - insight_displayed (type, confidence)
 - insight_action_taken (type, action)
 - insight_dismissed (type, reason)

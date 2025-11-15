@@ -7,7 +7,6 @@ on:
   pull_request:
     branches:
       - main
-      - develop
 
 concurrency:
   group: security-${{ github.workflow }}-${{ github.ref }}
@@ -22,6 +21,7 @@ jobs:
     name: Dependency Review
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    continue-on-error: true # Allow to fail if GitHub Advanced Security is not enabled
 
     permissions:
       actions: read
@@ -37,6 +37,7 @@ jobs:
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: high
+          allow-licenses: MIT, Apache-2.0, ISC, BSD-2-Clause, BSD-3-Clause
 
   pnpm-audit:
     name: pnpm Audit & Outdated
@@ -45,16 +46,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -87,7 +88,19 @@ jobs:
           generateSarif: true
           sarifFile: semgrep.sarif
 
+      - name: Check if SARIF file exists
+        id: check-sarif
+        if: always()
+        run: |
+          if [ -f semgrep.sarif ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️  Semgrep SARIF file not found (no issues found or Semgrep failed)"
+          fi
+
       - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@v2
+        if: steps.check-sarif.outputs.exists == 'true'
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: semgrep.sarif

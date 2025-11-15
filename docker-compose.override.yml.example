@@ -1,0 +1,160 @@
+version: '3.8'
+
+# KOMPASS Docker Compose - Local Development Override
+# 
+# This file provides examples for local development overrides.
+# Copy this file to docker-compose.override.yml and customize for your local setup.
+#
+# Usage:
+#   1. Copy this file: cp docker-compose.override.yml.example docker-compose.override.yml
+#   2. Customize the values below for your local environment
+#   3. Run: docker-compose up
+#
+# Docker Compose automatically merges this file with docker-compose.yml
+# See: https://docs.docker.com/compose/extends/
+
+services:
+  # Backend - Local development overrides
+  backend:
+    # Use local build instead of pulling from registry
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    # Override image to use local build
+    image: kompass-backend:local
+    # Mount local source code for hot reload
+    volumes:
+      - ./apps/backend/src:/app/src:ro
+      - ./apps/backend/package.json:/app/package.json:ro
+    # Enable debug logging
+    environment:
+      - LOG_LEVEL=debug
+      - NODE_ENV=development
+      # Local service URLs (if running services locally outside Docker)
+      # - COUCHDB_URL=http://localhost:5984
+      # - MEILISEARCH_URL=http://localhost:7700
+      # - KEYCLOAK_URL=http://localhost:8080
+      # - NEO4J_URI=bolt://localhost:7687
+      # - WHISPER_API_URL=http://localhost:8001
+      # - N8N_WEBHOOK_URL=http://localhost:5678
+    # Expose additional ports for debugging
+    ports:
+      - "3000:3000"
+      - "9229:9229"  # Node.js debugger
+
+  # Frontend - Local development overrides
+  frontend:
+    # Use local build instead of pulling from registry
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile
+    # Override image to use local build
+    image: kompass-frontend:local
+    # Mount local source code for hot reload
+    volumes:
+      - ./apps/frontend/src:/app/src:ro
+      - ./apps/frontend/public:/app/public:ro
+      - ./apps/frontend/index.html:/app/index.html:ro
+    # Enable development mode
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3000
+      # Feature flags for local development
+      - VITE_AI_N8N_ENABLED=true
+      - VITE_AI_RAG_ENABLED=true
+      - VITE_AI_ML_ENABLED=false
+    # Expose Vite dev server port
+    ports:
+      - "5173:5173"
+
+  # CouchDB - Local development overrides
+  couchdb:
+    # Use local data directory for persistence
+    volumes:
+      - ./data/couchdb:/opt/couchdb/data
+      - ./data/couchdb-config:/opt/couchdb/etc/local.d
+    # Expose Fauxton UI
+    ports:
+      - "5984:5984"
+      - "5986:5986"  # Fauxton UI
+
+  # MeiliSearch - Local development overrides
+  meilisearch:
+    # Use local data directory
+    volumes:
+      - ./data/meilisearch:/meili_data
+    # Expose search UI
+    ports:
+      - "7700:7700"
+
+  # Keycloak - Local development overrides
+  keycloak:
+    # Use local data directory
+    volumes:
+      - ./data/keycloak:/opt/keycloak/data
+    # Expose admin console
+    ports:
+      - "8080:8080"
+    # Development mode (no HTTPS required)
+    environment:
+      - KC_HTTP_ENABLED=true
+      - KC_HTTPS_ENABLED=false
+
+  # Neo4j - Local development overrides
+  neo4j:
+    # Use local data directory
+    volumes:
+      - ./data/neo4j:/data
+      - ./data/neo4j-logs:/logs
+    # Expose Neo4j Browser
+    ports:
+      - "7474:7474"  # HTTP
+      - "7687:7687"  # Bolt
+    # Development authentication (change in production!)
+    environment:
+      - NEO4J_AUTH=neo4j/devpassword
+
+  # Whisper - Local development overrides
+  whisper:
+    # Use local model cache
+    volumes:
+      - ./data/whisper:/root/.cache/whisper
+    # Expose API
+    ports:
+      - "8001:9000"
+    # Use smaller model for faster startup
+    environment:
+      - ASR_MODEL=base
+
+  # n8n - Local development overrides
+  n8n:
+    # Use local data directory
+    volumes:
+      - ./data/n8n:/home/node/.n8n
+    # Expose web UI
+    ports:
+      - "5678:5678"
+    # Disable basic auth for local development
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=false
+      - N8N_HOST=localhost
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678
+
+# Example: Override network configuration
+# networks:
+#   kompass-network:
+#     driver: bridge
+#     ipam:
+#       config:
+#         - subnet: 172.20.0.0/16
+
+# Example: Override volume configuration
+# volumes:
+#   couchdb-data:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: ./data/couchdb
+

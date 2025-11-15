@@ -1,16 +1,16 @@
 /**
  * n8n Service (Stub)
- * 
+ *
  * Intelligent Workflow Automation using n8n
- * 
+ *
  * Phase 2.2: n8n Integration
  * - Trigger workflows on entity changes
  * - Send emails, notifications, Slack messages
  * - Sync data with external systems
  * - Execute scheduled tasks
- * 
+ *
  * Feature Flag: AI_N8N_ENABLED
- * 
+ *
  * TODO: Implement in Phase 2.2
  * - Configure n8n connection
  * - Implement webhook handlers
@@ -19,6 +19,7 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
+
 import { FEATURE_FLAGS } from '@kompass/shared/constants/feature-flags';
 
 /**
@@ -56,12 +57,12 @@ export class N8nService {
 
   /**
    * Trigger a workflow execution
-   * 
+   *
    * TODO Phase 2.2:
    * - Send webhook to n8n instance
    * - Pass event data as payload
    * - Return execution ID for status tracking
-   * 
+   *
    * Example workflows:
    * - customer_created: Send welcome email, create Slack notification
    * - opportunity_won: Generate invoice, update external CRM
@@ -70,14 +71,18 @@ export class N8nService {
   async triggerWorkflow(trigger: WorkflowTrigger): Promise<string> {
     this.ensureEnabled();
 
-    this.logger.log(`[STUB] Triggering workflow ${trigger.workflowId} for event: ${trigger.event}`);
+    this.logger.log(
+      `[STUB] Triggering workflow ${trigger.workflowId} for event: ${trigger.event}`
+    );
     // TODO: Implement in Phase 2.2
-    throw new Error('n8n workflow triggering not yet implemented. Coming in Phase 2.2');
+    throw new Error(
+      'n8n workflow triggering not yet implemented. Coming in Phase 2.2'
+    );
   }
 
   /**
    * Get workflow execution status
-   * 
+   *
    * TODO Phase 2.2:
    * - Query n8n API for execution status
    * - Return execution details
@@ -88,17 +93,21 @@ export class N8nService {
 
     this.logger.log(`[STUB] Getting workflow status: ${executionId}`);
     // TODO: Implement in Phase 2.2
-    throw new Error('n8n status retrieval not yet implemented. Coming in Phase 2.2');
+    throw new Error(
+      'n8n status retrieval not yet implemented. Coming in Phase 2.2'
+    );
   }
 
   /**
    * List available workflows
-   * 
+   *
    * TODO Phase 2.2:
    * - Query n8n API for workflow list
    * - Return workflow metadata
    */
-  async listWorkflows(): Promise<Array<{ id: string; name: string; active: boolean }>> {
+  async listWorkflows(): Promise<
+    Array<{ id: string; name: string; active: boolean }>
+  > {
     this.ensureEnabled();
 
     this.logger.log('[STUB] Listing available workflows');
@@ -111,8 +120,9 @@ export class N8nService {
    */
   private ensureEnabled(): void {
     if (!FEATURE_FLAGS.AI_N8N_ENABLED) {
-      throw new Error('n8n feature is not enabled. Set AI_N8N_ENABLED=true in environment');
+      throw new Error(
+        'n8n feature is not enabled. Set AI_N8N_ENABLED=true in environment'
+      );
     }
   }
 }
-

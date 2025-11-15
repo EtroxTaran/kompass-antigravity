@@ -139,7 +139,7 @@ _(See [Deployment Documentation](../deployment/README.md) for operational deploy
 1. **[Development Workflow](./DEVELOPMENT_WORKFLOW.md)** - Understand git workflow and review process
 2. **[File Organization](./FILE_ORGANIZATION_ENFORCEMENT.md)** - Learn project structure standards
 3. **[Deployment Guide](../deployment/README.md)** - Understand deployment procedures
-4. **[Coding Standards](../guides/coding-standards.md)** - Review code quality standards
+4. **[Coding Standards](../guides/CODING_STANDARDS.md)** - Review code quality standards
 
 ### For Process Updates
 

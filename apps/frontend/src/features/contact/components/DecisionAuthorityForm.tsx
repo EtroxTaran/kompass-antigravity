@@ -1,15 +1,25 @@
 /**
  * DecisionAuthorityForm Component
- * 
+ *
  * Form for updating contact decision-making role and authority
  * Uses shadcn/ui Form components
- * 
+ *
  * RESTRICTED: Only PLAN and GF roles can use this form
  */
 
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+
+import { getDecisionMakingRoleLabel } from '@kompass/shared/types/entities/contact';
+import {
+  DecisionMakingRole,
+  FunctionalRole,
+  type AuthorityLevel,
+} from '@kompass/shared/types/enums';
+
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -20,8 +30,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -29,29 +37,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { DecisionMakingRole, FunctionalRole, type AuthorityLevel } from '@kompass/shared/types/enums';
-import { getDecisionMakingRoleLabel } from '@kompass/shared/types/entities/contact';
 
 /**
  * Form validation schema
  */
-const decisionAuthorityFormSchema = z.object({
-  decisionMakingRole: z.nativeEnum(DecisionMakingRole),
-  authorityLevel: z.enum(['low', 'medium', 'high', 'final_authority']),
-  canApproveOrders: z.boolean(),
-  approvalLimitEur: z.number().min(0).max(10000000).optional(),
-  functionalRoles: z.array(z.nativeEnum(FunctionalRole)),
-  departmentInfluence: z.array(z.string()),
-}).refine((data) => {
-  // Business rule CO-001: Approval limit required if canApproveOrders is true
-  if (data.canApproveOrders === true) {
-    return data.approvalLimitEur && data.approvalLimitEur > 0;
-  }
-  return true;
-}, {
-  message: 'Genehmigungslimit ist erforderlich, wenn Genehmigungsbefugnis aktiviert ist',
-  path: ['approvalLimitEur'],
-});
+const decisionAuthorityFormSchema = z
+  .object({
+    decisionMakingRole: z.nativeEnum(DecisionMakingRole),
+    authorityLevel: z.enum(['low', 'medium', 'high', 'final_authority']),
+    canApproveOrders: z.boolean(),
+    approvalLimitEur: z.number().min(0).max(10000000).optional(),
+    functionalRoles: z.array(z.nativeEnum(FunctionalRole)),
+    departmentInfluence: z.array(z.string()),
+  })
+  .refine(
+    (data) => {
+      // Business rule CO-001: Approval limit required if canApproveOrders is true
+      if (data.canApproveOrders === true) {
+        return data.approvalLimitEur && data.approvalLimitEur > 0;
+      }
+      return true;
+    },
+    {
+      message:
+        'Genehmigungslimit ist erforderlich, wenn Genehmigungsbefugnis aktiviert ist',
+      path: ['approvalLimitEur'],
+    }
+  );
 
 type DecisionAuthorityFormValues = z.infer<typeof decisionAuthorityFormSchema>;
 
@@ -74,7 +86,9 @@ export function DecisionAuthorityForm({
   const form = useForm<DecisionAuthorityFormValues>({
     resolver: zodResolver(decisionAuthorityFormSchema),
     defaultValues: {
-      decisionMakingRole: initialValues?.decisionMakingRole || DecisionMakingRole.OPERATIONAL_CONTACT,
+      decisionMakingRole:
+        initialValues?.decisionMakingRole ||
+        DecisionMakingRole.OPERATIONAL_CONTACT,
       authorityLevel: initialValues?.authorityLevel || 'low',
       canApproveOrders: initialValues?.canApproveOrders || false,
       approvalLimitEur: initialValues?.approvalLimitEur,
@@ -103,10 +117,14 @@ export function DecisionAuthorityForm({
                 </FormControl>
                 <SelectContent>
                   <SelectItem value={DecisionMakingRole.DECISION_MAKER}>
-                    {getDecisionMakingRoleLabel(DecisionMakingRole.DECISION_MAKER)}
+                    {getDecisionMakingRoleLabel(
+                      DecisionMakingRole.DECISION_MAKER
+                    )}
                   </SelectItem>
                   <SelectItem value={DecisionMakingRole.KEY_INFLUENCER}>
-                    {getDecisionMakingRoleLabel(DecisionMakingRole.KEY_INFLUENCER)}
+                    {getDecisionMakingRoleLabel(
+                      DecisionMakingRole.KEY_INFLUENCER
+                    )}
                   </SelectItem>
                   <SelectItem value={DecisionMakingRole.RECOMMENDER}>
                     {getDecisionMakingRoleLabel(DecisionMakingRole.RECOMMENDER)}
@@ -115,16 +133,18 @@ export function DecisionAuthorityForm({
                     {getDecisionMakingRoleLabel(DecisionMakingRole.GATEKEEPER)}
                   </SelectItem>
                   <SelectItem value={DecisionMakingRole.OPERATIONAL_CONTACT}>
-                    {getDecisionMakingRoleLabel(DecisionMakingRole.OPERATIONAL_CONTACT)}
+                    {getDecisionMakingRoleLabel(
+                      DecisionMakingRole.OPERATIONAL_CONTACT
+                    )}
                   </SelectItem>
                   <SelectItem value={DecisionMakingRole.INFORMATIONAL}>
-                    {getDecisionMakingRoleLabel(DecisionMakingRole.INFORMATIONAL)}
+                    {getDecisionMakingRoleLabel(
+                      DecisionMakingRole.INFORMATIONAL
+                    )}
                   </SelectItem>
                 </SelectContent>
               </Select>
-              <FormDescription>
-                Rolle im Entscheidungsprozess
-              </FormDescription>
+              <FormDescription>Rolle im Entscheidungsprozess</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -144,10 +164,14 @@ export function DecisionAuthorityForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="low">Niedrig (keine Genehmigung)</SelectItem>
+                  <SelectItem value="low">
+                    Niedrig (keine Genehmigung)
+                  </SelectItem>
                   <SelectItem value="medium">Mittel (bis €10.000)</SelectItem>
                   <SelectItem value="high">Hoch (bis €50.000)</SelectItem>
-                  <SelectItem value="final_authority">Letztentscheidung (unbegrenzt)</SelectItem>
+                  <SelectItem value="final_authority">
+                    Letztentscheidung (unbegrenzt)
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -162,7 +186,10 @@ export function DecisionAuthorityForm({
           render={({ field }) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0">
               <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>Kann Bestellungen genehmigen</FormLabel>
@@ -218,20 +245,29 @@ export function DecisionAuthorityForm({
                           if (checked) {
                             field.onChange([...current, role]);
                           } else {
-                            field.onChange(current.filter((r: FunctionalRole) => r !== role));
+                            field.onChange(
+                              current.filter((r: FunctionalRole) => r !== role)
+                            );
                           }
                         }}
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <FormLabel className="text-sm font-normal">
-                        {role === FunctionalRole.OWNER_CEO && 'Geschäftsführer/CEO'}
-                        {role === FunctionalRole.PURCHASING_MANAGER && 'Einkaufsleiter'}
-                        {role === FunctionalRole.FACILITY_MANAGER && 'Facility Manager'}
-                        {role === FunctionalRole.STORE_MANAGER && 'Filialleiter'}
-                        {role === FunctionalRole.PROJECT_COORDINATOR && 'Projektkoordinator'}
-                        {role === FunctionalRole.FINANCIAL_CONTROLLER && 'Finanzkontrolle'}
-                        {role === FunctionalRole.OPERATIONS_MANAGER && 'Betriebsleiter'}
+                        {role === FunctionalRole.OWNER_CEO &&
+                          'Geschäftsführer/CEO'}
+                        {role === FunctionalRole.PURCHASING_MANAGER &&
+                          'Einkaufsleiter'}
+                        {role === FunctionalRole.FACILITY_MANAGER &&
+                          'Facility Manager'}
+                        {role === FunctionalRole.STORE_MANAGER &&
+                          'Filialleiter'}
+                        {role === FunctionalRole.PROJECT_COORDINATOR &&
+                          'Projektkoordinator'}
+                        {role === FunctionalRole.FINANCIAL_CONTROLLER &&
+                          'Finanzkontrolle'}
+                        {role === FunctionalRole.OPERATIONS_MANAGER &&
+                          'Betriebsleiter'}
                         {role === FunctionalRole.ADMINISTRATIVE && 'Verwaltung'}
                       </FormLabel>
                     </div>
@@ -253,7 +289,12 @@ export function DecisionAuthorityForm({
 
         {/* Form Actions */}
         <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={isLoading}
+          >
             Abbrechen
           </Button>
           <Button type="submit" disabled={isLoading}>
@@ -264,4 +305,3 @@ export function DecisionAuthorityForm({
     </Form>
   );
 }
-

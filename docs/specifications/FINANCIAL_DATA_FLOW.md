@@ -63,6 +63,7 @@ This document maps the **complete financial data flow** through KOMPASS and Lexw
 **Actor:** ADM (Sales Field Agent)
 
 **Data Created:**
+
 ```typescript
 Opportunity {
   customer: "Hofladen Müller GmbH"
@@ -85,18 +86,19 @@ Opportunity {
 **Actor:** KALK (Cost Estimator)
 
 **Data Created:**
+
 ```typescript
 Offer {
   opportunityId: "opp-123"
   offerNumber: "A-2025-00089"
-  
+
   // Line items
   lineItems: [
     { description: "Ladenregale Eiche", quantity: 8, unitPrice: 850, total: 6800 },
     { description: "LED-Beleuchtung", quantity: 24, unitPrice: 145, total: 3480 },
     // ... more items
   ],
-  
+
   // Costs
   materialCosts: € 85.000,
   laborCosts: € 30.000,
@@ -104,7 +106,7 @@ Offer {
   subtotal: € 123.000,
   taxAmount: € 23.370 (19%),
   totalPrice: € 146.370,
-  
+
   // Terms
   paymentTerms: "30 Tage netto",
   validUntil: "2025-02-15"
@@ -124,25 +126,26 @@ Offer {
 **Actor:** BUCH (Accountant) or GF (CEO)
 
 **Data Created:**
+
 ```typescript
 Contract {
   offerId: "offer-123"
   contractNumber: "V-2025-00123"
   customer: "Hofladen Müller GmbH"
   projectNumber: "P-2025-M003"  // Project created simultaneously
-  
+
   contractValue: € 146.370,  // Gross (from offer)
   startDate: "2025-02-01",
   endDate: "2025-02-28",
-  
+
   paymentSchedule: [
     { description: "50% Anzahlung", percentage: 50, amount: € 73.185, dueCondition: "Bei Auftragserteilung" },
     { description: "50% Restzahlung", percentage: 50, amount: € 73.185, dueCondition: "Nach Abnahme" }
   ],
-  
+
   status: 'Signed',
   signedDate: "2025-01-18",
-  
+
   immutableHash: "sha256(contract data)",  // GoBD compliance
   finalized: true  // Cannot be modified
 }
@@ -151,6 +154,7 @@ Contract {
 **Financial Impact:** Contractual obligation created, revenue forecasted
 
 **GoBD Compliance:**
+
 - Contract is immutable after signing
 - Changes require audit trail (changeLog)
 - Hash ensures tampering detection
@@ -158,17 +162,20 @@ Contract {
 **Integration Point 1: Contract → Lexware**
 
 **Phase 1 (Manual CSV):**
+
 1. BUCH exports contract to CSV (weekly)
 2. BUCH imports CSV into Lexware as "Auftrag"
 3. Lexware creates customer if not exists
 4. Manual reconciliation: Check contract appears correctly
 
 **Phase 2 (Semi-Automated):**
+
 1. System exports contract to shared folder (nightly)
 2. Lexware imports automatically
 3. BUCH reviews error log (if any)
 
 **Phase 3 (Real-Time):**
+
 1. Contract signed in KOMPASS
 2. Webhook fires immediately
 3. KOMPASS POST /lexware/api/contracts
@@ -191,16 +198,16 @@ Project {
   contractId: "contract-123"
   contractValue: € 146.370,
   budget: € 123.000,
-  
+
   // Real-time actual costs
   actualLaborCosts: € 28.500,      // From time tracking
   actualMaterialCosts: € 82.300,   // From material deliveries
   actualSupplierCosts: € 7.800,    // From supplier invoices
   actualCost: € 118.600,           // Sum of above
-  
+
   currentMargin: € 27.770 (23,1%),  // contractValue - actualCost
   budgetStatus: 'OnTrack',          // actualCost < budget
-  
+
   // Cost breakdown
   costTracking: [
     { date: "2025-02-01", category: 'Materials', amount: € 3.480, description: "LED-Panels geliefert" },
@@ -212,6 +219,7 @@ Project {
 ```
 
 **Financial Impact:**
+
 - Real-time visibility into project profitability
 - Early warning if budget exceeded
 - Accurate margin calculation for management
@@ -220,12 +228,12 @@ Project {
 
 1. **Labor Costs:** Time tracking entries
    - Team members log hours per project
-   - System: hours * hourly rate = labor cost
+   - System: hours \* hourly rate = labor cost
    - Updates project.actualLaborCosts daily
 
 2. **Material Costs:** Purchase order deliveries
    - INN records material delivery
-   - System: delivered quantity * actual unit price = material cost
+   - System: delivered quantity \* actual unit price = material cost
    - Updates project.actualMaterialCosts immediately
 
 3. **Supplier Costs:** Supplier invoice payments
@@ -234,6 +242,7 @@ Project {
    - Updates immediately
 
 **Dashboard Visibility:**
+
 - PLAN sees real-time budget status
 - BUCH sees real-time margin
 - GF sees project profitability in real-time
@@ -246,7 +255,8 @@ Project {
 
 **Actor:** BUCH (Accountant)
 
-**Trigger:** 
+**Trigger:**
+
 - Payment milestone reached (e.g., "50% Anzahlung bei Auftragserteilung")
 - OR: Project phase completed (e.g., "Montage abgeschlossen")
 - OR: Project fully completed (final invoice)
@@ -281,6 +291,7 @@ Project {
    - Status: 'Issued', payment status: 'Pending'
 
 **Why in Lexware, not KOMPASS?**
+
 - **GoBD Compliance:** Lexware is certified for immutable, auditable invoicing
 - **Tax Reporting:** Lexware handles complex German tax rules (UStVA, etc.)
 - **Audit Safety:** Using established, certified tool reduces compliance risk
@@ -288,13 +299,16 @@ Project {
 **Integration Point 2: Invoice Reference → KOMPASS**
 
 **Phase 1 (Manual):**
+
 - BUCH manually enters invoice reference in KOMPASS
 
 **Phase 2 (Semi-Auto):**
+
 - BUCH exports invoice list from Lexware (CSV)
 - KOMPASS imports, matches by contract number
 
 **Phase 3 (Real-Time):**
+
 - Lexware webhook fires on invoice.created
 - KOMPASS receives webhook, creates invoice reference automatically
 - BUCH sees invoice appear in KOMPASS within minutes
@@ -330,12 +344,10 @@ Project {
      - KOMPASS updates invoice reference:
        - Payment status: 'Paid'
        - Payment date: "2025-02-10"
-   
    - **Phase 2 (Semi-Auto):**
      - System imports payment CSV nightly or hourly
      - Auto-matches by invoice number
      - BUCH reviews unmatched items
-   
    - **Phase 3 (Real-Time):**
      - Lexware webhook fires on payment.recorded
      - KOMPASS receives webhook, updates invoice immediately
@@ -370,6 +382,7 @@ Project {
    - Based on Lexware as source of truth for invoices
 
 **KOMPASS Role:**
+
 - Provides context: Which invoices belong to which projects
 - Provides reports: Project profitability, customer revenue
 - NOT used for tax filing (Lexware is authoritative)
@@ -385,6 +398,7 @@ Project {
 **Scenarios:**
 
 **A) Mileage Tracking:**
+
 ```typescript
 MileageLog {
   userId: "user-adm-123" (Michael Schmidt)
@@ -396,13 +410,14 @@ MileageLog {
   projectId?: "project-123"  // Optional allocation
   rate: 0.30  // €/km (German standard)
   amount: 67 * 0.30 = € 20.10
-  
+
   status: 'Pending'
   receiptPhoto?: null  // No receipt for mileage
 }
 ```
 
 **B) Expense Receipt:**
+
 ```typescript
 Expense {
   userId: "user-adm-123"
@@ -412,21 +427,22 @@ Expense {
   amount: € 45.80
   taxAmount: € 7.32 (19%)
   netAmount: € 38.48
-  
+
   merchantName: "Shell Tankstelle München"
   paymentMethod: 'CreditCard'
-  
+
   projectId: "project-123"  // Project allocation
   customerId?: "customer-456"  // Customer context
-  
+
   receiptPhoto: "receipt-20250205-123.jpg"  // Camera capture
   ocrData: { merchant, amount, date }  // [Phase 2] AI extraction
-  
+
   status: 'PendingApproval'
 }
 ```
 
 **C) Time Tracking:**
+
 ```typescript
 TimesheetEntry {
   userId: "user-plan-456" (Thomas Fischer)
@@ -438,7 +454,7 @@ TimesheetEntry {
   billable: true
   hourlyRate: € 80
   amount: 8.5 * 80 = € 680
-  
+
   approvedBy?: null
   status: 'Submitted'
 }
@@ -471,6 +487,7 @@ TimesheetEntry {
    - For Lexware export and accounting
 
 **Validation:**
+
 - Amount >€250: Requires BUCH approval (German travel expense rule)
 - Missing receipt for >€150: System warns, blocks approval
 - Project-allocated: Project budget checked (warn if exceeds)
@@ -499,6 +516,7 @@ TimesheetEntry {
    - **Clarify:** Status = 'PendingClarification', user notified
 
 **Batch Approval:**
+
 - BUCH can select multiple similar expenses
 - Example: All ADM mileage logs for a month
 - Approve all: "45 Kilometer-Erfassungen genehmigen (€ 1.350)"
@@ -523,11 +541,13 @@ TimesheetEntry {
 4. Lexware books to expense accounts
 
 **Phase 2 (Semi-Automated):**
+
 - System exports approved expenses to shared folder (nightly)
 - Lexware imports automatically
 - BUCH reviews import log
 
 **Phase 3 (Real-Time):**
+
 - Expense approved in KOMPASS
 - Webhook fires to Lexware
 - Lexware books expense immediately
@@ -549,6 +569,7 @@ TimesheetEntry {
 4. Lexware records reimbursement payment
 
 **KOMPASS Role:**
+
 - Shows expense status: "Ausstehend" / "Genehmigt" / "Ausgezahlt"
 - Expense status synced from Lexware (Phase 2/3) or BUCH marks manually (Phase 1)
 
@@ -576,6 +597,7 @@ TimesheetEntry {
    - Jahresabschluss filed
 
 **KOMPASS Role:**
+
 - Provides context: Project-level profitability
 - NOT used for tax filing (Lexware is GoBD-certified source)
 
@@ -607,14 +629,14 @@ TimesheetEntry {
 
 ### Conflict Resolution Matrix
 
-| Data Type | KOMPASS | Lexware | Resolution |
-|-----------|---------|---------|------------|
-| Customer info | Master | Replica | KOMPASS wins, sync to Lexware |
-| Contract value | Master | Replica | KOMPASS wins (immutable) |
-| Invoice content | Reference | Master | Lexware wins always |
-| Payment status | Derived | Master | Lexware wins always |
-| Project costs | Master | N/A | KOMPASS only |
-| Tax calculations | N/A | Master | Lexware only |
+| Data Type        | KOMPASS   | Lexware | Resolution                    |
+| ---------------- | --------- | ------- | ----------------------------- |
+| Customer info    | Master    | Replica | KOMPASS wins, sync to Lexware |
+| Contract value   | Master    | Replica | KOMPASS wins (immutable)      |
+| Invoice content  | Reference | Master  | Lexware wins always           |
+| Payment status   | Derived   | Master  | Lexware wins always           |
+| Project costs    | Master    | N/A     | KOMPASS only                  |
+| Tax calculations | N/A       | Master  | Lexware only                  |
 
 ---
 
@@ -640,6 +662,7 @@ TimesheetEntry {
    - Alert if: Count differs
 
 **Alert Handling:**
+
 - Discrepancy detected: Email BUCH + create dashboard alert
 - BUCH investigates: Missing sync, data entry error, legitimate difference
 - BUCH resolves: Fix source data, trigger re-sync, or mark as expected difference
@@ -670,6 +693,7 @@ TimesheetEntry {
    - Fix: Discrepancy >€10 → Investigate root cause
 
 **Estimated Time:**
+
 - **Phase 1:** 60 minutes (manual checks)
 - **Phase 2:** 15 minutes (review auto-check report)
 - **Phase 3:** 5 minutes (verification only)
@@ -731,17 +755,20 @@ TimesheetEntry {
 **Failure:** Network outage, Lexware API down, file corruption
 
 **Detection:**
+
 - Scheduled job fails
 - Error logged
 - Alert sent to BUCH + Ops team
 
 **Recovery:**
+
 - **Immediate:** System retries with exponential backoff (1s, 2s, 4s, 8s, max 5 attempts)
 - **If all retries fail:** Manual intervention required
 - **Fallback:** BUCH can trigger manual sync or use Phase 1 CSV method
 - **Data Safety:** All transactions queued, no data loss
 
 **Prevention:**
+
 - Health checks every 15 minutes
 - Redundant sync paths (API + CSV fallback)
 - Monitoring: Alert if no successful sync in 12 hours
@@ -751,20 +778,24 @@ TimesheetEntry {
 **Failure:** Contract in KOMPASS not found in Lexware (or vice versa)
 
 **Detection:**
+
 - Monthly reconciliation check
 - User report ("Invoice missing in KOMPASS")
 
 **Investigation:**
+
 1. Check sync logs: Was contract exported?
 2. Check Lexware import log: Was contract imported successfully?
 3. Check contract status: Was it cancelled after export?
 
 **Resolution:**
+
 - If sync failed: Re-trigger sync for that contract
 - If data changed post-sync: Re-sync with current data
 - If Lexware rejected: Fix validation error, re-sync
 
 **Post-Mortem:**
+
 - Document: What caused inconsistency
 - Fix: Root cause (validation, timing, logic error)
 - Improve: Add safeguards to prevent recurrence
@@ -791,6 +822,7 @@ TimesheetEntry {
    - Proves: Data consistency maintained
 
 **Auditor Requirement:** Show integration is trustworthy
+
 - **Evidence:** Reconciliation reports (all months)
 - **Evidence:** Error rate <1%
 - **Evidence:** Discrepancies resolved and documented
@@ -866,7 +898,6 @@ TimesheetEntry {
 
 ## Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-11-12 | Product Team | Initial revenue and expense flow documentation |
-
+| Version | Date       | Author       | Changes                                        |
+| ------- | ---------- | ------------ | ---------------------------------------------- |
+| 1.0     | 2025-11-12 | Product Team | Initial revenue and expense flow documentation |

@@ -1,8 +1,8 @@
 /**
  * Tour Service
- * 
+ *
  * Business logic for Tour management
- * 
+ *
  * Responsibilities:
  * - Validate tour data and business rules
  * - Check RBAC permissions
@@ -10,7 +10,7 @@
  * - Calculate tour costs from expenses and mileage
  * - Orchestrate repository calls
  * - Log audit trail
- * 
+ *
  * Business Rules:
  * - TR-001: Tour can only be completed if all meetings are attended or cancelled
  * - TR-002: actualDistance should match sum of mileage logs ±5%
@@ -27,6 +27,7 @@ import {
   Inject,
   Logger,
 } from '@nestjs/common';
+
 import type { Tour } from '@kompass/shared/types/entities/tour';
 import {
   validateTour,
@@ -34,10 +35,15 @@ import {
   createTour,
   TourStatus,
 } from '@kompass/shared/types/entities/tour';
-import { ITourRepository, TourFilters } from './tour.repository';
-import { CreateTourDto } from './dto/create-tour.dto';
-import { UpdateTourDto } from './dto/update-tour.dto';
-import { TourResponseDto, TourCostSummaryDto } from './dto/tour-response.dto';
+
+import type { CreateTourDto } from './dto/create-tour.dto';
+import type {
+  TourResponseDto,
+  TourCostSummaryDto,
+} from './dto/tour-response.dto';
+import type { UpdateTourDto } from './dto/update-tour.dto';
+import { ITourRepository } from './tour.repository';
+import type { TourFilters } from './tour.repository';
 
 /**
  * Placeholder User type
@@ -96,12 +102,12 @@ export class TourService {
     @Inject('IMeetingService')
     private readonly meetingService: IMeetingService,
     @Inject('IAuditService')
-    private readonly auditService: IAuditService,
+    private readonly auditService: IAuditService
   ) {}
 
   /**
    * List tours for user with optional filters
-   * 
+   *
    * RBAC: ADM sees own tours, PLAN/GF see all tours
    */
   async findAll(user: User, filters?: TourFilters): Promise<TourResponseDto[]> {
@@ -112,13 +118,15 @@ export class TourService {
       tours = await this.tourRepository.findByUser(user.id, filters);
     } else {
       // PLAN/GF: All tours
-      tours = await this.tourRepository.findByStatus(filters?.status || 'planned');
+      tours = await this.tourRepository.findByStatus(
+        filters?.status || TourStatus.PLANNED
+      );
       if (filters) {
         // Apply additional filters
         if (filters.startDate || filters.endDate) {
           tours = await this.tourRepository.findByDateRange(
             filters.startDate || new Date(0),
-            filters.endDate || new Date(9999, 11, 31),
+            filters.endDate || new Date(9999, 11, 31)
           );
         }
         if (filters.region) {
@@ -132,7 +140,7 @@ export class TourService {
 
   /**
    * Get tour by ID
-   * 
+   *
    * RBAC: ADM sees own tours, PLAN/GF see all tours
    */
   async findById(id: string, user: User): Promise<TourResponseDto> {
@@ -152,7 +160,7 @@ export class TourService {
 
   /**
    * Create new tour
-   * 
+   *
    * RBAC: ADM, PLAN, GF can create tours
    */
   async create(dto: CreateTourDto, user: User): Promise<TourResponseDto> {
@@ -195,7 +203,7 @@ export class TourService {
         expenseIds: [],
         mileageLogIds: [],
       },
-      user.id,
+      user.id
     );
 
     // Save to database
@@ -217,11 +225,15 @@ export class TourService {
 
   /**
    * Update tour
-   * 
+   *
    * RBAC: ADM can update own tours, PLAN/GF can update all tours
    * Business Rule TR-004: Only tour owner or GF can modify
    */
-  async update(id: string, dto: UpdateTourDto, user: User): Promise<TourResponseDto> {
+  async update(
+    id: string,
+    dto: UpdateTourDto,
+    user: User
+  ): Promise<TourResponseDto> {
     const tour = await this.tourRepository.findById(id);
 
     if (!tour) {
@@ -235,14 +247,16 @@ export class TourService {
 
     // Business Rule TR-004: Only owner or GF can modify
     if (tour.ownerId !== user.id && user.role !== 'GF') {
-      throw new ForbiddenException('Only tour owner or Geschäftsführer can modify tours');
+      throw new ForbiddenException(
+        'Only tour owner or Geschäftsführer can modify tours'
+      );
     }
 
     // Validate status transition if status is being changed
     if (dto.status && dto.status !== tour.status) {
       if (!isValidTourStatusTransition(tour.status, dto.status)) {
         throw new BadRequestException(
-          `Invalid status transition from ${tour.status} to ${dto.status}`,
+          `Invalid status transition from ${tour.status} to ${dto.status}`
         );
       }
     }
@@ -285,7 +299,7 @@ export class TourService {
 
   /**
    * Delete tour
-   * 
+   *
    * RBAC: ADM can delete own planned tours, PLAN/GF can delete all tours
    * Business Rule: Can only delete if status is 'planned' and no expenses linked
    */
@@ -309,7 +323,7 @@ export class TourService {
     // Business Rule: Cannot delete if expenses are linked
     if (tour.expenseIds.length > 0) {
       throw new BadRequestException(
-        'Cannot delete tour: Expenses are linked. Remove expenses first.',
+        'Cannot delete tour: Expenses are linked. Remove expenses first.'
       );
     }
 
@@ -330,10 +344,14 @@ export class TourService {
 
   /**
    * Complete tour
-   * 
+   *
    * Business Rule TR-001: Tour can only be completed if all meetings are attended or cancelled
    */
-  async complete(id: string, completionNotes: string, user: User): Promise<TourResponseDto> {
+  async complete(
+    id: string,
+    completionNotes: string,
+    user: User
+  ): Promise<TourResponseDto> {
     const tour = await this.tourRepository.findById(id);
 
     if (!tour) {
@@ -346,10 +364,11 @@ export class TourService {
     }
 
     // Business Rule TR-001: All meetings must be completed or cancelled
-    const allMeetingsCompleted = await this.meetingService.areAllMeetingsCompleted(id);
+    const allMeetingsCompleted =
+      await this.meetingService.areAllMeetingsCompleted(id);
     if (!allMeetingsCompleted) {
       throw new BadRequestException(
-        'Cannot complete tour: Not all meetings are completed or cancelled',
+        'Cannot complete tour: Not all meetings are completed or cancelled'
       );
     }
 
@@ -390,7 +409,7 @@ export class TourService {
 
   /**
    * Get tour cost summary
-   * 
+   *
    * Calculates costs from expenses and mileage logs
    */
   async getCostSummary(id: string, user: User): Promise<TourCostSummaryDto> {
@@ -407,7 +426,7 @@ export class TourService {
 
     // Get expenses and mileage
     const expenses = await this.expenseService.findByTour(id);
-    const mileageLogs = await this.mileageService.findByTour(id);
+    const _mileageLogs = await this.mileageService.findByTour(id);
 
     // Calculate costs
     const mileageCost = await this.mileageService.calculateTotalCost(id);
@@ -426,7 +445,8 @@ export class TourService {
 
     expenses.forEach((expense) => {
       if (expense.category !== 'mileage' && expense.category !== 'hotel') {
-        breakdown[expense.category] = (breakdown[expense.category] || 0) + expense.amount;
+        breakdown[expense.category] =
+          (breakdown[expense.category] || 0) + expense.amount;
       }
     });
 
@@ -445,7 +465,7 @@ export class TourService {
 
   /**
    * Suggest tours for a meeting
-   * 
+   *
    * Business Rule MT-001: Auto-tour suggestion
    * - Same day ±1 day
    * - Region <50km from meeting location
@@ -453,12 +473,12 @@ export class TourService {
   async suggestToursForMeeting(
     meetingDate: Date,
     locationId: string,
-    userId: string,
+    userId: string
   ): Promise<TourResponseDto[]> {
     const suggestions = await this.tourRepository.findSuggestionsForMeeting(
       meetingDate,
       locationId,
-      userId,
+      userId
     );
 
     // TODO: Filter by distance <50km (requires Location service to get GPS coordinates)
@@ -497,4 +517,3 @@ export class TourService {
     };
   }
 }
-

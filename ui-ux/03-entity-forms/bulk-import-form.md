@@ -1,6 +1,7 @@
 # Bulk Import Form - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Data Import Wizard
 - **User Roles**: GF, INNEN (full access), ADM (own data only), PLAN (read-only, no import)
 - **Usage Context**: Import customers, contacts from CSV/Excel
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Multi-Step Wizard**: 1) Upload → 2) Map Fields → 3) Validate → 4) Import
 - **Progress Indicator**: Clear step progress
 - **Error Highlighting**: Red indicators for invalid rows
 - **Success Summary**: Count of imported vs failed records
 
 ### Layout Structure
+
 - Full-screen wizard or large dialog (1200px)
 - Step indicator at top
 - Main content area changes per step
 - Navigation buttons at bottom (Back, Next, Import)
 
 ### shadcn/ui Components
+
 - `Dialog` or full-page
 - `Progress` for steps and import progress
 - `Table` for data preview
@@ -32,6 +36,7 @@
 Create a comprehensive bulk import wizard for KOMPASS, a German CRM application. Design a 4-step import process for uploading CSV/Excel files, mapping fields, validating data, and importing customers with error handling and German labels.
 
 **Wizard Container:**
+
 - Full-page or large dialog (1200px width)
 - Header:
   - Title: "Kunden importieren" - 24px, bold
@@ -39,6 +44,7 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
   - Help link: "Importanleitung" (opens help doc)
 
 **Progress Indicator (Top):**
+
 - 4 steps shown as connected circles
 - Steps:
   1. "Datei hochladen" - Circle with "1"
@@ -53,6 +59,7 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
 **Step 1: Datei hochladen (Upload File)**
 
 **Upload Area:**
+
 - Drag-and-drop zone: 600px × 300px
 - Border: 2px dashed gray (#d1d5db)
 - Border-radius: 8px
@@ -66,6 +73,7 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
   - Help text: "Maximale Dateigröße: 10 MB | Formate: .csv, .xlsx"
 
 **After File Selected:**
+
 - File info card:
   - Icon: FileText (24px)
   - Filename: "customers.csv"
@@ -75,12 +83,14 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
 - Change file: "Andere Datei auswählen" button
 
 **Template Download:**
+
 - Link: "CSV-Vorlage herunterladen"
 - Icon: Download
 - Provides template with correct column headers
 - Example columns: Firmenname, Umsatzsteuer-ID, Straße, PLZ, Stadt, etc.
 
 **Footer:**
+
 - Right buttons:
   - "Abbrechen" (secondary)
   - "Weiter" (primary, disabled until file selected)
@@ -88,6 +98,7 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
 **Step 2: Felder zuordnen (Map Fields)**
 
 **Mapping Table:**
+
 - Shows preview of data (first 5 rows)
 - 3 columns:
   1. **CSV-Spalte** (Source Column): Shows original column names
@@ -96,17 +107,18 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
 
 **Mapping Rows Example:**
 
-| CSV-Spalte | Vorschau | KOMPASS-Feld |
-|------------|----------|--------------|
-| Company Name | Hofladen Müller GmbH | [Firmenname ▾] |
-| VAT Number | DE123456789 | [Umsatzsteuer-ID ▾] |
-| Street | Hauptstraße 15 | [Straße ▾] |
-| Postal Code | 80331 | [PLZ ▾] |
-| City | München | [Stadt ▾] |
-| Email | info@example.de | [E-Mail ▾] |
-| Phone | +49-89-1234567 | [Telefon ▾] |
+| CSV-Spalte   | Vorschau             | KOMPASS-Feld        |
+| ------------ | -------------------- | ------------------- |
+| Company Name | Hofladen Müller GmbH | [Firmenname ▾]      |
+| VAT Number   | DE123456789          | [Umsatzsteuer-ID ▾] |
+| Street       | Hauptstraße 15       | [Straße ▾]          |
+| Postal Code  | 80331                | [PLZ ▾]             |
+| City         | München              | [Stadt ▾]           |
+| Email        | info@example.de      | [E-Mail ▾]          |
+| Phone        | +49-89-1234567       | [Telefon ▾]         |
 
 **Auto-Mapping:**
+
 - System auto-maps if column names match
 - Green checkmark icon: Auto-mapped successfully
 - Amber warning icon: Needs manual mapping
@@ -114,17 +126,20 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
 - Warning: "3 Pflichtfelder noch nicht zugeordnet"
 
 **Required Fields Indicator:**
+
 - List of required fields: "Firmenname", "Straße", "PLZ", "Stadt"
 - Red if not mapped, green checkmark if mapped
 - Cannot proceed until all required fields mapped
 
 **Footer:**
+
 - Left: "Zurück" (go back to upload)
 - Right: "Abbrechen", "Weiter" (disabled until required fields mapped)
 
 **Step 3: Daten validieren (Validate Data)**
 
 **Validation Summary Card:**
+
 - Large card at top showing results
 - Icon: Checkmark (green) or AlertCircle (amber/red)
 - Text: "450 von 500 Zeilen gültig" (90% success rate)
@@ -135,6 +150,7 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
   - 20 Warnungen (amber text)
 
 **Validation Table:**
+
 - Shows all rows with validation status
 - Columns:
   1. **Zeile** (Row): Row number
@@ -144,6 +160,7 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
   5. **Aktionen**: "Bearbeiten" button
 
 **Row States:**
+
 1. **Valid (Green):**
    - Green checkmark icon
    - Example: Row 1 | ✓ | Hofladen Müller GmbH | - | -
@@ -161,10 +178,12 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
    - Example: Row 78 | ⚠ | REWE Köln | Ungültige E-Mail | -
 
 **Filter Options:**
+
 - Tabs: "Alle (500)" | "Gültig (450)" | "Fehler (50)" | "Warnungen (20)"
 - Filter to show only rows with issues
 
 **Inline Edit (Fix Errors):**
+
 - Click "Bearbeiten" on error row
 - Row expands to show editable fields
 - Fix errors inline
@@ -172,6 +191,7 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
 - Updated validation status shows
 
 **Options:**
+
 - Checkbox: ☐ "Ungültige Zeilen überspringen"
   - If checked: Only valid rows imported
   - If unchecked: Import blocked until all errors fixed
@@ -179,6 +199,7 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
   - Default: Checked (warnings non-critical)
 
 **Footer:**
+
 - Left: "Zurück" (back to field mapping)
 - Right: "Abbrechen", "Importieren" (primary blue)
   - "Importieren" shows count: "450 Kunden importieren"
@@ -187,6 +208,7 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
 **Step 4: Importieren (Import)**
 
 **Progress Display:**
+
 - Large circular progress: 45% (center of screen)
 - Text: "225 von 500 Kunden importiert (45%)"
 - Linear progress bar below circle
@@ -194,10 +216,12 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
 - Status: "Wird importiert..." with spinner
 
 **Import Actions:**
+
 - "Abbrechen" button: Stops import (warning dialog first)
 - Cancel warning: "Import abbrechen? Bereits importierte Daten bleiben erhalten."
 
 **Completion State:**
+
 - Icon: Large green checkmark (80px)
 - Title: "Import abgeschlossen!"
 - Summary:
@@ -211,11 +235,13 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
   - "Schließen" (tertiary)
 
 **Error Report (Download):**
+
 - CSV file: "import-errors-2024-11-15.csv"
 - Columns: Row number, Company name, Error message
 - Use for: Fixing errors offline and re-importing
 
 **Duplicate Detection (During Import):**
+
 - If potential duplicates found:
   - Pause import
   - Show duplicate comparison dialog
@@ -223,6 +249,7 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
   - Resume import after decision
 
 **RBAC Import Restrictions:**
+
 - ADM users: Can only import customers assigned to self
 - "Inhaber" field auto-set to current user for ADM
 - GF/INNEN: Can assign imported customers to any ADM user
@@ -230,6 +257,7 @@ Create a comprehensive bulk import wizard for KOMPASS, a German CRM application.
 - PLAN users: Cannot access bulk import (read-only access to customers)
 
 **Import History:**
+
 - Link in header: "Frühere Importe anzeigen"
 - Opens sheet with import history:
   - Date/time, filename, user, result (X succeeded, Y failed)
@@ -240,6 +268,7 @@ Design with clear progress indicators, helpful error messages, and quick error r
 ## Interaction Patterns
 
 ### Import Wizard Flow
+
 1. Upload file (drag/drop or select)
 2. System parses CSV/Excel
 3. Click "Weiter" → Map fields step
@@ -252,12 +281,14 @@ Design with clear progress indicators, helpful error messages, and quick error r
 10. User views imported data or closes
 
 ### Error Handling
+
 - Errors shown per row
 - Click "Bearbeiten" to fix inline
 - Re-validation immediate
 - Continue when all fixed or skip enabled
 
 ### Duplicate Handling
+
 - Pause at first duplicate
 - Show comparison UI
 - User decides action
@@ -266,12 +297,14 @@ Design with clear progress indicators, helpful error messages, and quick error r
 ## German Labels & Content
 
 ### Steps
+
 - **Datei hochladen**: Upload file
 - **Felder zuordnen**: Map fields
 - **Daten validieren**: Validate data
 - **Importieren**: Import
 
 ### Status
+
 - **Wird importiert...**: Importing...
 - **Import abgeschlossen**: Import completed
 - **X von Y importiert**: X of Y imported
@@ -280,6 +313,7 @@ Design with clear progress indicators, helpful error messages, and quick error r
 - **Warnungen**: Warnings
 
 ### Buttons
+
 - **Datei auswählen**: Select file
 - **CSV-Vorlage herunterladen**: Download CSV template
 - **Zurück**: Back
@@ -289,12 +323,14 @@ Design with clear progress indicators, helpful error messages, and quick error r
 - **Importierte Kunden anzeigen**: View imported customers
 
 ### Errors
+
 - **Pflichtfeld fehlt**: Required field missing
 - **Ungültiges Format**: Invalid format
 - **Zeile überspringen**: Skip row
 - **Zeile bearbeiten**: Edit row
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Wizard: role="dialog", aria-label="Import-Assistent Schritt X von 4"
 - Progress: role="progressbar"
@@ -304,6 +340,7 @@ Design with clear progress indicators, helpful error messages, and quick error r
 - Success announcement: Screen reader alert
 
 ## Mobile Considerations
+
 - Full-screen wizard on mobile
 - Upload: Native file picker (no drag-drop)
 - Field mapping: Simplified UI, one mapping at a time
@@ -314,6 +351,7 @@ Design with clear progress indicators, helpful error messages, and quick error r
 ## Example Data
 
 **CSV Import:**
+
 - File: "customers.csv"
 - Rows: 500
 - Valid: 450
@@ -321,6 +359,7 @@ Design with clear progress indicators, helpful error messages, and quick error r
 - Warnings: 20 (invalid emails, will be skipped)
 
 **Field Mapping:**
+
 - "Company Name" → "Firmenname"
 - "VAT" → "Umsatzsteuer-ID"
 - "Street" → "Straße"
@@ -328,12 +367,14 @@ Design with clear progress indicators, helpful error messages, and quick error r
 - "City" → "Stadt"
 
 **Sample Data:**
+
 - Row 1: "Hofladen Müller GmbH", "DE123456789", "Hauptstraße 15", "80331", "München"
 - Row 45: "A", "", "", "", "" (error: too short)
 
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add dialog
 npx shadcn-ui@latest add progress
@@ -344,6 +385,7 @@ npx shadcn-ui@latest add checkbox
 ```
 
 ### File Parsing
+
 ```typescript
 // Using PapaParse for CSV
 import Papa from 'papaparse';
@@ -353,11 +395,12 @@ Papa.parse(file, {
   complete: (results) => {
     setData(results.data);
     setColumns(results.meta.fields);
-  }
+  },
 });
 ```
 
 ### Validation
+
 ```typescript
 // Validate each row against schema
 const validationResults = data.map((row, index) => {
@@ -366,12 +409,13 @@ const validationResults = data.map((row, index) => {
     rowIndex: index + 1,
     valid: result.success,
     errors: result.error?.issues || [],
-    data: row
+    data: row,
   };
 });
 ```
 
 ### Component Dependencies
+
 - CSV parser library (PapaParse)
 - Excel parser (SheetJS/xlsx)
 - Validation schemas from @kompass/shared
@@ -380,14 +424,17 @@ const validationResults = data.map((row, index) => {
 - Duplicate detection service
 
 ### Rich Text Fields Import
+
 **Note:** Rich text editor fields (Beschreibung, Notizen, Bemerkungen) are imported as **plain text** from CSV/Excel files. Users can add formatting after import using the rich text editor in the entity forms.
 
 **Import Behavior:**
+
 - Plain text from CSV column is stored as-is (no HTML tags)
 - After import, users can edit the field using rich text editor to add formatting
 - Example: CSV column "Kundenbeschreibung" → Imported as plain text → User opens Customer form → Edits "Interne Notizen" field with rich text editor → Adds Bold, Lists, etc.
 
 **CSV Column Mapping:**
+
 - `Kundenbeschreibung` → Customer `interne_notizen` (plain text)
 - `Kontaktnotizen` → Contact `interne_notizen` (plain text)
 - `Standortbeschreibung` → Location `beschreibung` (plain text)
@@ -396,6 +443,7 @@ const validationResults = data.map((row, index) => {
 **Future Enhancement:** Support HTML import from Excel files with rich text cells (Phase 2)
 
 ### State Management
+
 - Current wizard step
 - Uploaded file data
 - Field mappings (CSV column → system field)
@@ -403,4 +451,3 @@ const validationResults = data.map((row, index) => {
 - Import progress
 - Error/success counts
 - Duplicate handling decisions
-

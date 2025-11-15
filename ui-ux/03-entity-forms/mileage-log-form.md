@@ -1,6 +1,7 @@
 # Mileage Log Form - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Auto-GPS Tracking Form with Manual Entry
 - **User Roles**: ADM (create own), INNEN/GF (all), BUCH (review)
 - **Usage Context**: Automatic mileage tracking during tours, manual trip logging
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **GPS tracking prominent**: Start/stop button central
 - **Auto-fill from tour**: Pre-populate route data
 - **Manual override**: Easy editing for corrections
 - **Route visualization**: Map preview of driven route
 
 ### Form Structure
+
 - Quick start/stop for GPS tracking
 - Route summary with map
 - Purpose and customer association
@@ -22,6 +25,7 @@
 - Submission for reimbursement
 
 ### shadcn/ui Components
+
 - Card, Form, Button, Input, Toggle
 - Map component for route display
 - Progress indicator for active tracking
@@ -64,6 +68,7 @@ Create a mileage tracking form for KOMPASS that combines automatic GPS tracking 
 ```
 
 **Mobile - Trip Summary (After Stop):**
+
 ```
 ┌─────────────────────────────┐
 │ [←] Fahrt abgeschlossen     │
@@ -100,6 +105,7 @@ Create a mileage tracking form for KOMPASS that combines automatic GPS tracking 
 ```
 
 **Manual Entry Form (Mobile):**
+
 ```
 ┌─────────────────────────────┐
 │ [←] Manuelle Fahrt          │
@@ -177,6 +183,7 @@ Create a mileage tracking form for KOMPASS that combines automatic GPS tracking 
 ```
 
 **Quick Location Favorites:**
+
 ```
 Häufige Orte:
 🏢 Büro (Firmensitz)
@@ -187,6 +194,7 @@ Häufige Orte:
 ```
 
 **GPS Tracking Features:**
+
 - **Auto-pause**: When stopped > 5 minutes
 - **Battery saver**: Reduce GPS frequency on highway
 - **Privacy mode**: No tracking during breaks
@@ -194,6 +202,7 @@ Häufige Orte:
 - **Speed warnings**: Alert if >130 km/h
 
 **Purpose Categories:**
+
 - Kundenbesuch (Customer visit)
 - Projektbesichtigung (Project site)
 - Messe/Event (Trade fair)
@@ -202,6 +211,7 @@ Häufige Orte:
 - Sonstiges (Other)
 
 ## Interaction Patterns
+
 - **One-tap start**: Big GPS button
 - **Auto-detect stops**: Based on speed/location
 - **Quick favorites**: Common locations
@@ -209,6 +219,7 @@ Häufige Orte:
 - **Voice notes**: While driving
 
 ## German Labels & Content
+
 - **Fahrtenbuch**: Mileage log
 - **Geschäftlich**: Business
 - **Privat**: Private
@@ -218,6 +229,7 @@ Häufige Orte:
 - **Strecke**: Distance/Route
 
 ## Tax Compliance Features
+
 - **1% method support**: Track private use
 - **Odometer tracking**: Start/end readings
 - **Complete documentation**: All tax-required fields
@@ -225,6 +237,7 @@ Häufige Orte:
 - **Audit trail**: No retroactive editing
 
 ## Accessibility Requirements
+
 - Voice control for start/stop
 - High contrast for driving mode
 - Audio announcements
@@ -232,6 +245,7 @@ Häufige Orte:
 - One-handed operation
 
 ## Mobile Considerations
+
 - **Background GPS**: Continue tracking when minimized
 - **Offline support**: Store trips locally
 - **Auto-upload**: When WiFi available
@@ -239,6 +253,7 @@ Häufige Orte:
 - **CarPlay/Android Auto**: Basic controls
 
 ## Validation Rules
+
 - Start/end locations required
 - Distance must be > 0
 - Business purpose required for business trips
@@ -246,6 +261,7 @@ Häufige Orte:
 - No future dates
 
 ## Implementation Notes
+
 ```bash
 # GPS Integration
 - Foreground service for tracking
@@ -267,6 +283,7 @@ Häufige Orte:
 ```
 
 ## State Management
+
 - Tracking state (idle/active/paused)
 - Current location and speed
 - Route polyline data
@@ -274,6 +291,7 @@ Häufige Orte:
 - Sync status
 
 ## Analytics Events
+
 - tracking_started / tracking_stopped
 - manual_entry_created
 - route_distance_delta (GPS vs manual)

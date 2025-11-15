@@ -37,6 +37,7 @@ Create a **list view for Contracts (Auftragsbestätigungen)** in KOMPASS. This p
 ## FILTERS & SEARCH
 
 ### Search Bar (Top Left)
+
 - Placeholder: "Vertrag suchen... (Nummer, Kunde, Projekt)"
 - Width: 300px (desktop), full width (mobile)
 - Icon: Search icon (left side)
@@ -87,17 +88,17 @@ Create a **list view for Contracts (Auftragsbestätigungen)** in KOMPASS. This p
 
 ### Table Columns
 
-| Column | Width | Sort | Content |
-|--------|-------|------|---------|
-| **🔒** | 40px | No | GoBD indicator (lock icon if Signed+) |
-| **Vertragsnummer** | 150px | Yes | AB-2025-00045 (link) |
-| **Kunde** | 200px | Yes | Customer name (link) |
-| **Projekt** | 150px | No | Project link or "—" if none |
-| **Vertragsdatum** | 120px | Yes | 28.01.2025 |
-| **Leistungsbeginn** | 130px | Yes | 05.02.2025 |
-| **Auftragswert** | 150px | Yes | 125.000,00 € |
-| **Status** | 120px | Yes | Badge (color-coded) |
-| **Aktionen** | 100px | No | Action buttons |
+| Column              | Width | Sort | Content                               |
+| ------------------- | ----- | ---- | ------------------------------------- |
+| **🔒**              | 40px  | No   | GoBD indicator (lock icon if Signed+) |
+| **Vertragsnummer**  | 150px | Yes  | AB-2025-00045 (link)                  |
+| **Kunde**           | 200px | Yes  | Customer name (link)                  |
+| **Projekt**         | 150px | No   | Project link or "—" if none           |
+| **Vertragsdatum**   | 120px | Yes  | 28.01.2025                            |
+| **Leistungsbeginn** | 130px | Yes  | 05.02.2025                            |
+| **Auftragswert**    | 150px | Yes  | 125.000,00 €                          |
+| **Status**          | 120px | Yes  | Badge (color-coded)                   |
+| **Aktionen**        | 100px | No   | Action buttons                        |
 
 ### Row Design
 
@@ -108,6 +109,7 @@ Create a **list view for Contracts (Auftragsbestätigungen)** in KOMPASS. This p
 - **GoBD-protected rows:** Light green tint (#f0fdf4) if Signed+
 
 ### GoBD Lock Icon
+
 - **Icon:** Lock icon (16px)
 - **Color:** Green (#10b981) if Signed
 - **Tooltip:** "GoBD-geschützt seit [Date]"
@@ -121,12 +123,14 @@ Create a **list view for Contracts (Auftragsbestätigungen)** in KOMPASS. This p
 - **Completed (Abgeschlossen):** Gray badge, "Abgeschlossen"
 
 **Badge Style:**
+
 - Border-radius: 6px (rounded)
 - Padding: 4px 12px
 - Font: 14px, medium weight
 - Icon: 12px lock icon (for Signed+)
 
 ### Project Link
+
 - **If project exists:** Link text "P-2025-M001" (blue, clickable)
 - **If no project:** "—" (gray dash)
 - **If Signed + no project:** "Projekt erstellen" (link)
@@ -161,6 +165,7 @@ Create a **list view for Contracts (Auftragsbestätigungen)** in KOMPASS. This p
      - "Löschen" (if Draft, red text)
 
 **Icon Button Style:**
+
 - Size: 36px × 36px
 - Border-radius: 6px
 - Hover: gray-100 background
@@ -171,12 +176,14 @@ Create a **list view for Contracts (Auftragsbestätigungen)** in KOMPASS. This p
 ## EMPTY STATE
 
 **If no contracts exist:**
+
 - Icon: Document signed icon (large, gray)
 - Message: "Noch keine Verträge erstellt"
 - Description: "Erstellen Sie Ihren ersten Vertrag aus einem angenommenen Angebot."
 - **CTA Button:** "Erster Vertrag erstellen" (primary button)
 
 **If filtered to 0 results:**
+
 - Icon: Search icon (gray)
 - Message: "Keine Verträge gefunden"
 - Description: "Versuchen Sie andere Filterkriterien."
@@ -210,16 +217,19 @@ Create a **list view for Contracts (Auftragsbestätigungen)** in KOMPASS. This p
 ## RESPONSIVE DESIGN
 
 ### Desktop (>1024px)
+
 - Full table with all columns
 - Filters in horizontal row
 - Pagination at bottom
 
 ### Tablet (768-1024px)
+
 - Full table, narrower columns
 - Customer/Project columns truncate with ellipsis
 - Filters stack in 2 rows
 
 ### Mobile (<768px)
+
 - **Card View** instead of table
 - Each contract as card:
   - Contract number (bold) + GoBD lock icon
@@ -261,12 +271,14 @@ Create a **list view for Contracts (Auftragsbestätigungen)** in KOMPASS. This p
 ## COLOR CODING
 
 ### Status Colors
+
 - **Draft:** #FFC107 (yellow) - Border + badge
 - **Signed:** #4CAF50 (green) - Border + badge + lock icon
 - **InProgress:** #2196F3 (blue) - Border + badge
 - **Completed:** #9E9E9E (gray) - Border + badge
 
 ### Row Colors
+
 - **Default:** #ffffff (white)
 - **Hover:** #f9fafb (gray-50)
 - **GoBD-protected (Signed+):** #f0fdf4 (green-50, subtle tint)
@@ -296,12 +308,14 @@ Create a **list view for Contracts (Auftragsbestätigungen)** in KOMPASS. This p
 ## FINANCIAL SUMMARY (Bottom)
 
 **Summary Bar (Above pagination):**
+
 - **Total Contracts:** "53 Verträge"
 - **Total Value:** "Gesamtwert: **5.625.000,00 €**"
 - **Active Value:** "Aktive Verträge: **1.200.000,00 €** (12 Verträge)"
 - **Completed Value:** "Abgeschlossen: **4.425.000,00 €** (41 Verträge)"
 
 **Style:**
+
 - Background: Light blue (#eff6ff)
 - Border-top: 2px solid primary blue
 - Padding: 16px
@@ -360,6 +374,7 @@ Create a **list view for Contracts (Auftragsbestätigungen)** in KOMPASS. This p
 ## QUALITY CHECKLIST
 
 After implementing, verify:
+
 - [ ] All columns sortable (except GoBD icon, Actions)
 - [ ] Filters work correctly (status, customer, project, date)
 - [ ] Search finds contracts by number, customer, project
@@ -388,4 +403,3 @@ After implementing, verify:
 ---
 
 END OF PROMPT
-

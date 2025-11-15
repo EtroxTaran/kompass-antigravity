@@ -70,6 +70,66 @@ services:
           cpus: '1'
           memory: 2G
 
+  neo4j:
+    environment:
+      - NEO4J_AUTH=${PRODUCTION_NEO4J_AUTH}
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_dbms_memory_heap_initial__size=2g
+      - NEO4J_dbms_memory_heap_max__size=4g
+      - NEO4J_dbms_memory_pagecache_size=2g
+    volumes:
+      - /opt/kompass/production/data/neo4j:/data
+      - /opt/kompass/production/logs/neo4j:/logs
+      - /opt/kompass/production/backups/neo4j:/backups
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 6G
+        reservations:
+          cpus: '1'
+          memory: 3G
+
+  whisper:
+    environment:
+      - ASR_MODEL=${PRODUCTION_WHISPER_MODEL:-large-v3}
+      - ASR_ENGINE=faster_whisper
+    volumes:
+      - /opt/kompass/production/data/whisper:/root/.cache/whisper
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+
+  n8n:
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=${PRODUCTION_N8N_BASIC_AUTH_ACTIVE:-true}
+      - N8N_BASIC_AUTH_USER=${PRODUCTION_N8N_BASIC_AUTH_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${PRODUCTION_N8N_BASIC_AUTH_PASSWORD}
+      - N8N_HOST=${PRODUCTION_N8N_HOST:-n8n.kompass.de}
+      - N8N_PROTOCOL=https
+      - WEBHOOK_URL=${PRODUCTION_N8N_WEBHOOK_URL:-https://n8n.kompass.de}
+      - GENERIC_TIMEZONE=Europe/Berlin
+      - TZ=Europe/Berlin
+    volumes:
+      - /opt/kompass/production/data/n8n:/home/node/.n8n
+      - /opt/kompass/production/backups/n8n:/backups
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
   backend:
     image: ghcr.io/${GITHUB_REPOSITORY}/backend:${IMAGE_TAG:-latest}
     environment:
@@ -88,6 +148,18 @@ services:
       - JWT_SECRET=${PRODUCTION_JWT_SECRET}
       - ALLOWED_ORIGINS=${PRODUCTION_ALLOWED_ORIGINS}
       - LOG_LEVEL=warn
+      # Neo4j connection
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=${PRODUCTION_NEO4J_PASSWORD}
+      # Whisper API
+      - WHISPER_API_URL=${PRODUCTION_WHISPER_API_URL:-http://whisper:9000}
+      # n8n webhook URL
+      - N8N_WEBHOOK_URL=${PRODUCTION_N8N_WEBHOOK_URL:-https://n8n.kompass.de}
+      # Feature flags (injected from GitHub Secrets)
+      - AI_N8N_ENABLED=${PRODUCTION_AI_N8N_ENABLED:-false}
+      - AI_RAG_ENABLED=${PRODUCTION_AI_RAG_ENABLED:-false}
+      - AI_ML_ENABLED=${PRODUCTION_AI_ML_ENABLED:-false}
     restart: always
     deploy:
       resources:
@@ -98,15 +170,19 @@ services:
           cpus: '1'
           memory: 2G
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "50m"
-        max-file: "5"
+        max-size: '50m'
+        max-file: '5'
 
   frontend:
     image: ghcr.io/${GITHUB_REPOSITORY}/frontend:${IMAGE_TAG:-latest}
     environment:
       - VITE_API_URL=${PRODUCTION_API_URL}
+      # Feature flags (for frontend feature toggles)
+      - VITE_AI_N8N_ENABLED=${PRODUCTION_AI_N8N_ENABLED:-false}
+      - VITE_AI_RAG_ENABLED=${PRODUCTION_AI_RAG_ENABLED:-false}
+      - VITE_AI_ML_ENABLED=${PRODUCTION_AI_ML_ENABLED:-false}
     restart: always
     deploy:
       resources:
@@ -117,18 +193,18 @@ services:
           cpus: '0.5'
           memory: 512M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "50m"
-        max-file: "5"
+        max-size: '50m'
+        max-file: '5'
 
   # Nginx Reverse Proxy (optional - for SSL termination)
   nginx-proxy:
     image: nginx:1.25-alpine
     container_name: kompass-nginx-proxy
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - /opt/kompass/production/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - /opt/kompass/production/certs:/etc/nginx/certs:ro
@@ -161,4 +237,11 @@ volumes:
     driver: local
   keycloak-data:
     driver: local
-
+  neo4j-data:
+    driver: local
+  neo4j-logs:
+    driver: local
+  whisper-models:
+    driver: local
+  n8n-data:
+    driver: local

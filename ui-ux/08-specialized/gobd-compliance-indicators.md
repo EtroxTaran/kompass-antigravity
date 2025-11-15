@@ -1,6 +1,7 @@
 # GoBD Compliance Indicators - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: GoBD compliance status and indicators
 - **User Roles**: GF/BUCH (full view), others (awareness)
 - **Usage Context**: Show GoBD compliance status across invoices and financial records
@@ -13,6 +14,7 @@ Create GoBD compliance indicators for KOMPASS showing immutability status, data 
 **GoBD Compliance Badge:**
 
 **Document Status Badges:**
+
 1. **Entwurf (Draft)**
    - Color: Gray (#6B7280)
    - Icon: Pencil (edit)
@@ -40,12 +42,14 @@ Create GoBD compliance indicators for KOMPASS showing immutability status, data 
 **Invoice Card with GoBD Indicators:**
 
 **Invoice Header:**
+
 - Number: "R-2024-00456" (32px, bold, monospace)
 - Status: "Finalisiert" badge (green, large)
 - Lock icon: 24px (gray) - prominent
 - Hash indicator: "Integrität verifiziert ✓" (green, small text)
 
 **Immutability Warning (If Finalized):**
+
 - Banner: Top of invoice detail
 - Background: Blue (#3B82F6), semi-transparent
 - Icon: Lock (white)
@@ -54,6 +58,7 @@ Create GoBD compliance indicators for KOMPASS showing immutability status, data 
 - Link: "Änderungsverlauf anzeigen"
 
 **Hash Verification Section:**
+
 - Card: "GoBD-Integrität"
 - Icon: Shield with checkmark (green)
 - Hash: "SHA-256: a3b5c7d9e1f2..." (truncated, monospace)
@@ -63,12 +68,14 @@ Create GoBD compliance indicators for KOMPASS showing immutability status, data 
 - Action: "Jetzt prüfen" (button, re-verifies hash)
 
 **Hash Verification Process:**
+
 - Click "Jetzt prüfen"
 - Spinner: "Verifiziere Integrität..."
 - Success: "✓ Hash stimmt überein - Daten unverändert" (green toast)
 - Failure: "⚠ Hash-Fehler - Daten wurden manipuliert!" (red alert dialog)
 
 **Change Log Link:**
+
 - Card: "Änderungsprotokoll"
 - Icon: History (clock)
 - Text: "124 Einträge"
@@ -78,6 +85,7 @@ Create GoBD compliance indicators for KOMPASS showing immutability status, data 
 **GoBD Compliance Dashboard (BUCH Role):**
 
 **Overview Cards:**
+
 1. **Compliant Documents**
    - Value: "452 von 452 (100%)" (32px, green)
    - Icon: Shield checkmark
@@ -99,6 +107,7 @@ Create GoBD compliance indicators for KOMPASS showing immutability status, data 
    - Subtext: "Letztes Backup: Vor 2 Stunden"
 
 **Compliance Checklist (Expandable):**
+
 - Section: "GoBD-Anforderungen"
 - List (with checkmarks):
   - ✅ "Unveränderbarkeit nach Finalisierung"
@@ -109,6 +118,7 @@ Create GoBD compliance indicators for KOMPASS showing immutability status, data 
   - ✅ "Datensicherung (täglich)"
 
 **Non-Compliant Alert (If Issues):**
+
 - Banner: Red, prominent
 - Icon: Alert triangle
 - Text: "GoBD-Konformität gefährdet"
@@ -123,6 +133,7 @@ Create GoBD compliance indicators for KOMPASS showing immutability status, data 
 **Triggered by:** "Rechnung finalisieren" button
 
 **Dialog Content:**
+
 - Title: "Rechnung finalisieren" (28px, bold)
 - Warning icon: Large lock (amber, 64px)
 - Warning text: "ACHTUNG: Diese Aktion kann nicht rückgängig gemacht werden!"
@@ -133,22 +144,26 @@ Create GoBD compliance indicators for KOMPASS showing immutability status, data 
   - "Änderungen sind nur durch GF mit Korrekturprotokoll möglich"
 
 **Checklist (Must confirm):**
+
 - ☐ "Alle Rechnungsdaten sind korrekt"
 - ☐ "Rechnungsnummer ist eindeutig: R-2024-00456"
 - ☐ "Kunde und Beträge sind geprüft"
 
 **Actions:**
+
 - Primary: "Jetzt finalisieren" (red button, large)
   - Disabled until all checkboxes checked
 - Secondary: "Abbrechen" (gray)
 
 **Success:**
+
 - Toast: "Rechnung finalisiert - GoBD-konform gesichert" (green)
 - Shows: Lock icon, hash, finalization timestamp
 
 **Correction Process (GF Only):**
 
 **Correction Dialog:**
+
 - Title: "GoBD-konforme Korrektur" (amber header)
 - Icon: Shield with pencil
 - Current value: "Rechnungsbetrag: € 63.046,00"
@@ -157,16 +172,19 @@ Create GoBD compliance indicators for KOMPASS showing immutability status, data 
 - GF approval: "Genehmigt durch: Dr. Schmidt (GF)" (auto-filled)
 
 **Warning:**
+
 - "Diese Korrektur wird im Änderungsprotokoll festgehalten"
 - "Original-Hash bleibt erhalten"
 - "Neuer Korrektur-Eintrag wird erstellt"
 
 **Action:**
+
 - "Korrektur durchführen" (amber button)
 
 **Archive Indicator:**
 
 **10-Year Retention:**
+
 - Badge: "Archiviert" (blue)
 - Icon: Archive box
 - Tooltip: "Archiviert bis 15.11.2034 (10 Jahre)"
@@ -175,6 +193,7 @@ Create GoBD compliance indicators for KOMPASS showing immutability status, data 
 **Export (DATEV):**
 
 **GoBD-Compliant Export:**
+
 - Button: "DATEV-Export"
 - Icon: File download
 - Options:
@@ -185,22 +204,24 @@ Create GoBD compliance indicators for KOMPASS showing immutability status, data 
 - Filename: "DATEV_Q4_2024_GoBD.csv"
 
 **Mobile Indicators:**
+
 - Lock icon: Always visible (top-right)
 - Badge: Smaller (16px)
 - Hash: Hidden, show on tap
 - Finalization: Full-screen modal
 
 **Accessibility:**
+
 - ARIA labels: Describe compliance status
 - Screen reader: Reads immutability warnings
 - Color + icons: Not color-only indicators
 - Keyboard: Tab through compliance checks
 
 ## Implementation Notes
+
 ```bash
 npx shadcn-ui@latest add badge button dialog alert
 # GoBD: Immutable documents with SHA-256 hash
 # Storage: Separate audit database (CouchDB)
 # Backup: Daily automated with verification
 ```
-

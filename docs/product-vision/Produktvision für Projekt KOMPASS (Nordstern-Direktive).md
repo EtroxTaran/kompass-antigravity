@@ -1,10 +1,11 @@
 # Produktvision für Projekt KOMPASS (Nordstern-Direktive)
 
-*Converted from: Produktvision für Projekt KOMPASS (Nordstern-Direktive).pdf*  
-*Last Updated: 2025-11-10 – Verknüpft mit quantifizierten NFRs und Gap-Resolution*  
-*Document Version: 2.0*
+_Converted from: Produktvision für Projekt KOMPASS (Nordstern-Direktive).pdf_  
+_Last Updated: 2025-11-10 – Verknüpft mit quantifizierten NFRs und Gap-Resolution_  
+_Document Version: 2.0_
 
 **⚡ Verknüpfte Spezifikationen:**
+
 - **Nicht-funktionale Anforderungen:** `docs/reviews/NFR_SPECIFICATION.md` – Alle Qualitätsziele quantifiziert: Performance (API ≤1,5s P95, Dashboard ≤3s), Skalierung (20 Nutzer gleichzeitig, Infrastruktur 8,5 vCPU/15,5GB RAM), Verfügbarkeit (95% Uptime 8x5, RTO=4h), Offline-Speicher (pro Rolle berechnet, alle unter iOS-Limit), Browser-Support, Monitoring-SLIs, Lasttest-Szenarien. Basis: Salesforce/Dynamics-Benchmarks, CouchDB-Forschung, PWA-Best-Practices.
 - **Datenmodell:** `docs/reviews/DATA_MODEL_SPECIFICATION.md` – Vollständiges ERD, Entity-Definitionen, Validierungsregeln, ID-Strategien, GoBD-Konformität
 - **Benutzerreisen:** `docs/reviews/USER_JOURNEY_MAPS.md` – 5 End-to-End-Journeys mit Swim-Lanes, Fehlerszenarien, Handoff-Punkten
@@ -37,6 +38,7 @@ Eine umfassende Pre-Mortem-Analyse ([siehe Dokument](../reviews/PROJECT_KOMPASS_
 **Priorität:** Offline-First CRM/PM mit **vollständigen Workflows** für Ladenbau-Geschäft.
 
 **Was wird geliefert:**
+
 - ✅ Customer/Contact/Location Management (wie geplant)
 - ✅ Opportunity/Offer/Contract Management
 - ✅ **NEU: Supplier & Subcontractor Management** (komplett)
@@ -48,12 +50,14 @@ Eine umfassende Pre-Mortem-Analyse ([siehe Dokument](../reviews/PROJECT_KOMPASS_
 - ✅ Offline-First PWA mit Tiered Storage (iOS 50MB-sicher)
 
 **Was NICHT geliefert wird:**
+
 - ❌ Prädiktive Analysen (Lead Scoring, Risk Assessment, Cashflow Forecasting)
 - ❌ Automatisierte Empfehlungen (Routenoptimierung, Team-Zuweisungen)
 - ❌ Anomalie-Erkennung
 - ❌ Alle "AI-gestützte" Dashboard-Sektionen (Phase 3 markiert)
 
 **Wert-Proposition (Jahr 1):**
+
 - "Single Source of Truth" für Ladenbau-Geschäft (nicht nur CRM)
 - INN-Persona kann **100% der Beschaffungs-Workflows** in KOMPASS ausführen (kein Excel mehr)
 - PLAN-Persona sieht **Echtzeit-Projektkosten** aus Material-Lieferungen
@@ -64,6 +68,7 @@ Eine umfassende Pre-Mortem-Analyse ([siehe Dokument](../reviews/PROJECT_KOMPASS_
 **Priorität:** Pattern-basierte Intelligenz (kein ML), Lexware-Automatisierung.
 
 **Was wird geliefert:**
+
 - ✅ Smart Template Recommendations (Pattern Matching, kein ML)
 - ✅ Duplicate Detection (Fuzzy Matching)
 - ✅ Material Price Trends (↑↓→ basierend auf historischen Daten)
@@ -73,11 +78,13 @@ Eine umfassende Pre-Mortem-Analyse ([siehe Dokument](../reviews/PROJECT_KOMPASS_
 - ✅ RFQ Workflow (Request for Quotes)
 
 **Datenanforderung:**
+
 - 3-6 Monate KOMPASS-Betriebsdaten
 - 30+ abgeschlossene Projekte
 - 50+ Angebote mit Template-Zuordnung
 
 **Wert-Proposition (Jahr 1-2):**
+
 - BUCH-Persona: Lexware-Synchronisation **unter 15 Minuten pro Woche** (statt 60 Minuten)
 - KALK-Persona: Material-Preisvergleich **automatisch** (spare 30 Minuten pro Kalkulation)
 - INN-Persona: Lagerbestand-Alerts **automatisch** (verhindert Fehlbestellungen)
@@ -87,6 +94,7 @@ Eine umfassende Pre-Mortem-Analyse ([siehe Dokument](../reviews/PROJECT_KOMPASS_
 **Priorität:** ML-basierte Vorhersagen **NUR wenn Datenqualitäts-Gates bestanden**.
 
 **Voraussetzung (HARTE ANFORDERUNG):**
+
 - ✅ 12+ Monate saubere KOMPASS-Daten
 - ✅ 100+ abgeschlossene Opportunities (50 gewonnen, 50 verloren)
 - ✅ 50+ abgeschlossene Projekte mit vollständigem Kosten-Tracking
@@ -95,6 +103,7 @@ Eine umfassende Pre-Mortem-Analyse ([siehe Dokument](../reviews/PROJECT_KOMPASS_
 - ✅ **Validierung:** ML-Backtesting zeigt ≥75% Genauigkeit
 
 **Was wird geliefert (NUR wenn Gates bestanden):**
+
 - Lead Scoring & Win Probability
 - Project Risk Assessment
 - Cashflow Forecasting
@@ -102,11 +111,13 @@ Eine umfassende Pre-Mortem-Analyse ([siehe Dokument](../reviews/PROJECT_KOMPASS_
 - Anomaly Detection
 
 **Wert-Proposition (Jahr 2-3):**
+
 - GF-Persona: **Datenbasierte Forecasts** statt Bauchgefühl
 - PLAN-Persona: **Frühwarnung für Budget-Überschreitungen** (2+ Wochen im Voraus)
 - ADM-Persona: **Optimierte Routen** (15% Kraftstoff-Ersparnis)
 
 **Wenn Gates NICHT bestanden:**
+
 - Phase 3 Features bleiben **gesperrt**
 - Dashboard zeigt: "KI-Features noch nicht verfügbar. Datenqualität: 78% (Ziel: 90%). Weiter Daten sammeln."
 - Keine Ausnahmen. Keine vorzeitigen Launches.
@@ -124,16 +135,18 @@ Eine umfassende Pre-Mortem-Analyse ([siehe Dokument](../reviews/PROJECT_KOMPASS_
 ---
 
 **📋 MVP Scope (AKTUALISIERT nach Pre-Mortem):**
+
 - ✅ **Phase 1 (Monate 0-6):** CRM-Basis + Supplier-Modul + Material-Modul + Lexware CSV + RAG Search + Audio STT - €190k, 6 Sprints
 - ✅ **Phase 2 (Monate 6-12):** Pattern-basierte Intelligenz + Lexware Semi-Auto - €120k, 6 Sprints
 - ⚠️ **Phase 3 (Monate 12-24+):** ML-Vorhersagen **NUR wenn Datenqualität ≥90%** - €150k, 12 Sprints
 - 🎯 **Fokus:** Jahr 1 Wert **ohne KI-Vorhersagen**. KI ist Enhancement, nicht Requirement.
 
 **🌍 Internationalisierung (i18n) - Strategie (GAP-SCOPE-003):**
+
 - **MVP:** Deutsch-only (hardcoded strings, keine i18n-Bibliothek)
 - **Architektur:** i18n-ready (React Komponenten vorbereitet für spätere Externalisierung)
 - **Phase 2:** Bei internationaler Expansion: i18next Integration (Aufwand: 2-3 Wochen)
-- **Begründung:** 
+- **Begründung:**
   - ✅ Schnellere MVP-Entwicklung (keine Externalisierungs-Overhead)
   - ✅ Einfachere Tests (eine Sprache)
   - ✅ Niedrigere Kosten (€15-20k gespart)
@@ -178,7 +191,6 @@ geteilt (kein Abteilungs-Chaos mehr).
 
 # Nahtlose Prozesse statt Medienbrüchen: Heute gibt es häufig Brüche im Informationsfluss – z. B.
 
-
 **Effizienz statt Doppelarbeit:** Doppelarbeit und manuelle Routineaufgaben kosten dem Team
 derzeit viel Zeit und führen zu Verzögerungen. Beispielsweise müssen Vertriebler handschriftliche
 Besuchsnotizen später am PC nachpflegen, was nicht nur ineffizient ist, sondern auch zu Fehlern
@@ -214,7 +226,7 @@ auf alle Vorgänge, wodurch
 **Datenbrüche**
 ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arbeiten kann.
 
-**Kurzform (Leitstern):** *„Ein Team, ein Tool – volle Transparenz und Effizienz für nachhaltigen Projekterfolg.“*
+**Kurzform (Leitstern):** _„Ein Team, ein Tool – volle Transparenz und Effizienz für nachhaltigen Projekterfolg.“_
 
 ---
 
@@ -223,6 +235,7 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Vision:** KOMPASS wird von einem passiven Datenrepositorium zu einem **proaktiven, intelligenten Assistenten**, der Nutzer entlastet, Zeit spart und datenbasierte Handlungsempfehlungen gibt. Statt nur Daten zu speichern, "versteht" das System Zusammenhänge, erkennt Muster und unterstützt Entscheidungen.
 
 **Strategische Ausrichtung:**
+
 - **Vom "System of Record" zum "System of Intelligence"** – KOMPASS speichert nicht nur Daten, sondern extrahiert Wissen und liefert Insights.
 - **KI als integraler Produktbestandteil** – Nicht als Add-On, sondern als Kern-Differenzierungsmerkmal zur Konkurrenz (Salesforce Einstein, HubSpot AI, Monday.com AI).
 - **Self-Hosted & DSGVO-konform** – Alle KI-Modelle (Whisper, Llama 3, scikit-learn) können lokal laufen, keine Daten an Cloud-KI-Anbieter nötig.
@@ -238,6 +251,7 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Lösung: Voice-to-Text mit intelligenter Zusammenfassung**
 
 **Workflow:**
+
 1. **Audio-Aufnahme während Kundengespräch** (mobiles PWA, offline-fähig)
 2. **Automatische Transkription via Whisper** (OpenAI oder self-hosted) → vollständiger Gesprächstext
 3. **KI-Summarization** (GPT-4 oder Llama 3 via n8n) → 5-Zeilen-Zusammenfassung extrahiert:
@@ -248,18 +262,21 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 5. **Speicherung in Kundenprotokoll** → Volltext + Zusammenfassung + Audio-Datei (MinIO Object Storage)
 
 **Nutzen:**
+
 - ✅ **Zeit sparen**: 15-30 Min → 2 Min (nur prüfen & bestätigen) = 13-28 Min/Besuch gespart
 - ✅ **Keine Vergesslichkeit**: Alle Details im System, nichts geht verloren
 - ✅ **Bessere Übergaben**: Innendienst kann Audio anhören statt unleserliche Notizen interpretieren
 - ✅ **Compliance**: Vollständige Dokumentation (GoBD-konform)
 
 **Technology Stack:**
+
 - **Whisper** (OpenAI oder self-hosted via Docker) → Transkription
 - **n8n Workflow** → Orchestrierung (Audio → MinIO → Whisper → GPT-4 → CouchDB)
 - **BullMQ** → Job-Queue für async Processing (Transkription dauert 30-120s)
 - **Socket.IO** → Real-Time-Progress-Updates an Frontend ("Transkription läuft... 75%")
 
 **Akzeptanzkriterien:**
+
 - ✅ Transkriptions-Genauigkeit >95% (Deutsch, Branchen-Fachbegriffe via Fine-Tuning)
 - ✅ Durchschnittliche Processing-Zeit <90s für 5-Min-Audio
 - ✅ Nutzer-Akzeptanzrate >80% (User finden Summary "hilfreich")
@@ -273,11 +290,13 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Lösung: Intelligente Intent-Erkennung aus Protokollen**
 
 **Use Cases:**
+
 - **Explizite Zusagen**: "Ich schicke Ihnen das Muster nächste Woche" → Task: "Muster an [Kunde] schicken" (Fällig: 7 Tage)
 - **Implizite Deadlines**: "Angebot muss bis Monatsende vorliegen" → Task: "Angebot erstellen" (Fällig: Ende Monat)
 - **Wiedervorlagen**: "Rufe mich in 2 Wochen nochmal an" → Erinnerung in 14 Tagen
 
 **Implementierung:**
+
 - **NLP-Pipeline** (spaCy oder Transformers-basiert):
   1. Named Entity Recognition (NER) → Extraktion von Daten, Beträgen, Produktnamen
   2. Intent Classification → "Zusage", "Wiedervorlage", "Information"
@@ -285,11 +304,13 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 - **Confidence Threshold**: Nur Tasks mit >80% Confidence automatisch anlegen, Rest als Vorschlag
 
 **Nutzen:**
+
 - ✅ **Nichts vergessen**: System "erinnert" an Zusagen
 - ✅ **Proaktivität**: Follow-Ups kommen automatisch ins System
 - ✅ **Geschäftsführer-Oversight**: GF sieht Dashboard "Offene Zusagen" → Kontrolle, ob Team nachfasst
 
 **Roadmap:**
+
 - **Phase 2.1**: Basis-Intent-Recognition (explizite Zusagen)
 - **Phase 2.2**: Erweitert um implizite Intents (Sentiment Analysis, "Kunde unzufrieden" → GF-Alert)
 
@@ -304,6 +325,7 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Lösung: ML-Modell berechnet "Conversion-Wahrscheinlichkeit" für jede Opportunity**
 
 **Input-Features (Training Data):**
+
 - **Firmographics**: Branche, Unternehmensgröße, Standort
 - **Interaction History**: Anzahl Besuche, E-Mails, Anrufe, Protokolle
 - **Deal Characteristics**: Estimated Value, Projekt-Typ (Neubau vs. Umbau), Budget-Range
@@ -311,31 +333,37 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 - **Timing**: Saison (Q4 oft besser), Zeit seit Erstanfrage
 
 **Output:**
+
 - **Lead Score**: 0-100 Punkte (≥80: "Hot Lead", 50-79: "Warm", <50: "Cold")
 - **Conversion Probability**: z.B. "72% Chance auf Abschluss"
 - **Empfohlene Nächste Aktion**: "Angebot nachfassen" vs. "Langfristig pflegen"
 
 **Algorithmen:**
+
 - **Gradient Boosting** (XGBoost/LightGBM) → State-of-the-Art für Tabellen-Daten
 - **Training**: Historische Opportunities (2 Jahre Daten, mindestens 200 Abschlüsse + 500 nicht-gewonnene)
 - **Features**: 20-30 Features (nicht zu komplex, Overfitting-Gefahr)
 - **Evaluation**: AUC-ROC >0,75 (Minimum), Precision/Recall-Balance
 
 **UI-Integration:**
+
 - **Opportunity-Liste**: Sortierung nach Lead Score (höchster Score oben)
 - **Detailansicht**: Score-Badge + Erklärung ("Score hoch wegen: häufiger Kontakt, großes Budget, positive Sentiment")
 - **Dashboard**: "Top 10 Hot Leads diese Woche" Widget für GF
 
 **Nutzen:**
+
 - ✅ **Höhere Conversion Rate**: Vertrieb fokussiert sich auf beste Chancen → +10-20% mehr Abschlüsse (Benchmark: Salesforce Einstein)
 - ✅ **Zeitersparnis**: Keine Zeit für "Dead Ends", fokussierte Akquise
 - ✅ **Datenbasierte Priorisierung**: Ersetzt Bauchgefühl durch Fakten
 
 **Explainability (SHAP/LIME):**
+
 - **Transparenz**: Nutzer sieht, WARUM Score hoch/niedrig ist → Vertrauen in KI
 - **Regulatory Compliance**: DSGVO verlangt Erklärbarkeit bei automatisierten Entscheidungen
 
 **A/B-Testing:**
+
 - **Phase 2.2**: Pilotgruppe (5 Nutzer) arbeitet mit Lead Scoring, Kontrollgruppe ohne
 - **Messung**: Conversion Rate, Zeit bis Abschluss, Nutzer-Feedback
 - **Rollout**: Wenn Pilotgruppe +15% bessere Conversion → Vollständiger Rollout
@@ -349,18 +377,21 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Lösung: KI-Dashboard mit Frühwarnsystem**
 
 **Risk Indicators (automatisch berechnet):**
+
 1. **Budget-Risiko**: Tatsächliche Kosten > 80% Planbudget → Rot
 2. **Terminrisiko**: Projekt >10% hinter Zeitplan → Orange
 3. **Historisches Risiko**: Ähnliche Projekte hatten oft Probleme (ML-Modell) → Gelb
 4. **Stakeholder-Sentiment**: Viele negative Protokolle/E-Mails → Rot
 
 **ML-Modell: "Project Delay Prediction"**
+
 - **Training**: 100+ abgeschlossene Projekte (Features: Komplexität, Team-Größe, Kundenkommunikation-Frequenz, Change Requests)
 - **Output**: "Wahrscheinlichkeit für >2 Wochen Verzögerung": z.B. 65%
 - **Algorithmus**: Random Forest oder Gradient Boosting
 - **Evaluation**: Precision >70% (wenig False Positives, GF soll nicht überalarmiert werden)
 
 **Dashboard-Widget:**
+
 ```
 ┌──────────────────────────────────────────┐
 │ 🚨 Projekte mit erhöhtem Risiko          │
@@ -378,6 +409,7 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 ```
 
 **Nutzen:**
+
 - ✅ **Früherkennung**: Probleme werden sichtbar BEVOR sie kritisch sind
 - ✅ **Proaktive Steuerung**: GF kann rechtzeitig eingreifen (Ressourcen umverteilen, Kunde informieren)
 - ✅ **Reputation**: Weniger "Überraschungen" beim Kunden → bessere Zufriedenheit
@@ -391,6 +423,7 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Vision**: System generiert automatisch **Wochen-/Monatsberichte** für GF → "Top 5 Deals diese Woche", "Umsatzprognose Q1", "Risiken & Chancen"
 
 **Technologie:**
+
 - **LLM** (GPT-4 oder selbst-gehostetes Llama 3 70B via n8n)
 - **Data Aggregation**: CouchDB Analytics (via CQRS PostgreSQL) + Sentiment aus Protokollen
 - **Natural Language Generation**: Report in verständlicher Sprache (Deutsch)
@@ -398,15 +431,18 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 ### 🔮 Predictive Forecasting (Umsatzprognose mit ML)
 
 **Vision**: "Wie viel Umsatz machen wir voraussichtlich in Q2?" → System berechnet basierend auf:
+
 - **Pipeline-Analyse**: Opportunities mit Abschluss-Wahrscheinlichkeit × Wert
 - **Saisonalität**: Historische Patterns (Q4 oft stärker als Q1)
 - **Externe Faktoren**: Wirtschaftslage (optional: Integration von Wirtschaftsdaten)
 
 **Algorithmen:**
+
 - **Time-Series Forecasting**: ARIMA, Prophet (Facebook), LightGBM
 - **Confidence Intervals**: "Umsatz Q2: €250K-€350K (80% Konfidenz)"
 
 **Nutzen:**
+
 - ✅ **Finanzplanung**: GF kann Liquidität besser steuern
 - ✅ **Kapazitätsplanung**: "Wir brauchen mehr Planer im März" (vorausschauend)
 
@@ -415,19 +451,23 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 ## Sicherheit & Datenschutz (DSGVO-Konformität)
 
 **DSGVO-Consent-Management:**
+
 - ❌ **Kein AI-Processing ohne explizites Opt-In**: `customer.dsgvoConsent.aiProcessing = true` (per Kunde)
 - ✅ **Opt-In-Dialog**: "Möchten Sie, dass wir KI zur Analyse verwenden? (Verbesserung Ihrer Experience)" → User wählt bewusst
 
 **Data Anonymization:**
+
 - **Vor KI-Call**: Sensible Felder (Namen, Adressen, Telefonnummern) werden maskiert
-- **Beispiel**: Protokoll-Text "Herr Müller aus München, Tel. 089-123456" → "PERSON aus ORT, Tel. ***-***" → KI sieht anonymisierte Version
+- **Beispiel**: Protokoll-Text "Herr Müller aus München, Tel. 089-123456" → "PERSON aus ORT, Tel. **_-_**" → KI sieht anonymisierte Version
 
 **Local AI Option (100% On-Premise):**
+
 - **Whisper**: Lokales Docker-Container (keine Daten an OpenAI)
 - **Llama 3**: Selbst-gehostetes LLM (70B Modell via Ollama/LM Studio)
 - **Vorteil**: Vollständige Datenkontrolle, kein Cloud-Vendor-Lockin, DSGVO-sicher
 
 **Audit-Log:**
+
 - **Alle KI-Operationen geloggt**: Wer hat wann welches Modell mit welchen Daten genutzt?
 - **Compliance-Report**: GF kann jederzeit nachweisen, wie KI genutzt wurde (für Audits)
 
@@ -435,18 +475,19 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 
 ## Erfolgsmetriken (KPIs für KI-Features)
 
-| Metrik | Ziel (Phase 2) | Messung |
-|--------|----------------|---------|
-| **Transkriptions-Adoption** | 70% aller Außendienst-Besuche nutzen Audio-Aufnahme | CouchDB Analytics |
-| **Zeit-Ersparnis pro Protokoll** | Durchschnittlich 15 Min gespart | User-Survey + Time-Tracking |
-| **Lead-Scoring-Accuracy** | >75% AUC-ROC | ML-Evaluation |
-| **Conversion Rate (mit KI vs. ohne)** | +15% höhere Abschlussrate bei KI-Nutzern | A/B-Test |
-| **Project Risk Precision** | >70% korrekte Vorhersagen (keine False Alarms) | Historical Validation |
-| **User Satisfaction (KI-Features)** | Net Promoter Score (NPS) >50 für KI-Features | Quartals-Survey |
+| Metrik                                | Ziel (Phase 2)                                      | Messung                     |
+| ------------------------------------- | --------------------------------------------------- | --------------------------- |
+| **Transkriptions-Adoption**           | 70% aller Außendienst-Besuche nutzen Audio-Aufnahme | CouchDB Analytics           |
+| **Zeit-Ersparnis pro Protokoll**      | Durchschnittlich 15 Min gespart                     | User-Survey + Time-Tracking |
+| **Lead-Scoring-Accuracy**             | >75% AUC-ROC                                        | ML-Evaluation               |
+| **Conversion Rate (mit KI vs. ohne)** | +15% höhere Abschlussrate bei KI-Nutzern            | A/B-Test                    |
+| **Project Risk Precision**            | >70% korrekte Vorhersagen (keine False Alarms)      | Historical Validation       |
+| **User Satisfaction (KI-Features)**   | Net Promoter Score (NPS) >50 für KI-Features        | Quartals-Survey             |
 
 ---
 
 **Siehe auch:**
+
 - **Technische Umsetzung**: `docs/architectur/` → "KI-Integrationsarchitektur (Phase 2+)"
 - **ADR-018**: AI-Integrationsarchitektur (Message Queue + n8n + WebSocket)
 - **Review**: `docs/reviews/AI_INTEGRATION_STRATEGY.md` → Detaillierte Implementierungsstrategie
@@ -456,6 +497,7 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Vision:** KOMPASS entwickelt sich von einer "Datenteilung" zu **aktiver, kontextueller Kollaboration**. Teams arbeiten in Echtzeit zusammen, Kommunikation ist in Vorgänge eingebettet (nicht in separatem E-Mail/Chat), und Kunden werden proaktiv eingebunden.
 
 **Strategische Ausrichtung:**
+
 - **Von asynchron (E-Mail) zu synchron (Real-Time)** → Schnellere Reaktionszeiten, weniger "Wer hat was übersehen?"
 - **Von isoliert (Slack/Teams) zu integriert (Kommunikation IN den Daten)** → Kontext bleibt erhalten
 - **Von B2B zu B2B2C (Customer Portal)** → Kunde wird Teil des Prozesses, nicht externer Empfänger
@@ -471,7 +513,9 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Lösung: Echtzeit-Activity-Feed mit intelligentem Notification-System**
 
 **Features:**
+
 1. **Zentral Customer/Account/Project Activity Stream:**
+
    ```
    ┌────────────────────────────────────────────────────┐
    │ Kunde "Hofladen Müller"                            │
@@ -497,16 +541,19 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
    - **E-Mail-Digest** (Optional) → "Täglich um 8 Uhr: Zusammenfassung gestern"
 
 **Intelligentes Filtering (Noise Reduction):**
+
 - ❌ **NICHT** jede Kleinigkeit notifizieren ("User hat Kunde geöffnet" → zu viel Spam)
 - ✅ **Nur relevante Events**: Task Assignments, @-Mentions, Status Changes (Critical Path), Approvals
 - ✅ **Mute-Funktion**: "Benachrichtigungen für Projekt X pausieren" (wenn temporär nicht relevant)
 
 **Technologie:**
+
 - **Socket.IO + Redis Adapter** (für horizontale Skalierung) → Siehe ADR-016
 - **Notification Storage**: CouchDB `notifications`-Collection (pro User)
 - **Read/Unread-Tracking**: `notification.read = false` → Badge-Counter
 
 **Nutzen:**
+
 - ✅ **Schnellere Reaktionszeiten**: Mitarbeiter sehen Updates sofort, statt alle 30 Min E-Mails checken
 - ✅ **Weniger "Hab ich nicht gesehen"-Ausreden**: Klare Notification-History
 - ✅ **Bessere Übergaben**: Activity Feed zeigt chronologisch alle Änderungen (Audit Trail)
@@ -520,7 +567,9 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Lösung: Kommentare direkt IN den Daten**
 
 **Use Cases:**
+
 1. **Angebots-Position-Level-Kommentar:**
+
    ```
    Offer #2024-045, Position 3 "LED-Beleuchtung"
    💬 @max: "Ist die Menge 50 Stück korrekt? Kunde hatte 60 genannt."
@@ -528,6 +577,7 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
    ```
 
 2. **Task-Level-Kommentar:**
+
    ```
    Projekt "Baumarkt Z", Task "Elektro-Installation"
    💬 @planer: "Verzögerung wegen fehlendem Material"
@@ -543,6 +593,7 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
    ```
 
 **Technologie:**
+
 - **CouchDB Embedded Comments**: `entity.comments: Comment[]` (Array of Comment-Objects)
 - **Comment-Schema:**
   ```typescript
@@ -559,11 +610,13 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 - **Real-Time**: Neue Comments via Socket.IO an alle offenen Clients pushen
 
 **UI-Integration:**
+
 - **Kommentar-Button** neben jeder relevanten Entity (Offer-Position, Task, Document)
 - **Thread-View**: Diskussion chronologisch, @-Mentions hervorgehoben
 - **Resolve-Button**: "Diskussion abgeschlossen" → ausgeblendet (aber archiviert)
 
 **Nutzen:**
+
 - ✅ **Kontext bleibt erhalten**: Kommentar ist direkt bei der Sache (nicht in separatem Chat)
 - ✅ **Audit Trail**: Alle Diskussionen nachvollziehbar (GoBD-konform)
 - ✅ **Weniger E-Mail-Ping-Pong**: Diskussion im System statt endlose Mail-Threads
@@ -575,14 +628,17 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Vision (Phase 2.2):** Nutzer sehen in Echtzeit, wer gerade welchen Kunden/Projekt öffnet → verhindert gleichzeitige Bearbeitungen (Konflikte).
 
 **Use Case:**
+
 - Max öffnet "Kunde Hofladen Müller" → Lisa sieht Badge "🟢 Max arbeitet gerade hier" → Lisa wartet oder koordiniert sich
 - GF öffnet Dashboard → System zeigt "3 aktive Nutzer: Max, Lisa, Sarah" (Übersicht wer gerade arbeitet)
 
 **Technologie:**
+
 - **Socket.IO Rooms**: User "betritt" Room, wenn Entity öffnet → andere User in Room sehen Presence
 - **Heartbeat**: Alle 30s sendet Client "Ich bin noch hier" → bei Timeout (2 Min) = "User hat verlassen"
 
 **Nutzen:**
+
 - ✅ **Kollisions-Vermeidung**: Weniger CouchDB-Konflikte (2 User bearbeiten gleichzeitig)
 - ✅ **Transparenz**: "Wer macht was?" – sichtbar in Echtzeit
 
@@ -599,61 +655,71 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Features:**
 
 #### 1. **Project Status Dashboard (für Kunden)**
-   ```
-   ┌────────────────────────────────────────────────────┐
-   │ Projekt "Ladenumbau Hofladen Müller"               │
-   ├────────────────────────────────────────────────────┤
-   │ Status: 🟡 In Progress (60% fertig)                │
-   │ Budget: €85K / €100K verbraucht                    │
-   │ Zeitplan: 2 Wochen Verzug (ursprünglich 15.03.)   │
-   │                                                    │
-   │ ✅ Phase 1: Planung (abgeschlossen)               │
-   │ 🟡 Phase 2: Elektro-Installation (läuft)          │
-   │ ⏳ Phase 3: Innenausbau (startet 20.03.)          │
-   └────────────────────────────────────────────────────┘
-   ```
+
+```
+┌────────────────────────────────────────────────────┐
+│ Projekt "Ladenumbau Hofladen Müller"               │
+├────────────────────────────────────────────────────┤
+│ Status: 🟡 In Progress (60% fertig)                │
+│ Budget: €85K / €100K verbraucht                    │
+│ Zeitplan: 2 Wochen Verzug (ursprünglich 15.03.)   │
+│                                                    │
+│ ✅ Phase 1: Planung (abgeschlossen)               │
+│ 🟡 Phase 2: Elektro-Installation (läuft)          │
+│ ⏳ Phase 3: Innenausbau (startet 20.03.)          │
+└────────────────────────────────────────────────────┘
+```
 
 #### 2. **Document Access & Approval**
+
 - Kunde kann **Angebote/Rechnungen downloaden** (PDF)
 - **Approval-Workflow**: "Angebot #2024-045 bitte freigeben" → Kunde klickt "Genehmigen" → System notifiziert Planer
 - **Change Requests**: Kunde kann Änderungswünsche direkt im Portal eingeben (statt E-Mail)
 
 #### 3. **Secure Communication Channel**
+
 - **Nachrichten-Thread** zwischen Kunde und Team (wie Kommentare, aber Kunde sieht nur seine Konversation)
 - **File-Upload**: Kunde kann Dateien hochladen (z.B. Logo für Beschilderung)
 - **Push-Notifications**: "Projekt-Status aktualisiert" → Kunde bekommt E-Mail
 
 #### 4. **Photo Gallery (Baufortschritt)**
+
 - Planer lädt Fotos vom Bau hoch → Kunde sieht Timeline "Vorher/Nachher" → professioneller Eindruck
 
 **Sicherheit & Datenschutz:**
 
 **Authentication:**
+
 - **Magic Link** (passwortlos) → Kunde bekommt E-Mail mit Einmal-Link → Zugriff auf Portal
 - **Alternative**: SSO (falls Kunde Unternehmens-Login hat)
 - **Kein Passwort-Reset-Stress** → Einfach neuen Link anfordern
 
 **Authorization (Feingranulare Berechtigungen):**
+
 - Kunde sieht **NUR eigene Projekte** (nicht Projekte anderer Kunden)
 - Kunde sieht **KEINE internen Daten** (Kosten-Kalkulationen, interne Notizen)
 - **Feldebene-Filtering**: Budget-Feld optional (manche Kunden sollen Budget sehen, manche nicht)
 
 **Audit Log:**
+
 - **Alle Portal-Zugriffe geloggt**: Wer hat wann welches Dokument heruntergeladen?
 - **Compliance**: GoBD & DSGVO-konform (Kunde kann Datenauskunft anfordern)
 
 **Technology Stack:**
+
 - **Backend**: NestJS API mit Customer-Portal-Endpoints (`/api/portal/*`)
 - **Frontend**: Separate React-App (oder Sub-Route in KOMPASS PWA) mit vereinfachtem UI für Kunden
 - **CouchDB Filtered Replication**: Kunde-User bekommt nur gefilterte Ansicht (nur eigene Projekte)
 
 **Benefits:**
+
 - ✅ **Kunde zufriedener**: Transparenz → Vertrauen → weniger "Wo bleibt ihr?"-Anrufe
 - ✅ **Team entlastet**: Weniger manuelle Statusberichte, Kunde schaut selbst nach
 - ✅ **Professioneller Eindruck**: "Die haben ein modernes System" → Wettbewerbsvorteil
 - ✅ **Umsatzpotenzial**: Kunde sieht Fortschritt → empfiehlt Firma weiter → mehr Projekte
 
 **Rollout-Strategie:**
+
 - **Phase 2.2 (Q4 2025)**: MVP Portal (Status Dashboard + Document Download)
 - **Phase 3 (Q1 2026)**: Approval-Workflow + Communication Channel
 - **Phase 3+ (Q2 2026)**: Photo Gallery, Mobile-optimiertes Portal (Customer PWA)
@@ -662,17 +728,18 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 
 ### 📱 Customer Engagement KPIs
 
-| Metrik | Ziel (Phase 2.2) | Messung |
-|--------|------------------|---------|
-| **Portal-Adoption** | 50% aller aktiven Projekte nutzen Portal | CouchDB Analytics |
-| **Reduktion Status-Anfragen** | -40% weniger "Wie weit seid ihr?"-Anrufe | User-Survey + Call-Log |
-| **Customer Satisfaction** | Net Promoter Score (NPS) >60 bei Portal-Nutzern | Post-Project-Survey |
-| **Approval-Cycle-Time** | Angebots-Freigabe durchschnittlich 2 Tage schneller (vorher 5 Tage) | Process Analytics |
-| **Dokumenten-Zugriff** | 80% aller Kunden laden mind. 1 Dokument herunter | Portal-Analytics |
+| Metrik                        | Ziel (Phase 2.2)                                                    | Messung                |
+| ----------------------------- | ------------------------------------------------------------------- | ---------------------- |
+| **Portal-Adoption**           | 50% aller aktiven Projekte nutzen Portal                            | CouchDB Analytics      |
+| **Reduktion Status-Anfragen** | -40% weniger "Wie weit seid ihr?"-Anrufe                            | User-Survey + Call-Log |
+| **Customer Satisfaction**     | Net Promoter Score (NPS) >60 bei Portal-Nutzern                     | Post-Project-Survey    |
+| **Approval-Cycle-Time**       | Angebots-Freigabe durchschnittlich 2 Tage schneller (vorher 5 Tage) | Process Analytics      |
+| **Dokumenten-Zugriff**        | 80% aller Kunden laden mind. 1 Dokument herunter                    | Portal-Analytics       |
 
 ---
 
 **Siehe auch:**
+
 - **Technische Umsetzung**: `docs/architectur/` → "Real-Time-Kommunikationsarchitektur (Phase 2+)"
 - **ADR-016**: Real-Time-Kommunikationslayer (Socket.IO + Redis Adapter)
 - **Security**: `docs/reviews/NFR_SPECIFICATION.md` § Sicherheit (Kundendaten-Isolation)
@@ -682,6 +749,7 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Vision:** KOMPASS liefert der Geschäftsführung **actionable Intelligence** statt roher Daten. Dashboards sind nicht statisch, sondern **anpassbar**. Analysen laufen performant (SQL-basiert via CQRS), und Außendienst erhält **effiziente Route Planning** für maximale Kundenbesuche.
 
 **Strategische Ausrichtung:**
+
 - **Vom "Daten-Dump" zu "Insights-Engine"** → Nicht nur Zahlen, sondern Handlungsempfehlungen
 - **Von starren Reports zu Self-Service-BI** → GF baut eigene Dashboards (kein Dev-Involvement nötig)
 - **Von CouchDB-Limitierung zu SQL-Power** → CQRS-Pattern für 10-100x schnellere Analytics
@@ -699,11 +767,13 @@ ausgeschlossen sind und das Unternehmen **datensouverän** und DSGVO-konform arb
 **Features:**
 
 #### 1. **Multi-Stop Route Optimization (Traveling Salesman Problem)**
+
 - **Input**: Außendienst wählt 5 Kunden aus, die er diese Woche besuchen will
 - **Output**: Optimale Reihenfolge (kürzeste Gesamtstrecke) + Zeitplan ("10:00 Kunde A, 11:30 Kunde B, ...")
 - **Algorithmus**: Google Maps Directions API + Heuristiken (Nearest Neighbor, Genetic Algorithm)
 
 **Use Case:**
+
 ```
 Montag-Tour:
 1. 09:00 - Hofladen Müller (München)
@@ -717,10 +787,12 @@ Statt: 240 km bei manueller Planung → 60 km gespart = €15 Sprit
 ```
 
 #### 2. **Nearby Lead Mapping (Opportunistische Besuche)**
+
 - **Use Case**: Außendienst ist bei "Hofladen Müller" → System zeigt: "3 potenzielle Leads in 10 km Umkreis"
 - **Benefit**: Spontane Zusatzbesuche ("Ich bin eh in der Nähe") → mehr Kontakte, bessere Ausnutzung
 
 **UI:**
+
 ```
 ┌────────────────────────────────────────────────────┐
 │ 📍 In deiner Nähe (aktuell: München-Ost)          │
@@ -738,17 +810,20 @@ Statt: 240 km bei manueller Planung → 60 km gespart = €15 Sprit
 ```
 
 #### 3. **Automated Check-Ins & Visit Logging**
+
 - **Geofencing**: Wenn Außendienst am Kunden-Standort ankommt (GPS-Radius 100m) → Auto-Prompt "Check-In bei Hofladen Müller?"
 - **One-Click-Protokoll**: Nach Check-Out → "Besuch dokumentieren?" → Voice-Memo aufnehmen (Whisper-Transkription, siehe Pillar 1)
 - **Zeiterfassung**: System loggt automatisch Besuchsdauer (für Abrechnung/Statistik)
 
 **Nutzen:**
+
 - ✅ **Zeit sparen**: 1-2h/Woche durch optimierte Routen
 - ✅ **Kosten sparen**: €50-100/Monat weniger Sprit (bei 5 Außendienstlern = €600-1200/Jahr)
 - ✅ **Mehr Besuche**: +15-20% mehr Kundenkontakte durch opportunistische Leads
 - ✅ **Automatische Dokumentation**: Kein manuelles Fahrtenbuch nötig
 
 **Technology Stack:**
+
 - **Routing**: Google Maps Directions API (oder self-hosted OSRM)
 - **Geofencing**: Browser Geolocation API + CouchDB Geo-Queries (`_spatial` Views)
 - **Offline-Support**: Route wird lokal gecacht (PouchDB) → funktioniert auch ohne Netz
@@ -766,11 +841,13 @@ Statt: 240 km bei manueller Planung → 60 km gespart = €15 Sprit
 **Features:**
 
 #### 1. **Widget Library (vorkonfigurierte Komponenten)**
+
 - **Sales-Widgets**: "Umsatz YTD", "Top 10 Opportunities", "Pipeline-Value", "Conversion Rate"
 - **Project-Widgets**: "Laufende Projekte", "Budget-Auslastung", "Verspätete Projekte"
 - **Team-Widgets**: "Außendienst-Aktivität", "Offene Tasks pro User", "Durchschnittl. Response-Time"
 
 #### 2. **Dashboard-Editor (No-Code UI)**
+
 ```
 ┌────────────────────────────────────────────────────┐
 │ Dashboard: "GF-Übersicht Q1 2025"                  │
@@ -793,19 +870,23 @@ Statt: 240 km bei manueller Planung → 60 km gespart = €15 Sprit
 ```
 
 #### 3. **Custom Filters & Drill-Downs**
+
 - **Filter**: "Zeige nur Opportunities >€50K aus Q1 2025"
 - **Drill-Down**: Klick auf "Umsatz YTD" → Detail-Tabelle alle Rechnungen
 
 #### 4. **Dashboard-Sharing**
+
 - GF kann Dashboard "Team-Performance" mit allen Teamleitern teilen
 - **Permissions**: Manche Dashboards nur für GF (z.B. Gehaltsdaten), andere für alle
 
 **Technology Stack:**
+
 - **Frontend**: React + Recharts/Chart.js für Visualisierungen
 - **Backend**: PostgreSQL (via CQRS) → SQL-Queries für Aggregationen
 - **Dashboard-Persistence**: Dashboard-Config als JSON in CouchDB gespeichert
 
 **Nutzen:**
+
 - ✅ **Autonomie**: GF kann selbst KPIs definieren, keine Dev-Abhängigkeit
 - ✅ **Schnelligkeit**: Dashboard in 5 Min erstellt statt 3 Tage Wartezeit
 - ✅ **Flexibilität**: GF kann Dashboards wöchentlich anpassen (je nach Fokus)
@@ -819,6 +900,7 @@ Statt: 240 km bei manueller Planung → 60 km gespart = €15 Sprit
 **Lösung: CQRS Pattern mit PostgreSQL als Read-Store (siehe ADR-017)**
 
 **Architektur:**
+
 ```
 CouchDB (OLTP - Write Store)
    ↓ _changes Feed
@@ -828,19 +910,23 @@ Grafana Dashboards / Custom BI-Widgets
 ```
 
 **Performance-Gewinn:**
+
 - **Vorher (CouchDB MapReduce)**: 10-30s für "Umsatz pro Quartal" (Full-Doc-Scan)
 - **Nachher (PostgreSQL SQL)**: <100ms für gleiche Query (Indexes!)
 
 **Replication Latency:**
+
 - **Eventual Consistency**: 1-5s Verzögerung zwischen CouchDB-Update → PostgreSQL
 - **Akzeptabel für Dashboards**: Reports müssen nicht Realtime sein
 
 **Nutzen:**
+
 - ✅ **10-100x schnellere Analytics**: Dashboards laden <2s statt >10s
 - ✅ **SQL-Flexibilität**: Ad-hoc-Queries ohne neue MapReduce-Views
 - ✅ **BI-Tool-Integration**: Grafana, Metabase, Apache Superset können direkt PostgreSQL anbinden
 
 **Siehe auch:**
+
 - **Detaillierte Architektur**: `docs/architectur/` → "Erweiterte Datenbankarchitektur & Skalierung (CQRS Pattern)"
 - **ADR-017**: CQRS für Analytics
 
@@ -848,17 +934,18 @@ Grafana Dashboards / Custom BI-Widgets
 
 ### 📈 Advanced Analytics KPIs
 
-| Metrik | Ziel (Phase 2.2) | Messung |
-|--------|------------------|---------|
-| **Dashboard-Adoption** | 80% aller GF-relevanten User nutzen mind. 1 Dashboard | User-Analytics |
-| **Dashboard-Load-Time** | <2s (P95) für alle Widgets | Performance-Monitoring |
-| **Self-Service-Rate** | 60% aller Dashboard-Änderungen durch User selbst (ohne Dev) | Support-Tickets |
-| **Route-Optimization-Adoption** | 70% aller Außendienst-Touren nutzen Route Planning | CouchDB Analytics |
-| **Zeit-Ersparnis Route Planning** | Durchschnittlich 1,5h/Woche pro Außendienst | User-Survey |
+| Metrik                            | Ziel (Phase 2.2)                                            | Messung                |
+| --------------------------------- | ----------------------------------------------------------- | ---------------------- |
+| **Dashboard-Adoption**            | 80% aller GF-relevanten User nutzen mind. 1 Dashboard       | User-Analytics         |
+| **Dashboard-Load-Time**           | <2s (P95) für alle Widgets                                  | Performance-Monitoring |
+| **Self-Service-Rate**             | 60% aller Dashboard-Änderungen durch User selbst (ohne Dev) | Support-Tickets        |
+| **Route-Optimization-Adoption**   | 70% aller Außendienst-Touren nutzen Route Planning          | CouchDB Analytics      |
+| **Zeit-Ersparnis Route Planning** | Durchschnittlich 1,5h/Woche pro Außendienst                 | User-Survey            |
 
 ---
 
 **Siehe auch:**
+
 - **CQRS-Implementierung**: `docs/architectur/` → "Erweiterte Datenbankarchitektur & Skalierung (CQRS Pattern)"
 - **Performance-Ziele**: `docs/reviews/NFR_SPECIFICATION.md` § Performance & Skalierung
 - **ADR-017**: CQRS für Analytics (CouchDB → PostgreSQL)
@@ -910,7 +997,6 @@ Zielen ernstgenommen.
 
 # Umsetzungsbezug
 
-
 Prüfkriterium
 Bewertung
 Begründung / Belegquelle
@@ -924,6 +1010,7 @@ Begründung / Belegquelle
 Die **ursprüngliche Nordstern-Vision** positionierte KOMPASS als "Intelligent Co-Pilot". Die **Erweiterungen 2025** heben dieses Zielbild auf die nächste Stufe: **KOMPASS wird zum autonomen Business Partner**, der nicht nur assistiert, sondern **proaktiv Chancen erkennt, Risiken vorhersagt und Workflows orchestriert**.
 
 **Evolution der Vision:**
+
 ```
 Phase 1 (MVP):         Daten-Repository → Zentrale Informationsquelle
 Phase 2 (2025 Q1-Q2):  Intelligent Co-Pilot → KI-Assistenz bei Routineaufgaben
@@ -932,6 +1019,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 ```
 
 **Strategische Differenzierung** gegenüber Wettbewerbern (Salesforce Einstein, Dynamics 365 Copilot, SAP AI)[^comp]:
+
 - **On-Premise RAG**: 100% Datensouveränität (kein Vendor-Lock-in wie Salesforce)
 - **n8n-native Automation**: Flexible Workflow-Orchestrierung (vs. proprietäre Automation-Engines)
 - **Open-Source-Foundation**: LlamaIndex, Llama 3, Weaviate (vs. Black-Box-AI)
@@ -946,6 +1034,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 ### Vision: "Jede Frage sofort beantwortet – als hätte man das gesamte Unternehmensgedächtnis zur Hand"
 
 **Herausforderung:**
+
 - Wissen ist fragmentiert: Projekt-Dokumentationen, E-Mails, Notizen, CAD-Zeichnungen
 - Suche ist ineffizient: Keyword-Suche findet nur exakte Treffer
 - Expertise geht verloren: Wenn erfahrene Mitarbeiter gehen, geht Wissen mit
@@ -982,6 +1071,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 **Funktions-Features:**
 
 **1. Semantic Search über gesamte Knowledge Base:**
+
 - **Alle Dokumente embedded**: Projekte, Protokolle, Angebote, E-Mails, CAD-Beschreibungen
 - **Vector Embeddings**: Multilingual E5-Modell (optimal für Deutsch)[^embed]
   - "Hofladen regionale Produkte" findet auch "Bauernladen Direktvermarkter"
@@ -992,9 +1082,11 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
   - Weighted Fusion: 70% Vector + 30% Keyword
 
 [^embed]: Quelle: Research "Embedding Strategies" – Multilingual E5 für German Text
+
 [^hybrid]: Quelle: Research "RAG Architecture" – Hybrid Search Best Practices
 
 **2. Conversational Q&A mit Kontext-Erhaltung:**
+
 - **Multi-Turn-Dialoge**:
   ```
   User: "Zeige mir ähnliche Hofläden-Projekte"
@@ -1007,6 +1099,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 - **Kontext-Speicherung**: System erinnert sich an vorherige Fragen im Dialog (Session-basiert)
 
 **3. Cross-Entity-Queries:**
+
 - **Graph-Enhanced RAG** (Neo4j + Vector Search)[^graph-rag]:
   - "Welche Projekte von Kunde X verwendeten Material Y von Lieferant Z?"
   - Graph-Traversierung findet Beziehungen → Vector Search findet semantisch ähnliche Materialien
@@ -1017,6 +1110,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 [^graph-rag]: Quelle: Research "Neo4j" – Graph Database + Vector Search Hybrid
 
 **4. Auto-Summarization & Report Generation:**
+
 - **Executive Summaries**: Automatisch generierte Zusammenfassungen
   - Wöchentlicher GF-Report: KI fasst alle Events der Woche zusammen (Opportunities, Projekte, Risiken)
   - Projekt-Abschluss-Report: KI generiert Lessons Learned aus Protokollen + Notizen
@@ -1024,6 +1118,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
   - "Kunde X: 3 vergangene Projekte (€180K Gesamt), 1 offene Opportunity (€45K), 2 offene Rechnungen (€12K)"
 
 **5. DSGVO-konforme Umsetzung:**
+
 - **On-Premise LLM Hosting**: Llama 3 70B läuft lokal (keine Cloud-Abhängigkeit)[^dsgvo-llm]
 - **Feldebene-Verschlüsselung**: Sensitive Daten verschlüsselt in Vector DB
 - **Access Control**: RAG respektiert RBAC (User sieht nur erlaubte Dokumente)
@@ -1032,12 +1127,14 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 [^dsgvo-llm]: Quelle: Research "DSGVO Compliance for LLMs" – On-Premise Hosting
 
 **6. Quality Assurance & Hallucination Prevention:**
+
 - **Source Attribution**: Jede Antwort mit Quellenangaben (CRM-IDs, Projekt-Links)
 - **Confidence Scores**: "Antwort basierend auf 12 Dokumenten (Konfidenz: 92%)"
 - **Hallucination Detection**: System warnt wenn Konfidenz <70% ("Manuelle Prüfung empfohlen")
 - **Human-in-the-Loop**: Kritische Entscheidungen erfordern manuelle Bestätigung
 
 **Use Cases pro Persona:**
+
 - **GF**: "Warum ist Umsatz Q1 gesunken?" → KI analysiert & liefert Ursachen mit Quellen
 - **Außendienst**: "Zeig mir erfolgreiche Pitches für Hofläden" → Best-Practice-Beispiele
 - **Innendienst**: "Was kostete Position X im letzten ähnlichen Projekt?" → Preis-Historie
@@ -1045,6 +1142,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 - **Buchhaltung**: "Welche Kunden zahlen am häufigsten zu spät?" → Risiko-Ranking
 
 **Performance-Ziele:**
+
 - Query Response Time: <2s (P95)[^perf]
 - Relevanz-Score: >85% (gemessen via User-Feedback)
 - Adoption: >70% monatlich aktive User nutzen RAG-Suche
@@ -1058,6 +1156,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 ### Vision: "Workflows arbeiten für dich – nicht umgekehrt"
 
 **Herausforderung:**
+
 - Repetitive Tasks (Mahnungen, Follow-Ups, Reporting) binden Kapazität
 - Prozess-Lücken: Dinge fallen durch Raster (vergessene Nachfass-E-Mails)
 - Manuelle Koordination: Übergaben zwischen Abteilungen ineffizient
@@ -1095,6 +1194,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 **Kategorie 1: Proaktive Kunden-Workflows**
 
 **1.1 Automated Follow-Up Sequences:**
+
 - **Trigger**: Angebot versendet, keine Antwort nach X Tagen
 - **Workflow**[^n8n-workflows]:
   - Tag 3: Freundliche Nachfass-E-Mail (Personalisiert via LLM-Template)
@@ -1107,6 +1207,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 [^n8n-workflows]: Quelle: Research "n8n CRM Automation" – Automated Follow-Up Patterns
 
 **1.2 Customer Health Monitoring:**
+
 - **Trigger**: Täglich um 6 Uhr morgens
 - **Workflow**:
   1. Für jeden Kunden: Analysiere Engagement-Metriken
@@ -1122,6 +1223,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 **Kategorie 2: Interne Prozess-Automation**
 
 **2.1 Automated Project Kickoff:**
+
 - **Trigger**: Opportunity-Status → "Won"
 - **Workflow** (Multi-Step-Orchestration)[^n8n-orchestration]:
   1. **Projekt auto-anlegen**: Daten aus Opportunity → neues Projekt (CouchDB)
@@ -1135,6 +1237,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 [^n8n-orchestration]: Quelle: Research "n8n Agent Orchestration" – Multi-Step Workflows
 
 **2.2 Supplier Performance Tracking:**
+
 - **Trigger**: Kontinuierlich (Event-driven bei jeder Lieferung)
 - **Workflow**:
   1. **Liefertermin-Tracking**: Vergleich "zugesagt" vs. "tatsächlich geliefert"
@@ -1144,6 +1247,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
   4. **Auto-Recommendations**: Bei nächster Bestellung → System schlägt zuverlässigeren Lieferanten vor
 
 **2.3 Invoice Reminder Automation:**
+
 - **Trigger**: Rechnung fällig + X Tage nach Fälligkeit
 - **Workflow** (Mehrstufig):
   - Tag 3: Freundliche Zahlungserinnerung (E-Mail)
@@ -1157,6 +1261,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 **Kategorie 3: Predictive Intelligence Workflows**
 
 **3.1 Weekly Forecast Generation:**
+
 - **Trigger**: Jeden Freitagabend 17 Uhr
 - **Workflow** (LLM-Powered)[^n8n-llm]:
   1. **Daten aggregieren**: Pipeline, Umsatz, Margen, Liquidität, Team-Auslastung
@@ -1172,6 +1277,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 [^n8n-llm]: Quelle: Research "n8n Automation" – LLM Integration für Report Generation
 
 **3.2 Proactive Risk Alerts:**
+
 - **Trigger**: Stündlich (n8n Cron)
 - **Workflow**:
   1. **ML-Modelle ausführen**: Projekt-Delay-Risk, Budget-Overrun-Risk, Payment-Risk
@@ -1186,6 +1292,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 **Kategorie 4: External Integrations**
 
 **4.1 Supplier API Integration:**
+
 - **Trigger**: Neues Angebot benötigt Sonderteile (nicht in Preisliste)
 - **Workflow**:
   1. **Specs extrahieren** aus Angebots-Position (LLM parst Text)
@@ -1195,6 +1302,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
   5. **Benachrichtigung** an Innendienst: "Lieferantenangebote ready for review"
 
 **4.2 Credit Check Automation:**
+
 - **Trigger**: Neuer Großkunde (Opportunity >€50K)
 - **Workflow**:
   1. **Bonitätsprüfung** via Creditreform/Schufa-API
@@ -1206,6 +1314,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 **Workflow-Governance & Monitoring:**
 
 **No-Code Visual Editor:**
+
 - **n8n UI**: Nicht-technische User (Innendienst, GF) können Workflows modifizieren
 - **Drag & Drop**: Nodes verbinden (Trigger → Action → Condition → Notification)
 - **Template Library**: Vorgefertigte Workflow-Templates für häufige Use Cases
@@ -1214,6 +1323,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
   - "Invoice Reminder Cascade"
 
 **Monitoring & Error Handling:**
+
 - **Execution Logs**: Jede Workflow-Ausführung geloggt (Erfolg/Fehler, Dauer)
 - **Error Alerts**: Bei Workflow-Fehlern → Benachrichtigung an Admin
   - "🔴 Workflow 'Invoice Reminder' failed 3× – E-Mail-Server nicht erreichbar"
@@ -1221,6 +1331,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 - **Grafana Dashboard**: n8n-Metrics (Execution Count, Error Rate, Avg Duration)
 
 **Adoption & ROI:**
+
 - **Time Savings**: Ø 8h/Woche pro Team (Innendienst: 5h, Buchhaltung: 3h, Vertrieb: 2h)
 - **Error Reduction**: -40% "vergessene" Tasks durch Automation
 - **Consistency**: 100% der Workflows laufen standardisiert ab (keine Ad-hoc-Abweichungen)
@@ -1233,6 +1344,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 ### Vision: "Zukunft sehen statt nachschauen – Entscheidungen treffen bevor Probleme entstehen"
 
 **Herausforderung:**
+
 - Reaktives Management: Probleme werden erkannt wenn es zu spät ist
 - Bauchgefühl-Entscheidungen: Mangels Daten/Prognosen keine fundierten Entscheidungen
 - Reporting-Overhead: Manuelle Excel-Reports kosten 2-3h/Woche
@@ -1242,6 +1354,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 **Forecasting-Katalog:**
 
 **1. Sales Pipeline Forecasting:**
+
 - **Gewichtete Pipeline-Methode**[^forecast-methods]:
   - Jede Opportunity mit ML-Wahrscheinlichkeit gewichtet
   - Q1 Forecast: €450K (aus €720K Pipeline bei Ø 62% Wahrscheinlichkeit)
@@ -1252,10 +1365,13 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
   - Accuracy: >85% (validiert auf historischen Daten 2022-2024)
 
 [^bi-arch]: Quelle: Research "BI Solutions" – Metabase/Grafana for Real-Time Dashboards
+
 [^forecast-methods]: Quelle: Research "Sales Forecasting Methods" – Weighted Pipeline Best Practices
+
 [^ml-scoring]: Quelle: Research "ML Opportunity Scoring" – Random Forest für Win-Prediction
 
 **2. Cash Flow & Liquiditäts-Forecasting:**
+
 - **Rolling 6-Month Cash Flow Prediction**[^cashflow]:
   - Erwartete Zahlungseingänge (Invoice Aging + Payment Pattern ML)
   - Geplante Ausgaben (Gehälter, Lieferanten, Projektkosten)
@@ -1267,6 +1383,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 [^cashflow]: Quelle: Research "Cash Flow Prediction" – Invoice Aging & ML-Based Forecasting
 
 **3. Project Timeline Forecasting:**
+
 - **Critical Path Analysis** mit ML-Enhanced Estimates[^cpm]:
   - System berechnet realistische Fertigstellungsdaten (nicht nur geplante)
   - Projekt A: Geplant KW 16, ML-Forecast KW 17 (75% Wahrscheinlichkeit +1 Woche Verzögerung)
@@ -1277,6 +1394,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 [^cpm]: Quelle: Research "Forecasting Methods" – Critical Path Method mit ML-Enhancements
 
 **4. Financial KPI Forecasting:**
+
 - **Margin Trends**: Prognose Durchschnitts-Marge nächste 3 Monate
   - Q2 Forecast: 26,5% (unter Ziel 30%, Ursache: Materialkosten +15%)
 - **Revenue Forecasting**: Umsatz-Prognose mit Seasonality-Adjustments
@@ -1287,13 +1405,14 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 
 **Technology Stack-Entscheidung** (basierend auf Research)[^bi-comparison]:
 
-| Tool | Pros | Cons | Use Case |
-|------|------|------|----------|
-| **Grafana** | Echtzeit-fähig, Infrastructure Monitoring, Open-Source | Weniger BI-Features, SQL-lastig | **Operations Dashboards** (Team-Auslastung, System-Health) |
-| **Metabase** | Business-User-friendly, No-Code, Auto-SQL-Generation | Nicht Echtzeit, limitierte Anpassbarkeit | **Executive Dashboards** (GF, Buchhaltung) |
-| **PowerBI** | Enterprise-Features, Microsoft-Integration, Advanced Analytics | Kosten (€10/User/Monat), Cloud-only | **Optional** für Kunden mit Office 365 |
+| Tool         | Pros                                                           | Cons                                     | Use Case                                                   |
+| ------------ | -------------------------------------------------------------- | ---------------------------------------- | ---------------------------------------------------------- |
+| **Grafana**  | Echtzeit-fähig, Infrastructure Monitoring, Open-Source         | Weniger BI-Features, SQL-lastig          | **Operations Dashboards** (Team-Auslastung, System-Health) |
+| **Metabase** | Business-User-friendly, No-Code, Auto-SQL-Generation           | Nicht Echtzeit, limitierte Anpassbarkeit | **Executive Dashboards** (GF, Buchhaltung)                 |
+| **PowerBI**  | Enterprise-Features, Microsoft-Integration, Advanced Analytics | Kosten (€10/User/Monat), Cloud-only      | **Optional** für Kunden mit Office 365                     |
 
 **KOMPASS-Strategie**: **Grafana (Primary) + Metabase (Secondary)**
+
 - **Grafana**: Operations-Dashboards, Real-Time-KPIs
 - **Metabase**: Executive-Reports, Ad-hoc-Queries (Self-Service BI)
 
@@ -1302,6 +1421,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 **Data Warehouse Architecture:**
 
 **Star Schema Design** für schnelle Aggregationen[^dw-design]:
+
 ```
                      ┌──────────────────┐
                      │   Fact: Sales    │
@@ -1319,14 +1439,17 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
        │ └─ Location │ │└─ Week   │ └───────────┘
        └─────────────┘ └──────────┘
 ```
+
 - **Incremental Updates**: CDC (Change Data Capture) repliziert CouchDB → PostgreSQL[^cdc]
 - **Materialized Views**: Vorberechnete Aggregationen für Sub-Second-Query-Performance
 - **Partitioning**: Nach Zeit partitioniert (Quarter) für schnelle Historical Queries
 
 [^dw-design]: Quelle: Research "Data Warehouse Design" – Star Schema for Operational BI
+
 [^cdc]: Quelle: Research "Real-Time Dashboards" – CDC für Live-Updates
 
 **Self-Service BI für Power-User:**
+
 - **Metabase SQL-Editor**: GF und Buchhaltung können eigene Ad-hoc-Queries erstellen
 - **No-Code Query Builder**: Drag & Drop Interface für nicht-SQL-User
 - **Dashboard-Sharing**: Dashboards können mit Team geteilt werden (URL-basiert)
@@ -1341,6 +1464,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 **Quantifizierter Business Value:**
 
 **Zeitersparnis pro Woche** (bei 15 Mitarbeitern)[^roi]:
+
 - **Außendienst** (5 Mitarbeiter): 2h/Person = 10h/Woche
   - Transkription: 1h, AI-Recherche: 0,5h, Pipeline-Viz: 0,5h
 - **Innendienst** (3 Mitarbeiter): 5h/Person = 15h/Woche
@@ -1355,6 +1479,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 **Gesamt: 39,5h/Woche = €1.580/Woche = €82K/Jahr** (bei Ø €40/h Stundensatz)
 
 **ROI-Berechnung:**
+
 - **Entwicklungskosten**: €180K (RAG + n8n + ML-Modelle + BI-Dashboards)
 - **Betriebs Kosten**: €24K/Jahr (Cloud-Hosting für Vector DB, LLM-APIs optional)
 - **Zeitersparnis-Wert**: €82K/Jahr
@@ -1363,6 +1488,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 [^roi]: Quelle: Conservative Estimates basierend auf Research "n8n Automation" & "RAG Architecture" Time Savings
 
 **Qualitative Benefits:**
+
 - **Bessere Entscheidungen**: GF hat datenbasierte Forecasts statt Bauchgefühl
 - **Risiko-Reduktion**: Frühwarnsysteme verhindern Liquiditätsengpässe, Projektüberschreitungen
 - **Wettbewerbsvorteil**: Schnellere Angebotsstellung, proaktive Kundenbetreuung
@@ -1371,6 +1497,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 **Strategisches Zielbild 2026:**
 
 **KOMPASS als "Unternehmens-Intelligence-Layer":**
+
 - **Nicht nur CRM/PM-Tool**, sondern **zentrale Intelligenz-Plattform**
 - **Alle Entscheidungen datenbasiert**: Forecasts, Alerts, Recommendations durchdringen alle Prozesse
 - **Autonome Prozesse**: 60% aller Routine-Workflows laufen automatisiert (ohne manuellen Trigger)
@@ -1378,6 +1505,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 - **Knowledge Accumulation**: RAG-System wird mächtiger mit jedem abgeschlossenen Projekt
 
 **Marktpositionierung:**
+
 - **Target**: KMU (10-50 Mitarbeiter) mit projektbasiertem Geschäft (Dienstleistung + Produkt)
 - **USP**: "On-Premise AI-CRM mit deutscher DSGVO-Garantie" (vs. US-Cloud-Anbieter)
 - **Preismodell**: Self-Hosted → Keine monatlichen SaaS-Kosten (Einmalentwicklung + Wartung)
@@ -1391,28 +1519,34 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 **Datenschutz-Architektur-Prinzipien**[^dsgvo-arch]:
 
 **1. Data Minimization:**
+
 - Nur notwendige Daten an LLMs gesendet
 - Pseudonymisierung bei Cloud-LLM-Nutzung (Namen → IDs)
 
 **2. On-Premise-First:**
+
 - **Default**: Alle KI-Modelle lokal (Llama 3 70B, Whisper Large)
 - **Optional**: Cloud-LLMs (GPT-4) nur mit explizitem Consent & Anonymisierung
 
 **3. Access Control:**
+
 - **RAG respektiert RBAC**: User sehen nur Dokumente gemäß Rollen-Berechtigungen
 - **Field-Level Encryption**: Margen, Gehälter verschlüsselt at-rest
 
 **4. Audit Trails:**
+
 - **Alle KI-Interaktionen geloggt**: Wer hat was gefragt? Welche Daten wurden verwendet?
 - **Löschbarkeit**: RTBF (Right To Be Forgotten) – User-Daten aus Vector DB löschbar
 
 **5. Consent Management:**
+
 - **Opt-In für AI-Features**: User können KI-Assistenz deaktivieren
 - **Granulare Kontrolle**: Consent pro Feature (Transkription, Forecasting, RAG-Suche)
 
 [^dsgvo-arch]: Quelle: Research "DSGVO Compliance for LLMs" – Architecture Patterns
 
 **GoBD-Konformität für AI-Generierungen:**
+
 - **AI-generierte Dokumente** (Reports, Summaries) werden als "System-Generated" markiert
 - **Immutability**: Nach Finalisierung unveränderbar (Hash-basiert)
 - **Traceability**: Jede KI-Generierung referenziert Eingabedaten + Modell-Version
@@ -1425,6 +1559,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 ### Phasenplan für AI/Automation/BI-Features
 
 **Q2 2025: Foundation (RAG + n8n Basics)**
+
 - [ ] Vector Database Setup (Weaviate Self-Hosted)
 - [ ] LlamaIndex Integration (Document Ingestion Pipeline)
 - [ ] n8n Installation & Basic Workflows (Follow-Ups, Reminders)
@@ -1432,12 +1567,14 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 - [ ] RAG-Prototype: Q&A über Projekt-Dokumentation
 
 **Q3 2025: Core Intelligence (Forecasting + Dashboards)**
+
 - [ ] ML-Modelle trainieren (Opportunity Scoring, Payment Prediction, Timeline Forecasts)
 - [ ] Grafana Dashboards (Team-Auslastung, Projekt-Status, Financial KPIs)
 - [ ] n8n Advanced Workflows (Project Kickoff, Supplier Tracking, Risk Alerts)
 - [ ] RAG Expansion: Semantische Suche über alle Entities
 
 **Q4 2025: Advanced Features (Neo4j + BI Self-Service)**
+
 - [ ] Neo4j Integration (Knowledge Graph für Relationships)
 - [ ] Hybrid Search (Graph + Vector)
 - [ ] Metabase Integration (Self-Service BI für GF)
@@ -1445,6 +1582,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 - [ ] Automated Report Generation (Weekly Summaries via LLM)
 
 **Q1 2026: Optimization & Scaling (Continuous Improvement)**
+
 - [ ] Model Retraining Pipeline (Automated via n8n)
 - [ ] A/B-Testing für AI-Features (Welche Workflows performen besser?)
 - [ ] Advanced Forecasting (Monte Carlo, Sensitivity Analysis)
@@ -1452,6 +1590,7 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 - [ ] User Onboarding (Interne Schulungen + Video-Tutorials)
 
 **Success Metrics:**
+
 - **AI Adoption**: >70% aktive User nutzen mindestens 1 AI-Feature monatlich
 - **Time Savings**: 39,5h/Woche (gemessen via Time-Tracking-Surveys)
 - **Forecast Accuracy**: >90% Genauigkeit bei Quartals-Umsatz-Prognosen
@@ -1459,11 +1598,10 @@ Phase 4 (2026+):       Self-Optimizing System → Continuous Learning & Adaptati
 
 ---
 
-Persona-Profil_ Geschäftsführer (CEO) im Projektgeschäft.pdf
+Persona-Profil\_ Geschäftsführer (CEO) im Projektgeschäft.pdf
 
 ## file://file-6u9mbbeUE2U8xbjEUwdjcN
 
 ### Gesamtkonzept_Integriertes_CRM_und_PM_Tool_final.pdf
 
 ## file://file-FbKUtfPLzdQxRsRczADzbb
-

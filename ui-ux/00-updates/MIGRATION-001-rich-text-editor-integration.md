@@ -18,7 +18,7 @@ This migration prompt updates all existing KOMPASS Figma designs to replace plai
 ### Master Update Prompt
 
 ```
-Update all KOMPASS entity forms to replace plain textarea fields with rich text WYSIWYG editors. 
+Update all KOMPASS entity forms to replace plain textarea fields with rich text WYSIWYG editors.
 
 SCOPE: Update 7 forms with 11 textarea fields total.
 
@@ -52,13 +52,13 @@ DETAILED UPDATES BY FORM:
 
 1. ACTIVITY PROTOCOL FORM (activity-protocol-form.md)
    Field: "Beschreibung" (Description)
-   
+
    REPLACE: Plain textarea (5 rows)
    WITH: Rich text editor - STANDARD TOOLBAR
-   
+
    Toolbar buttons (12 total):
    [Bold] [Italic] [Underline] [Strikethrough] | [H2] [H3] | [Bullet List] [Numbered List] [Task List ☐] | [Blockquote] [Link] | [Undo] [Redo]
-   
+
    Specifications:
    - Min height: 200px
    - Placeholder: "Was wurde besprochen oder vereinbart? Nächste Schritte..."
@@ -75,12 +75,12 @@ DETAILED UPDATES BY FORM:
 2. CUSTOMER FORM (customer-form.md)
    Section: Geschäftsdaten
    Field: "Interne Notizen" (Internal Notes) - NEW OPTIONAL FIELD
-   
+
    ADD: Rich text editor - BASIC TOOLBAR
-   
+
    Toolbar buttons (8 total):
    [Bold] [Italic] [Underline] | [Bullet List] [Numbered List] | [Link] | [Undo] [Redo]
-   
+
    Specifications:
    - Min height: 150px
    - Placeholder: "Besonderheiten, Präferenzen, historische Infos..."
@@ -95,12 +95,12 @@ DETAILED UPDATES BY FORM:
 3. CONTACT FORM (contact-form.md)
    Tab: "Standortzuordnung" (Location Assignment)
    Field: "Interne Notizen" (Internal Notes) - NEW OPTIONAL FIELD
-   
+
    ADD: Rich text editor - BASIC TOOLBAR
-   
+
    Toolbar buttons (8 total):
    [Bold] [Italic] [Underline] | [Bullet List] [Numbered List] | [Link] | [Undo] [Redo]
-   
+
    Specifications:
    - Min height: 150px
    - Placeholder: "Persönliche Präferenzen, Gesprächsnotizen, Besonderheiten..."
@@ -115,13 +115,13 @@ DETAILED UPDATES BY FORM:
 4. LOCATION FORM (location-form.md)
    Section: Standortzuordnung (Location Assignment)
    Field: "Standortbeschreibung" (Location Description) - NEW OPTIONAL FIELD
-   
+
    ADD NEW SECTION: "Zusätzliche Informationen" (Additional Information)
    ADD: Rich text editor - BASIC TOOLBAR
-   
+
    Toolbar buttons (8 total):
    [Bold] [Italic] [Underline] | [Bullet List] [Numbered List] | [Link] | [Undo] [Redo]
-   
+
    Specifications:
    - Min height: 150px
    - Placeholder: "Besonderheiten des Standorts, Anfahrtsbeschreibung, Zugangsinformationen..."
@@ -136,13 +136,13 @@ DETAILED UPDATES BY FORM:
 5. OPPORTUNITY FORM (opportunity-form.md)
    Section: Grunddaten
    Field: "Beschreibung" (Description)
-   
+
    REPLACE: Plain textarea (4 rows)
    WITH: Rich text editor - STANDARD TOOLBAR
-   
+
    Toolbar buttons (12 total):
    [Bold] [Italic] [Underline] [Strikethrough] | [H2] [H3] | [Bullet List] [Numbered List] [Task List ☐] | [Blockquote] [Link] | [Undo] [Redo]
-   
+
    Specifications:
    - Min height: 200px
    - Placeholder: "Details zur Opportunity, Kundenanforderungen, nächste Schritte..."
@@ -156,13 +156,13 @@ DETAILED UPDATES BY FORM:
 6. PROJECT FORM (project-form.md)
    Tab: "Grunddaten" (Basic Information)
    Field: "Projektbeschreibung" (Project Description)
-   
+
    REPLACE: Plain textarea (5 rows)
    WITH: Rich text editor - ADVANCED TOOLBAR
-   
+
    Toolbar buttons (20+ total):
    [Bold] [Italic] [Underline] [Strikethrough] | [H1] [H2] [H3] [¶ Paragraph] | [Bullet List] [Numbered List] [Task List ☐] | [Blockquote] [Code Block] [Horizontal Rule] | [Link] [Table] | [Undo] [Redo]
-   
+
    Specifications:
    - Min height: 250px
    - Placeholder: "Detaillierte Beschreibung des Projekts, Leistungsumfang, besondere Anforderungen..."
@@ -170,17 +170,17 @@ DETAILED UPDATES BY FORM:
    - Character counter: "X / 5000 Zeichen" (bottom-right)
    - Help text: "Strukturierte Projektbeschreibung. Nutzen Sie Überschriften (H2) für Abschnitte und Tabellen für Spezifikationen."
    - Mobile: Compact toolbar with "Mehr" button
-   
+
    ---
-   
+
    Tab: "Dokumente & Notizen" (Documents & Notes)
    Field: "Projektnotizen" (Project Notes) - NEW FIELD
-   
+
    ADD: Rich text editor - ADVANCED TOOLBAR
-   
+
    Toolbar buttons (20+ total):
    [Bold] [Italic] [Underline] [Strikethrough] | [H1] [H2] [H3] [¶] | [Bullet List] [Numbered List] [Task List ☐] | [Blockquote] [Code Block] [Horizontal Rule] | [Link] [Table] | [Undo] [Redo]
-   
+
    Specifications:
    - Min height: 200px
    - Placeholder: "Projektnotizen, Milestones, offene Punkte, Lessons Learned..."
@@ -196,13 +196,13 @@ DETAILED UPDATES BY FORM:
 7. INVOICE FORM (invoice-form.md)
    Section: Zahlungsinformationen (Payment Information)
    Field: "Bemerkungen / Zahlungsbedingungen" (Remarks / Payment Terms)
-   
+
    REPLACE: Plain textarea (3 rows)
    WITH: Rich text editor - BASIC TOOLBAR
-   
+
    Toolbar buttons (8 total):
    [Bold] [Italic] [Underline] | [Bullet List] [Numbered List] | [Link] | [Undo] [Redo]
-   
+
    Specifications:
    - Min height: 120px
    - Placeholder: "Zahlungsbedingungen, Lieferbedingungen, rechtliche Hinweise..."
@@ -368,6 +368,7 @@ Design with consistency across all forms, maintaining the shadcn/ui design syste
 ## ✅ Verification
 
 After applying this migration in Figma, verify:
+
 - [ ] All 7 forms updated
 - [ ] Toolbar buttons consistent across all forms
 - [ ] Character counters positioned correctly
@@ -382,4 +383,3 @@ After applying this migration in Figma, verify:
 **Migration Author:** AI Assistant  
 **Review Status:** Ready for Figma Make  
 **Estimated Design Time:** 2-3 hours for complete update
-

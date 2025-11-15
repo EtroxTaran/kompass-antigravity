@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
 import { ExpenseCategory, ExpenseStatus } from './create-expense.dto';
 
 /**
@@ -26,7 +27,7 @@ export class ExpenseResponseDto {
 
   @ApiProperty({
     description: 'Amount in EUR',
-    example: 45.50,
+    example: 45.5,
   })
   amount: number;
 
@@ -109,4 +110,3 @@ export class ExpenseResponseDto {
   })
   modifiedAt: Date;
 }
-

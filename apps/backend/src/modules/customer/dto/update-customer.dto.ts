@@ -1,11 +1,11 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateCustomerDto } from './create-customer.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { PartialType, ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional } from 'class-validator';
+
+import { CreateCustomerDto } from './create-customer.dto';
 
 /**
  * DTO for updating an existing Customer
- * 
+ *
  * All fields from CreateCustomerDto are optional
  * Adds CouchDB revision for optimistic locking
  */
@@ -28,4 +28,3 @@ export class UpdateCustomerDto extends PartialType(CreateCustomerDto) {
   @IsOptional()
   _correctionReason?: string;
 }
-

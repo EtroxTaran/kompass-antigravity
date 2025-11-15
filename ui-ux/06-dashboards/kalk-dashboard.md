@@ -1,6 +1,7 @@
 # KALK Dashboard (Cost Estimator) - Figma Make Prompt
 
 ## Context & Purpose
+
 - **User Role**: KALK (Kalkulator / Cost Estimator)
 - **Business Value**: Project costing, margin analysis, estimates
 - **Access**: ALL projects (read), opportunities (for estimates)
@@ -11,42 +12,39 @@
 Create a KALK (Cost Estimator) dashboard for KOMPASS showing opportunities needing estimates, active project costing, margin analysis, and pricing tools with German labels.
 
 **Header:**
+
 - "Kalkulation" (28px, bold)
 - View: "Angebote" | "Projekte" | "Analysen"
 - User: Avatar + "Stefan Bauer (KALK)"
 - **AI Toggle:** Switch "KI-Features" (top-right, default OFF until Phase 3)
 
 **KPI Cards (Top Row - 6 cards):**
+
 1. **Offene Kalkulationen**
    - Count: "8" (36px, amber)
    - Urgent: "3 fällig diese Woche" (red badge)
    - Avg. time: "2 Tage"
    - **[Phase 3]** AI Priority: "🎯 2 kritisch für Umsatzziel" (purple)
-   
 2. **Durchschnittliche Marge**
    - Percentage: "18,5%" (36px, green)
    - Trend: "+2% ↗" (vs. last quarter)
    - Target: "15% Ziel"
    - **[Phase 3]** AI Insight: "💡 +3% möglich durch Optimierung"
-   
 3. **Gesamtvolumen (aktuell)**
    - Value: "€ 3.200.000" (36px, blue)
    - Open estimates: "24"
    - Won: "€ 1.450.000"
    - **[Phase 3]** AI Prediction: "📈 85% für weitere €450k" (purple)
-   
 4. **Ablehnungsrate**
    - Percentage: "15%" (36px, amber)
    - Reason: "Preis zu hoch (60%)"
    - Improve: "Kalkulation optimieren"
    - **[Phase 3]** AI Analysis: "🔍 Preisschwelle bei €85k"
-   
 5. **Echtzeitkosten (NEU)**
    - Today tracked: "€ 3.450" (36px, orange)
    - Hours logged: "45h @ €1.890"
    - Materials: "€ 1.560"
    - **[Phase 3]** AI Alert: "⚠️ Projekt P-2025-M003 +15% über Plan"
-   
 6. **Genauigkeit (NEU)**
    - Accuracy: "92%" (36px, green)
    - Last month: "94%"
@@ -54,6 +52,7 @@ Create a KALK (Cost Estimator) dashboard for KOMPASS showing opportunities needi
    - **[Phase 3]** AI Learning: "🤖 +2% durch neue Datenpunkte"
 
 **Section: Anstehende Kalkulationen (Enhanced Priority Queue)**
+
 - Table with sortable columns
 - Columns: Opportunity, Kunde, Wert, **[Phase 3]** AI-Score, Fälligkeit, Priorität, Status, Aktion
 - Rows: Opportunities needing estimates
@@ -75,6 +74,7 @@ Create a KALK (Cost Estimator) dashboard for KOMPASS showing opportunities needi
 - **[Phase 3] Row Enhancement:** AI-recommended opportunities pulse with purple border - only if toggle ON
 
 **Section: KI-gestützte Kalkulationsanalyse [Phase 3] (NEW)**
+
 - **Visibility:** Hidden by default. Requires AI toggle ON + 30+ completed projects
 - **Data Requirement:** 30+ projects for similar project finder, 100+ opportunities for price optimization
 - **See:** [AI Data Requirements](../../docs/specifications/AI_DATA_REQUIREMENTS.md)
@@ -87,14 +87,12 @@ Create a KALK (Cost Estimator) dashboard for KOMPASS showing opportunities needi
   - Competitor range overlay (if known)
   - **Live updates as you adjust price**
   - **Confidence:** Only show if ≥70% model confidence
-  
 - **[Phase 2] Ähnliche Projekte (Reference Cards):**
   - Shows 3 most similar past projects (vector similarity, no ML)
   - Each card: Project name, final margin, key learnings
   - Similarity: "92% ähnlich" (based on category/value/customer type matching)
   - Quick action: "Als Vorlage verwenden"
   - **Works in Phase 2:** Pattern matching, not ML prediction
-  
 - **[Phase 3] Kosten-Vorhersage (Predictive Breakdown):**
   - Material: "€ 45.000 ± 5%" (based on 15 similar projects)
   - Labor: "€ 32.000 ± 8%" (includes travel time)
@@ -103,6 +101,7 @@ Create a KALK (Cost Estimator) dashboard for KOMPASS showing opportunities needi
   - **Confidence level:** "89% accuracy" (only show if ≥70%)
 
 **Section: Aktive Projekte - Echtzeit-Kostenüberwachung (Enhanced)**
+
 - Table showing real-time project cost tracking
 - Columns: Projekt, Auftragswert, Budget, Ist-Kosten, Heute erfasst, **[Phase 3]** AI-Prognose, Restbudget, Marge (%), Status
 - Rows: Active projects with live updates
@@ -127,6 +126,7 @@ Create a KALK (Cost Estimator) dashboard for KOMPASS showing opportunities needi
   - **[Phase 3]** AI alerts: Unusual spending patterns - only if toggle ON
 
 **Section: Margenanalyse (AI-Enhanced Charts)**
+
 - **Marge nach Projekten (Bar Chart):**
   - X-axis: Project names
   - Y-axis: Margin %
@@ -135,13 +135,11 @@ Create a KALK (Cost Estimator) dashboard for KOMPASS showing opportunities needi
   - **[Phase 3]** AI overlay: Predicted final margin (dotted outline) - only if toggle ON
   - Hover: Shows margin drivers
   - **[Phase 3]** Hover enhancement: AI risk factors - only if toggle ON
-  
 - **Kostenverteilung (Pie Chart - Live):**
   - Segments: Material (45%), Personal (35%), Fremdleistungen (15%), Sonstiges (5%)
   - Colors: Blue shades
   - **Live updates:** Real-time from expense tracking
   - **[Phase 3]** AI insight: "Material 8% über Durchschnitt" (warning) - only if toggle ON
-  
 - **Marge Trend (Line Chart - with AI Forecast):**
   - X-axis: Months (historical: 6 past)
   - **[Phase 3]** X-axis extension: 3 future months - only if toggle ON
@@ -153,6 +151,7 @@ Create a KALK (Cost Estimator) dashboard for KOMPASS showing opportunities needi
   - **[Phase 3]** Key events marked: Price changes, market shifts - only if toggle ON
 
 **Section: Intelligente Kalkulationsvorlagen (Enhanced)**
+
 - **[Phase 2]** Template recommendations based on customer type (pattern matching)
 - Cards with usage stats and success rates:
   - "Ladeneinrichtung Standard" - 97% accuracy, 18.5% avg margin
@@ -168,6 +167,7 @@ Create a KALK (Cost Estimator) dashboard for KOMPASS showing opportunities needi
 - Create new: "+ Neue Vorlage"
 
 **Section: Intelligente Preis-Datenbank (Enhanced)**
+
 - Search bar: "Material oder Dienstleistung suchen..."
 - **Real-time features:**
   - **[Phase 2]** Price trend indicators (↑↓→) - only if 3+ months price history
@@ -183,11 +183,13 @@ Create a KALK (Cost Estimator) dashboard for KOMPASS showing opportunities needi
 - Price updates: "Live-Daten von 3 Lieferanten"
 
 **Section: Benötigte Genehmigungen**
+
 - List of estimates pending GF approval (if > € 200k or margin < 10%)
 - Each item: Opportunity, value, margin, reason for approval
 - Actions: "Details", "GF benachrichtigen"
 
 **Quick Actions (Sidebar or FAB):**
+
 - "+ Neue Kalkulation"
 - **[Phase 3]** "🤖 AI-Schnellkalkulation" - only if toggle ON
 - "Vorlage erstellen"
@@ -197,6 +199,7 @@ Create a KALK (Cost Estimator) dashboard for KOMPASS showing opportunities needi
 - **[Phase 3]** "💬 Kalkulationsassistent" (AI chat) - only if toggle ON
 
 **Mobile-First PWA Enhancements:**
+
 - **Bottom Navigation (5 tabs):**
   - "Kalkulationen" (calculator icon) - Main view
   - "Projekte" (folder icon) - Active projects
@@ -257,35 +260,40 @@ Create a KALK (Cost Estimator) dashboard for KOMPASS showing opportunities needi
 ## Design Requirements
 
 ### Visual Hierarchy
+
 1. Priority queue: Prominent, color-coded
 2. Cost tracking: Clear progress bars
 3. Charts: Margin analysis
 4. Templates: Quick access
 
 ### shadcn/ui Components
+
 ```bash
 npx shadcn-ui@latest add card badge button table progress
 # Charts: Use recharts
 ```
 
 ### Charts
+
 - Bar chart: Margin by project
 - Pie chart: Cost distribution
 - Line chart: Margin trend
 
 ### Interaction
+
 - Click opportunity: Open calculation form
 - Hover project: Show cost breakdown
 - Filter: Priority, date, margin health
 - Search: Material/service prices
 
 ### Accessibility
+
 - Color + text for margin health
 - Keyboard navigation for tables
 - Screen reader friendly
 
 ### Example Data
+
 - Opportunity: "REWE München, € 125k, 20.11.24, Hoch, In Bearbeitung"
 - Project: "P-2024-B023, € 450k, € 380k, € 285k, 15,6%"
 - Margin: "18,5% (+2% vs. Q3)"
-

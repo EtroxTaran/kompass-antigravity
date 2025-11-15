@@ -17,52 +17,52 @@ This document defines the non-functional requirements (NFRs) for the KOMPASS app
 
 ### 2.1 API Response Times
 
-| Endpoint Category | P50 Target | P95 Target | P99 Target |
-|-------------------|------------|------------|------------|
-| Simple CRUD (GET single entity) | ≤ 200ms | ≤ 500ms | ≤ 1s |
-| List queries (with filters) | ≤ 400ms | ≤ 1.5s | ≤ 2.5s |
-| Complex aggregations | ≤ 800ms | ≤ 2s | ≤ 4s |
-| **Calendar event aggregation** | ≤ 500ms | ≤ 1.5s | ≤ 3s |
-| **ICS export generation** | ≤ 1s | ≤ 3s | ≤ 5s |
-| Search queries (MeiliSearch) | ≤ 300ms | ≤ 800ms | ≤ 1.5s |
-| Document upload (< 10MB) | ≤ 2s | ≤ 5s | ≤ 10s |
+| Endpoint Category               | P50 Target | P95 Target | P99 Target |
+| ------------------------------- | ---------- | ---------- | ---------- |
+| Simple CRUD (GET single entity) | ≤ 200ms    | ≤ 500ms    | ≤ 1s       |
+| List queries (with filters)     | ≤ 400ms    | ≤ 1.5s     | ≤ 2.5s     |
+| Complex aggregations            | ≤ 800ms    | ≤ 2s       | ≤ 4s       |
+| **Calendar event aggregation**  | ≤ 500ms    | ≤ 1.5s     | ≤ 3s       |
+| **ICS export generation**       | ≤ 1s       | ≤ 3s       | ≤ 5s       |
+| Search queries (MeiliSearch)    | ≤ 300ms    | ≤ 800ms    | ≤ 1.5s     |
+| Document upload (< 10MB)        | ≤ 2s       | ≤ 5s       | ≤ 10s      |
 
 ### 2.2 Frontend Performance
 
-| Metric | Target | Description |
-|--------|--------|-------------|
-| Initial Page Load (FCP) | ≤ 1.5s | First Contentful Paint |
-| Time to Interactive (TTI) | ≤ 3s | Page becomes fully interactive |
-| Largest Contentful Paint (LCP) | ≤ 2.5s | Main content rendered |
-| Dashboard Load | ≤ 3s | Complete dashboard with widgets |
-| **Calendar View Load** | ≤ 2s | Month view with events |
-| **Calendar View Switch** | ≤ 500ms | Between month/week/day views |
-| Form Submission Response | ≤ 1s | User feedback after submit |
-| Search Results Display | ≤ 500ms | After search query entered |
-| Cumulative Layout Shift (CLS) | ≤ 0.1 | Visual stability |
+| Metric                         | Target  | Description                     |
+| ------------------------------ | ------- | ------------------------------- |
+| Initial Page Load (FCP)        | ≤ 1.5s  | First Contentful Paint          |
+| Time to Interactive (TTI)      | ≤ 3s    | Page becomes fully interactive  |
+| Largest Contentful Paint (LCP) | ≤ 2.5s  | Main content rendered           |
+| Dashboard Load                 | ≤ 3s    | Complete dashboard with widgets |
+| **Calendar View Load**         | ≤ 2s    | Month view with events          |
+| **Calendar View Switch**       | ≤ 500ms | Between month/week/day views    |
+| Form Submission Response       | ≤ 1s    | User feedback after submit      |
+| Search Results Display         | ≤ 500ms | After search query entered      |
+| Cumulative Layout Shift (CLS)  | ≤ 0.1   | Visual stability                |
 
 ### 2.3 Offline Sync Performance
 
-| Operation | Target | Description |
-|-----------|--------|-------------|
-| Initial Sync (First Login) | ≤ 10s | Download essential data (5 MB) |
-| Incremental Sync (100 changes) | ≤ 30s | Sync queued offline changes |
-| Conflict Resolution (10 conflicts) | ≤ 5s | Detect and present conflicts |
-| Background Sync | ≤ 60s | Periodic sync while online |
-| **Calendar Event Sync** | ≤ 3s | Sync calendar events for 90-day range |
+| Operation                          | Target | Description                           |
+| ---------------------------------- | ------ | ------------------------------------- |
+| Initial Sync (First Login)         | ≤ 10s  | Download essential data (5 MB)        |
+| Incremental Sync (100 changes)     | ≤ 30s  | Sync queued offline changes           |
+| Conflict Resolution (10 conflicts) | ≤ 5s   | Detect and present conflicts          |
+| Background Sync                    | ≤ 60s  | Periodic sync while online            |
+| **Calendar Event Sync**            | ≤ 3s   | Sync calendar events for 90-day range |
 
 ### 2.4 Calendar-Specific Performance
 
-| Operation | Target | Description |
-|-----------|--------|-------------|
-| Event Aggregation (30 days) | ≤ 500ms | Aggregate from all sources |
-| Event Aggregation (90 days) | ≤ 1.5s | Maximum date range |
-| ICS Export (100 events) | ≤ 1s | Generate RFC 5545 ICS file |
-| ICS Export (500 events) | ≤ 3s | Large export |
-| Calendar Subscription Feed | ≤ 2s | Generate WebCal feed on-demand |
-| Resource Availability Calculation | ≤ 800ms | Calculate team capacity for month |
-| **Event Density Check** | ≤ 100ms | Count events in date range |
-| **Color Assignment** | ≤ 50ms | Assign colors to event batch (100 events) |
+| Operation                         | Target  | Description                               |
+| --------------------------------- | ------- | ----------------------------------------- |
+| Event Aggregation (30 days)       | ≤ 500ms | Aggregate from all sources                |
+| Event Aggregation (90 days)       | ≤ 1.5s  | Maximum date range                        |
+| ICS Export (100 events)           | ≤ 1s    | Generate RFC 5545 ICS file                |
+| ICS Export (500 events)           | ≤ 3s    | Large export                              |
+| Calendar Subscription Feed        | ≤ 2s    | Generate WebCal feed on-demand            |
+| Resource Availability Calculation | ≤ 800ms | Calculate team capacity for month         |
+| **Event Density Check**           | ≤ 100ms | Count events in date range                |
+| **Color Assignment**              | ≤ 50ms  | Assign colors to event batch (100 events) |
 
 ---
 
@@ -70,25 +70,25 @@ This document defines the non-functional requirements (NFRs) for the KOMPASS app
 
 ### 3.1 Data Volume
 
-| Entity | Expected Volume (Year 1) | Max Volume Supported |
-|--------|---------------------------|----------------------|
-| Customers | 500 | 10,000 |
-| Contacts | 2,000 | 50,000 |
-| Opportunities | 1,000 | 20,000 |
-| Projects | 200 | 5,000 |
-| UserTasks | 5,000 | 100,000 |
-| ProjectTasks | 3,000 | 50,000 |
-| **Calendar Events (aggregated)** | 10,000 | 200,000 |
-| Invoices | 1,500 | 30,000 |
-| Users | 20 | 100 |
+| Entity                           | Expected Volume (Year 1) | Max Volume Supported |
+| -------------------------------- | ------------------------ | -------------------- |
+| Customers                        | 500                      | 10,000               |
+| Contacts                         | 2,000                    | 50,000               |
+| Opportunities                    | 1,000                    | 20,000               |
+| Projects                         | 200                      | 5,000                |
+| UserTasks                        | 5,000                    | 100,000              |
+| ProjectTasks                     | 3,000                    | 50,000               |
+| **Calendar Events (aggregated)** | 10,000                   | 200,000              |
+| Invoices                         | 1,500                    | 30,000               |
+| Users                            | 20                       | 100                  |
 
 ### 3.2 Concurrent Users
 
-| Scenario | Concurrent Users | Response Time |
-|----------|------------------|---------------|
-| Peak Usage | 15 | ≤ P95 targets |
-| Average Usage | 8 | ≤ P50 targets |
-| Burst Load | 25 | ≤ P99 targets |
+| Scenario      | Concurrent Users | Response Time |
+| ------------- | ---------------- | ------------- |
+| Peak Usage    | 15               | ≤ P95 targets |
+| Average Usage | 8                | ≤ P50 targets |
+| Burst Load    | 25               | ≤ P99 targets |
 
 ### 3.3 Query Performance at Scale
 
@@ -264,11 +264,11 @@ This document defines the non-functional requirements (NFRs) for the KOMPASS app
 ### 9.1 Supported Browsers
 
 | Browser | Minimum Version |
-|---------|-----------------|
-| Chrome | 100+ |
-| Firefox | 100+ |
-| Safari | 15+ |
-| Edge | 100+ |
+| ------- | --------------- |
+| Chrome  | 100+            |
+| Firefox | 100+            |
+| Safari  | 15+             |
+| Edge    | 100+            |
 
 ### 9.2 Supported Devices
 
@@ -374,15 +374,15 @@ This document defines the non-functional requirements (NFRs) for the KOMPASS app
 
 ### 14.1 Performance Metrics
 
-| Metric | Measurement Frequency | Alert Threshold |
-|--------|----------------------|-----------------|
-| API Response Time (P95) | Real-time | > 2x target |
-| Error Rate | Real-time | > 1% |
-| Database Query Time | Real-time | > 1s |
-| Memory Usage | Every 5 minutes | > 80% |
-| Disk Usage | Every hour | > 85% |
-| **Calendar Event Aggregation Time** | Real-time | > 3s |
-| **ICS Export Failures** | Real-time | > 5% |
+| Metric                              | Measurement Frequency | Alert Threshold |
+| ----------------------------------- | --------------------- | --------------- |
+| API Response Time (P95)             | Real-time             | > 2x target     |
+| Error Rate                          | Real-time             | > 1%            |
+| Database Query Time                 | Real-time             | > 1s            |
+| Memory Usage                        | Every 5 minutes       | > 80%           |
+| Disk Usage                          | Every hour            | > 85%           |
+| **Calendar Event Aggregation Time** | Real-time             | > 3s            |
+| **ICS Export Failures**             | Real-time             | > 5%            |
 
 ### 14.2 Business Metrics
 
@@ -398,9 +398,9 @@ This document defines the non-functional requirements (NFRs) for the KOMPASS app
 
 ## 15. Version History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-01-28 | System | Initial NFR specification with calendar requirements |
+| Version | Date       | Author | Changes                                              |
+| ------- | ---------- | ------ | ---------------------------------------------------- |
+| 1.0     | 2025-01-28 | System | Initial NFR specification with calendar requirements |
 
 ---
 
@@ -411,4 +411,3 @@ This document defines the non-functional requirements (NFRs) for the KOMPASS app
 ---
 
 **END OF NFR SPECIFICATION**
-

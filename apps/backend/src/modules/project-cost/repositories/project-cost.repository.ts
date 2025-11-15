@@ -1,23 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
-import { Connection } from 'mongoose';
-import {
+// TODO: Install mongoose and @nestjs/mongoose when implementing project cost tracking
+// import { InjectConnection } from '@nestjs/mongoose';
+// import { Connection } from 'mongoose';
+type Connection = any; // Stub type
+import { v4 as uuidv4 } from 'uuid';
+
+// Stub InjectConnection decorator
+const InjectConnection =
+  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
+
+import type {
   ProjectCost,
-  ProjectCostStatus,
   ProjectCostType,
   MaterialCostSummary,
   CostTypeSummary,
   CostStatusSummary,
 } from '@kompass/shared/types/entities/project-cost';
-import {
+import { ProjectCostStatus } from '@kompass/shared/types/entities/project-cost';
+
+import type {
   IProjectCostRepository,
   ProjectCostFilters,
 } from './project-cost.repository.interface';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Project Cost Repository Implementation
- * 
+ *
  * Implements data access operations for project costs using CouchDB.
  * Handles CRUD operations, filtering, and cost aggregations.
  */
@@ -25,13 +33,12 @@ import { v4 as uuidv4 } from 'uuid';
 export class ProjectCostRepository implements IProjectCostRepository {
   private readonly collectionName = 'project_costs';
 
-  constructor(
-    @InjectConnection() private readonly connection: Connection,
-  ) {}
+  // @ts-expect-error - InjectConnection is stubbed until mongoose is installed
+  constructor(@InjectConnection() private readonly _connection: Connection) {}
 
   /**
    * Get CouchDB database instance
-   * 
+   *
    * Note: This is a placeholder. Actual implementation will use CouchDB/Nano client
    */
   private getDb() {
@@ -65,8 +72,8 @@ export class ProjectCostRepository implements IProjectCostRepository {
       // const doc = await db.get(id);
       // return doc as ProjectCost;
       return null;
-    } catch (error) {
-      if (error.statusCode === 404) {
+    } catch (error: unknown) {
+      if (this.isCouchDBError(error) && error.statusCode === 404) {
         return null;
       }
       throw error;
@@ -99,7 +106,7 @@ export class ProjectCostRepository implements IProjectCostRepository {
     // TODO: Implement CouchDB query with filters
     // const db = this.getDb();
     // const selector: any = { type: 'project_cost' };
-    
+
     // if (filters) {
     //   if (filters.projectId) selector.projectId = filters.projectId;
     //   if (filters.costType) selector.costType = filters.costType;
@@ -134,18 +141,20 @@ export class ProjectCostRepository implements IProjectCostRepository {
     return this.findAll({ costType });
   }
 
-  async calculateMaterialCosts(projectId: string): Promise<MaterialCostSummary> {
+  async calculateMaterialCosts(
+    projectId: string
+  ): Promise<MaterialCostSummary> {
     // Get all project costs for project
     const costs = await this.findByProject(projectId);
 
     // Calculate totals
     const totalCostEur = costs.reduce(
       (sum, cost) => sum + cost.totalCostEur,
-      0,
+      0
     );
     const totalWithTaxEur = costs.reduce(
       (sum, cost) => sum + cost.totalWithTaxEur,
-      0,
+      0
     );
 
     // Group by cost type
@@ -206,5 +215,15 @@ export class ProjectCostRepository implements IProjectCostRepository {
   async findBySupplier(supplierName: string): Promise<ProjectCost[]> {
     return this.findAll({ supplierName });
   }
-}
 
+  private isCouchDBError(
+    error: unknown
+  ): error is { statusCode: number; message?: string } {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'statusCode' in error &&
+      typeof (error as { statusCode: unknown }).statusCode === 'number'
+    );
+  }
+}

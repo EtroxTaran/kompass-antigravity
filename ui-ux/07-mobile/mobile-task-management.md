@@ -35,7 +35,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 **Tab 2: Dashboard** - Task overview and metrics  
 **Tab 3: Projects** - Project task boards  
 **Tab 4: Activity** - Recent updates and notifications  
-**Tab 5: Me** - Profile and settings  
+**Tab 5: Me** - Profile and settings
 
 ---
 
@@ -92,22 +92,26 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ## Swipe Actions
 
 ### Right Swipe (Complete)
+
 ```
 ┌─────────────────────────────────┐
 │ [✅ Complete]  Task Title...    │ ← Green background
 └─────────────────────────────────┘
 ```
+
 - **Color:** Green (#10B981)
 - **Icon:** Checkmark
 - **Action:** Mark task complete
 - **Threshold:** 50% swipe = show button, 80% = auto-complete
 
 ### Left Swipe (Actions Menu)
+
 ```
 ┌─────────────────────────────────┐
 │  ...Task Title  [✏️ Edit][🗑️ Del]│ ← Blue/Red background
 └─────────────────────────────────┘
 ```
+
 - **First Action (Blue):** Edit task
 - **Second Action (Red):** Delete task
 - **Threshold:** 30% swipe = show one action, 60% = show both
@@ -117,6 +121,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ## Quick Add Task (Floating Action Button)
 
 ### FAB Position
+
 - **Location:** Bottom-right corner, above tab bar
 - **Size:** 56px × 56px
 - **Icon:** + (plus sign)
@@ -148,6 +153,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ```
 
 ### Quick Add Fields
+
 1. **Title** (required) - Text input with voice-to-text button
 2. **Due Date** (optional) - Tap to open date picker with shortcuts
 3. **Priority** (optional) - Tap to cycle through Low/Medium/High/Urgent
@@ -204,6 +210,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ## Voice Input
 
 ### Voice-to-Text for Title
+
 ```
 ┌─────────────────────────────────┐
 │ Quick Add Task                  │
@@ -217,6 +224,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ```
 
 ### Voice Recording
+
 ```
 ┌─────────────────────────────────┐
 │ 🎤 Listening...                 │
@@ -230,6 +238,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ```
 
 ### Voice Confirmation
+
 - **Auto-fill Title:** Transcribed text appears in title field
 - **Corrections:** User can edit transcription
 - **Retry:** Tap mic again to re-record
@@ -239,26 +248,31 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ## Offline Mode
 
 ### Offline Indicator
+
 ```
 ┌─────────────────────────────────┐
 │ ⚠️ Offline  •  3 changes pending│
 └─────────────────────────────────┘
 ```
+
 - **Banner:** Top of screen, persistent
 - **Status:** Shows pending changes count
 - **Auto-Hide:** When back online and synced
 
 ### Pending Changes Badge
+
 ```
 ┌───────────────────────────┐
 │🟡 Review quotes           │
 │📋 Admin • Not synced yet  │
 └───────────────────────────┘
 ```
+
 - **Yellow Dot:** Indicates local changes not synced
 - **Tap:** View sync status details
 
 ### Sync Status Details
+
 ```
 ┌─────────────────────────────────┐
 │ Sync Status                 [X] │
@@ -284,6 +298,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ## Notifications
 
 ### Push Notification Format
+
 ```
 ┌─────────────────────────────────┐
 │ KOMPASS                     [X] │
@@ -298,6 +313,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ```
 
 ### Notification Types
+
 1. **Due Soon:** 1 hour before due time
 2. **Overdue:** At due time, then daily reminders
 3. **Assignment:** When task assigned to you
@@ -305,6 +321,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 5. **Blocked:** When project task becomes blocked
 
 ### Notification Actions
+
 - **Mark Complete:** Quick complete from notification
 - **Snooze:** Remind again in 1h, 3h, or Tomorrow
 - **Open Task:** View task details
@@ -357,6 +374,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ## Search (Mobile)
 
 ### Search Bar
+
 ```
 ┌─────────────────────────────────┐
 │ [←] 🔍 Search tasks...          │
@@ -364,6 +382,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ```
 
 ### Search Results
+
 ```
 ┌─────────────────────────────────┐
 │ [←] 🔍 "hofladen"               │
@@ -390,6 +409,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ```
 
 ### Search Features
+
 - **Real-Time:** Results as you type
 - **Fuzzy Search:** Matches partial words
 - **Highlight:** Search term highlighted in results
@@ -401,6 +421,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ## Widgets (iOS/Android Home Screen)
 
 ### Small Widget (2×2)
+
 ```
 ┌───────────────┐
 │ KOMPASS Tasks │
@@ -412,6 +433,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ```
 
 ### Medium Widget (4×2)
+
 ```
 ┌─────────────────────────────────┐
 │ KOMPASS Tasks                   │
@@ -429,11 +451,13 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ## Touch Targets & Gestures
 
 ### Minimum Touch Target
+
 - **Size:** 44px × 44px minimum (Apple HIG)
 - **Spacing:** 8px minimum between targets
 - **Buttons:** 48dp × 48dp (Material Design)
 
 ### Gestures
+
 - **Swipe Right:** Mark complete
 - **Swipe Left:** Show actions
 - **Long Press:** Open context menu
@@ -446,16 +470,17 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 
 ### Dark Mode Colors
 
-| Element | Light Mode | Dark Mode |
-|---------|------------|-----------|
-| Background | #FFFFFF | #1F2937 |
-| Card | #F9FAFB | #374151 |
-| Text Primary | #111827 | #F9FAFB |
-| Text Secondary | #6B7280 | #9CA3AF |
-| Priority High | #EF4444 | #F87171 |
-| Priority Urgent | #DC2626 | #EF4444 |
+| Element         | Light Mode | Dark Mode |
+| --------------- | ---------- | --------- |
+| Background      | #FFFFFF    | #1F2937   |
+| Card            | #F9FAFB    | #374151   |
+| Text Primary    | #111827    | #F9FAFB   |
+| Text Secondary  | #6B7280    | #9CA3AF   |
+| Priority High   | #EF4444    | #F87171   |
+| Priority Urgent | #DC2626    | #EF4444   |
 
 ### Dark Mode Toggle
+
 - **Location:** Settings > Appearance
 - **Options:** Light, Dark, System Default
 - **Persistence:** Saved in local storage
@@ -465,16 +490,19 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ## Accessibility (Mobile)
 
 ### Screen Reader (iOS VoiceOver / Android TalkBack)
+
 - **Task Card:** "Task: [Title], Priority: [Priority], Due: [Date], Status: [Status]"
 - **Swipe Actions:** "Swipe right to mark complete, swipe left for more actions"
 - **FAB:** "Add new task button"
 
 ### Font Scaling
+
 - **Support:** iOS Dynamic Type, Android Scalable Pixels
 - **Range:** 0.85x to 2.0x
 - **Reflow:** UI adjusts to larger text sizes
 
 ### Haptic Feedback
+
 - **Swipe Complete:** Success haptic (iOS: notification, Android: heavy click)
 - **Delete:** Warning haptic (iOS: warning, Android: long press)
 - **Task Created:** Light haptic feedback
@@ -484,16 +512,19 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ## Performance (Mobile)
 
 ### Initial Load Time
+
 - **Target:** < 2 seconds on 4G connection
 - **Critical Path:** Render first 10 tasks immediately
 - **Images:** Lazy load avatars and icons
 
 ### Battery Optimization
+
 - **Background Sync:** Batch sync every 15 minutes when app in background
 - **Location:** Do not use location services
 - **Animations:** Reduce animations when battery saver on
 
 ### Data Usage
+
 - **Efficient Sync:** Only sync changed tasks
 - **Image Compression:** Use WebP format at 75% quality
 - **Offline Cache:** Limit to last 30 days of tasks
@@ -503,6 +534,7 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ## Testing Checklist
 
 ### Device Testing
+
 - [ ] iPhone SE (smallest screen)
 - [ ] iPhone 14 Pro (notch)
 - [ ] iPad (tablet mode)
@@ -510,10 +542,12 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 - [ ] Pixel 7 (Material You)
 
 ### Orientation Testing
+
 - [ ] Portrait mode (primary)
 - [ ] Landscape mode (supported)
 
 ### Network Testing
+
 - [ ] Online mode (full sync)
 - [ ] Offline mode (local changes)
 - [ ] Slow connection (3G)
@@ -538,5 +572,3 @@ Mobile task management is optimized for on-the-go access, focusing on quick task
 ---
 
 **End of mobile-task-management.md**
-
-

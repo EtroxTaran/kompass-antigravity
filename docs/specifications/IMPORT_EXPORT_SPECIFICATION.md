@@ -11,6 +11,7 @@
 ## Overview
 
 KOMPASS supports import and export functionality for customers and contact protocols to enable:
+
 - Initial data migration from Excel/Word documents
 - Ongoing bulk operations
 - Data backup and recovery
@@ -64,7 +65,7 @@ The system attempts automatic field mapping using:
 When automatic mapping fails or is incomplete:
 
 1. **User selects mapping:** Dropdown for each CSV column
-2. **Required fields:** Must be mapped (red asterisk *)
+2. **Required fields:** Must be mapped (red asterisk \*)
    - `companyName` (required)
    - `billingAddress.street` (required)
    - `billingAddress.zipCode` (required)
@@ -199,27 +200,32 @@ Word documents must contain **tables** with the following structure:
 The system supports a wide variety of date formats:
 
 **ISO Format:**
+
 - `2024-01-15`
 - `2024-01-15T14:30:00Z`
 
 **German Format:**
+
 - `15.01.2024`
 - `15.01.24`
 - `15.1.2024`
 - `15.1.24`
 
 **Text Format:**
+
 - `15. Januar 2024`
 - `15. Jan 2024`
 - `15 Jan 2024`
 - `15.01.2024`
 
 **Numeric Format:**
+
 - `15012024`
 - `150124`
 - `20240115`
 
 **Mixed Format:**
+
 - `15/01/2024`
 - `15-01-2024`
 - `2024/01/15`
@@ -401,10 +407,12 @@ Upload Excel/CSV file for customer import.
 **Permission:** Customer.IMPORT
 
 **Request:**
+
 - **Content-Type:** `multipart/form-data`
 - **Body:** File (Excel/CSV)
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-123",
@@ -425,6 +433,7 @@ Map CSV columns to internal fields.
 **Permission:** Customer.IMPORT
 
 **Request Body:**
+
 ```json
 {
   "mappings": {
@@ -441,6 +450,7 @@ Map CSV columns to internal fields.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-123",
@@ -463,6 +473,7 @@ Validate imported data.
 **Permission:** Customer.IMPORT
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-123",
@@ -500,6 +511,7 @@ Execute customer import.
 **Permission:** Customer.IMPORT
 
 **Request Body:**
+
 ```json
 {
   "options": {
@@ -511,6 +523,7 @@ Execute customer import.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-123",
@@ -535,10 +548,12 @@ Upload Word document for protocol import.
 **Permission:** Protocol.IMPORT
 
 **Request:**
+
 - **Content-Type:** `multipart/form-data`
 - **Body:** File (Word document)
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
@@ -559,6 +574,7 @@ Extract table from Word document.
 **Permission:** Protocol.IMPORT
 
 **Request Body:**
+
 ```json
 {
   "tableIndex": 0,
@@ -571,6 +587,7 @@ Extract table from Word document.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
@@ -598,6 +615,7 @@ Parse dates from protocol import.
 **Permission:** Protocol.IMPORT
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
@@ -639,6 +657,7 @@ Assign customers to protocols.
 **Permission:** Protocol.IMPORT
 
 **Request Body:**
+
 ```json
 {
   "defaultCustomerId": "customer-123",
@@ -656,6 +675,7 @@ Assign customers to protocols.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
@@ -674,6 +694,7 @@ Validate imported protocols.
 **Permission:** Protocol.IMPORT
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
@@ -710,6 +731,7 @@ Execute protocol import.
 **Permission:** Protocol.IMPORT
 
 **Request Body:**
+
 ```json
 {
   "options": {
@@ -721,6 +743,7 @@ Execute protocol import.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
@@ -744,6 +767,7 @@ Export customers to CSV/Excel/JSON.
 **Permission:** Customer.EXPORT
 
 **Query Parameters:**
+
 - `format`: `csv` | `excel` | `json` | `datev`
 - `dateRange`: `all` | `last30days` | `custom`
 - `startDate`: ISO date (if custom range)
@@ -752,6 +776,7 @@ Export customers to CSV/Excel/JSON.
 - `filters`: JSON-encoded filters
 
 **Response (200 OK):**
+
 - **Content-Type:** `text/csv` (CSV), `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` (Excel), `application/json` (JSON)
 - **Content-Disposition:** `attachment; filename="customers_export_2025-01-27.csv"`
 
@@ -765,6 +790,7 @@ Export contact protocols to CSV/Excel/Word/JSON.
 **Permission:** Protocol.EXPORT
 
 **Query Parameters:**
+
 - `format`: `csv` | `excel` | `word` | `json`
 - `customerId`: Customer ID (optional)
 - `dateRange`: `all` | `last30days` | `custom`
@@ -774,6 +800,7 @@ Export contact protocols to CSV/Excel/Word/JSON.
 - `fields`: Comma-separated field list
 
 **Response (200 OK):**
+
 - **Content-Type:** `text/csv` (CSV), `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` (Excel), `application/vnd.openxmlformats-officedocument.wordprocessingml.document` (Word), `application/json` (JSON)
 - **Content-Disposition:** `attachment; filename="protocols_export_2025-01-27.docx"`
 
@@ -925,4 +952,3 @@ Export contact protocols to CSV/Excel/Word/JSON.
 ---
 
 **End of IMPORT_EXPORT_SPECIFICATION.md v1.0**
-

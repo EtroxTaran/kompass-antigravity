@@ -1,11 +1,16 @@
 /**
  * Response DTO for Contact Decision Authority
- * 
+ *
  * Returns decision-making role and authority information
  */
 
 import { ApiProperty } from '@nestjs/swagger';
-import { DecisionMakingRole, FunctionalRole, type AuthorityLevel } from '@kompass/shared/types/enums';
+
+import {
+  DecisionMakingRole,
+  FunctionalRole,
+  type AuthorityLevel,
+} from '@kompass/shared/types/enums';
 
 /**
  * Decision Authority Response DTO
@@ -15,30 +20,30 @@ export class DecisionAuthorityResponseDto {
     description: 'Contact ID',
     example: 'contact-111',
   })
-  contactId: string;
+  contactId!: string;
 
   @ApiProperty({
     description: 'Contact full name',
     example: 'Thomas Schmidt',
   })
-  contactName: string;
+  contactName!: string;
 
   @ApiProperty({
     description: 'Decision-making role',
     enum: DecisionMakingRole,
   })
-  decisionMakingRole: DecisionMakingRole;
+  decisionMakingRole!: DecisionMakingRole;
 
   @ApiProperty({
     description: 'Authority level',
     enum: ['low', 'medium', 'high', 'final_authority'],
   })
-  authorityLevel: AuthorityLevel;
+  authorityLevel!: AuthorityLevel;
 
   @ApiProperty({
     description: 'Can approve orders',
   })
-  canApproveOrders: boolean;
+  canApproveOrders!: boolean;
 
   @ApiProperty({
     description: 'Approval limit in EUR',
@@ -51,34 +56,33 @@ export class DecisionAuthorityResponseDto {
     type: [String],
     enum: FunctionalRole,
   })
-  functionalRoles: FunctionalRole[];
+  functionalRoles!: FunctionalRole[];
 
   @ApiProperty({
     description: 'Department influence',
     type: [String],
   })
-  departmentInfluence: string[];
+  departmentInfluence!: string[];
 
   @ApiProperty({
     description: 'Assigned location IDs',
     type: [String],
   })
-  assignedLocationIds: string[];
+  assignedLocationIds!: string[];
 
   @ApiProperty({
     description: 'Primary contact for locations',
     type: [String],
   })
-  isPrimaryContactForLocations: string[];
+  isPrimaryContactForLocations!: string[];
 
   @ApiProperty({
     description: 'Last updated timestamp',
   })
-  lastUpdated: Date;
+  lastUpdated!: Date;
 
   @ApiProperty({
     description: 'User who last updated',
   })
-  updatedBy: string;
+  updatedBy!: string;
 }
-

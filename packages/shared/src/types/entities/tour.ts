@@ -1,9 +1,9 @@
 /**
  * Tour Entity for KOMPASS
- * 
+ *
  * Represents a business trip grouping multiple customer visits/meetings
  * Used by ADM (Außendienst) for tour planning and expense tracking
- * 
+ *
  * Validation rules:
  * - startDate: Required, cannot be more than 365 days in past
  * - endDate: Required, must be >= startDate (equal dates allowed)
@@ -11,7 +11,7 @@
  * - status: Valid enum transitions only
  * - actualDistance: >= 0 if provided
  * - costs: >= 0 if provided
- * 
+ *
  * Business Rules:
  * - TR-001: Tour can only be completed if all meetings are attended or cancelled
  * - TR-002: actualDistance should match sum of mileage logs ±5%
@@ -59,7 +59,7 @@ export interface Tour extends BaseEntity {
   type: 'tour';
 
   // ==================== Tour Identity ====================
-  
+
   /** Tour title/name */
   title: string;
 
@@ -70,7 +70,7 @@ export interface Tour extends BaseEntity {
   region?: string;
 
   // ==================== Tour Schedule ====================
-  
+
   /** Tour start date and time */
   startDate: Date;
 
@@ -81,12 +81,12 @@ export interface Tour extends BaseEntity {
   status: TourStatus;
 
   // ==================== Ownership ====================
-  
+
   /** User ID of tour owner (typically ADM) */
   ownerId: string;
 
   // ==================== Route Planning ====================
-  
+
   /** Planned route with waypoints */
   plannedRoute?: RouteWaypoint[];
 
@@ -97,7 +97,7 @@ export interface Tour extends BaseEntity {
   actualDistance?: number;
 
   // ==================== Cost Management ====================
-  
+
   /** Estimated total costs in EUR */
   estimatedCosts?: number;
 
@@ -108,7 +108,7 @@ export interface Tour extends BaseEntity {
   mileageCost?: number;
 
   // ==================== Related Data Arrays ====================
-  
+
   /** Meeting IDs associated with this tour */
   meetingIds: string[];
 
@@ -122,7 +122,7 @@ export interface Tour extends BaseEntity {
   mileageLogIds: string[];
 
   // ==================== Completion Data ====================
-  
+
   /** When tour was completed */
   completedAt?: Date;
 
@@ -130,7 +130,7 @@ export interface Tour extends BaseEntity {
   completionNotes?: string;
 
   // ==================== Search Optimization ====================
-  
+
   /** Denormalized text for full-text search */
   searchableText?: string;
 }
@@ -214,7 +214,10 @@ export function validateTour(tour: Partial<Tour>): TourValidationError[] {
 
   // Required fields
   if (!tour.title || tour.title.length < 2 || tour.title.length > 200) {
-    errors.push({ field: 'title', message: 'Tour title must be 2-200 characters' });
+    errors.push({
+      field: 'title',
+      message: 'Tour title must be 2-200 characters',
+    });
   }
 
   if (!tour.startDate) {
@@ -236,7 +239,10 @@ export function validateTour(tour: Partial<Tour>): TourValidationError[] {
   // Date validation
   if (tour.startDate && tour.endDate) {
     if (new Date(tour.endDate) < new Date(tour.startDate)) {
-      errors.push({ field: 'endDate', message: 'End date must be on or after start date' });
+      errors.push({
+        field: 'endDate',
+        message: 'End date must be on or after start date',
+      });
     }
   }
 
@@ -245,30 +251,48 @@ export function validateTour(tour: Partial<Tour>): TourValidationError[] {
     const oneYearAgo = new Date();
     oneYearAgo.setDate(oneYearAgo.getDate() - 365);
     if (new Date(tour.startDate) < oneYearAgo) {
-      errors.push({ field: 'startDate', message: 'Start date cannot be more than 365 days in the past' });
+      errors.push({
+        field: 'startDate',
+        message: 'Start date cannot be more than 365 days in the past',
+      });
     }
   }
 
   // Distance validation
   if (tour.estimatedDistance !== undefined && tour.estimatedDistance < 0) {
-    errors.push({ field: 'estimatedDistance', message: 'Estimated distance cannot be negative' });
+    errors.push({
+      field: 'estimatedDistance',
+      message: 'Estimated distance cannot be negative',
+    });
   }
 
   if (tour.actualDistance !== undefined && tour.actualDistance < 0) {
-    errors.push({ field: 'actualDistance', message: 'Actual distance cannot be negative' });
+    errors.push({
+      field: 'actualDistance',
+      message: 'Actual distance cannot be negative',
+    });
   }
 
   // Cost validation
   if (tour.estimatedCosts !== undefined && tour.estimatedCosts < 0) {
-    errors.push({ field: 'estimatedCosts', message: 'Estimated costs cannot be negative' });
+    errors.push({
+      field: 'estimatedCosts',
+      message: 'Estimated costs cannot be negative',
+    });
   }
 
   if (tour.actualCosts !== undefined && tour.actualCosts < 0) {
-    errors.push({ field: 'actualCosts', message: 'Actual costs cannot be negative' });
+    errors.push({
+      field: 'actualCosts',
+      message: 'Actual costs cannot be negative',
+    });
   }
 
   if (tour.mileageCost !== undefined && tour.mileageCost < 0) {
-    errors.push({ field: 'mileageCost', message: 'Mileage cost cannot be negative' });
+    errors.push({
+      field: 'mileageCost',
+      message: 'Mileage cost cannot be negative',
+    });
   }
 
   return errors;
@@ -290,4 +314,3 @@ export function isValidTourStatusTransition(
 
   return validTransitions[currentStatus]?.includes(newStatus) ?? false;
 }
-

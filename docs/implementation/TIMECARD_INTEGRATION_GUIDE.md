@@ -24,6 +24,7 @@ This document outlines the research findings for integrating KOMPASS with the ex
 ### API Availability
 
 Based on research:
+
 - ✅ TimeCard has an API for ERP/CRM integration
 - ❌ API is **not publicly documented**
 - ⚠️ API access requires direct contact with REINER SCT support
@@ -44,12 +45,14 @@ Based on research:
 **Use Case**: Import time data from TimeCard for project cost calculation
 
 **Pros**:
+
 - Simple to implement
 - No risk of data conflicts
 - TimeCard remains source of truth
 - KOMPASS uses TimeCard data for cost calculations
 
 **Cons**:
+
 - Users must enter time in TimeCard
 - Cannot use KOMPASS timer widget
 - Duplicate UI for time entry
@@ -59,11 +62,13 @@ Based on research:
 **Use Case**: Use KOMPASS or TimeCard interchangeably
 
 **Pros**:
+
 - Flexibility for users
 - Can use KOMPASS timer widget
 - Data stays synchronized
 
 **Cons**:
+
 - Complex conflict resolution
 - Risk of data inconsistencies
 - Requires careful implementation
@@ -73,11 +78,13 @@ Based on research:
 **Use Case**: KOMPASS as main time tracking, sync to TimeCard for payroll
 
 **Pros**:
+
 - Best user experience
 - Use KOMPASS features (offline timer, etc.)
 - TimeCard receives data for payroll
 
 **Cons**:
+
 - TimeCard becomes secondary
 - May require TimeCard configuration
 
@@ -88,6 +95,7 @@ Based on research:
 ### Short-Term (Now)
 
 **Use native KOMPASS time tracking**:
+
 - ✅ Fully implemented and ready
 - ✅ Integrated with project cost management
 - ✅ Profitability calculations built-in
@@ -96,6 +104,7 @@ Based on research:
 ### Medium-Term (Once API Available)
 
 **Implement One-Way Sync (TimeCard → KOMPASS)**:
+
 - Import time entries from TimeCard
 - Calculate project costs in KOMPASS
 - Keep TimeCard for HR/payroll
@@ -104,6 +113,7 @@ Based on research:
 ### Long-Term (After Evaluation)
 
 **Upgrade to Two-Way Sync** (if API supports it and business needs it):
+
 - Enable KOMPASS timer widget
 - Sync to TimeCard for payroll
 - Conflict resolution strategy
@@ -161,6 +171,7 @@ Best regards,
 ### Phase 1: API Evaluation (4 hours)
 
 **Tasks**:
+
 1. Review API documentation
 2. Test authentication
 3. Test basic API calls
@@ -174,6 +185,7 @@ Best regards,
 6. Decide on integration approach
 
 **Deliverables**:
+
 - API evaluation report
 - Integration approach decision
 - Technical specification
@@ -183,42 +195,54 @@ Best regards,
 **Backend Components**:
 
 1. **TimeCardApiClient** (`apps/backend/src/modules/timecard/timecard-api.client.ts`):
+
    ```typescript
    export class TimeCardApiClient {
-     constructor(private readonly apiKey: string, private readonly baseUrl: string) {}
-     
-     async getTimeEntries(startDate: Date, endDate: Date): Promise<TimeCardEntry[]>
-     async createTimeEntry(entry: TimeCardEntry): Promise<TimeCardEntry>
-     async updateTimeEntry(id: string, entry: Partial<TimeCardEntry>): Promise<TimeCardEntry>
-     async deleteTimeEntry(id: string): Promise<void>
+     constructor(
+       private readonly apiKey: string,
+       private readonly baseUrl: string
+     ) {}
+
+     async getTimeEntries(
+       startDate: Date,
+       endDate: Date
+     ): Promise<TimeCardEntry[]>;
+     async createTimeEntry(entry: TimeCardEntry): Promise<TimeCardEntry>;
+     async updateTimeEntry(
+       id: string,
+       entry: Partial<TimeCardEntry>
+     ): Promise<TimeCardEntry>;
+     async deleteTimeEntry(id: string): Promise<void>;
    }
    ```
 
 2. **TimeCardSyncService** (`apps/backend/src/modules/timecard/timecard-sync.service.ts`):
+
    ```typescript
    export class TimeCardSyncService {
-     async syncFromTimeCard(options: SyncOptions): Promise<SyncResult>
-     async syncToTimeCard(entries: TimeEntry[]): Promise<SyncResult>
-     async resolveConflicts(conflicts: Conflict[]): Promise<void>
+     async syncFromTimeCard(options: SyncOptions): Promise<SyncResult>;
+     async syncToTimeCard(entries: TimeEntry[]): Promise<SyncResult>;
+     async resolveConflicts(conflicts: Conflict[]): Promise<void>;
    }
    ```
 
 3. **TimeCardMappingService** (`apps/backend/src/modules/timecard/timecard-mapping.service.ts`):
    ```typescript
    export class TimeCardMappingService {
-     mapFromTimeCard(timeCardEntry: TimeCardEntry): TimeEntry
-     mapToTimeCard(timeEntry: TimeEntry): TimeCardEntry
+     mapFromTimeCard(timeCardEntry: TimeCardEntry): TimeEntry;
+     mapToTimeCard(timeEntry: TimeEntry): TimeCardEntry;
    }
    ```
 
 **Database**:
 
 Add tracking fields to TimeEntry entity:
+
 ```typescript
 interface TimeEntry {
   // ... existing fields
-  timeCardId?: string;        // TimeCard entry ID
-  timeCardSyncedAt?: Date;    // Last sync timestamp
+  timeCardId?: string; // TimeCard entry ID
+  timeCardSyncedAt?: Date; // Last sync timestamp
   timeCardSyncStatus?: 'pending' | 'synced' | 'conflict';
 }
 ```
@@ -243,6 +267,7 @@ interface TimeEntry {
    - Apply resolution
 
 **Pages to Update**:
+
 - TimeTrackingPage: Add sync status
 - MyTimesheetsPage: Add sync button
 - Settings: Add TimeCard configuration
@@ -250,6 +275,7 @@ interface TimeEntry {
 ### Phase 4: Scheduled Sync (4 hours)
 
 **Cron Job**:
+
 ```typescript
 // Sync every 15 minutes
 @Cron('*/15 * * * *')
@@ -262,6 +288,7 @@ async handleScheduledSync() {
 ```
 
 **Configuration**:
+
 ```env
 TIMECARD_API_URL=https://api.timecard.example.com
 TIMECARD_API_KEY=your-api-key
@@ -335,21 +362,25 @@ function mapToTimeCard(timeEntry: TimeEntry): TimeCardEntry {
 ### Resolution Rules
 
 **Rule 1: Last Write Wins**
+
 - Compare `modifiedAt` timestamps
 - Use most recent version
 - Log conflict for audit
 
 **Rule 2: User Decides**
+
 - Show conflict dialog
 - User chooses version
 - Apply choice to both systems
 
 **Rule 3: Merge Non-Conflicting Fields**
+
 - If only description changed in A
 - And only duration changed in B
 - Merge both changes
 
 **Rule 4: Prevent Overlaps**
+
 - Detect overlapping time entries
 - Warn user before creating
 - Require manual resolution
@@ -365,11 +396,11 @@ describe('TimeCardSyncService', () => {
   it('should sync time entries from TimeCard', async () => {
     // Test sync logic
   });
-  
+
   it('should handle API errors gracefully', async () => {
     // Test error handling
   });
-  
+
   it('should resolve conflicts correctly', async () => {
     // Test conflict resolution
   });
@@ -383,7 +414,7 @@ describe('TimeCard Integration', () => {
   it('should import time entries from TimeCard', async () => {
     // Test full sync flow
   });
-  
+
   it('should export time entries to TimeCard', async () => {
     // Test export flow
   });
@@ -397,11 +428,11 @@ describe('TimeCard Sync UI', () => {
   it('should display sync status', async () => {
     // Test UI elements
   });
-  
+
   it('should allow manual sync', async () => {
     // Test sync button
   });
-  
+
   it('should handle conflicts via UI', async () => {
     // Test conflict resolution
   });
@@ -509,4 +540,3 @@ logger.error('TimeCard sync failed', {
 - REINER SCT Website: https://www.reiner-sct.com
 - KOMPASS Time Tracking: `docs/implementation/TIME_TRACKING_IMPLEMENTATION_GUIDE.md`
 - Data Model: `docs/reviews/DATA_MODEL_SPECIFICATION.md`
-

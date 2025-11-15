@@ -1,13 +1,13 @@
 /**
  * Meeting Controller
- * 
+ *
  * Handles HTTP requests for Meeting management
  * Includes GPS check-in endpoints
- * 
+ *
  * All endpoints require:
  * - JwtAuthGuard: User must be authenticated
  * - RbacGuard: User must have required permissions
- * 
+ *
  * Permissions:
  * - Meeting.READ: All roles
  * - Meeting.CREATE: GF, PLAN, ADM
@@ -40,10 +40,15 @@ import {
   ApiQuery,
   ApiBody,
 } from '@nestjs/swagger';
-import { MeetingService } from './meeting.service';
-import { CreateMeetingDto, MeetingType, MeetingStatus } from './dto/create-meeting.dto';
-import { UpdateMeetingDto, CheckInDto } from './dto/update-meeting.dto';
+
+import {
+  CreateMeetingDto,
+  MeetingType,
+  MeetingStatus,
+} from './dto/create-meeting.dto';
 import { MeetingResponseDto } from './dto/meeting-response.dto';
+import { UpdateMeetingDto, CheckInDto } from './dto/update-meeting.dto';
+import { MeetingService } from './meeting.service';
 
 /**
  * Placeholder guards and decorators
@@ -53,8 +58,11 @@ interface User {
   role: 'GF' | 'PLAN' | 'ADM' | 'KALK' | 'BUCH';
 }
 
-const CurrentUser = () => (target: any, propertyKey: string, parameterIndex: number) => {};
-const RequirePermission = (entity: string, action: string) => (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {};
+const CurrentUser =
+  () => (target: any, propertyKey: string, parameterIndex: number) => {};
+const RequirePermission =
+  (entity: string, action: string) =>
+  (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {};
 const JwtAuthGuard = class {};
 const RbacGuard = class {};
 
@@ -75,7 +83,8 @@ export class MeetingController {
   @RequirePermission('Meeting', 'READ')
   @ApiOperation({
     summary: 'List meetings',
-    description: 'Returns meetings. ADM sees own meetings, PLAN/GF see all meetings.',
+    description:
+      'Returns meetings. ADM sees own meetings, PLAN/GF see all meetings.',
   })
   @ApiQuery({
     name: 'status',
@@ -107,7 +116,7 @@ export class MeetingController {
     @Query('meetingType') meetingType?: MeetingType,
     @Query('customerId') customerId?: string,
     @Query('tourId') tourId?: string,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<MeetingResponseDto[]> {
     const filters: any = {};
     if (status) filters.status = status;
@@ -125,7 +134,8 @@ export class MeetingController {
   @RequirePermission('Meeting', 'CREATE')
   @ApiOperation({
     summary: 'Create new meeting',
-    description: 'Creates a new meeting. System will suggest tours if no tourId provided.',
+    description:
+      'Creates a new meeting. System will suggest tours if no tourId provided.',
   })
   @ApiBody({ type: CreateMeetingDto })
   @ApiResponse({
@@ -139,7 +149,7 @@ export class MeetingController {
   })
   async create(
     @Body() dto: CreateMeetingDto,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<MeetingResponseDto> {
     return this.meetingService.create(dto, user!);
   }
@@ -167,7 +177,7 @@ export class MeetingController {
   })
   async findOne(
     @Param('meetingId') meetingId: string,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<MeetingResponseDto> {
     return this.meetingService.findById(meetingId, user!);
   }
@@ -193,7 +203,7 @@ export class MeetingController {
   async update(
     @Param('meetingId') meetingId: string,
     @Body() dto: UpdateMeetingDto,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<MeetingResponseDto> {
     return this.meetingService.update(meetingId, dto, user!);
   }
@@ -218,7 +228,7 @@ export class MeetingController {
   })
   async delete(
     @Param('meetingId') meetingId: string,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<void> {
     return this.meetingService.delete(meetingId, user!);
   }
@@ -230,7 +240,8 @@ export class MeetingController {
   @RequirePermission('Meeting', 'CHECK_IN')
   @ApiOperation({
     summary: 'GPS check-in for meeting',
-    description: 'Performs GPS check-in. Must be within 100m of meeting location.',
+    description:
+      'Performs GPS check-in. Must be within 100m of meeting location.',
   })
   @ApiParam({
     name: 'meetingId',
@@ -249,7 +260,7 @@ export class MeetingController {
   async checkIn(
     @Param('meetingId') meetingId: string,
     @Body() checkInDto: CheckInDto,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<MeetingResponseDto> {
     return this.meetingService.checkIn(meetingId, checkInDto, user!);
   }
@@ -261,7 +272,8 @@ export class MeetingController {
   @RequirePermission('Meeting', 'UPDATE_OUTCOME')
   @ApiOperation({
     summary: 'Update meeting outcome',
-    description: 'Updates meeting outcome and notes. Required if meeting was attended.',
+    description:
+      'Updates meeting outcome and notes. Required if meeting was attended.',
   })
   @ApiParam({
     name: 'meetingId',
@@ -294,7 +306,7 @@ export class MeetingController {
     @Param('meetingId') meetingId: string,
     @Body('outcome') outcome: string,
     @Body('notes') notes: string | undefined,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<MeetingResponseDto> {
     return this.meetingService.updateOutcome(meetingId, outcome, notes, user!);
   }
@@ -331,7 +343,7 @@ export class MeetingController {
   async linkToTour(
     @Param('meetingId') meetingId: string,
     @Body('tourId') tourId: string,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<MeetingResponseDto> {
     return this.meetingService.linkToTour(meetingId, tourId, user!);
   }
@@ -343,7 +355,8 @@ export class MeetingController {
   @RequirePermission('Meeting', 'READ')
   @ApiOperation({
     summary: 'Get tour suggestions for meeting',
-    description: 'Returns tours that match meeting date and location (same day ±1, region <50km).',
+    description:
+      'Returns tours that match meeting date and location (same day ±1, region <50km).',
   })
   @ApiParam({
     name: 'meetingId',
@@ -356,14 +369,13 @@ export class MeetingController {
   })
   async getTourSuggestions(
     @Param('meetingId') meetingId: string,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<any[]> {
     const meeting = await this.meetingService.findById(meetingId, user!);
     return this.meetingService.getTourSuggestions(
       meeting.scheduledAt,
       meeting.locationId,
-      user!,
+      user!
     );
   }
 }
-

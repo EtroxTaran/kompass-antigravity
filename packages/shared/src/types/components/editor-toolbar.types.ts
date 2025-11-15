@@ -1,15 +1,16 @@
 /**
  * Editor Toolbar Type Definitions
- * 
+ *
  * Type-safe interfaces for TipTap editor toolbar components
  * Defines toolbar groups, buttons, and configurations
- * 
+ *
  * @see docs/guides/RICH_TEXT_EDITOR_IMPLEMENTATION.md
  * @see ui-ux/02-core-components/rich-text-editor.md
  */
 
-import { Editor } from '@tiptap/react';
-import { LucideIcon } from 'lucide-react';
+import type { Editor } from '@tiptap/react';
+// Note: Icon is string identifier in shared package (framework-agnostic)
+// Actual LucideIcon component is resolved in frontend implementation
 
 /**
  * Toolbar group identifiers
@@ -100,9 +101,11 @@ export interface ToolbarButton {
   label: string;
 
   /**
-   * Lucide icon component
+   * Lucide icon identifier (string name)
+   * Resolved to actual LucideIcon component in frontend
+   * @example 'Bold', 'Italic', 'Underline'
    */
-  icon: LucideIcon;
+  icon: string;
 
   /**
    * Keyboard shortcut (optional)
@@ -191,7 +194,9 @@ export interface ToolbarConfig {
 export interface EditorToolbarProps {
   /**
    * TipTap editor instance
+   * Note: Editor type from @tiptap/react (installed in frontend)
    */
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   editor: Editor | null;
 
   /**
@@ -256,12 +261,7 @@ export const TOOLBAR_PRESETS: Record<
    */
   basic: {
     groups: ['text-formatting', 'lists', 'insert', 'history'],
-    hiddenButtons: [
-      'strikethrough',
-      'taskList',
-      'image',
-      'table',
-    ],
+    hiddenButtons: ['strikethrough', 'taskList', 'image', 'table'],
   },
 
   /**
@@ -269,7 +269,14 @@ export const TOOLBAR_PRESETS: Record<
    * Adds headings, task lists, blockquotes
    */
   standard: {
-    groups: ['text-formatting', 'headings', 'lists', 'blocks', 'insert', 'history'],
+    groups: [
+      'text-formatting',
+      'headings',
+      'lists',
+      'blocks',
+      'insert',
+      'history',
+    ],
     hiddenButtons: [
       'heading1',
       'codeBlock',
@@ -304,28 +311,24 @@ export const MOBILE_TOOLBAR_CONFIG: ToolbarConfig = {
   groups: ['text-formatting', 'lists', 'history'],
   compact: true,
   expandable: true,
-  hiddenButtons: [
-    'strikethrough',
-    'taskList',
-    'image',
-    'table',
-    'mention',
-  ],
+  hiddenButtons: ['strikethrough', 'taskList', 'image', 'table', 'mention'],
 };
 
 /**
  * Complete button registry
  * Defines all available toolbar buttons
- * 
+ *
  * Note: Icons are imported from lucide-react in actual implementation
+ * Note: TipTap Editor chain API uses `any` types by design - safe in practice
  */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
 export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
   // Text Formatting
   {
     id: 'bold',
     group: 'text-formatting',
     label: 'Fett',
-    icon: 'Bold' as any, // LucideIcon type
+    icon: 'Bold',
     shortcut: 'Ctrl+B',
     action: (editor) => editor.chain().focus().toggleBold().run(),
     isActive: (editor) => editor.isActive('bold'),
@@ -335,7 +338,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'italic',
     group: 'text-formatting',
     label: 'Kursiv',
-    icon: 'Italic' as any,
+    icon: 'Italic',
     shortcut: 'Ctrl+I',
     action: (editor) => editor.chain().focus().toggleItalic().run(),
     isActive: (editor) => editor.isActive('italic'),
@@ -345,7 +348,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'underline',
     group: 'text-formatting',
     label: 'Unterstrichen',
-    icon: 'Underline' as any,
+    icon: 'Underline',
     shortcut: 'Ctrl+U',
     action: (editor) => editor.chain().focus().toggleUnderline().run(),
     isActive: (editor) => editor.isActive('underline'),
@@ -355,7 +358,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'strikethrough',
     group: 'text-formatting',
     label: 'Durchgestrichen',
-    icon: 'Strikethrough' as any,
+    icon: 'Strikethrough',
     action: (editor) => editor.chain().focus().toggleStrike().run(),
     isActive: (editor) => editor.isActive('strike'),
     ariaLabel: 'Durchgestrichen',
@@ -366,8 +369,9 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'heading1',
     group: 'headings',
     label: 'Überschrift 1',
-    icon: 'Heading1' as any,
-    action: (editor) => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+    icon: 'Heading1',
+    action: (editor) =>
+      editor.chain().focus().toggleHeading({ level: 1 }).run(),
     isActive: (editor) => editor.isActive('heading', { level: 1 }),
     ariaLabel: 'Überschrift 1',
   },
@@ -375,8 +379,9 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'heading2',
     group: 'headings',
     label: 'Überschrift 2',
-    icon: 'Heading2' as any,
-    action: (editor) => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+    icon: 'Heading2',
+    action: (editor) =>
+      editor.chain().focus().toggleHeading({ level: 2 }).run(),
     isActive: (editor) => editor.isActive('heading', { level: 2 }),
     ariaLabel: 'Überschrift 2',
   },
@@ -384,8 +389,9 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'heading3',
     group: 'headings',
     label: 'Überschrift 3',
-    icon: 'Heading3' as any,
-    action: (editor) => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+    icon: 'Heading3',
+    action: (editor) =>
+      editor.chain().focus().toggleHeading({ level: 3 }).run(),
     isActive: (editor) => editor.isActive('heading', { level: 3 }),
     ariaLabel: 'Überschrift 3',
   },
@@ -393,7 +399,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'paragraph',
     group: 'headings',
     label: 'Absatz',
-    icon: 'Pilcrow' as any,
+    icon: 'Pilcrow',
     action: (editor) => editor.chain().focus().setParagraph().run(),
     isActive: (editor) => editor.isActive('paragraph'),
     ariaLabel: 'Absatz',
@@ -404,7 +410,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'bulletList',
     group: 'lists',
     label: 'Aufzählung',
-    icon: 'List' as any,
+    icon: 'List',
     action: (editor) => editor.chain().focus().toggleBulletList().run(),
     isActive: (editor) => editor.isActive('bulletList'),
     ariaLabel: 'Aufzählung',
@@ -413,7 +419,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'orderedList',
     group: 'lists',
     label: 'Nummerierte Liste',
-    icon: 'ListOrdered' as any,
+    icon: 'ListOrdered',
     action: (editor) => editor.chain().focus().toggleOrderedList().run(),
     isActive: (editor) => editor.isActive('orderedList'),
     ariaLabel: 'Nummerierte Liste',
@@ -422,7 +428,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'taskList',
     group: 'lists',
     label: 'Aufgabenliste',
-    icon: 'CheckSquare' as any,
+    icon: 'CheckSquare',
     action: (editor) => editor.chain().focus().toggleTaskList().run(),
     isActive: (editor) => editor.isActive('taskList'),
     ariaLabel: 'Aufgabenliste',
@@ -433,7 +439,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'blockquote',
     group: 'blocks',
     label: 'Zitat',
-    icon: 'Quote' as any,
+    icon: 'Quote',
     action: (editor) => editor.chain().focus().toggleBlockquote().run(),
     isActive: (editor) => editor.isActive('blockquote'),
     ariaLabel: 'Zitat',
@@ -442,7 +448,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'codeBlock',
     group: 'blocks',
     label: 'Code-Block',
-    icon: 'Code' as any,
+    icon: 'Code',
     action: (editor) => editor.chain().focus().toggleCodeBlock().run(),
     isActive: (editor) => editor.isActive('codeBlock'),
     ariaLabel: 'Code-Block',
@@ -451,7 +457,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'horizontalRule',
     group: 'blocks',
     label: 'Trennlinie',
-    icon: 'Minus' as any,
+    icon: 'Minus',
     action: (editor) => editor.chain().focus().setHorizontalRule().run(),
     ariaLabel: 'Trennlinie',
   },
@@ -461,7 +467,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'link',
     group: 'insert',
     label: 'Link',
-    icon: 'Link' as any,
+    icon: 'Link',
     requiresInput: true,
     action: (editor) => {
       // Note: Actual implementation requires URL input dialog
@@ -477,7 +483,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'image',
     group: 'insert',
     label: 'Bild',
-    icon: 'Image' as any,
+    icon: 'Image',
     requiresInput: true,
     action: (editor) => {
       // Note: Actual implementation requires file upload dialog
@@ -492,8 +498,9 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'table',
     group: 'insert',
     label: 'Tabelle',
-    icon: 'Table' as any,
-    action: (editor) => editor.chain().focus().insertTable({ rows: 3, cols: 3 }).run(),
+    icon: 'Table',
+    action: (editor) =>
+      editor.chain().focus().insertTable({ rows: 3, cols: 3 }).run(),
     ariaLabel: 'Tabelle einfügen',
   },
 
@@ -502,7 +509,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'undo',
     group: 'history',
     label: 'Rückgängig',
-    icon: 'Undo' as any,
+    icon: 'Undo',
     shortcut: 'Ctrl+Z',
     action: (editor) => editor.chain().focus().undo().run(),
     isDisabled: (editor) => !editor.can().undo(),
@@ -512,7 +519,7 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'redo',
     group: 'history',
     label: 'Wiederherstellen',
-    icon: 'Redo' as any,
+    icon: 'Redo',
     shortcut: 'Ctrl+Y',
     action: (editor) => editor.chain().focus().redo().run(),
     isDisabled: (editor) => !editor.can().redo(),
@@ -524,8 +531,8 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'mention',
     group: 'advanced',
     label: 'Erwähnung',
-    icon: 'AtSign' as any,
-    action: (editor) => {
+    icon: 'AtSign',
+    action: (_editor) => {
       // Note: Mention implementation requires suggestion popup
       // This is just placeholder
     },
@@ -535,11 +542,13 @@ export const TOOLBAR_BUTTON_REGISTRY: ToolbarButton[] = [
     id: 'clearFormatting',
     group: 'advanced',
     label: 'Formatierung entfernen',
-    icon: 'RemoveFormatting' as any,
-    action: (editor) => editor.chain().focus().clearNodes().unsetAllMarks().run(),
+    icon: 'RemoveFormatting',
+    action: (editor) =>
+      editor.chain().focus().clearNodes().unsetAllMarks().run(),
     ariaLabel: 'Formatierung entfernen',
   },
 ];
+/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
 
 /**
  * Get buttons for a specific toolbar configuration
@@ -586,4 +595,3 @@ export function getGroupedButtons(
 
   return grouped as Record<ToolbarGroup, ToolbarButton[]>;
 }
-

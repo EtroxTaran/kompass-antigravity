@@ -1,6 +1,12 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
-import { CalendarEventDto, CalendarEventType, CalendarEntityType, CalendarPriority } from './dto/calendar-event.dto';
-import { CalendarQueryDto } from './dto/calendar-query.dto';
+
+import type { CalendarEventDto } from './dto/calendar-event.dto';
+import {
+  CalendarEventType,
+  CalendarEntityType,
+  CalendarPriority,
+} from './dto/calendar-event.dto';
+import type { CalendarQueryDto } from './dto/calendar-query.dto';
 
 @Injectable()
 export class CalendarService {
@@ -8,13 +14,7 @@ export class CalendarService {
   private readonly MAX_DATE_RANGE_DAYS = 90;
   private readonly MAX_EVENTS = 1000;
 
-  constructor(
-    // TODO: Inject task, project, opportunity repositories when available
-    // @Inject('IUserTaskRepository') private readonly userTaskRepo: IUserTaskRepository,
-    // @Inject('IProjectTaskRepository') private readonly projectTaskRepo: IProjectTaskRepository,
-    // @Inject('IProjectRepository') private readonly projectRepo: IProjectRepository,
-    // @Inject('IOpportunityRepository') private readonly opportunityRepo: IOpportunityRepository,
-  ) {}
+  constructor() {} // @Inject('IOpportunityRepository') private readonly opportunityRepo: IOpportunityRepository, // @Inject('IProjectRepository') private readonly projectRepo: IProjectRepository, // @Inject('IProjectTaskRepository') private readonly projectTaskRepo: IProjectTaskRepository, // @Inject('IUserTaskRepository') private readonly userTaskRepo: IUserTaskRepository, // TODO: Inject task, project, opportunity repositories when available
 
   /**
    * Get calendar events aggregated from multiple sources
@@ -26,7 +26,7 @@ export class CalendarService {
   async getCalendarEvents(
     query: CalendarQueryDto,
     userId: string,
-    userRole: string,
+    userRole: string
   ): Promise<CalendarEventDto[]> {
     this.validateDateRange(query.startDate, query.endDate);
 
@@ -37,23 +37,43 @@ export class CalendarService {
 
     // Aggregate events from different sources
     if (this.shouldFetchType(typesToFetch, CalendarEventType.USER_TASK)) {
-      const userTaskEvents = await this.getUserTaskEvents(query, userId, userRole);
+      const userTaskEvents = await this.getUserTaskEvents(
+        query,
+        userId,
+        userRole
+      );
       events.push(...userTaskEvents);
     }
 
     if (this.shouldFetchType(typesToFetch, CalendarEventType.PROJECT_TASK)) {
-      const projectTaskEvents = await this.getProjectTaskEvents(query, userId, userRole);
+      const projectTaskEvents = await this.getProjectTaskEvents(
+        query,
+        userId,
+        userRole
+      );
       events.push(...projectTaskEvents);
     }
 
-    if (this.shouldFetchType(typesToFetch, CalendarEventType.PROJECT_DEADLINE) || 
-        this.shouldFetchType(typesToFetch, CalendarEventType.PROJECT_START)) {
-      const projectEvents = await this.getProjectEvents(query, userId, userRole);
+    if (
+      this.shouldFetchType(typesToFetch, CalendarEventType.PROJECT_DEADLINE) ||
+      this.shouldFetchType(typesToFetch, CalendarEventType.PROJECT_START)
+    ) {
+      const projectEvents = await this.getProjectEvents(
+        query,
+        userId,
+        userRole
+      );
       events.push(...projectEvents);
     }
 
-    if (this.shouldFetchType(typesToFetch, CalendarEventType.OPPORTUNITY_CLOSE)) {
-      const opportunityEvents = await this.getOpportunityEvents(query, userId, userRole);
+    if (
+      this.shouldFetchType(typesToFetch, CalendarEventType.OPPORTUNITY_CLOSE)
+    ) {
+      const opportunityEvents = await this.getOpportunityEvents(
+        query,
+        userId,
+        userRole
+      );
       events.push(...opportunityEvents);
     }
 
@@ -61,13 +81,16 @@ export class CalendarService {
     let filteredEvents = this.applyFilters(events, query);
 
     // Sort by start date
-    filteredEvents.sort((a, b) => 
-      new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+    filteredEvents.sort(
+      (a, b) =>
+        new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
     );
 
     // Limit results
     if (filteredEvents.length > this.MAX_EVENTS) {
-      this.logger.warn(`Event count (${filteredEvents.length}) exceeds maximum (${this.MAX_EVENTS}). Truncating.`);
+      this.logger.warn(
+        `Event count (${filteredEvents.length}) exceeds maximum (${this.MAX_EVENTS}). Truncating.`
+      );
       filteredEvents = filteredEvents.slice(0, this.MAX_EVENTS);
     }
 
@@ -80,7 +103,7 @@ export class CalendarService {
   async getMyCalendarEvents(
     query: CalendarQueryDto,
     userId: string,
-    userRole: string,
+    userRole: string
   ): Promise<CalendarEventDto[]> {
     // Override assignedTo filter to current user
     const myQuery = { ...query, assignedTo: userId };
@@ -93,10 +116,12 @@ export class CalendarService {
   async getTeamCalendarEvents(
     query: CalendarQueryDto,
     userId: string,
-    userRole: string,
-  ): Promise<{ events: CalendarEventDto[], teamMembers: any[], meta: any }> {
+    userRole: string
+  ): Promise<{ events: CalendarEventDto[]; teamMembers: any[]; meta: any }> {
     if (userRole !== 'GF' && userRole !== 'PLAN') {
-      throw new BadRequestException('Team calendar is only available for GF and PLAN roles');
+      throw new BadRequestException(
+        'Team calendar is only available for GF and PLAN roles'
+      );
     }
 
     const events = await this.getCalendarEvents(query, userId, userRole);
@@ -126,14 +151,18 @@ export class CalendarService {
     }
 
     if (end < start) {
-      throw new BadRequestException('End date must be greater than or equal to start date');
+      throw new BadRequestException(
+        'End date must be greater than or equal to start date'
+      );
     }
 
-    const diffDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    const diffDays = Math.ceil(
+      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+    );
 
     if (diffDays > this.MAX_DATE_RANGE_DAYS) {
       throw new BadRequestException(
-        `Date range exceeds maximum allowed (${this.MAX_DATE_RANGE_DAYS} days). Current range: ${diffDays} days.`,
+        `Date range exceeds maximum allowed (${this.MAX_DATE_RANGE_DAYS} days). Current range: ${diffDays} days.`
       );
     }
   }
@@ -141,34 +170,41 @@ export class CalendarService {
   /**
    * Check if event type should be fetched based on query
    */
-  private shouldFetchType(typesToFetch: CalendarEventType[], type: CalendarEventType): boolean {
+  private shouldFetchType(
+    typesToFetch: CalendarEventType[],
+    type: CalendarEventType
+  ): boolean {
     return typesToFetch.includes(type);
   }
 
   /**
    * Apply additional filters to events
    */
-  private applyFilters(events: CalendarEventDto[], query: CalendarQueryDto): CalendarEventDto[] {
+  private applyFilters(
+    events: CalendarEventDto[],
+    query: CalendarQueryDto
+  ): CalendarEventDto[] {
     let filtered = events;
 
     // Filter by assigned user
     if (query.assignedTo) {
-      filtered = filtered.filter(event => 
-        event.assignedTo && event.assignedTo.includes(query.assignedTo!)
+      filtered = filtered.filter(
+        (event) =>
+          event.assignedTo && event.assignedTo.includes(query.assignedTo!)
       );
     }
 
     // Filter by status
     if (query.status && query.status.length > 0) {
-      filtered = filtered.filter(event => 
+      filtered = filtered.filter((event) =>
         query.status!.includes(event.status)
       );
     }
 
     // Filter by priority
     if (query.priority && query.priority.length > 0) {
-      filtered = filtered.filter(event => 
-        event.priority && query.priority!.includes(event.priority)
+      filtered = filtered.filter(
+        (event) => event.priority && query.priority!.includes(event.priority)
       );
     }
 
@@ -180,9 +216,9 @@ export class CalendarService {
    * TODO: Implement when UserTask repository is available
    */
   private async getUserTaskEvents(
-    query: CalendarQueryDto,
-    userId: string,
-    userRole: string,
+    _query: CalendarQueryDto,
+    _userId: string,
+    _userRole: string
   ): Promise<CalendarEventDto[]> {
     this.logger.debug('Fetching UserTask events');
     // TODO: Query UserTask repository
@@ -196,9 +232,9 @@ export class CalendarService {
    * TODO: Implement when ProjectTask repository is available
    */
   private async getProjectTaskEvents(
-    query: CalendarQueryDto,
-    userId: string,
-    userRole: string,
+    _query: CalendarQueryDto,
+    _userId: string,
+    _userRole: string
   ): Promise<CalendarEventDto[]> {
     this.logger.debug('Fetching ProjectTask events');
     // TODO: Query ProjectTask repository
@@ -210,9 +246,9 @@ export class CalendarService {
    * TODO: Implement when Project repository is available
    */
   private async getProjectEvents(
-    query: CalendarQueryDto,
-    userId: string,
-    userRole: string,
+    _query: CalendarQueryDto,
+    _userId: string,
+    _userRole: string
   ): Promise<CalendarEventDto[]> {
     this.logger.debug('Fetching Project events');
     // TODO: Query Project repository
@@ -224,9 +260,9 @@ export class CalendarService {
    * TODO: Implement when Opportunity repository is available
    */
   private async getOpportunityEvents(
-    query: CalendarQueryDto,
-    userId: string,
-    userRole: string,
+    _query: CalendarQueryDto,
+    _userId: string,
+    _userRole: string
   ): Promise<CalendarEventDto[]> {
     this.logger.debug('Fetching Opportunity events');
     // TODO: Query Opportunity repository
@@ -237,23 +273,23 @@ export class CalendarService {
    * Convert UserTask to CalendarEvent
    * TODO: Implement when UserTask entity is available
    */
-  private userTaskToCalendarEvent(task: any): CalendarEventDto {
+  private _userTaskToCalendarEvent(_task: any): CalendarEventDto {
     return {
-      id: task._id,
+      id: _task._id,
       type: CalendarEventType.USER_TASK,
-      title: task.title,
-      description: task.description,
-      color: this.getPriorityColor(task.priority) || '#3B82F6',
+      title: _task.title,
+      description: _task.description,
+      color: this.getPriorityColor(_task.priority) || '#3B82F6',
       icon: 'CheckSquare',
-      startDate: task.dueDate,
-      endDate: task.dueDate,
+      startDate: _task.dueDate,
+      endDate: _task.dueDate,
       allDay: true,
-      entityId: task._id,
+      entityId: _task._id,
       entityType: CalendarEntityType.USER_TASK,
-      status: task.status,
-      priority: this.mapPriority(task.priority),
-      assignedTo: [task.assignedTo],
-      url: `/tasks/${task._id}`,
+      status: _task.status,
+      priority: this.mapPriority(_task.priority),
+      assignedTo: [_task.assignedTo],
+      url: `/tasks/${_task._id}`,
     };
   }
 
@@ -283,5 +319,3 @@ export class CalendarService {
     return mapping[priority] || CalendarPriority.MEDIUM;
   }
 }
-
-

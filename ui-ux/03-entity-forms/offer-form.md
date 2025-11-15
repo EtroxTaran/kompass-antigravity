@@ -17,6 +17,7 @@ Create a form for **Offer Creation (Angebots-Erfassung)** in KOMPASS. Offers are
 ## FORM STRUCTURE
 
 ### Header
+
 - Title: "Angebot erstellen" (Create Offer)
 - Subtitle: "Angebot für Kunde: [Customer Name]"
 - Status Badge: Show current status (Draft/Sent/Accepted/Rejected)
@@ -102,17 +103,19 @@ Create a form for **Offer Creation (Angebots-Erfassung)** in KOMPASS. Offers are
 #### Section 5: Linked Entities
 
 11. **Linked Opportunity** (Optional)
-   - Label: "Verknüpfte Verkaufschance"
-   - Type: Dropdown select
-   - Options: List of opportunities for this customer
-   - Optional: Can be empty
-   - Help text: "Optional: Angebot einer bestehenden Opportunity zuordnen"
+
+- Label: "Verknüpfte Verkaufschance"
+- Type: Dropdown select
+- Options: List of opportunities for this customer
+- Optional: Can be empty
+- Help text: "Optional: Angebot einer bestehenden Opportunity zuordnen"
 
 12. **Project Reference** (Optional)
-   - Label: "Projektbezeichnung"
-   - Type: Text input
-   - Placeholder: "z.B. P-2025-M001"
-   - Optional
+
+- Label: "Projektbezeichnung"
+- Type: Text input
+- Placeholder: "z.B. P-2025-M001"
+- Optional
 
 #### Section 6: Status Management
 
@@ -204,7 +207,7 @@ Create a form for **Offer Creation (Angebots-Erfassung)** in KOMPASS. Offers are
 ## ACCESSIBILITY
 
 - All fields have proper labels (ARIA-compliant)
-- Required fields marked with "*"
+- Required fields marked with "\*"
 - Help text below inputs (aria-describedby)
 - Error messages in red below fields
 - Keyboard navigation: Tab through fields
@@ -262,7 +265,8 @@ Create a form for **Offer Creation (Angebots-Erfassung)** in KOMPASS. Offers are
 ## QUALITY CHECKLIST
 
 After implementing, verify:
-- [ ] All required fields are marked with "*"
+
+- [ ] All required fields are marked with "\*"
 - [ ] PDF upload required before "Sent" status
 - [ ] Currency formatting works (German format)
 - [ ] Date validation works (Valid Until > Offer Date)
@@ -284,4 +288,3 @@ After implementing, verify:
 ---
 
 END OF PROMPT
-

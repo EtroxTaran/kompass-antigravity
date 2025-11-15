@@ -17,6 +17,7 @@ Update all KOMPASS form designs by replacing EVERY multi-line textarea field wit
 ## DESIGN SPECIFICATION: Rich Text Editor Component
 
 ### Container
+
 - Border: 1px solid #e5e7eb
 - Border radius: 8px
 - Background: white
@@ -24,6 +25,7 @@ Update all KOMPASS form designs by replacing EVERY multi-line textarea field wit
 - Full width
 
 ### Toolbar (Top Section)
+
 **CRITICAL FIX:** Toolbar must use HORIZONTAL scrolling ONLY, NO vertical scrollbar
 
 - Height: 48px (fixed, no auto-expand)
@@ -39,6 +41,7 @@ Update all KOMPASS form designs by replacing EVERY multi-line textarea field wit
 - Align items: center
 
 ### Toolbar Buttons
+
 - Size: 32px × 32px (height AND width - square buttons)
 - Min-width: 32px (prevent shrinking)
 - Flex-shrink: 0 (buttons never shrink)
@@ -46,6 +49,7 @@ Update all KOMPASS form designs by replacing EVERY multi-line textarea field wit
 - Padding: 0 (icon centered)
 
 **Button States:**
+
 - **Inactive (default):**
   - Background: transparent
   - Icon: #374151 (gray-700)
@@ -66,11 +70,13 @@ Update all KOMPASS form designs by replacing EVERY multi-line textarea field wit
   - Cursor: not-allowed
 
 ### Button Icons (Lucide Icons)
+
 - Size: 16px × 16px (h-4 w-4)
 - Stroke width: 2
 - Color: Inherited from button state
 
 ### Vertical Separators (Between Button Groups)
+
 - Width: 1px
 - Height: 32px
 - Background: #d1d5db (gray-300)
@@ -78,6 +84,7 @@ Update all KOMPASS form designs by replacing EVERY multi-line textarea field wit
 - Flex-shrink: 0
 
 ### Content Area
+
 - Padding: 16px all sides
 - Min-height: varies (see below per field)
 - Background: white
@@ -87,6 +94,7 @@ Update all KOMPASS form designs by replacing EVERY multi-line textarea field wit
 - Placeholder: #9ca3af (gray-400), italic
 
 ### Character Counter (Bottom-right)
+
 - Position: Inside editor container, bottom-right corner
 - Padding: 8px 16px
 - Font: 12px (text-xs)
@@ -95,6 +103,7 @@ Update all KOMPASS form designs by replacing EVERY multi-line textarea field wit
 - Text align: right
 
 **Color States:**
+
 - Normal (0-80%): #6b7280 (gray-500)
 - Warning (80-99%): #f97316 (orange-500)
 - Over limit (100%+): #ef4444 (red-500)
@@ -106,10 +115,12 @@ Update all KOMPASS form designs by replacing EVERY multi-line textarea field wit
 ### 1. ACTIVITY PROTOCOL FORM
 
 **FIND:**
+
 - Field: "Beschreibung" (multiline textarea, 5 rows)
 
 **REPLACE WITH:**
 Rich Text Editor - STANDARD TOOLBAR
+
 - Toolbar buttons in order: [Bold][Italic][Underline][Strikethrough] | [H2][H3] | [List][ListOrdered][CheckSquare] | [Quote][Link] | [Undo][Redo]
 - Min height: 200px
 - Max: 2000 chars
@@ -118,10 +129,12 @@ Rich Text Editor - STANDARD TOOLBAR
 ---
 
 **FIND:**
+
 - Field: "Nächste Schritte" (multiline textarea, 2 rows)
 
 **REPLACE WITH:**
 Rich Text Editor - BASIC TOOLBAR WITH TASK LIST
+
 - Toolbar buttons: [Bold][Italic] | [List][ListOrdered][CheckSquare] | [Link] | [Undo][Redo]
 - Min height: 100px
 - Max: 500 chars
@@ -131,11 +144,13 @@ Rich Text Editor - BASIC TOOLBAR WITH TASK LIST
 ### 2. CUSTOMER FORM
 
 **FIND:**
+
 - Section: "Geschäftsdaten"
 - Look for: "Notizen" textarea field (if it exists as plain textarea)
 
 **REPLACE WITH:**
 Rich Text Editor - BASIC TOOLBAR
+
 - Label: "Interne Notizen"
 - Toolbar buttons: [Bold][Italic][Underline] | [List][ListOrdered] | [Link] | [Undo][Redo]
 - Min height: 150px
@@ -146,11 +161,13 @@ Rich Text Editor - BASIC TOOLBAR
 ### 3. CONTACT FORM
 
 **FIND:**
+
 - Tab: "Standortzuordnung"
 - Look for: Any textarea for notes
 
 **REPLACE WITH:**
 Rich Text Editor - BASIC TOOLBAR
+
 - Label: "Interne Notizen"
 - Toolbar buttons: [Bold][Italic][Underline] | [List][ListOrdered] | [Link] | [Undo][Redo]
 - Min height: 150px
@@ -161,17 +178,20 @@ Rich Text Editor - BASIC TOOLBAR
 ### 4. LOCATION FORM
 
 **FIND:**
+
 - Field: "Anlieferhinweise" (textarea, 3 rows)
 - Field: "Parkmöglichkeiten" (textarea, 2 rows)
 - Field: Any "Beschreibung" or "Standortbeschreibung" textarea
 
 **REPLACE WITH:**
 Rich Text Editor - BASIC TOOLBAR (for Standortbeschreibung only)
+
 - Toolbar buttons: [Bold][Italic][Underline] | [List][ListOrdered] | [Link] | [Undo][Redo]
 - Min height: 150px
 - Max: 2000 chars
 
 **KEEP AS PLAIN TEXTAREA:**
+
 - "Anlieferhinweise" (operational instructions - can stay plain)
 - "Parkmöglichkeiten" (very short - can stay plain)
 
@@ -180,6 +200,7 @@ Rich Text Editor - BASIC TOOLBAR (for Standortbeschreibung only)
 ### 5. OPPORTUNITY FORM
 
 **FIND:**
+
 - Field: "Beschreibung" (textarea, 4 rows)
 - Field: "Nächster Schritt" (textarea, 2 rows)
 - Field: "Grund für Verlust" (textarea, 3 rows, conditional on Status=Verloren)
@@ -188,18 +209,21 @@ Rich Text Editor - BASIC TOOLBAR (for Standortbeschreibung only)
 
 **Beschreibung:**
 Rich Text Editor - STANDARD TOOLBAR
+
 - Toolbar buttons: [Bold][Italic][Underline][Strikethrough] | [H2][H3] | [List][ListOrdered][CheckSquare] | [Quote][Link] | [Undo][Redo]
 - Min height: 200px
 - Max: 5000 chars
 
 **Nächster Schritt:**
 Rich Text Editor - BASIC TOOLBAR
+
 - Toolbar buttons: [Bold][Italic] | [List][ListOrdered] | [Link] | [Undo][Redo]
 - Min height: 100px
 - Max: 500 chars
 
 **Grund für Verlust:**
 Rich Text Editor - BASIC TOOLBAR
+
 - Toolbar buttons: [Bold][Italic] | [List][ListOrdered] | [Link] | [Undo][Redo]
 - Min height: 120px
 - Max: 1000 chars
@@ -209,6 +233,7 @@ Rich Text Editor - BASIC TOOLBAR
 ### 6. PROJECT FORM
 
 **FIND:**
+
 - Tab 1: "Projektbeschreibung" (textarea, 5 rows)
 - Tab 4: "Externe Partner" (textarea, 3 rows)
 - Tab 5: Look for any notes/description textarea
@@ -217,18 +242,21 @@ Rich Text Editor - BASIC TOOLBAR
 
 **Projektbeschreibung:**
 Rich Text Editor - ADVANCED TOOLBAR
+
 - Toolbar buttons: [Bold][Italic][Underline][Strikethrough] | [H1][H2][H3][Pilcrow] | [List][ListOrdered][CheckSquare] | [Quote][Code][Minus] | [Link][Table] | [Undo][Redo]
 - Min height: 250px
 - Max: 5000 chars
 
 **Externe Partner:**
 Rich Text Editor - BASIC TOOLBAR
+
 - Toolbar buttons: [Bold][Italic] | [List][ListOrdered] | [Link] | [Undo][Redo]
 - Min height: 100px
 - Max: 1000 chars
 
 **Projektnotizen (ADD NEW):**
 Rich Text Editor - ADVANCED TOOLBAR
+
 - Same as Projektbeschreibung
 - Min height: 200px
 - Max: 5000 chars
@@ -239,10 +267,12 @@ Rich Text Editor - ADVANCED TOOLBAR
 ### 7. INVOICE FORM
 
 **FIND:**
+
 - Field: "Rechnungstext" or "Notizen" (textarea, 3 rows)
 
 **REPLACE WITH:**
 Rich Text Editor - BASIC TOOLBAR
+
 - Label: "Bemerkungen / Zahlungsbedingungen"
 - Toolbar buttons: [Bold][Italic][Underline] | [List][ListOrdered] | [Link] | [Undo][Redo]
 - Min height: 120px
@@ -255,27 +285,27 @@ Rich Text Editor - BASIC TOOLBAR
 
 Map these button names to Lucide icons (all 16px × 16px, stroke-width: 2):
 
-| Button | Icon Name | Lucide Component |
-|--------|-----------|------------------|
-| Bold | Bold | `<Bold />` |
-| Italic | Italic | `<Italic />` |
-| Underline | Underline | `<Underline />` |
-| Strikethrough | Strikethrough | `<Strikethrough />` |
-| H1 | Heading 1 | `<Heading1 />` |
-| H2 | Heading 2 | `<Heading2 />` |
-| H3 | Heading 3 | `<Heading3 />` |
-| Paragraph | Pilcrow | `<Pilcrow />` |
-| List | Bullet List | `<List />` |
-| ListOrdered | Numbered List | `<ListOrdered />` |
-| CheckSquare | Task List | `<CheckSquare />` |
-| Quote | Blockquote | `<Quote />` |
-| Code | Code Block | `<Code />` |
-| Minus | Horizontal Rule | `<Minus />` |
-| Link | Link | `<Link />` |
-| Table | Table | `<Table />` |
-| Undo | Undo | `<Undo />` |
-| Redo | Redo | `<Redo />` |
-| Mic | Microphone | `<Mic />` |
+| Button        | Icon Name       | Lucide Component    |
+| ------------- | --------------- | ------------------- |
+| Bold          | Bold            | `<Bold />`          |
+| Italic        | Italic          | `<Italic />`        |
+| Underline     | Underline       | `<Underline />`     |
+| Strikethrough | Strikethrough   | `<Strikethrough />` |
+| H1            | Heading 1       | `<Heading1 />`      |
+| H2            | Heading 2       | `<Heading2 />`      |
+| H3            | Heading 3       | `<Heading3 />`      |
+| Paragraph     | Pilcrow         | `<Pilcrow />`       |
+| List          | Bullet List     | `<List />`          |
+| ListOrdered   | Numbered List   | `<ListOrdered />`   |
+| CheckSquare   | Task List       | `<CheckSquare />`   |
+| Quote         | Blockquote      | `<Quote />`         |
+| Code          | Code Block      | `<Code />`          |
+| Minus         | Horizontal Rule | `<Minus />`         |
+| Link          | Link            | `<Link />`          |
+| Table         | Table           | `<Table />`         |
+| Undo          | Undo            | `<Undo />`          |
+| Redo          | Redo            | `<Redo />`          |
+| Mic           | Microphone      | `<Mic />`           |
 
 ---
 
@@ -306,6 +336,7 @@ Used in: Project "Projektbeschreibung", Project "Projektnotizen"
 ## MOBILE OPTIMIZATION (<768px)
 
 **Toolbar Changes for Mobile:**
+
 - Button size: 44px × 44px (touch-friendly)
 - Gap: 8px between buttons
 - Overflow: horizontal scroll (swipe to see more buttons)
@@ -316,6 +347,7 @@ Used in: Project "Projektbeschreibung", Project "Projektnotizen"
 [Bold] [Italic] [List] [Mehr]
 
 **"Mehr" button:**
+
 - Variant: ghost
 - Label: "Mehr" (collapsed) or "Weniger" (expanded)
 - Size: 44px × 44px
@@ -326,6 +358,7 @@ Used in: Project "Projektbeschreibung", Project "Projektnotizen"
 ## ACCESSIBILITY REQUIREMENTS
 
 Each button MUST have:
+
 - `aria-label` with German text + keyboard shortcut
   - Examples:
     - "Fett (Ctrl+B)"
@@ -336,6 +369,7 @@ Each button MUST have:
 - Minimum touch target: 44px × 44px on mobile
 
 Editor MUST have:
+
 - `role="textbox"`
 - `aria-label="Rich text editor"`
 - `aria-multiline="true"`
@@ -345,6 +379,7 @@ Editor MUST have:
 ## GERMAN TOOLTIPS
 
 Use these exact German labels in tooltips:
+
 - Fett (Ctrl+B)
 - Kursiv (Ctrl+I)
 - Unterstrichen (Ctrl+U)
@@ -371,6 +406,7 @@ Use these exact German labels in tooltips:
 ### ACTIVITY PROTOCOL FORM (activity-protocol-form.md)
 
 **Field 1: Beschreibung**
+
 - CURRENT: Textarea, 5 rows, "Was wurde besprochen..."
 - NEW: Rich text editor, Standard toolbar (12 buttons)
 - Height: 200px min
@@ -378,6 +414,7 @@ Use these exact German labels in tooltips:
 - SPECIAL: Add microphone button (blue, 44px, bottom-right)
 
 **Field 2: Nächste Schritte**
+
 - CURRENT: Textarea, 2 rows, "Was sind die nächsten Schritte..."
 - NEW: Rich text editor, Basic+Tasks toolbar (9 buttons)
 - Height: 100px min
@@ -388,6 +425,7 @@ Use these exact German labels in tooltips:
 ### CUSTOMER FORM (customer-form.md)
 
 **Field: Interne Notizen**
+
 - CURRENT: May be plain textarea or not exist
 - NEW: Rich text editor, Basic toolbar (8 buttons)
 - Height: 150px min
@@ -399,6 +437,7 @@ Use these exact German labels in tooltips:
 ### CONTACT FORM (contact-form.md)
 
 **Field: Interne Notizen**
+
 - CURRENT: May not exist
 - NEW: Rich text editor, Basic toolbar (8 buttons)
 - Height: 150px min
@@ -410,6 +449,7 @@ Use these exact German labels in tooltips:
 ### LOCATION FORM (location-form.md)
 
 **Field: Standortbeschreibung**
+
 - CURRENT: May not exist
 - NEW: Rich text editor, Basic toolbar (8 buttons)
 - Height: 150px min
@@ -417,6 +457,7 @@ Use these exact German labels in tooltips:
 - Position: New section "Zusätzliche Informationen", after "Zugewiesene Kontakte"
 
 **KEEP AS PLAIN TEXTAREA:**
+
 - "Anlieferhinweise" (operational, stays plain)
 - "Parkmöglichkeiten" (very short, stays plain)
 
@@ -425,18 +466,21 @@ Use these exact German labels in tooltips:
 ### OPPORTUNITY FORM (opportunity-form.md)
 
 **Field 1: Beschreibung**
+
 - CURRENT: Textarea, 4 rows, "Detaillierte Beschreibung..."
 - NEW: Rich text editor, Standard toolbar (12 buttons)
 - Height: 200px min
 - Max: 5000 chars
 
 **Field 2: Nächster Schritt**
+
 - CURRENT: Textarea, 2 rows
 - NEW: Rich text editor, Basic toolbar (8 buttons)
 - Height: 100px min
 - Max: 500 chars
 
 **Field 3: Grund für Verlust** (conditional, when Status=Verloren)
+
 - CURRENT: Textarea, 3 rows
 - NEW: Rich text editor, Basic toolbar (8 buttons)
 - Height: 120px min
@@ -447,18 +491,21 @@ Use these exact German labels in tooltips:
 ### PROJECT FORM (project-form.md)
 
 **Field 1: Projektbeschreibung** (Tab 1)
+
 - CURRENT: Textarea, 5 rows
 - NEW: Rich text editor, Advanced toolbar (20 buttons)
 - Height: 250px min
 - Max: 5000 chars
 
 **Field 2: Externe Partner** (Tab 4)
+
 - CURRENT: Textarea, 3 rows
 - NEW: Rich text editor, Basic toolbar (8 buttons)
 - Height: 100px min
 - Max: 1000 chars
 
 **Field 3: Projektnotizen** (Tab 5 - ADD NEW)
+
 - CURRENT: Does not exist
 - NEW: Rich text editor, Advanced toolbar (20 buttons)
 - Height: 200px min
@@ -470,6 +517,7 @@ Use these exact German labels in tooltips:
 ### INVOICE FORM (invoice-form.md)
 
 **Field: Bemerkungen / Zahlungsbedingungen**
+
 - CURRENT: Textarea labeled "Rechnungstext / Notizen", 3 rows
 - NEW: Rich text editor, Basic toolbar (8 buttons)
 - Height: 120px min
@@ -514,6 +562,7 @@ Use these exact German labels in tooltips:
 ## QUALITY CHECKLIST
 
 After applying this prompt, verify:
+
 - [ ] NO vertical scrollbar in any toolbar
 - [ ] Toolbar buttons in single horizontal row
 - [ ] All 14 textarea fields replaced (11 we already did + 3 new ones)
@@ -534,4 +583,3 @@ After applying this prompt, verify:
 ---
 
 END OF PROMPT - Copy everything above into Figma Make
-

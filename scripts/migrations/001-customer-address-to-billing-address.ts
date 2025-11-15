@@ -1,13 +1,13 @@
 /**
  * Migration Script: Customer Address → Billing Address
- * 
+ *
  * BREAKING CHANGE: Renames 'address' to 'billingAddress' in all Customer documents
  * Adds: locations[], contactPersons[], defaultDeliveryLocationId
- * 
+ *
  * Usage:
  *   node 001-customer-address-to-billing-address.ts --dry-run
  *   node 001-customer-address-to-billing-address.ts --execute
- * 
+ *
  * Based on DATA_MODEL_SPECIFICATION.md Section 7: Migration Strategy
  */
 
@@ -20,7 +20,9 @@ const COUCHDB_USER = process.env.COUCHDB_ADMIN_USER || 'admin';
 const COUCHDB_PASSWORD = process.env.COUCHDB_ADMIN_PASSWORD || 'changeme';
 const DATABASE = process.env.COUCHDB_DATABASE || 'kompass';
 
-const nano = Nano.default(`http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@${COUCHDB_URL.replace('http://', '')}`);
+const nano = Nano.default(
+  `http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@${COUCHDB_URL.replace('http://', '')}`
+);
 const db = nano.use(DATABASE);
 
 interface OldCustomer {
@@ -41,8 +43,12 @@ interface MigrationResult {
 /**
  * Migrate Customer documents
  */
-async function migrateCustomers(dryRun: boolean = true): Promise<MigrationResult> {
-  console.log(`🚀 Starting Customer migration (${dryRun ? 'DRY RUN' : 'EXECUTE'})...`);
+async function migrateCustomers(
+  dryRun: boolean = true
+): Promise<MigrationResult> {
+  console.log(
+    `🚀 Starting Customer migration (${dryRun ? 'DRY RUN' : 'EXECUTE'})...`
+  );
 
   const result: MigrationResult = {
     total: 0,
@@ -149,7 +155,9 @@ async function main() {
   const dryRun = !args.includes('--execute');
 
   if (dryRun) {
-    console.log('⚠️  Running in DRY RUN mode. Use --execute to apply changes.\n');
+    console.log(
+      '⚠️  Running in DRY RUN mode. Use --execute to apply changes.\n'
+    );
   } else {
     console.log('⚠️  EXECUTING migration. Changes will be applied!\n');
   }
@@ -166,4 +174,3 @@ if (require.main === module) {
 }
 
 export { migrateCustomers };
-

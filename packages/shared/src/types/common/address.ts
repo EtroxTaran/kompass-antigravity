@@ -1,8 +1,8 @@
 /**
  * Address structure for KOMPASS
- * 
+ *
  * Used for both billing addresses (Customer) and delivery addresses (Location)
- * 
+ *
  * Validation rules from DATA_MODEL_SPECIFICATION.md:
  * - street: Required, 2-100 characters
  * - zipCode: Required, format depends on country (Germany: 5 digits)
@@ -93,23 +93,27 @@ export function createDefaultAddress(overrides?: Partial<Address>): Address {
  */
 export function formatAddress(address: Address): string {
   const parts: string[] = [];
-  
+
   if (address.street) {
-    parts.push(address.streetNumber ? `${address.street} ${address.streetNumber}` : address.street);
+    parts.push(
+      address.streetNumber
+        ? `${address.street} ${address.streetNumber}`
+        : address.street
+    );
   }
-  
+
   if (address.addressLine2) {
     parts.push(address.addressLine2);
   }
-  
+
   if (address.zipCode && address.city) {
     parts.push(`${address.zipCode} ${address.city}`);
   }
-  
+
   if (address.country && address.country !== 'Deutschland') {
     parts.push(address.country);
   }
-  
+
   return parts.join(', ');
 }
 
@@ -118,27 +122,30 @@ export function formatAddress(address: Address): string {
  */
 export function formatAddressMultiLine(address: Address): string {
   const lines: string[] = [];
-  
+
   if (address.street) {
-    lines.push(address.streetNumber ? `${address.street} ${address.streetNumber}` : address.street);
+    lines.push(
+      address.streetNumber
+        ? `${address.street} ${address.streetNumber}`
+        : address.street
+    );
   }
-  
+
   if (address.addressLine2) {
     lines.push(address.addressLine2);
   }
-  
+
   if (address.zipCode && address.city) {
     lines.push(`${address.zipCode} ${address.city}`);
   }
-  
+
   if (address.state) {
     lines.push(address.state);
   }
-  
+
   if (address.country) {
     lines.push(address.country);
   }
-  
+
   return lines.join('\n');
 }
-

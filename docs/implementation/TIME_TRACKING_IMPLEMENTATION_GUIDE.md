@@ -59,6 +59,7 @@ This document describes the implementation of time tracking and project cost man
 #### RBAC Updates ✅
 
 Updated RBAC permission matrix (`packages/shared/src/constants/rbac.constants.ts`):
+
 - Added `TimeEntry` and `ProjectCost` entity types
 - Added `KALK` (Cost Calculation) role
 - Defined granular permissions for all roles:
@@ -76,6 +77,7 @@ Updated RBAC permission matrix (`packages/shared/src/constants/rbac.constants.ts
 **Location**: `apps/frontend/src/features/time-tracking/components/TimerWidget.tsx`
 
 Features:
+
 - Start/pause/resume/stop timer
 - Real-time duration display
 - Integrated with useTimer hook
@@ -84,6 +86,7 @@ Features:
 #### Time Entry Management ✅
 
 **Components Created**:
+
 1. `TimeEntryList.tsx` - List view with filtering and bulk actions
 2. `TimeTrackingPage.tsx` - Main time tracking page
 3. `MyTimesheetsPage.tsx` - Personal timesheets
@@ -91,6 +94,7 @@ Features:
 5. `TimesheetWeekView.tsx` - Weekly calendar view
 
 **Hooks Created**:
+
 - `useTimer.ts` - Timer logic and state management
 - `useTimeTracking.ts` - Fetch time entries with filters
 - `useMyTimesheets.ts` - Personal timesheets
@@ -99,26 +103,32 @@ Features:
 #### Project Cost Management ✅
 
 **Components Created**:
+
 1. `ProjectCostList.tsx` - List view with actions
 2. `ProjectCostForm.tsx` - Cost entry form
 3. `ProjectCostsPage.tsx` - Main costs page
 
 **Hooks Created**:
+
 - `useProjectCosts.ts` - Fetch costs and summary
 
 **API Client**:
+
 - `project-cost-api.ts` - HTTP client for project costs
 
 #### Profitability Dashboard ✅
 
 **Components Created**:
+
 1. `ProfitabilityDashboard.tsx` - Comprehensive profitability analysis
 2. `ProjectProfitabilityPage.tsx` - Dashboard page
 
 **Hooks Created**:
+
 - `useProfitability.ts` - Fetch profitability report
 
 **Features**:
+
 - Budget vs actual comparison
 - Cost breakdown (labor vs materials)
 - Profit margin analysis
@@ -146,6 +156,7 @@ Features:
 ### Implementation Plan
 
 **Backend**:
+
 1. Install PDF generation library (e.g., `@pdf-lib/pdf-lib` or `pdfkit`)
 2. Create `ReportingService` with methods:
    - `generateTimeTrackingCSV(filters): Promise<Buffer>`
@@ -159,6 +170,7 @@ Features:
    - `GET /api/v1/reports/project-costs/pdf`
 
 **Frontend**:
+
 1. Update export buttons in pages to call report endpoints
 2. Add download functionality
 3. Add preview modal for PDF reports
@@ -185,12 +197,14 @@ Features:
 ### Implementation Plan
 
 **CSV Format**:
+
 ```csv
 Date,ProjectID,UserID,TaskDescription,DurationMinutes,IsBillable,Status
 2024-01-15,project-1,user-1,Development work,480,true,completed
 ```
 
 **Backend**:
+
 1. Install CSV parsing library (`csv-parse`)
 2. Create `ImportService`:
    - `validateCSV(file): Promise<ValidationResult>`
@@ -202,6 +216,7 @@ Date,ProjectID,UserID,TaskDescription,DurationMinutes,IsBillable,Status
    - `POST /api/v1/import/time-entries/execute`
 
 **Frontend**:
+
 1. Create `ImportTimeEntriesPage.tsx`:
    - File upload
    - CSV validation
@@ -231,6 +246,7 @@ Date,ProjectID,UserID,TaskDescription,DurationMinutes,IsBillable,Status
 ### Implementation Plan
 
 **Service Worker**:
+
 1. Create Service Worker (`apps/frontend/public/sw.js`)
 2. Implement background sync:
    - Register sync event
@@ -239,6 +255,7 @@ Date,ProjectID,UserID,TaskDescription,DurationMinutes,IsBillable,Status
 3. Cache timer state in IndexedDB
 
 **Frontend**:
+
 1. Update `useTimer.ts`:
    - Detect offline status
    - Store entries in IndexedDB when offline
@@ -247,6 +264,7 @@ Date,ProjectID,UserID,TaskDescription,DurationMinutes,IsBillable,Status
 3. Show sync status
 
 **Backend**:
+
 1. Add conflict detection:
    - Check for overlapping time entries
    - Resolve conflicts automatically where possible
@@ -287,6 +305,7 @@ Date,ProjectID,UserID,TaskDescription,DurationMinutes,IsBillable,Status
 ### Implementation Plan
 
 **Unit Tests** (70% of tests):
+
 ```bash
 # Backend
 apps/backend/src/modules/time-tracking/**/*.spec.ts
@@ -299,6 +318,7 @@ apps/frontend/src/features/project-costs/**/*.spec.tsx
 ```
 
 **Integration Tests** (20% of tests):
+
 ```bash
 tests/integration/time-tracking/
 tests/integration/project-cost/
@@ -306,6 +326,7 @@ tests/integration/profitability/
 ```
 
 **E2E Tests** (10% of tests):
+
 ```bash
 tests/e2e/time-tracking/
 tests/e2e/project-cost/
@@ -339,12 +360,14 @@ tests/e2e/profitability/
 ### Implementation Plan
 
 **Step 1: Contact REINER SCT**
+
 - Email: support@reiner-sct.com
 - Request: TimeCard API documentation and credentials
 - Mention: ERP/CRM integration for project time tracking
 
 **Step 2: API Evaluation**
 After receiving API access:
+
 1. Review API documentation
 2. Test API endpoints
 3. Evaluate capabilities:
@@ -355,6 +378,7 @@ After receiving API access:
 4. Decide if integration is feasible
 
 **Step 3: Implementation** (if feasible)
+
 1. Create `TimeCardSyncService`:
    - `syncFromTimeCard(): Promise<SyncResult>`
    - `syncToTimeCard(entries): Promise<SyncResult>`
@@ -375,6 +399,7 @@ After receiving API access:
 ## Summary
 
 ### Phase 1 (Completed) ✅
+
 - ✅ Backend entities and modules
 - ✅ RBAC permissions
 - ✅ Cost calculator and budget alerts
@@ -384,6 +409,7 @@ After receiving API access:
 - ✅ Profitability dashboard
 
 ### Future Phases 🔄
+
 - 🔄 Phase 2: Reporting & Exports (12 hours)
 - 🔄 Phase 3: CSV Import Tool (12 hours)
 - 🔄 Phase 4: PWA Offline Support (20 hours)
@@ -409,4 +435,3 @@ After receiving API access:
 - Data Model: `docs/reviews/DATA_MODEL_SPECIFICATION.md`
 - RBAC Matrix: `docs/reviews/RBAC_PERMISSION_MATRIX.md`
 - API Specification: `docs/reviews/API_SPECIFICATION.md`
-

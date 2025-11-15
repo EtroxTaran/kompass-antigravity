@@ -8,6 +8,7 @@
 ## Pre-Flight Checklist
 
 Before you begin, ensure you have:
+
 - [ ] GitHub repository admin access
 - [ ] Two servers (staging + production) with root access
 - [ ] Domain names configured (optional but recommended)
@@ -82,6 +83,7 @@ ssh -i ~/.ssh/kompass_deploy deploy@<staging-ip> "echo 'Success'"
 ## Step 4: Set Up Production Server (30 minutes)
 
 Repeat Step 3, but:
+
 - Use production server IP
 - Use `/opt/kompass/production` directory
 - Use different SSH key or same key (your choice)
@@ -93,6 +95,7 @@ Repeat Step 3, but:
 Go to: Settings → Secrets and variables → Actions → New repository secret
 
 **Quick Add (Staging)**:
+
 ```
 STAGING_HOST=<staging-ip>
 STAGING_USER=deploy
@@ -115,6 +118,7 @@ STAGING_ALLOWED_ORIGINS=https://staging.kompass.de
 **Quick Add (Production)** - Same as staging but with `PRODUCTION_` prefix and different passwords!
 
 **Shared**:
+
 ```
 SNYK_TOKEN=<your-snyk-api-token>
 ```
@@ -126,13 +130,14 @@ SNYK_TOKEN=<your-snyk-api-token>
 Settings → Branches → Add rule
 
 **For `main`**:
+
 - Pattern: `main`
 - ✅ Require PR reviews: 1
 - ✅ Require status checks: All 11 checks
 - ✅ Require conversation resolution
 - ✅ No bypass
 
-**For `develop`**: Same as main
+**Note**: With trunk-based development, all feature branches merge directly to `main`. There is no `develop` branch.
 
 ---
 
@@ -156,7 +161,7 @@ git push origin feature/KOM-999-test-workflow
 # 3. Create PR on GitHub
 # Watch CI/CD run (should take ~8-12 minutes)
 
-# 4. Merge to develop
+# 4. Merge to main
 # Watch automatic staging deployment (~10 minutes)
 
 # 5. Check staging
@@ -192,6 +197,7 @@ scp -i ~/.ssh/kompass_deploy scripts/*.sh deploy@<production-ip>:/opt/kompass/pr
 ### "Permission denied" during deployment
 
 **Fix**: Check SSH key is correct in GitHub secrets
+
 ```bash
 # Test SSH manually
 ssh -i ~/.ssh/kompass_deploy deploy@<server-ip>
@@ -200,12 +206,14 @@ ssh -i ~/.ssh/kompass_deploy deploy@<server-ip>
 ### Deployment fails with "Image not found"
 
 **Fix**: Check GITHUB_TOKEN permissions
+
 - Go to Settings → Actions → General
 - Workflow permissions: Read and write
 
 ### Health checks fail
 
 **Fix**: Check service logs
+
 ```bash
 ssh deploy@<server>
 cd /opt/kompass/<environment>
@@ -215,6 +223,7 @@ docker-compose logs -f
 ### Commit hook fails
 
 **Fix**: Run the failing check manually
+
 ```bash
 pnpm lint          # If linting fails
 pnpm format        # If formatting fails
@@ -264,11 +273,12 @@ After completing these steps, you'll have:
 ✅ Documentation automation  
 ✅ Dual-environment deployment  
 ✅ Linear integration  
-✅ Automatic rollback  
+✅ Automatic rollback
 
 **Your development workflow is now complete!**
 
 For detailed information, see:
+
 - Full guide: `docs/deployment/DEPLOYMENT_GUIDE.md`
 - Workflow: `docs/processes/DEVELOPMENT_WORKFLOW.md`
 - Secrets: `docs/deployment/GITHUB_SECRETS.md`
@@ -276,4 +286,3 @@ For detailed information, see:
 ---
 
 **Questions?** Create a Linear issue with tag `ci-cd`
-

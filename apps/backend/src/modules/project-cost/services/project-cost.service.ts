@@ -5,24 +5,26 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
-import {
+import { v4 as uuidv4 } from 'uuid';
+
+import type {
   ProjectCost,
-  ProjectCostStatus,
   CreateProjectCostDto,
   UpdateProjectCostDto,
   ProjectCostResponseDto,
   MaterialCostSummary,
-  calculateProjectCostTotals,
 } from '@kompass/shared/types/entities/project-cost';
 import {
-  IProjectCostRepository,
-  ProjectCostFilters,
-} from '../repositories/project-cost.repository.interface';
-import { v4 as uuidv4 } from 'uuid';
+  ProjectCostStatus,
+  calculateProjectCostTotals,
+} from '@kompass/shared/types/entities/project-cost';
+
+import type { ProjectCostFilters } from '../repositories/project-cost.repository.interface';
+import { IProjectCostRepository } from '../repositories/project-cost.repository.interface';
 
 /**
  * Project Cost Service
- * 
+ *
  * Business logic for project cost management including:
  * - Material and contractor cost tracking
  * - Invoice management
@@ -33,7 +35,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class ProjectCostService {
   constructor(
     @Inject('IProjectCostRepository')
-    private readonly repository: IProjectCostRepository,
+    private readonly repository: IProjectCostRepository
   ) {}
 
   /**
@@ -41,7 +43,7 @@ export class ProjectCostService {
    */
   async create(
     dto: CreateProjectCostDto,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<ProjectCostResponseDto> {
     // Calculate totals
     const taxRate = dto.taxRate || 0.19; // Default 19% VAT
@@ -83,7 +85,7 @@ export class ProjectCostService {
   async update(
     costId: string,
     dto: UpdateProjectCostDto,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<ProjectCostResponseDto> {
     const cost = await this.repository.findById(costId);
 
@@ -94,10 +96,11 @@ export class ProjectCostService {
     // TODO: Check RBAC permissions
 
     // Cannot update paid costs without approval
-    if (cost.status === ProjectCostStatus.PAID && dto.status !== ProjectCostStatus.PAID) {
-      throw new ForbiddenException(
-        'Cannot update paid costs',
-      );
+    if (
+      cost.status === ProjectCostStatus.PAID &&
+      dto.status !== ProjectCostStatus.PAID
+    ) {
+      throw new ForbiddenException('Cannot update paid costs');
     }
 
     // Recalculate totals if quantity or unit price changed
@@ -110,7 +113,11 @@ export class ProjectCostService {
       const unitPrice = dto.unitPriceEur || cost.unitPriceEur;
       const taxRate = dto.taxRate || cost.taxRate;
 
-      const calculated = calculateProjectCostTotals(quantity, unitPrice, taxRate);
+      const calculated = calculateProjectCostTotals(
+        quantity,
+        unitPrice,
+        taxRate
+      );
       totalCostEur = calculated.totalCostEur;
       taxAmountEur = calculated.taxAmountEur;
       totalWithTaxEur = calculated.totalWithTaxEur;
@@ -144,9 +151,7 @@ export class ProjectCostService {
 
     // Cannot delete paid costs
     if (cost.status === ProjectCostStatus.PAID) {
-      throw new ForbiddenException(
-        'Cannot delete paid costs',
-      );
+      throw new ForbiddenException('Cannot delete paid costs');
     }
 
     await this.repository.delete(costId);
@@ -157,7 +162,7 @@ export class ProjectCostService {
    */
   async findById(
     costId: string,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<ProjectCostResponseDto> {
     const cost = await this.repository.findById(costId);
 
@@ -175,7 +180,7 @@ export class ProjectCostService {
    */
   async findAll(
     filters: ProjectCostFilters,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<ProjectCostResponseDto[]> {
     // TODO: Apply RBAC filters based on user role
 
@@ -188,7 +193,7 @@ export class ProjectCostService {
    */
   async findByProject(
     projectId: string,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<ProjectCostResponseDto[]> {
     // TODO: Check if user has access to project
 
@@ -201,7 +206,7 @@ export class ProjectCostService {
    */
   async approve(
     costId: string,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<ProjectCostResponseDto> {
     const cost = await this.repository.findById(costId);
 
@@ -231,7 +236,7 @@ export class ProjectCostService {
    */
   async markAsPaid(
     costId: string,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<ProjectCostResponseDto> {
     const cost = await this.repository.findById(costId);
 
@@ -244,7 +249,7 @@ export class ProjectCostService {
     // Must be invoiced before paid
     if (cost.status !== ProjectCostStatus.INVOICED) {
       throw new BadRequestException(
-        'Cost must be invoiced before marking as paid',
+        'Cost must be invoiced before marking as paid'
       );
     }
 
@@ -267,7 +272,7 @@ export class ProjectCostService {
    * Calculate material costs for a project
    */
   async calculateProjectMaterialCosts(
-    projectId: string,
+    projectId: string
   ): Promise<MaterialCostSummary> {
     return this.repository.calculateMaterialCosts(projectId);
   }
@@ -276,7 +281,7 @@ export class ProjectCostService {
    * Get costs pending payment
    */
   async getPendingPayments(
-    currentUserId: string,
+    currentUserId: string
   ): Promise<ProjectCostResponseDto[]> {
     // TODO: Check RBAC permissions (BUCH role)
 
@@ -289,7 +294,7 @@ export class ProjectCostService {
    */
   async getBySupplier(
     supplierName: string,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<ProjectCostResponseDto[]> {
     // TODO: Check RBAC permissions
 
@@ -309,4 +314,3 @@ export class ProjectCostService {
     };
   }
 }
-

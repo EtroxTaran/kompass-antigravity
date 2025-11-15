@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import type {
   TimeEntry,
   CreateTimeEntryDto,
@@ -9,9 +10,9 @@ import type {
 
 /**
  * Time Tracking API Client
- * 
+ *
  * Handles all HTTP requests for time tracking functionality.
- * 
+ *
  * @see Phase 1 of Time Tracking Implementation Plan
  */
 
@@ -27,7 +28,7 @@ export const timeTrackingApi = {
   async create(dto: CreateTimeEntryDto): Promise<TimeEntryResponseDto> {
     const response = await axios.post(
       `${API_BASE_URL}/api/v1/time-entries`,
-      dto,
+      dto
     );
     return response.data;
   },
@@ -53,7 +54,7 @@ export const timeTrackingApi = {
    */
   async getById(id: string): Promise<TimeEntryResponseDto> {
     const response = await axios.get(
-      `${API_BASE_URL}/api/v1/time-entries/${id}`,
+      `${API_BASE_URL}/api/v1/time-entries/${id}`
     );
     return response.data;
   },
@@ -63,11 +64,11 @@ export const timeTrackingApi = {
    */
   async update(
     id: string,
-    dto: UpdateTimeEntryDto,
+    dto: UpdateTimeEntryDto
   ): Promise<TimeEntryResponseDto> {
     const response = await axios.patch(
       `${API_BASE_URL}/api/v1/time-entries/${id}`,
-      dto,
+      dto
     );
     return response.data;
   },
@@ -84,7 +85,7 @@ export const timeTrackingApi = {
    */
   async stopTimer(id: string): Promise<TimeEntryResponseDto> {
     const response = await axios.patch(
-      `${API_BASE_URL}/api/v1/time-entries/${id}/stop`,
+      `${API_BASE_URL}/api/v1/time-entries/${id}/stop`
     );
     return response.data;
   },
@@ -94,7 +95,7 @@ export const timeTrackingApi = {
    */
   async pauseTimer(id: string): Promise<TimeEntryResponseDto> {
     const response = await axios.patch(
-      `${API_BASE_URL}/api/v1/time-entries/${id}/pause`,
+      `${API_BASE_URL}/api/v1/time-entries/${id}/pause`
     );
     return response.data;
   },
@@ -105,7 +106,7 @@ export const timeTrackingApi = {
   async resumeTimer(dto: CreateTimeEntryDto): Promise<TimeEntryResponseDto> {
     const response = await axios.post(
       `${API_BASE_URL}/api/v1/time-entries/resume`,
-      dto,
+      dto
     );
     return response.data;
   },
@@ -115,7 +116,7 @@ export const timeTrackingApi = {
    */
   async approve(id: string): Promise<TimeEntryResponseDto> {
     const response = await axios.patch(
-      `${API_BASE_URL}/api/v1/time-entries/${id}/approve`,
+      `${API_BASE_URL}/api/v1/time-entries/${id}/approve`
     );
     return response.data;
   },
@@ -126,7 +127,7 @@ export const timeTrackingApi = {
   async reject(id: string, reason: string): Promise<TimeEntryResponseDto> {
     const response = await axios.patch(
       `${API_BASE_URL}/api/v1/time-entries/${id}/reject`,
-      { reason },
+      { reason }
     );
     return response.data;
   },
@@ -137,7 +138,7 @@ export const timeTrackingApi = {
   async bulkApprove(entryIds: string[]): Promise<{ approvedCount: number }> {
     const response = await axios.post(
       `${API_BASE_URL}/api/v1/time-entries/bulk-approve`,
-      { entryIds },
+      { entryIds }
     );
     return response.data;
   },
@@ -148,7 +149,7 @@ export const timeTrackingApi = {
   async getActiveTimer(): Promise<TimeEntryResponseDto | null> {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/api/v1/time-entries/active/current`,
+        `${API_BASE_URL}/api/v1/time-entries/active/current`
       );
       return response.data;
     } catch (error) {
@@ -168,7 +169,7 @@ export const timeTrackingApi = {
   }): Promise<TimeEntryResponseDto[]> {
     const response = await axios.get(
       `${API_BASE_URL}/api/v1/time-entries/my-timesheets/list`,
-      { params: filters },
+      { params: filters }
     );
     return response.data;
   },
@@ -184,7 +185,7 @@ export const timeTrackingApi = {
   }): Promise<TimeEntryResponseDto[]> {
     const response = await axios.get(
       `${API_BASE_URL}/api/v1/time-entries/team/list`,
-      { params: filters },
+      { params: filters }
     );
     return response.data;
   },
@@ -197,9 +198,11 @@ export const projectTimeApi = {
   /**
    * Get time entries for a project
    */
-  async getProjectTimeEntries(projectId: string): Promise<TimeEntryResponseDto[]> {
+  async getProjectTimeEntries(
+    projectId: string
+  ): Promise<TimeEntryResponseDto[]> {
     const response = await axios.get(
-      `${API_BASE_URL}/api/v1/projects/${projectId}/time-entries`,
+      `${API_BASE_URL}/api/v1/projects/${projectId}/time-entries`
     );
     return response.data;
   },
@@ -209,7 +212,7 @@ export const projectTimeApi = {
    */
   async getProjectTimeSummary(projectId: string): Promise<any> {
     const response = await axios.get(
-      `${API_BASE_URL}/api/v1/projects/${projectId}/time-summary`,
+      `${API_BASE_URL}/api/v1/projects/${projectId}/time-summary`
     );
     return response.data;
   },
@@ -219,9 +222,8 @@ export const projectTimeApi = {
    */
   async getProjectLaborCosts(projectId: string): Promise<LaborCostSummary> {
     const response = await axios.get(
-      `${API_BASE_URL}/api/v1/projects/${projectId}/labor-costs`,
+      `${API_BASE_URL}/api/v1/projects/${projectId}/labor-costs`
     );
     return response.data;
   },
 };
-

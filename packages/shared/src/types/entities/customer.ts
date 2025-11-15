@@ -17,7 +17,7 @@ import type { Address } from '../common/address';
 import type {
   CustomerType,
   CustomerBusinessType,
-  type CustomerRating,
+  CustomerRating,
 } from '../enums';
 
 /**

@@ -262,6 +262,9 @@ docker/data/
 docker/volumes/
 *.dockerignore.bak
 
+# Docker Compose override files (local development)
+docker-compose.override.yml
+
 # ============================================================================
 # Temporary Files
 # ============================================================================

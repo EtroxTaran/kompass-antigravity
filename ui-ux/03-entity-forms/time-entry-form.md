@@ -1,6 +1,7 @@
 # Time Entry Form - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Manual Time Entry Form
 - **User Roles**: All roles (track their project time)
 - **Usage Context**: Log time after the fact, edit tracked time, bulk time entry
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Date-first approach**: Clear date selection
 - **Project prominently displayed**: Easy project selection
 - **Duration input methods**: Hours or start/end time
 - **Description required**: What was done
 
 ### Form Structure
+
 - Date selector at top
 - Project/task hierarchy
 - Duration input (flexible)
@@ -23,6 +26,7 @@
 - Save/submit actions
 
 ### shadcn/ui Components
+
 - Form, DatePicker, TimePicker, Select
 - Textarea, Switch, Button
 - Card for form container
@@ -209,6 +213,7 @@ Create a comprehensive time entry form for KOMPASS that enables manual time logg
 ```
 
 ## Interaction Patterns
+
 - **Smart defaults**: Today's date, last used project
 - **Time calculator**: Auto-calc duration from start/end
 - **Inline validation**: Min/max hours per day
@@ -216,6 +221,7 @@ Create a comprehensive time entry form for KOMPASS that enables manual time logg
 - **Keyboard navigation**: Tab through fields efficiently
 
 ## German Labels & Content
+
 - **Zeiteintrag**: Time entry
 - **Dauer**: Duration
 - **Abrechenbar**: Billable
@@ -225,6 +231,7 @@ Create a comprehensive time entry form for KOMPASS that enables manual time logg
 - **Beschreibung**: Description
 
 ## Validation Rules
+
 - Date cannot be future
 - Duration 0.25 - 24 hours
 - Description minimum 10 characters
@@ -233,6 +240,7 @@ Create a comprehensive time entry form for KOMPASS that enables manual time logg
 - Warning if > 10h single entry
 
 ## Activity Types
+
 - Entwicklung (Development)
 - Meeting
 - Konzeption (Design/Planning)
@@ -243,6 +251,7 @@ Create a comprehensive time entry form for KOMPASS that enables manual time logg
 - Reise (Travel)
 
 ## Implementation Notes
+
 ```bash
 # Time Input Methods
 - Decimal hours: 2.5
@@ -265,6 +274,7 @@ Create a comprehensive time entry form for KOMPASS that enables manual time logg
 ```
 
 ## Billable Logic
+
 - Default from project settings
 - Override per entry
 - Non-billable categories:
@@ -274,6 +284,7 @@ Create a comprehensive time entry form for KOMPASS that enables manual time logg
 - Billable rate from user role/project
 
 ## Analytics Events
+
 - time_entry_created
 - time_entry_method (manual/timer/calendar)
 - bulk_entry_used

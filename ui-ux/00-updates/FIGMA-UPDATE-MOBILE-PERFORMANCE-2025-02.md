@@ -19,6 +19,7 @@ Enhance KOMPASS mobile performance by adding skeleton loaders to all list views,
 ### List View Skeleton
 
 **ADD TO ALL LIST VIEWS:**
+
 ```
 When loading = true, show:
 
@@ -35,6 +36,7 @@ When loading = true, show:
 ```
 
 **Specifications:**
+
 - Background: #F3F4F6 (gray-100)
 - Animation: Shimmer effect, 1.5s duration
 - Border radius: 4px for text blocks
@@ -44,6 +46,7 @@ When loading = true, show:
 ### Card Skeleton
 
 **FOR CUSTOMER/PROJECT CARDS:**
+
 ```
 ┌─────────────────────────────────────┐
 │ ░░░░░░░░░░░░░░░░░                  │  ← 180px × 20px
@@ -56,6 +59,7 @@ When loading = true, show:
 ### Dashboard Widget Skeleton
 
 **FOR METRIC CARDS:**
+
 ```
 ┌─────────────────────────────────────┐
 │ ░░░░░░░░░░░░                        │  ← Label
@@ -65,19 +69,19 @@ When loading = true, show:
 ```
 
 **Animation CSS:**
+
 ```css
 @keyframes shimmer {
-  0% { background-position: -200px 0; }
-  100% { background-position: calc(200px + 100%) 0; }
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
 }
 
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    #F3F4F6 0%,
-    #E5E7EB 50%,
-    #F3F4F6 100%
-  );
+  background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
   background-size: 200px 100%;
   animation: shimmer 1.5s ease-in-out infinite;
 }
@@ -90,6 +94,7 @@ When loading = true, show:
 ### Pull-to-Refresh Indicator
 
 **ADD TO TOP OF SCROLLABLE LISTS:**
+
 ```
 Initial state (hidden above viewport):
 ┌─────────────────────────────────────┐
@@ -119,6 +124,7 @@ Loading state:
 ```
 
 **Specifications:**
+
 - Container height: 64px
 - Background: White with subtle shadow
 - Icon: 24px, animated rotation when loading
@@ -133,6 +139,7 @@ Loading state:
 ### Global Offline Banner
 
 **ADD TO APP HEADER:**
+
 ```
 When offline = true:
 ┌─────────────────────────────────────┐
@@ -142,6 +149,7 @@ When offline = true:
 ```
 
 **Specifications:**
+
 - Background: #FEF3C7 (amber-100)
 - Border: 1px solid #FCD34D (amber-300)
 - Icon: ⚡ 16px
@@ -152,6 +160,7 @@ When offline = true:
 ### Sync Status Indicators
 
 **FOR LIST ITEMS AND CARDS:**
+
 ```
 Synced (default - no indicator):
 [Customer Name]
@@ -164,6 +173,7 @@ Sync error:
 ```
 
 **Icon specifications:**
+
 - 🔄 Pending: #3B82F6, subtle rotation animation
 - ⚠️ Error: #EF4444, static
 - Size: 16px
@@ -172,6 +182,7 @@ Sync error:
 ### Offline Data Age Indicator
 
 **FOR CACHED DATA:**
+
 ```
 ┌─────────────────────────────────────┐
 │ Letzte Aktualisierung: vor 3 Std.   │
@@ -188,11 +199,13 @@ Sync error:
 **UPDATE ALL INTERACTIVE ELEMENTS:**
 
 **Before (Too Small):**
+
 ```
 [Edit] [Delete]  ← 32px height ❌
 ```
 
 **After (Optimized):**
+
 ```
 [  Edit  ] [ Delete ]  ← 48px height ✓
 ```
@@ -200,6 +213,7 @@ Sync error:
 ### List Item Touch Targets
 
 **CURRENT:**
+
 ```
 ┌─────────────────────────┐
 │ Customer Name      [>] │  ← 40px ❌
@@ -207,6 +221,7 @@ Sync error:
 ```
 
 **UPDATE TO:**
+
 ```
 ┌─────────────────────────────────────┐
 │                                     │ ← 64px ✓
@@ -218,6 +233,7 @@ Sync error:
 ### Button Spacing
 
 **MOBILE BUTTON GROUPS:**
+
 ```
 Before:
 [Save] [Cancel]  ← No gap ❌
@@ -230,6 +246,7 @@ After:
 ### Icon Buttons
 
 **UPDATE ALL ICON BUTTONS:**
+
 ```
 Before: [🗑️] ← 32×32px ❌
 
@@ -244,6 +261,7 @@ After: [ 🗑️ ] ← 48×48px ✓
 ### Image Loading States
 
 **FOR CUSTOMER/CONTACT AVATARS:**
+
 ```
 Loading:
 ┌───┐
@@ -264,6 +282,7 @@ Error:
 ### Lazy Loading Indicators
 
 **FOR LONG LISTS:**
+
 ```
 End of initial load (20 items):
 
@@ -276,6 +295,7 @@ Mehr laden...
 ### Virtual Scroll Placeholder
 
 **FOR VERY LONG LISTS (>100 items):**
+
 ```
 ┌─────────────────────────────────────┐
 │ Visible item 1                      │
@@ -293,6 +313,7 @@ Mehr laden...
 ### Form Submit States
 
 **UPDATE ALL FORM BUTTONS:**
+
 ```
 Default:
 [Speichern]
@@ -304,6 +325,7 @@ Loading:
 ### Search Loading
 
 **FOR SEARCH INPUTS:**
+
 ```
 ┌─────────────────────────────────┐
 │ 🔍 Suche...              [⟳]    │ ← Spinner in input
@@ -324,6 +346,7 @@ Results loading:
 ### Bottom Navigation Touch Targets
 
 **UPDATE TAB BAR:**
+
 ```
 Before (44px):
 ┌─────┬─────┬─────┬─────┐
@@ -342,6 +365,7 @@ After (56px + safe area):
 ### Swipe Action Targets
 
 **FOR LIST ITEMS:**
+
 ```
 ┌─────────────────────────────────────┐
 │ Customer Name              │ Delete │ ← 64px
@@ -357,6 +381,7 @@ After (56px + safe area):
 ### Performance Metrics
 
 Target metrics:
+
 - First Contentful Paint: < 1.5s
 - Time to Interactive: < 3.5s
 - Largest Contentful Paint: < 2.5s
@@ -380,6 +405,7 @@ Target metrics:
 ## QUALITY CHECKLIST
 
 After applying this prompt, verify:
+
 - [ ] All lists have skeleton loaders
 - [ ] Pull-to-refresh works on all scrollable views
 - [ ] Offline banner appears when disconnected

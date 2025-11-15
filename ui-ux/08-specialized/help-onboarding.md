@@ -1,6 +1,7 @@
 # Help & Onboarding - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: First-time user onboarding and help system
 - **User Roles**: All (especially new users)
 - **Usage Context**: Guide new users, contextual help, feature discovery
@@ -13,6 +14,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 **First-Time Onboarding (Welcome Flow):**
 
 **Screen 1: Welcome**
+
 - Full-screen overlay (semi-transparent blue gradient)
 - Logo: KOMPASS logo (large, 200px)
 - Title: "Willkommen bei KOMPASS" (48px, bold, white)
@@ -21,6 +23,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 - Action: "Los geht's" (large button, white)
 
 **Screen 2: Role Introduction**
+
 - Title: "Ihre Rolle: Außendienst (ADM)" (32px)
 - Icon: Large role icon (green, 120px)
 - Description: "Als Außendienstmitarbeiter können Sie:"
@@ -31,6 +34,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 - Action: "Weiter" (blue button)
 
 **Screen 3: Key Features**
+
 - Title: "Wichtige Features für Sie"
 - 4 feature cards (2x2 grid):
   1. **Offline-First**
@@ -50,6 +54,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 **Interactive Product Tour:**
 
 **Tour Step 1: Dashboard**
+
 - Spotlight: Highlights dashboard area (rest dimmed)
 - Tooltip (floating card):
   - Title: "Ihr Dashboard" (20px, bold)
@@ -59,39 +64,46 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
   - Actions: "Weiter" (blue), "Tour beenden" (link)
 
 **Tour Step 2: Kunden-Liste**
+
 - Spotlight: Customer list
 - Tooltip: "Ihre Kunden werden hier angezeigt. Als ADM sehen Sie nur Ihre eigenen Kunden."
 - Interaction: Click customer to see detail (guided)
 - Progress: "2 von 7"
 
 **Tour Step 3: Aktivität hinzufügen**
+
 - Spotlight: FAB "+" button
 - Tooltip: "Mit diesem Button erfassen Sie schnell Aktivitäten - auch per Sprache!"
 - Demo: Button pulses (animation)
 - Progress: "3 von 7"
 
 **Tour Step 4: Map View**
+
 - Spotlight: Map/Route planner
 - Tooltip: "Planen Sie Ihre täglichen Kundenbesuche mit GPS-Navigation"
 - Progress: "4 von 7"
 
 **Tour Step 5: Offline Mode**
+
 - Spotlight: Sync status indicator
 - Tooltip: "Arbeiten Sie offline weiter - Ihre Daten werden automatisch synchronisiert"
 - Progress: "5 von 7"
 
 **Tour Step 6: Visitenkarten-Scan**
+
 - Spotlight: Camera icon in contact creation
 - Tooltip: "Scannen Sie Visitenkarten und erfassen Sie Kontakte automatisch"
 - Progress: "6 von 7"
 
 **Tour Step 7: Hilfe**
+
 - Spotlight: Help icon
 - Tooltip: "Brauchen Sie Hilfe? Klicken Sie hier für Tutorials und Support"
 - Progress: "7 von 7"
 - Action: "Tour abschließen" (green button)
 
 **Tour Complete:**
+
 - Confetti animation (celebration)
 - Title: "Tour abgeschlossen!" (32px, bold)
 - Icon: Checkmark (green, large)
@@ -106,6 +118,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 **Contextual Tooltips:**
 
 **Feature Discovery Tooltips:**
+
 - Triggered by: First use of a feature
 - Appearance: Small floating card with arrow
 - Example: First time clicking "Aktivität hinzufügen"
@@ -113,12 +126,14 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
   - Action: "Verstanden" (dismiss), "Mehr erfahren" (link)
 
 **Tooltip Styles:**
+
 - Info: Blue background, info icon
 - Tip: Green background, lightbulb icon
 - Warning: Amber background, alert icon
 - New Feature: Purple background, sparkles icon
 
 **Tooltip Positions:**
+
 - Top, bottom, left, right (auto-adjusts)
 - Arrow: Points to trigger element
 - Dismiss: Click outside or "X" button
@@ -128,6 +143,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 **Help Center (In-App):**
 
 **Help Button (Persistent):**
+
 - Location: Bottom-right corner (floating)
 - Icon: Question mark in circle (blue)
 - Badge: "?" (24px)
@@ -136,11 +152,13 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 **Help Panel (Slide-In from Right):**
 
 **Header:**
+
 - Title: "Hilfe-Center" (24px, bold)
 - Search: "Wie können wir helfen?"
 - Close: "X" (top-right)
 
 **Quick Links:**
+
 - "Erste Schritte" (rocket icon)
 - "Video-Tutorials" (play icon)
 - "Häufige Fragen (FAQ)" (book icon)
@@ -150,6 +168,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 **Sections:**
 
 **1. Erste Schritte**
+
 - List of getting started guides:
   - "Ersten Kunden anlegen"
   - "Aktivität erfassen"
@@ -158,6 +177,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 - Each: Click to open step-by-step guide
 
 **2. Video-Tutorials**
+
 - Grid of video thumbnails (3 columns)
 - Each video:
   - Thumbnail: Preview image with play icon overlay
@@ -167,6 +187,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 - Categories: "Kunden", "Aktivitäten", "Opportunities", "Offline"
 
 **3. FAQ**
+
 - Accordion list
 - Each question:
   - Question: "Wie funktioniert Offline-Modus?"
@@ -175,6 +196,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
   - Helpful: "War das hilfreich?" (thumbs up/down)
 
 **4. Tastaturkürzel**
+
 - Table: Shortcut keys
 - Example:
   - Strg + N: "Neuer Kunde"
@@ -183,6 +205,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
   - F1: "Hilfe öffnen"
 
 **5. Dokumentation**
+
 - Link: "Vollständige Dokumentation anzeigen" (opens external docs)
 
 ---
@@ -190,6 +213,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 **Role-Specific Guides:**
 
 **ADM Guide:**
+
 - "Ihr erster Tag im Außendienst"
 - Steps:
   1. Dashboard erkunden
@@ -199,6 +223,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
   5. Offline arbeiten
 
 **GF Guide:**
+
 - "Dashboard für Geschäftsführer"
 - Steps:
   1. KPIs überblicken
@@ -207,6 +232,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
   4. Benutzer verwalten
 
 **PLAN Guide:**
+
 - "Projektplanung meistern"
 - Steps:
   1. Projekt erstellen
@@ -219,6 +245,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 **Support Contact:**
 
 **Support Form:**
+
 - Subject: "Wie können wir helfen?"
 - Category: Dropdown "Technisches Problem", "Feature-Anfrage", "Frage"
 - Description: Textarea (required, min 20 chars)
@@ -227,6 +254,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 - Action: "Anfrage senden" (blue button)
 
 **Support Channels:**
+
 - E-Mail: "support@kompass.de" (mailto link)
 - Telefon: "+49-89-XXXXXXX"
 - Chat: "Live-Chat starten" (if available)
@@ -236,6 +264,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 **What's New (Feature Announcements):**
 
 **New Feature Banner:**
+
 - Location: Top of dashboard (dismissible)
 - Background: Purple gradient
 - Icon: Sparkles ✨
@@ -244,6 +273,7 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 - Dismiss: "X" button
 
 **Changelog (In Help Center):**
+
 - Section: "Was ist neu?"
 - List: Recent updates (last 3 months)
 - Each update:
@@ -256,23 +286,27 @@ Create help and onboarding interfaces for KOMPASS with interactive product tours
 ---
 
 **Mobile Help:**
+
 - Help button: Bottom-right FAB (smaller)
 - Help panel: Bottom sheet (swipeable)
 - Videos: Open in native player
 - Search: Voice search supported
 
 **Accessibility:**
+
 - ARIA labels: Describe all help elements
 - Keyboard: Tab through guides, Esc to close
 - Screen reader: Reads all instructions
 - High contrast: Clear visual cues
 
 **Gamification (Optional):**
+
 - Progress tracker: "5 von 10 Features entdeckt"
 - Badges: "Aktivitäts-Profi" (100 activities logged)
 - Achievements: "Visitenkarten-Experte" (50 cards scanned)
 
 ## Implementation Notes
+
 ```bash
 npx shadcn-ui@latest add dialog sheet accordion
 # Tour: Use react-joyride or intro.js
@@ -280,4 +314,3 @@ npx shadcn-ui@latest add dialog sheet accordion
 # Videos: Embed YouTube or Vimeo
 # Help content: Store in markdown files or CMS
 ```
-

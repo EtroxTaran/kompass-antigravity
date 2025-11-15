@@ -17,6 +17,7 @@ Create a form for **Contract Creation (Auftragsbestätigung-Erfassung)** in KOMP
 ## FORM STRUCTURE
 
 ### Header
+
 - Title: "Vertrag erstellen" (Create Contract) OR "Aus Angebot erstellen" (if converting from offer)
 - Subtitle: "Auftragsbestätigung für Kunde: [Customer Name]"
 - Status Badge: Show current status (Draft/Signed/InProgress/Completed)
@@ -213,12 +214,14 @@ Create a form for **Contract Creation (Auftragsbestätigung-Erfassung)** in KOMP
 ## GOBD COMPLIANCE INDICATORS
 
 ### Immutability Warning
+
 - **Position:** Top of form (if status >= Signed)
 - **Style:** Warning banner (yellow background)
 - **Icon:** Lock icon
 - **Text:** "🔒 Dieser Vertrag ist GoBD-konform finalisiert und kann nicht mehr bearbeitet werden. Änderungen erfordern GF-Freigabe und werden im Änderungsprotokoll dokumentiert."
 
 ### Change Log (if Signed)
+
 - **Position:** Bottom of form
 - **Title:** "Änderungsprotokoll (GoBD)"
 - **Content:** List of all changes after signing
@@ -238,7 +241,7 @@ Create a form for **Contract Creation (Auftragsbestätigung-Erfassung)** in KOMP
 ## ACCESSIBILITY
 
 - All fields have proper labels (ARIA-compliant)
-- Required fields marked with "*"
+- Required fields marked with "\*"
 - Help text below inputs (aria-describedby)
 - Error messages in red below fields
 - Keyboard navigation: Tab through fields
@@ -280,7 +283,8 @@ Create a form for **Contract Creation (Auftragsbestätigung-Erfassung)** in KOMP
 ## QUALITY CHECKLIST
 
 After implementing, verify:
-- [ ] All required fields marked with "*"
+
+- [ ] All required fields marked with "\*"
 - [ ] PDF upload required before "Signed" status
 - [ ] Currency formatting works (German format)
 - [ ] Date validation works (End > Start > Contract Date)
@@ -305,4 +309,3 @@ After implementing, verify:
 ---
 
 END OF PROMPT
-

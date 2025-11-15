@@ -34,6 +34,7 @@ docs/
 **Approach**: Keep markdown in repo, but minimize root to 2 files only.
 
 **Structure**:
+
 ```
 docs/
 ├── README.md                    # Only main index
@@ -42,6 +43,7 @@ docs/
 ```
 
 **Pros**:
+
 - ✅ No external dependencies
 - ✅ Version controlled with code
 - ✅ Works offline
@@ -50,6 +52,7 @@ docs/
 - ✅ Fast to implement
 
 **Cons**:
+
 - ⚠️ Limited navigation/search
 - ⚠️ Manual link management
 - ⚠️ No rich media embedding
@@ -69,6 +72,7 @@ docs/
 **Best for**: React projects, modern UI, excellent navigation
 
 **Pros**:
+
 - ✅ Excellent navigation and search
 - ✅ React-based (matches your frontend)
 - ✅ Versioning support
@@ -78,6 +82,7 @@ docs/
 - ✅ Mobile responsive
 
 **Cons**:
+
 - ⚠️ Requires Node.js build step
 - ⚠️ Learning curve for configuration
 
@@ -88,6 +93,7 @@ docs/
 **Best for**: Enterprise collaboration, rich features
 
 **Pros**:
+
 - ✅ Beautiful UI out of the box
 - ✅ Excellent search
 - ✅ Collaboration features
@@ -95,6 +101,7 @@ docs/
 - ✅ Can sync from GitHub
 
 **Cons**:
+
 - ⚠️ Paid for advanced features
 - ⚠️ External dependency
 - ⚠️ Can drift from codebase
@@ -106,12 +113,14 @@ docs/
 **Best for**: Fast, simple, Vue-based projects
 
 **Pros**:
+
 - ✅ Very fast
 - ✅ Simple configuration
 - ✅ Great search
 - ✅ Vue-based (if using Vue)
 
 **Cons**:
+
 - ⚠️ Less mature than Docusaurus
 - ⚠️ Vue-focused (you use React)
 
@@ -122,11 +131,13 @@ docs/
 **Best for**: Python projects, simple setup
 
 **Pros**:
+
 - ✅ Simple Python-based
 - ✅ Good themes
 - ✅ Easy to configure
 
 **Cons**:
+
 - ⚠️ Python dependency
 - ⚠️ Less modern than Docusaurus
 
@@ -139,16 +150,19 @@ docs/
 **Approach**: Markdown in repo for code-proximal docs + Wiki for broader guides
 
 **Structure**:
+
 - **In Repo (`docs/`)**: API specs, architecture, technical docs
 - **In Wiki (GitBook/Notion)**: User guides, onboarding, process docs
 
 **Pros**:
+
 - ✅ Best of both worlds
 - ✅ Code docs stay in sync
 - ✅ User docs easier to maintain
 - ✅ Non-technical contributors can edit wiki
 
 **Cons**:
+
 - ⚠️ Two places to maintain
 - ⚠️ Risk of duplication
 - ⚠️ Requires discipline
@@ -162,6 +176,7 @@ docs/
 **Action**: Minimize root to 2 files, move everything to subfolders
 
 **Result**:
+
 ```
 docs/
 ├── README.md                    # Only main index
@@ -186,6 +201,7 @@ docs/
 **Action**: Set up Docusaurus to generate beautiful documentation site
 
 **Why Docusaurus**:
+
 - ✅ React-based (matches your stack)
 - ✅ Excellent for monorepos
 - ✅ Great navigation/search
@@ -194,6 +210,7 @@ docs/
 - ✅ Can deploy to GitHub Pages
 
 **Structure**:
+
 ```
 docs/
 ├── README.md                    # Main index
@@ -237,6 +254,7 @@ mv docs/reviews docs/specifications
 ### Step 2: Update README.md (30 minutes)
 
 Update `docs/README.md` to:
+
 - Link to new file locations
 - Provide clear navigation
 - Remove outdated links
@@ -244,6 +262,7 @@ Update `docs/README.md` to:
 ### Step 3: Create Category README Files (1 hour)
 
 Create `README.md` in each category folder with:
+
 - Category overview
 - Document list
 - Quick links
@@ -312,12 +331,12 @@ website/                         # Docusaurus site
 
 ## Comparison Matrix
 
-| Solution | Setup Time | Maintenance | Navigation | Search | Cost | Best For |
-|----------|-----------|-------------|------------|--------|------|----------|
-| **Minimal Root** | 1-2h | Low | Manual | No | Free | Small projects |
-| **Docusaurus** | 4-6h | Low | Auto | Yes | Free | React projects |
-| **GitBook** | 1-2h | Medium | Auto | Yes | Paid | Enterprise |
-| **Hybrid** | 2-4h | Medium | Mixed | Mixed | Free/Paid | Large teams |
+| Solution         | Setup Time | Maintenance | Navigation | Search | Cost      | Best For       |
+| ---------------- | ---------- | ----------- | ---------- | ------ | --------- | -------------- |
+| **Minimal Root** | 1-2h       | Low         | Manual     | No     | Free      | Small projects |
+| **Docusaurus**   | 4-6h       | Low         | Auto       | Yes    | Free      | React projects |
+| **GitBook**      | 1-2h       | Medium      | Auto       | Yes    | Paid      | Enterprise     |
+| **Hybrid**       | 2-4h       | Medium      | Mixed      | Mixed  | Free/Paid | Large teams    |
 
 ---
 
@@ -326,6 +345,7 @@ website/                         # Docusaurus site
 ### Immediate (Today)
 
 ✅ **Option 1: Minimal Root**
+
 - Move all files to subfolders
 - Keep only README.md + CHANGELOG.md in root
 - Update all links
@@ -335,6 +355,7 @@ website/                         # Docusaurus site
 ### Future (Q2 2025)
 
 ✅ **Option 2: Docusaurus**
+
 - Set up Docusaurus documentation site
 - Generate beautiful site from markdown
 - Deploy to GitHub Pages
@@ -372,4 +393,3 @@ website/                         # Docusaurus site
 **Status**: ✅ Analysis complete  
 **Recommendation**: Clean root now, add Docusaurus later  
 **Next Step**: Execute immediate cleanup plan
-

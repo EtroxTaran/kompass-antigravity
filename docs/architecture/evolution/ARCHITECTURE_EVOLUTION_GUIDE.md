@@ -5,6 +5,7 @@
 **Purpose:** Practical migration path from MVP (Phase 1) to Full Vision (Phases 2-3)
 
 **Cross-References:**
+
 - `docs/product-vision/TECHNOLOGY_ROADMAP.md` – Timeline & Budget
 - `docs/architecture/system-architecture.md` – Complete Technical Specification
 - `docs/architecture/README.md` – Architecture Overview and Implementation Guidance
@@ -42,6 +43,7 @@ Search (MeiliSearch)                             Portal
 ### Step 1: OpenTelemetry Instrumentation (1-2 Tage)
 
 #### Backend (NestJS)
+
 ```typescript
 // apps/backend/src/main.ts
 import { NodeSDK } from '@opentelemetry/sdk-node';
@@ -66,6 +68,7 @@ sdk.start();
 ```
 
 #### Frontend (React)
+
 ```typescript
 // apps/frontend/src/instrumentation.ts
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
@@ -101,7 +104,7 @@ services:
   prometheus:
     image: prom/prometheus:latest
     ports:
-      - "9090:9090"
+      - '9090:9090'
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
@@ -109,22 +112,22 @@ services:
   loki:
     image: grafana/loki:latest
     ports:
-      - "3100:3100"
+      - '3100:3100'
     volumes:
       - loki-data:/loki
 
   tempo:
     image: grafana/tempo:latest
     ports:
-      - "3200:3200"  # Tempo HTTP
-      - "4318:4318"  # OTLP gRPC
+      - '3200:3200' # Tempo HTTP
+      - '4318:4318' # OTLP gRPC
     volumes:
       - tempo-data:/tmp/tempo
 
   grafana:
     image: grafana/grafana:latest
     ports:
-      - "3001:3000"
+      - '3001:3000'
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=secure_password_here
     volumes:
@@ -146,12 +149,14 @@ volumes:
 ### Step 3: Configure Dashboards & Alerts (2-3 Tage)
 
 **Grafana Dashboards:**
+
 - `NestJS API Performance` (P50/P95/P99 Response Times)
 - `CouchDB Health` (Replication Lag, Conflict Rate, Doc Count)
 - `React PWA Performance` (Largest Contentful Paint, First Input Delay)
 - `Offline Sync Stats` (Pending Changes, Sync Duration, Conflicts)
 
 **Alerting Rules:**
+
 ```yaml
 # alerting_rules.yml
 groups:
@@ -161,13 +166,13 @@ groups:
         expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1.5
         for: 5m
         annotations:
-          summary: "API P95 latency >1.5s"
+          summary: 'API P95 latency >1.5s'
 
       - alert: HighErrorRate
         expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.01
         for: 2m
         annotations:
-          summary: "Error rate >1%"
+          summary: 'Error rate >1%'
 ```
 
 ---
@@ -243,6 +248,7 @@ services:
 ```
 
 **n8n Workflows (Pre-configured):**
+
 1. `Whisper Transcription Workflow`: Audio Upload → Whisper API → GPT-4 Summary → CouchDB Update
 2. `Lead Scoring Workflow`: New Opportunity → Python ML Service → Score Update → CouchDB Update
 
@@ -254,14 +260,22 @@ services:
 
 ```typescript
 // apps/backend/src/websocket/websocket.gateway.ts
-import { WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket } from '@nestjs/websockets';
+import {
+  WebSocketGateway,
+  WebSocketServer,
+  SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
+} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || [
+      'http://localhost:3000',
+    ],
     credentials: true,
   },
   adapter: require('socket.io-redis'), // Redis Adapter for Horizontal Scaling
@@ -283,6 +297,7 @@ export class WebSocketGateway {
 ```
 
 **Redis Adapter for Horizontal Scaling:**
+
 ```typescript
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
@@ -383,6 +398,7 @@ if (FEATURE_FLAGS.AI_LEAD_SCORING) {
 ```
 
 **Rollout Strategy:**
+
 - **Week 1:** Feature Flags OFF für alle Nutzer (Deploy & Smoke-Test)
 - **Week 2:** Feature Flags ON für 3 Pilotnutzer (Außendienst)
 - **Week 3:** Feature Flags ON für 10 Nutzer (A/B-Test)
@@ -421,7 +437,7 @@ services:
   postgres:
     image: postgres:15
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_DB: kompass_analytics
       POSTGRES_USER: kompass
@@ -434,6 +450,7 @@ volumes:
 ```
 
 **Schema Migration:**
+
 ```sql
 -- PostgreSQL Read Store Schema
 CREATE TABLE opportunities (
@@ -468,7 +485,7 @@ export class CQRSReplicationService implements OnModuleInit {
   constructor(
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepo: Repository<OpportunityEntity>,
-    private readonly nano: Nano,
+    private readonly nano: Nano
   ) {}
 
   async onModuleInit() {
@@ -530,12 +547,12 @@ import { Repository } from 'typeorm';
 export class AnalyticsResolver {
   constructor(
     @InjectRepository(OpportunityEntity)
-    private readonly opportunityRepo: Repository<OpportunityEntity>,
+    private readonly opportunityRepo: Repository<OpportunityEntity>
   ) {}
 
   @Query(() => [OpportunitySummary])
   async opportunitiesByStatus(
-    @Args('status', { nullable: true }) status?: string,
+    @Args('status', { nullable: true }) status?: string
   ): Promise<OpportunitySummary[]> {
     const query = this.opportunityRepo
       .createQueryBuilder('o')
@@ -554,6 +571,7 @@ export class AnalyticsResolver {
 ```
 
 **Frontend Integration:**
+
 ```typescript
 // apps/frontend/src/hooks/useAnalytics.ts
 import { useQuery, gql } from '@apollo/client';
@@ -578,12 +596,14 @@ export function useOpportunitiesByStatus(status?: string) {
 ### Step 4: Custom Dashboard Builder (4 Wochen)
 
 **Widget Library:**
+
 - `UmsatzTrendChart` (React-Recharts Line Chart)
 - `PipelineFunnelChart` (Recharts Bar Chart)
 - `Top10DealsTable` (shadcn DataTable)
 - `TeamPerformanceCard` (shadcn Card)
 
 **Drag & Drop Editor:**
+
 ```typescript
 // apps/frontend/src/features/dashboards/DashboardEditor.tsx
 import GridLayout from 'react-grid-layout';
@@ -628,6 +648,7 @@ export function DashboardEditor() {
 ### Step 1: CRDT Library Evaluation (2 Wochen PoC)
 
 **Candidates:**
+
 - **Yjs:** Mature, CRDT + ProseMirror/Quill Integration, 9K GitHub Stars
 - **Automerge:** Pure JavaScript, Conflict-Free Merge, 12K GitHub Stars
 
@@ -641,7 +662,11 @@ import { WebsocketProvider } from 'y-websocket';
 const ydoc = new Y.Doc();
 const ybudget = ydoc.getMap('project-budget');
 
-const provider = new WebsocketProvider('ws://localhost:1234', 'project-123', ydoc);
+const provider = new WebsocketProvider(
+  'ws://localhost:1234',
+  'project-123',
+  ydoc
+);
 
 // User 1 editiert
 ybudget.set('totalBudget', 50000);
@@ -661,6 +686,7 @@ ybudget.set('usedBudget', 30000);
 **Challenge:** Yjs speichert CRDT-State in Binary Format → CouchDB speichert JSON Docs.
 
 **Solution:** Hybrid Approach:
+
 1. **Yjs State → Separate CouchDB Document:** `project-123-yjs-state` (Binary Blob in Attachment)
 2. **Final JSON → Regular CouchDB Document:** `project-123` (für Queries/Indexing)
 3. **Yjs Persistence Provider:** Custom Provider schreibt Yjs-Updates zu CouchDB
@@ -671,7 +697,10 @@ import * as Y from 'yjs';
 import Nano from 'nano';
 
 export class YjsCouchDBProvider {
-  constructor(private readonly docId: string, private readonly nano: Nano) {}
+  constructor(
+    private readonly docId: string,
+    private readonly nano: Nano
+  ) {}
 
   async persistState(ydoc: Y.Doc): Promise<void> {
     const state = Y.encodeStateAsUpdate(ydoc);
@@ -745,16 +774,19 @@ export function CollaborativeProjectEditor({ projectId }: { projectId: string })
 ## Rollback Strategy
 
 ### If Phase 2.1 AI Features Fail
+
 1. **Disable Feature Flags:** `FEATURE_AI_TRANSCRIPTION=false`, `FEATURE_AI_LEAD_SCORING=false`
 2. **MVP bleibt aktiv:** Keine Downtime, Nutzer arbeiten mit manueller Protokollierung weiter
 3. **BullMQ/n8n bleiben deployed:** Können für Phase 2.2 weiter genutzt werden
 
 ### If Phase 2.2 CQRS Fails
+
 1. **Disable GraphQL API:** Analytics-Endpoints returnen 503
 2. **Fallback to MapReduce Views:** CouchDB MapReduce bleibt parallel aktiv
 3. **PostgreSQL kann gelöscht werden:** Keine Auswirkung auf MVP
 
 ### If Phase 3 CRDTs Cause Conflicts
+
 1. **Disable Collaborative Editing:** Fallback zu Soft-Lock-Warning (Presence Indicators)
 2. **Yjs-State bleibt in CouchDB:** Kann später reaktiviert werden
 3. **Regular Editing bleibt aktiv:** Keine Downtime
@@ -763,31 +795,34 @@ export function CollaborativeProjectEditor({ projectId }: { projectId: string })
 
 ## Performance Benchmarks (Before vs. After)
 
-| Metric | MVP (Phase 1) | Phase 2.1 | Phase 2.2 | Phase 3 |
-|--------|--------------|-----------|-----------|---------|
-| **Protokoll-Zeit** | 20 Min | **2 Min** (-90%) | - | - |
-| **Dashboard-Load** | 10-30s (MapReduce) | - | **<2s** (CQRS) | - |
-| **Lead-Priorisierung** | Manuell (Bauchgefühl) | **ML-Score (87% Accuracy)** | - | **90% Accuracy** |
-| **Activity-Feed-Latenz** | Polling (5s) | **Real-Time (<500ms)** | - | - |
-| **CouchDB-Konflikte** | 10/Woche | - | - | **5/Woche** (CRDTs) |
+| Metric                   | MVP (Phase 1)         | Phase 2.1                   | Phase 2.2      | Phase 3             |
+| ------------------------ | --------------------- | --------------------------- | -------------- | ------------------- |
+| **Protokoll-Zeit**       | 20 Min                | **2 Min** (-90%)            | -              | -                   |
+| **Dashboard-Load**       | 10-30s (MapReduce)    | -                           | **<2s** (CQRS) | -                   |
+| **Lead-Priorisierung**   | Manuell (Bauchgefühl) | **ML-Score (87% Accuracy)** | -              | **90% Accuracy**    |
+| **Activity-Feed-Latenz** | Polling (5s)          | **Real-Time (<500ms)**      | -              | -                   |
+| **CouchDB-Konflikte**    | 10/Woche              | -                           | -              | **5/Woche** (CRDTs) |
 
 ---
 
 ## Testing Strategy for Each Phase
 
 ### Phase 2.1 Testing
+
 - **Unit Tests:** BullMQ Job Handlers, n8n Webhook Mock
 - **Integration Tests:** Socket.IO Connection/Disconnection, Message Broadcasting
 - **E2E Tests:** Audio Upload → Transcription → Protocol Auto-Fill (Playwright)
 - **Load Tests:** 1000 concurrent WebSocket connections
 
 ### Phase 2.2 Testing
+
 - **Unit Tests:** PostgreSQL Repository, CQRS Replication Logic
 - **Integration Tests:** CouchDB Changes Feed → PostgreSQL Upsert
 - **E2E Tests:** Dashboard Widget Drag & Drop, Custom Filter Application
 - **Performance Tests:** PostgreSQL Query <500ms (P95)
 
 ### Phase 3 Testing
+
 - **Unit Tests:** Yjs CRDT Merge Logic
 - **Integration Tests:** Yjs + CouchDB Persistence
 - **E2E Tests:** 2 Users edit Budget simultaneously → Conflict-Free Merge
@@ -798,6 +833,7 @@ export function CollaborativeProjectEditor({ projectId }: { projectId: string })
 ## Deployment Checklist for Each Phase
 
 ### Before Phase 2.1 Deployment
+
 - [ ] BullMQ/Redis deployed and healthy
 - [ ] n8n workflows imported and tested
 - [ ] Socket.IO Gateway smoke-tested (1 connection)
@@ -805,6 +841,7 @@ export function CollaborativeProjectEditor({ projectId }: { projectId: string })
 - [ ] Grafana Alerts configured for new services
 
 ### Before Phase 2.2 Deployment
+
 - [ ] PostgreSQL deployed and healthy
 - [ ] CQRS Replication Service deployed (but not started)
 - [ ] GraphQL Schema validated (no breaking changes)
@@ -812,6 +849,7 @@ export function CollaborativeProjectEditor({ projectId }: { projectId: string })
 - [ ] Dashboard Editor tested with 5 widgets
 
 ### Before Phase 3 Deployment
+
 - [ ] Yjs WebSocket Server deployed
 - [ ] Yjs CouchDB Provider tested (PoC)
 - [ ] Collaborative Editing tested with 2 users
@@ -823,14 +861,17 @@ export function CollaborativeProjectEditor({ projectId }: { projectId: string })
 ## Maintenance & Monitoring Post-Deployment
 
 ### Phase 2.1 Monitoring
+
 - **Grafana Dashboard:** "AI Features Health" (Transcription Success Rate, Lead Scoring Accuracy)
 - **Alerts:** "BullMQ Job Failure Rate >5%" → Slack
 
 ### Phase 2.2 Monitoring
+
 - **Grafana Dashboard:** "CQRS Replication Lag" (CouchDB → PostgreSQL Latenz)
 - **Alerts:** "PostgreSQL Query P95 >2s" → PagerDuty
 
 ### Phase 3 Monitoring
+
 - **Grafana Dashboard:** "CRDT Sync Health" (Yjs State Size, Merge Conflicts)
 - **Alerts:** "CRDT Conflict Resolution Failure" → Slack
 
@@ -849,7 +890,7 @@ export function CollaborativeProjectEditor({ projectId }: { projectId: string })
 **Sign-Off Required:** Tech Lead, DevOps, Product Owner
 
 **See Also:**
+
 - `docs/TECHNOLOGY_ROADMAP.md` – Timeline & Budget
 - `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md` – Technical Specs
 - `docs/reviews/NFR_SPECIFICATION.md` – Performance Targets
-

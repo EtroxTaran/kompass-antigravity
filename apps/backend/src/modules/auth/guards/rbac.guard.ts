@@ -1,26 +1,33 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import type { CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { User } from '@kompass/shared/types/entities/user';
-import { EntityType, Permission, hasAnyRolePermission } from '@kompass/shared/constants/rbac.constants';
+
+import type {
+  EntityType,
+  Permission,
+} from '@kompass/shared/constants/rbac.constants';
+import { hasAnyRolePermission } from '@kompass/shared/constants/rbac.constants';
+import type { User } from '@kompass/shared/types/entities/user';
+
 import { PERMISSION_KEY } from '../decorators/require-permission.decorator';
 
 /**
  * RBAC Guard
- * 
+ *
  * Enforces role-based access control using the hybrid RBAC architecture.
  * Checks if ANY of the user's roles have the required permission (OR logic).
- * 
+ *
  * TODO: Integrate with RoleService to fetch runtime permission matrix from CouchDB
  * TODO: Add caching layer for permission matrix lookups
  * TODO: Add permission check logging for audit trail
  * TODO: Add support for resource-level permission checks (ownership)
- * 
+ *
  * @see docs/specifications/reviews/RBAC_PERMISSION_MATRIX.md
  */
 @Injectable()
 export class RbacGuard implements CanActivate {
   constructor(
-    private reflector: Reflector,
+    private reflector: Reflector
     // TODO: Inject RoleService when available
     // private readonly roleService: RoleService,
   ) {}
@@ -75,4 +82,3 @@ export class RbacGuard implements CanActivate {
     return true;
   }
 }
-

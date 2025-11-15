@@ -8,6 +8,54 @@
     },
     {
       "pattern": "^http://127.0.0.1"
+    },
+    {
+      "pattern": "PROJECT_KOMPASS_PRE-MORTEM_ANALYSIS\\.md"
+    },
+    {
+      "pattern": "PRE_MORTEM_VALIDATION_CHECKLIST\\.md"
+    },
+    {
+      "pattern": "USER_JOURNEY_MAPS\\.md"
+    },
+    {
+      "pattern": "https://github\\.com/kompass/kompass"
+    },
+    {
+      "pattern": "https://staging\\.kompass\\.de"
+    },
+    {
+      "pattern": "https://www\\.(pwc|evarlinkstudios|vdi|developer\\.lexware)\\.(de|com)"
+    },
+    {
+      "pattern": "https://www\\.evarlinkstudios\\.com"
+    },
+    {
+      "pattern": "\\./diagrams/"
+    },
+    {
+      "pattern": "DOCUMENTATION_ROOT_CLEANUP_PLAN\\.md|CLEANUP_SCRIPT\\.md|ROOT_DIRECTORY_CLEANUP\\.md"
+    },
+    {
+      "pattern": "QUICK_START\\.md|SETUP_CHECKLIST\\.md|IMPLEMENTATION_COMPLETE\\.md"
+    },
+    {
+      "pattern": "Persona_(BUCH|PLAN|KALK|INN)\\.md"
+    },
+    {
+      "pattern": "GOBD_COMPLIANCE_STRATEGY\\.md"
+    },
+    {
+      "pattern": "material-catalog\\.md"
+    },
+    {
+      "pattern": "code-review-standards\\.mdc"
+    },
+    {
+      "pattern": "\\.\\./\\.\\./ui-ux/"
+    },
+    {
+      "pattern": "https://developer\\.lexware\\.de"
     }
   ],
   "replacementPatterns": [
@@ -30,4 +78,3 @@
   "fallbackRetryDelay": "30s",
   "aliveStatusCodes": [200, 206, 301, 302, 307, 308, 403, 429]
 }
-

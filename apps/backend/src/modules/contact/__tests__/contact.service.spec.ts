@@ -1,16 +1,26 @@
 /**
  * Contact Service Unit Tests
- * 
+ *
  * Tests business logic for Contact management
  * Focus on decision authority RBAC restrictions
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
-import { ContactService } from '../contact.service';
+import {
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
+
 import type { ContactPerson } from '@kompass/shared/types/entities/contact';
-import { DecisionMakingRole, FunctionalRole } from '@kompass/shared/types/enums';
-import { UpdateDecisionAuthorityDto } from '../dto/update-decision-authority.dto';
+import {
+  DecisionMakingRole,
+  FunctionalRole,
+} from '@kompass/shared/types/enums';
+
+import { ContactService } from '../contact.service';
+import type { UpdateDecisionAuthorityDto } from '../dto/update-decision-authority.dto';
 
 describe('ContactService', () => {
   let service: ContactService;
@@ -86,19 +96,24 @@ describe('ContactService', () => {
     it('should return decision authority for any role', async () => {
       repository.findById.mockResolvedValue(mockContact);
 
-      const result = await service.getDecisionAuthority('contact-111', mockADMUser);
+      const result = await service.getDecisionAuthority(
+        'contact-111',
+        mockADMUser
+      );
 
       expect(result.contactId).toBe('contact-111');
-      expect(result.decisionMakingRole).toBe(DecisionMakingRole.OPERATIONAL_CONTACT);
+      expect(result.decisionMakingRole).toBe(
+        DecisionMakingRole.OPERATIONAL_CONTACT
+      );
       expect(result.authorityLevel).toBe('low');
     });
 
     it('should throw NotFoundException if contact not found', async () => {
       repository.findById.mockResolvedValue(null);
 
-      await expect(service.getDecisionAuthority('contact-999', mockADMUser)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.getDecisionAuthority('contact-999', mockADMUser)
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -116,7 +131,7 @@ describe('ContactService', () => {
       repository.findById.mockResolvedValue(mockContact);
 
       await expect(
-        service.updateDecisionAuthority('contact-111', updateDto, mockADMUser),
+        service.updateDecisionAuthority('contact-111', updateDto, mockADMUser)
       ).rejects.toThrow(ForbiddenException);
 
       expect(repository.update).not.toHaveBeenCalled();
@@ -127,7 +142,7 @@ describe('ContactService', () => {
       const kalkUser = { id: 'user-kalk-001', role: 'KALK' as const };
 
       await expect(
-        service.updateDecisionAuthority('contact-111', updateDto, kalkUser),
+        service.updateDecisionAuthority('contact-111', updateDto, kalkUser)
       ).rejects.toThrow(ForbiddenException);
     });
 
@@ -135,7 +150,11 @@ describe('ContactService', () => {
       repository.findById.mockResolvedValue(mockContact);
       repository.update.mockResolvedValue({ ...mockContact, ...updateDto });
 
-      const result = await service.updateDecisionAuthority('contact-111', updateDto, mockPLANUser);
+      const result = await service.updateDecisionAuthority(
+        'contact-111',
+        updateDto,
+        mockPLANUser
+      );
 
       expect(result.decisionMakingRole).toBe(DecisionMakingRole.KEY_INFLUENCER);
       expect(result.authorityLevel).toBe('high');
@@ -147,7 +166,11 @@ describe('ContactService', () => {
       repository.findById.mockResolvedValue(mockContact);
       repository.update.mockResolvedValue({ ...mockContact, ...updateDto });
 
-      const result = await service.updateDecisionAuthority('contact-111', updateDto, mockGFUser);
+      const result = await service.updateDecisionAuthority(
+        'contact-111',
+        updateDto,
+        mockGFUser
+      );
 
       expect(result.decisionMakingRole).toBe(DecisionMakingRole.KEY_INFLUENCER);
       expect(repository.update).toHaveBeenCalled();
@@ -163,7 +186,7 @@ describe('ContactService', () => {
       };
 
       await expect(
-        service.updateDecisionAuthority('contact-111', invalidDto, mockPLANUser),
+        service.updateDecisionAuthority('contact-111', invalidDto, mockPLANUser)
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -171,7 +194,11 @@ describe('ContactService', () => {
       repository.findById.mockResolvedValue(mockContact);
       repository.update.mockResolvedValue({ ...mockContact, ...updateDto });
 
-      await service.updateDecisionAuthority('contact-111', updateDto, mockPLANUser);
+      await service.updateDecisionAuthority(
+        'contact-111',
+        updateDto,
+        mockPLANUser
+      );
 
       expect(auditService.log).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -179,7 +206,7 @@ describe('ContactService', () => {
           entityId: 'contact-111',
           action: 'UPDATE_DECISION_ROLE',
           userId: 'user-plan-001',
-        }),
+        })
       );
     });
   });
@@ -188,7 +215,8 @@ describe('ContactService', () => {
     it('should return warning if customer has no decision maker', async () => {
       repository.findByCustomer.mockResolvedValue([mockContact]);
 
-      const result = await service.validateCustomerHasDecisionMaker('customer-123');
+      const result =
+        await service.validateCustomerHasDecisionMaker('customer-123');
 
       expect(result.hasDecisionMaker).toBe(false);
       expect(result.warning).toBeDefined();
@@ -201,7 +229,8 @@ describe('ContactService', () => {
       };
       repository.findByCustomer.mockResolvedValue([decisionMakerContact]);
 
-      const result = await service.validateCustomerHasDecisionMaker('customer-123');
+      const result =
+        await service.validateCustomerHasDecisionMaker('customer-123');
 
       expect(result.hasDecisionMaker).toBe(true);
       expect(result.warning).toBeUndefined();
@@ -214,10 +243,10 @@ describe('ContactService', () => {
       };
       repository.findByCustomer.mockResolvedValue([influencerContact]);
 
-      const result = await service.validateCustomerHasDecisionMaker('customer-123');
+      const result =
+        await service.validateCustomerHasDecisionMaker('customer-123');
 
       expect(result.hasDecisionMaker).toBe(true);
     });
   });
 });
-

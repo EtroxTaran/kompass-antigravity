@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Query,
-  UseGuards,
   HttpCode,
   HttpStatus,
   Res,
@@ -17,10 +16,11 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { Response } from 'express';
+
 import { CalendarService } from './calendar.service';
-import { IcsGeneratorService } from './services/ics-generator.service';
-import { CalendarQueryDto } from './dto/calendar-query.dto';
 import { CalendarEventDto } from './dto/calendar-event.dto';
+import { CalendarQueryDto } from './dto/calendar-query.dto';
+import { IcsGeneratorService } from './services/ics-generator.service';
 // TODO: Import actual guards when available
 // import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 // import { RbacGuard } from '../auth/guards/rbac.guard';
@@ -34,44 +34,79 @@ import { CalendarEventDto } from './dto/calendar-event.dto';
 export class CalendarController {
   constructor(
     private readonly calendarService: CalendarService,
-    private readonly icsGenerator: IcsGeneratorService,
+    private readonly icsGenerator: IcsGeneratorService
   ) {}
 
   @Get('events')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Get calendar events',
-    description: 'Retrieves calendar events aggregated from tasks, projects, and opportunities'
+    description:
+      'Retrieves calendar events aggregated from tasks, projects, and opportunities',
   })
-  @ApiQuery({ name: 'startDate', type: String, required: true, description: 'Start date (ISO 8601)' })
-  @ApiQuery({ name: 'endDate', type: String, required: true, description: 'End date (ISO 8601)' })
-  @ApiQuery({ name: 'types', type: [String], required: false, description: 'Event types to include' })
-  @ApiQuery({ name: 'assignedTo', type: String, required: false, description: 'Filter by assigned user' })
-  @ApiQuery({ name: 'status', type: [String], required: false, description: 'Filter by status' })
-  @ApiQuery({ name: 'priority', type: [String], required: false, description: 'Filter by priority' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiQuery({
+    name: 'startDate',
+    type: String,
+    required: true,
+    description: 'Start date (ISO 8601)',
+  })
+  @ApiQuery({
+    name: 'endDate',
+    type: String,
+    required: true,
+    description: 'End date (ISO 8601)',
+  })
+  @ApiQuery({
+    name: 'types',
+    type: [String],
+    required: false,
+    description: 'Event types to include',
+  })
+  @ApiQuery({
+    name: 'assignedTo',
+    type: String,
+    required: false,
+    description: 'Filter by assigned user',
+  })
+  @ApiQuery({
+    name: 'status',
+    type: [String],
+    required: false,
+    description: 'Filter by status',
+  })
+  @ApiQuery({
+    name: 'priority',
+    type: [String],
+    required: false,
+    description: 'Filter by priority',
+  })
+  @ApiResponse({
+    status: 200,
     description: 'Calendar events retrieved successfully',
-    type: [CalendarEventDto]
+    type: [CalendarEventDto],
   })
-  @ApiResponse({ 
-    status: 400, 
-    description: 'Invalid date range or parameters'
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid date range or parameters',
   })
-  @ApiResponse({ 
-    status: 401, 
-    description: 'Unauthorized'
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
   })
   // @RequirePermission('Calendar', 'VIEW_ALL_EVENTS') // TODO: Uncomment when RBAC is implemented
   async getCalendarEvents(
-    @Query() query: CalendarQueryDto,
+    @Query() query: CalendarQueryDto
     // @CurrentUser() user: any, // TODO: Uncomment when auth is available
-  ): Promise<{ events: CalendarEventDto[], meta: any }> {
+  ): Promise<{ events: CalendarEventDto[]; meta: any }> {
     // TODO: Get user from CurrentUser decorator
     const userId = 'temp-user-id';
     const userRole = 'GF';
 
-    const events = await this.calendarService.getCalendarEvents(query, userId, userRole);
+    const events = await this.calendarService.getCalendarEvents(
+      query,
+      userId,
+      userRole
+    );
 
     const meta = {
       startDate: query.startDate,
@@ -85,24 +120,29 @@ export class CalendarController {
 
   @Get('my-events')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Get my calendar events',
-    description: 'Retrieves calendar events for the current authenticated user only'
+    description:
+      'Retrieves calendar events for the current authenticated user only',
   })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'User calendar events retrieved successfully',
-    type: [CalendarEventDto]
+    type: [CalendarEventDto],
   })
   // @RequirePermission('Calendar', 'VIEW_OWN_EVENTS')
   async getMyCalendarEvents(
-    @Query() query: CalendarQueryDto,
+    @Query() query: CalendarQueryDto
     // @CurrentUser() user: any,
-  ): Promise<{ events: CalendarEventDto[], meta: any }> {
+  ): Promise<{ events: CalendarEventDto[]; meta: any }> {
     const userId = 'temp-user-id';
     const userRole = 'ADM';
 
-    const events = await this.calendarService.getMyCalendarEvents(query, userId, userRole);
+    const events = await this.calendarService.getMyCalendarEvents(
+      query,
+      userId,
+      userRole
+    );
 
     const meta = {
       startDate: query.startDate,
@@ -116,21 +156,21 @@ export class CalendarController {
 
   @Get('team-events')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Get team calendar events',
-    description: 'Retrieves team-wide calendar events (GF/PLAN only)'
+    description: 'Retrieves team-wide calendar events (GF/PLAN only)',
   })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Team calendar events retrieved successfully',
   })
-  @ApiResponse({ 
-    status: 403, 
-    description: 'Forbidden - GF/PLAN role required'
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - GF/PLAN role required',
   })
   // @RequirePermission('Calendar', 'VIEW_ALL_EVENTS')
   async getTeamCalendarEvents(
-    @Query() query: CalendarQueryDto,
+    @Query() query: CalendarQueryDto
     // @CurrentUser() user: any,
   ): Promise<any> {
     const userId = 'temp-user-id';
@@ -142,12 +182,13 @@ export class CalendarController {
   @Get('export/ics')
   @HttpCode(HttpStatus.OK)
   @Header('Content-Type', 'text/calendar; charset=utf-8')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Export calendar to ICS',
-    description: 'Generates and downloads an ICS file for importing into Outlook, Google Calendar, etc.'
+    description:
+      'Generates and downloads an ICS file for importing into Outlook, Google Calendar, etc.',
   })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'ICS file generated successfully',
     content: {
       'text/calendar': {
@@ -158,24 +199,30 @@ export class CalendarController {
       },
     },
   })
-  @ApiResponse({ 
-    status: 400, 
-    description: 'Invalid date range or parameters'
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid date range or parameters',
   })
   // @RequirePermission('Calendar', 'EXPORT')
   async exportCalendarIcs(
     @Query() query: CalendarQueryDto,
-    @Res() res: Response,
+    @Res() res: Response
     // @CurrentUser() user: any,
   ): Promise<void> {
     const userId = 'temp-user-id';
     const userRole = 'GF';
 
     // Get calendar events
-    const events = await this.calendarService.getCalendarEvents(query, userId, userRole);
+    const events = await this.calendarService.getCalendarEvents(
+      query,
+      userId,
+      userRole
+    );
 
     if (events.length === 0) {
-      throw new BadRequestException('No events found in the selected date range');
+      throw new BadRequestException(
+        'No events found in the selected date range'
+      );
     }
 
     // Generate ICS file
@@ -194,15 +241,15 @@ export class CalendarController {
   /**
    * Helper method to count events by type
    */
-  private countEventsByType(events: CalendarEventDto[]): Record<string, number> {
+  private countEventsByType(
+    events: CalendarEventDto[]
+  ): Record<string, number> {
     const counts: Record<string, number> = {};
-    
-    events.forEach(event => {
+
+    events.forEach((event) => {
       counts[event.type] = (counts[event.type] || 0) + 1;
     });
 
     return counts;
   }
 }
-
-

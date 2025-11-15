@@ -1,0 +1,115 @@
+---
+description: MCP automation tool usage - Playwright for browser testing, Firecrawl for web scraping, and n8n for workflow automation
+globs: []
+alwaysApply: false
+---
+
+# MCP Automation Tools
+
+This rule covers automation tools: **Playwright**, **Firecrawl**, and **n8n**. Use these tools for browser automation, web scraping, and workflow automation.
+
+**See also:** `.cursor/rules/mcp-tool-usage.mdc` for prioritization hierarchy and decision tree.
+
+## Playwright
+
+**What it's used for:**
+Browser automation and control framework for simulating real user actions, inspecting dynamic web content, or extracting content that only appears after interaction.
+
+**When to use:**
+- Testing or interacting with web interfaces beyond static content
+- Simulating user workflows (login, form submission, navigation)
+- Extracting dynamic content that requires JavaScript execution
+- Debugging frontend issues by interacting with the browser
+- Testing responsive design across different viewports
+- Verifying UI components in actual browser environment
+
+**When NOT to use:**
+- Static web scraping (use Firecrawl instead)
+- Simple HTTP requests (use codebase API clients)
+- Documentation lookup (use Ref/Context7/Perplexity)
+- Code analysis (use Semgrep)
+
+**Prioritization:**
+Use Playwright when interaction is required. Prefer Firecrawl for static scraping without interaction.
+
+```typescript
+// ✅ CORRECT: Use Playwright for interactive testing
+// User asks: "Test the customer creation flow in the browser"
+// Use Playwright to navigate, fill forms, click buttons, verify results
+
+// ❌ WRONG: Using Playwright for static content scraping
+// Firecrawl is more efficient for non-interactive content
+```
+
+## Firecrawl
+
+**What it's used for:**
+Intelligent web crawler and scraper for extracting structured or unstructured data from web pages across multiple levels or pages.
+
+**When to use:**
+- Extracting structured or unstructured data from web pages
+- Following links, pagination, and deep scraping from dynamic websites
+- Building datasets or fetching large volumes of content from external sites
+- Scraping multiple pages or entire sites systematically
+- Extracting data from websites without requiring interaction
+
+**When NOT to use:**
+- Interactive testing (use Playwright instead)
+- Single-page static content (use simple HTTP requests)
+- Documentation lookup (use Ref/Context7)
+- Code-related tasks
+
+**Prioritization:**
+Prefer Firecrawl over Playwright when interaction isn't required. Firecrawl is more efficient for batch scraping operations.
+
+```typescript
+// ✅ CORRECT: Use Firecrawl for batch web scraping
+// User asks: "Extract all customer data from external API documentation"
+// Firecrawl crawls multiple pages and extracts structured data
+
+// ❌ WRONG: Using Playwright for static scraping
+// Playwright is slower and unnecessary when no interaction is needed
+```
+
+## n8n
+
+**What it's used for:**
+Workflow automation platform that connects to hundreds of services and APIs for building automation pipelines.
+
+**When to use:**
+- Building or understanding automation pipelines across APIs, databases, and apps
+- Parsing and generating workflows, webhooks, or background jobs
+- Visualizing and validating process flows for automation tasks
+- Integrating multiple services (Linear, GitHub, CouchDB, etc.)
+- Creating scheduled tasks or event-driven automations
+
+**When NOT to use:**
+- Simple API calls (use codebase API clients)
+- Code generation (use Cursor AI with codebase context)
+- Documentation lookup (use Ref/Context7)
+- Security analysis (use Semgrep)
+
+**Prioritization:**
+Use n8n when users mention workflows, automation, or multi-step processes involving external services.
+
+```typescript
+// ✅ CORRECT: Use n8n for workflow automation
+// User asks: "Create a workflow that syncs Linear issues to GitHub"
+// Use n8n to design workflow connecting Linear webhooks to GitHub API
+
+// ❌ WRONG: Writing custom workflow code when n8n integration exists
+// Use n8n for visual workflow design instead of custom code
+```
+
+## Automation Tool Comparison
+
+| Tool | Best For | When to Use |
+|------|----------|-------------|
+| **Playwright** | Interactive browser testing, dynamic content | User workflows, JavaScript-rendered content |
+| **Firecrawl** | Static web scraping, batch data extraction | Non-interactive scraping, multi-page extraction |
+| **n8n** | Workflow automation, service integration | Multi-step processes, scheduled tasks, webhooks |
+
+## References
+
+- Main MCP Tool Usage: `.cursor/rules/mcp-tool-usage.mdc`
+- Testing Strategy: `.cursor/rules/testing-strategy.mdc`

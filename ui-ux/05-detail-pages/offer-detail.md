@@ -17,6 +17,7 @@ Create a **detail page for Offer (Angebot)** in KOMPASS. This page displays all 
 ## PAGE LAYOUT
 
 ### Header Section
+
 - **Breadcrumb:** Kunden > [Customer Name] > Angebote > [Offer Number]
 - **Title:** Offer Number (e.g., "A-2025-00123")
 - **Status Badge:** Large badge showing current status
@@ -26,6 +27,7 @@ Create a **detail page for Offer (Angebot)** in KOMPASS. This page displays all 
   - Rejected (Abgelehnt): Red badge
 
 ### Quick Actions (Top Right)
+
 - **Edit** button (if status = Draft)
 - **Download PDF** button (if PDF exists)
 - **Send Offer** button (if status = Draft, has PDF)
@@ -42,18 +44,19 @@ Create a **detail page for Offer (Angebot)** in KOMPASS. This page displays all 
 
 **Card Title:** "Angebotsinformationen"
 
-| Field | Value |
-|-------|-------|
-| Angebotsnummer | A-2025-00123 |
-| Kunde | [Customer Name] (link to customer detail) |
-| Angebotsdatum | 28.01.2025 |
-| Gültig bis | 28.02.2025 (28 Tage verbleibend) |
-| Status | Badge: Versendet (blue) |
-| Erstellt am | 28.01.2025, 10:30 Uhr |
-| Erstellt von | Maria Schmidt (link to user) |
-| Zuletzt bearbeitet | 28.01.2025, 14:15 Uhr |
+| Field              | Value                                     |
+| ------------------ | ----------------------------------------- |
+| Angebotsnummer     | A-2025-00123                              |
+| Kunde              | [Customer Name] (link to customer detail) |
+| Angebotsdatum      | 28.01.2025                                |
+| Gültig bis         | 28.02.2025 (28 Tage verbleibend)          |
+| Status             | Badge: Versendet (blue)                   |
+| Erstellt am        | 28.01.2025, 10:30 Uhr                     |
+| Erstellt von       | Maria Schmidt (link to user)              |
+| Zuletzt bearbeitet | 28.01.2025, 14:15 Uhr                     |
 
 **Layout:**
+
 - 2-column grid on desktop
 - Single column on mobile
 - Labels bold, values regular weight
@@ -64,13 +67,14 @@ Create a **detail page for Offer (Angebot)** in KOMPASS. This page displays all 
 
 **Card Title:** "Finanzdaten"
 
-| Field | Value |
-|-------|-------|
+| Field                  | Value                         |
+| ---------------------- | ----------------------------- |
 | Angebotssumme (Gesamt) | **25.000,00 €** (large, bold) |
-| Nettobetrag | 21.008,40 € |
-| MwSt. (19%) | 3.991,60 € |
+| Nettobetrag            | 21.008,40 €                   |
+| MwSt. (19%)            | 3.991,60 €                    |
 
 **Layout:**
+
 - Total amount prominently displayed (28px font, bold)
 - Net and tax in smaller font (16px)
 - Currency formatting: German standard (1.234,56 €)
@@ -80,6 +84,7 @@ Create a **detail page for Offer (Angebot)** in KOMPASS. This page displays all 
 **Card Title:** "Angebotsdokument"
 
 **If PDF uploaded:**
+
 - **PDF Viewer:** Embedded PDF viewer (iframe or pdf.js)
   - Height: 600px
   - Controls: Zoom, page navigation, download
@@ -95,6 +100,7 @@ Create a **detail page for Offer (Angebot)** in KOMPASS. This page displays all 
   - "Löschen" button (text, red, Draft only)
 
 **If NO PDF:**
+
 - Message: "Kein Dokument hochgeladen"
 - **Action Button:** "PDF hochladen" (primary button)
 
@@ -115,6 +121,7 @@ Create a **detail page for Offer (Angebot)** in KOMPASS. This page displays all 
 - **Related Project:** Link to project (if exists)
 
 **Layout:**
+
 - Each link displayed as clickable card/badge
 - Icon + entity name + arrow right icon
 - Blue hover state
@@ -124,6 +131,7 @@ Create a **detail page for Offer (Angebot)** in KOMPASS. This page displays all 
 **Card Title:** "Aktivitätsprotokoll"
 
 **Timeline display:**
+
 - Created: "28.01.2025, 10:30 - Angebot erstellt von Maria Schmidt"
 - PDF uploaded: "28.01.2025, 10:35 - PDF hochgeladen (2,5 MB)"
 - Status changed: "28.01.2025, 14:15 - Status geändert: Draft → Sent von Maria Schmidt"
@@ -131,6 +139,7 @@ Create a **detail page for Offer (Angebot)** in KOMPASS. This page displays all 
 - Converted: "05.02.2025, 09:25 - In Vertrag umgewandelt (AB-2025-00045)"
 
 **Layout:**
+
 - Vertical timeline with dates on left
 - Icons for each action type
 - Chronological order (newest at top)
@@ -140,23 +149,27 @@ Create a **detail page for Offer (Angebot)** in KOMPASS. This page displays all 
 ## STATE-SPECIFIC UI
 
 ### Draft Status
+
 - Show: Edit, Send, Delete buttons
 - Hide: Accept, Reject, Convert buttons
 - Allow: PDF upload/replacement
 - Message: "Entwurf - Kann bearbeitet werden"
 
 ### Sent Status
+
 - Show: Accept, Reject buttons
 - Hide: Edit, Delete buttons
 - Allow: PDF viewing (no changes)
 - Message: "Versendet - Warten auf Kundenentscheidung"
 
 ### Accepted Status
+
 - Show: Convert to Contract button
 - Hide: All other action buttons
 - Message: "Angenommen - Kann in Vertrag umgewandelt werden"
 
 ### Rejected Status
+
 - Show: Nothing (read-only)
 - Message: "Abgelehnt - Archiviert"
 
@@ -230,6 +243,7 @@ Create a **detail page for Offer (Angebot)** in KOMPASS. This page displays all 
 ## QUALITY CHECKLIST
 
 After implementing, verify:
+
 - [ ] All status badges display correctly
 - [ ] PDF viewer works (or shows download link)
 - [ ] Status-specific buttons are shown/hidden correctly
@@ -251,4 +265,3 @@ After implementing, verify:
 ---
 
 END OF PROMPT
-

@@ -18,27 +18,38 @@ import {
   ApiQuery,
   ApiBody,
 } from '@nestjs/swagger';
-import { TimeEntryService } from '../services/time-entry.service';
+
+import type { TimeEntryResponseDto } from '@kompass/shared/types/entities/time-entry';
 import {
   CreateTimeEntryDto,
   UpdateTimeEntryDto,
-  TimeEntryResponseDto,
   TimeEntryStatus,
   LaborCostSummary,
 } from '@kompass/shared/types/entities/time-entry';
-import { TimeEntryFilters } from '../repositories/time-entry.repository.interface';
 
-// Placeholder decorators - replace with actual implementations
-const JwtAuthGuard = () => UseGuards();
-const RbacGuard = () => UseGuards();
-const RequirePermission = (entity: string, permission: string) => () => {};
-const CurrentUser = () => () => {};
+import type { TimeEntryFilters } from '../repositories/time-entry.repository.interface';
+import { TimeEntryService } from '../services/time-entry.service';
+
+// TODO: Import actual decorators and guards when auth module is fully implemented
+// import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+// import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
+// import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+// import { RbacGuard } from '../../auth/guards/rbac.guard';
+
+// Stub decorators and guards for now
+const JwtAuthGuard = class {};
+const RbacGuard = class {};
+const RequirePermission =
+  (_entity: string, _action: string) =>
+  (_target: any, _propertyKey: string, _descriptor: PropertyDescriptor) => {};
+const CurrentUser =
+  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
 
 /**
  * Time Entry Controller
- * 
+ *
  * Handles HTTP endpoints for time tracking functionality.
- * 
+ *
  * @see Phase 1.2 of Time Tracking Implementation Plan
  */
 @Controller('api/v1/time-entries')
@@ -54,17 +65,25 @@ export class TimeEntryController {
   @Post()
   @RequirePermission('TimeEntry', 'CREATE')
   @ApiOperation({ summary: 'Create time entry or start timer' })
-  @ApiBody({ type: CreateTimeEntryDto })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      description: 'CreateTimeEntryDto',
+    },
+  })
   @ApiResponse({
     status: 201,
     description: 'Time entry created',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   @ApiResponse({ status: 400, description: 'Validation error' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async create(
     @Body() dto: CreateTimeEntryDto,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<TimeEntryResponseDto> {
     return this.timeEntryService.create(dto, user.id);
   }
@@ -83,7 +102,10 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'List of time entries',
-    type: [TimeEntryResponseDto],
+    schema: {
+      type: 'array',
+      items: { type: 'object' },
+    },
   })
   async findAll(
     @Query('projectId') projectId?: string,
@@ -91,7 +113,7 @@ export class TimeEntryController {
     @Query('status') status?: TimeEntryStatus,
     @Query('startDate') startDate?: Date,
     @Query('endDate') endDate?: Date,
-    @CurrentUser() user?: any,
+    @CurrentUser() user?: any
   ): Promise<TimeEntryResponseDto[]> {
     const filters: TimeEntryFilters = {
       projectId,
@@ -113,12 +135,15 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Time entry found',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   @ApiResponse({ status: 404, description: 'Time entry not found' })
   async findOne(
     @Param('id') id: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<TimeEntryResponseDto> {
     return this.timeEntryService.findById(id, user.id);
   }
@@ -130,18 +155,26 @@ export class TimeEntryController {
   @RequirePermission('TimeEntry', 'UPDATE')
   @ApiOperation({ summary: 'Update time entry' })
   @ApiParam({ name: 'id', description: 'Time entry ID' })
-  @ApiBody({ type: UpdateTimeEntryDto })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      description: 'UpdateTimeEntryDto',
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'Time entry updated',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   @ApiResponse({ status: 404, description: 'Time entry not found' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateTimeEntryDto,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<TimeEntryResponseDto> {
     return this.timeEntryService.update(id, dto, user.id);
   }
@@ -156,7 +189,10 @@ export class TimeEntryController {
   @ApiResponse({ status: 204, description: 'Time entry deleted' })
   @ApiResponse({ status: 404, description: 'Time entry not found' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
-  async delete(@Param('id') id: string, @CurrentUser() user: any): Promise<void> {
+  async delete(
+    @Param('id') id: string,
+    @CurrentUser() user: any
+  ): Promise<void> {
     await this.timeEntryService.delete(id, user.id);
   }
 
@@ -170,12 +206,15 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Timer stopped',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   @ApiResponse({ status: 400, description: 'Timer not running' })
   async stopTimer(
     @Param('id') id: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<TimeEntryResponseDto> {
     return this.timeEntryService.stopTimer(id, user.id);
   }
@@ -190,11 +229,14 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Timer paused',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   async pauseTimer(
     @Param('id') id: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<TimeEntryResponseDto> {
     return this.timeEntryService.pauseTimer(id, user.id);
   }
@@ -205,15 +247,23 @@ export class TimeEntryController {
   @Post('resume')
   @RequirePermission('TimeEntry', 'CREATE')
   @ApiOperation({ summary: 'Resume timer (creates new entry)' })
-  @ApiBody({ type: CreateTimeEntryDto })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      description: 'CreateTimeEntryDto',
+    },
+  })
   @ApiResponse({
     status: 201,
     description: 'Timer resumed',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   async resumeTimer(
     @Body() dto: CreateTimeEntryDto,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<TimeEntryResponseDto> {
     return this.timeEntryService.create(dto, user.id);
   }
@@ -228,12 +278,15 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Time entry approved',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   @ApiResponse({ status: 400, description: 'Cannot approve this entry' })
   async approve(
     @Param('id') id: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<TimeEntryResponseDto> {
     return this.timeEntryService.approve(id, user.id);
   }
@@ -257,12 +310,15 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Time entry rejected',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   async reject(
     @Param('id') id: string,
     @Body('reason') reason: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<TimeEntryResponseDto> {
     return this.timeEntryService.reject(id, reason, user.id);
   }
@@ -298,7 +354,7 @@ export class TimeEntryController {
   })
   async bulkApprove(
     @Body('entryIds') entryIds: string[],
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<{ approvedCount: number }> {
     return this.timeEntryService.bulkApprove(entryIds, user.id);
   }
@@ -312,10 +368,15 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Active timer found',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   @ApiResponse({ status: 204, description: 'No active timer' })
-  async getActiveTimer(@CurrentUser() user: any): Promise<TimeEntryResponseDto | null> {
+  async getActiveTimer(
+    @CurrentUser() user: any
+  ): Promise<TimeEntryResponseDto | null> {
     return this.timeEntryService.getActiveTimer(user.id);
   }
 
@@ -330,12 +391,15 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'User timesheets',
-    type: [TimeEntryResponseDto],
+    schema: {
+      type: 'array',
+      items: { type: 'object' },
+    },
   })
   async getMyTimesheets(
     @Query('startDate') startDate?: Date,
     @Query('endDate') endDate?: Date,
-    @CurrentUser() user?: any,
+    @CurrentUser() user?: any
   ): Promise<TimeEntryResponseDto[]> {
     const filters: TimeEntryFilters = {
       userId: user.id,
@@ -358,14 +422,17 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Team timesheets',
-    type: [TimeEntryResponseDto],
+    schema: {
+      type: 'array',
+      items: { type: 'object' },
+    },
   })
   async getTeamTimesheets(
     @Query('projectId') projectId?: string,
     @Query('status') status?: TimeEntryStatus,
     @Query('startDate') startDate?: Date,
     @Query('endDate') endDate?: Date,
-    @CurrentUser() user?: any,
+    @CurrentUser() user?: any
   ): Promise<TimeEntryResponseDto[]> {
     // RBAC filters applied in service (PLAN/GF/BUCH can see all team entries)
     const filters: TimeEntryFilters = {
@@ -377,4 +444,3 @@ export class TimeEntryController {
     return this.timeEntryService.findAll(filters, user.id, user.role);
   }
 }
-

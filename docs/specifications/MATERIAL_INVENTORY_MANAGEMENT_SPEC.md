@@ -15,6 +15,7 @@
 The pre-mortem analysis identified the **complete absence of Material & Inventory Management** as a fatal gap alongside supplier management. The Ladenbau business revolves around procuring and installing physical goods—shelving, lighting, furniture, fixtures.
 
 **Without this module:**
+
 - KALK cannot accurately estimate project costs (missing material price database)
 - PLAN cannot track what materials are needed or ordered for projects
 - Real-time project cost tracking is impossible (material costs are 40-50% of project value)
@@ -22,6 +23,7 @@ The pre-mortem analysis identified the **complete absence of Material & Inventor
 - Budget overruns go undetected until too late
 
 **This module enables:**
+
 - Accurate cost estimation using live material pricing
 - Real-time project budget tracking (estimated vs. actual material costs)
 - Efficient procurement workflow (material requirements → purchase orders → delivery tracking)
@@ -36,65 +38,65 @@ The pre-mortem analysis identified the **complete absence of Material & Inventor
 
 ```typescript
 interface Material extends BaseEntity {
-  _id: string;                     // "material-{uuid}"
+  _id: string; // "material-{uuid}"
   _rev: string;
   type: 'material';
-  
+
   // Basic Information
-  materialCode: string;            // Required, unique, e.g., "MAT-LED-001"
-  materialName: string;            // Required, 5-200 chars
-  description: string;             // Required, 20-1000 chars
-  category: MaterialCategory;      // Required
-  subcategory?: string;            // Optional, free text
-  
+  materialCode: string; // Required, unique, e.g., "MAT-LED-001"
+  materialName: string; // Required, 5-200 chars
+  description: string; // Required, 20-1000 chars
+  category: MaterialCategory; // Required
+  subcategory?: string; // Optional, free text
+
   // Specifications
-  unit: UnitOfMeasure;             // Required: "Stück", "m²", "lfm", "kg", "Paket"
+  unit: UnitOfMeasure; // Required: "Stück", "m²", "lfm", "kg", "Paket"
   dimensions?: MaterialDimensions; // Optional
-  color?: string;                  // Optional
-  finish?: string;                 // Optional: "Matt", "Glänzend", "Gebürstet"
-  material?: string;               // Optional: "Holz", "Metall", "Glas", "Kunststoff"
-  weight?: number;                 // kg, optional
-  
+  color?: string; // Optional
+  finish?: string; // Optional: "Matt", "Glänzend", "Gebürstet"
+  material?: string; // Optional: "Holz", "Metall", "Glas", "Kunststoff"
+  weight?: number; // kg, optional
+
   // Catalog Information
-  manufacturerSKU?: string;        // Manufacturer's product code
+  manufacturerSKU?: string; // Manufacturer's product code
   manufacturerName?: string;
-  productLine?: string;            // e.g., "IKEA BESTÅ Serie"
-  eanCode?: string;                // Barcode (EAN-13)
-  
+  productLine?: string; // e.g., "IKEA BESTÅ Serie"
+  eanCode?: string; // Barcode (EAN-13)
+
   // Pricing (Multi-Supplier)
   supplierPrices: SupplierPrice[]; // Pricing from multiple suppliers
-  averagePrice: number;            // Calculated: average of active supplier prices
-  lowestPrice: number;             // Calculated: min of active supplier prices
-  lastPriceUpdate: Date;           // Last time any price was updated
-  
+  averagePrice: number; // Calculated: average of active supplier prices
+  lowestPrice: number; // Calculated: min of active supplier prices
+  lastPriceUpdate: Date; // Last time any price was updated
+
   // Inventory (Phase 2 - optional for Phase 1)
-  trackInventory: boolean;         // Whether to track stock levels
-  currentStock?: number;           // Current quantity in stock
-  minimumStock?: number;           // Reorder threshold
-  maximumStock?: number;           // Storage capacity limit
-  stockLocation?: string;          // Warehouse location
-  
+  trackInventory: boolean; // Whether to track stock levels
+  currentStock?: number; // Current quantity in stock
+  minimumStock?: number; // Reorder threshold
+  maximumStock?: number; // Storage capacity limit
+  stockLocation?: string; // Warehouse location
+
   // Usage Statistics
-  timesUsed: number;               // Count of project material requirements
-  lastUsedDate?: Date;             // Most recent project usage
+  timesUsed: number; // Count of project material requirements
+  lastUsedDate?: Date; // Most recent project usage
   averageQuantityPerProject: number; // Calculated
-  
+
   // Status
   status: 'Active' | 'Discontinued' | 'OutOfStock';
-  discontinuedReason?: string;     // Why discontinued
-  alternativeMaterialId?: string;  // Replacement material
-  
+  discontinuedReason?: string; // Why discontinued
+  alternativeMaterialId?: string; // Replacement material
+
   // Documents
-  datasheet?: Document;            // Technical specifications PDF
+  datasheet?: Document; // Technical specifications PDF
   installationGuide?: Document;
-  images?: Document[];             // Product photos (max 5)
-  
+  images?: Document[]; // Product photos (max 5)
+
   // Metadata
-  tags: string[];                  // Searchable tags
-  internalNotes?: string;          // Notes for internal team
-  
+  tags: string[]; // Searchable tags
+  internalNotes?: string; // Notes for internal team
+
   // Audit Trail
-  createdBy: string;               // Usually KALK or INN
+  createdBy: string; // Usually KALK or INN
   createdAt: Date;
   modifiedBy: string;
   modifiedAt: Date;
@@ -103,86 +105,86 @@ interface Material extends BaseEntity {
 
 enum MaterialCategory {
   // Shelving & Display
-  SHELVING = 'shelving',                   // Regale
-  DISPLAY_UNITS = 'display_units',         // Präsentationsvitrinen
-  COUNTERS = 'counters',                   // Theken
-  
+  SHELVING = 'shelving', // Regale
+  DISPLAY_UNITS = 'display_units', // Präsentationsvitrinen
+  COUNTERS = 'counters', // Theken
+
   // Furniture
-  SEATING = 'seating',                     // Sitzmöbel
-  TABLES = 'tables',                       // Tische
-  STORAGE = 'storage',                     // Lagermöbel
-  
+  SEATING = 'seating', // Sitzmöbel
+  TABLES = 'tables', // Tische
+  STORAGE = 'storage', // Lagermöbel
+
   // Lighting
-  CEILING_LIGHTS = 'ceiling_lights',       // Deckenleuchten
-  SPOT_LIGHTS = 'spot_lights',             // Strahler
-  LED_STRIPS = 'led_strips',               // LED-Bänder
-  SIGNAGE_LIGHTS = 'signage_lights',       // Leuchtschriften
-  
+  CEILING_LIGHTS = 'ceiling_lights', // Deckenleuchten
+  SPOT_LIGHTS = 'spot_lights', // Strahler
+  LED_STRIPS = 'led_strips', // LED-Bänder
+  SIGNAGE_LIGHTS = 'signage_lights', // Leuchtschriften
+
   // Fixtures & Fittings
-  DOOR_HANDLES = 'door_handles',           // Türgriffe
-  HOOKS_RAILS = 'hooks_rails',             // Haken & Leisten
-  SIGNAGE = 'signage',                     // Beschilderung
-  MIRRORS = 'mirrors',                     // Spiegel
-  
+  DOOR_HANDLES = 'door_handles', // Türgriffe
+  HOOKS_RAILS = 'hooks_rails', // Haken & Leisten
+  SIGNAGE = 'signage', // Beschilderung
+  MIRRORS = 'mirrors', // Spiegel
+
   // Raw Materials
-  WOOD = 'wood',                           // Holzmaterialien
-  METAL = 'metal',                         // Metallmaterialien
-  GLASS = 'glass',                         // Glas
-  PLASTIC = 'plastic',                     // Kunststoff
-  
+  WOOD = 'wood', // Holzmaterialien
+  METAL = 'metal', // Metallmaterialien
+  GLASS = 'glass', // Glas
+  PLASTIC = 'plastic', // Kunststoff
+
   // Electrical & Plumbing
   ELECTRICAL_COMPONENTS = 'electrical_components', // Elektrik
   PLUMBING_FIXTURES = 'plumbing_fixtures', // Sanitär
-  HVAC_COMPONENTS = 'hvac_components',     // Heizung/Klima
-  
+  HVAC_COMPONENTS = 'hvac_components', // Heizung/Klima
+
   // Flooring & Walls
-  FLOORING = 'flooring',                   // Bodenbeläge
-  WALL_PANELS = 'wall_panels',             // Wandverkleidungen
-  TILES = 'tiles',                         // Fliesen
-  
+  FLOORING = 'flooring', // Bodenbeläge
+  WALL_PANELS = 'wall_panels', // Wandverkleidungen
+  TILES = 'tiles', // Fliesen
+
   // Other
-  TOOLS = 'tools',                         // Werkzeuge
-  CONSUMABLES = 'consumables',             // Verbrauchsmaterialien
-  OTHER = 'other'
+  TOOLS = 'tools', // Werkzeuge
+  CONSUMABLES = 'consumables', // Verbrauchsmaterialien
+  OTHER = 'other',
 }
 
 enum UnitOfMeasure {
-  PIECE = 'piece',                         // Stück
-  SQUARE_METER = 'square_meter',           // m²
-  LINEAR_METER = 'linear_meter',           // lfm (laufende Meter)
-  CUBIC_METER = 'cubic_meter',             // m³
-  KILOGRAM = 'kilogram',                   // kg
-  LITER = 'liter',                         // l
-  PACKAGE = 'package',                     // Paket/Karton
-  SET = 'set',                             // Set
-  HOUR = 'hour'                            // Stunde (for labor-like materials)
+  PIECE = 'piece', // Stück
+  SQUARE_METER = 'square_meter', // m²
+  LINEAR_METER = 'linear_meter', // lfm (laufende Meter)
+  CUBIC_METER = 'cubic_meter', // m³
+  KILOGRAM = 'kilogram', // kg
+  LITER = 'liter', // l
+  PACKAGE = 'package', // Paket/Karton
+  SET = 'set', // Set
+  HOUR = 'hour', // Stunde (for labor-like materials)
 }
 
 interface MaterialDimensions {
-  length?: number;                 // cm
-  width?: number;                  // cm
-  height?: number;                 // cm
-  diameter?: number;               // cm
+  length?: number; // cm
+  width?: number; // cm
+  height?: number; // cm
+  diameter?: number; // cm
   unit: 'cm' | 'mm' | 'm';
 }
 
 interface SupplierPrice {
-  supplierId: string;              // Reference to Supplier
-  supplierName: string;            // Denormalized for quick display
-  unitPrice: number;               // € per unit
-  currency: 'EUR';                 // Future: support other currencies
-  minimumOrderQuantity: number;    // MOQ
-  bulkDiscounts?: BulkDiscount[];  // Optional volume discounts
-  leadTimeDays: number;            // Delivery time in days
-  lastUpdated: Date;               // When price was last updated
-  isPreferred: boolean;            // Preferred supplier for this material
-  notes?: string;                  // Price conditions, terms
+  supplierId: string; // Reference to Supplier
+  supplierName: string; // Denormalized for quick display
+  unitPrice: number; // € per unit
+  currency: 'EUR'; // Future: support other currencies
+  minimumOrderQuantity: number; // MOQ
+  bulkDiscounts?: BulkDiscount[]; // Optional volume discounts
+  leadTimeDays: number; // Delivery time in days
+  lastUpdated: Date; // When price was last updated
+  isPreferred: boolean; // Preferred supplier for this material
+  notes?: string; // Price conditions, terms
 }
 
 interface BulkDiscount {
-  quantityFrom: number;            // e.g., 10
-  discountPercentage: number;      // e.g., 5% off
-  unitPrice: number;               // Calculated: base price * (1 - discount%)
+  quantityFrom: number; // e.g., 10
+  discountPercentage: number; // e.g., 5% off
+  unitPrice: number; // Calculated: base price * (1 - discount%)
 }
 ```
 
@@ -190,47 +192,47 @@ interface BulkDiscount {
 
 ```typescript
 interface ProjectMaterialRequirement extends BaseEntity {
-  _id: string;                     // "project-material-{uuid}"
+  _id: string; // "project-material-{uuid}"
   _rev: string;
   type: 'project_material_requirement';
-  
+
   // Assignment
-  projectId: string;               // Required
-  materialId: string;              // Required
-  
+  projectId: string; // Required
+  materialId: string; // Required
+
   // Requirement Details
-  phase: ProjectPhase;             // When material is needed
-  workPackage?: string;            // Which work package uses this
-  description?: string;            // Usage notes
-  
+  phase: ProjectPhase; // When material is needed
+  workPackage?: string; // Which work package uses this
+  description?: string; // Usage notes
+
   // Quantity
-  estimatedQuantity: number;       // Required, from KALK estimate
-  actualQuantity?: number;         // Updated after procurement
-  unit: UnitOfMeasure;             // From Material
-  
+  estimatedQuantity: number; // Required, from KALK estimate
+  actualQuantity?: number; // Updated after procurement
+  unit: UnitOfMeasure; // From Material
+
   // Pricing
-  estimatedUnitPrice: number;      // From KALK estimate (from material.averagePrice)
-  actualUnitPrice?: number;        // Updated after purchase
-  estimatedTotalCost: number;      // estimatedQuantity * estimatedUnitPrice
-  actualTotalCost?: number;        // actualQuantity * actualUnitPrice
-  
+  estimatedUnitPrice: number; // From KALK estimate (from material.averagePrice)
+  actualUnitPrice?: number; // Updated after purchase
+  estimatedTotalCost: number; // estimatedQuantity * estimatedUnitPrice
+  actualTotalCost?: number; // actualQuantity * actualUnitPrice
+
   // Procurement
-  supplierId?: string;             // Which supplier provides this
-  purchaseOrderId?: string;        // Link to PO when ordered
+  supplierId?: string; // Which supplier provides this
+  purchaseOrderId?: string; // Link to PO when ordered
   orderedDate?: Date;
   expectedDeliveryDate?: Date;
   actualDeliveryDate?: Date;
   deliveryStatus: DeliveryStatus;
-  
+
   // Inventory (Phase 2)
-  allocatedFromStock?: boolean;    // True if taken from inventory vs. ordered
-  stockLocationId?: string;        // If from stock, which location
-  
+  allocatedFromStock?: boolean; // True if taken from inventory vs. ordered
+  stockLocationId?: string; // If from stock, which location
+
   // Status
   requirementStatus: RequirementStatus;
-  
+
   // Audit Trail
-  createdBy: string;               // KALK (estimate) or PLAN (requirement)
+  createdBy: string; // KALK (estimate) or PLAN (requirement)
   createdAt: Date;
   modifiedBy: string;
   modifiedAt: Date;
@@ -238,12 +240,12 @@ interface ProjectMaterialRequirement extends BaseEntity {
 }
 
 enum ProjectPhase {
-  PLANNING = 'planning',           // Pre-construction
-  PREPARATION = 'preparation',     // Site prep
-  CONSTRUCTION = 'construction',   // Main build
-  INSTALLATION = 'installation',   // Fixture installation
-  FINISHING = 'finishing',         // Final touches
-  HANDOVER = 'handover'            // Client delivery
+  PLANNING = 'planning', // Pre-construction
+  PREPARATION = 'preparation', // Site prep
+  CONSTRUCTION = 'construction', // Main build
+  INSTALLATION = 'installation', // Fixture installation
+  FINISHING = 'finishing', // Final touches
+  HANDOVER = 'handover', // Client delivery
 }
 
 enum DeliveryStatus {
@@ -252,16 +254,16 @@ enum DeliveryStatus {
   IN_TRANSIT = 'in_transit',
   DELIVERED = 'delivered',
   DELAYED = 'delayed',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 enum RequirementStatus {
-  ESTIMATED = 'estimated',         // From KALK estimate
-  CONFIRMED = 'confirmed',         // PLAN confirmed need
-  ORDERED = 'ordered',             // PO placed
-  DELIVERED = 'delivered',         // Received on-site
-  INSTALLED = 'installed',         // Used in project
-  RETURNED = 'returned'            // Excess returned to supplier
+  ESTIMATED = 'estimated', // From KALK estimate
+  CONFIRMED = 'confirmed', // PLAN confirmed need
+  ORDERED = 'ordered', // PO placed
+  DELIVERED = 'delivered', // Received on-site
+  INSTALLED = 'installed', // Used in project
+  RETURNED = 'returned', // Excess returned to supplier
 }
 ```
 
@@ -269,60 +271,60 @@ enum RequirementStatus {
 
 ```typescript
 interface PurchaseOrder extends BaseEntity {
-  _id: string;                     // "purchase-order-{uuid}"
+  _id: string; // "purchase-order-{uuid}"
   _rev: string;
   type: 'purchase_order';
-  
+
   // PO Basics
-  poNumber: string;                // Required, unique, "PO-2025-00234"
-  projectId: string;               // Required
-  supplierId: string;              // Required
-  
+  poNumber: string; // Required, unique, "PO-2025-00234"
+  projectId: string; // Required
+  supplierId: string; // Required
+
   // Requester
-  requestedBy: string;             // User ID (PLAN or INN)
+  requestedBy: string; // User ID (PLAN or INN)
   requestedDate: Date;
-  requiredByDate: Date;            // When materials needed on-site
-  
+  requiredByDate: Date; // When materials needed on-site
+
   // Line Items
   lineItems: PurchaseOrderLineItem[]; // Required, min 1
-  
+
   // Financial
-  subtotal: number;                // Calculated from line items
-  taxRate: number;                 // Usually 19%
-  taxAmount: number;               // Calculated
-  shippingCost?: number;           // Optional
-  totalAmount: number;             // subtotal + tax + shipping
-  
+  subtotal: number; // Calculated from line items
+  taxRate: number; // Usually 19%
+  taxAmount: number; // Calculated
+  shippingCost?: number; // Optional
+  totalAmount: number; // subtotal + tax + shipping
+
   // Approval (based on amount)
-  approvalRequired: boolean;       // True if >€10k
-  approvedBy?: string;             // BUCH or GF
+  approvalRequired: boolean; // True if >€10k
+  approvedBy?: string; // BUCH or GF
   approvedAt?: Date;
   rejectionReason?: string;
-  
+
   // Order Execution
-  orderDate?: Date;                // When sent to supplier
+  orderDate?: Date; // When sent to supplier
   orderMethod: 'Email' | 'Phone' | 'Portal' | 'Fax';
   orderConfirmationNumber?: string; // Supplier's confirmation ref
-  
+
   // Delivery
-  expectedDeliveryDate?: Date;     // From supplier
+  expectedDeliveryDate?: Date; // From supplier
   actualDeliveryDate?: Date;
-  deliveryAddress: Address;        // Project site or warehouse
+  deliveryAddress: Address; // Project site or warehouse
   deliveryNotes?: string;
   partialDeliveriesAllowed: boolean;
-  
+
   // Status
   poStatus: POStatus;
-  
+
   // Documents
-  poDocument?: Document;           // Generated PO PDF
+  poDocument?: Document; // Generated PO PDF
   supplierConfirmation?: Document; // Supplier order confirmation
-  deliveryNote?: Document;         // Lieferschein
-  
+  deliveryNote?: Document; // Lieferschein
+
   // Payment
   invoiceReceived: boolean;
-  supplierInvoiceId?: string;      // Link to SupplierInvoice entity
-  
+  supplierInvoiceId?: string; // Link to SupplierInvoice entity
+
   // Audit Trail
   createdBy: string;
   createdAt: Date;
@@ -333,29 +335,29 @@ interface PurchaseOrder extends BaseEntity {
 
 enum POStatus {
   DRAFT = 'draft',
-  PENDING_APPROVAL = 'pending_approval',  // >€10k
+  PENDING_APPROVAL = 'pending_approval', // >€10k
   APPROVED = 'approved',
   SENT_TO_SUPPLIER = 'sent_to_supplier',
   CONFIRMED_BY_SUPPLIER = 'confirmed_by_supplier',
   PARTIALLY_DELIVERED = 'partially_delivered',
   DELIVERED = 'delivered',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 interface PurchaseOrderLineItem {
-  materialId: string;              // Link to Material
-  materialName: string;            // Denormalized
-  materialCode: string;            // Denormalized
-  description: string;             // From material or custom
-  
+  materialId: string; // Link to Material
+  materialName: string; // Denormalized
+  materialCode: string; // Denormalized
+  description: string; // From material or custom
+
   quantity: number;
   unit: UnitOfMeasure;
-  unitPrice: number;               // € per unit (from supplier quote or material price)
-  netAmount: number;               // quantity * unitPrice
-  taxRate: number;                 // Usually 19%
-  
-  projectMaterialReqId?: string;   // Link back to ProjectMaterialRequirement
-  
+  unitPrice: number; // € per unit (from supplier quote or material price)
+  netAmount: number; // quantity * unitPrice
+  taxRate: number; // Usually 19%
+
+  projectMaterialReqId?: string; // Link back to ProjectMaterialRequirement
+
   // Delivery tracking per line item
   deliveredQuantity?: number;
   deliveryDate?: Date;
@@ -367,46 +369,46 @@ interface PurchaseOrderLineItem {
 
 ```typescript
 interface InventoryMovement extends BaseEntity {
-  _id: string;                     // "inventory-movement-{uuid}"
+  _id: string; // "inventory-movement-{uuid}"
   _rev: string;
   type: 'inventory_movement';
-  
-  materialId: string;              // Required
-  movementType: MovementType;      // Required
-  quantity: number;                // Required (positive = in, negative = out)
+
+  materialId: string; // Required
+  movementType: MovementType; // Required
+  quantity: number; // Required (positive = in, negative = out)
   unit: UnitOfMeasure;
-  
+
   // Context
-  projectId?: string;              // If allocated to project
-  purchaseOrderId?: string;        // If from PO receipt
-  supplierId?: string;             // If incoming from supplier
-  
+  projectId?: string; // If allocated to project
+  purchaseOrderId?: string; // If from PO receipt
+  supplierId?: string; // If incoming from supplier
+
   // Tracking
-  movementDate: Date;              // Required
-  locationFrom?: string;           // Warehouse location
-  locationTo?: string;             // Project site or different warehouse
-  
+  movementDate: Date; // Required
+  locationFrom?: string; // Warehouse location
+  locationTo?: string; // Project site or different warehouse
+
   // Financial
-  unitCost?: number;               // € for valuation
-  totalCost?: number;              // quantity * unitCost
-  
+  unitCost?: number; // € for valuation
+  totalCost?: number; // quantity * unitCost
+
   // Details
-  reason: string;                  // Required, e.g., "Lieferung PO-2025-234"
+  reason: string; // Required, e.g., "Lieferung PO-2025-234"
   notes?: string;
-  documentReference?: string;      // Delivery note, usage report
-  
+  documentReference?: string; // Delivery note, usage report
+
   // Audit Trail
-  recordedBy: string;              // User who recorded movement
+  recordedBy: string; // User who recorded movement
   recordedAt: Date;
 }
 
 enum MovementType {
-  PURCHASE_RECEIPT = 'purchase_receipt',   // Incoming from supplier
+  PURCHASE_RECEIPT = 'purchase_receipt', // Incoming from supplier
   PROJECT_ALLOCATION = 'project_allocation', // Allocated to project
   RETURN_TO_SUPPLIER = 'return_to_supplier', // Returned
   INVENTORY_ADJUSTMENT = 'inventory_adjustment', // Correction
-  WRITE_OFF = 'write_off',                 // Damaged/lost
-  TRANSFER = 'transfer'                    // Between locations
+  WRITE_OFF = 'write_off', // Damaged/lost
+  TRANSFER = 'transfer', // Between locations
 }
 ```
 
@@ -416,40 +418,45 @@ enum MovementType {
 
 ### Permission Matrix
 
-| Role | Material (CRUD) | PurchaseOrder (Create/Approve) | Inventory (Manage) | Price (Update) |
-|------|----------------|--------------------------------|---------------------|----------------|
-| **INN** | Full CRUD | Create, View | Full management (Phase 2) | Update prices |
-| **PLAN** | Read, Create requirements | Create (≤€10k) | View | View |
-| **KALK** | Read, Create catalog | View | View | Update prices |
-| **BUCH** | Read | Approve (>€10k) | View | View |
-| **ADM** | Read (limited) | - | - | - |
-| **GF** | Full CRUD | Approve (>€10k) | View all | View |
+| Role     | Material (CRUD)           | PurchaseOrder (Create/Approve) | Inventory (Manage)        | Price (Update) |
+| -------- | ------------------------- | ------------------------------ | ------------------------- | -------------- |
+| **INN**  | Full CRUD                 | Create, View                   | Full management (Phase 2) | Update prices  |
+| **PLAN** | Read, Create requirements | Create (≤€10k)                 | View                      | View           |
+| **KALK** | Read, Create catalog      | View                           | View                      | Update prices  |
+| **BUCH** | Read                      | Approve (>€10k)                | View                      | View           |
+| **ADM**  | Read (limited)            | -                              | -                         | -              |
+| **GF**   | Full CRUD                 | Approve (>€10k)                | View all                  | View           |
 
 ### Business Rules
 
 **MAT-001:** Material catalog is shared resource
+
 - Any authenticated user can read materials
 - KALK and INN can add new materials
 - Only INN/GF can discontinue materials
 
 **MAT-002:** Purchase Order approval workflow
+
 - POs ≤€1k: Auto-approved
 - POs €1k-€10k: Require BUCH approval
 - POs >€10k: Require GF approval
 - POs >€50k: Require GF + BUCH pre-approval
 
 **MAT-003:** Project material requirements
+
 - KALK creates initial requirements during estimate
 - PLAN confirms/adjusts requirements during planning
 - INN procures based on confirmed requirements
 - Actual quantities/costs update project budget real-time
 
 **MAT-004:** Price update frequency
+
 - INN or KALK update prices when quotes received
 - System flags materials with price updates >6 months old
 - Automatic price trend indicators (Phase 2: ↑↓→)
 
 **MAT-005:** Multi-supplier pricing
+
 - Materials can have prices from multiple suppliers
 - System shows: lowest, average, preferred supplier
 - KALK uses preferred supplier price for estimates
@@ -485,6 +492,7 @@ enum MovementType {
    - Available for project requirements
 
 **Edge Cases:**
+
 - **Duplicate detection (Phase 2):** System checks for similar materials by name
 - **Multiple suppliers:** KALK can add pricing from 2-3 suppliers for comparison
 - **Missing info:** KALK can save with minimal info, INN enriches later
@@ -523,6 +531,7 @@ enum MovementType {
    - INN creates purchase orders (next workflow)
 
 **Edge Cases:**
+
 - **Material not in catalog:** KALK creates on-the-fly during estimate
 - **Quantity changes:** PLAN updates, system recalculates project budget
 - **Material substitution:** PLAN selects alternative material, system tracks variance
@@ -580,6 +589,7 @@ enum MovementType {
    - Status: 'ConfirmedBySupplier'
 
 **Edge Cases:**
+
 - **Urgent PO:** INN can request expedited approval (GF notification)
 - **Price change:** If supplier quotes higher, INN revises PO, re-approval may be needed
 - **Supplier unavailable:** INN selects alternative supplier, revises PO
@@ -610,18 +620,19 @@ enum MovementType {
    - System: Updates deliveryStatus per material
 
 4. **Project Cost Update (Real-Time)**
-   - System: Calculates actual material cost from delivered quantities * actual unit prices
+   - System: Calculates actual material cost from delivered quantities \* actual unit prices
    - System: Updates Project.actualMaterialCosts
    - System: Updates Project.actualCost = labor + materials + suppliers
    - System: Recalculates Project.currentMargin
    - System: Updates Project.budgetStatus (OnTrack / Warning / Exceeded)
 
 5. **Budget Alert (if applicable)**
-   - If actualCost > budget * 0.90: Notify PLAN, BUCH (Warning)
+   - If actualCost > budget \* 0.90: Notify PLAN, BUCH (Warning)
    - If actualCost > budget: Notify PLAN, BUCH, GF (Exceeded)
    - Alert shows: Project, budget %, variance amount
 
 **Edge Cases:**
+
 - **Damaged goods:** INN marks items damaged, initiates return/replacement
 - **Wrong item:** INN disputes delivery, contacts supplier
 - **Quantity mismatch:** INN adjusts, may trigger additional PO
@@ -667,6 +678,7 @@ enum MovementType {
    - System: Records which supplier selected for procurement
 
 **Edge Cases:**
+
 - **Price outdated:** System flags prices >6 months old (amber warning)
 - **Supplier no longer stocks:** INN marks price inactive, contact supplier
 - **Bulk discount threshold:** System shows savings if ordering larger quantity
@@ -696,11 +708,12 @@ enum MovementType {
    - INN creates PO to restock
 
 4. **Stock Valuation**
-   - System: Calculates total inventory value (sum of currentStock * averagePrice)
+   - System: Calculates total inventory value (sum of currentStock \* averagePrice)
    - Shown on INN dashboard
    - Monthly inventory report for BUCH
 
 **Edge Cases:**
+
 - **Stock discrepancy:** INN performs physical count, adjusts with InventoryMovement (type = Adjustment)
 - **Damaged stock:** INN writes off with InventoryMovement (type = WriteOff)
 - **Return to supplier:** INN records return, credits project
@@ -899,7 +912,7 @@ GET    /api/v1/inventory/low-stock-alerts
 // Approval validation (MAT-002)
 - If totalAmount > 10000 AND approvedBy == null:
   - Error: "POs über €10k erfordern GF-Freigabe"
-  
+
 - If totalAmount > 50000 AND (!gfApproved OR !buchReviewed):
   - Error: "POs über €50k erfordern GF + BUCH Freigabe"
 ```
@@ -916,46 +929,52 @@ async function updateProjectMaterialCosts(
   deliveredMaterial: PurchaseOrderLineItem
 ): Promise<void> {
   // When PO delivery is recorded, update project costs immediately
-  
+
   const project = await projectRepository.findById(projectId);
   const requirement = await materialReqRepository.findById(
     deliveredMaterial.projectMaterialReqId
   );
-  
+
   // Update requirement with actual quantities/costs
   requirement.actualQuantity = deliveredMaterial.deliveredQuantity;
   requirement.actualUnitPrice = deliveredMaterial.unitPrice;
-  requirement.actualTotalCost = requirement.actualQuantity * requirement.actualUnitPrice;
+  requirement.actualTotalCost =
+    requirement.actualQuantity * requirement.actualUnitPrice;
   requirement.requirementStatus = 'Delivered';
   await materialReqRepository.update(requirement);
-  
+
   // Recalculate project material costs (sum all actuals)
   const allRequirements = await materialReqRepository.findByProject(projectId);
   const actualMaterialCosts = allRequirements
-    .filter(r => r.actualTotalCost != null)
+    .filter((r) => r.actualTotalCost != null)
     .reduce((sum, r) => sum + r.actualTotalCost, 0);
-  
+
   // Update project
   project.actualMaterialCosts = actualMaterialCosts;
-  project.actualCost = project.actualLaborCosts + project.actualMaterialCosts + project.actualSupplierCosts;
-  project.currentMargin = ((project.contractValue - project.actualCost) / project.contractValue) * 100;
-  
+  project.actualCost =
+    project.actualLaborCosts +
+    project.actualMaterialCosts +
+    project.actualSupplierCosts;
+  project.currentMargin =
+    ((project.contractValue - project.actualCost) / project.contractValue) *
+    100;
+
   // Update budget status
   if (project.actualCost > project.budget) {
     project.budgetStatus = 'Exceeded';
-  } else if (project.actualCost > project.budget * 0.90) {
+  } else if (project.actualCost > project.budget * 0.9) {
     project.budgetStatus = 'Warning';
   }
-  
+
   await projectRepository.update(project);
-  
+
   // Trigger alerts if needed
   if (project.budgetStatus !== 'OnTrack') {
     await notificationService.send({
       recipients: [project.projectManager, 'BUCH'],
       type: 'BudgetAlert',
       message: `Projekt ${project.projectNumber}: Material-Budget bei ${percentage}%`,
-      link: `/projects/${project.id}/materials`
+      link: `/projects/${project.id}/materials`,
     });
   }
 }
@@ -970,20 +989,20 @@ interface MaterialCostVariance {
   materialName: string;
   estimatedQuantity: number;
   actualQuantity: number;
-  quantityVariance: number;        // actualQuantity - estimatedQuantity
+  quantityVariance: number; // actualQuantity - estimatedQuantity
   quantityVariancePercentage: number;
-  
+
   estimatedUnitPrice: number;
   actualUnitPrice: number;
-  priceVariance: number;           // actualUnitPrice - estimatedUnitPrice
+  priceVariance: number; // actualUnitPrice - estimatedUnitPrice
   priceVariancePercentage: number;
-  
+
   estimatedTotalCost: number;
   actualTotalCost: number;
-  totalVariance: number;           // actualTotalCost - estimatedTotalCost
+  totalVariance: number; // actualTotalCost - estimatedTotalCost
   totalVariancePercentage: number;
-  
-  varianceReason?: string;         // Why different (user-entered)
+
+  varianceReason?: string; // Why different (user-entered)
 }
 
 // Generate variance report for project
@@ -1027,6 +1046,7 @@ function calculateMaterialVariances(projectId: string): MaterialCostVariance[] {
 ## UI/UX Considerations
 
 See dedicated UI/UX documentation:
+
 - [Material Catalog Form](../../ui-ux/03-entity-forms/material-catalog-form.md)
 - [Purchase Order Form](../../ui-ux/03-entity-forms/purchase-order-form.md)
 - [Material Catalog List](../../ui-ux/04-list-views/material-catalog.md)
@@ -1070,6 +1090,7 @@ See dedicated UI/UX documentation:
 **Source:** Likely Excel spreadsheets, supplier catalogs, past estimates
 
 **Import Fields:**
+
 - Material name (required)
 - Category (map from free text to enum)
 - Unit of measure (standardize)
@@ -1077,6 +1098,7 @@ See dedicated UI/UX documentation:
 - Supplier associations (if traceable)
 
 **Data Cleaning:**
+
 - Deduplicate materials (fuzzy name matching)
 - Standardize units (m² vs. qm → square_meter)
 - Standardize categories
@@ -1091,6 +1113,7 @@ See dedicated UI/UX documentation:
 **Challenge:** Material catalog may grow to 1000+ items.
 
 **Solution:**
+
 - **Phase 1:** CouchDB Mango queries with indexes on: materialName, category, materialCode
 - **Phase 1 Enhancement:** RAG semantic search for material descriptions
 - **Phase 2:** MeiliSearch integration for instant autocomplete
@@ -1100,6 +1123,7 @@ See dedicated UI/UX documentation:
 **Challenge:** Delivery recording must update project costs instantly without delay.
 
 **Solution:**
+
 - Optimistic UI: Show updated costs immediately in frontend
 - Background sync: Queue cost recalculation, process within 1s
 - Notification: Alert PLAN/BUCH after recalculation complete
@@ -1112,14 +1136,13 @@ See dedicated UI/UX documentation:
 - [Pre-Mortem Analysis](../reviews/PROJECT_KOMPASS_PRE-MORTEM_ANALYSIS.md) - Risk identification (Danger #3)
 - [Supplier Management Specification](SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md) - Related module
 - [Financial Data Flow](FINANCIAL_DATA_FLOW.md) - Invoice integration
-- [PLAN Persona](../../docs/personas/Persona_PLAN.md) - User of material tracking
-- [KALK Persona](../../docs/personas/Persona_KALK.md) - User of material pricing
+- [PLAN Persona](../personas/Persona_PLAN.md) - User of material tracking
+- [KALK Persona](../personas/Persona_KALK.md) - User of material pricing
 
 ---
 
 ## Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-11-12 | Product Team | Initial specification addressing pre-mortem gap |
-
+| Version | Date       | Author       | Changes                                         |
+| ------- | ---------- | ------------ | ----------------------------------------------- |
+| 1.0     | 2025-11-12 | Product Team | Initial specification addressing pre-mortem gap |

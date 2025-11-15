@@ -1,6 +1,7 @@
 # Sync Progress Patterns - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Progress Feedback Component
 - **User Roles**: All users (offline-first PWA)
 - **Usage Context**: Show sync progress for offline changes, bulk operations
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Overall progress**: Primary progress indicator
 - **Item-level progress**: Individual operation status
 - **Error handling**: Clear error states with actions
 - **Success feedback**: Completion confirmation
 
 ### Progress Types
+
 - Determinate (known total)
 - Indeterminate (unknown duration)
 - Segmented (multi-step)
 - Queue-based (item by item)
 
 ### shadcn/ui Components
+
 - Progress, Alert, Card, Button
 - Custom queue visualization
 - Toast notifications
@@ -53,6 +57,7 @@ Create comprehensive sync progress components for KOMPASS that provide clear fee
 ```
 
 **Specifications:**
+
 - Modal: 500px × 400px (desktop), full screen (mobile)
 - Overall progress: 8px height, primary blue
 - Category progress: 4px height, gray background
@@ -232,20 +237,20 @@ interface SyncProgress {
 
 function calculateProgress(queue: SyncItem[]): SyncProgress {
   const total = queue.length;
-  const completed = queue.filter(i => i.status === 'completed').length;
-  const failed = queue.filter(i => i.status === 'failed').length;
-  const inProgress = queue.filter(i => i.status === 'syncing').length;
-  
+  const completed = queue.filter((i) => i.status === 'completed').length;
+  const failed = queue.filter((i) => i.status === 'failed').length;
+  const inProgress = queue.filter((i) => i.status === 'syncing').length;
+
   const progress = total > 0 ? (completed / total) * 100 : 0;
   const rate = completed / (Date.now() - startTime);
   const remaining = (total - completed) / rate;
-  
+
   return {
     total,
     completed,
     failed,
     inProgress,
-    estimatedTimeRemaining: remaining
+    estimatedTimeRemaining: remaining,
   };
 }
 ```
@@ -255,15 +260,15 @@ function calculateProgress(queue: SyncItem[]): SyncProgress {
 ```typescript
 function formatTimeRemaining(ms: number): string {
   if (ms < 60000) return 'Weniger als 1 Minute';
-  
+
   const minutes = Math.floor(ms / 60000);
   const seconds = Math.floor((ms % 60000) / 1000);
-  
+
   if (minutes > 60) {
     const hours = Math.floor(minutes / 60);
     return `Etwa ${hours} Std. ${minutes % 60} Min.`;
   }
-  
+
   return `Etwa ${minutes} Min. ${seconds} Sek.`;
 }
 ```
@@ -283,10 +288,10 @@ async function retrySyncItem(error: SyncError) {
   if (!error.canRetry || error.retryCount >= 3) {
     return { status: 'failed', requiresManual: true };
   }
-  
+
   const delay = Math.pow(2, error.retryCount) * 1000;
   await sleep(delay);
-  
+
   return syncItem(error.item);
 }
 ```
@@ -296,19 +301,19 @@ async function retrySyncItem(error: SyncError) {
 ### Progress Announcements
 
 ```html
-<div role="progressbar" 
-     aria-valuenow="67" 
-     aria-valuemin="0" 
-     aria-valuemax="100"
-     aria-label="Synchronisierung 67 Prozent abgeschlossen">
+<div
+  role="progressbar"
+  aria-valuenow="67"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  aria-label="Synchronisierung 67 Prozent abgeschlossen"
+>
   <div class="progress-bar" style="width: 67%"></div>
 </div>
 
 <!-- Live region for updates -->
 <div role="status" aria-live="polite" aria-atomic="true">
-  <span class="sr-only">
-    23 von 34 Einträgen synchronisiert
-  </span>
+  <span class="sr-only"> 23 von 34 Einträgen synchronisiert </span>
 </div>
 ```
 
@@ -335,6 +340,7 @@ async function retrySyncItem(error: SyncError) {
 ## Do's and Don'ts
 
 ### ✅ DO's
+
 - Show overall and item progress
 - Provide time estimates
 - Allow background sync
@@ -342,6 +348,7 @@ async function retrySyncItem(error: SyncError) {
 - Enable retry for failures
 
 ### ❌ DON'T's
+
 - Don't block UI during sync
 - Don't hide errors
 - Don't force modal sync
@@ -365,6 +372,7 @@ async function retrySyncItem(error: SyncError) {
 - Cancel sync on app background
 
 ## Analytics Events
+
 - sync_started (total_items, estimated_bytes)
 - sync_progress (percent, items_complete)
 - sync_completed (duration, success_rate)

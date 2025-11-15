@@ -1,25 +1,48 @@
-import { Controller, Get, Put, Delete, Param, Body, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RbacGuard } from '../auth/guards/rbac.guard';
-import { RequirePermission } from '../auth/decorators/require-permission.decorator';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { User } from '@kompass/shared/types/entities/user';
+import {
+  Controller,
+  Get,
+  Put,
+  Delete,
+  Param,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+} from '@nestjs/swagger';
+
 import { UserRole } from '@kompass/shared/constants/rbac.constants';
+import { User } from '@kompass/shared/types/entities/user';
+
+// TODO: Import CurrentUser and JwtAuthGuard when auth module is fully implemented
+// import { CurrentUser } from '../auth/decorators/current-user.decorator';
+// import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { RbacGuard } from '../auth/guards/rbac.guard';
+
+// Stub decorator and guard for now
+const CurrentUser =
+  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
+const JwtAuthGuard = class {};
+
 import { AssignRolesDto } from './dto/assign-roles.dto';
 import { UpdatePrimaryRoleDto } from './dto/update-primary-role.dto';
 
 /**
  * User Roles Management Controller
- * 
+ *
  * Handles user role assignment, primary role updates, and role revocation.
  * Only GF and ADMIN roles can manage user roles.
- * 
+ *
  * TODO: Implement user roles service
  * TODO: Add validation that primaryRole is in roles array
  * TODO: Add audit logging for role changes
  * TODO: Add notification system for role changes
- * 
+ *
  * @see docs/specifications/reviews/API_SPECIFICATION.md#user-role-management-endpoints
  */
 @Controller('api/v1/users/:userId/roles')
@@ -33,7 +56,7 @@ export class UserRolesController {
   /**
    * GET /api/v1/users/:userId/roles
    * Retrieve current roles for a user
-   * 
+   *
    * TODO: Implement role retrieval
    */
   @Get()
@@ -43,8 +66,8 @@ export class UserRolesController {
   @ApiResponse({ status: 200, description: 'User roles retrieved' })
   @ApiResponse({ status: 404, description: 'User not found' })
   async getUserRoles(
-    @Param('userId') userId: string,
-    @CurrentUser() user: User
+    @Param('userId') _userId: string,
+    @CurrentUser() _user: User
   ): Promise<{ roles: UserRole[]; primaryRole: UserRole }> {
     // TODO: Implement user roles retrieval
     // TODO: Verify requesting user has permission (GF/ADMIN or self)
@@ -54,7 +77,7 @@ export class UserRolesController {
   /**
    * PUT /api/v1/users/:userId/roles
    * Assign multiple roles to a user and set primary role
-   * 
+   *
    * TODO: Implement role assignment with validation
    * TODO: Verify primaryRole is in roles array
    * TODO: Add audit logging
@@ -68,9 +91,9 @@ export class UserRolesController {
   @ApiResponse({ status: 403, description: 'Forbidden - GF or ADMIN only' })
   @ApiResponse({ status: 404, description: 'User not found' })
   async assignRoles(
-    @Param('userId') userId: string,
-    @Body() dto: AssignRolesDto,
-    @CurrentUser() user: User
+    @Param('userId') _userId: string,
+    @Body() _dto: AssignRolesDto,
+    @CurrentUser() _user: User
   ): Promise<User> {
     // TODO: Verify requesting user is GF or ADMIN
     // TODO: Validate primaryRole is in roles array
@@ -83,7 +106,7 @@ export class UserRolesController {
   /**
    * DELETE /api/v1/users/:userId/roles/:roleId
    * Revoke a specific role from a user
-   * 
+   *
    * TODO: Implement role revocation
    * TODO: Prevent removing last role
    * TODO: Auto-update primaryRole if removed
@@ -94,13 +117,19 @@ export class UserRolesController {
   @ApiParam({ name: 'userId', description: 'User ID' })
   @ApiParam({ name: 'roleId', description: 'Role to revoke', enum: UserRole })
   @ApiResponse({ status: 200, description: 'Role revoked successfully' })
-  @ApiResponse({ status: 400, description: 'Cannot remove last role or primary role' })
+  @ApiResponse({
+    status: 400,
+    description: 'Cannot remove last role or primary role',
+  })
   @ApiResponse({ status: 403, description: 'Forbidden - GF or ADMIN only' })
-  @ApiResponse({ status: 404, description: 'User not found or role not assigned' })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found or role not assigned',
+  })
   async revokeRole(
-    @Param('userId') userId: string,
-    @Param('roleId') roleId: UserRole,
-    @CurrentUser() user: User
+    @Param('userId') _userId: string,
+    @Param('roleId') _roleId: UserRole,
+    @CurrentUser() _user: User
   ): Promise<User> {
     // TODO: Verify requesting user is GF or ADMIN
     // TODO: Verify user has the role to revoke
@@ -115,7 +144,7 @@ export class UserRolesController {
   /**
    * PUT /api/v1/users/:userId/primary-role
    * Update user's primary role
-   * 
+   *
    * TODO: Implement primary role update
    * TODO: Validate new primary role is in user.roles array
    */
@@ -124,13 +153,16 @@ export class UserRolesController {
   @ApiOperation({ summary: 'Update user primary role' })
   @ApiParam({ name: 'userId', description: 'User ID' })
   @ApiResponse({ status: 200, description: 'Primary role updated' })
-  @ApiResponse({ status: 400, description: 'Primary role not in assigned roles' })
+  @ApiResponse({
+    status: 400,
+    description: 'Primary role not in assigned roles',
+  })
   @ApiResponse({ status: 403, description: 'Forbidden - GF or ADMIN only' })
   @ApiResponse({ status: 404, description: 'User not found' })
   async updatePrimaryRole(
-    @Param('userId') userId: string,
-    @Body() dto: UpdatePrimaryRoleDto,
-    @CurrentUser() user: User
+    @Param('userId') _userId: string,
+    @Body() _dto: UpdatePrimaryRoleDto,
+    @CurrentUser() _user: User
   ): Promise<User> {
     // TODO: Verify requesting user is GF or ADMIN
     // TODO: Verify new primary role is in user.roles array
@@ -140,4 +172,3 @@ export class UserRolesController {
     throw new Error('Not implemented');
   }
 }
-

@@ -24,8 +24,8 @@ import type { BaseEntity } from '../base.entity';
 import { DecisionMakingRole } from '../enums';
 import type {
   FunctionalRole,
-  type AuthorityLevel,
-  type PreferredContactMethod,
+  AuthorityLevel,
+  PreferredContactMethod,
 } from '../enums';
 
 /**

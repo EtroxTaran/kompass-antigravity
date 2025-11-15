@@ -1,13 +1,14 @@
 /**
  * Meeting Repository
- * 
+ *
  * Data access layer for Meeting entities
  * Handles CouchDB operations for meetings
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
+import { ServerScope as Nano } from 'nano';
+
 import type { Meeting } from '@kompass/shared/types/entities/meeting';
-import type { Nano } from 'nano';
 
 /**
  * Meeting Repository Interface
@@ -17,7 +18,11 @@ export interface IMeetingRepository {
   findByCustomer(customerId: string): Promise<Meeting[]>;
   findByTour(tourId: string): Promise<Meeting[]>;
   findByUser(userId: string, filters?: MeetingFilters): Promise<Meeting[]>;
-  findByDateRange(startDate: Date, endDate: Date, userId?: string): Promise<Meeting[]>;
+  findByDateRange(
+    startDate: Date,
+    endDate: Date,
+    userId?: string
+  ): Promise<Meeting[]>;
   create(meeting: Omit<Meeting, '_rev'>): Promise<Meeting>;
   update(meeting: Meeting): Promise<Meeting>;
   delete(id: string): Promise<void>;
@@ -27,7 +32,6 @@ export interface IMeetingRepository {
  * Meeting Filters
  */
 export interface MeetingFilters {
-  status?: Meeting['status'];
   meetingType?: Meeting['meetingType'];
   customerId?: string;
   tourId?: string;
@@ -44,18 +48,29 @@ export class MeetingRepository implements IMeetingRepository {
 
   async findById(id: string): Promise<Meeting | null> {
     try {
-      const doc = await this.nano.use('kompass').get<Meeting>(id);
+      const doc = (await this.nano.use('kompass').get(id)) as Meeting;
       if (doc.type !== 'meeting') {
         return null;
       }
       return doc;
-    } catch (error: any) {
-      if (error.statusCode === 404) {
+    } catch (error: unknown) {
+      if (this.isCouchDBError(error) && error.statusCode === 404) {
         return null;
       }
       this.logger.error(`Error finding meeting ${id}:`, error);
       throw error;
     }
+  }
+
+  private isCouchDBError(
+    error: unknown
+  ): error is { statusCode: number; message?: string } {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'statusCode' in error &&
+      typeof (error as { statusCode: unknown }).statusCode === 'number'
+    );
   }
 
   async findByCustomer(customerId: string): Promise<Meeting[]> {
@@ -70,7 +85,10 @@ export class MeetingRepository implements IMeetingRepository {
       });
       return result.docs as Meeting[];
     } catch (error) {
-      this.logger.error(`Error finding meetings for customer ${customerId}:`, error);
+      this.logger.error(
+        `Error finding meetings for customer ${customerId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -92,16 +110,15 @@ export class MeetingRepository implements IMeetingRepository {
     }
   }
 
-  async findByUser(userId: string, filters?: MeetingFilters): Promise<Meeting[]> {
+  async findByUser(
+    userId: string,
+    filters?: MeetingFilters
+  ): Promise<Meeting[]> {
     try {
       const selector: any = {
         type: 'meeting',
         createdBy: userId,
       };
-
-      if (filters?.status) {
-        selector.status = filters.status;
-      }
 
       if (filters?.meetingType) {
         selector.meetingType = filters.meetingType;
@@ -128,7 +145,11 @@ export class MeetingRepository implements IMeetingRepository {
     }
   }
 
-  async findByDateRange(startDate: Date, endDate: Date, userId?: string): Promise<Meeting[]> {
+  async findByDateRange(
+    startDate: Date,
+    endDate: Date,
+    userId?: string
+  ): Promise<Meeting[]> {
     try {
       const selector: any = {
         type: 'meeting',
@@ -194,4 +215,3 @@ export class MeetingRepository implements IMeetingRepository {
     }
   }
 }
-

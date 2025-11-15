@@ -82,6 +82,7 @@ apps/frontend/src/components/editor/
 ### Type Definitions
 
 Shared types are defined in `packages/shared/src/types/components/`:
+
 - `rich-text-editor.types.ts` - Editor props, config, content types
 - `editor-toolbar.types.ts` - Toolbar groups, button types
 
@@ -386,24 +387,24 @@ function ToolbarButton({
 }
 
 /* Task list styling */
-.ProseMirror ul[data-type="taskList"] {
+.ProseMirror ul[data-type='taskList'] {
   list-style: none;
   padding: 0;
 }
 
-.ProseMirror ul[data-type="taskList"] li {
+.ProseMirror ul[data-type='taskList'] li {
   display: flex;
   align-items: flex-start;
   margin-bottom: 0.5rem;
 }
 
-.ProseMirror ul[data-type="taskList"] li > label {
+.ProseMirror ul[data-type='taskList'] li > label {
   flex: 0 0 auto;
   margin-right: 0.5rem;
   user-select: none;
 }
 
-.ProseMirror ul[data-type="taskList"] li > div {
+.ProseMirror ul[data-type='taskList'] li > div {
   flex: 1 1 auto;
 }
 
@@ -546,7 +547,7 @@ export function VoiceInputButton({ onTranscript, editor }: VoiceInputButtonProps
             finalTranscript += transcript + ' ';
           }
         }
-        
+
         if (finalTranscript && editor) {
           // Insert at current cursor position
           editor.chain().focus().insertContent(finalTranscript).run();
@@ -772,11 +773,13 @@ function recordCorrection(
 ### Optimization Tips
 
 1. **Lazy Load Extensions**
+
    ```typescript
    const Table = lazy(() => import('@tiptap/extension-table'));
    ```
 
 2. **Debounce onChange**
+
    ```typescript
    const debouncedOnChange = useMemo(
      () => debounce((html: string) => onChange(html), 300),
@@ -815,11 +818,11 @@ describe('MeetingNotesEditor', () => {
   it('should call onChange when content changes', () => {
     const handleChange = jest.fn();
     render(<MeetingNotesEditor content="" onChange={handleChange} />);
-    
+
     // Simulate typing
     const editor = screen.getByRole('textbox');
     fireEvent.input(editor, { target: { innerHTML: '<p>Test content</p>' } });
-    
+
     expect(handleChange).toHaveBeenCalledWith('<p>Test content</p>');
   });
 
@@ -844,20 +847,20 @@ import { test, expect } from '@playwright/test';
 
 test('should format text in activity protocol', async ({ page }) => {
   await page.goto('/customers/123/activities/new');
-  
+
   // Type in editor
   const editor = page.locator('.ProseMirror');
   await editor.click();
   await editor.type('Meeting notes');
-  
+
   // Click bold button
   await page.click('button[aria-label="Fett"]');
   await editor.type(' with bold text');
-  
+
   // Verify HTML output contains <strong>
   const html = await editor.innerHTML();
   expect(html).toContain('<strong>with bold text</strong>');
-  
+
   // Save activity
   await page.click('button:has-text("Aktivität speichern")');
   await expect(page.locator('.toast-success')).toBeVisible();
@@ -871,6 +874,7 @@ test('should format text in activity protocol', async ({ page }) => {
 ### Common Issues
 
 1. **Editor not updating on prop change**
+
    ```typescript
    // Use useEffect to sync content
    useEffect(() => {
@@ -900,11 +904,13 @@ test('should format text in activity protocol', async ({ page }) => {
 ## References
 
 ### External Documentation
+
 - **TipTap Official**: https://tiptap.dev/docs/editor/introduction
 - **ProseMirror**: https://prosemirror.net/docs/
 - **React Hook Form**: https://react-hook-form.com/docs
 
 ### Internal Documentation
+
 - **ADR-019**: `docs/architecture/decisions/ADR-019-rich-text-editor-selection.md`
 - **Type Definitions**: `packages/shared/src/types/components/rich-text-editor.types.ts`
 - **UI/UX Spec**: `ui-ux/02-core-components/rich-text-editor.md`
@@ -924,13 +930,12 @@ test('should format text in activity protocol', async ({ page }) => {
 
 **Version History:**
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0 | 2025-01-27 | Initial implementation guide |
+| Version | Date       | Changes                      |
+| ------- | ---------- | ---------------------------- |
+| 1.0     | 2025-01-27 | Initial implementation guide |
 
 ---
 
 **Maintained By:** Frontend Team  
 **Last Review:** 2025-01-27  
 **Next Review:** Q2 2025 (after MVP launch)
-

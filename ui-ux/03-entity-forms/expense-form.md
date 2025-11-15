@@ -1,6 +1,7 @@
 # Expense Entry Form - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Quick Entry Form with Photo Capture
 - **User Roles**: ADM (create own), INNEN/GF (all), BUCH (review/approve)
 - **Usage Context**: Quick expense capture during tours, receipt documentation
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Photo-first approach**: Camera/upload prominent
 - **Quick categorization**: Common expense type buttons
 - **Auto-fill from photo**: OCR for amount extraction
 - **Tour association**: Link to active/recent tour
 
 ### Form Structure
+
 - Photo capture/preview at top
 - Quick type selection
 - Amount and description
@@ -22,6 +25,7 @@
 - Submit for approval
 
 ### shadcn/ui Components
+
 - Card, Form, Input, Button, Select
 - Image preview component
 - Camera integration
@@ -68,6 +72,7 @@ Create a mobile-optimized expense entry form for KOMPASS that enables quick expe
 ```
 
 **After Photo Capture:**
+
 ```
 ┌─────────────────────────────┐
 │ [←] Neue Ausgabe      [✓]   │
@@ -141,6 +146,7 @@ Create a mobile-optimized expense entry form for KOMPASS that enables quick expe
 ```
 
 **Expense Categories:**
+
 ```
 🍽️ Verpflegung - Meals
 ⛽ Benzin - Fuel (auto-links to mileage)
@@ -152,6 +158,7 @@ Create a mobile-optimized expense entry form for KOMPASS that enables quick expe
 ```
 
 **Business Meal Extension:**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Bewirtungsbeleg - Zusätzliche Angaben       │
@@ -168,12 +175,14 @@ Create a mobile-optimized expense entry form for KOMPASS that enables quick expe
 ```
 
 **Approval Status Indicators:**
+
 - **Entwurf** (gray): Draft, editable
 - **Eingereicht** (blue): Submitted, pending
 - **Genehmigt** (green): Approved for reimbursement
 - **Abgelehnt** (red): Rejected, needs correction
 
 **OCR Integration:**
+
 - Auto-detect amount from receipt
 - Extract vendor name if possible
 - Highlight detected fields
@@ -181,6 +190,7 @@ Create a mobile-optimized expense entry form for KOMPASS that enables quick expe
 - Confidence indicator
 
 ## Interaction Patterns
+
 - **Quick type selection**: Tap category to pre-fill
 - **OCR validation**: Green check if confident
 - **Photo preview**: Pinch to zoom
@@ -188,6 +198,7 @@ Create a mobile-optimized expense entry form for KOMPASS that enables quick expe
 - **Offline queue**: Save locally, sync later
 
 ## German Labels & Content
+
 - **Beleg**: Receipt
 - **Ausgabe**: Expense
 - **Betrag**: Amount
@@ -197,6 +208,7 @@ Create a mobile-optimized expense entry form for KOMPASS that enables quick expe
 - **MwSt.**: VAT
 
 ## Accessibility Requirements
+
 - Voice input for amount and description
 - Large touch targets for mobile
 - Clear contrast for photo preview
@@ -204,6 +216,7 @@ Create a mobile-optimized expense entry form for KOMPASS that enables quick expe
 - Screen reader support for status
 
 ## Mobile Considerations
+
 - **Camera API**: Direct access, no file browser
 - **Compression**: Reduce photo size before upload
 - **Offline storage**: Queue expenses locally
@@ -211,6 +224,7 @@ Create a mobile-optimized expense entry form for KOMPASS that enables quick expe
 - **Batch upload**: When connection restored
 
 ## Validation Rules
+
 - Amount required, > 0
 - Description min 5 characters
 - Photo required for amounts > €25
@@ -218,6 +232,7 @@ Create a mobile-optimized expense entry form for KOMPASS that enables quick expe
 - Business meals require attendees
 
 ## Implementation Notes
+
 ```bash
 # Required components
 npx shadcn-ui@latest add form input button
@@ -237,6 +252,7 @@ npx shadcn-ui@latest add dialog camera-upload
 ```
 
 ## State Management
+
 - Current expense draft
 - Photo upload progress
 - OCR processing state
@@ -244,6 +260,7 @@ npx shadcn-ui@latest add dialog camera-upload
 - Offline queue
 
 ## Analytics Events
+
 - expense_created
 - photo_captured / photo_uploaded
 - ocr_success_rate

@@ -1,6 +1,7 @@
 # Business Card Scanner (Mobile) - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Platform**: Mobile PWA (camera access)
 - **User Role**: ADM (Sales Field)
 - **Usage Context**: Capture and auto-fill contact information from business cards
@@ -11,11 +12,13 @@
 Create a mobile business card scanner for KOMPASS with camera capture, OCR text extraction, auto-fill contact form, and quick save with German labels.
 
 **Entry Points:**
+
 - From customer detail: "+ Kontakt hinzufügen" → "Visitenkarte scannen"
 - From contact list: "+ Neuer Kontakt" → "Visitenkarte scannen"
 - From dashboard: Quick action button
 
 **Screen 1: Camera View**
+
 - Full-screen camera preview
 - Overlay guide: Card-shaped frame (credit card aspect ratio)
 - Instruction text: "Visitenkarte im Rahmen positionieren"
@@ -29,6 +32,7 @@ Create a mobile business card scanner for KOMPASS with camera capture, OCR text 
 - Gallery button: Small thumbnail (bottom-left) to choose from gallery
 
 **Screen 2: Preview & Confirm**
+
 - Shows captured image
 - Overlay: Card detected highlight (green border)
 - Text: "Visitenkarte erkannt - analysiere..."
@@ -38,6 +42,7 @@ Create a mobile business card scanner for KOMPASS with camera capture, OCR text 
   - "Fortfahren" (proceed to extraction)
 
 **Screen 3: OCR Extraction (Loading)**
+
 - Shows blurred card image
 - Large spinner in center
 - Text: "Extrahiere Kontaktinformationen..."
@@ -45,11 +50,13 @@ Create a mobile business card scanner for KOMPASS with camera capture, OCR text 
 - Duration: 2-3 seconds typical
 
 **Screen 4: Extracted Data (Form Pre-filled)**
+
 - Header: "Kontakt aus Visitenkarte" (24px, bold)
 - Card image: Small thumbnail at top (tappable to enlarge)
 - Form with auto-filled fields (editable):
 
 **Extracted Fields:**
+
 - **Vorname**: "Hans" (extracted, green checkmark)
 - **Nachname**: "Müller" (extracted, green checkmark)
 - **Position**: "Geschäftsführer" (extracted)
@@ -60,42 +67,50 @@ Create a mobile business card scanner for KOMPASS with camera capture, OCR text 
 - **Adresse**: "Industriestraße 42, 81379 München" (extracted)
 
 **Confidence Indicators:**
+
 - Green checkmark: High confidence (> 90%)
 - Amber warning: Medium confidence (70-90%) - "Bitte überprüfen"
 - Red alert: Low confidence (< 70%) or missing - "Manuell eingeben"
 
 **Field Editing:**
+
 - All fields editable
 - Tap field: Keyboard appears
 - Validation: Real-time (email format, phone format)
 - Suggestions: If multiple possible values detected
 
 **Kunde zuordnen:**
+
 - Dropdown: "Firma wählen oder neu erstellen"
 - Options: Existing customers (fuzzy match by name)
 - Or: "Neue Firma erstellen" (+ icon)
 
 **Additional Fields (Optional, Collapsible):**
+
 - "Weitere Felder" (expand/collapse)
 - Website, Fax, Notizen
 
 **Actions (Bottom, Sticky):**
+
 - Primary: "Kontakt speichern" (blue, large)
 - Secondary: "Abbrechen" (gray)
 - Tertiary: "Originalfoto anzeigen" (link)
 
 **Success Flow:**
+
 - Toast: "Kontakt gespeichert" (green checkmark)
 - Navigate to: Contact detail page
 - Or: Return to customer detail (if from customer context)
 
 **Error Handling:**
+
 - No card detected: "Keine Visitenkarte erkannt - Foto wiederholen?"
 - OCR failed: "Konnte Text nicht extrahieren - Manuell eingeben?"
 - Low quality: "Foto zu unscharf - Bitte erneut aufnehmen"
 - No camera: Fallback to manual input
 
 **OCR Accuracy Tips (Overlay):**
+
 - Icon button: "?" (info)
 - Tips modal:
   - "Gute Beleuchtung verwenden"
@@ -104,12 +119,14 @@ Create a mobile business card scanner for KOMPASS with camera capture, OCR text 
   - "Bewegung vermeiden"
 
 **Offline Support:**
+
 - Photo saved locally
 - OCR: Requires online (API call)
 - Fallback: Save photo, process when online
 - Queue indicator: "Wird verarbeitet wenn online"
 
 **Mobile Optimizations:**
+
 - Camera: Use native camera API (best quality)
 - Pinch to zoom: For close-up capture
 - Auto-focus: Tap to focus on card
@@ -117,12 +134,14 @@ Create a mobile business card scanner for KOMPASS with camera capture, OCR text 
 - Battery: Warn if low (camera is power-intensive)
 
 **Accessibility:**
+
 - Voice-over: Describes camera controls
 - High contrast: Guide frame
 - Large buttons: 44px minimum touch target
 - Haptic feedback: On capture, on success
 
 **Example Flow:**
+
 1. User taps "+ Kontakt" → "Visitenkarte scannen"
 2. Camera opens, full-screen preview
 3. User positions business card in frame
@@ -138,9 +157,9 @@ Create a mobile business card scanner for KOMPASS with camera capture, OCR text 
 13. Navigate to contact detail page
 
 ## Implementation Notes
+
 ```bash
 npx shadcn-ui@latest add button input form sheet toast
 # Camera: Use <input type="file" capture="environment"> for PWA
 # OCR: Use Tesseract.js or cloud API (Google Vision, Azure)
 ```
-

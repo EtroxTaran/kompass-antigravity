@@ -14,8 +14,8 @@ BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
 echo ""
 echo "1️⃣  Checking branch name format..."
 
-# Allow develop, main, and properly formatted feature branches
-if [ "$BRANCH_NAME" != "develop" ] && [ "$BRANCH_NAME" != "main" ]; then
+# Allow main and properly formatted feature branches (trunk-based development)
+if [ "$BRANCH_NAME" != "main" ]; then
   # Check if branch follows naming convention
   if ! echo "$BRANCH_NAME" | grep -qE "^(feature|bugfix|hotfix|refactor|docs|test|chore)/KOM-[0-9]+-[a-z0-9-]+$"; then
     echo "❌ Branch name does not follow naming convention"
@@ -43,8 +43,25 @@ fi
 echo ""
 echo "2️⃣  Checking commit messages for Linear issue IDs..."
 
+# Determine base branch for comparison
+# If upstream exists, use it; otherwise compare against origin/main or main
+UPSTREAM=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null || echo "")
+
+if [ -n "$UPSTREAM" ]; then
+  # Branch has upstream - compare against it
+  BASE_REF="$UPSTREAM"
+else
+  # New branch without upstream - compare against origin/main or main
+  if git rev-parse --verify origin/main >/dev/null 2>&1; then
+    BASE_REF="origin/main"
+  else
+    BASE_REF="main"
+  fi
+  echo "   ℹ️  No upstream set, comparing against $BASE_REF"
+fi
+
 # Get commits that would be pushed
-COMMITS=$(git log @{u}.. --format=%s 2>/dev/null)
+COMMITS=$(git log "$BASE_REF"..HEAD --format=%s 2>/dev/null || echo "")
 
 if [ -z "$COMMITS" ]; then
   echo "   ℹ️  No new commits to push"
@@ -74,34 +91,44 @@ fi
 echo ""
 echo "3️⃣  Checking documentation updates..."
 
-# Get changed files
-CHANGED_FILES=$(git diff --name-only @{u}.. 2>/dev/null)
+# Get changed files (use same BASE_REF as commit check)
+CHANGED_FILES=$(git diff --name-only "$BASE_REF"..HEAD 2>/dev/null || echo "")
 
 if [ -n "$CHANGED_FILES" ]; then
   # Check if API changes were made
-  if echo "$CHANGED_FILES" | grep -qE "apps/backend/src/.*\.(controller|dto|guard|module)\.ts$"; then
-    # Check if docs were updated
-    if ! echo "$CHANGED_FILES" | grep -qE "^docs/(api/|specifications/API)"; then
-      echo "   ⚠️  WARNING: API changes detected but no documentation updates"
-      echo "   Consider updating:"
-      echo "     - docs/api/reference/"
-      echo "     - docs/specifications/API_SPECIFICATION.md"
-      echo ""
-      echo "   If documentation is not needed, you can proceed."
-      echo "   Continue? (y/N)"
-      if [ -t 0 ]; then
-        read -r CONTINUE
-      elif [ -t 1 ]; then
-        read -r CONTINUE < /dev/tty
+  API_FILES=$(echo "$CHANGED_FILES" | grep -E "apps/backend/src/.*\.(controller|dto|guard|module)\.ts$" || true)
+  
+  if [ -n "$API_FILES" ]; then
+    # Check if actual new endpoints/DTOs were added (not just type fixes)
+    NEW_ENDPOINTS=$(git diff "$BASE_REF"..HEAD -- $API_FILES 2>/dev/null | grep -E "^\+.*@(Get|Post|Put|Patch|Delete)\(\)" | wc -l || echo "0")
+    NEW_DTOS=$(git diff "$BASE_REF"..HEAD -- $API_FILES 2>/dev/null | grep -E "^\+.*export (class|interface).*Dto" | wc -l || echo "0")
+    
+    # Only require docs if new endpoints or DTOs were added
+    if [ "$NEW_ENDPOINTS" -gt 0 ] || [ "$NEW_DTOS" -gt 0 ]; then
+      # Check if docs were updated
+      if ! echo "$CHANGED_FILES" | grep -qE "^docs/(api/|specifications/API)"; then
+        echo "   ⚠️  WARNING: New API endpoints/DTOs detected but no documentation updates"
+        echo "   Consider updating:"
+        echo "     - docs/api/reference/"
+        echo "     - docs/specifications/API_SPECIFICATION.md"
+        echo ""
+        echo "   If documentation is not needed, you can proceed."
+        echo "   Continue? (y/N)"
+        # Auto-continue if running non-interactively (e.g., from CI or automated scripts)
+        if [ -t 0 ] && [ -t 1 ]; then
+          read -r CONTINUE
+        else
+          CONTINUE="N"
+        fi
+        if [ "$CONTINUE" != "y" ] && [ "$CONTINUE" != "Y" ]; then
+          echo "   ❌ Push aborted. Update documentation and try again."
+          exit 1
+        fi
       else
-        CONTINUE="N"
-      fi
-      if [ "$CONTINUE" != "y" ] && [ "$CONTINUE" != "Y" ]; then
-        echo "   ❌ Push aborted. Update documentation and try again."
-        exit 1
+        echo "   ✅ Documentation updated with API changes"
       fi
     else
-      echo "   ✅ Documentation updated with API changes"
+      echo "   ✅ API files changed but only type fixes (no new endpoints/DTOs)"
     fi
   else
     echo "   ✅ No API changes requiring documentation"

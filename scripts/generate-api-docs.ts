@@ -2,37 +2,12 @@
 /**
  * API Documentation Generator
  * Generates markdown documentation from OpenAPI/NestJS decorators
- * 
+ *
  * Usage: pnpm run generate:api-docs
  */
 
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-
-interface OpenAPIEndpoint {
-  path: string;
-  method: string;
-  summary: string;
-  description?: string;
-  tags: string[];
-  parameters?: any[];
-  requestBody?: any;
-  responses: Record<string, any>;
-  security?: any[];
-}
-
-interface OpenAPISpec {
-  openapi: string;
-  info: any;
-  servers: any[];
-  paths: Record<string, Record<string, OpenAPIEndpoint>>;
-  components: {
-    schemas: Record<string, any>;
-    securitySchemes: Record<string, any>;
-  };
-  tags: any[];
-}
 
 const DOCS_API_DIR = path.join(process.cwd(), 'docs', 'api');
 const DOCS_API_REFERENCE_DIR = path.join(DOCS_API_DIR, 'reference');
@@ -41,7 +16,7 @@ function main() {
   console.log('📝 Generating API documentation...\n');
 
   // Create directories if they don't exist
-  [DOCS_API_DIR, DOCS_API_REFERENCE_DIR].forEach(dir => {
+  [DOCS_API_DIR, DOCS_API_REFERENCE_DIR].forEach((dir) => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
       console.log(`✅ Created directory: ${dir}`);
@@ -50,12 +25,12 @@ function main() {
 
   // Generate OpenAPI spec from NestJS app
   console.log('🔧 Extracting OpenAPI specification from NestJS...');
-  
+
   // TODO: This requires the NestJS app to be built
   // For now, create a placeholder that will be replaced by actual implementation
-  
+
   const timestamp = new Date().toISOString().split('T')[0];
-  
+
   // Create placeholder API documentation
   const apiEndpointsDoc = `# API Endpoints Reference
 
@@ -217,7 +192,7 @@ All errors follow the RFC 7807 Problem Details format:
 
 ## Related Documentation
 
-- [API Specification](../../specifications/API_SPECIFICATION.md) - Technical specification
+- [API Specification](../../specifications/api-specification.md) - Technical specification
 - [Authentication Guide](./authentication.md) - Authentication details
 - [API Updates](../updates/API_UPDATES.md) - Version changelog
 
@@ -266,7 +241,7 @@ The JWT token contains:
 
 ## RBAC Permissions
 
-See [RBAC Permission Matrix](../../specifications/RBAC_PERMISSION_MATRIX.md) for complete permission matrix.
+See [RBAC Permission Matrix](../../specifications/rbac-permissions.md) for complete permission matrix.
 
 ## Error Responses
 
@@ -292,7 +267,7 @@ See [RBAC Permission Matrix](../../specifications/RBAC_PERMISSION_MATRIX.md) for
 
 ## Related Documentation
 
-- [RBAC Permission Matrix](../../specifications/RBAC_PERMISSION_MATRIX.md)
+- [RBAC Permission Matrix](../../specifications/rbac-permissions.md)
 - [API Endpoints](./endpoints.md)
 
 ---
@@ -309,7 +284,9 @@ See [RBAC Permission Matrix](../../specifications/RBAC_PERMISSION_MATRIX.md) for
   console.log('   - docs/api/reference/endpoints.md');
   console.log('   - docs/api/reference/authentication.md');
   console.log('\n💡 Note: This is a placeholder implementation.');
-  console.log('   Once the NestJS backend is implemented, this script will extract');
+  console.log(
+    '   Once the NestJS backend is implemented, this script will extract'
+  );
   console.log('   actual OpenAPI specifications from Swagger decorators.');
 }
 
@@ -318,4 +295,3 @@ if (require.main === module) {
 }
 
 export { main as generateApiDocs };
-

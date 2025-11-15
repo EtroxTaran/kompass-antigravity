@@ -1,6 +1,7 @@
 # Activity & Protocol Form - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Quick Capture Form
 - **User Roles**: All (especially ADM for field sales logging)
 - **Usage Context**: Log customer interactions, calls, meetings, notes
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Quick Capture**: Fast, minimal fields for mobile use
 - **Activity Type**: Icon-based selection (Call, Email, Meeting, Note)
 - **Customer Context**: Clear indication of related customer
 - **Timestamp**: Auto-captured, editable
 
 ### Layout Structure
+
 - Compact dialog: 600px (desktop), full-screen (mobile)
 - Single column layout
 - Large activity type buttons at top
@@ -22,6 +25,7 @@
 - Voice-to-text support indication (mobile)
 
 ### shadcn/ui Components
+
 - `Sheet` for mobile (slides from bottom)
 - `Dialog` for desktop
 - `Form` with minimal fields
@@ -33,6 +37,7 @@
 Create a quick activity and protocol form for KOMPASS, a German CRM application. Design a fast-capture form optimized for field sales logging customer interactions on mobile with voice-to-text support and German labels.
 
 **Form Container:**
+
 - Mobile: Bottom sheet (slides up from bottom)
 - Desktop: Dialog (600px width, centered)
 - Header:
@@ -41,6 +46,7 @@ Create a quick activity and protocol form for KOMPASS, a German CRM application.
   - Close button
 
 **Activity Type Selection (Prominent):**
+
 - Label: "Art der Aktivität" - 16px, semibold
 - Toggle button group: 4 large buttons in row (or 2×2 grid on mobile)
 
@@ -69,7 +75,7 @@ Create a quick activity and protocol form for KOMPASS, a German CRM application.
 **Form Fields:**
 
 1. **Kunde** (Required, if not in context):
-   - Label: "Kunde *"
+   - Label: "Kunde \*"
    - Combobox: Searchable select
    - Pre-filled if in customer context
    - Can change if needed
@@ -83,14 +89,14 @@ Create a quick activity and protocol form for KOMPASS, a German CRM application.
    - Example: "Hans Müller (Geschäftsführer)"
 
 3. **Betreff** (Required):
-   - Label: "Betreff *"
+   - Label: "Betreff \*"
    - Input: Text, full width
    - Placeholder: "z.B. Telefonat zu neuem Projekt, Follow-up Meeting"
    - Validation: 5-200 characters
    - Help text: "Kurze Zusammenfassung der Aktivität"
 
 4. **Beschreibung** (Required):
-   - Label: "Beschreibung *"
+   - Label: "Beschreibung \*"
    - **Rich Text Editor** (WYSIWYG): Standard toolbar configuration
      - Toolbar buttons: Bold, Italic, Underline, Strikethrough, H2, H3, Bullet List, Numbered List, Task List (checkboxes), Blockquote, Link, Undo, Redo
      - See `ui-ux/02-core-components/rich-text-editor.md` for complete toolbar design
@@ -109,7 +115,7 @@ Create a quick activity and protocol form for KOMPASS, a German CRM application.
    - **Mobile**: Compact toolbar with essential buttons (Bold, Italic, Lists), "Mehr" button to expand
 
 5. **Datum & Uhrzeit** (Required):
-   - Label: "Datum & Uhrzeit *"
+   - Label: "Datum & Uhrzeit \*"
    - Date+Time picker
    - Default: Now (current date and time)
    - Format: "15.11.2024, 14:30 Uhr"
@@ -147,6 +153,7 @@ Create a quick activity and protocol form for KOMPASS, a German CRM application.
    - Use for: Sensitive notes
 
 **Quick Capture Mode (Mobile):**
+
 - Simplified version with only essential fields
 - Activity type + Customer + Description + Voice input
 - Auto-fills: Date/time = now, owner = current user
@@ -154,12 +161,14 @@ Create a quick activity and protocol form for KOMPASS, a German CRM application.
 - Expands to full form: "Mehr Felder anzeigen" link
 
 **Form Footer:**
+
 - Buttons:
   - "Abbrechen" (secondary, outlined)
   - "Speichern & Neu" (secondary, saves and reopens empty form)
   - "Aktivität speichern" (primary, blue)
 
 **Success State:**
+
 - Toast: "Aktivität wurde protokolliert" (green)
 - Options:
   - "Rückgängig" (undo action, 5 seconds)
@@ -167,11 +176,13 @@ Create a quick activity and protocol form for KOMPASS, a German CRM application.
   - Or: "Weitere Aktivität erfassen" button
 
 **Offline Support Indicator:**
+
 - If offline: Badge at top "Offline - Wird synchronisiert, wenn online"
 - Icon: CloudOff (amber)
 - Activity saved locally, queued for sync
 
 **Voice-to-Text Experience (Mobile):**
+
 1. User clicks microphone icon
 2. Permission prompt (first time)
 3. Recording starts: Icon pulses red, "Hört zu..."
@@ -182,6 +193,7 @@ Create a quick activity and protocol form for KOMPASS, a German CRM application.
 8. Smooth, fast experience for field sales
 
 **Templates (Quick Actions):**
+
 - Dropdown button: "Vorlage verwenden"
 - Pre-defined templates:
   - "Erstkontakt" (First contact)
@@ -195,6 +207,7 @@ Design optimized for speed, especially on mobile, with voice-to-text as primary 
 ## Interaction Patterns
 
 ### Quick Capture Flow (Mobile)
+
 1. User at customer location, opens app
 2. Taps "Aktivität erfassen" FAB
 3. Bottom sheet slides up
@@ -208,6 +221,7 @@ Design optimized for speed, especially on mobile, with voice-to-text as primary 
 11. Returns to customer view with new activity visible
 
 ### Desktop Flow
+
 1. User clicks "Aktivität hinzufügen"
 2. Dialog opens
 3. Fills form fields manually
@@ -215,6 +229,7 @@ Design optimized for speed, especially on mobile, with voice-to-text as primary 
 5. Activity logged
 
 ### Voice Input
+
 - Click microphone: Start recording
 - Speak: Transcription appears in real-time (optional)
 - Click stop: Finalize transcription
@@ -224,6 +239,7 @@ Design optimized for speed, especially on mobile, with voice-to-text as primary 
 ## German Labels & Content
 
 ### Activity Types
+
 - **Anruf**: Phone call
 - **E-Mail**: Email
 - **Meeting**: Meeting
@@ -232,6 +248,7 @@ Design optimized for speed, especially on mobile, with voice-to-text as primary 
 - **Präsentation**: Presentation
 
 ### Fields
+
 - **Kunde**: Customer
 - **Kontaktperson**: Contact person
 - **Betreff**: Subject
@@ -243,24 +260,28 @@ Design optimized for speed, especially on mobile, with voice-to-text as primary 
 - **Privat**: Private
 
 ### Voice Input
+
 - **Spracheingabe starten**: Start voice input
 - **Hört zu...**: Listening...
 - **Aufnahme beenden**: Stop recording
 - **Transkription...**: Transcribing...
 
 ### Buttons
+
 - **Aktivität speichern**: Save activity
 - **Speichern & Neu**: Save & new
 - **Vorlage verwenden**: Use template
 - **Mehr Felder anzeigen**: Show more fields
 
 ### Templates
+
 - **Erstkontakt**: First contact
 - **Angebot versendet**: Quote sent
 - **Follow-up Anruf**: Follow-up call
 - **Meeting-Protokoll**: Meeting minutes
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Activity type buttons: role="radio", aria-checked
 - Voice input button: aria-label="Spracheingabe"
@@ -269,6 +290,7 @@ Design optimized for speed, especially on mobile, with voice-to-text as primary 
 - Keyboard navigation works without voice input
 
 ## Mobile Considerations
+
 - Optimized for one-handed use
 - Bottom sheet preferred (thumb-friendly)
 - Large activity type buttons (touch-friendly)
@@ -279,6 +301,7 @@ Design optimized for speed, especially on mobile, with voice-to-text as primary 
 ## Example Data
 
 **Phone Call Activity:**
+
 - Art: Anruf (phone icon selected, blue)
 - Kunde: "Hofladen Müller GmbH"
 - Kontaktperson: "Hans Müller"
@@ -289,6 +312,7 @@ Design optimized for speed, especially on mobile, with voice-to-text as primary 
 - Follow-up: "22.11.2024" (1 Woche)
 
 **Quick Note:**
+
 - Art: Notiz
 - Kunde: "REWE Köln"
 - Betreff: "Projektfortschritt"
@@ -298,6 +322,7 @@ Design optimized for speed, especially on mobile, with voice-to-text as primary 
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add sheet
 npx shadcn-ui@latest add dialog
@@ -310,6 +335,7 @@ npx shadcn-ui@latest add tooltip   # For rich text editor toolbar
 ```
 
 ### TipTap Rich Text Editor Installation
+
 ```bash
 # Core TipTap packages for Meeting Notes Editor
 pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-placeholder
@@ -318,6 +344,7 @@ pnpm add @tiptap/extension-link @tiptap/extension-underline
 ```
 
 ### Voice-to-Text API Integration with Rich Text Editor
+
 ```typescript
 // Web Speech API for voice input - integrates with TipTap editor
 const recognition = new webkitSpeechRecognition();
@@ -329,7 +356,7 @@ recognition.onresult = (event) => {
   const transcript = Array.from(event.results)
     .map(result => result[0].transcript)
     .join('');
-  
+
   // Insert plain text at cursor position in TipTap editor
   if (editor) {
     editor.chain().focus().insertContent(transcript + ' ').run();
@@ -350,6 +377,7 @@ recognition.onresult = (event) => {
 ```
 
 ### Component Dependencies
+
 - Customer/contact selection components
 - Date-time picker
 - **Rich Text Editor** (`MeetingNotesEditor` component with standard toolbar)
@@ -361,10 +389,10 @@ recognition.onresult = (event) => {
 - Auto-save functionality
 
 ### State Management
+
 - Form state
 - Voice recording state
 - Customer context
 - Draft auto-save
 - Offline queue
 - Template selection
-

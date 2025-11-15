@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
 import { MeetingType, MeetingStatus } from './create-meeting.dto';
 
 /**
@@ -128,4 +129,3 @@ export class MeetingResponseDto {
   })
   modifiedAt: Date;
 }
-

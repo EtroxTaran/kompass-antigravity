@@ -15,16 +15,19 @@ The Task Card component is a compact, reusable UI element that displays task inf
 ## Component Variants
 
 ### 1. Compact Card (List View)
+
 - **Size:** 320px × 120px (desktop), full-width (mobile)
 - **Usage:** Task lists, dashboard widgets, search results
 - **Information Density:** Essential info only
 
 ### 2. Expanded Card (Detail View)
+
 - **Size:** 640px × auto (expands vertically)
 - **Usage:** Click-to-expand inline detail view
 - **Information Density:** Full task details with actions
 
 ### 3. Kanban Card (Board View - Phase 2)
+
 - **Size:** 280px × 140px
 - **Usage:** Kanban board columns
 - **Features:** Drag-and-drop enabled
@@ -46,6 +49,7 @@ The Task Card component is a compact, reusable UI element that displays task inf
 ```
 
 **Elements (Top to Bottom):**
+
 1. **Header Row:**
    - Priority badge (left) - colored icon with text (LOW/MEDIUM/HIGH/URGENT or CRITICAL)
    - Task title (center) - truncated to 50 chars with ellipsis
@@ -67,47 +71,50 @@ The Task Card component is a compact, reusable UI element that displays task inf
 
 ### Priority Colors
 
-| Priority | Color | Badge Style |
-|----------|-------|-------------|
-| Low | Gray (#9CA3AF) | Subtle border |
-| Medium | Blue (#3B82F6) | Filled background |
-| High | Orange (#F59E0B) | Filled background |
-| Urgent | Red (#EF4444) | Filled background + bold text |
+| Priority               | Color              | Badge Style                          |
+| ---------------------- | ------------------ | ------------------------------------ |
+| Low                    | Gray (#9CA3AF)     | Subtle border                        |
+| Medium                 | Blue (#3B82F6)     | Filled background                    |
+| High                   | Orange (#F59E0B)   | Filled background                    |
+| Urgent                 | Red (#EF4444)      | Filled background + bold text        |
 | Critical (ProjectTask) | Dark Red (#B91C1C) | Filled background + bold text + icon |
 
 ### Status Colors (UserTask)
 
-| Status | Color | Badge Style |
-|--------|-------|-------------|
-| Open | Gray (#6B7280) | Outline |
-| In Progress | Blue (#3B82F6) | Filled |
-| Completed | Green (#10B981) | Filled with checkmark |
-| Cancelled | Red (#EF4444) | Outline with strikethrough |
+| Status      | Color           | Badge Style                |
+| ----------- | --------------- | -------------------------- |
+| Open        | Gray (#6B7280)  | Outline                    |
+| In Progress | Blue (#3B82F6)  | Filled                     |
+| Completed   | Green (#10B981) | Filled with checkmark      |
+| Cancelled   | Red (#EF4444)   | Outline with strikethrough |
 
 ### Status Colors (ProjectTask)
 
-| Status | Color | Badge Style |
-|--------|-------|-------------|
-| Todo | Gray (#6B7280) | Outline |
-| In Progress | Blue (#3B82F6) | Filled |
-| Review | Purple (#8B5CF6) | Filled |
-| Done | Green (#10B981) | Filled with checkmark |
-| Blocked | Red (#EF4444) | Filled with warning icon |
+| Status      | Color            | Badge Style              |
+| ----------- | ---------------- | ------------------------ |
+| Todo        | Gray (#6B7280)   | Outline                  |
+| In Progress | Blue (#3B82F6)   | Filled                   |
+| Review      | Purple (#8B5CF6) | Filled                   |
+| Done        | Green (#10B981)  | Filled with checkmark    |
+| Blocked     | Red (#EF4444)    | Filled with warning icon |
 
 ---
 
 ## Interactive States
 
 ### Hover State
+
 - **Effect:** Subtle shadow elevation, background lightens
 - **Cursor:** Pointer
 - **Animation:** 150ms ease-in-out
 
 ### Selected State
+
 - **Effect:** Blue border (2px), blue background tint
 - **Use Case:** Multi-select mode, active task in detail view
 
 ### Dragging State (Phase 2)
+
 - **Effect:** Opacity 0.5, larger shadow
 - **Cursor:** Grabbing
 - **Visual:** Ghost card follows cursor
@@ -117,12 +124,15 @@ The Task Card component is a compact, reusable UI element that displays task inf
 ## Actions
 
 ### Quick Actions (Hover)
+
 Display on card hover or always on mobile:
+
 1. **Quick Status Change** - Dropdown to change status
 2. **Edit** - Opens task edit modal
 3. **Delete** - Confirmation dialog
 
 ### Three-Dot Menu Actions
+
 - **View Details** - Expands card or opens modal
 - **Duplicate** - Creates copy (Phase 2)
 - **Move to Project** - For UserTask (Phase 2)
@@ -179,6 +189,7 @@ When clicked, card expands to show:
 ```
 
 ### Swipe Actions
+
 - **Swipe Right:** Mark complete (green background)
 - **Swipe Left:** Delete (red background) or Edit (blue background)
 - **Full Swipe:** Execute action immediately
@@ -189,6 +200,7 @@ When clicked, card expands to show:
 ## Accessibility
 
 ### Keyboard Navigation
+
 - **Tab:** Focus card
 - **Enter/Space:** Expand/collapse card
 - **Arrow Keys:** Navigate between cards
@@ -197,11 +209,13 @@ When clicked, card expands to show:
 - **D:** Mark done (if applicable)
 
 ### Screen Reader
+
 - Announce: "Task: [Title], Priority: [Priority], Status: [Status], Due: [Date], Assigned to: [Name]"
 - Action menu labeled: "Task actions for [Title]"
 - Status change: "Status updated to [New Status]"
 
 ### Color Contrast
+
 - All text: Minimum WCAG AA (4.5:1 contrast ratio)
 - Priority badges: WCAG AAA (7:1 contrast ratio)
 - Focus indicators: 3px solid blue outline
@@ -231,6 +245,7 @@ interface TaskCardProps {
 ## Empty States
 
 ### No Tasks
+
 ```
 ┌─────────────────────────────────────────────┐
 │                                             │
@@ -245,6 +260,7 @@ interface TaskCardProps {
 ```
 
 ### All Tasks Completed
+
 ```
 ┌─────────────────────────────────────────────┐
 │                                             │
@@ -263,12 +279,14 @@ interface TaskCardProps {
 ## Performance Considerations
 
 ### Rendering Optimization
+
 - **Virtual Scrolling:** For lists >100 tasks (use `react-window`)
 - **Lazy Loading:** Load task details on expand
 - **Memoization:** Prevent unnecessary re-renders with `React.memo()`
 - **Image Optimization:** Lazy load user avatars
 
 ### Offline Indicators
+
 - **Sync Status:** Show small cloud icon with sync state
 - **Pending Changes:** Yellow dot indicator for unsaved changes
 - **Conflict Warning:** Red warning icon if sync conflict detected
@@ -303,5 +321,3 @@ interface TaskCardProps {
 ---
 
 **End of task-card.md**
-
-

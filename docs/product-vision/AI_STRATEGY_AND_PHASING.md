@@ -3,7 +3,7 @@
 **Document Version:** 1.0  
 **Date:** 2025-11-12  
 **Status:** Active  
-**Owner:** Product & Engineering Leadership  
+**Owner:** Product & Engineering Leadership
 
 ---
 
@@ -51,12 +51,14 @@ We embrace AI as a **long-term vision** while prioritizing **immediate user valu
 **What:** Semantic search across projects, materials, notes, and documents.
 
 **Why Safe:**
+
 - Works with any amount of data (even 1 document)
 - Results are explainable (shows source documents)
 - Fails gracefully (falls back to keyword search)
 - Builds trust through transparency
 
 **Implementation:**
+
 - Vector embeddings of all text content
 - Simple semantic similarity matching
 - Source attribution on all results
@@ -67,12 +69,14 @@ We embrace AI as a **long-term vision** while prioritizing **immediate user valu
 **What:** Convert voice notes to text for ADM persona while driving.
 
 **Why Safe:**
+
 - No prediction required - direct transcription
 - Immediate user value (hands-free note taking)
 - Errors are obvious and easily corrected
 - Works offline (local STT models)
 
 **Implementation:**
+
 - German-optimized speech recognition (Whisper or similar)
 - Offline capability critical for mobile use
 - User reviews/edits transcription before saving
@@ -129,6 +133,7 @@ All predictive, scoring, and optimization features:
 **Data Requirement:** 50+ completed offers with templates assigned.
 
 **Example:**
+
 - Customer type: "Lebensmittelhandel" + Project type: "Ladeneinrichtung" → Suggest "Hofladen Standard" template
 - Confidence shown: "Basiert auf 12 ähnlichen Projekten"
 
@@ -141,6 +146,7 @@ All predictive, scoring, and optimization features:
 **Data Requirement:** Existing customer database (any size).
 
 **Example:**
+
 - New customer: "Hofladen Mueller GmbH"
 - Alert: "Ähnlich: Hofladen Müller GmbH (VAT: DE123456789) - Gleicher Kunde?"
 
@@ -153,6 +159,7 @@ All predictive, scoring, and optimization features:
 **Data Requirement:** 3+ months of material price history.
 
 **Example:**
+
 - "Stahlregal (€145 ↑5% vs. letzten Monat)"
 
 #### 4. Similar Project Finder
@@ -164,17 +171,20 @@ All predictive, scoring, and optimization features:
 **Data Requirement:** 30+ completed projects.
 
 **Example:**
+
 - "3 ähnliche Projekte: REWE Hamburg (92% ähnlich), EDEKA Berlin (88%), Bio-Markt München (85%)"
 
 ### Data Requirements: Phase 2
 
 **Minimum:**
+
 - 3-6 months of KOMPASS operational data
 - 30+ completed projects
 - 50+ customer records
 - 100+ material price data points
 
 **Quality Gate:**
+
 - ≥70% field completion rate (critical fields: customer type, project category, values, outcomes)
 
 ### Success Criteria: Phase 2
@@ -204,6 +214,7 @@ All predictive, scoring, and optimization features:
 **Model:** Logistic regression or gradient boosting on historical opportunity outcomes.
 
 **Data Requirement:**
+
 - 100+ opportunities (minimum: 50 won, 50 lost)
 - Complete fields: customer type, value, sales cycle length, interactions, proposal details
 - Outcome labels: won/lost with reason
@@ -211,6 +222,7 @@ All predictive, scoring, and optimization features:
 **Confidence Threshold:** Don't show predictions <70% confidence.
 
 **Example:**
+
 - "Opportunity REWE München: 85% Abschlusswahrscheinlichkeit (↑ 10% vs. Ihre Schätzung)"
 - Explanation: "Ähnliche Projekte (12) mit gleicher Kunde-Größe haben 82% Erfolgsrate. Empfehlung: Nachfassen in 3 Tagen."
 
@@ -221,6 +233,7 @@ All predictive, scoring, and optimization features:
 **Model:** Random forest on project progress patterns, resource allocation, cost trends.
 
 **Data Requirement:**
+
 - 50+ completed projects with full cost tracking
 - 20+ projects with delays or budget overruns (for failure pattern learning)
 - Weekly snapshots of project status
@@ -228,6 +241,7 @@ All predictive, scoring, and optimization features:
 **Confidence Threshold:** Only flag high-risk (>75% confidence).
 
 **Example:**
+
 - "Projekt P-2025-M003: 🔴 85% Risiko für Kostenüberschreitung"
 - Explanation: "Material-Kosten +15% über Plan. Bei ähnlichen Projekten führte dies in 9 von 10 Fällen zu Budget-Überschreitung. Empfehlung: Budget-Review mit KALK."
 
@@ -238,6 +252,7 @@ All predictive, scoring, and optimization features:
 **Model:** Time series forecasting (Prophet or ARIMA) on historical invoicing/payment patterns.
 
 **Data Requirement:**
+
 - 12+ months of invoice and payment data
 - Seasonal pattern data (2+ full business cycles preferred)
 - Outstanding receivables tracking
@@ -245,6 +260,7 @@ All predictive, scoring, and optimization features:
 **Confidence Threshold:** Show forecast with ±confidence interval. Don't show if interval >30% of prediction.
 
 **Example:**
+
 - "30-Tage Cashflow-Prognose: €285.000 (±€25k, 92% Konfidenz)"
 - Chart shows confidence band shaded
 
@@ -255,6 +271,7 @@ All predictive, scoring, and optimization features:
 **Model:** Traveling salesman problem (TSP) solver with traffic data integration.
 
 **Data Requirement:**
+
 - 3+ months of GPS tracking data
 - Historical visit durations
 - Traffic pattern data (Google Maps API)
@@ -262,6 +279,7 @@ All predictive, scoring, and optimization features:
 **Confidence Threshold:** Show time/fuel savings. Require user approval before applying.
 
 **Example:**
+
 - "Route optimiert: 12 km gespart, 18 Min. schneller"
 - "Neue Reihenfolge: Hofladen Müller → REWE → EDEKA (statt REWE → EDEKA → Müller)"
 - Action: [Anwenden] [Ablehnen]
@@ -273,18 +291,21 @@ All predictive, scoring, and optimization features:
 **Model:** Isolation forest or statistical outlier detection.
 
 **Data Requirement:**
+
 - 6+ months of expense/time tracking data
 - Sufficient volume for baseline (100+ expense records per category)
 
 **Confidence Threshold:** Only flag anomalies >2.5 standard deviations from norm.
 
 **Example:**
+
 - "⚠️ Ungewöhnliche Ausgaben: Reisekosten +250% vs. Durchschnitt (Projekt P-2025-M005)"
 - Explanation: "Ihre üblichen Reisekosten: €450/Monat. Dieser Monat: €1.575. Bitte prüfen: Korrektur oder Sonderfall?"
 
 ### Data Requirements: Phase 3
 
 **Minimum (HARD REQUIREMENT):**
+
 - 12+ months of clean KOMPASS data
 - 100+ completed opportunities (balanced win/loss)
 - 50+ completed projects
@@ -326,15 +347,16 @@ Must pass automated data quality audit:
 
 **Criteria:**
 
-| Metric | Requirement | Current | Status |
-|--------|-------------|---------|--------|
-| Operational time | 3+ months | TBD | ⏳ |
-| Completed projects | 30+ | TBD | ⏳ |
-| Customer records | 50+ | TBD | ⏳ |
-| Material price data | 100+ entries | TBD | ⏳ |
-| Field completion rate | ≥70% (critical fields) | TBD | ⏳ |
+| Metric                | Requirement            | Current | Status |
+| --------------------- | ---------------------- | ------- | ------ |
+| Operational time      | 3+ months              | TBD     | ⏳     |
+| Completed projects    | 30+                    | TBD     | ⏳     |
+| Customer records      | 50+                    | TBD     | ⏳     |
+| Material price data   | 100+ entries           | TBD     | ⏳     |
+| Field completion rate | ≥70% (critical fields) | TBD     | ⏳     |
 
 **Validation:**
+
 - Automated monthly data quality report
 - Manual review by Product Owner
 - User feedback survey: "Are you ready for smart suggestions?"
@@ -347,18 +369,19 @@ Must pass automated data quality audit:
 
 **Criteria:**
 
-| Metric | Requirement | Current | Status |
-|--------|-------------|---------|--------|
-| Operational time | 12+ months | TBD | ⏳ |
-| Completed opportunities | 100+ (50+ won, 50+ lost) | TBD | ⏳ |
-| Completed projects | 50+ with full cost tracking | TBD | ⏳ |
-| Material price history | 12+ months | TBD | ⏳ |
-| Expense tracking data | 200+ entries | TBD | ⏳ |
-| GPS tracking data | 3+ months | TBD | ⏳ |
-| Field completion rate | ≥90% (all fields) | TBD | ⏳ |
-| Data accuracy audit | ≤5% error rate | TBD | ⏳ |
+| Metric                  | Requirement                 | Current | Status |
+| ----------------------- | --------------------------- | ------- | ------ |
+| Operational time        | 12+ months                  | TBD     | ⏳     |
+| Completed opportunities | 100+ (50+ won, 50+ lost)    | TBD     | ⏳     |
+| Completed projects      | 50+ with full cost tracking | TBD     | ⏳     |
+| Material price history  | 12+ months                  | TBD     | ⏳     |
+| Expense tracking data   | 200+ entries                | TBD     | ⏳     |
+| GPS tracking data       | 3+ months                   | TBD     | ⏳     |
+| Field completion rate   | ≥90% (all fields)           | TBD     | ⏳     |
+| Data accuracy audit     | ≤5% error rate              | TBD     | ⏳     |
 
 **Validation:**
+
 - Comprehensive data quality audit (automated + manual)
 - ML model training & backtesting on historical data
 - Prediction accuracy validation on held-out test set
@@ -378,25 +401,26 @@ Must pass automated data quality audit:
 ```typescript
 interface AIFeatureFlags {
   // Phase 1
-  ragSearch: boolean;              // Default: true (Phase 1)
-  audioTranscription: boolean;     // Default: true (Phase 1)
-  
+  ragSearch: boolean; // Default: true (Phase 1)
+  audioTranscription: boolean; // Default: true (Phase 1)
+
   // Phase 2
   templateRecommendations: boolean; // Default: false (until Phase 2 gates)
-  duplicateDetection: boolean;      // Default: false
-  materialPriceTrends: boolean;     // Default: false
-  similarProjectFinder: boolean;    // Default: false
-  
+  duplicateDetection: boolean; // Default: false
+  materialPriceTrends: boolean; // Default: false
+  similarProjectFinder: boolean; // Default: false
+
   // Phase 3
-  leadScoring: boolean;             // Default: false (until Phase 3 gates)
-  projectRiskAssessment: boolean;   // Default: false
-  cashflowForecasting: boolean;     // Default: false
-  routeOptimization: boolean;       // Default: false
-  anomalyDetection: boolean;        // Default: false
+  leadScoring: boolean; // Default: false (until Phase 3 gates)
+  projectRiskAssessment: boolean; // Default: false
+  cashflowForecasting: boolean; // Default: false
+  routeOptimization: boolean; // Default: false
+  anomalyDetection: boolean; // Default: false
 }
 ```
 
 **User-Level Toggle:**
+
 - Any user can disable AI features for themselves (stored in user preferences)
 - GF can disable features globally (overrides user preferences)
 
@@ -440,12 +464,12 @@ Empfehlung: Nachfassen in 3 Tagen optimal (basierend auf Verkaufszyklus-Analyse)
 
 **AI features have stricter SLAs than core features:**
 
-| Feature Category | Availability | Error Rate | Latency P95 |
-|-----------------|--------------|------------|-------------|
-| Core (Phase 1 non-AI) | 99.9% | <0.1% | <500ms |
-| Phase 1 AI (Search/STT) | 99.5% | <1% | <1s |
-| Phase 2 AI (Suggestions) | 99% | <5% | <2s |
-| Phase 3 AI (Predictions) | 98% | <10% | <3s |
+| Feature Category         | Availability | Error Rate | Latency P95 |
+| ------------------------ | ------------ | ---------- | ----------- |
+| Core (Phase 1 non-AI)    | 99.9%        | <0.1%      | <500ms      |
+| Phase 1 AI (Search/STT)  | 99.5%        | <1%        | <1s         |
+| Phase 2 AI (Suggestions) | 99%          | <5%        | <2s         |
+| Phase 3 AI (Predictions) | 98%          | <10%       | <3s         |
 
 **Rationale:** Users tolerate AI flakiness better than core feature failures.
 
@@ -456,16 +480,19 @@ Empfehlung: Nachfassen in 3 Tagen optimal (basierend auf Verkaufszyklus-Analyse)
 ### User Education per Phase
 
 **Phase 1:**
+
 - Onboarding: "Search past projects and customers with natural language"
 - Tutorial: "Use voice notes while driving - hands-free documentation"
 - Emphasis: AI is optional helper, not required
 
 **Phase 2:**
+
 - Announcement: "New: Smart suggestions based on your historical data"
 - Training video: "How we recommend templates using pattern matching"
 - FAQ: "Why did you suggest this?" explanations
 
 **Phase 3:**
+
 - Workshop: "Understanding AI predictions and confidence scores"
 - Guide: "When to trust vs. override AI recommendations"
 - Feedback loop: "Help us improve predictions"
@@ -556,9 +583,9 @@ Empfehlung: Nachfassen in 3 Tagen optimal (basierend auf Verkaufszyklus-Analyse)
 
 ## Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-11-12 | Product Team | Initial version addressing pre-mortem findings |
+| Version | Date       | Author       | Changes                                        |
+| ------- | ---------- | ------------ | ---------------------------------------------- |
+| 1.0     | 2025-11-12 | Product Team | Initial version addressing pre-mortem findings |
 
 ---
 
@@ -568,4 +595,3 @@ Empfehlung: Nachfassen in 3 Tagen optimal (basierend auf Verkaufszyklus-Analyse)
 - [Pre-Mortem Analysis](../../docs/reviews/PROJECT_KOMPASS_PRE-MORTEM_ANALYSIS.md) - Risk identification
 - [Revised Implementation Roadmap](../implementation/REVISED_IMPLEMENTATION_ROADMAP.md) - Sprint planning
 - [User Adoption Strategy](USER_ADOPTION_STRATEGY.md) - Addressing user concerns
-
