@@ -2,8 +2,14 @@ name: Deploy to Production
 
 on:
   push:
-    branches: [main]
+    tags:
+      - 'v*.*.*' # Tag-triggered production deployment (e.g., v1.2.3)
   workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Version tag to deploy (e.g., v1.2.3)'
+        required: true
+        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -13,7 +19,7 @@ jobs:
   quality-gates:
     name: Quality Gates
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -49,27 +55,45 @@ jobs:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
     needs: [quality-gates]
-    
+
     permissions:
       contents: read
       packages: write
-    
+
     outputs:
       version: ${{ steps.version.outputs.version }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Determine version
+      - name: Determine version from tag
         id: version
         run: |
-          # Get version from package.json
-          VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
-          echo "version=v${VERSION}" >> $GITHUB_OUTPUT
-          echo "Version: v${VERSION}"
+          # Extract version from Git tag (v1.2.3 -> v1.2.3)
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            # Manual trigger: use input
+            VERSION_TAG="${{ github.event.inputs.version_tag }}"
+          else
+            # Tag push: use ref
+            VERSION_TAG="${{ github.ref_name }}"
+          fi
+
+          # Validate tag format (v*.*.*)
+          if [[ ! "$VERSION_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Invalid version tag format: $VERSION_TAG"
+            echo "Required format: v<major>.<minor>.<patch> (e.g., v1.2.3)"
+            exit 1
+          fi
+
+          # Extract version without 'v' prefix (1.2.3)
+          VERSION="${VERSION_TAG#v}"
+          echo "version=$VERSION_TAG" >> $GITHUB_OUTPUT
+          echo "version_clean=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version tag: $VERSION_TAG"
+          echo "Version (clean): $VERSION"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -81,15 +105,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get Git SHA
+        id: git-sha
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Extract metadata for backend
         id: meta-backend
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend
           tags: |
-            type=raw,value=latest
             type=raw,value=${{ steps.version.outputs.version }}
-            type=sha,prefix=prod-
+            type=raw,value=prod-${{ steps.git-sha.outputs.sha }}
 
       - name: Build and push backend image
         uses: docker/build-push-action@v5
@@ -109,9 +136,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend
           tags: |
-            type=raw,value=latest
             type=raw,value=${{ steps.version.outputs.version }}
-            type=sha,prefix=prod-
+            type=raw,value=prod-${{ steps.git-sha.outputs.sha }}
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
@@ -134,7 +160,13 @@ jobs:
     environment:
       name: production
       url: ${{ secrets.PRODUCTION_URL }}
-    
+      # Optional: Add required reviewers for manual approval
+      # Uncomment to require manual approval before production deployment
+      # protection_rules:
+      #   - type: required_reviewers
+      #     reviewers:
+      #       - <github-username>
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -147,29 +179,37 @@ jobs:
           key: ${{ secrets.PRODUCTION_DEPLOY_KEY }}
           script: |
             cd /opt/kompass/production
-            
-            # Pull latest images
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:latest
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:latest
-            
+
+            VERSION_TAG="${{ steps.version.outputs.version }}"
+            GIT_SHA="${{ steps.git-sha.outputs.sha }}"
+
+            echo "Deploying version: $VERSION_TAG (SHA: $GIT_SHA)"
+
+            # Pull versioned images (not latest)
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:$VERSION_TAG
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:$VERSION_TAG
+
             # Backup current deployment
-            docker-compose -f docker-compose.yml -f docker-compose.production.yml ps > deployment-backup-$(date +%Y%m%d-%H%M%S).txt
-            
-            # Create backup of current running containers
+            TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+            docker-compose -f docker-compose.yml -f docker-compose.production.yml ps > deployment-backup-$TIMESTAMP.txt
+
+            # Create backup tags for rollback
             docker-compose -f docker-compose.yml -f docker-compose.production.yml stop
-            docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:rollback || true
-            docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:rollback || true
-            
-            # Deploy with docker-compose
+            # Tag current images as rollback (if they exist)
+            docker images ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend --format "{{.Tag}}" | grep -E "^v[0-9]+\.[0-9]+\.[0-9]+$" | head -1 | xargs -I {} docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:{} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:rollback || true
+            docker images ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend --format "{{.Tag}}" | grep -E "^v[0-9]+\.[0-9]+\.[0-9]+$" | head -1 | xargs -I {} docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:{} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:rollback || true
+
+            # Deploy with docker-compose using versioned tags
             export GITHUB_REPOSITORY=${{ env.IMAGE_NAME }}
-            export IMAGE_TAG=latest
+            export IMAGE_TAG=$VERSION_TAG
+            # Feature flags are injected via docker-compose.production.yml environment variables
             docker-compose -f docker-compose.yml -f docker-compose.production.yml pull
             docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d --remove-orphans
-            
+
             # Wait for services to be healthy
             echo "Waiting for services to be healthy..."
             sleep 45
-            
+
             # Check health
             docker-compose -f docker-compose.yml -f docker-compose.production.yml ps
 
@@ -182,13 +222,13 @@ jobs:
           script: |
             # Check backend health
             curl -f http://localhost:3001/health || exit 1
-            
+
             # Check frontend health
             curl -f http://localhost:3000/health || exit 1
-            
+
             # Check if services are responding
             docker-compose -f /opt/kompass/production/docker-compose.yml -f /opt/kompass/production/docker-compose.production.yml ps | grep "Up" || exit 1
-            
+
             echo "✅ Smoke tests passed"
 
       - name: Rollback on failure
@@ -201,24 +241,32 @@ jobs:
           script: |
             echo "❌ Deployment failed, rolling back..."
             cd /opt/kompass/production
-            
-            # Restore previous images
-            docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:rollback ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:latest || true
-            docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:rollback ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:latest || true
-            
-            # Restart with previous version
+
+            # Get previous version tag for rollback
+            PREV_VERSION=$(docker images ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend --format "{{.Tag}}" | grep -E "^v[0-9]+\.[0-9]+\.[0-9]+$" | grep -v "${{ steps.version.outputs.version }}" | head -1)
+
+            if [ -z "$PREV_VERSION" ]; then
+              echo "⚠️  No previous version found, using rollback tag"
+              PREV_VERSION="rollback"
+            fi
+
+            echo "Rolling back to version: $PREV_VERSION"
+
+            # Restore previous version
+            export GITHUB_REPOSITORY=${{ env.IMAGE_NAME }}
+            export IMAGE_TAG=$PREV_VERSION
             docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d --force-recreate
-            
+
             echo "✅ Rollback complete"
 
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     needs: [deploy-production, build-and-push]
-    
+
     permissions:
       contents: write
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -242,11 +290,25 @@ jobs:
         run: |
           npx conventional-changelog -p angular -i RELEASE_NOTES.md -s -r 1
 
-      - name: Get version
+      - name: Get version from tag
         id: version
         run: |
-          VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')
-          echo "version=v${VERSION}" >> $GITHUB_OUTPUT
+          # Extract version from Git tag (same logic as build-and-push job)
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION_TAG="${{ github.event.inputs.version_tag }}"
+          else
+            VERSION_TAG="${{ github.ref_name }}"
+          fi
+
+          # Validate tag format
+          if [[ ! "$VERSION_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Invalid version tag format: $VERSION_TAG"
+            exit 1
+          fi
+
+          VERSION="${VERSION_TAG#v}"
+          echo "version=$VERSION_TAG" >> $GITHUB_OUTPUT
+          echo "version_clean=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
@@ -263,9 +325,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           npx conventional-changelog -p angular -i CHANGELOG.md -s -r 0
-          
+
           if git diff --quiet CHANGELOG.md; then
             echo "No changelog changes"
           else
@@ -284,4 +346,3 @@ jobs:
           else
             echo "❌ Production deployment failed"
           fi
-

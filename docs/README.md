@@ -145,6 +145,7 @@ docs/
 │   ├── getting-started.md             # Quick start for new team members
 │   ├── development.md                 # Development environment setup
 │   ├── usage-guide.md                 # Application usage instructions
+│   ├── graphiti-memory.md             # Graphiti MCP setup, lifecycle, and usage expectations
 │   └── coding-standards.md            # Code quality standards
 │
 ├── processes/                          # Development and operational processes

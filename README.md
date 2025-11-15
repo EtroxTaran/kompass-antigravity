@@ -32,7 +32,8 @@ A comprehensive [pre-mortem analysis](docs/reviews/PROJECT_KOMPASS_PRE-MORTEM_AN
 
 **Risk:** Shifting from focused CRM to "Autonomous Business Partner" creates feature bloat.
 
-**Mitigation:** 
+**Mitigation:**
+
 - ✅ [AI Strategy & Phasing](docs/product-vision/AI_STRATEGY_AND_PHASING.md) - 3-phase roadmap with data quality gates
 - ✅ Phase 1 delivers full value **without** predictive AI
 - ✅ All AI features marked with phase indicators and user-controlled toggles
@@ -43,6 +44,7 @@ A comprehensive [pre-mortem analysis](docs/reviews/PROJECT_KOMPASS_PRE-MORTEM_AN
 **Risk:** AI predictions require historical data that doesn't exist, leading to inaccurate predictions.
 
 **Mitigation:**
+
 - ✅ System functional with **zero historical data** (Phase 1 works on day 1)
 - ✅ Confidence thresholds: No predictions shown if <70% confidence
 - ✅ Explainability required for all predictions (user trust through transparency)
@@ -53,6 +55,7 @@ A comprehensive [pre-mortem analysis](docs/reviews/PROJECT_KOMPASS_PRE-MORTEM_AN
 **Risk:** Missing Supplier and Material Management modules make KOMPASS incomplete for INN and PLAN personas.
 
 **Mitigation:**
+
 - ✅ [Supplier Management Module](docs/specifications/SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md) - Complete supplier lifecycle (Phase 1)
 - ✅ [Material Management Module](docs/specifications/MATERIAL_INVENTORY_MANAGEMENT_SPEC.md) - Material catalog, procurement, real-time cost tracking (Phase 1)
 - ✅ [INN Dashboard](ui-ux/06-dashboards/inn-dashboard.md) - Dedicated dashboard for procurement workflows
@@ -63,6 +66,7 @@ A comprehensive [pre-mortem analysis](docs/reviews/PROJECT_KOMPASS_PRE-MORTEM_AN
 **Risk:** Manual CSV integration creates data integrity issues and operational frustration.
 
 **Mitigation:**
+
 - ✅ [Lexware Integration Strategy](docs/specifications/LEXWARE_INTEGRATION_STRATEGY.md) - 4-phase roadmap with automation commitment
 - ✅ Phase 1: CSV with validation tools and reconciliation dashboard (acknowledge pain, minimize it)
 - ✅ Phase 2 (Month 3-6): Semi-automated sync (90% automation, 4h latency)
@@ -109,7 +113,7 @@ pnpm dev
 - **Frontend:** http://localhost:5173
 - **Backend API:** http://localhost:3000
 - **API Documentation:** http://localhost:3000/api
-- **CouchDB:** http://localhost:5984/_utils
+- **CouchDB:** http://localhost:5984/\_utils
 - **MeiliSearch:** http://localhost:7700
 
 ## Architecture
@@ -117,6 +121,7 @@ pnpm dev
 ### Technology Stack
 
 **Frontend:**
+
 - React 18 + TypeScript
 - Vite + PWA plugin
 - Redux Toolkit + Zustand (state management)
@@ -126,6 +131,7 @@ pnpm dev
 - Tailwind CSS
 
 **Backend:**
+
 - NestJS + TypeScript
 - CouchDB (database)
 - MeiliSearch (search)
@@ -153,6 +159,7 @@ kompass/
 ### Domain Model
 
 Core entities:
+
 - **Customer** - Business customers with contacts and locations
 - **Opportunity** - Sales pipeline tracking
 - **Offer** - Versioned quotes and proposals
@@ -170,9 +177,12 @@ See `docs/reviews/DATA_MODEL_SPECIFICATION.md` for complete entity definitions.
 
 KOMPASS uses Linear-integrated Git workflow with automated quality gates.
 
-**Quick workflow**:
+**Quick workflow** (trunk-based development):
+
 ```bash
 # 1. Create branch for Linear issue KOM-123
+git checkout main
+git pull origin main
 git checkout -b feature/KOM-123-description
 
 # 2. Make changes and commit
@@ -183,14 +193,16 @@ git commit -m "feat(KOM-123): add feature description"
 git push origin feature/KOM-123-description
 # Pre-push hooks run: unit tests, documentation checks
 
-# 4. Create PR on GitHub
+# 4. Create PR on GitHub (target: main)
 # CI/CD runs: all quality gates (11 checks)
 
-# 5. After approval, merge to develop
+# 5. After approval, merge to main
 # Auto-deploys to staging
 
-# 6. QA on staging, then merge develop → main
-# Auto-deploys to production
+# 6. QA on staging, then create production tag
+git tag v1.2.3
+git push origin v1.2.3
+# Tag-triggered production deployment
 ```
 
 **See**: `docs/processes/DEVELOPMENT_WORKFLOW.md` for complete workflow
@@ -269,9 +281,10 @@ bash scripts/health-check.sh
 
 ### Automated Workflows
 
-KOMPASS uses GitHub Actions for complete CI/CD:
+KOMPASS uses **trunk-based development** with GitHub Actions for complete CI/CD:
 
-**Quality Gates** (on every PR):
+**Quality Gates** (on every PR to `main`):
+
 - ✅ ESLint, Prettier, TypeScript checks
 - ✅ Unit, integration, and E2E tests (75%+ coverage)
 - ✅ Security scanning (Snyk, Semgrep, pnpm audit)
@@ -279,25 +292,35 @@ KOMPASS uses GitHub Actions for complete CI/CD:
 - ✅ Build verification
 
 **Deployments**:
-- **Staging**: Auto-deploy on merge to `develop`
-- **Production**: Auto-deploy on merge to `main`
 
-**See**: `docs/deployment/QUICK_START.md` for setup guide
+- **Staging**: Auto-deploy on push to `main` branch (trunk-based)
+- **Production**: Tag-triggered deployment (push tag `v*.*.*` to trigger)
+
+**Deployment Targets**: Hetzner Cloud servers (EU region, GDPR compliant)
+
+**See**: `docs/deployment/DEPLOYMENT_GUIDE.md` for complete setup guide
 
 ### Deployment Commands
 
 ```bash
-# Deploy to staging (on server)
-bash scripts/deploy-staging.sh
+# Staging: Auto-deploys on merge to main
+# No manual command needed - automatic via GitHub Actions
 
-# Deploy to production (on server)
-bash scripts/deploy-production.sh
+# Production: Create and push version tag
+git tag v1.2.3
+git push origin v1.2.3
+# This triggers production deployment workflow
+
+# Manual deployment (on Hetzner server)
+cd /opt/kompass/<environment>
+bash scripts/deploy-staging.sh      # Staging
+bash scripts/deploy-production.sh   # Production (requires IMAGE_TAG env var)
 
 # Run health checks
 bash scripts/health-check.sh <environment>
 
 # Rollback deployment
-bash scripts/rollback.sh <environment>
+bash scripts/rollback.sh <environment> [backup-timestamp]
 ```
 
 ## Project Status
@@ -312,6 +335,9 @@ bash scripts/rollback.sh <environment>
 - API specification
 - Development environment setup
 - **Complete CI/CD pipeline with Docker deployment**
+- **Trunk-based development workflow**
+- **Tag-triggered production deployments**
+- **Hetzner Cloud deployment (EU, GDPR compliant)**
 - **Documentation automation**
 - **Quality gates enforcement**
 - **Dual-environment deployment (staging + production)**
@@ -381,6 +407,7 @@ See `docs/reviews/RBAC_PERMISSION_MATRIX.md` for complete permission matrix.
 ## Contributing
 
 Please read `CONTRIBUTING.md` for:
+
 - Development workflow
 - Git commit conventions
 - Code review process
@@ -393,6 +420,7 @@ Proprietary - Internal use only
 ## Support
 
 For questions and support:
+
 - Technical issues: See `docs/reviews/OPERATIONS_GUIDE.md`
 - Architecture questions: Refer to `docs/architectur/`
 - Product questions: See `docs/product-vision/`

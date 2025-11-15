@@ -44,8 +44,35 @@ services:
       - /opt/kompass/staging/data/keycloak:/opt/keycloak/data
     restart: always
 
+  neo4j:
+    environment:
+      - NEO4J_AUTH=${STAGING_NEO4J_AUTH:-neo4j/stagingpassword}
+    volumes:
+      - /opt/kompass/staging/data/neo4j:/data
+      - /opt/kompass/staging/logs/neo4j:/logs
+    restart: always
+
+  whisper:
+    environment:
+      - ASR_MODEL=${STAGING_WHISPER_MODEL:-base}
+    volumes:
+      - /opt/kompass/staging/data/whisper:/root/.cache/whisper
+    restart: always
+
+  n8n:
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=${STAGING_N8N_BASIC_AUTH_ACTIVE:-true}
+      - N8N_BASIC_AUTH_USER=${STAGING_N8N_BASIC_AUTH_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${STAGING_N8N_BASIC_AUTH_PASSWORD}
+      - N8N_HOST=${STAGING_N8N_HOST:-n8n.staging.kompass.de}
+      - N8N_PROTOCOL=https
+      - WEBHOOK_URL=${STAGING_N8N_WEBHOOK_URL:-https://n8n.staging.kompass.de}
+    volumes:
+      - /opt/kompass/staging/data/n8n:/home/node/.n8n
+    restart: always
+
   backend:
-    image: ghcr.io/${GITHUB_REPOSITORY}/backend:staging
+    image: ghcr.io/${GITHUB_REPOSITORY}/backend:${IMAGE_TAG:-staging}
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -62,23 +89,39 @@ services:
       - JWT_SECRET=${STAGING_JWT_SECRET}
       - ALLOWED_ORIGINS=${STAGING_ALLOWED_ORIGINS}
       - LOG_LEVEL=info
+      # Neo4j connection
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=${STAGING_NEO4J_PASSWORD:-stagingpassword}
+      # Whisper API
+      - WHISPER_API_URL=${STAGING_WHISPER_API_URL:-http://whisper:9000}
+      # n8n webhook URL
+      - N8N_WEBHOOK_URL=${STAGING_N8N_WEBHOOK_URL:-https://n8n.staging.kompass.de}
+      # Feature flags (injected from GitHub Secrets)
+      - AI_N8N_ENABLED=${STAGING_AI_N8N_ENABLED:-false}
+      - AI_RAG_ENABLED=${STAGING_AI_RAG_ENABLED:-false}
+      - AI_ML_ENABLED=${STAGING_AI_ML_ENABLED:-false}
     restart: always
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   frontend:
-    image: ghcr.io/${GITHUB_REPOSITORY}/frontend:staging
+    image: ghcr.io/${GITHUB_REPOSITORY}/frontend:${IMAGE_TAG:-staging}
     environment:
       - VITE_API_URL=${STAGING_API_URL}
+      # Feature flags (for frontend feature toggles)
+      - VITE_AI_N8N_ENABLED=${STAGING_AI_N8N_ENABLED:-false}
+      - VITE_AI_RAG_ENABLED=${STAGING_AI_RAG_ENABLED:-false}
+      - VITE_AI_ML_ENABLED=${STAGING_AI_ML_ENABLED:-false}
     restart: always
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
 networks:
   kompass-network:
@@ -93,4 +136,3 @@ volumes:
     driver: local
   keycloak-data:
     driver: local
-

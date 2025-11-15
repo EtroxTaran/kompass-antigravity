@@ -1,7 +1,7 @@
 # KOMPASS Development Workflow
 
-**Last Updated**: 2025-01-27  
-**Version**: 1.0.0
+**Last Updated**: 2025-01-28  
+**Version**: 2.0.0 (Trunk-Based Development)
 
 ---
 
@@ -20,15 +20,17 @@
 
 ## Overview
 
-KOMPASS uses a Linear-integrated, Git Flow-inspired development workflow with automated quality gates and continuous deployment.
+KOMPASS uses a **trunk-based development** workflow with Linear integration, automated quality gates, and continuous deployment. All feature work happens in short-lived branches that merge directly to `main`, with feature flags controlling feature rollout.
 
 ### Key Principles
 
-1. **Linear Integration**: Every commit references a Linear issue
-2. **Quality First**: All code must pass quality gates before merge
-3. **Documentation**: Code and documentation are updated together
-4. **Automated Testing**: Comprehensive test coverage is required
-5. **Continuous Deployment**: Automated deployment to staging and production
+1. **Trunk-Based Development**: Feature branches merge directly to `main` (no long-lived develop branch)
+2. **Linear Integration**: Every commit references a Linear issue
+3. **Quality First**: All code must pass quality gates before merge
+4. **Feature Flags**: New features are controlled via feature flags for gradual rollout
+5. **Documentation**: Code and documentation are updated together
+6. **Automated Testing**: Comprehensive test coverage is required
+7. **Continuous Deployment**: Auto-deploy to staging on `main` push, tag-triggered production releases
 
 ---
 
@@ -63,17 +65,15 @@ GitHub Actions Run
     ✓ 1+ approvals
     ✓ Conversations resolved
         ↓
-  Merge to develop
+  Merge to main
         ↓
   Auto-Deploy to Staging
         ↓
  Manual QA on Staging
         ↓
- Create PR develop → main
+  Tag Release (v1.2.3)
         ↓
-  Merge to main
-        ↓
-Auto-Deploy to Production
+Tag-Triggered Production Deploy
         ↓
    GitHub Release
 ```
@@ -92,11 +92,11 @@ Auto-Deploy to Production
 ### 2. Create Feature Branch
 
 ```bash
-# Update local branches
-git checkout develop
-git pull origin develop
+# Update local main branch
+git checkout main
+git pull origin main
 
-# Create feature branch
+# Create feature branch from main
 git checkout -b feature/KOM-123-customer-validation
 
 # Branch naming format:
@@ -136,12 +136,14 @@ Show warning dialog when potential duplicate is found.
 ```
 
 **Pre-commit hooks automatically run**:
+
 - ✅ ESLint (auto-fix)
 - ✅ Prettier (auto-format)
 - ✅ TypeScript type checking
 - ✅ Commit message format validation
 
 **Commit Message Format**:
+
 ```
 <type>(KOM-###): <subject>
 
@@ -151,6 +153,7 @@ Show warning dialog when potential duplicate is found.
 ```
 
 **Types**:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -169,6 +172,7 @@ git push origin feature/KOM-123-customer-validation
 ```
 
 **Pre-push hooks automatically run**:
+
 - ✅ Unit tests
 - ✅ Documentation validation (if docs/ changed)
 - ✅ Linear issue ID check
@@ -181,38 +185,47 @@ Go to GitHub and create a pull request:
 **Title**: `feat(KOM-123): Add customer validation`
 
 **Description Template**:
+
 ```markdown
 ## Linear Issue
+
 Closes KOM-123
 
 ## Changes
+
 - Implemented fuzzy matching for company names
 - Added exact matching for VAT numbers
 - Created warning dialog for potential duplicates
 - Added comprehensive unit tests
 
 ## Testing
+
 - [ ] Unit tests pass (85% coverage)
 - [ ] Integration tests pass
 - [ ] Manual testing completed
 - [ ] Tested on Chrome, Firefox, Safari
 
 ## Documentation
+
 - [ ] API documentation updated
 - [ ] User guide updated (if applicable)
 - [ ] README updated (if applicable)
 
 ## Screenshots
+
 (Add screenshots for UI changes)
 
 ## Breaking Changes
+
 None
 
 ## Additional Notes
+
 Consider adding fuzzy matching threshold configuration in settings.
 ```
 
 **GitHub Actions automatically run**:
+
 - ✅ ESLint
 - ✅ TypeScript type checking
 - ✅ Prettier format check
@@ -233,65 +246,74 @@ Consider adding fuzzy matching threshold configuration in settings.
 - Push updates (will re-run CI/CD)
 
 **Requirements**:
+
 - ✅ At least 1 approval
 - ✅ All conversations resolved
 - ✅ All CI checks passing
 
-### 8. Merge to develop
+### 8. Merge to main
 
 - Merge PR (use "Squash and merge" recommended)
 - Delete feature branch
 - Move Linear issue to "Done"
 
 **Automatic Actions**:
+
 - ✅ Docker images built
-- ✅ Images pushed to ghcr.io
-- ✅ Deployed to staging
+- ✅ Images pushed to ghcr.io with Git SHA tags
+- ✅ Auto-deployed to staging
 - ✅ Smoke tests run
 - ✅ CHANGELOG.md updated
 - ✅ Linear issue updated
+
+**Note**: With trunk-based development, all merges go directly to `main`. Staging is automatically updated with every merge.
 
 ### 9. QA on Staging
 
 - Test feature on staging environment
 - Verify functionality
 - Check for regressions
+- Verify feature flags work correctly (if feature is behind a flag)
 - Get product owner sign-off
 
 **Staging URL**: https://staging.kompass.de
 
+**Feature Flags**: If your feature is behind a feature flag, verify it can be toggled on/off in staging before production release.
+
 ### 10. Release to Production
 
+Production deployments are **tag-triggered** for controlled releases:
+
 ```bash
-# Create release PR
+# Ensure you're on main and up to date
 git checkout main
 git pull origin main
-git checkout -b release/v1.2.0
-git merge develop
 
-# Update version in package.json
-npm version minor  # or major, patch
+# Update version in package.json (if needed)
+npm version patch  # or minor, major
 
-# Push and create PR
-git push origin release/v1.2.0
+# Create and push version tag
+git tag v1.2.3
+git push origin v1.2.3
 ```
 
-Create PR from `develop` to `main`:
+**Tag Format**: `v<major>.<minor>.<patch>` (e.g., `v1.2.3`)
 
-**Title**: `Release v1.2.0`
-
-**Description**: (Changelog summary)
-
-After approval and merge:
+**After tag push**:
 
 **Automatic Actions**:
+
+- ✅ Production deployment workflow triggers
 - ✅ Full test suite runs
-- ✅ Docker images built with version tags
-- ✅ Deployed to production
+- ✅ Docker images built with version tags (`v1.2.3` and `prod-<sha>`)
+- ✅ Deployed to production (Hetzner server)
+- ✅ Comprehensive health checks run
 - ✅ Smoke tests run
-- ✅ GitHub release created
-- ✅ Changelog generated
-- ✅ Git tag created
+- ✅ GitHub release created automatically
+- ✅ Changelog generated from commits since last tag
+- ✅ Automatic rollback on failure
+
+**Manual Approval**: Production deployments may require manual approval (configured in GitHub Environments).
 
 ---
 
@@ -302,6 +324,7 @@ After approval and merge:
 Format: `<type>/KOM-###-<description>`
 
 **Examples**:
+
 - `feature/KOM-123-customer-validation`
 - `bugfix/KOM-456-invoice-calculation`
 - `hotfix/KOM-789-security-jwt`
@@ -313,6 +336,7 @@ Format: `<type>/KOM-###-<description>`
 Format: `<type>(KOM-###): <subject>`
 
 **Examples**:
+
 ```
 feat(KOM-123): add customer duplicate detection
 fix(KOM-456): correct invoice total calculation
@@ -333,33 +357,39 @@ Same format as commit messages: `<type>(KOM-###): <subject>`
 All PRs must pass these quality gates:
 
 ### Code Quality
+
 - [ ] ESLint passes (no errors)
 - [ ] TypeScript type checking passes
 - [ ] Prettier formatting check passes
 - [ ] Build succeeds (backend + frontend)
 
 ### Testing
+
 - [ ] Unit tests pass (70% of test pyramid)
 - [ ] Integration tests pass (20% of test pyramid)
 - [ ] E2E tests pass (10% of test pyramid)
 - [ ] Test coverage ≥75% overall
 
 ### Security
+
 - [ ] pnpm audit passes (no high/critical vulnerabilities)
 - [ ] Snyk security scan passes
 - [ ] Semgrep SAST scan passes
 
 ### Documentation
+
 - [ ] Documentation updated (if code changes require it)
 - [ ] API documentation current
 - [ ] Changelog entry added (for feat/fix/refactor)
 
 ### Git Hygiene
+
 - [ ] All commits follow conventional commits format
 - [ ] Linear issue referenced in all commits
 - [ ] Branch name follows naming convention
 
 ### Code Review
+
 - [ ] At least 1 approval
 - [ ] All conversations resolved
 
@@ -470,6 +500,7 @@ test('Customer creation flow with duplicate warning', async ({ page }) => {
 ### When to Update Documentation
 
 **Always update docs when you**:
+
 - Add/modify API endpoints
 - Change data models
 - Add new features
@@ -477,19 +508,20 @@ test('Customer creation flow with duplicate warning', async ({ page }) => {
 - Update dependencies (major versions)
 
 **Consider updating docs when you**:
+
 - Fix complex bugs (add to troubleshooting)
 - Improve performance (update metrics)
 - Add tests (update test strategy)
 
 ### What to Update
 
-| Change Type | Documentation to Update |
-|------------|------------------------|
-| API changes | `docs/api/reference/endpoints.md`, API_SPECIFICATION.md |
-| Architecture changes | `docs/architecture/` |
-| New features | `docs/guides/`, README.md |
-| Configuration changes | `.env.example`, deployment docs |
-| Process changes | `docs/processes/` |
+| Change Type           | Documentation to Update                                 |
+| --------------------- | ------------------------------------------------------- |
+| API changes           | `docs/api/reference/endpoints.md`, API_SPECIFICATION.md |
+| Architecture changes  | `docs/architecture/`                                    |
+| New features          | `docs/guides/`, README.md                               |
+| Configuration changes | `.env.example`, deployment docs                         |
+| Process changes       | `docs/processes/`                                       |
 
 ---
 
@@ -500,6 +532,7 @@ test('Customer creation flow with duplicate warning', async ({ page }) => {
 **Issue**: Linting or formatting errors
 
 **Solution**:
+
 ```bash
 # Auto-fix linting
 pnpm lint --fix
@@ -516,6 +549,7 @@ git commit
 **Issue**: Unit tests fail
 
 **Solution**:
+
 ```bash
 # Run tests locally
 pnpm test:unit
@@ -529,6 +563,7 @@ pnpm test:unit
 **Issue**: Integration or E2E tests fail in GitHub Actions
 
 **Solution**:
+
 1. Check GitHub Actions logs
 2. Run tests locally:
    ```bash
@@ -540,14 +575,15 @@ pnpm test:unit
 ### Merge Conflicts
 
 **Solution**:
-```bash
-# Update local develop
-git checkout develop
-git pull origin develop
 
-# Rebase feature branch
+```bash
+# Update local main branch
+git checkout main
+git pull origin main
+
+# Rebase feature branch on main
 git checkout feature/KOM-123-description
-git rebase develop
+git rebase main
 
 # Resolve conflicts
 # Test after rebase
@@ -559,6 +595,27 @@ git push origin feature/KOM-123-description --force-with-lease
 
 ---
 
+## Feature Flags
+
+KOMPASS uses feature flags for gradual feature rollout and safe deployments. All new features should be behind feature flags initially.
+
+### Using Feature Flags
+
+1. **Define flag in code**: Use `packages/shared/src/constants/feature-flags.ts`
+2. **Enable in staging**: Test with flag enabled in staging environment
+3. **Deploy to production**: Deploy with flag disabled (feature hidden)
+4. **Gradual rollout**: Enable flag for specific users/groups
+5. **Full rollout**: Enable flag globally when confident
+
+### Feature Flag Best Practices
+
+- **Always use flags for new features**: Allows safe deployment without exposing incomplete features
+- **Test flag toggling**: Verify feature works with flag on/off
+- **Document flag usage**: Update documentation when adding new flags
+- **Remove flags after full rollout**: Clean up flags once feature is stable and fully rolled out
+
+See `packages/shared/src/constants/feature-flags.ts` for implementation details.
+
 ## Best Practices
 
 1. **Commit frequently**: Small, focused commits
@@ -567,8 +624,10 @@ git push origin feature/KOM-123-description --force-with-lease
 4. **Request review early**: Get feedback sooner
 5. **Be responsive**: Address review comments promptly
 6. **Keep PRs small**: Easier to review, faster to merge
-7. **Rebase regularly**: Stay up to date with develop
-8. **Clean up**: Delete merged branches
+7. **Rebase regularly**: Stay up to date with main (not develop)
+8. **Use feature flags**: Control feature rollout safely
+9. **Clean up**: Delete merged branches
+10. **Tag for production**: Use semantic versioning tags for production releases
 
 ---
 
@@ -584,4 +643,3 @@ git push origin feature/KOM-123-description --force-with-lease
 **Maintained By**: Development Team  
 **Last Review**: 2025-01-27  
 **Next Review**: Q2 2025
-

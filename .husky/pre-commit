@@ -43,7 +43,7 @@ echo "   ✅ No forbidden files in root directory"
 echo ""
 echo "2️⃣  Checking for forbidden file patterns..."
 
-FORBIDDEN_PATTERNS=$(git diff --cached --name-only | grep -E "(_backup|\.backup|\.bak|_old|\.old|_v[0-9]|\.v[0-9]|_fixed|\.fixed|_copy|\.copy|_temp|\.temp|~$|\.swp$|\.tmp$)" || true)
+FORBIDDEN_PATTERNS=$(git diff --cached --name-only | grep -E "(_backup|\.backup|\.bak|_old|\.old|_v[0-9]|\.v[0-9]|_fixed|\.fixed|_copy|\.copy|_temp|\.temp$|~$|\.swp$|\.tmp$)" | grep -vE "\.template$" || true)
 
 if [ -n "$FORBIDDEN_PATTERNS" ]; then
     echo "   ❌ Forbidden file patterns detected:"

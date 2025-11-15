@@ -33,14 +33,14 @@
 
 ## 📚 Document Index
 
-| Document | Purpose | Audience | Time to Read |
-|----------|---------|----------|--------------|
-| [QUICK_START.md](./QUICK_START.md) | Fast setup guide | DevOps, Tech Lead | 30 min |
-| [SETUP_CHECKLIST.md](./SETUP_CHECKLIST.md) | Step-by-step checklist | DevOps, Tech Lead | 2-4 hours |
-| [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) | Complete deployment reference | DevOps, Developers | 1 hour |
-| [GITHUB_SECRETS.md](./GITHUB_SECRETS.md) | Secrets reference | DevOps, Security | 30 min |
-| [ROLLBACK_PROCEDURES.md](./ROLLBACK_PROCEDURES.md) | Emergency rollback guide | DevOps, On-call | 15 min |
-| [IMPLEMENTATION_COMPLETE.md](./IMPLEMENTATION_COMPLETE.md) | Implementation summary | Tech Lead | 20 min |
+| Document                                                   | Purpose                       | Audience           | Time to Read |
+| ---------------------------------------------------------- | ----------------------------- | ------------------ | ------------ |
+| [QUICK_START.md](./QUICK_START.md)                         | Fast setup guide              | DevOps, Tech Lead  | 30 min       |
+| [SETUP_CHECKLIST.md](./SETUP_CHECKLIST.md)                 | Step-by-step checklist        | DevOps, Tech Lead  | 2-4 hours    |
+| [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)               | Complete deployment reference | DevOps, Developers | 1 hour       |
+| [GITHUB_SECRETS.md](./GITHUB_SECRETS.md)                   | Secrets reference             | DevOps, Security   | 30 min       |
+| [ROLLBACK_PROCEDURES.md](./ROLLBACK_PROCEDURES.md)         | Emergency rollback guide      | DevOps, On-call    | 15 min       |
+| [IMPLEMENTATION_COMPLETE.md](./IMPLEMENTATION_COMPLETE.md) | Implementation summary        | Tech Lead          | 20 min       |
 
 ---
 
@@ -49,12 +49,14 @@
 ### Complete CI/CD Pipeline
 
 ✅ **Docker Infrastructure**
+
 - Production-ready Dockerfiles (backend + frontend)
 - Multi-stage builds for minimal image sizes
 - Security hardening (non-root users, minimal base images)
 - docker-compose for all environments
 
 ✅ **Quality Gates**
+
 - 11 automated checks on every PR
 - Unit, integration, and E2E tests
 - Linting, formatting, type checking
@@ -62,25 +64,29 @@
 - Test coverage enforcement (≥75%)
 
 ✅ **Documentation Automation**
+
 - Automatic documentation validation
 - API docs generation from code
 - Changelog generation from commits
 - Broken link detection
 
 ✅ **Deployment Automation**
-- Auto-deploy to staging on merge to `develop`
-- Auto-deploy to production on merge to `main`
+
+- Auto-deploy to staging on push to `main` (trunk-based development)
+- Tag-triggered production deployment (v*.*.\* tags)
 - Comprehensive health checks
 - Automatic rollback on failure
 - GitHub release creation
 
 ✅ **Git Workflow Integration**
+
 - Linear issue tracking enforced
 - Conventional commits required
 - Branch naming validation
 - Pre-commit and pre-push hooks
 
 ✅ **Safety Features**
+
 - Automatic rollback scripts
 - Database backups
 - Health monitoring
@@ -93,11 +99,13 @@
 **For First-Time Setup** (Choose one):
 
 ### Path A: Fast Track (2 hours)
+
 1. Read [QUICK_START.md](./QUICK_START.md)
 2. Follow [SETUP_CHECKLIST.md](./SETUP_CHECKLIST.md)
 3. Test deployment
 
 ### Path B: Comprehensive (4 hours)
+
 1. Read [IMPLEMENTATION_COMPLETE.md](./IMPLEMENTATION_COMPLETE.md)
 2. Read [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
 3. Configure servers following guide
@@ -113,18 +121,21 @@
 Before you begin, ensure you have:
 
 ### Access & Accounts
+
 - [ ] GitHub repository admin access
 - [ ] Two servers with root SSH access (staging + production)
 - [ ] Snyk account (free tier sufficient)
 - [ ] (Optional) Domain names configured
 
 ### Local Requirements
+
 - [ ] Git installed and configured
 - [ ] SSH client
 - [ ] Text editor
 - [ ] Terminal/command line access
 
 ### Knowledge Requirements
+
 - Basic Linux command line
 - Basic Docker concepts
 - Basic Git workflow
@@ -162,17 +173,17 @@ graph LR
     C -->|Yes| E[Code Review]
     E --> F{Approved?}
     F -->|No| D
-    F -->|Yes| G[Merge to develop]
+    F -->|Yes| G[Merge to main]
     G --> H[Auto-Deploy Staging]
     H --> I[QA Testing]
     I --> J{Ready for Prod?}
     J -->|No| D
-    J -->|Yes| K[PR to main]
-    K --> L[Merge to main]
-    L --> M[Auto-Deploy Production]
+    J -->|Yes| K[Tag Release (v1.2.3)]
+    K --> L[Tag-Triggered Production Deploy]
 ```
 
 **Timeline**:
+
 - PR creation to merge: 1-2 hours (with review)
 - Staging deployment: ~15 minutes
 - Production deployment: ~20 minutes
@@ -186,6 +197,7 @@ graph LR
 Every PR must pass **13 checks**:
 
 ### Automated (11 checks)
+
 1. ESLint (code quality)
 2. TypeScript (type safety)
 3. Prettier (formatting)
@@ -199,6 +211,7 @@ Every PR must pass **13 checks**:
 11. Branch naming convention
 
 ### Manual (2 checks)
+
 12. Code review (1+ approval)
 13. Conversation resolution
 
@@ -209,17 +222,20 @@ Every PR must pass **13 checks**:
 ## 🎓 Learning Resources
 
 ### For Developers
+
 1. Read: [Development Workflow](../processes/DEVELOPMENT_WORKFLOW.md)
 2. Practice: Create a test PR following the workflow
 3. Reference: Keep workflow guide handy
 
 ### For DevOps
+
 1. Read: [Quick Start](./QUICK_START.md)
 2. Read: [Deployment Guide](./DEPLOYMENT_GUIDE.md)
 3. Practice: Deploy to staging
 4. Test: Perform rollback on staging
 
 ### For Team Leads
+
 1. Read: [Implementation Complete](./IMPLEMENTATION_COMPLETE.md)
 2. Review: Quality gates and their rationale
 3. Train: Team members on workflow
@@ -230,13 +246,13 @@ Every PR must pass **13 checks**:
 
 ### Common Issues
 
-| Issue | Quick Fix | Full Solution |
-|-------|-----------|---------------|
-| Commit hooks fail | Run `pnpm lint --fix && pnpm format` | See Development Workflow |
-| CI checks fail | Check GitHub Actions logs | Fix and push again |
-| Deployment fails | Check GitHub secrets | See Deployment Guide |
-| Services won't start | Check logs: `docker-compose logs` | See Deployment Guide |
-| Need to rollback | Run `bash scripts/rollback.sh` | See Rollback Procedures |
+| Issue                | Quick Fix                            | Full Solution            |
+| -------------------- | ------------------------------------ | ------------------------ |
+| Commit hooks fail    | Run `pnpm lint --fix && pnpm format` | See Development Workflow |
+| CI checks fail       | Check GitHub Actions logs            | Fix and push again       |
+| Deployment fails     | Check GitHub secrets                 | See Deployment Guide     |
+| Services won't start | Check logs: `docker-compose logs`    | See Deployment Guide     |
+| Need to rollback     | Run `bash scripts/rollback.sh`       | See Rollback Procedures  |
 
 **Full troubleshooting**: See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md#troubleshooting)
 
@@ -245,15 +261,18 @@ Every PR must pass **13 checks**:
 ## 📞 Support
 
 ### Documentation Issues
+
 - Create issue with tag: `documentation`
 - Update docs and submit PR
 
 ### Deployment Issues
+
 - Check: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
 - Rollback: [ROLLBACK_PROCEDURES.md](./ROLLBACK_PROCEDURES.md)
 - Create Linear issue with tag: `ci-cd` or `deployment`
 
 ### Emergency Production Issues
+
 - Follow: [ROLLBACK_PROCEDURES.md](./ROLLBACK_PROCEDURES.md)
 - Contact: DevOps on-call
 
@@ -261,11 +280,11 @@ Every PR must pass **13 checks**:
 
 ## 🗺️ Deployment Environments
 
-| Environment | URL | Branch | Deploy Trigger | Purpose |
-|------------|-----|--------|----------------|---------|
-| Development | localhost:3000 | Any | Manual | Local development |
-| Staging | staging.kompass.de | develop | Auto on merge | QA testing |
-| Production | kompass.de | main | Auto on merge | Live system |
+| Environment | URL                | Branch        | Deploy Trigger | Purpose           |
+| ----------- | ------------------ | ------------- | -------------- | ----------------- |
+| Development | localhost:3000     | Any           | Manual         | Local development |
+| Staging     | staging.kompass.de | main          | Auto on push   | QA testing        |
+| Production  | kompass.de         | Tag (v*.*.\*) | Tag push       | Live system       |
 
 ---
 
@@ -286,16 +305,19 @@ After deployment, monitor:
 ## 🔄 Maintenance Schedule
 
 ### Weekly
+
 - Review GitHub Actions logs
 - Check deployment health
 - Review pending PRs
 
 ### Monthly
+
 - Review test coverage
 - Update dependencies
 - Review security scans
 
 ### Quarterly
+
 - Rotate secrets and credentials
 - Review documentation
 - Update deployment procedures
@@ -306,11 +328,13 @@ After deployment, monitor:
 ## 📖 Related Documentation
 
 ### Core Documentation
+
 - [Architecture](../architecture/)
 - [API Specification](../specifications/API_SPECIFICATION.md)
 - [RBAC Permissions](../specifications/RBAC_PERMISSION_MATRIX.md)
 
 ### Process Documentation
+
 - [Development Workflow](../processes/DEVELOPMENT_WORKFLOW.md)
 - [Git Workflow](../../.cursor/rules/git-workflow.mdc)
 - [Code Review Standards](../../.cursor/rules/code-review-standards.mdc)
@@ -332,4 +356,3 @@ After setup is complete:
 **Questions?** Create a Linear issue with the `ci-cd` tag.
 
 **Ready to start?** Go to [QUICK_START.md](./QUICK_START.md)
-

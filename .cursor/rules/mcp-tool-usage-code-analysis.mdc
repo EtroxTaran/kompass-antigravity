@@ -1,0 +1,79 @@
+---
+description: MCP code analysis tool usage - Semgrep for security scanning, bug detection, and code quality analysis
+globs: []
+alwaysApply: false
+---
+
+# MCP Code Analysis Tools
+
+This rule covers code analysis tools: **Semgrep**. Use Semgrep for security scanning, bug detection, and code quality analysis.
+
+**See also:** `.cursor/rules/mcp-tool-usage.mdc` for prioritization hierarchy and decision tree.
+
+## Semgrep
+
+**What it's used for:**
+Static analysis and security engine for code that detects bugs, secrets, hardcoded credentials, insecure code patterns, unused variables, risky imports, or bad practices.
+
+**When to use:**
+- Review unfamiliar code for security vulnerabilities
+- Respond to "Is this code secure?" questions
+- Check your own work before committing
+- Detect hardcoded secrets or credentials
+- Find insecure patterns (SQL injection, XSS, etc.)
+- Identify unused code or dead variables
+- Perform compliance checks (GoBD, DSGVO)
+
+**When NOT to use:**
+- Testing running code (use Playwright or integration tests)
+- Performance analysis (use profiling tools)
+- Documentation lookup (use Ref/Context7)
+- General code review (use human reviewers)
+
+**Prioritization:**
+Always use Semgrep for security-critical code reviews. Run security checks before accepting code changes.
+
+```typescript
+// ✅ CORRECT: Use Semgrep to check for security issues
+// Before committing authentication code, run Semgrep security check
+// Semgrep detects: hardcoded JWT secret, SQL injection, XSS vulnerability
+
+// ❌ WRONG: Skipping Semgrep security check
+// Pushing code with security vulnerabilities without scanning
+const jwtSecret = 'my-secret-key'; // Semgrep would catch this
+```
+
+## Security Scanning Workflow
+
+### Before Committing Code
+
+1. **Run Semgrep security check** on changed files
+2. **Review findings** - fix critical and high severity issues
+3. **Re-scan** after fixes to ensure vulnerabilities are resolved
+4. **Document exceptions** if false positives occur
+
+### Common Issues Semgrep Detects
+
+- **Hardcoded Secrets**: API keys, passwords, tokens in code
+- **SQL Injection**: Unsanitized database queries
+- **XSS Vulnerabilities**: Unsanitized user input in HTML
+- **Insecure Random**: Weak random number generation
+- **Mass Assignment**: Unprotected object property assignment
+- **NoSQL Injection**: Unsanitized NoSQL queries
+- **Insecure Dependencies**: Known vulnerable packages
+
+## Integration with Security Rules
+
+Semgrep complements existing security rules:
+
+- **security-best-practices.mdc** - General security guidelines
+- **security-compliance.mdc** - DSGVO and GoBD compliance
+- **codeguard-*.mdc** - CodeGuard security rules (automatically applied)
+
+Always run Semgrep in addition to following security rules - it catches violations automatically.
+
+## References
+
+- Main MCP Tool Usage: `.cursor/rules/mcp-tool-usage.mdc`
+- Security Best Practices: `.cursor/rules/security-best-practices.mdc`
+- Security Compliance: `.cursor/rules/security-compliance.mdc`

@@ -19,6 +19,7 @@
 ```
 
 This script will:
+
 - Check prerequisites (Node.js 20+, pnpm 8+)
 - Install all dependencies
 - Setup git hooks (Husky)
@@ -54,6 +55,7 @@ pnpm dev
 ### Environment Variables
 
 **Backend (.env):**
+
 ```env
 NODE_ENV=development
 PORT=3000
@@ -65,6 +67,7 @@ JWT_SECRET=your-secret-key
 ```
 
 **Frontend (.env):**
+
 ```env
 VITE_API_URL=http://localhost:3000/api/v1
 VITE_ENABLE_OFFLINE=true
@@ -112,20 +115,20 @@ kompass/
 
 ### Technology Decisions
 
-| Purpose | Technology | Why |
-|---------|-----------|-----|
-| Backend Framework | NestJS | TypeScript, DI, modular |
-| Frontend Framework | React 18 | Component-based, ecosystem |
-| Database | CouchDB | Offline-first, sync |
-| Search | MeiliSearch | Fast, typo-tolerant |
-| Auth | Keycloak | RBAC, SSO-ready |
-| State (Global) | Redux Toolkit | Predictable, DevTools |
-| State (Local) | Zustand | Simple, fast |
-| Server State | React Query | Caching, sync |
-| UI Components | shadcn/ui | Accessible, customizable |
-| Forms | react-hook-form | Performance, validation |
-| Validation | Zod + class-validator | Type-safe |
-| Testing | Jest + Playwright | Coverage, E2E |
+| Purpose            | Technology            | Why                        |
+| ------------------ | --------------------- | -------------------------- |
+| Backend Framework  | NestJS                | TypeScript, DI, modular    |
+| Frontend Framework | React 18              | Component-based, ecosystem |
+| Database           | CouchDB               | Offline-first, sync        |
+| Search             | MeiliSearch           | Fast, typo-tolerant        |
+| Auth               | Keycloak              | RBAC, SSO-ready            |
+| State (Global)     | Redux Toolkit         | Predictable, DevTools      |
+| State (Local)      | Zustand               | Simple, fast               |
+| Server State       | React Query           | Caching, sync              |
+| UI Components      | shadcn/ui             | Accessible, customizable   |
+| Forms              | react-hook-form       | Performance, validation    |
+| Validation         | Zod + class-validator | Type-safe                  |
+| Testing            | Jest + Playwright     | Coverage, E2E              |
 
 ## Development Workflow
 
@@ -160,6 +163,7 @@ pnpm type-check
 ```
 
 This generates:
+
 - ✅ Entity interface with all audit fields
 - ✅ Repository (CouchDB operations)
 - ✅ Service (business logic)
@@ -239,6 +243,7 @@ open coverage/lcov-report/index.html
 ### Writing Tests
 
 **Unit Test Example:**
+
 ```typescript
 // apps/backend/src/modules/customer/__tests__/customer.service.spec.ts
 import { Test } from '@nestjs/testing';
@@ -249,7 +254,7 @@ describe('CustomerService', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      providers: [CustomerService, /* mocks */],
+      providers: [CustomerService /* mocks */],
     }).compile();
 
     service = module.get(CustomerService);
@@ -263,6 +268,7 @@ describe('CustomerService', () => {
 ```
 
 **E2E Test Example:**
+
 ```typescript
 // tests/e2e/customer/create-customer.spec.ts
 import { test, expect } from '@playwright/test';
@@ -272,7 +278,7 @@ test('User can create customer', async ({ page }) => {
   await page.click('button:has-text("New")');
   await page.fill('[name="name"]', 'Test Customer');
   await page.click('button:has-text("Save")');
-  
+
   await expect(page.locator('.toast-success')).toBeVisible();
 });
 ```
@@ -424,7 +430,9 @@ const statistics = useMemo(() => {
 }, [customers]);
 
 // ✅ DO: Lazy load routes
-const CustomerPage = lazy(() => import('./features/customer/pages/CustomerPage'));
+const CustomerPage = lazy(
+  () => import('./features/customer/pages/CustomerPage')
+);
 
 // ✅ DO: Virtual scrolling for large lists (>100 items)
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -476,7 +484,7 @@ private filterFieldsByRole(entity: Customer, role: string) {
 git commit -m "feat(customer): add email validation"
 
 # ✅ DO: Pull before pushing
-git pull origin develop
+git pull origin main
 git push origin feature/my-feature
 
 # ❌ DON'T: Commit directly to main
@@ -577,6 +585,7 @@ docker-compose logs -f     # View logs
 ### Cursor AI Rules
 
 The `.cursorrules` file enforces:
+
 - ✅ No `any` types (use `unknown`)
 - ✅ Explicit return types
 - ✅ shadcn/ui components only
@@ -589,20 +598,21 @@ The `.cursorrules` file enforces:
 
 ### RBAC Roles
 
-| Role | Description | Permissions |
-|------|-------------|-------------|
-| **ADM** | Außendienst (Field Sales) | Own customers, opportunities, protocols |
-| **INNEN** | Innendienst (Inside Sales) | All customers, create offers, view projects |
-| **PLAN** | Planungsabteilung (Planning) | Assigned projects, all tasks, capacity planning |
-| **BUCH** | Buchhaltung (Accounting) | All invoices, payments, financial reports |
-| **GF** | Geschäftsführer (Executive) | Full access, approve high-value items |
-| **ADMIN** | System Administrator | Full system access, user management |
+| Role      | Description                  | Permissions                                     |
+| --------- | ---------------------------- | ----------------------------------------------- |
+| **ADM**   | Außendienst (Field Sales)    | Own customers, opportunities, protocols         |
+| **INNEN** | Innendienst (Inside Sales)   | All customers, create offers, view projects     |
+| **PLAN**  | Planungsabteilung (Planning) | Assigned projects, all tasks, capacity planning |
+| **BUCH**  | Buchhaltung (Accounting)     | All invoices, payments, financial reports       |
+| **GF**    | Geschäftsführer (Executive)  | Full access, approve high-value items           |
+| **ADMIN** | System Administrator         | Full system access, user management             |
 
 See `docs/reviews/RBAC_PERMISSION_MATRIX.md` for complete matrix.
 
 ### Domain Entities
 
 **Core entities with GoBD compliance:**
+
 - **Customer** - Business customers
 - **Contact** - Customer contacts
 - **Location** - Customer locations
@@ -673,4 +683,3 @@ DELETE /api/v1/customers/:id  # Delete
 ---
 
 **Happy coding! 🚀**
-
