@@ -111,7 +111,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run unit tests with coverage thresholds
-        run: pnpm test:unit --coverage
+        run: |
+          pnpm --filter @kompass/backend test:cov
+          pnpm --filter @kompass/frontend test:coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -215,7 +217,7 @@ jobs:
 
       - name: Upload Playwright artifacts
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: |
