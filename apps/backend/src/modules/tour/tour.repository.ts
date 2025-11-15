@@ -12,7 +12,7 @@
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
-import { Nano } from 'nano';
+import { ServerScope as Nano } from 'nano';
 
 import type { Tour } from '@kompass/shared/types/entities/tour';
 
@@ -62,7 +62,7 @@ export class TourRepository implements ITourRepository {
    */
   async findById(id: string): Promise<Tour | null> {
     try {
-      const doc = await this.nano.use('kompass').get<Tour>(id);
+      const doc = (await this.nano.use('kompass').get(id)) as Tour;
       if (doc.type !== 'tour') {
         return null;
       }
@@ -240,7 +240,7 @@ export class TourRepository implements ITourRepository {
    */
   async findSuggestionsForMeeting(
     meetingDate: Date,
-    locationId: string,
+    _locationId: string,
     userId: string
   ): Promise<Tour[]> {
     try {

@@ -6,7 +6,7 @@
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
-import { Nano } from 'nano';
+import { ServerScope as Nano } from 'nano';
 
 import type { Expense } from '@kompass/shared/types/entities/expense';
 
@@ -63,7 +63,7 @@ export class ExpenseRepository implements IExpenseRepository {
 
   async findById(id: string): Promise<Expense | null> {
     try {
-      const doc = await this.nano.use('kompass').get<Expense>(id);
+      const doc = (await this.nano.use('kompass').get(id)) as Expense;
       if (doc.type !== 'expense') {
         return null;
       }
@@ -102,11 +102,11 @@ export class ExpenseRepository implements IExpenseRepository {
       };
 
       if (filters?.status) {
-        selector.status = filters.status;
+        selector['status'] = filters.status;
       }
 
       if (filters?.category) {
-        selector.category = filters.category;
+        selector['category'] = filters.category;
       }
 
       if (filters?.tourId) {

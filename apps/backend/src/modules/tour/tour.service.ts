@@ -119,7 +119,7 @@ export class TourService {
     } else {
       // PLAN/GF: All tours
       tours = await this.tourRepository.findByStatus(
-        filters?.status || 'planned'
+        filters?.status || TourStatus.PLANNED
       );
       if (filters) {
         // Apply additional filters
@@ -426,7 +426,7 @@ export class TourService {
 
     // Get expenses and mileage
     const expenses = await this.expenseService.findByTour(id);
-    const mileageLogs = await this.mileageService.findByTour(id);
+    const _mileageLogs = await this.mileageService.findByTour(id);
 
     // Calculate costs
     const mileageCost = await this.mileageService.calculateTotalCost(id);

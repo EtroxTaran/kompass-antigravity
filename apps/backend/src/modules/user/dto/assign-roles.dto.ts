@@ -25,7 +25,7 @@ export class AssignRolesDto {
   @IsArray()
   @ArrayMinSize(1, { message: 'User must have at least one role' })
   @IsEnum(UserRole, { each: true, message: 'Invalid role' })
-  roles: UserRole[];
+  roles!: UserRole[];
 
   @ApiProperty({
     description: 'Primary role for the user (must be in roles array)',
@@ -33,7 +33,7 @@ export class AssignRolesDto {
     enum: UserRole,
   })
   @IsEnum(UserRole, { message: 'Invalid primary role' })
-  primaryRole: UserRole;
+  primaryRole!: UserRole;
 
   @ApiProperty({
     description: 'Reason for role assignment (audit trail)',

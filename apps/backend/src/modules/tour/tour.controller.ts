@@ -27,6 +27,7 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -54,10 +55,10 @@ interface User {
 }
 
 const CurrentUser =
-  () => (target: any, propertyKey: string, parameterIndex: number) => {};
+  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
 const RequirePermission =
-  (entity: string, action: string) =>
-  (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {};
+  (_entity: string, _action: string) =>
+  (_target: any, _propertyKey: string, _descriptor: PropertyDescriptor) => {};
 const JwtAuthGuard = class {};
 const RbacGuard = class {};
 

@@ -17,15 +17,7 @@
  * - Contact.VIEW_AUTHORITY_LEVELS: All roles
  */
 
-import {
-  Controller,
-  Get,
-  Put,
-  Body,
-  Param,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Get, Put, Body, Param, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiBearerAuth,
@@ -48,10 +40,10 @@ interface User {
 }
 
 const CurrentUser =
-  () => (target: any, propertyKey: string, parameterIndex: number) => {};
+  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
 const RequirePermission =
-  (entity: string, action: string) =>
-  (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {};
+  (_entity: string, _action: string) =>
+  (_target: any, _propertyKey: string, _descriptor: PropertyDescriptor) => {};
 const JwtAuthGuard = class {};
 const RbacGuard = class {};
 

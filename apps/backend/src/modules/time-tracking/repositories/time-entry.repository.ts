@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
-import { Connection } from 'mongoose';
+// TODO: Install mongoose and @nestjs/mongoose when implementing time tracking
+// import { InjectConnection } from '@nestjs/mongoose';
+// import { Connection } from 'mongoose';
+type Connection = any; // Stub type
 import { v4 as uuidv4 } from 'uuid';
 
 import type {
@@ -64,8 +66,8 @@ export class TimeEntryRepository implements ITimeEntryRepository {
       // const doc = await db.get(id);
       // return doc as TimeEntry;
       return null;
-    } catch (error) {
-      if (error.statusCode === 404) {
+    } catch (error: unknown) {
+      if (this.isCouchDBError(error) && error.statusCode === 404) {
         return null;
       }
       throw error;
@@ -239,5 +241,16 @@ export class TimeEntryRepository implements ITimeEntryRepository {
 
   async findPendingApproval(): Promise<TimeEntry[]> {
     return this.findAll({ status: TimeEntryStatus.COMPLETED });
+  }
+
+  private isCouchDBError(
+    error: unknown
+  ): error is { statusCode: number; message?: string } {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'statusCode' in error &&
+      typeof (error as { statusCode: unknown }).statusCode === 'number'
+    );
   }
 }

@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 
-import { ExpenseController } from './expense.controller';
+// TODO: Implement ExpenseController and ExpenseService in Phase 2 (Q3 2025)
+// import { ExpenseController } from './expense.controller';
+// import { ExpenseService } from './expense.service';
 import { ExpenseRepository } from './expense.repository';
-import { ExpenseService } from './expense.service';
 
 /**
  * Expense Module
@@ -18,15 +19,15 @@ import { ExpenseService } from './expense.service';
  * Phase 2 (Q3 2025)
  */
 @Module({
-  controllers: [ExpenseController],
+  // controllers: [ExpenseController], // TODO: Implement in Phase 2
   providers: [
-    ExpenseService,
+    // ExpenseService, // TODO: Implement in Phase 2
     ExpenseRepository,
     {
       provide: 'IExpenseRepository',
       useClass: ExpenseRepository,
     },
   ],
-  exports: [ExpenseService],
+  // exports: [ExpenseService], // TODO: Implement in Phase 2
 })
 export class ExpenseModule {}

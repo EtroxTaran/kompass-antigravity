@@ -18,7 +18,7 @@ export class CalendarQueryDto {
     example: '2025-01-01T00:00:00Z',
   })
   @IsISO8601()
-  startDate: string;
+  startDate!: string;
 
   @ApiProperty({
     description: 'End date for event range',
@@ -27,7 +27,7 @@ export class CalendarQueryDto {
     example: '2025-01-31T23:59:59Z',
   })
   @IsISO8601()
-  endDate: string;
+  endDate!: string;
 
   @ApiProperty({
     description: 'Filter by event types',

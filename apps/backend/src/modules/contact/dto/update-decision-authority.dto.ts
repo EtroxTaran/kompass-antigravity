@@ -33,7 +33,7 @@ export class UpdateDecisionAuthorityDto {
     example: DecisionMakingRole.KEY_INFLUENCER,
   })
   @IsEnum(DecisionMakingRole)
-  decisionMakingRole: DecisionMakingRole;
+  decisionMakingRole!: DecisionMakingRole;
 
   @ApiProperty({
     description: 'Authority level',
@@ -41,14 +41,14 @@ export class UpdateDecisionAuthorityDto {
     example: 'high',
   })
   @IsEnum(['low', 'medium', 'high', 'final_authority'])
-  authorityLevel: AuthorityLevel;
+  authorityLevel!: AuthorityLevel;
 
   @ApiProperty({
     description: 'Can approve orders/quotes',
     example: true,
   })
   @IsBoolean()
-  canApproveOrders: boolean;
+  canApproveOrders!: boolean;
 
   @ApiProperty({
     description:
@@ -75,7 +75,7 @@ export class UpdateDecisionAuthorityDto {
   })
   @IsArray()
   @IsEnum(FunctionalRole, { each: true })
-  functionalRoles: FunctionalRole[];
+  functionalRoles!: FunctionalRole[];
 
   @ApiProperty({
     description: 'Departments this contact influences',
@@ -84,5 +84,5 @@ export class UpdateDecisionAuthorityDto {
   })
   @IsArray()
   @IsString({ each: true })
-  departmentInfluence: string[];
+  departmentInfluence!: string[];
 }

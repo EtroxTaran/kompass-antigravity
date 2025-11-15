@@ -48,7 +48,7 @@ export class CalendarEventDto {
     example: 'usertask-123',
   })
   @IsString()
-  id: string;
+  id!: string;
 
   @ApiProperty({
     description: 'Event type',
@@ -56,7 +56,7 @@ export class CalendarEventDto {
     example: CalendarEventType.USER_TASK,
   })
   @IsEnum(CalendarEventType)
-  type: CalendarEventType;
+  type!: CalendarEventType;
 
   @ApiProperty({
     description: 'Event title',
@@ -65,7 +65,7 @@ export class CalendarEventDto {
   })
   @IsString()
   @MaxLength(200)
-  title: string;
+  title!: string;
 
   @ApiProperty({
     description: 'Event description',
@@ -86,7 +86,7 @@ export class CalendarEventDto {
   @Matches(/^#[0-9A-F]{6}$/i, {
     message: 'Color must be a valid hex color (#RRGGBB)',
   })
-  color: string;
+  color!: string;
 
   @ApiProperty({
     description: 'Icon name for event type',
@@ -104,7 +104,7 @@ export class CalendarEventDto {
     example: '2025-02-05T00:00:00Z',
   })
   @IsISO8601()
-  startDate: Date;
+  startDate!: Date;
 
   @ApiProperty({
     description: 'Event end date/time',
@@ -121,14 +121,14 @@ export class CalendarEventDto {
     example: true,
   })
   @IsBoolean()
-  allDay: boolean;
+  allDay!: boolean;
 
   @ApiProperty({
     description: 'Reference to source entity ID',
     example: 'usertask-123',
   })
   @IsString()
-  entityId: string;
+  entityId!: string;
 
   @ApiProperty({
     description: 'Source entity type',
@@ -136,14 +136,14 @@ export class CalendarEventDto {
     example: CalendarEntityType.USER_TASK,
   })
   @IsEnum(CalendarEntityType)
-  entityType: CalendarEntityType;
+  entityType!: CalendarEntityType;
 
   @ApiProperty({
     description: 'Entity-specific status',
     example: 'open',
   })
   @IsString()
-  status: string;
+  status!: string;
 
   @ApiProperty({
     description: 'Priority level',

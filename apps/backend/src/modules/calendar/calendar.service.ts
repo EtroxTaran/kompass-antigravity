@@ -273,23 +273,23 @@ export class CalendarService {
    * Convert UserTask to CalendarEvent
    * TODO: Implement when UserTask entity is available
    */
-  private userTaskToCalendarEvent(task: any): CalendarEventDto {
+  private _userTaskToCalendarEvent(_task: any): CalendarEventDto {
     return {
-      id: task._id,
+      id: _task._id,
       type: CalendarEventType.USER_TASK,
-      title: task.title,
-      description: task.description,
-      color: this.getPriorityColor(task.priority) || '#3B82F6',
+      title: _task.title,
+      description: _task.description,
+      color: this.getPriorityColor(_task.priority) || '#3B82F6',
       icon: 'CheckSquare',
-      startDate: task.dueDate,
-      endDate: task.dueDate,
+      startDate: _task.dueDate,
+      endDate: _task.dueDate,
       allDay: true,
-      entityId: task._id,
+      entityId: _task._id,
       entityType: CalendarEntityType.USER_TASK,
-      status: task.status,
-      priority: this.mapPriority(task.priority),
-      assignedTo: [task.assignedTo],
-      url: `/tasks/${task._id}`,
+      status: _task.status,
+      priority: this.mapPriority(_task.priority),
+      assignedTo: [_task.assignedTo],
+      url: `/tasks/${_task._id}`,
     };
   }
 

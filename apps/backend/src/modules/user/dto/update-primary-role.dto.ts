@@ -16,7 +16,7 @@ export class UpdatePrimaryRoleDto {
     enum: UserRole,
   })
   @IsEnum(UserRole, { message: 'Invalid primary role' })
-  primaryRole: UserRole;
+  primaryRole!: UserRole;
 
   @ApiProperty({
     description: 'Reason for primary role change (audit trail)',
