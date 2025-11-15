@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import type { TimeEntryResponseDto, TimeEntryStatus } from '@kompass/shared';
 
+import { useToast } from '@/hooks/use-toast';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -17,8 +18,6 @@ import {
 } from '@/components/ui/table';
 
 import { timeTrackingApi } from '../services/time-tracking-api';
-
-import { useToast } from '@/hooks/use-toast';
 
 /**
  * Time Entry List Component

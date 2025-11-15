@@ -9,6 +9,7 @@ import type {
   ProjectCostType,
 } from '@kompass/shared';
 
+import { useToast } from '@/hooks/use-toast';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -22,8 +23,6 @@ import {
 } from '@/components/ui/table';
 
 import { projectCostApi } from '../services/project-cost-api';
-
-import { useToast } from '@/hooks/use-toast';
 
 /**
  * Project Cost List Component
