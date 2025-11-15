@@ -25,7 +25,10 @@
       "pattern": "https://staging\\.kompass\\.de"
     },
     {
-      "pattern": "https://www\\.(pwc|evarlinkstudios|vdi|developer\\.lexware)\\.de"
+      "pattern": "https://www\\.(pwc|evarlinkstudios|vdi|developer\\.lexware)\\.(de|com)"
+    },
+    {
+      "pattern": "https://www\\.evarlinkstudios\\.com"
     },
     {
       "pattern": "\\./diagrams/"
