@@ -130,38 +130,56 @@ jobs:
     needs: [build-and-push]
     environment:
       name: staging
-      url: ${{ secrets.STAGING_URL }}
+      url: https://kompass.etrox.de
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get Git SHA
+        id: git-sha-deploy
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Deploy to staging server via SSH
         uses: appleboy/ssh-action@v1.0.0
+        env:
+          GIT_SHA: ${{ steps.git-sha-deploy.outputs.sha }}
+          GITHUB_REPOSITORY: ${{ env.IMAGE_NAME }}
+          REGISTRY: ${{ env.REGISTRY }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
         with:
           host: ${{ secrets.STAGING_HOST }}
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_DEPLOY_KEY }}
+          envs: GIT_SHA,GITHUB_REPOSITORY,REGISTRY,IMAGE_NAME
           script: |
             cd /opt/kompass/staging
 
-            # Get Git SHA for image tags
-            GIT_SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "latest")
+            # Load environment variables from .env.staging file
+            if [ -f .env.staging ]; then
+              echo "Loading environment variables from .env.staging..."
+              set -a
+              source .env.staging
+              set +a
+            else
+              echo "⚠️  Warning: .env.staging file not found. Some environment variables may be missing."
+            fi
 
             # Pull latest images (with SHA tag for traceability)
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:staging || true
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:staging-${{ steps.git-sha.outputs.sha }} || true
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:staging || true
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:staging-${{ steps.git-sha.outputs.sha }} || true
+            docker pull ${REGISTRY}/${IMAGE_NAME}/backend:staging || true
+            docker pull ${REGISTRY}/${IMAGE_NAME}/backend:staging-${GIT_SHA} || true
+            docker pull ${REGISTRY}/${IMAGE_NAME}/frontend:staging || true
+            docker pull ${REGISTRY}/${IMAGE_NAME}/frontend:staging-${GIT_SHA} || true
 
             # Backup current deployment
             docker-compose -f docker-compose.yml -f docker-compose.staging.yml ps > deployment-backup-$(date +%Y%m%d-%H%M%S).txt
 
             # Deploy with docker-compose
-            export GITHUB_REPOSITORY=${{ env.IMAGE_NAME }}
-            export IMAGE_TAG=staging-${{ steps.git-sha.outputs.sha }}
+            export GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
+            export IMAGE_TAG=staging-${GIT_SHA}
             # Use SHA-tagged images (staging-<sha>) that were just pulled
             # Feature flags are injected via docker-compose.staging.yml environment variables
+            # Environment variables from .env.staging are loaded above
             docker-compose -f docker-compose.yml -f docker-compose.staging.yml pull
             docker-compose -f docker-compose.yml -f docker-compose.staging.yml up -d --remove-orphans
 
@@ -179,11 +197,47 @@ jobs:
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_DEPLOY_KEY }}
           script: |
-            # Check backend health
-            curl -f http://localhost:3001/health || exit 1
+            # Wait for services to be ready
+            echo "Waiting for services to be healthy..."
+            sleep 30
 
-            # Check frontend health
-            curl -f http://localhost:3000/health || exit 1
+            cd /opt/kompass/staging
+
+            # Get actual container names from docker-compose
+            BACKEND_CONTAINER=$(docker-compose -f docker-compose.yml -f docker-compose.staging.yml ps -q backend)
+            FRONTEND_CONTAINER=$(docker-compose -f docker-compose.yml -f docker-compose.staging.yml ps -q frontend)
+
+            # Check backend health via Traefik
+            STAGING_API_URL="${{ secrets.STAGING_API_URL }}"
+            if [ -z "$STAGING_API_URL" ]; then
+              STAGING_API_URL="https://api.kompass.etrox.de"
+            fi
+            echo "Testing backend at: ${STAGING_API_URL}/health"
+            curl -f -k "${STAGING_API_URL}/health" || {
+              echo "⚠️  Backend health check via Traefik failed, trying internal..."
+              if [ -n "$BACKEND_CONTAINER" ]; then
+                docker exec "$BACKEND_CONTAINER" wget --spider -q http://localhost:3000/health || exit 1
+              else
+                echo "❌ Backend container not found"
+                exit 1
+              fi
+            }
+
+            # Check frontend health via Traefik
+            STAGING_URL="${{ secrets.STAGING_URL }}"
+            if [ -z "$STAGING_URL" ]; then
+              STAGING_URL="https://kompass.etrox.de"
+            fi
+            echo "Testing frontend at: ${STAGING_URL}/health"
+            curl -f -k "${STAGING_URL}/health" || {
+              echo "⚠️  Frontend health check via Traefik failed, trying internal..."
+              if [ -n "$FRONTEND_CONTAINER" ]; then
+                docker exec "$FRONTEND_CONTAINER" wget --spider -q http://localhost:8080/health || exit 1
+              else
+                echo "❌ Frontend container not found"
+                exit 1
+              fi
+            }
 
             echo "✅ Smoke tests passed"
 

@@ -2,6 +2,7 @@ version: '3.8'
 
 # KOMPASS Docker Compose - Staging Environment
 # Override for staging-specific configuration
+# Integrates with existing Traefik on proxynet network
 
 services:
   couchdb:
@@ -11,7 +12,10 @@ services:
     volumes:
       - /opt/kompass/staging/data/couchdb:/opt/couchdb/data
       - /opt/kompass/staging/config/couchdb:/opt/couchdb/etc/local.d
+    networks:
+      - proxynet
     restart: always
+    # Internal service - no Traefik labels, no ports exposed
 
   meilisearch:
     environment:
@@ -19,7 +23,10 @@ services:
       - MEILI_ENV=production
     volumes:
       - /opt/kompass/staging/data/meilisearch:/meili_data
+    networks:
+      - proxynet
     restart: always
+    # Internal service - no Traefik labels, no ports exposed
 
   keycloak:
     environment:
@@ -29,20 +36,21 @@ services:
       - KC_DB_URL=jdbc:postgresql://${STAGING_POSTGRES_HOST}:5432/keycloak
       - KC_DB_USERNAME=${STAGING_POSTGRES_USER}
       - KC_DB_PASSWORD=${STAGING_POSTGRES_PASSWORD}
-      - KC_HOSTNAME=${STAGING_HOSTNAME}
-      - KC_HOSTNAME_STRICT=true
-      - KC_HOSTNAME_STRICT_HTTPS=true
+      - KC_HTTP_ENABLED=true
+      - KC_HTTP_PORT=8080
       - KC_PROXY=edge
     command:
       - start
       - --optimized
-      - --http-enabled=false
-      - --https-certificate-file=/opt/keycloak/conf/tls.crt
-      - --https-certificate-key-file=/opt/keycloak/conf/tls.key
+      - --http-enabled=true
+      - --http-port=8080
     volumes:
-      - /opt/kompass/staging/certs:/opt/keycloak/conf
       - /opt/kompass/staging/data/keycloak:/opt/keycloak/data
+    networks:
+      - proxynet
     restart: always
+    # Internal service - accessed via http://keycloak:8080 by backend
+    # No Traefik labels - not exposed publicly
 
   neo4j:
     environment:
@@ -50,26 +58,37 @@ services:
     volumes:
       - /opt/kompass/staging/data/neo4j:/data
       - /opt/kompass/staging/logs/neo4j:/logs
+    networks:
+      - proxynet
     restart: always
+    # Internal service - no Traefik labels, no ports exposed
 
   whisper:
     environment:
       - ASR_MODEL=${STAGING_WHISPER_MODEL:-base}
     volumes:
       - /opt/kompass/staging/data/whisper:/root/.cache/whisper
+    networks:
+      - proxynet
     restart: always
+    # Internal service - no Traefik labels, no ports exposed
 
   n8n:
     environment:
       - N8N_BASIC_AUTH_ACTIVE=${STAGING_N8N_BASIC_AUTH_ACTIVE:-true}
       - N8N_BASIC_AUTH_USER=${STAGING_N8N_BASIC_AUTH_USER:-admin}
       - N8N_BASIC_AUTH_PASSWORD=${STAGING_N8N_BASIC_AUTH_PASSWORD}
-      - N8N_HOST=${STAGING_N8N_HOST:-n8n.staging.kompass.de}
+      - N8N_HOST=${STAGING_N8N_HOST:-n8n.kompass.etrox.de}
       - N8N_PROTOCOL=https
-      - WEBHOOK_URL=${STAGING_N8N_WEBHOOK_URL:-https://n8n.staging.kompass.de}
+      - WEBHOOK_URL=${STAGING_N8N_WEBHOOK_URL:-http://n8n:5678}
     volumes:
       - /opt/kompass/staging/data/n8n:/home/node/.n8n
+    networks:
+      - proxynet
     restart: always
+    # Internal service - accessed via http://n8n:5678 by backend
+    # No Traefik labels - not exposed publicly
+    # Note: If webhooks need external access, add Traefik labels with Host(`n8n.kompass.etrox.de`)
 
   backend:
     image: ghcr.io/${GITHUB_REPOSITORY}/backend:${IMAGE_TAG:-staging}
@@ -79,15 +98,15 @@ services:
       - DATABASE_URL=${STAGING_DATABASE_URL}
       - COUCHDB_USER=${STAGING_COUCHDB_USER}
       - COUCHDB_PASSWORD=${STAGING_COUCHDB_PASSWORD}
-      - COUCHDB_DATABASE=kompass_staging
+      - COUCHDB_DATABASE=${STAGING_COUCHDB_DATABASE:-kompass_staging}
       - MEILISEARCH_URL=${STAGING_MEILISEARCH_URL}
       - MEILISEARCH_MASTER_KEY=${STAGING_MEILI_MASTER_KEY}
-      - KEYCLOAK_URL=${STAGING_KEYCLOAK_URL}
+      - KEYCLOAK_URL=${STAGING_KEYCLOAK_URL:-http://keycloak:8080}
       - KEYCLOAK_REALM=kompass-staging
       - KEYCLOAK_CLIENT_ID=kompass-api-staging
       - KEYCLOAK_CLIENT_SECRET=${STAGING_KEYCLOAK_CLIENT_SECRET}
       - JWT_SECRET=${STAGING_JWT_SECRET}
-      - ALLOWED_ORIGINS=${STAGING_ALLOWED_ORIGINS}
+      - ALLOWED_ORIGINS=${STAGING_ALLOWED_ORIGINS:-https://kompass.etrox.de}
       - LOG_LEVEL=info
       # Neo4j connection
       - NEO4J_URI=bolt://neo4j:7687
@@ -95,37 +114,55 @@ services:
       - NEO4J_PASSWORD=${STAGING_NEO4J_PASSWORD:-stagingpassword}
       # Whisper API
       - WHISPER_API_URL=${STAGING_WHISPER_API_URL:-http://whisper:9000}
-      # n8n webhook URL
-      - N8N_WEBHOOK_URL=${STAGING_N8N_WEBHOOK_URL:-https://n8n.staging.kompass.de}
+      # n8n webhook URL (internal access)
+      - N8N_WEBHOOK_URL=${STAGING_N8N_WEBHOOK_URL:-http://n8n:5678}
       # Feature flags (injected from GitHub Secrets)
       - AI_N8N_ENABLED=${STAGING_AI_N8N_ENABLED:-false}
       - AI_RAG_ENABLED=${STAGING_AI_RAG_ENABLED:-false}
       - AI_ML_ENABLED=${STAGING_AI_ML_ENABLED:-false}
+    networks:
+      - proxynet
     restart: always
     logging:
       driver: 'json-file'
       options:
         max-size: '10m'
         max-file: '3'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.backend.rule=Host(`api.kompass.etrox.de`)'
+      - 'traefik.http.routers.backend.entrypoints=https'
+      - 'traefik.http.routers.backend.tls=true'
+      - 'traefik.http.routers.backend.tls.certresolver=production'
+      - 'traefik.http.services.backend.loadbalancer.server.port=3000'
 
   frontend:
     image: ghcr.io/${GITHUB_REPOSITORY}/frontend:${IMAGE_TAG:-staging}
     environment:
-      - VITE_API_URL=${STAGING_API_URL}
+      - VITE_API_URL=${STAGING_API_URL:-https://api.kompass.etrox.de}
       # Feature flags (for frontend feature toggles)
       - VITE_AI_N8N_ENABLED=${STAGING_AI_N8N_ENABLED:-false}
       - VITE_AI_RAG_ENABLED=${STAGING_AI_RAG_ENABLED:-false}
       - VITE_AI_ML_ENABLED=${STAGING_AI_ML_ENABLED:-false}
+    networks:
+      - proxynet
     restart: always
     logging:
       driver: 'json-file'
       options:
         max-size: '10m'
         max-file: '3'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.frontend.rule=Host(`kompass.etrox.de`)'
+      - 'traefik.http.routers.frontend.entrypoints=https'
+      - 'traefik.http.routers.frontend.tls=true'
+      - 'traefik.http.routers.frontend.tls.certresolver=production'
+      - 'traefik.http.services.frontend.loadbalancer.server.port=8080'
 
 networks:
-  kompass-network:
-    driver: bridge
+  proxynet:
+    external: true
 
 volumes:
   couchdb-data:
