@@ -62,6 +62,11 @@ alwaysApply: true # Whether rule should always be active
 - **error-handling.mdc** - Structured error responses, secure logging, correlation IDs
 - **dependency-management.mdc** - Vulnerability scanning, dependency updates, license checks
 - **graphiti-memory.mdc** - Graphiti MCP memory usage - when and how to store architectural decisions, infrastructure changes, routing updates, refactors, and bug fixes
+- **mcp-tool-usage.mdc** - MCP tool usage overview - prioritization hierarchy, decision tree, best practices, and references to detailed tool-specific rules
+- **mcp-tool-usage-documentation.mdc** - Ref, Context7, and Perplexity for API documentation lookup, version-specific docs, and web search
+- **mcp-tool-usage-code-analysis.mdc** - Semgrep for security scanning, bug detection, and code quality analysis
+- **mcp-tool-usage-automation.mdc** - Playwright, Firecrawl, and n8n for browser testing, web scraping, and workflow automation
+- **mcp-tool-usage-ui-integration.mdc** - ShadCN, Figma, GitHub, Linear, and Graphiti for component generation, design extraction, and project management
 
 ### Performance
 
@@ -170,7 +175,7 @@ These rules are automatically loaded by Cursor AI. When coding, Cursor will:
 
 ## Rule Statistics
 
-- **Total Rule Files**: 42 (19 project rules + 23 codeguard security rules)
+- **Total Rule Files**: 47 (24 project rules + 23 codeguard security rules)
 - **Code Examples**: 229+ ✅ CORRECT / ❌ WRONG examples
 - **Coverage**: All major areas covered (architecture, security, testing, API design, UI/UX sync, memory management, etc.)
 - **Status**: ✅ Production-ready, fully audited
