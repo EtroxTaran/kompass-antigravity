@@ -1136,8 +1136,8 @@ See dedicated UI/UX documentation:
 - [Pre-Mortem Analysis](../reviews/PROJECT_KOMPASS_PRE-MORTEM_ANALYSIS.md) - Risk identification (Danger #3)
 - [Supplier Management Specification](SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md) - Related module
 - [Financial Data Flow](FINANCIAL_DATA_FLOW.md) - Invoice integration
-- [PLAN Persona](../../docs/personas/Persona_PLAN.md) - User of material tracking
-- [KALK Persona](../../docs/personas/Persona_KALK.md) - User of material pricing
+- [PLAN Persona](../personas/Persona_PLAN.md) - User of material tracking
+- [KALK Persona](../personas/Persona_KALK.md) - User of material pricing
 
 ---
 

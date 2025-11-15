@@ -2382,7 +2382,7 @@ ggf. manuelle Nachkorrektur aufgefangen werden.
 - **Kundenimport:** PLAN/ADM/GF können jederzeit Kunden aus Excel/CSV-Dateien importieren mit automatischer/manueller Feldzuordnung, Validierung, Duplikatsprüfung und Fehlerbehandlung. Nützlich für: Bulk-Kundenimporte (z.B. aus Marketing-Kampagnen), Datenaktualisierungen von externen Quellen, Migration zusätzlicher Datenbestände.
 - **Kontaktprotokoll-Import:** PLAN/ADM/GF können Word-Dokumente mit tabellarischen Kontaktprotokollen importieren. Das System extrahiert Tabellen, parst verschiedene Datumsformate (mit Fallback auf manuelle Eingabe), ordnet Protokolle Kunden zu und validiert die Daten. Nützlich für: Import historischer Protokolle, regelmäßige Protokoll-Importe von externen Quellen, Migration zusätzlicher Protokoll-Datenbestände.
 - **Datenexport:** PLAN/ADM/GF/BUCH können jederzeit Daten exportieren (CSV/Excel/JSON/DATEV für Kunden, CSV/Excel/Word/JSON für Protokolle) mit Feldauswahl, Datumsbereichs-Filterung und RBAC-Berechtigungen. Nützlich für: Backups, DSGVO-Exporte, DATEV-Integration (Lexware), Datenanalyse in externen Tools, Audit-Trails.
-- **Vollständige Spezifikation:** Siehe [Import/Export Specification](../../specifications/IMPORT_EXPORT_SPECIFICATION.md) und [API Specification](../../specifications/reviews/API_SPECIFICATION.md) (Section 22) für vollständige Details.
+- **Vollständige Spezifikation:** Siehe [Import/Export Specification](../specifications/IMPORT_EXPORT_SPECIFICATION.md) und [API Specification](../specifications/api-specification.md) (Section 22) für vollständige Details.
 
 # Kontaktbericht- und Angebotsprozess (Vertrieb): Im heutigen Prozess schreibt der ADM nach
 

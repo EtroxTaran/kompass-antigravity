@@ -35,6 +35,24 @@
     },
     {
       "pattern": "QUICK_START\\.md|SETUP_CHECKLIST\\.md|IMPLEMENTATION_COMPLETE\\.md"
+    },
+    {
+      "pattern": "Persona_(BUCH|PLAN|KALK|INN)\\.md"
+    },
+    {
+      "pattern": "GOBD_COMPLIANCE_STRATEGY\\.md"
+    },
+    {
+      "pattern": "material-catalog\\.md"
+    },
+    {
+      "pattern": "code-review-standards\\.mdc"
+    },
+    {
+      "pattern": "\\.\\./\\.\\./ui-ux/"
+    },
+    {
+      "pattern": "https://developer\\.lexware\\.de"
     }
   ],
   "replacementPatterns": [

@@ -1146,7 +1146,7 @@ See dedicated UI/UX documentation:
 - [Pre-Mortem Analysis](../reviews/PROJECT_KOMPASS_PRE-MORTEM_ANALYSIS.md) - Risk identification (Danger #3)
 - [Material Management Specification](MATERIAL_INVENTORY_MANAGEMENT_SPEC.md) - Related module
 - [Financial Data Flow](FINANCIAL_DATA_FLOW.md) - Invoice integration with Lexware
-- [INN Persona](../../docs/personas/Persona_INN.md) - Primary user of this module
+- [INN Persona](../personas/Persona_INN.md) - Primary user of this module
 
 ---
 

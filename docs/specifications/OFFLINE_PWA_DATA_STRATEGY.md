@@ -1020,7 +1020,7 @@ Click badge: Pin/unpin for offline
 ## Related Documents
 
 - [Pre-Mortem Analysis](../reviews/PROJECT_KOMPASS_PRE-MORTEM_ANALYSIS.md) - Risk identification (Danger #2)
-- [NFR Specification](../nfr-specification.md) - Performance requirements
+- [NFR Specification](./nfr-specification.md) - Performance requirements
 - [Offline Components UI](../../ui-ux/02-core-components/offline-indicators.md) - UI patterns
 - [Sync Progress UI](../../ui-ux/02-core-components/sync-progress.md) - User feedback
 

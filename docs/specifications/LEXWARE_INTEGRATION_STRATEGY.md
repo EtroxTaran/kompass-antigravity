@@ -1074,8 +1074,8 @@ Gesamtstatus: ⚠️ 2 Fehler erfordern manuelle Prüfung
 
 - [Pre-Mortem Analysis](../reviews/PROJECT_KOMPASS_PRE-MORTEM_ANALYSIS.md) - Risk identification (Danger #4)
 - [Financial Data Flow](FINANCIAL_DATA_FLOW.md) - Complete financial workflow
-- [BUCH Persona](../../docs/personas/Persona_BUCH.md) - Primary user affected by integration
-- [GoBD Compliance](../../docs/reviews/GOBD_COMPLIANCE_STRATEGY.md) - Regulatory requirements
+- [BUCH Persona](../personas/Persona_BUCH.md) - Primary user affected by integration
+- [GoBD Compliance](../reviews/GOBD_COMPLIANCE_STRATEGY.md) - Regulatory requirements
 
 ---
 
