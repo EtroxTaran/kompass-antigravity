@@ -8,6 +8,7 @@
  */
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -81,7 +82,7 @@ export function DecisionAuthorityForm({
   onSubmit,
   onCancel,
   isLoading = false,
-}: DecisionAuthorityFormProps) {
+}: DecisionAuthorityFormProps): React.ReactElement {
   const form = useForm<DecisionAuthorityFormValues>({
     resolver: zodResolver(decisionAuthorityFormSchema),
     defaultValues: {
@@ -100,7 +101,12 @@ export function DecisionAuthorityForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit((values) => {
+          void Promise.resolve(onSubmit(values));
+        })}
+        className="space-y-6"
+      >
         {/* Decision Making Role */}
         <FormField
           control={form.control}
@@ -213,7 +219,9 @@ export function DecisionAuthorityForm({
                     type="number"
                     placeholder="50000"
                     {...field}
-                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                    onChange={(e) =>
+                      field.onChange(parseFloat(e.target.value as string))
+                    }
                   />
                 </FormControl>
                 <FormDescription>

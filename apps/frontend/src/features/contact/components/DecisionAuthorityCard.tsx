@@ -130,7 +130,7 @@ export function DecisionAuthorityCard({
             <div className="flex flex-wrap gap-2">
               {authority.functionalRoles.map((role) => (
                 <Badge key={role} variant="outline">
-                  {getFunctionalRoleLabel(role)}
+                  {getFunctionalRoleLabel(role as FunctionalRole)}
                 </Badge>
               ))}
             </div>
@@ -173,7 +173,9 @@ export function DecisionAuthorityCard({
         {/* Last Updated */}
         <div className="text-xs text-muted-foreground pt-2 border-t">
           Zuletzt aktualisiert:{' '}
-          {new Date(authority.lastUpdated).toLocaleString('de-DE')}
+          {new Date(
+            authority.lastUpdated as string | number | Date
+          ).toLocaleString('de-DE')}
         </div>
       </CardContent>
 
