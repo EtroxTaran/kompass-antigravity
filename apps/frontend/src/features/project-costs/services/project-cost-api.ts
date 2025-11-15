@@ -8,7 +8,7 @@ import type {
   UpdateProjectCostDto,
   ProjectCostResponseDto,
   MaterialCostSummary,
-} from '@kompass/shared/types/entities/project-cost';
+} from '@kompass/shared';
 
 /**
  * Project Cost API Client

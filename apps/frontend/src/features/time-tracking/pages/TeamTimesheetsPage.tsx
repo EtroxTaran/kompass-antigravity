@@ -1,4 +1,4 @@
-import { Users, Download, Filter } from 'lucide-react';
+import { Users, Download } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -37,15 +37,34 @@ import { useTeamTimesheets } from '../hooks/useTimeTracking';
  *
  * Permissions: PLAN and GF roles only
  */
+/**
+ * Helper: Get start of current week (Monday)
+ */
+function getStartOfWeek(): Date {
+  const today = new Date();
+  const day = today.getDay();
+  const diff = today.getDate() - day + (day === 0 ? -6 : 1); // Adjust to Monday
+  return new Date(today.setDate(diff));
+}
+
+/**
+ * Helper: Get end of current week (Sunday)
+ */
+function getEndOfWeek(): Date {
+  const start = getStartOfWeek();
+  start.setDate(start.getDate() + 6);
+  return start;
+}
+
 export function TeamTimesheetsPage() {
   // Filters
   const [projectId, setProjectId] = useState<string>('');
   const [status, setStatus] = useState<string>('');
   const [startDate, setStartDate] = useState<string>(
-    getStartOfWeek().toISOString().split('T')[0]
+    getStartOfWeek().toISOString().split('T')[0] ?? ''
   );
   const [endDate, setEndDate] = useState<string>(
-    getEndOfWeek().toISOString().split('T')[0]
+    getEndOfWeek().toISOString().split('T')[0] ?? ''
   );
 
   // Fetch team timesheets
@@ -89,29 +108,11 @@ export function TeamTimesheetsPage() {
   );
 
   /**
-   * Get start of week (Monday)
-   */
-  function getStartOfWeek(): Date {
-    const now = new Date();
-    const day = now.getDay();
-    const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-    return new Date(now.setDate(diff));
-  }
-
-  /**
-   * Get end of week (Sunday)
-   */
-  function getEndOfWeek(): Date {
-    const start = getStartOfWeek();
-    return new Date(start.getTime() + 6 * 24 * 60 * 60 * 1000);
-  }
-
-  /**
    * Set to current week
    */
   function setCurrentWeek() {
-    setStartDate(getStartOfWeek().toISOString().split('T')[0]);
-    setEndDate(getEndOfWeek().toISOString().split('T')[0]);
+    setStartDate(getStartOfWeek().toISOString().split('T')[0] ?? '');
+    setEndDate(getEndOfWeek().toISOString().split('T')[0] ?? '');
   }
 
   /**

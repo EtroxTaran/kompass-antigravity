@@ -8,8 +8,8 @@
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 
-import type { Location } from '@kompass/shared/types/entities/location';
-import { LocationType } from '@kompass/shared/types/enums';
+import type { Location } from '@kompass/shared';
+import { LocationType } from '@kompass/shared';
 
 import { Button } from '@/components/ui/button';
 import {

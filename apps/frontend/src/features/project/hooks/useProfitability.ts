@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
-import type { ProfitabilityReport } from '@kompass/shared/types/entities/project';
+import type { ProfitabilityReport } from '@kompass/shared';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 

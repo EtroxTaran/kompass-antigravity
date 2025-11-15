@@ -9,8 +9,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-import type { Location } from '@kompass/shared/types/entities/location';
-import { LocationType } from '@kompass/shared/types/enums';
+import type { Location } from '@kompass/shared';
+import { LocationType } from '@kompass/shared';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';

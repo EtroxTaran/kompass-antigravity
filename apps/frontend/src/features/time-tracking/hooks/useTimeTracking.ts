@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import type { TimeEntryResponseDto } from '@kompass/shared/types/entities/time-entry';
+import type { TimeEntryResponseDto } from '@kompass/shared';
 
 import { timeTrackingApi } from '../services/time-tracking-api';
 

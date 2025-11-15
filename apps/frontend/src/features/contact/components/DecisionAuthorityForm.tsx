@@ -11,12 +11,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-import { getDecisionMakingRoleLabel } from '@kompass/shared/types/entities/contact';
 import {
   DecisionMakingRole,
   FunctionalRole,
-  type AuthorityLevel,
-} from '@kompass/shared/types/enums';
+  getDecisionMakingRoleLabel,
+} from '@kompass/shared';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';

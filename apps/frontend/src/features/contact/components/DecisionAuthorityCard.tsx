@@ -9,7 +9,7 @@
 
 import { Edit, DollarSign, Briefcase, Building } from 'lucide-react';
 
-import { FunctionalRole } from '@kompass/shared/types/enums';
+import { FunctionalRole } from '@kompass/shared';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

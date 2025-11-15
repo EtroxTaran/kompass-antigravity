@@ -1,7 +1,7 @@
 import { Play, Pause, Square, Clock } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
-import type { TimeEntry } from '@kompass/shared/types/entities/time-entry';
+import { useToast } from '@/hooks/use-toast';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,8 +22,6 @@ import {
 } from '@/components/ui/select';
 
 import { useTimer } from '../hooks/useTimer';
-
-import { useToast } from '@/hooks/use-toast';
 
 /**
  * TimerWidget Component

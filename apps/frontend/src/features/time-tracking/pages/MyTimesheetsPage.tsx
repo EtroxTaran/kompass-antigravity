@@ -30,13 +30,32 @@ import { useMyTimesheets } from '../hooks/useTimeTracking';
  *
  * @see Phase 1.3 of Time Tracking Implementation Plan
  */
+/**
+ * Helper: Get start of current week (Monday)
+ */
+function getStartOfWeek(): Date {
+  const today = new Date();
+  const day = today.getDay();
+  const diff = today.getDate() - day + (day === 0 ? -6 : 1); // Adjust to Monday
+  return new Date(today.setDate(diff));
+}
+
+/**
+ * Helper: Get end of current week (Sunday)
+ */
+function getEndOfWeek(): Date {
+  const start = getStartOfWeek();
+  start.setDate(start.getDate() + 6);
+  return start;
+}
+
 export function MyTimesheetsPage() {
   // Date range filters
   const [startDate, setStartDate] = useState<string>(
-    getStartOfWeek().toISOString().split('T')[0]
+    getStartOfWeek().toISOString().split('T')[0] ?? ''
   );
   const [endDate, setEndDate] = useState<string>(
-    getEndOfWeek().toISOString().split('T')[0]
+    getEndOfWeek().toISOString().split('T')[0] ?? ''
   );
 
   // Fetch timesheets
@@ -60,29 +79,11 @@ export function MyTimesheetsPage() {
     .reduce((sum, entry) => sum + entry.durationMinutes / 60, 0);
 
   /**
-   * Get start of week (Monday)
-   */
-  function getStartOfWeek(): Date {
-    const now = new Date();
-    const day = now.getDay();
-    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Adjust if Sunday
-    return new Date(now.setDate(diff));
-  }
-
-  /**
-   * Get end of week (Sunday)
-   */
-  function getEndOfWeek(): Date {
-    const start = getStartOfWeek();
-    return new Date(start.getTime() + 6 * 24 * 60 * 60 * 1000);
-  }
-
-  /**
    * Set to current week
    */
   function setCurrentWeek() {
-    setStartDate(getStartOfWeek().toISOString().split('T')[0]);
-    setEndDate(getEndOfWeek().toISOString().split('T')[0]);
+    setStartDate(getStartOfWeek().toISOString().split('T')[0] ?? '');
+    setEndDate(getEndOfWeek().toISOString().split('T')[0] ?? '');
   }
 
   /**
@@ -92,8 +93,8 @@ export function MyTimesheetsPage() {
     const start = new Date(startDate);
     start.setDate(start.getDate() - 7);
     const end = new Date(start.getTime() + 6 * 24 * 60 * 60 * 1000);
-    setStartDate(start.toISOString().split('T')[0]);
-    setEndDate(end.toISOString().split('T')[0]);
+    setStartDate(start.toISOString().split('T')[0] ?? '');
+    setEndDate(end.toISOString().split('T')[0] ?? '');
   }
 
   /**
@@ -103,8 +104,8 @@ export function MyTimesheetsPage() {
     const start = new Date(startDate);
     start.setDate(start.getDate() + 7);
     const end = new Date(start.getTime() + 6 * 24 * 60 * 60 * 1000);
-    setStartDate(start.toISOString().split('T')[0]);
-    setEndDate(end.toISOString().split('T')[0]);
+    setStartDate(start.toISOString().split('T')[0] ?? '');
+    setEndDate(end.toISOString().split('T')[0] ?? '');
   }
 
   /**

@@ -19,8 +19,11 @@ export {
   formatAddress,
   formatAddressMultiLine,
 } from './types/common/address';
-export type { Customer, DSGVOConsent } from './types/entities/customer';
-export { isCustomer, createCustomer } from './types/entities/customer';
+// Export entities (includes Customer, Location, Contact, Role, etc.)
+// Using export * instead of export type * to include both types and functions
+export * from './types/entities';
+// Export enums as values
+export * from './types/enums';
 
 // Constants
 export {

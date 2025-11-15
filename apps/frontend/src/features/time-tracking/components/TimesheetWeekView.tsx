@@ -1,4 +1,4 @@
-import type { TimeEntryResponseDto } from '@kompass/shared/types/entities/time-entry';
+import type { TimeEntryResponseDto } from '@kompass/shared';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,7 +19,7 @@ interface TimesheetWeekViewProps {
 export function TimesheetWeekView({
   entries,
   startDate,
-  onEntryUpdated,
+  onEntryUpdated: _onEntryUpdated, // TODO: Implement entry update callback
 }: TimesheetWeekViewProps) {
   /**
    * Get days of the week
@@ -88,7 +88,8 @@ export function TimesheetWeekView({
     <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
       {weekDays.map((day) => {
         const dayEntries = getEntriesForDay(day);
-        const totalHours = getTotalHours(day);
+        // TODO: Display totalHours in future implementation
+        // const totalHours = getTotalHours(day);
 
         return (
           <Card key={day.toISOString()} className="min-h-[300px]">

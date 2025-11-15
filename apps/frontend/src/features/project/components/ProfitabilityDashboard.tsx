@@ -7,7 +7,7 @@ import {
   DollarSign,
 } from 'lucide-react';
 
-import type { ProfitabilityReport } from '@kompass/shared/types/entities/project';
+import type { ProfitabilityReport } from '@kompass/shared';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';

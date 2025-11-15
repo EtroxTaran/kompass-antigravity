@@ -1,7 +1,7 @@
 import { Download, Filter, Plus } from 'lucide-react';
 import { useState } from 'react';
 
-import type { TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
+import type { TimeEntryStatus } from '@kompass/shared';
 
 import { Button } from '@/components/ui/button';
 import {

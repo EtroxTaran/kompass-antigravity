@@ -12,11 +12,8 @@ import { Crown, User, MessageSquare, Shield, Users, Info } from 'lucide-react';
 import {
   getDecisionMakingRoleLabel,
   getAuthorityLevelLabel,
-} from '@kompass/shared/types/entities/contact';
-import {
-  DecisionMakingRole,
-  type AuthorityLevel,
-} from '@kompass/shared/types/enums';
+} from '@kompass/shared';
+import { DecisionMakingRole, type AuthorityLevel } from '@kompass/shared';
 
 import { Badge } from '@/components/ui/badge';
 

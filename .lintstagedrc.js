@@ -1,8 +1,8 @@
 module.exports = {
   '*.{ts,tsx}': [
-    // Type-check using root tsconfig which uses project references
-    // This will automatically check affected packages via TypeScript project references
-    'pnpm exec tsc --noEmit',
+    // Skip type-check in lint-staged (use project-specific type-check via turbo)
+    // Type-check runs in CI/CD pipeline for full project validation
+    // 'pnpm type-check' requires project references which lint-staged doesn't handle well
     'eslint --fix',
     'prettier --write',
   ],

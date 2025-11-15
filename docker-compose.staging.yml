@@ -163,13 +163,6 @@ services:
 networks:
   proxynet:
     external: true
-
-volumes:
-  couchdb-data:
-    driver: local
-  couchdb-config:
-    driver: local
-  meilisearch-data:
-    driver: local
-  keycloak-data:
-    driver: local
+# Note: All services use bind mounts (host paths) instead of named volumes
+# This allows better control over data persistence and backup strategies
+# No named volumes needed - removed to avoid orphaned volume definitions

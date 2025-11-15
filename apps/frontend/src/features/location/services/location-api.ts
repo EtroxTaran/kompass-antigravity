@@ -9,8 +9,7 @@
 
 import axios from 'axios';
 
-import type { Location } from '@kompass/shared/types/entities/location';
-import type { LocationType } from '@kompass/shared/types/enums';
+import type { Location, LocationType } from '@kompass/shared';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 

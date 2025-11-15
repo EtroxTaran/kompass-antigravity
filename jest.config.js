@@ -15,12 +15,16 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
+      // Quality standards: These thresholds enforce good testing practices
+      // If coverage is below these, CI will fail to encourage test writing
       branches: 80,
       functions: 80,
       lines: 80,
       statements: 80,
     },
     './apps/backend/src/modules/*/services/*.ts': {
+      // Business logic services require higher coverage
+      // Services contain critical business rules and need comprehensive testing
       branches: 90,
       functions: 90,
       lines: 90,

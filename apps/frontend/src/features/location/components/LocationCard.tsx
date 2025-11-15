@@ -7,9 +7,8 @@
 
 import { MapPin, Edit, Trash2, CheckCircle, XCircle } from 'lucide-react';
 
-import { formatAddress } from '@kompass/shared/types/common/address';
-import type { Location } from '@kompass/shared/types/entities/location';
-import { LocationType } from '@kompass/shared/types/enums';
+import type { Location } from '@kompass/shared';
+import { formatAddress, LocationType } from '@kompass/shared';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

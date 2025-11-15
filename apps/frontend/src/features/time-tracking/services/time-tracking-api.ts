@@ -1,12 +1,11 @@
 import axios from 'axios';
 
 import type {
-  TimeEntry,
   CreateTimeEntryDto,
   UpdateTimeEntryDto,
   TimeEntryResponseDto,
   LaborCostSummary,
-} from '@kompass/shared/types/entities/time-entry';
+} from '@kompass/shared';
 
 /**
  * Time Tracking API Client
@@ -152,7 +151,7 @@ export const timeTrackingApi = {
         `${API_BASE_URL}/api/v1/time-entries/active/current`
       );
       return response.data;
-    } catch (error) {
+    } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response?.status === 204) {
         return null; // No active timer
       }

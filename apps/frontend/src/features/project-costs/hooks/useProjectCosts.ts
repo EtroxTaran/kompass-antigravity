@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import type {
   ProjectCostResponseDto,
   MaterialCostSummary,
-} from '@kompass/shared/types/entities/project-cost';
+} from '@kompass/shared';
 
 import { projectCostQueriesApi } from '../services/project-cost-api';
 

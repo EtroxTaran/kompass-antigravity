@@ -1,22 +1,28 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-import type {
-  TimeEntry,
-  CreateTimeEntryDto,
-} from '@kompass/shared/types/entities/time-entry';
-import { TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
+import type { TimeEntry, CreateTimeEntryDto } from '@kompass/shared';
+import { TimeEntryStatus } from '@kompass/shared';
 
 import { timeTrackingApi } from '../services/time-tracking-api';
 
 /**
- * Timer State
+ * Timer State (unused - defined for future use)
+ *
+ * @example
+ * const timerState: _TimerState = {
+ *   activeTimer: null,
+ *   elapsedTime: 0,
+ *   isRunning: false,
+ *   loading: false,
+ * };
  */
-interface TimerState {
+// @ts-expect-error - TimerState is defined for future use
+type _TimerState = {
   activeTimer: TimeEntry | null;
   elapsedTime: number;
   isRunning: boolean;
   loading: boolean;
-}
+};
 
 /**
  * Start Timer Parameters
@@ -118,6 +124,8 @@ export function useTimer() {
         }
       };
     }
+    // Return undefined if not running (no cleanup needed)
+    return undefined;
   }, [isRunning, activeTimer]);
 
   /**

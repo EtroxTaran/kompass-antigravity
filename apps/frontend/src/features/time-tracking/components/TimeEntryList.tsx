@@ -1,21 +1,13 @@
 import { Check, X, Clock, Calendar } from 'lucide-react';
 import { useState } from 'react';
 
-import type {
-  TimeEntryResponseDto,
-  TimeEntryStatus,
-} from '@kompass/shared/types/entities/time-entry';
+import type { TimeEntryResponseDto, TimeEntryStatus } from '@kompass/shared';
+
+import { useToast } from '@/hooks/use-toast';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -26,8 +18,6 @@ import {
 } from '@/components/ui/table';
 
 import { timeTrackingApi } from '../services/time-tracking-api';
-
-import { useToast } from '@/hooks/use-toast';
 
 /**
  * Time Entry List Component

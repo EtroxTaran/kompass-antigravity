@@ -1,12 +1,12 @@
 import { Fragment, useEffect, useState } from 'react';
 import type { ChangeEvent } from 'react';
 
-import type {
-  UserRole,
-  EntityType,
-  Permission,
-} from '@kompass/shared/constants/rbac.constants';
-import type { PermissionMatrix } from '@kompass/shared/types/entities/role';
+import {
+  type UserRole,
+  type EntityType,
+  type Permission,
+  type PermissionMatrix,
+} from '@kompass/shared';
 
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
@@ -88,11 +88,14 @@ export function PermissionMatrixEditor(): JSX.Element {
     null
   );
   const [editedMatrix, setEditedMatrix] = useState<
-    Record<UserRole, Record<EntityType, Partial<Record<Permission, boolean>>>>
+    Record<
+      UserRole,
+      Partial<Record<EntityType, Partial<Record<Permission, boolean>>>>
+    >
   >(
     {} as Record<
       UserRole,
-      Record<EntityType, Partial<Record<Permission, boolean>>>
+      Partial<Record<EntityType, Partial<Record<Permission, boolean>>>>
     >
   );
   const [changeReason, setChangeReason] = useState('');
@@ -113,11 +116,11 @@ export function PermissionMatrixEditor(): JSX.Element {
     checked: boolean
   ): void => {
     setEditedMatrix((previous) => {
-      const updatedRoleMatrix: Record<
-        EntityType,
-        Partial<Record<Permission, boolean>>
+      const previousRoleMatrix = previous[role] ?? {};
+      const updatedRoleMatrix: Partial<
+        Record<EntityType, Partial<Record<Permission, boolean>>>
       > = {
-        ...(previous[role] ?? {}),
+        ...previousRoleMatrix,
       };
 
       const updatedEntityMatrix: Partial<Record<Permission, boolean>> = {
@@ -148,6 +151,7 @@ export function PermissionMatrixEditor(): JSX.Element {
 
   const handleReset = (): void => {
     if (activeMatrix) {
+      // PermissionMatrix.matrix uses Partial records, which is compatible with our state type
       setEditedMatrix(activeMatrix.matrix);
     }
     setIsDirty(false);
@@ -268,12 +272,8 @@ export function PermissionMatrixEditor(): JSX.Element {
             <Textarea
               placeholder="z.B. Neue Rolle hinzugefügt, Berechtigungen für PLAN-Rolle angepasst..."
               value={changeReason}
-              onChange={(event) => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const nextValue = (event as ChangeEvent<HTMLTextAreaElement>)
-                  .currentTarget.value;
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                setChangeReason(nextValue);
+              onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+                setChangeReason(event.currentTarget.value);
               }}
               rows={3}
             />

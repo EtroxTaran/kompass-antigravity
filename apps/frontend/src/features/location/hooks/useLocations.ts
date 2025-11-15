@@ -8,7 +8,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 
-import type { LocationType } from '@kompass/shared/types/enums';
+import type { LocationType } from '@kompass/shared';
 
 import { locationApi, type LocationResponse } from '../services/location-api';
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { User, UserRole } from '@kompass/shared/types/entities/user';
+import type { User, UserRole } from '@kompass/shared';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -89,7 +89,7 @@ export function RoleAssignmentDialog({
   user,
   open,
   onClose,
-  onSuccess,
+  onSuccess: _onSuccess, // TODO: Implement success callback
 }: RoleAssignmentDialogProps) {
   const [selectedRoles, setSelectedRoles] = useState<UserRole[]>(
     user?.roles || []

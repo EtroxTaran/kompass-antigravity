@@ -179,6 +179,13 @@ module.exports = {
       },
     },
     {
+      files: ['apps/frontend/vite.config.ts'],
+      rules: {
+        'import/no-cycle': 'off', // Vite config causes false positives with import/no-cycle
+        'import/no-unresolved': 'off', // Vite package exports cause resolution issues
+      },
+    },
+    {
       files: ['apps/frontend/**/*.{ts,tsx}'],
       rules: {
         'import/no-unresolved': 'off', // Disabled due to path alias resolution issues in ESLint

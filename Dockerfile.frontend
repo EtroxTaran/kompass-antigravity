@@ -17,7 +17,7 @@ COPY tsconfig.json ./
 
 RUN pnpm --filter @kompass/shared build
 
-ARG VITE_API_URL
+ARG VITE_API_URL=https://api.kompass.etrox.de
 ENV VITE_API_URL=${VITE_API_URL}
 RUN pnpm --filter @kompass/frontend build
 
