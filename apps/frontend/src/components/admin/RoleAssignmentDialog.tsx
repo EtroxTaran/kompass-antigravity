@@ -121,6 +121,7 @@ export function RoleAssignmentDialog({
     // TODO: Call onSuccess callback
     setIsLoading(true);
     // API call will be implemented here
+    await Promise.resolve(); // Placeholder for future API call
     setIsLoading(false);
   };
 
@@ -212,7 +213,7 @@ export function RoleAssignmentDialog({
               placeholder="z.B. Beförderung zum Teamleiter, Aufgabenwechsel..."
               value={reason}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                setReason(e.target.value);
+                setReason(e.target.value as string);
               }}
               rows={3}
             />

@@ -8,6 +8,7 @@
  */
 
 import { Crown, User, MessageSquare, Shield, Users, Info } from 'lucide-react';
+import * as React from 'react';
 
 import {
   getDecisionMakingRoleLabel,
@@ -26,7 +27,9 @@ interface ContactDecisionBadgeProps {
 /**
  * Get icon for decision-making role
  */
-function getRoleIcon(role: DecisionMakingRole) {
+function getRoleIcon(
+  role: DecisionMakingRole
+): React.ComponentType<{ className?: string }> {
   switch (role) {
     case DecisionMakingRole.DECISION_MAKER:
       return Crown;
@@ -76,7 +79,7 @@ export function ContactDecisionBadge({
   role,
   authorityLevel,
   showLabel = true,
-}: ContactDecisionBadgeProps) {
+}: ContactDecisionBadgeProps): React.ReactElement {
   const Icon = getRoleIcon(role);
   const variant = getRoleVariant(role);
 

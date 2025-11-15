@@ -8,6 +8,7 @@
  */
 
 import { Edit, DollarSign, Briefcase, Building } from 'lucide-react';
+import * as React from 'react';
 
 import { FunctionalRole } from '@kompass/shared';
 
@@ -64,7 +65,7 @@ export function DecisionAuthorityCard({
   authority,
   onEdit,
   canEdit = false,
-}: DecisionAuthorityCardProps) {
+}: DecisionAuthorityCardProps): React.ReactElement {
   return (
     <Card>
       <CardHeader>
@@ -86,9 +87,10 @@ export function DecisionAuthorityCard({
             <Briefcase className="h-4 w-4" />
             Entscheidungsrolle
           </h4>
+          {}
           <ContactDecisionBadge
-            role={authority.decisionMakingRole}
-            authorityLevel={authority.authorityLevel}
+            role={authority.decisionMakingRole as any}
+            authorityLevel={authority.authorityLevel as any}
           />
         </div>
 
