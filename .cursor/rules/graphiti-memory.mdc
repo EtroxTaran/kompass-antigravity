@@ -1,5 +1,5 @@
 ---
-description: Graphiti MCP memory usage requirements - when and how to store architectural decisions, infrastructure changes, routing updates, refactors, and bug fixes for long-term context retention
+description: Graphiti MCP memory usage - when and how to store architectural decisions, infrastructure changes, routing updates, refactors, and bug fixes
 globs: []
 alwaysApply: true
 ---
@@ -8,212 +8,185 @@ alwaysApply: true
 
 ## Overview
 
-Graphiti MCP provides persistent, project-scoped long-term memory for the KOMPASS repository. This memory enables Cursor AI agents to retain context about architectural decisions, infrastructure changes, patterns, and fixes across development sessions.
+Graphiti MCP provides long-term memory for storing architectural decisions, infrastructure changes, routing updates, implementation patterns, refactors, and non-trivial bug fixes. This rule defines when and how to use Graphiti memory during development.
 
-**Setup:** See `docs/guides/graphiti-memory.md` for installation, configuration, and lifecycle management.
+## When to Use Graphiti Memory
 
-**Stack Status:** The Graphiti MCP stack MUST be running (`./scripts/start-memory.sh`) whenever developing on this repository. Cursor depends on `http://localhost:8000/mcp/` for memory access.
+### 1. Architectural Decisions
 
-## MANDATORY: When to Store Information in Graphiti
+**Store in Graphiti when:**
+- Making significant architectural changes
+- Choosing technologies or frameworks
+- Defining patterns or conventions
+- Making trade-off decisions
 
-You MUST use Graphiti MCP tools to store information in the following scenarios:
-
-### 1. Architectural Decisions & ADR Context
-
-**ALWAYS store when:**
-- Making significant technology choices (database, framework, library changes)
-- Deciding on architectural patterns (before or after creating ADR files)
-- Making trade-off decisions with multiple valid options
-- Changing system design that affects multiple modules
-
-**What to store:**
-- Decision context and rationale
-- Alternatives considered and why they were rejected
-- Consequences and implementation notes
-- Link to ADR file if one exists
+**Before creating an ADR:**
+1. Store the decision in Graphiti memory using MCP tools
+2. Reference the stored memory in the ADR
+3. This ensures the context is preserved even if the ADR is archived
 
 **Example:**
 ```typescript
-// After deciding to use NestJS for backend
-// Store in Graphiti: "Architectural decision to use NestJS for backend.
-// Rationale: TypeScript-first, decorator-based architecture aligns with 
-// team expertise. Rejected Express.js due to lack of built-in dependency 
-// injection. See ADR-001 for details."
+// When deciding to use CouchDB for offline-first architecture
+// Store: "KOMPASS uses CouchDB for offline-first data sync with PouchDB on frontend"
+// Then create ADR-002 documenting the decision
 ```
 
-### 2. Docker & Container Infrastructure Changes
+### 2. Docker & Infrastructure Changes
 
-**ALWAYS store when:**
-- Adding or modifying `docker-compose*.yml` files
-- Creating new infrastructure scripts (`scripts/start-*.sh`, `scripts/stop-*.sh`)
-- Changing container configuration, volumes, networks
+**Store in Graphiti when:**
+- Adding new services to docker-compose
+- Changing database configurations
 - Updating environment variable requirements
-- Modifying infrastructure documentation
-
-**What to store:**
-- What changed and why
-- Impact on local development workflow
-- Required manual steps for other developers
-- Environment variable updates needed
+- Modifying deployment configurations
 
 **Example:**
-```bash
-# After adding Graphiti MCP stack
-# Store in Graphiti: "Added infra/graphiti-mcp/ docker-compose stack.
-# New scripts: start-memory.sh, stop-memory.sh. Requires OPENAI_API_KEY
-# in infra/graphiti-mcp/.env.template (copy to .env). Stack must run
-# during development for Cursor MCP integration."
+```typescript
+// When setting up Graphiti MCP with Neo4j:
+// Store: "Graphiti MCP requires Neo4j service running on bolt://neo4j:7687, uses SSE transport at /sse endpoint"
 ```
 
 ### 3. Routing & Navigation Updates
 
-**ALWAYS store when:**
-- Changing route paths or navigation structure
-- Adding new pages or redirects
-- Modifying landing page flows (e.g., A → B → C changes)
-- Updating URL patterns or query parameters
-- Changing authentication/authorization redirects
-
-**What to store:**
-- Old route/navigation structure
-- New route/navigation structure
-- Reason for change (user experience, security, etc.)
-- Migration notes for existing links/bookmarks
+**Store in Graphiti when:**
+- Adding new routes or pages
+- Changing route structure
+- Updating navigation patterns
+- Modifying URL schemes
 
 **Example:**
 ```typescript
-// After changing customer detail route from /customers/:id to /customers/:id/details
-// Store in Graphiti: "Changed customer detail route from /customers/:id 
-// to /customers/:id/details to accommodate new sub-routes. Old route 
-// redirects to new route for backward compatibility. Updated all internal 
-// navigation links. See routing.md for full route map."
+// When adding nested routes for locations:
+// Store: "Locations use nested REST routes: /api/v1/customers/:customerId/locations"
 ```
 
-### 4. Important Implementation Patterns & Refactors
+### 4. Important Refactors & Patterns
 
-**ALWAYS store when:**
-- Extracting shared code to `packages/shared/`
-- Creating reusable hooks, services, or utilities
-- Refactoring complex logic patterns
-- Establishing new coding conventions or patterns
-- Migrating from one pattern to another
-
-**What to store:**
-- Pattern description and use cases
-- Before/after code structure
-- Migration path for existing code
-- Examples of correct usage
+**Store in Graphiti when:**
+- Extracting reusable patterns
+- Refactoring shared code
+- Establishing new coding patterns
+- Consolidating duplicate code
 
 **Example:**
 ```typescript
-// After extracting RBAC logic to shared guard
-// Store in Graphiti: "Refactored RBAC permission checks into reusable 
-// RbacGuard. Pattern: @RequirePermission(entity, action) decorator on 
-// controller methods. All services should use this guard instead of 
-// inline permission checks. See rbac.guard.ts for implementation."
+// When extracting validation logic to shared package:
+// Store: "Customer validation rules moved to packages/shared/src/validation/ for reuse across frontend and backend"
 ```
 
-### 5. Non-Trivial Bugs & Fixes
+### 5. Non-Trivial Bug Fixes
 
-**ALWAYS store when:**
-- Fixing complex bugs with non-obvious root causes
-- Implementing workarounds for third-party library issues
-- Resolving performance bottlenecks
-- Fixing data corruption or sync issues
-- Addressing security vulnerabilities
-
-**What to store:**
-- Bug description and symptoms
-- Root cause analysis
-- Fix implementation details
-- Preventive measures (tests, validations) added
-- Related Linear issue ID
+**Store in Graphiti when:**
+- Fixing complex bugs with context
+- Resolving issues that required investigation
+- Documenting workarounds or fixes that might be needed again
+- Bug fixes that affect multiple components
 
 **Example:**
 ```typescript
-// After fixing CouchDB conflict resolution issue
-// Store in Graphiti: "Fixed offline sync conflict resolution bug (KOM-456).
-// Root cause: Last-write-wins strategy didn't handle nested object updates
-// correctly. Fix: Implemented field-level merge for non-conflicting fields.
-// Added conflict detection tests in customer.service.spec.ts. Pattern now
-// used for all entity sync operations."
+// When fixing a race condition in offline sync:
+// Store: "Fixed offline sync race condition by adding optimistic locking with _rev field in CouchDB documents"
 ```
 
-## How to Store Information in Graphiti
+## How to Store Information
 
 ### Using MCP Tools
 
-When working in Cursor with Graphiti MCP enabled, use the available MCP tools:
+Graphiti MCP provides these tools (available via Cursor MCP integration):
 
-1. **`add_episode`** - Store text, messages, or JSON data as an episode
-2. **`search_facts`** - Search for previously stored facts
-3. **`search_nodes`** - Find entity nodes and relationships
-4. **`get_episode`** - Retrieve a specific episode by ID
+1. **`add_episode`** - Store a new memory/episode
+   - Use for: Architectural decisions, infrastructure changes, patterns
+   - Include: Context, decision, rationale
+
+2. **`search_facts`** - Search stored facts
+   - Use for: Finding previous decisions or patterns
+   - Query: Keywords related to what you're looking for
+
+3. **`search_nodes`** - Search graph nodes
+   - Use for: Finding related decisions or patterns
+   - Query: Entity or concept names
 
 ### Best Practices
 
-- **Use descriptive names**: Episode names should clearly describe the content (e.g., "Architectural Decision: NestJS Backend", "Bug Fix: CouchDB Conflict Resolution")
-- **Include context**: Store enough context that a future developer/agent can understand the decision or fix
-- **Link to documentation**: Reference ADR files, Linear issues, or code files when relevant
-- **Use consistent group_id**: Always use `kompass-memory` (configured in `.cursor/mcp.json`) to namespace data
+1. **Be Specific**: Include enough context for future understanding
+2. **Use Keywords**: Include relevant keywords for searchability
+3. **Link Related**: Reference related decisions or patterns when storing
+4. **Update, Don't Duplicate**: If updating existing memory, reference the original
 
-### Example MCP Tool Usage
+### Naming Conventions
 
-When making an architectural decision:
-
-```
-Use add_episode with:
-- name: "ADR-005: Graphiti MCP Integration"
-- episode_body: Full decision context and rationale
-- source: "documentation" or "code"
-- source_description: "Architectural decision for long-term memory"
-```
+- Use descriptive names: "KOMPASS offline-first architecture decision"
+- Include entity names: "Customer location nested routes pattern"
+- Reference issue IDs: "KOM-123 invoice total calculation fix"
 
 ## Workflow Integration
 
 ### During Development
 
-1. **Before starting work**: Ensure Graphiti stack is running (`./scripts/start-memory.sh`)
-2. **During implementation**: Store relevant decisions, patterns, and changes as you make them
-3. **After fixing bugs**: Document complex fixes in Graphiti
-4. **When refactoring**: Store pattern changes and migration notes
+1. **Before major changes**: Search Graphiti memory for related decisions
+2. **During implementation**: Store decisions as you make them
+3. **After completion**: Store final patterns or solutions
 
 ### When Creating ADRs
 
-- Store ADR context in Graphiti BEFORE or AFTER creating the ADR file
-- Graphiti provides searchable, semantic memory beyond static files
-- ADR files remain the authoritative source; Graphiti augments with context
+1. Search Graphiti memory for related decisions
+2. Reference stored memories in the ADR
+3. Store the ADR decision summary in Graphiti
 
-### During Code Reviews
+### When Fixing Bugs
 
-- Reviewers should check that significant changes have corresponding Graphiti entries
-- Use `search_facts` or `search_nodes` to recall related decisions or patterns
-- Store review feedback if it leads to pattern changes
+1. Search Graphiti memory for similar issues or fixes
+2. Store the fix context if it's non-trivial
+3. Reference related patterns or solutions
 
-## Verification
+## Examples
 
-### Checking Stack Status
+### Storing an Architectural Decision
 
-```bash
-# Verify Graphiti stack is running
-curl http://localhost:8000/health
-
-# Check Docker container status
-docker compose -f infra/graphiti-mcp/docker-compose.yml ps
-
-# View logs if issues
-docker compose -f infra/graphiti-mcp/docker-compose.yml logs -f
+```typescript
+// When deciding to use NestJS for backend:
+// Store in Graphiti:
+// "KOMPASS backend uses NestJS framework for REST API. Chosen for TypeScript support, 
+// modular architecture, and built-in features (Guards, Interceptors, Pipes). 
+// Follows strict layered architecture: Controller → Service → Repository → Database."
 ```
 
-### Searching Stored Memory
+### Storing an Infrastructure Change
 
-When you need to recall information:
-- Use `search_facts` with keywords related to your query
-- Use `search_nodes` to find related entities (decisions, patterns, bugs)
-- Graphiti's semantic search will return relevant episodes even with partial matches
+```typescript
+// When setting up Graphiti MCP:
+// Store in Graphiti:
+// "Graphiti MCP configured with Neo4j database. Docker compose includes neo4j service 
+// and graphiti-mcp service. SSE transport used at http://localhost:8000/sse endpoint. 
+// Requires NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD environment variables."
+```
+
+### Storing a Routing Pattern
+
+```typescript
+// When implementing nested REST routes:
+// Store in Graphiti:
+// "KOMPASS uses nested REST routes for parent-child relationships. Locations are nested 
+// under customers: /api/v1/customers/:customerId/locations. Parent must be validated 
+// before child operations. RBAC cascades from parent to child."
+```
+
+## Memory vs Documentation
+
+**Graphiti Memory** stores:
+- Context and rationale for decisions
+- Patterns and solutions discovered during development
+- Quick reference information for developers
+
+**Documentation** (ADRs, guides, etc.) stores:
+- Formal decisions and alternatives considered
+- Complete implementation details
+- Step-by-step guides and procedures
+
+**Both are important**: Graphiti provides searchable context, documentation provides complete reference.
 
 ## References
 
-- Setup Guide: `docs/guides/graphiti-memory.md`
-- Graphiti MCP Documentation: https://github.com/getzep/graphiti/blob/main/mcp_server/README.md
-- Cursor MCP Configuration: `.cursor/mcp.json`
+- Graphiti MCP Setup: `docs/guides/graphiti-memory.md`
+- Architecture Decision Records: `docs/architecture/decisions/`
+- Docker Configuration: `infra/graphiti-mcp/docker-compose.yml`
