@@ -1,10 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+import type { RouteWaypoint } from '@kompass/shared/types/entities/tour';
 import { TourStatus } from '@kompass/shared/types/entities/tour';
-import { RouteWaypoint } from '@kompass/shared/types/entities/tour';
 
 /**
  * Tour Response DTO
- * 
+ *
  * Used for API responses
  */
 export class TourResponseDto {
@@ -200,4 +201,3 @@ export class TourCostSummaryDto {
   })
   breakdown: Record<string, number>;
 }
-

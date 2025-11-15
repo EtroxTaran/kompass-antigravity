@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+
 import type {
   TimeEntry,
   CreateTimeEntryDto,
 } from '@kompass/shared/types/entities/time-entry';
 import { TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
+
 import { timeTrackingApi } from '../services/time-tracking-api';
 
 /**
@@ -28,16 +30,16 @@ interface StartTimerParams {
 
 /**
  * useTimer Hook
- * 
+ *
  * Custom hook for managing time tracking timer.
- * 
+ *
  * Features:
  * - Start/stop/pause timer
  * - Real-time elapsed time tracking
  * - Offline support with localStorage
  * - Automatic background persistence
  * - API integration
- * 
+ *
  * @see Phase 1.2 of Time Tracking Implementation Plan
  */
 export function useTimer() {
@@ -101,7 +103,7 @@ export function useTimer() {
 
   /**
    * Timer tick effect
-   * 
+   *
    * Updates elapsed time every second when timer is running
    */
   useEffect(() => {
@@ -211,7 +213,7 @@ export function useTimer() {
 
   /**
    * Pause timer
-   * 
+   *
    * Note: Pausing is implemented by stopping the current timer.
    * When resumed, a new timer is started.
    */
@@ -238,17 +240,20 @@ export function useTimer() {
 
   /**
    * Resume timer
-   * 
+   *
    * Creates a new timer with the same project/task as the previous one.
    */
-  const resumeTimer = useCallback(async (previousTimer: TimeEntry) => {
-    await startTimer({
-      projectId: previousTimer.projectId,
-      taskId: previousTimer.taskId,
-      taskDescription: previousTimer.taskDescription,
-      isManualEntry: false,
-    });
-  }, [startTimer]);
+  const resumeTimer = useCallback(
+    async (previousTimer: TimeEntry) => {
+      await startTimer({
+        projectId: previousTimer.projectId,
+        taskId: previousTimer.taskId,
+        taskDescription: previousTimer.taskDescription,
+        isManualEntry: false,
+      });
+    },
+    [startTimer]
+  );
 
   return {
     activeTimer,
@@ -261,4 +266,3 @@ export function useTimer() {
     resumeTimer,
   };
 }
-

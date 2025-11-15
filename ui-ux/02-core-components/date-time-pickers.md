@@ -1,6 +1,7 @@
 # Date & Time Pickers - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Date and Time Selection Components
 - **User Roles**: All (GF, PLAN, ADM, KALK, BUCH)
 - **Usage Context**: Forms, filters, scheduling
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Input Field**: Clear date/time display in German format
 - **Calendar Popover**: Visual month calendar for selection
 - **Navigation**: Month/year selection with arrows
 - **Today Highlight**: Current date distinctly marked
 
 ### Layout Structure
+
 - Input: 40px height, German format (TT.MM.JJJJ)
 - Calendar: 280px width, popover positioning
 - Day cells: 40x40px, clickable
 - Month/year header: 48px height
 
 ### shadcn/ui Components
+
 - `Calendar` for date picker
 - `Popover` for calendar display
 - `Button` for day cells
@@ -33,6 +37,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 **Date Input Field:**
 
 **Closed State:**
+
 - Width: 200px (or full width in forms)
 - Height: 40px
 - Border: 1px solid gray (#d1d5db)
@@ -46,6 +51,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 **Calendar Popover (Open State):**
 
 **Calendar Container:**
+
 - Width: 280px
 - Background: White
 - Border: 1px solid #e5e7eb
@@ -54,6 +60,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 - Padding: 16px
 
 **Month/Year Header:**
+
 - Height: 48px
 - Month dropdown: "November 2024" (clickable, opens month/year selector)
 - Navigation arrows: ChevronLeft and ChevronRight (24px, clickable)
@@ -62,6 +69,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 - Hover: Light gray background on arrows
 
 **Calendar Grid:**
+
 - Weekday headers: "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"
   - Font: 12px, semibold, gray (#6b7280)
   - Height: 32px
@@ -78,6 +86,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
     6. **Disabled**: Gray text (#9ca3af), not clickable, line-through
 
 **Month/Year Selector (Dropdown):**
+
 - Opens when clicking month/year in header
 - Grid of months: 4 columns × 3 rows
 - Month buttons: "Jan", "Feb", "Mär", "Apr", etc. (German abbreviations)
@@ -86,6 +95,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 - Quick navigation: "Heute" button at bottom (jumps to today)
 
 **Date Range Picker:**
+
 - Two inputs: "Von: TT.MM.JJJJ" and "Bis: TT.MM.JJJJ"
 - Single calendar showing both months side-by-side
 - Selection:
@@ -98,6 +108,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 **Time Picker:**
 
 **Time Input Field:**
+
 - Width: 120px
 - Format: "HH:MM" (24-hour German format)
 - Placeholder: "HH:MM"
@@ -105,6 +116,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 - Example: "14:30"
 
 **Time Picker Popover:**
+
 - Width: 200px
 - Two scrollable columns: Hours (00-23) and Minutes (00, 15, 30, 45)
 - Column height: 200px, scrollable
@@ -113,12 +125,14 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 - "Jetzt" button at bottom (sets to current time)
 
 **Date-Time Picker (Combined):**
+
 - Date input + Time input side by side
 - Single popover with calendar and time picker
 - Layout: Calendar above, time picker below
 - Divider: 1px solid #e5e7eb between calendar and time
 
 **Presets (Quick Selection):**
+
 - Left sidebar in calendar popover (optional)
 - Preset buttons:
   - "Heute" (Today)
@@ -130,6 +144,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 - Clicking preset: Auto-fills date(s) and closes picker
 
 **Birthday/Year Picker:**
+
 - Year-first selection (important for old dates)
 - Year dropdown: Scrollable list 1900-2024
 - Month grid: After year selected
@@ -137,6 +152,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 - Use for: Birth dates, historical dates
 
 **Keyboard Navigation:**
+
 - Arrow keys: Navigate days in calendar
 - Enter: Select focused day
 - Escape: Close calendar
@@ -144,6 +160,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 - Page Up/Down: Previous/next month
 
 **Disabled Date Ranges:**
+
 - Visual: Grayed out, strikethrough, not clickable
 - Use cases:
   - Past dates disabled (for future-only dates)
@@ -152,6 +169,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 - Example: Invoice date limited to last 7 days
 
 **Validation States:**
+
 - Error: Red border on input, error message below
 - Success: Green border (optional)
 - Warning: Amber border for unusual dates
@@ -161,6 +179,7 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
   - "Datum liegt zu weit zurück" (Date too far in past)
 
 **Mobile Date Picker:**
+
 - On mobile: Native date picker (iOS/Android)
 - Or: Full-screen calendar overlay
 - Larger day cells (56x56px) for touch
@@ -168,12 +187,14 @@ Create comprehensive date and time picker components for KOMPASS, a German CRM a
 - "Abbrechen" and "Fertig" buttons at bottom
 
 **Relative Date Display:**
+
 - Shows relative time for recent dates
 - "Heute", "Gestern", "Vor 3 Tagen"
 - Tooltip shows absolute date on hover
 - Use for: Activity timestamps, last modified
 
 **Week Number Display (Optional):**
+
 - Week numbers shown in left column
 - Font: 11px, gray
 - Format: "KW 46" (Kalenderwoche)
@@ -184,6 +205,7 @@ Design with German date format (DD.MM.YYYY) and clear visual feedback for all in
 ## Interaction Patterns
 
 ### Date Selection
+
 1. User clicks date input
 2. Calendar popover opens below (or above if no space)
 3. Current month shown, today highlighted
@@ -192,6 +214,7 @@ Design with German date format (DD.MM.YYYY) and clear visual feedback for all in
 6. Calendar closes automatically
 
 ### Date Range Selection
+
 1. User clicks "Von" input
 2. Calendar opens
 3. User selects start date
@@ -200,6 +223,7 @@ Design with German date format (DD.MM.YYYY) and clear visual feedback for all in
 6. Calendar closes
 
 ### Time Selection
+
 1. User clicks time input
 2. Time picker opens
 3. User scrolls hour column, selects hour
@@ -210,11 +234,13 @@ Design with German date format (DD.MM.YYYY) and clear visual feedback for all in
 ## German Labels & Content
 
 ### Date Format
+
 - **TT.MM.JJJJ**: DD.MM.YYYY
 - **HH:MM**: 24-hour time
 - Example: "15.11.2024" or "15.11.2024, 14:30"
 
 ### Weekdays
+
 - **Mo**: Monday
 - **Di**: Tuesday
 - **Mi**: Wednesday
@@ -224,9 +250,11 @@ Design with German date format (DD.MM.YYYY) and clear visual feedback for all in
 - **So**: Sunday
 
 ### Months
+
 - **Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember**
 
 ### Presets
+
 - **Heute**: Today
 - **Gestern**: Yesterday
 - **Letzte 7 Tage**: Last 7 days
@@ -235,17 +263,20 @@ Design with German date format (DD.MM.YYYY) and clear visual feedback for all in
 - **Letzter Monat**: Last month
 
 ### Buttons
+
 - **Jetzt**: Now (current time)
 - **Abbrechen**: Cancel
 - **Fertig**: Done
 - **Zurücksetzen**: Reset
 
 ### Validation
+
 - **Ungültiges Datum**: Invalid date
 - **Pflichtfeld**: Required field
 - **Von-Datum muss vor Bis-Datum liegen**: From date must be before To date
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Input: aria-label="Datum auswählen"
 - Calendar: role="dialog", aria-modal="true"
@@ -257,6 +288,7 @@ Design with German date format (DD.MM.YYYY) and clear visual feedback for all in
 - Screen reader announces date changes
 
 ## Mobile Considerations
+
 - Native date picker preferred on mobile
 - Or larger calendar with 56px touch targets
 - Full-screen overlay for better visibility
@@ -266,17 +298,20 @@ Design with German date format (DD.MM.YYYY) and clear visual feedback for all in
 ## Example Data
 
 **Invoice Date:**
+
 - Input: "15.11.2024"
 - Min date: 7 days ago (08.11.2024)
 - Max date: Today (15.11.2024)
 - Disabled: Future dates, dates > 7 days ago
 
 **Project Timeline:**
+
 - Start date: "01.10.2024"
 - End date: "31.12.2024"
 - Range: 92 days highlighted in calendar
 
 **Meeting Time:**
+
 - Date: "20.11.2024"
 - Time: "14:30"
 - Format: "20.11.2024, 14:30 Uhr"
@@ -284,6 +319,7 @@ Design with German date format (DD.MM.YYYY) and clear visual feedback for all in
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add calendar
 npx shadcn-ui@latest add popover
@@ -291,6 +327,7 @@ npx shadcn-ui@latest add select
 ```
 
 ### Date Picker Usage
+
 ```typescript
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -316,6 +353,7 @@ const [date, setDate] = useState<Date>();
 ```
 
 ### Date Range Picker
+
 ```typescript
 const [dateRange, setDateRange] = useState<DateRange>();
 
@@ -329,6 +367,7 @@ const [dateRange, setDateRange] = useState<DateRange>();
 ```
 
 ### Component Dependencies
+
 - Design tokens (colors, spacing)
 - Icons from lucide-react (Calendar, Clock, ChevronLeft, ChevronRight)
 - date-fns for date formatting and manipulation
@@ -336,9 +375,9 @@ const [dateRange, setDateRange] = useState<DateRange>();
 - Popover for calendar display
 
 ### State Management
+
 - Selected date(s) state
 - Calendar open/close state
 - Current viewed month/year
 - Time selection state
 - Date validation rules
-

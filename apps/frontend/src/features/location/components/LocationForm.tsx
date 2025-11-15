@@ -1,13 +1,19 @@
 /**
  * LocationForm Component
- * 
+ *
  * Form for creating/editing Location
  * Uses shadcn/ui components: Form, Input, Select, Textarea, Checkbox
  */
 
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+
+import type { Location } from '@kompass/shared/types/entities/location';
+import { LocationType } from '@kompass/shared/types/enums';
+
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -18,9 +24,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -28,8 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { LocationType } from '@kompass/shared/types/enums';
-import type { Location } from '@kompass/shared/types/entities/location';
+import { Textarea } from '@/components/ui/textarea';
 
 /**
  * Form validation schema
@@ -39,7 +41,10 @@ const locationFormSchema = z.object({
     .string()
     .min(2, 'Standortname muss mindestens 2 Zeichen lang sein')
     .max(100, 'Standortname darf maximal 100 Zeichen lang sein')
-    .regex(/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/, 'Nur Buchstaben, Zahlen und Standardzeichen erlaubt'),
+    .regex(
+      /^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/,
+      'Nur Buchstaben, Zahlen und Standardzeichen erlaubt'
+    ),
   locationType: z.nativeEnum(LocationType),
   isActive: z.boolean(),
   deliveryAddress: z.object({
@@ -136,10 +141,14 @@ export function LocationForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value={LocationType.HEADQUARTER}>Hauptsitz</SelectItem>
+                  <SelectItem value={LocationType.HEADQUARTER}>
+                    Hauptsitz
+                  </SelectItem>
                   <SelectItem value={LocationType.BRANCH}>Filiale</SelectItem>
                   <SelectItem value={LocationType.WAREHOUSE}>Lager</SelectItem>
-                  <SelectItem value={LocationType.PROJECT_SITE}>Projektstandort</SelectItem>
+                  <SelectItem value={LocationType.PROJECT_SITE}>
+                    Projektstandort
+                  </SelectItem>
                   <SelectItem value={LocationType.OTHER}>Sonstige</SelectItem>
                 </SelectContent>
               </Select>
@@ -155,7 +164,10 @@ export function LocationForm({
           render={({ field }) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0">
               <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>Aktiv</FormLabel>
@@ -289,7 +301,10 @@ export function LocationForm({
             <FormItem>
               <FormLabel>Öffnungszeiten</FormLabel>
               <FormControl>
-                <Input placeholder="Mo-Fr 8:00-18:00, Sa 9:00-14:00" {...field} />
+                <Input
+                  placeholder="Mo-Fr 8:00-18:00, Sa 9:00-14:00"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -312,15 +327,23 @@ export function LocationForm({
 
         {/* Form Actions */}
         <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={isLoading}
+          >
             Abbrechen
           </Button>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Wird gespeichert...' : location ? 'Aktualisieren' : 'Erstellen'}
+            {isLoading
+              ? 'Wird gespeichert...'
+              : location
+                ? 'Aktualisieren'
+                : 'Erstellen'}
           </Button>
         </div>
       </form>
     </Form>
   );
 }
-

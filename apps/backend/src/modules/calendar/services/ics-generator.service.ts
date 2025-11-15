@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CalendarEventDto } from '../dto/calendar-event.dto';
 import * as ics from 'ics';
-import { EventAttributes } from 'ics';
+import type { EventAttributes } from 'ics';
+
+import type { CalendarEventDto } from '../dto/calendar-event.dto';
 
 @Injectable()
 export class IcsGeneratorService {
@@ -12,7 +13,7 @@ export class IcsGeneratorService {
    */
   generateIcs(events: CalendarEventDto[]): string {
     const icsEvents: EventAttributes[] = events.map((event) =>
-      this.eventToIcsFormat(event),
+      this.eventToIcsFormat(event)
     );
 
     const { error, value } = ics.createEvents(icsEvents);
@@ -21,7 +22,7 @@ export class IcsGeneratorService {
       throw new Error(`Failed to generate ICS file: ${error.message}`);
     }
 
-    return this.addCustomHeaders(value!);
+    return this.addCustomHeaders(value);
   }
 
   /**
@@ -59,7 +60,9 @@ export class IcsGeneratorService {
   /**
    * Converts Date to ICS date array format [year, month, day, hour, minute]
    */
-  private dateToIcsFormat(date: Date): [number, number, number, number, number] {
+  private dateToIcsFormat(
+    date: Date
+  ): [number, number, number, number, number] {
     return [
       date.getFullYear(),
       date.getMonth() + 1,
@@ -94,9 +97,11 @@ export class IcsGeneratorService {
 
     if (headerIndex !== -1) {
       lines[headerIndex] = 'PRODID:-//KOMPASS CRM//Calendar Export//EN';
-      
+
       // Add custom calendar properties after PRODID
-      lines.splice(headerIndex + 1, 0, 
+      lines.splice(
+        headerIndex + 1,
+        0,
         'X-WR-CALNAME:KOMPASS Kalender',
         'X-WR-TIMEZONE:Europe/Berlin',
         'CALSCALE:GREGORIAN',
@@ -107,5 +112,3 @@ export class IcsGeneratorService {
     return lines.join('\r\n');
   }
 }
-
-

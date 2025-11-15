@@ -1,6 +1,7 @@
 # Data Export & Import - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Bulk data import/export interface
 - **User Roles**: GF/BUCH (export), PLAN/ADM/GF (import)
 - **Usage Context**: Migrate data, backup, DATEV integration, bulk customer import, contact protocol import from Word documents
@@ -13,10 +14,12 @@ Create data export and import interfaces for KOMPASS with format selection, fiel
 **Data Export Interface:**
 
 **Export Dialog (Modal):**
+
 - Title: "Daten exportieren" (28px, bold)
 - Icon: Download cloud
 
 **Step 1: Export Type**
+
 - Select entity: Radio buttons
   - ◉ Kunden
   - ○ Kontakte
@@ -26,10 +29,12 @@ Create data export and import interfaces for KOMPASS with format selection, fiel
 - Batch: "Alle auswählen" checkbox
 
 **Step 2: Date Range**
+
 - Preset: Chips "Heute", "Diese Woche", "Dieser Monat", "Dieses Quartal", "Dieses Jahr", "Alle"
 - Custom: Date pickers "Von/Bis"
 
 **Step 3: Format**
+
 - Dropdown: "Format wählen"
   - CSV (Standard)
   - Excel (.xlsx)
@@ -37,6 +42,7 @@ Create data export and import interfaces for KOMPASS with format selection, fiel
   - DATEV (GoBD-konform)
 
 **Step 4: Fields**
+
 - Section: "Felder auswählen"
 - Default: "Alle Felder" (checkbox)
 - Custom: Multi-select list with checkboxes
@@ -48,32 +54,38 @@ Create data export and import interfaces for KOMPASS with format selection, fiel
 - Info: "32 von 45 Feldern ausgewählt"
 
 **Step 5: Options**
+
 - Toggle: "Kopfzeile einschließen" (default: ON)
 - Toggle: "Gelöschte Einträge einschließen" (default: OFF)
 - Toggle: "Audit-Trail einschließen" (for GoBD) (default: OFF if not DATEV)
 - Encoding: Dropdown "UTF-8" (default), "ISO-8859-1"
 
 **Preview:**
+
 - Card: "Vorschau (erste 5 Zeilen)"
 - Table: Shows sample rows
 - Columns: Selected fields
 - Rows: First 5 customers
 
 **Actions:**
+
 - Primary: "Exportieren" (large blue button)
 - Secondary: "Abbrechen" (gray)
 
 **Export Progress:**
+
 - Progress bar: "Exportiere 128 von 256 Kunden..." (blue)
 - Percentage: "50%"
 - Cancel: "Abbrechen" button
 
 **Success:**
+
 - Toast: "Export abgeschlossen - 256 Kunden exportiert" (green)
 - File: "Kunden_Export_2024-11-15.csv"
 - Actions: "Herunterladen" (download icon), "E-Mail senden"
 
 **DATEV Export (Special):**
+
 - Checkbox: "GoBD-konform exportieren"
 - Includes: Hashes, signatures, audit trail
 - Format: DATEV CSV standard
@@ -83,10 +95,12 @@ Create data export and import interfaces for KOMPASS with format selection, fiel
 **Data Import Interface:**
 
 **Import Dialog (Modal or Full Page):**
+
 - Title: "Daten importieren" (28px, bold)
 - Icon: Upload cloud
 
 **Step 1: File Upload**
+
 - Drag-drop area: "CSV-, Excel- oder Word-Datei hier ablegen"
 - Or: "Datei auswählen" button
 - Supported: CSV, XLSX, JSON, DOCX, DOC
@@ -96,6 +110,7 @@ Create data export and import interfaces for KOMPASS with format selection, fiel
   - Example: "protocols.docx, 1.5 MB, 150 Protokolle"
 
 **Step 2: Import Type**
+
 - Select entity: Dropdown
   - Kunden (Excel/CSV)
   - Kontakte (Excel/CSV)
@@ -107,11 +122,13 @@ Create data export and import interfaces for KOMPASS with format selection, fiel
   - ○ Beide (Upsert)
 
 **Step 3: Field Mapping**
+
 - Section: "Felder zuordnen"
 - Table: 3 columns
   - CSV-Spalte | → | KOMPASS-Feld
-  
+
 **Example Mapping:**
+
 ```
 CSV-Spalte          →  KOMPASS-Feld
 company_name        →  Firmenname (erforderlich)
@@ -124,17 +141,20 @@ address_city        →  Adresse > Stadt
 ```
 
 **Mapping Controls:**
+
 - Auto-detect: "Automatisch zuordnen" button (AI-assisted)
 - Manual: Dropdown for each CSV column
-- Required fields: Red asterisk * (must map)
+- Required fields: Red asterisk \* (must map)
 - Optional fields: Gray (can skip)
 - Unmapped: "Ignorieren" (not imported)
 
 **Step 4: Validation**
+
 - Button: "Vorschau & Validierung"
 - Shows: Validation results table
 
 **Validation Results:**
+
 - Columns: Zeile, Status, Feld, Fehler, Wert
 - Rows: Each row from CSV
 - Status icons:
@@ -143,6 +163,7 @@ address_city        →  Adresse > Stadt
   - ❌ Fehler (red)
 
 **Example Validation Errors:**
+
 ```
 Zeile | Status | Feld         | Fehler                           | Wert
 2     | ❌     | VAT-Nummer   | Ungültiges Format (DE fehlt)     | 123456789
@@ -151,18 +172,21 @@ Zeile | Status | Feld         | Fehler                           | Wert
 ```
 
 **Validation Summary:**
+
 - Card: "Validierungsergebnis"
 - Gültig: "487 Zeilen ✅" (green)
 - Warnungen: "15 Zeilen ⚠" (amber)
 - Fehler: "10 Zeilen ❌" (red)
 
 **Error Handling Options:**
+
 - Radio buttons:
   - ◉ "Nur gültige Zeilen importieren"
   - ○ "Import abbrechen bei Fehlern"
   - ○ "Fehlerhafte Zeilen überspringen und protokollieren"
 
 **Step 5: Duplicate Check**
+
 - Toggle: "Duplikatsprüfung aktivieren"
 - Matching field: Dropdown "VAT-Nummer" or "E-Mail"
 - Action if duplicate:
@@ -171,6 +195,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - ○ "Nachfragen"
 
 **Duplicate Detection Results:**
+
 - Shows: Potential duplicates
 - Each: CSV row vs. Existing KOMPASS entry
 - Actions:
@@ -179,6 +204,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - "Aktualisieren" (merge/update existing)
 
 **Step 6: Confirmation**
+
 - Summary card:
   - Zu importieren: "487 Kunden"
   - Übersprungen (Fehler): "10 Kunden"
@@ -186,17 +212,20 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - Gesamt: "512 Zeilen"
 
 **Actions:**
+
 - Primary: "Import starten" (large blue button)
 - Secondary: "Abbrechen" (gray)
 - Tertiary: "Fehler exportieren" (download error CSV)
 
 **Import Progress:**
+
 - Progress bar: "Importiere 128 von 487 Kunden..." (blue)
 - Percentage: "26%"
 - ETA: "Verbleibende Zeit: ~2 Minuten"
 - Cancel: "Abbrechen" button
 
 **Import Results:**
+
 - Dialog: "Import abgeschlossen"
 - Icon: Checkmark (green, large)
 - Summary:
@@ -209,11 +238,13 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - "Schließen" (secondary)
 
 **Error Log Export:**
+
 - Filename: "Import_Errors_2024-11-15.csv"
 - Columns: Zeile, Feld, Fehler, Wert, Grund
 - Opens in Excel: Users can fix and re-import
 
 **Templates:**
+
 - Section: "Vorlagen"
 - Download templates: "CSV-Vorlage herunterladen"
 - Example files: "Kunden_Vorlage.csv", "Kontakte_Vorlage.xlsx"
@@ -222,6 +253,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
 **Contact Protocol Import (Word Documents):**
 
 **Import Wizard (Full Page or Modal):**
+
 - Title: "Kontaktprotokolle importieren" (28px, bold, margin-bottom: 8px)
 - Subtitle: "Importieren Sie Kontaktprotokolle aus Word-Dokumenten" (16px, gray, margin-bottom: 24px)
 - Progress indicator: Step indicator at top (horizontal stepper)
@@ -251,6 +283,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
       - Options: "Abbrechen" (secondary), "Import beenden" (primary, red)
 
 **Step 1: File Upload**
+
 - Section: "Datei hochladen" (24px, bold, margin-bottom: 16px)
 - Drag-drop area: Large drop zone (min-height: 200px)
   - Border: 2px dashed #d1d5db (gray-300)
@@ -286,6 +319,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - Action: "Erneut versuchen" button (primary, blue)
 
 **Step 2: Table Selection**
+
 - Section: "Tabelle auswählen"
 - Loading state: Show spinner while extracting tables from Word document
 - If multiple tables: Dropdown "Tabelle 1", "Tabelle 2", etc.
@@ -306,6 +340,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - Action: "Datei erneut auswählen" button
 
 **Step 3: Column Mapping**
+
 - Section: "Spalten zuordnen" (24px, bold, margin-bottom: 16px)
 - Auto-detect button: "Automatisch zuordnen" (primary button, blue)
   - Icon: Sparkles (left of text)
@@ -318,8 +353,8 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - Border-radius: 8px (rounded-lg)
   - Background: #ffffff (white)
 - Required columns (highlighted with red border-left: 4px solid #ef4444):
-  - Date column: "Datum" (required, red asterisk *, error if not mapped)
-  - Note column: "Notiz" (required, red asterisk *, error if not mapped)
+  - Date column: "Datum" (required, red asterisk \*, error if not mapped)
+  - Note column: "Notiz" (required, red asterisk \*, error if not mapped)
   - Action column: "Aktion" (optional, gray text, no asterisk)
 - Manual mapping: Dropdown for each Word column
   - Dropdown: Shows all available KOMPASS fields
@@ -328,7 +363,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - Placeholder: "Feld auswählen..." (gray text)
   - Selected: Blue background (#3b82f6), white text
 - Required fields indicator:
-  - Red asterisk * (color: #ef4444, 14px)
+  - Red asterisk \* (color: #ef4444, 14px)
   - Tooltip on hover: "Pflichtfeld - muss zugeordnet werden"
 - Optional fields indicator:
   - Gray text (#6b7280)
@@ -338,6 +373,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - Action: "Ignorieren" button (gray, small)
 
 **Example Mapping Table:**
+
 ```
 ┌─────────────────┬───┬─────────────────────────────────────┐
 │ Word-Spalte     │ → │ KOMPASS-Feld                        │
@@ -350,11 +386,13 @@ Zeile | Status | Feld         | Fehler                           | Wert
 ```
 
 **Mapping Validation:**
+
 - Real-time validation: Show error if required fields not mapped
 - Error message: "Bitte ordnen Sie alle erforderlichen Felder zu" (red text, below table)
 - Success state: All required fields mapped, show checkmark icon
 
 **Step 4: Date Parsing**
+
 - Section: "Datumsparsing" (24px, bold, margin-bottom: 16px)
 - Info text: "Das System versucht, Datumsformate automatisch zu erkennen. Bei fehlgeschlagenem Parsing können Sie das Datum manuell korrigieren." (gray text, 14px, margin-bottom: 16px)
 - Button: "Daten parsen" (primary button, blue)
@@ -390,6 +428,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - On click: Opens date correction dialog
 
 **Example Date Parsing Table:**
+
 ```
 ┌──────┬──────────────┬──────────────┬──────────────┬────────┬──────────────┐
 │ Zeile│ Originalwert │ Parsed Wert  │ Format       │ Status │ Aktion       │
@@ -403,6 +442,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
 ```
 
 **Parsing Summary Card:**
+
 - Card: White background, border: 1px solid #e5e7eb, border-radius: 8px, padding: 16px
 - Grid: 3 columns
   - Erfolgreich: "140 Datumsangaben ✅" (green text, #10b981)
@@ -414,6 +454,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - Opens bulk correction dialog
 
 **Manual Date Correction:**
+
 - For failed dates: Show date picker
 - Original value: Display original date string
 - Parsing attempts: Show what system tried to parse
@@ -423,6 +464,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
 - Text input: User can type date in known format
 
 **Date Correction UI:**
+
 - Dialog: Modal dialog, centered, max-width: 500px
 - Title: "Datum korrigieren" (24px, bold, margin-bottom: 8px)
 - Original value display:
@@ -464,13 +506,14 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - Auto-dismiss: After 3 seconds
 
 **Step 5: Customer Assignment**
+
 - Section: "Kunden zuordnen" (24px, bold, margin-bottom: 16px)
 - Info text: "Ordnen Sie jedem Protokoll einen Kunden zu. Das System kann versuchen, Kunden automatisch aus der Notiz zu erkennen." (gray text, 14px, margin-bottom: 16px)
 - Assignment mode: Radio button group
   - ◉ "Alle Protokolle einem Kunden zuordnen" (default)
   - ○ "Kunden pro Zeile zuordnen"
 - Single customer mode (when "Alle Protokolle einem Kunden zuordnen" selected):
-  - Dropdown: "Kunde auswählen" (required, red asterisk *)
+  - Dropdown: "Kunde auswählen" (required, red asterisk \*)
     - Search: Typeahead search in dropdown
     - Placeholder: "Kunde suchen..." (gray text)
     - Grouped: Customers grouped by rating (A, B, C)
@@ -514,6 +557,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - Action: "Nicht zugeordnete Protokolle manuell zuordnen" button (if unmatched rows exist)
 
 **Customer Assignment Example Table:**
+
 ```
 ┌──────┬────────────────────────────────────────┬──────────────────────────────┬──────────┐
 │ Zeile│ Notiz (Vorschau)                       │ Kunde                        │ Status   │
@@ -525,6 +569,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
 ```
 
 **Customer Assignment Validation:**
+
 - Real-time validation: Show error if required customer not assigned
 - Error message: "Bitte ordnen Sie allen Protokollen einen Kunden zu" (red text, below table)
 - Success state: All protocols assigned, show checkmark icon
@@ -533,6 +578,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - Action: "Manuell überprüfen" button
 
 **Step 6: Validation**
+
 - Section: "Validierung" (24px, bold, margin-bottom: 16px)
 - Button: "Vorschau & Validierung" (primary button, blue)
   - Icon: CheckCircle (left of text)
@@ -571,6 +617,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - "Fehler" (red text, shows only error rows)
 
 **Example Validation Table:**
+
 ```
 ┌──────┬────────┬──────────┬──────────────────────────────┬──────────────────────┬──────────┐
 │ Zeile│ Status │ Feld     │ Fehler                       │ Wert                 │ Aktion   │
@@ -584,6 +631,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
 ```
 
 **Validation Summary Card:**
+
 - Card: White background, border: 1px solid #e5e7eb, border-radius: 8px, padding: 16px
 - Grid: 3 columns with icons and counts
   - Gültig: "140 Protokolle ✅" (green text, #10b981, checkmark icon)
@@ -601,6 +649,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - ○ "Fehlerhafte Protokolle überspringen und protokollieren"
 
 **Step 7: Confirmation**
+
 - Section: "Import bestätigen" (24px, bold, margin-bottom: 16px)
 - Summary card: White background, border: 1px solid #e5e7eb, border-radius: 8px, padding: 24px
   - Title: "Import-Zusammenfassung" (20px, bold, margin-bottom: 16px)
@@ -639,6 +688,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
       - Options: "Abbrechen" (secondary), "Importieren" (primary)
 
 **Import Progress:**
+
 - Modal: Full-screen overlay with progress indicator
 - Background: Semi-transparent black (#000000, opacity: 0.5)
 - Card: White background, centered, max-width: 500px, padding: 24px
@@ -657,6 +707,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
     - Options: "Weiter importieren" (primary), "Abbrechen" (secondary)
 
 **Import Results:**
+
 - Dialog: Modal dialog, centered, max-width: 600px, padding: 24px
 - Icon: Checkmark (green, #10b981, 64px, centered, margin-bottom: 16px)
 - Title: "Import abgeschlossen" (24px, bold, centered, margin-bottom: 16px)
@@ -688,19 +739,23 @@ Zeile | Status | Feld         | Fehler                           | Wert
 **Contact Protocol Export:**
 
 **Export Dialog (Modal):**
+
 - Title: "Kontaktprotokolle exportieren" (28px, bold)
 - Icon: Download cloud
 
 **Step 1: Export Type**
+
 - Select entity: "Kontaktprotokolle" (pre-selected)
 - Customer filter: Dropdown "Alle Kunden" or specific customer
 - Protocol type: Dropdown "Alle Typen" or specific type (Besuch, Anruf, E-Mail, Meeting)
 
 **Step 2: Date Range**
+
 - Preset: Chips "Heute", "Diese Woche", "Dieser Monat", "Dieses Quartal", "Dieses Jahr", "Alle"
 - Custom: Date pickers "Von/Bis"
 
 **Step 3: Format**
+
 - Dropdown: "Format wählen"
   - CSV (Standard)
   - Excel (.xlsx)
@@ -708,6 +763,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - JSON (API)
 
 **Step 4: Fields**
+
 - Section: "Felder auswählen"
 - Default: "Alle Felder" (checkbox)
 - Custom: Multi-select list with checkboxes
@@ -720,12 +776,14 @@ Zeile | Status | Feld         | Fehler                           | Wert
   - ☐ Protokolltyp (optional)
 
 **Preview:**
+
 - Card: "Vorschau (erste 5 Zeilen)"
 - Table: Shows sample rows
 - Columns: Selected fields
 - Rows: First 5 protocols
 
 **Word Export Format:**
+
 - Table structure: Professional table with headers (Word table format)
 - Columns: Datum, Notiz, Aktion, Kunde, Kontakt, Benutzer, Protokolltyp (if selected)
 - Headers: Bold, 14px, blue background (#3b82f6), white text
@@ -748,22 +806,26 @@ Zeile | Status | Feld         | Fehler                           | Wert
 - File size: Shown in export dialog (e.g., "2.3 MB")
 
 **Export Progress:**
+
 - Progress bar: "Exportiere 70 von 140 Protokollen..." (blue)
 - Percentage: "50%"
 - Cancel: "Abbrechen" button
 
 **Success:**
+
 - Toast: "Export abgeschlossen - 140 Protokolle exportiert" (green)
 - File: "Protokolle_Export_2025-01-27.docx"
 - Actions: "Herunterladen" (download icon), "E-Mail senden"
 
 **Business Card Bulk Import (Mobile):**
+
 - Special mode: "Visitenkarten scannen"
 - Multi-photo: Scan multiple business cards
 - OCR: Extract all contacts
 - Batch import: Import all at once
 
 **Mobile View:**
+
 - Wizard: Step-by-step (1 screen per step)
 - Swipe: Navigate steps
 - File upload: Use file picker or camera
@@ -771,6 +833,7 @@ Zeile | Status | Feld         | Fehler                           | Wert
 - Progress: Full-screen overlay
 
 **Accessibility:**
+
 - ARIA labels: Describe steps and fields
 - Keyboard navigation: Tab through form
 - Screen reader: Reads validation errors
@@ -779,11 +842,13 @@ Zeile | Status | Feld         | Fehler                           | Wert
 ## Implementation Notes
 
 ### Required shadcn/ui Components
+
 ```bash
 npx shadcn-ui@latest add button dialog progress table date-picker card badge alert toast
 ```
 
 ### Libraries
+
 ```bash
 # CSV parsing
 pnpm add papaparse @types/papaparse
@@ -817,12 +882,14 @@ pnpm add react-dropzone
 ```
 
 ### Word Document Parsing
+
 - Use `mammoth` or `docx` library to extract tables from Word documents
 - Extract table structure (headers, rows, columns)
 - Handle multiple tables in single document
 - Preserve table formatting (if needed)
 
 ### Date Parsing Strategy
+
 1. **Try common formats first:**
    - ISO: `YYYY-MM-DD`, `YYYY-MM-DDTHH:mm:ssZ`
    - German: `DD.MM.YYYY`, `DD.MM.YY`, `DD.M.YYYY`, `DD.M.YY`
@@ -847,6 +914,7 @@ pnpm add react-dropzone
    - Apply correction to similar dates (optional)
 
 ### Customer Auto-Matching
+
 - Extract customer names from note field
 - Use fuzzy matching to find similar customers
 - Match by: Company name, VAT number, email
@@ -855,6 +923,7 @@ pnpm add react-dropzone
 - Allow user to override auto-matches
 
 ### Performance Considerations
+
 - Large files: Process in chunks (1000 rows at a time)
 - Progress tracking: Show progress bar for long-running operations
 - Background jobs: Use background jobs for imports >5000 rows
@@ -863,12 +932,14 @@ pnpm add react-dropzone
 - Batch processing: Process dates in batches for better performance
 
 ### Error Handling
+
 - Error logging: Log errors to file for large imports
 - Error reporting: Generate error reports for user review
 - Error recovery: Allow user to retry import with corrections
 - Error export: Export error log as CSV file
 
 ### Accessibility
+
 - ARIA labels: Describe all interactive elements
 - Keyboard navigation: Tab through form, Enter to submit
 - Screen reader: Reads validation errors and progress
@@ -877,6 +948,7 @@ pnpm add react-dropzone
 - Error announcements: Screen reader announces validation errors
 
 ### Mobile Considerations
+
 - Wizard: Step-by-step (1 screen per step)
 - Swipe: Navigate steps with swipe gestures
 - File upload: Use native file picker or camera
@@ -892,18 +964,21 @@ pnpm add react-dropzone
 ## Summary
 
 ### Customer Import/Export (Excel/CSV)
+
 - **Import:** Upload Excel/CSV file → Map fields (automatic/manual) → Validate → Check duplicates → Execute → Error log
 - **Export:** Select format (CSV/Excel/JSON/DATEV) → Select fields → Apply filters → Export → Download
 - **Features:** Field mapping, validation, duplicate detection, error handling, progress tracking
 - **Formats:** CSV, Excel (.xlsx, .xls), JSON, DATEV (GoBD-compliant)
 
 ### Contact Protocol Import/Export (Word Documents)
+
 - **Import:** Upload Word document → Select table → Map columns → Parse dates (with fallback) → Assign customers → Validate → Execute → Error log
 - **Export:** Select format (CSV/Excel/Word/JSON) → Select fields → Apply filters → Export → Download
 - **Features:** Table extraction, column mapping, date parsing (multiple formats with fallback to manual entry), customer assignment (single/multiple with auto-match), validation, error handling, progress tracking
 - **Formats:** CSV, Excel (.xlsx), Word (.docx), JSON
 
 ### Key UI/UX Features
+
 - **Step-by-step wizard:** 7 steps for protocol import, 6 steps for customer import
 - **Progress tracking:** Real-time progress bars, percentages, ETA
 - **Error handling:** Comprehensive error logging, error export, error correction dialogs
@@ -915,6 +990,7 @@ pnpm add react-dropzone
 - **Mobile optimization:** Touch-optimized, responsive design, mobile-first approach
 
 ### Implementation Requirements
+
 - **shadcn/ui components:** button, dialog, progress, table, date-picker, card, badge, alert, toast
 - **Libraries:** papaparse/csv-parse (CSV), xlsx/exceljs (Excel), mammoth/docx (Word), date-fns/chrono-node (date parsing), zod/yup (validation), react-dropzone (file upload)
 - **Performance:** Chunked processing (1000 rows), background jobs (>5000 rows), streaming, caching
@@ -923,4 +999,3 @@ pnpm add react-dropzone
 ---
 
 **End of Data Export & Import UI/UX Documentation**
-

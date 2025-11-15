@@ -33,6 +33,7 @@ This document describes the coding standards enforced by `.cursorrules` and expe
 ### Type Safety Rules
 
 **✅ DO:**
+
 ```typescript
 // Explicit return types
 function getUserById(id: string): Promise<User> {
@@ -63,18 +64,20 @@ type LoadingState =
 ```
 
 **❌ DON'T:**
+
 ```typescript
 // No implicit any
-function processData(data) { }  // ❌
+function processData(data) {} // ❌
 
 // No any type
-function processData(data: any) { }  // ❌
+function processData(data: any) {} // ❌
 
 // No type assertion without guards
-const customer = data as Customer;  // ❌
+const customer = data as Customer; // ❌
 
 // No missing return types
-function getUserById(id: string) {  // ❌
+function getUserById(id: string) {
+  // ❌
   return repository.findById(id);
 }
 ```
@@ -90,14 +93,14 @@ interface Config {
 
 // ✅ Const assertions
 const STATUS = ['NEW', 'ACTIVE', 'COMPLETED'] as const;
-type Status = typeof STATUS[number];
+type Status = (typeof STATUS)[number];
 
 // ✅ Spread for updates
 const updated = { ...original, name: 'New Name' };
 
 // ❌ Don't mutate
-original.name = 'New Name';  // ❌
-array.push(item);  // ❌ Use [...array, item]
+original.name = 'New Name'; // ❌
+array.push(item); // ❌ Use [...array, item]
 ```
 
 ## Backend Standards (NestJS)
@@ -132,16 +135,17 @@ Controller → Service → Repository → Database
 ```
 
 **✅ DO:**
+
 ```typescript
 // Controller: Only HTTP concerns
 @Controller('customers')
 export class CustomerController {
   constructor(private readonly service: CustomerService) {}
-  
+
   @Get(':id')
-  @UseGuards(JwtAuthGuard, RbacGuard)  // ✅ Guards required
+  @UseGuards(JwtAuthGuard, RbacGuard) // ✅ Guards required
   async findOne(@Param('id') id: string) {
-    return this.service.findById(id);  // ✅ Delegate to service
+    return this.service.findById(id); // ✅ Delegate to service
   }
 }
 
@@ -149,9 +153,9 @@ export class CustomerController {
 @Injectable()
 export class CustomerService {
   constructor(private readonly repository: CustomerRepository) {}
-  
+
   async findById(id: string): Promise<Customer> {
-    return this.repository.findById(id);  // ✅ Use repository
+    return this.repository.findById(id); // ✅ Use repository
   }
 }
 
@@ -159,20 +163,21 @@ export class CustomerService {
 @Injectable()
 export class CustomerRepository {
   async findById(id: string): Promise<Customer> {
-    return this.db.get(id);  // ✅ Only layer accessing DB
+    return this.db.get(id); // ✅ Only layer accessing DB
   }
 }
 ```
 
 **❌ DON'T:**
+
 ```typescript
 // No business logic in controller
 @Controller('customers')
 export class CustomerController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const customer = await this.db.get(id);  // ❌ No DB access
-    customer.status = 'active';  // ❌ No business logic
+    const customer = await this.db.get(id); // ❌ No DB access
+    customer.status = 'active'; // ❌ No business logic
     return customer;
   }
 }
@@ -181,7 +186,7 @@ export class CustomerController {
 @Injectable()
 export class CustomerService {
   async findById(id: string): Promise<Customer> {
-    return this.db.get(id);  // ❌ Use repository
+    return this.db.get(id); // ❌ Use repository
   }
 }
 ```
@@ -191,10 +196,10 @@ export class CustomerService {
 ```typescript
 // ✅ Every endpoint must have guards
 @Controller('customers')
-@UseGuards(JwtAuthGuard, RbacGuard)  // ✅ Required
+@UseGuards(JwtAuthGuard, RbacGuard) // ✅ Required
 export class CustomerController {
   @Get(':id')
-  @RequirePermission('Customer', 'READ')  // ✅ Required
+  @RequirePermission('Customer', 'READ') // ✅ Required
   async findOne(@Param('id') id: string) {
     // ...
   }
@@ -204,7 +209,8 @@ export class CustomerController {
 @Controller('customers')
 export class CustomerController {
   @Get(':id')
-  async findOne(@Param('id') id: string) {  // ❌ Missing guards!
+  async findOne(@Param('id') id: string) {
+    // ❌ Missing guards!
     // ...
   }
 }
@@ -216,16 +222,16 @@ Every entity MUST have:
 
 ```typescript
 interface BaseEntity {
-  _id: string;              // ✅ Required
-  _rev: string;             // ✅ Required
-  type: string;             // ✅ Required
-  createdBy: string;        // ✅ Required
-  createdAt: Date;          // ✅ Required
-  modifiedBy: string;       // ✅ Required
-  modifiedAt: Date;         // ✅ Required
-  version: number;          // ✅ Required
-  _conflicts?: string[];    // ✅ For offline sync
-  lastSyncedAt?: Date;      // ✅ For offline sync
+  _id: string; // ✅ Required
+  _rev: string; // ✅ Required
+  type: string; // ✅ Required
+  createdBy: string; // ✅ Required
+  createdAt: Date; // ✅ Required
+  modifiedBy: string; // ✅ Required
+  modifiedAt: Date; // ✅ Required
+  version: number; // ✅ Required
+  _conflicts?: string[]; // ✅ For offline sync
+  lastSyncedAt?: Date; // ✅ For offline sync
 }
 ```
 
@@ -234,6 +240,7 @@ interface BaseEntity {
 ### Component Rules
 
 **✅ DO: Use shadcn/ui ONLY**
+
 ```tsx
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -241,13 +248,14 @@ import { Card } from '@/components/ui/card';
 export function MyComponent() {
   return (
     <Card>
-      <Button>Save</Button>  {/* ✅ shadcn component */}
+      <Button>Save</Button> {/* ✅ shadcn component */}
     </Card>
   );
 }
 ```
 
 **❌ DON'T: Create custom UI components**
+
 ```tsx
 // ❌ Never do this
 const CustomButton = styled.button`
@@ -265,14 +273,14 @@ function MyButton({ children }) {
 ```typescript
 // ✅ Extract complex logic to hooks
 function useCustomerData(id: string) {
-  const { data, isLoading } = useQuery(['customer', id], () => 
+  const { data, isLoading } = useQuery(['customer', id], () =>
     customerApi.getById(id)
   );
-  
+
   const { mutate: update } = useMutation((data) =>
     customerApi.update(id, data)
   );
-  
+
   return { customer: data, isLoading, update };
 }
 
@@ -280,15 +288,15 @@ function useCustomerData(id: string) {
 function CustomerDetail({ id }) {
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     // ❌ Too much logic in component
     fetch(`/api/customers/${id}`)
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(setCustomer)
       .finally(() => setLoading(false));
   }, [id]);
-  
+
   // ...
 }
 ```
@@ -320,8 +328,8 @@ function useCustomer(id) {
 
 // ❌ Don't use useState for server data
 function MyComponent() {
-  const [customer, setCustomer] = useState(null);  // ❌ Use React Query
-  
+  const [customer, setCustomer] = useState(null); // ❌ Use React Query
+
   useEffect(() => {
     fetchCustomer().then(setCustomer);
   }, []);
@@ -382,13 +390,13 @@ function MyComponent() {
 
 ### Coverage Requirements
 
-| Component Type | Coverage Required |
-|----------------|-------------------|
-| Business Logic (Services) | 90% |
-| React Components | 80% |
-| Utilities | 85% |
-| Controllers | 70% |
-| Overall | 80% |
+| Component Type            | Coverage Required |
+| ------------------------- | ----------------- |
+| Business Logic (Services) | 90%               |
+| React Components          | 80%               |
+| Utilities                 | 85%               |
+| Controllers               | 70%               |
+| Overall                   | 80%               |
 
 ### Test Structure
 
@@ -398,10 +406,10 @@ describe('Feature', () => {
     it('should do something when condition', () => {
       // Arrange
       const input = 'test';
-      
+
       // Act
       const result = doSomething(input);
-      
+
       // Assert
       expect(result).toBe('expected');
     });
@@ -423,7 +431,7 @@ jest.useFakeTimers();
 jest.setSystemTime(new Date('2024-01-01'));
 
 // ❌ Don't mock the code under test
-const mockService = jest.fn();  // ❌ Test real service
+const mockService = jest.fn(); // ❌ Test real service
 ```
 
 ## Security Standards
@@ -436,8 +444,8 @@ const apiKey = process.env.API_KEY;
 const jwtSecret = process.env.JWT_SECRET;
 
 // ❌ Hardcoded secrets
-const apiKey = 'sk-1234567890';  // ❌ NEVER!
-const jwtSecret = 'my-secret';   // ❌ NEVER!
+const apiKey = 'sk-1234567890'; // ❌ NEVER!
+const jwtSecret = 'my-secret'; // ❌ NEVER!
 ```
 
 ### Input Validation (Always)
@@ -454,7 +462,7 @@ export class CreateCustomerDto {
   @IsString()
   @Length(2, 200)
   name: string;
-  
+
   @IsEmail()
   @IsOptional()
   email?: string;
@@ -490,7 +498,7 @@ async getCustomer(id: string) {  // ❌ No RBAC!
 
 ### JSDoc Comments (Required for Public APIs)
 
-```typescript
+````typescript
 /**
  * Finds a customer by ID with RBAC filtering
  *
@@ -508,7 +516,7 @@ async getCustomer(id: string) {  // ❌ No RBAC!
 async findById(id: string, user: User): Promise<Customer> {
   // Implementation
 }
-```
+````
 
 ### README Files (Required for Modules)
 
@@ -518,9 +526,11 @@ Every module directory should have a README.md:
 # Customer Module
 
 ## Overview
+
 Handles customer management with CRUD, validation, and RBAC.
 
 ## API Endpoints
+
 - GET /api/v1/customers
 - GET /api/v1/customers/:id
 - POST /api/v1/customers
@@ -528,9 +538,11 @@ Handles customer management with CRUD, validation, and RBAC.
 - DELETE /api/v1/customers/:id
 
 ## Usage
+
 [Import and usage examples]
 
 ## Testing
+
 [How to run tests]
 ```
 
@@ -638,7 +650,7 @@ class CustomerRepository {
     // Try local first
     const local = await localDB.get(id);
     if (local) return local;
-    
+
     // Fallback to API
     const remote = await api.get(id);
     await localDB.put(remote);
@@ -678,12 +690,12 @@ if (!navigator.onLine) {
 // ✅ Invoice is immutable after finalization
 if (invoice.finalized) {
   const immutableFields = ['invoiceNumber', 'invoiceDate', 'totalAmount'];
-  
+
   if (changesInclude(immutableFields)) {
     if (user.role !== 'GF') {
       throw new ForbiddenException('Requires GF approval');
     }
-    
+
     // Log correction
     invoice.changeLog.push({
       field,
@@ -691,7 +703,7 @@ if (invoice.finalized) {
       newValue,
       changedBy: user.id,
       changedAt: new Date(),
-      reason: correctionReason,  // ✅ Required
+      reason: correctionReason, // ✅ Required
       approvedBy: user.id,
     });
   }
@@ -751,4 +763,3 @@ These standards are enforced by:
 ---
 
 **Remember:** These standards exist to maintain code quality, prevent bugs, and ensure long-term maintainability. Follow them consistently!
-

@@ -1,6 +1,7 @@
 # Time Tracker Widget - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Floating Widget/Toolbar Component
 - **User Roles**: ADM, INNEN, PLAN, KALK (track project time)
 - **Usage Context**: Quick time tracking while working, minimal UI disruption
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Minimal footprint**: Small, unobtrusive widget
 - **Clear status**: Running/paused/stopped states
 - **Quick project switch**: Dropdown for active project
 - **Time display**: Current session and daily total
 
 ### Widget Structure
+
 - Floating or docked positioning
 - Start/pause/stop controls
 - Project/task selector
@@ -22,6 +25,7 @@
 - Quick note capability
 
 ### shadcn/ui Components
+
 - Card (mini), Button, Select, Popover
 - Progress indicator for running state
 - Tooltip for expanded info
@@ -117,18 +121,21 @@ Create a minimal time tracking widget for KOMPASS that enables quick time loggin
 **States & Visual Feedback:**
 
 **Running State:**
+
 - Green pulse on timer icon
 - Time counter incrementing
 - Pause button active
 - Subtle animation on digits
 
 **Paused State:**
+
 - Amber pause icon
 - Time frozen
 - "Pausiert" text
 - Resume button highlighted
 
 **Stopped State:**
+
 - Gray/neutral colors
 - "Bereit" status
 - Start button prominent
@@ -156,6 +163,7 @@ Create a minimal time tracking widget for KOMPASS that enables quick time loggin
 ```
 
 **Quick Actions:**
+
 - **Click timer**: Show day summary
 - **Right click**: Context menu
 - **Drag**: Reposition (floating mode)
@@ -163,6 +171,7 @@ Create a minimal time tracking widget for KOMPASS that enables quick time loggin
 - **Keyboard shortcuts**: Ctrl+Shift+S (start/stop)
 
 ## Interaction Patterns
+
 - **Smart project detection**: Auto-suggest based on calendar
 - **Quick note**: Inline editing without dialog
 - **Batch time entry**: Add multiple entries at once
@@ -170,6 +179,7 @@ Create a minimal time tracking widget for KOMPASS that enables quick time loggin
 - **End of day reminder**: Prompt to stop tracking
 
 ## German Labels & Content
+
 - **Zeiterfassung**: Time tracking
 - **Aktuelle Sitzung**: Current session
 - **Heute gesamt**: Today total
@@ -178,6 +188,7 @@ Create a minimal time tracking widget for KOMPASS that enables quick time loggin
 - **Projekt wechseln**: Switch project
 
 ## Accessibility Requirements
+
 - Keyboard shortcuts for all actions
 - Screen reader announces time changes
 - High contrast mode support
@@ -185,6 +196,7 @@ Create a minimal time tracking widget for KOMPASS that enables quick time loggin
 - Tab navigation through controls
 
 ## Mobile Considerations
+
 - **Persistent notification**: Show timer in status bar
 - **Lock screen widget**: Basic controls available
 - **Battery optimization**: Minimal background usage
@@ -192,6 +204,7 @@ Create a minimal time tracking widget for KOMPASS that enables quick time loggin
 - **Voice control**: "Start timer for Project X"
 
 ## Smart Features
+
 - **Calendar integration**: Auto-start based on meetings
 - **Location awareness**: Start when arriving at client
 - **Task detection**: Suggest project from active window
@@ -199,6 +212,7 @@ Create a minimal time tracking widget for KOMPASS that enables quick time loggin
 - **Reminder system**: Break reminders, end of day
 
 ## Implementation Notes
+
 ```bash
 # Widget Framework Options
 - Electron for desktop (cross-platform)
@@ -226,6 +240,7 @@ Create a minimal time tracking widget for KOMPASS that enables quick time loggin
 ```
 
 ## Timer States & Transitions
+
 ```
 IDLE → RUNNING → PAUSED → RUNNING → STOPPED
   ↓                ↓
@@ -238,6 +253,7 @@ IDLE → RUNNING → PAUSED → RUNNING → STOPPED
 ```
 
 ## Analytics Events
+
 - timer_started (project, method)
 - timer_stopped (duration, project)
 - timer_paused (reason: manual/idle)

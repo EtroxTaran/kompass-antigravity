@@ -1,17 +1,27 @@
 /**
  * DecisionAuthorityCard Component
- * 
+ *
  * Read-only display of contact decision authority with edit button (PLAN/GF only)
  * Uses shadcn/ui Card component
  */
 
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Edit, DollarSign, Briefcase, Building } from 'lucide-react';
-import { ContactDecisionBadge } from './ContactDecisionBadge';
-import type { DecisionAuthorityResponseDto } from '../../../services/contact-api';
+
 import { FunctionalRole } from '@kompass/shared/types/enums';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
+
+import type { DecisionAuthorityResponseDto } from '../../../services/contact-api';
+
+import { ContactDecisionBadge } from './ContactDecisionBadge';
 
 interface DecisionAuthorityCardProps {
   authority: DecisionAuthorityResponseDto;
@@ -145,7 +155,8 @@ export function DecisionAuthorityCard({
             </p>
             {authority.isPrimaryContactForLocations.length > 0 && (
               <p className="text-sm text-muted-foreground">
-                Hauptansprechpartner für {authority.isPrimaryContactForLocations.length} Standort(e)
+                Hauptansprechpartner für{' '}
+                {authority.isPrimaryContactForLocations.length} Standort(e)
               </p>
             )}
           </div>
@@ -153,7 +164,8 @@ export function DecisionAuthorityCard({
 
         {/* Last Updated */}
         <div className="text-xs text-muted-foreground pt-2 border-t">
-          Zuletzt aktualisiert: {new Date(authority.lastUpdated).toLocaleString('de-DE')}
+          Zuletzt aktualisiert:{' '}
+          {new Date(authority.lastUpdated).toLocaleString('de-DE')}
         </div>
       </CardContent>
 
@@ -168,4 +180,3 @@ export function DecisionAuthorityCard({
     </Card>
   );
 }
-

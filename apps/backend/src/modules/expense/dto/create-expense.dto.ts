@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsDate,
@@ -8,7 +9,7 @@ import {
   Min,
   Length,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+
 import { ExpenseCategory } from '@kompass/shared/types/entities/expense';
 
 /**
@@ -50,7 +51,7 @@ export class CreateExpenseDto {
 
   @ApiProperty({
     description: 'Amount in EUR',
-    example: 45.50,
+    example: 45.5,
     minimum: 0.01,
   })
   @IsNumber()
@@ -98,4 +99,3 @@ export class CreateExpenseDto {
   @IsOptional()
   projectId?: string;
 }
-

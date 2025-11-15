@@ -1,6 +1,7 @@
 # Offline Indicators - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: System Status Component
 - **User Roles**: All users (offline-first PWA)
 - **Usage Context**: Indicate offline status, sync state, data freshness
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Global offline banner**: Most prominent, system-wide
 - **Sync status badges**: Item-level indicators
 - **Data age indicators**: Freshness transparency
 - **Connection quality**: Network speed indicators
 
 ### Component States
+
 - Online (default, no indicator)
 - Offline (prominent warning)
 - Syncing (progress indication)
@@ -22,6 +25,7 @@
 - Stale data (age warning)
 
 ### shadcn/ui Components
+
 - Alert, Badge, Progress, Tooltip
 - Custom connection status hook
 - Sync queue visualization
@@ -53,6 +57,7 @@ When synced:
 ```
 
 **Specifications:**
+
 - Position: Fixed below header
 - Background colors:
   - Offline: #FEF3C7 (amber-100)
@@ -91,6 +96,7 @@ Sync error:
 ```
 
 **Icon Specifications:**
+
 - 🔄 Pending: #3B82F6 (blue-500), static
 - ⟳ Syncing: #3B82F6, rotate animation 1s linear infinite
 - ⚠️ Error: #EF4444 (red-500), static
@@ -187,22 +193,21 @@ When offline with cached data:
 
 ```typescript
 // Service Worker connection detection
-navigator.onLine // Basic check
+navigator.onLine; // Basic check
 
 // Enhanced detection with speed test
 async function checkConnection() {
   try {
     const start = Date.now();
-    await fetch('/api/ping', { 
+    await fetch('/api/ping', {
       method: 'HEAD',
-      cache: 'no-store' 
+      cache: 'no-store',
     });
     const latency = Date.now() - start;
-    
+
     return {
       online: true,
-      quality: latency < 100 ? 'good' : 
-               latency < 500 ? 'fair' : 'poor'
+      quality: latency < 100 ? 'good' : latency < 500 ? 'fair' : 'poor',
     };
   } catch {
     return { online: false, quality: 'none' };
@@ -237,18 +242,19 @@ function getSyncIndicator(item: Entity): SyncIndicator {
 function getDataAgeIndicator(lastSync: Date): DataAge {
   const age = Date.now() - lastSync.getTime();
   const hours = age / (1000 * 60 * 60);
-  
+
   if (hours < 1) return null; // Fresh
-  if (hours < 24) return {
-    text: `vor ${Math.floor(hours)} Std.`,
-    level: 'info'
-  };
-  
+  if (hours < 24)
+    return {
+      text: `vor ${Math.floor(hours)} Std.`,
+      level: 'info',
+    };
+
   const days = Math.floor(hours / 24);
   return {
     text: `vor ${days} ${days === 1 ? 'Tag' : 'Tagen'}`,
     level: 'warning',
-    showRefresh: true
+    showRefresh: true,
   };
 }
 ```
@@ -302,12 +308,13 @@ Expanded:
 </div>
 
 <!-- Sync progress -->
-<div role="progressbar" 
-     aria-valuenow="75" 
-     aria-valuemin="0" 
-     aria-valuemax="100"
-     aria-label="Synchronisierung 75% abgeschlossen">
-</div>
+<div
+  role="progressbar"
+  aria-valuenow="75"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  aria-label="Synchronisierung 75% abgeschlossen"
+></div>
 ```
 
 ### Keyboard Navigation
@@ -318,12 +325,12 @@ Expanded:
 
 ## Color Semantics
 
-| State | Background | Border | Text | Icon |
-|-------|------------|--------|------|------|
-| Offline | #FEF3C7 | #FCD34D | #92400E | #92400E |
-| Syncing | #DBEAFE | #93C5FD | #1E40AF | #3B82F6 |
-| Error | #FEE2E2 | #FCA5A5 | #991B1B | #EF4444 |
-| Success | #D1FAE5 | #86EFAC | #166534 | #10B981 |
+| State   | Background | Border  | Text    | Icon    |
+| ------- | ---------- | ------- | ------- | ------- |
+| Offline | #FEF3C7    | #FCD34D | #92400E | #92400E |
+| Syncing | #DBEAFE    | #93C5FD | #1E40AF | #3B82F6 |
+| Error   | #FEE2E2    | #FCA5A5 | #991B1B | #EF4444 |
+| Success | #D1FAE5    | #86EFAC | #166534 | #10B981 |
 
 ## German Labels
 
@@ -338,6 +345,7 @@ Expanded:
 ## Do's and Don'ts
 
 ### ✅ DO's
+
 - Show sync status for modified items only
 - Provide manual sync option
 - Show data age when relevant
@@ -345,6 +353,7 @@ Expanded:
 - Auto-dismiss success messages
 
 ### ❌ DON'T's
+
 - Don't show indicators for synced items
 - Don't block UI during sync
 - Don't use alarming colors for offline
@@ -360,6 +369,7 @@ Expanded:
 - Cache connection state
 
 ## Analytics Events
+
 - offline_mode_entered / offline_mode_exited
 - sync_queue_size (count)
 - sync_success_rate

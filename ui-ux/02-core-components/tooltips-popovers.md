@@ -1,6 +1,7 @@
 # Tooltips & Popovers - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Tooltip and Popover Components
 - **User Roles**: All (GF, PLAN, ADM, KALK, BUCH)
 - **Usage Context**: Contextual help, additional information, quick actions
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Tooltips**: Small, text-only, immediate hover
 - **Popovers**: Larger, rich content, click to open
 - **Arrow/pointer**: Indicates anchor element
 - **Backdrop**: Optional dark overlay for popovers
 
 ### Layout Structure
+
 - Tooltip: Max width 200px, auto height
 - Popover: Width 200-400px, auto or fixed height
 - Position: Above, below, left, or right of anchor
@@ -22,6 +25,7 @@
 - Shadow: Subtle for depth
 
 ### shadcn/ui Components
+
 - `Tooltip`, `TooltipProvider`, `TooltipTrigger`, `TooltipContent`
 - `Popover`, `PopoverTrigger`, `PopoverContent`
 - `HoverCard` for rich hover content
@@ -33,6 +37,7 @@ Create comprehensive tooltip and popover components for KOMPASS, a German CRM ap
 **Simple Tooltip:**
 
 **Appearance:**
+
 - Background: Dark gray (#1f2937), 95% opacity
 - Text: White, 12px, regular weight
 - Padding: 8px 12px
@@ -43,6 +48,7 @@ Create comprehensive tooltip and popover components for KOMPASS, a German CRM ap
 - Font: 12px, line-height 1.4
 
 **Positioning:**
+
 - Default: Above anchor element
 - Falls back to below if no space above
 - Centered on anchor element
@@ -50,6 +56,7 @@ Create comprehensive tooltip and popover components for KOMPASS, a German CRM ap
 - Offset: 8px from anchor element
 
 **Behavior:**
+
 - Trigger: Mouse hover (desktop), long press (mobile)
 - Delay: 500ms after hover starts
 - Duration: Stays visible while hovering anchor or tooltip
@@ -57,17 +64,20 @@ Create comprehensive tooltip and popover components for KOMPASS, a German CRM ap
 - No dismiss button (auto-dismisses)
 
 **Content Examples:**
+
 - Icon button: "Kunde bearbeiten"
 - Truncated text: Full text "Hofladen Müller GmbH und Partner KG"
 - Status badge: "Aktiv: Der Kunde ist aktuell aktiv und kann kontaktiert werden"
 - Help icon: "Die Umsatzsteuer-ID besteht aus DE gefolgt von 9 Ziffern"
 
 **Multi-line Tooltip:**
+
 - Max width: 200px
 - Text wraps to multiple lines
 - Example: "Dieser Kunde hat 3 offene Angebote im Wert von insgesamt € 125.000"
 
 **Tooltip with Shortcut:**
+
 - Bottom line shows keyboard shortcut
 - Divider: 1px solid white (30% opacity)
 - Example: "Kunde bearbeiten" (top) | "Cmd+E" (bottom, smaller, gray)
@@ -75,6 +85,7 @@ Create comprehensive tooltip and popover components for KOMPASS, a German CRM ap
 **Rich Popover:**
 
 **Appearance:**
+
 - Background: White
 - Border: 1px solid #e5e7eb
 - Border-radius: 8px
@@ -84,24 +95,28 @@ Create comprehensive tooltip and popover components for KOMPASS, a German CRM ap
 - Max-height: 400px, scrollable if content exceeds
 
 **Header (Optional):**
+
 - Padding: 16px
 - Border-bottom: 1px solid #e5e7eb
 - Title: 16px, semibold, #1f2937
 - Close button: "×" (20px) at top-right
 
 **Content:**
+
 - Padding: 16px
 - Can include: Text, lists, forms, buttons, images
 - Font: 14px, regular, #374151
 - Scrollable if content tall
 
 **Footer (Optional):**
+
 - Padding: 12px 16px
 - Border-top: 1px solid #e5e7eb
 - Buttons: Action buttons (primary/secondary)
 - Right-aligned or full-width
 
 **Trigger:**
+
 - Click to open (desktop/mobile)
 - Click outside or Escape key to close
 - Or: Close button in header
@@ -196,18 +211,21 @@ Create comprehensive tooltip and popover components for KOMPASS, a German CRM ap
    - Use for: Quick forms, filters
 
 **Positioning:**
+
 - Preferred: Above or below anchor (more space)
 - Alternative: Left or right of anchor
 - Auto-adjust: Flips if no space in preferred direction
 - Arrow always points to anchor
 
 **Arrow Positioning:**
+
 - Centered on anchor element
 - Or: Offset to align with click point
 - Arrow size: 8-10px triangle
 - Arrow border matches popover border
 
 **Backdrop (Optional):**
+
 - For modal-like popovers
 - Semi-transparent dark overlay (#000, 30% opacity)
 - Click backdrop to close popover
@@ -218,6 +236,7 @@ Design with clear visual hierarchy and smooth animations (200ms).
 ## Interaction Patterns
 
 ### Tooltip Interaction
+
 1. User hovers element (desktop)
 2. 500ms delay
 3. Tooltip fades in (200ms)
@@ -226,6 +245,7 @@ Design with clear visual hierarchy and smooth animations (200ms).
 6. Tooltip fades out
 
 ### Popover Interaction
+
 1. User clicks trigger
 2. Popover opens with animation (200ms scale + fade)
 3. Focus moves to first interactive element (if any)
@@ -234,6 +254,7 @@ Design with clear visual hierarchy and smooth animations (200ms).
 6. Popover closes with animation
 
 ### Hover Card Interaction
+
 1. User hovers trigger link
 2. Short delay (300ms)
 3. Hover card appears
@@ -244,6 +265,7 @@ Design with clear visual hierarchy and smooth animations (200ms).
 ## German Labels & Content
 
 ### Common Tooltip Text
+
 - **Bearbeiten**: Edit
 - **Löschen**: Delete
 - **Mehr Optionen**: More options
@@ -254,6 +276,7 @@ Design with clear visual hierarchy and smooth animations (200ms).
 - **Zurücksetzen**: Reset
 
 ### Popover Headers
+
 - **Profil**: Profile
 - **Benutzerinformationen**: User information
 - **Filter**: Filters
@@ -262,6 +285,7 @@ Design with clear visual hierarchy and smooth animations (200ms).
 - **Details**: Details
 
 ### Buttons
+
 - **Anwenden**: Apply
 - **Abbrechen**: Cancel
 - **Speichern**: Save
@@ -269,6 +293,7 @@ Design with clear visual hierarchy and smooth animations (200ms).
 - **Mehr erfahren**: Learn more
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Tooltip: role="tooltip", aria-describedby on anchor
 - Popover: role="dialog" (if modal), aria-labelledby
@@ -280,6 +305,7 @@ Design with clear visual hierarchy and smooth animations (200ms).
 - Sufficient contrast: 4.5:1 for text
 
 ## Mobile Considerations
+
 - Tooltips: Long press to show (500ms), tap outside to dismiss
 - Popovers: Full-screen or bottom sheet on mobile
 - Larger close button (48px) for touch
@@ -289,26 +315,31 @@ Design with clear visual hierarchy and smooth animations (200ms).
 ## Example Data
 
 **Edit Button Tooltip:**
+
 - Trigger: Hover/focus on pencil icon button
 - Content: "Kunde bearbeiten"
 - Shortcut: "Cmd+E"
 
 **User Avatar Popover:**
+
 - Trigger: Click on avatar
 - Content: Avatar, "Michael Schmidt", "ADM", "m.schmidt@kompass.de"
 - Actions: "Profil anzeigen", "Abmelden"
 
 **Customer Name Hover Card:**
+
 - Trigger: Hover "Hofladen Müller GmbH" link
 - Content: Company name, VAT, location, status, "3 aktive Projekte"
 
 **Help Popover:**
+
 - Trigger: Click "?" next to "Umsatzsteuer-ID" label
 - Content: Explanation of VAT ID format, example, "Mehr erfahren" link
 
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add tooltip
 npx shadcn-ui@latest add popover
@@ -316,6 +347,7 @@ npx shadcn-ui@latest add hover-card
 ```
 
 ### Tooltip Usage
+
 ```typescript
 <TooltipProvider>
   <Tooltip>
@@ -332,6 +364,7 @@ npx shadcn-ui@latest add hover-card
 ```
 
 ### Popover Usage
+
 ```typescript
 <Popover>
   <PopoverTrigger asChild>
@@ -346,6 +379,7 @@ npx shadcn-ui@latest add hover-card
 ```
 
 ### Component Dependencies
+
 - Design tokens (colors, shadows, spacing)
 - Icons from lucide-react (Info, HelpCircle, X)
 - Floating UI (Popper) for positioning
@@ -353,8 +387,8 @@ npx shadcn-ui@latest add hover-card
 - Focus trap for modal popovers
 
 ### State Management
+
 - Tooltip: Open/close state (managed by hover)
 - Popover: Open/close state (controlled or uncontrolled)
 - Position calculation based on available space
 - Focus management for accessibility
-

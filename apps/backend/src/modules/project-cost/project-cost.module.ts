@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+
 import { ProjectCostController } from './controllers/project-cost.controller';
-import { ProjectCostService } from './services/project-cost.service';
 import { ProjectCostRepository } from './repositories/project-cost.repository';
+import { ProjectCostService } from './services/project-cost.service';
 
 /**
  * Project Cost Module
- * 
+ *
  * Provides project cost tracking functionality including:
  * - Material costs
  * - Contractor costs
@@ -13,7 +14,7 @@ import { ProjectCostRepository } from './repositories/project-cost.repository';
  * - Equipment rental
  * - Invoice management
  * - Payment tracking
- * 
+ *
  * @see Phase 1 of Time Tracking Implementation Plan
  */
 @Module({
@@ -29,4 +30,3 @@ import { ProjectCostRepository } from './repositories/project-cost.repository';
   exports: [ProjectCostService],
 })
 export class ProjectCostModule {}
-

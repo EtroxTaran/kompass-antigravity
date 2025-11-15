@@ -1,10 +1,11 @@
 # Produktvision Tourenplanung & Spesen
 
-*Document Version: 1.0*  
-*Last Updated: 2025-01-28*  
-*Status: Phase 2 (Q3 2025)*
+_Document Version: 1.0_  
+_Last Updated: 2025-01-28_  
+_Status: Phase 2 (Q3 2025)_
 
 **⚡ Verknüpfte Spezifikationen:**
+
 - **Datenmodell:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` – Tour, Meeting, HotelStay, Expense, MileageLog Entitäten (Sektionen 17-21)
 - **RBAC-Matrix:** `docs/specifications/reviews/RBAC_PERMISSION_MATRIX.md` – Tour Planning & Expense Management Permissions (Sektion 13)
 - **API-Spezifikation:** `docs/specifications/reviews/API_SPECIFICATION.md` – Tour Planning & Expense Management Endpoints
@@ -25,12 +26,14 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 ### Aktuelle Pain Points
 
 **Manuelle Tourenplanung:**
+
 - ADM plant Touren manuell in Excel oder auf Papier
 - Keine automatische Routenoptimierung → suboptimale Reihenfolge, höhere Fahrtkosten
 - Keine Integration mit Kundenprioritäten oder Besuchsintervallen
 - Planung dauert **ca. 30 Minuten pro Woche**
 
 **Spesenabrechnung:**
+
 - Belege werden gesammelt und am Monatsende manuell eingetragen
 - Excel-Listen müssen erstellt werden
 - Quittungen müssen gescannt und angehängt werden
@@ -38,11 +41,13 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Fehleranfällig durch manuelle Eingabe
 
 **Kilometererfassung:**
+
 - Manuelle Eingabe der gefahrenen Kilometer
 - Keine Validierung gegen tatsächliche Route
 - Oft ungenau oder vergessen
 
 **Hotelverwaltung:**
+
 - Keine Übersicht über vergangene Hotels
 - Manuelle Suche nach Hotels in der Nähe
 - Keine Bewertungen oder Preisvergleiche
@@ -54,12 +59,14 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 ### Kernfunktionen
 
 **1. Automatische Tourenplanung**
+
 - System analysiert Kundenprioritäten (`lastVisitDate`, `visitFrequencyDays`)
 - Vorschläge basierend auf geografischer Nähe und Umsatzpotenzial
 - Automatische Routenoptimierung (TSP-Algorithmus)
 - Integration mit Kalender und bestehenden Terminen
 
 **2. GPS-gestützte Navigation & Tracking**
+
 - Interaktive Karte mit geplanten Besuchen
 - GPS-Tracking während der Tour
 - Automatische Kilometererfassung
@@ -67,6 +74,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Check-In-Funktion bei Ankunft am Kundenstandort
 
 **3. Mobile Spesenerfassung**
+
 - Belege fotografieren mit Smartphone-Kamera
 - OCR-Verarbeitung (Tesseract.js) erkennt automatisch Betrag, Datum, Händler
 - Manuelle Korrektur bei Bedarf
@@ -74,18 +82,21 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Automatische Zuordnung zu Tour/Kunde basierend auf GPS und Datum
 
 **4. Hotelverwaltung**
+
 - Liste vergangener Hotels mit Bewertungen und Preisen
 - Google Places API Integration für Hotelsuche
 - Karte zeigt Hotels in der Nähe der geplanten Termine
 - Schnelles Hinzufügen zu Tour
 
 **5. Expense Approval Workflow**
+
 - Ausgaben >€100 erfordern GF-Genehmigung
 - Status-Tracking: Entwurf → Eingereicht → Genehmigt/Abgelehnt → Bezahlt
 - Audit-Trail für GoBD-Compliance
 - Rejection-Reason bei Ablehnung
 
 **6. Monatliche Abrechnungsberichte**
+
 - Automatische Generierung von PDF-Reports
 - Gruppierung nach Kategorie, Tour, Monat
 - Alle Belege als Anhang
@@ -98,19 +109,23 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 ### Datenverknüpfungen
 
 **Tour ↔ Customer:**
+
 - Tour enthält mehrere Meetings mit verschiedenen Kunden
 - Customer-Entity erweitert um `lastVisitDate`, `visitFrequencyDays`, `preferredVisitTime`
 - Automatische Vorschläge basierend auf Kundenhistorie
 
 **Tour ↔ Opportunity:**
+
 - Meetings können mit Opportunities verknüpft werden
 - Tour-ROI-Berechnung (zukünftig): Tour-Kosten vs. gewonnene Opportunities
 
 **Tour ↔ Project:**
+
 - Expenses können Projekten zugeordnet werden
 - Projektkosten-Tracking inkl. Tour-Ausgaben
 
 **Tour ↔ Location:**
+
 - Location-Entity erweitert um `gpsCoordinates` für Navigation
 - Hotels als spezielle Locations (`isHotel: true`)
 
@@ -121,18 +136,21 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 ### Mobile Field Sales Requirements
 
 **Offline-Speicher:**
+
 - Tour-Daten lokal in IndexedDB (via PouchDB)
 - Belege lokal gespeichert, Upload bei Sync
 - GPS-Logs gepuffert offline
 - Meeting-Check-Ins funktionieren offline
 
 **Synchronisation:**
+
 - Bidirektionale Sync mit CouchDB
 - Konflikt-Erkennung und -Auflösung
 - Automatische Sync bei Verbindung
 - Manueller Sync-Trigger
 
 **iOS 50MB Limit:**
+
 - Tiered Data Strategy:
   - Essential: Eigene Touren, zugewiesene Meetings (5 MB)
   - Recent: Letzte 30 Tage (10 MB)
@@ -145,6 +163,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 ### Backend-Module (5 neue Module)
 
 **Tour Module:**
+
 - CRUD-Operationen für Touren
 - Auto-Create bei Meeting ohne Tour
 - Tour-Vorschläge (gleicher Tag ±1, Region <50km)
@@ -152,6 +171,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Status-Transitions
 
 **Meeting Module:**
+
 - Meeting-CRUD mit Tour-Verknüpfung
 - GPS-Check-In (Geofencing)
 - Auto-Tour-Vorschläge
@@ -159,6 +179,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Konflikt-Erkennung mit Kalender
 
 **Hotel Module:**
+
 - Hotel-Stay-CRUD
 - Vergangene Hotels-Liste (ADM-spezifisch)
 - Google Places API Integration
@@ -166,6 +187,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Kartenbasierte Hotel-Suche
 
 **Expense Module:**
+
 - Expense-CRUD mit Validierung
 - Receipt-Upload (MinIO Storage)
 - OCR-Verarbeitung (n8n Workflow + Tesseract.js)
@@ -174,6 +196,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Monatlicher Report-Generator (PDF/Excel)
 
 **Mileage Module:**
+
 - GPS-Tracking-Integration
 - Route-Recording (GeoJSON)
 - Distanzberechnung (Haversine-Formel)
@@ -184,6 +207,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 ### Frontend-Features (7 neue Feature-Module)
 
 **Tour Management:**
+
 - Tour-Liste (nach Monat, Status)
 - Tour-Detail (Meetings, Hotels, Expenses Summary)
 - Create/Edit Tour Form
@@ -191,6 +215,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Kostenaufschlüsselung-Visualisierung
 
 **Meeting Scheduler:**
+
 - Meeting-Planer (integriert mit Customer/Location)
 - Meeting-Detail mit Notizen
 - Check-In-Button (GPS-getriggert bei Nähe zu Location)
@@ -198,6 +223,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Meeting-Outcome-Form
 
 **Hotel Management:**
+
 - Vergangene Hotels-Liste (durchsuchbar, filterbar)
 - Add Hotel Form (manuelle Eingabe)
 - Kartenbasierte Hotel-Suche (Google Maps Integration)
@@ -205,6 +231,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Quick-Add von Karte
 
 **Expense Capture:**
+
 - Expense-Eingabe-Form
 - Kamera-Integration (Receipt-Aufnahme)
 - OCR-Ergebnis-Review/Edit
@@ -213,6 +240,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Approval-Status-Tracking
 
 **Mileage Tracking:**
+
 - Mileage-Log-Viewer
 - Start/Stop Tracking Controls
 - Route-Karten-Visualisierung
@@ -220,6 +248,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Monatliche Zusammenfassung
 
 **Route Planner (Erweiterung bestehend):**
+
 - Multi-Stop Route Builder
 - Heutige geplante Meetings auf Karte
 - Auto-Optimierung Route (TSP-Algorithmus)
@@ -227,6 +256,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 - Nearby Customer Vorschläge
 
 **Expense Report:**
+
 - Monatlicher Expense-Report-Builder
 - Filter nach Datum, Kategorie, Tour
 - Export PDF/Excel
@@ -332,6 +362,7 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 ### Tour-ROI-Modell
 
 **Berechnung:**
+
 ```
 Tour-ROI = (Gewonnener Umsatz aus Tour) / (Tour-Kosten) × 100%
 
@@ -342,6 +373,7 @@ Beispiel:
 ```
 
 **Metriken:**
+
 - Durchschnittlicher Tour-ROI pro ADM
 - ROI-Trend über Zeit
 - Vergleich: Welche Touren haben höchsten ROI?
@@ -359,6 +391,7 @@ Beispiel:
 4. Basis-Route-Planner-Erweiterung
 
 **Deliverables:**
+
 - Tour-CRUD funktional
 - Meeting-CRUD mit Tour-Verknüpfung
 - Auto-Tour-Vorschläge
@@ -372,6 +405,7 @@ Beispiel:
 4. Expense-Capture-UI
 
 **Deliverables:**
+
 - OCR-Verarbeitung (Tesseract.js via n8n)
 - GPS-Tracking und Kilometererfassung
 - Hotel-Suche (Google Places API)
@@ -385,6 +419,7 @@ Beispiel:
 4. Dokumentation finalisieren
 
 **Deliverables:**
+
 - PDF/Excel-Report-Generator
 - Tour-ROI-Berechnung (Basis)
 - Vollständige Test-Abdeckung
@@ -397,12 +432,14 @@ Beispiel:
 ### GPS & Maps Integration
 
 **Google Maps Platform:**
+
 - Directions API für Routenoptimierung
 - Places API für Hotel-Suche
 - Maps JavaScript API für Kartenvisualisierung
 - Geolocation API für Position-Tracking
 
 **Background Tracking:**
+
 - Service Worker für GPS-Tracking im Hintergrund
 - Battery-Optimierung (Tracking nur bei aktiver Tour)
 - Fallback auf manuelle Eingabe wenn GPS nicht verfügbar
@@ -410,6 +447,7 @@ Beispiel:
 ### OCR Processing
 
 **n8n Workflow:**
+
 1. Receipt-Upload → MinIO Storage
 2. Tesseract.js OCR-Verarbeitung
 3. Parsing: Betrag, Datum, Händler erkennen
@@ -417,6 +455,7 @@ Beispiel:
 5. Frontend: Manuelle Korrektur möglich
 
 **Training:**
+
 - Deutsche Quittungsformate (Quittung)
 - Verbesserung der Genauigkeit durch Training-Daten
 
@@ -439,22 +478,26 @@ Beispiel:
 ### GoBD-Compliance
 
 **Audit-Trail:**
+
 - Alle Expense-Änderungen werden geloggt
 - Approval-Workflow vollständig nachvollziehbar
 - Receipt-Images unveränderlich gespeichert (MinIO)
 
 **Immutability:**
+
 - Approved/Paid Expenses können nicht mehr geändert werden
 - Korrekturen nur durch GF mit Grund
 
 ### DSGVO-Compliance
 
 **GPS-Tracking:**
+
 - Benutzer kann Tracking pausieren
 - Consent-Management für GPS-Daten
 - Daten werden nur lokal gespeichert, Sync optional
 
 **Receipt-Images:**
+
 - Verschlüsselt gespeichert (at rest)
 - Zugriff nur für berechtigte Rollen (ADM, GF, BUCH)
 - Retention-Policy: 10 Jahre (GoBD-Anforderung)
@@ -535,20 +578,25 @@ Beispiel:
 ### Technische Risiken
 
 **GPS-Tracking-Batterieverbrauch:**
+
 - Mitigation: Service Worker mit Battery-Optimierung, Tracking nur bei aktiver Tour
 
 **OCR-Genauigkeit:**
+
 - Mitigation: Manuelle Korrektur-Möglichkeit, Training mit deutschen Quittungen
 
 **Offline-Speicher-Limit (iOS 50MB):**
+
 - Mitigation: Tiered Data Strategy, automatische Bereinigung alter Daten
 
 ### Organisatorische Risiken
 
 **ADM-Akzeptanz:**
+
 - Mitigation: Einfache Bedienung, klarer Nutzen, Schulungen
 
 **GF-Genehmigungs-Workflow:**
+
 - Mitigation: Klare Benachrichtigungen, Mobile-Zugriff für GF
 
 ---
@@ -579,7 +627,8 @@ Beispiel:
 
 Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außendienst, das durch Automatisierung, mobile Erfassung und Offline-Fähigkeit erhebliche Zeitersparnis und Effizienzsteigerung bringt. Die Integration mit bestehendem CRM/PM sorgt für nahtlose Workflows und vollständige Transparenz für die Geschäftsführung.
 
-**Kernversprechen:** 
+**Kernversprechen:**
+
 - **67% Zeitersparnis** bei Tour-Planung
 - **95% Zeitersparnis** bei Spesenabrechnung
 - **10-15% Reduzierung** der Fahrtkosten durch Routenoptimierung
@@ -588,9 +637,8 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 ---
 
 **Related Documents:**
+
 - Implementation Plan: `tour-planning.plan.md`
 - Data Model: `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` (Sektionen 17-21)
 - RBAC: `docs/specifications/reviews/RBAC_PERMISSION_MATRIX.md` (Sektion 13)
 - API: `docs/specifications/reviews/API_SPECIFICATION.md` (Tour Planning & Expense Management)
-
-

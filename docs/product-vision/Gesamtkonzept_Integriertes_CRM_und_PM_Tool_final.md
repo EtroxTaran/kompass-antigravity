@@ -1,10 +1,11 @@
 # Gesamtkonzept_Integriertes_CRM_und_PM_Tool_final
 
-*Converted from: Gesamtkonzept_Integriertes_CRM_und_PM_Tool_final.pdf*  
-*Last Updated: 2025-11-10 – Vollständig integriert mit allen Gap-Resolutionen*  
-*Document Version: 2.0*
+_Converted from: Gesamtkonzept_Integriertes_CRM_und_PM_Tool_final.pdf_  
+_Last Updated: 2025-11-10 – Vollständig integriert mit allen Gap-Resolutionen_  
+_Document Version: 2.0_
 
 **⚡ Verknüpfte Spezifikationen:**
+
 - **NFR-Spezifikation:** `docs/reviews/NFR_SPECIFICATION.md` – Performance, Skalierung, Verfügbarkeit, Offline-Speicher, Monitoring
 - **Datenmodell:** `docs/reviews/DATA_MODEL_SPECIFICATION.md` – ERD, Entities, Validierung, ID-Strategien, GoBD, Deduplizierung
 - **RBAC-Matrix:** `docs/reviews/RBAC_PERMISSION_MATRIX.md` – Rollenberechtigungen (ADM/INNEN/PLAN/BUCH/GF), Feldebene-Zugriffsregeln
@@ -15,6 +16,7 @@
 - **Lieferplan:** `docs/reviews/DELIVERY_PLAN.md` – 16 Wochen MVP, 6.75 FTE, €230k Budget, Training & Rollout
 
 **📋 Clarified Scope (GAP-SCOPE-001, GAP-SCOPE-003):**
+
 - **MVP:** CRM-Kern (Customer/Contact/Opportunity/Protocol) + Import/Export – **Keine KI-Features in MVP**
 - **Phase 2:** KI-Transkription (Whisper), KI-Analyse, Lexware-API-Sync, erweiterte PM-Features
 - **i18n:** Deutsch-only für MVP, Architektur i18n-ready für Phase 2 (Aufwand dann: 2-3 Wochen)
@@ -34,7 +36,6 @@ Umsetzung reibungslos verläuft und **Doppelarbeit sowie Medienbrüche entfallen
 wichtigsten Erkenntnisse der Analyse sind:
 
 # Klare Definition von Personas (Außendienst, Innendienst/Kalkulation, Planung, Buchhaltung,
-
 
 spezifische Anforderungen des Ladenbau-Bereichs wie Grundriss-Handling, Lieferzeiten-Tracking)
 bieten **Differenzierungschancen** für eine maßgeschneiderte Lösung.
@@ -56,7 +57,7 @@ Aus dem Chat-Kontext und Interview lassen sich folgende Rahmenbedingungen und An
 **Branche & Geschäftsmodell:** Es handelt sich um ein Unternehmen im **Ladenbau/Innenausbau**
 (Planung und Umsetzung von Ladeneinrichtungen). Projekte sind meist kundenspezifische
 Einrichtungen von Ladenlokalen, inkl. Entwurf, Fertigung (über Partner wie Schreinereien) und
-Montage vor Ort. Der Vertrieb erfolgt teils über *Kaltakquise* und persönliche Beratung durch
+Montage vor Ort. Der Vertrieb erfolgt teils über _Kaltakquise_ und persönliche Beratung durch
 Außendienstmitarbeiter. Projekte können sich über mehrere Monate erstrecken und oft über den
 Jahreswechsel hinaus laufen
 .
@@ -66,7 +67,6 @@ Jahreswechsel hinaus laufen
 # Technische Rahmenbedingungen: Technologische Entscheidungen sind explizit ausgeklammert .
 
 # Compliance & Datenschutz: Da Kundendaten verarbeitet werden, muss das System DSGVO-
-
 
 nötige personenbezogene Daten erhoben und gespeichert)
 , Zweckbindung (Nutzung der Daten
@@ -81,7 +81,7 @@ u.a. **revisionssichere Speicherung** (Unveränderbarkeit von Archivdaten), **Na
 Änderungen und eine Aufbewahrung von 10 Jahren für relevante Dokumente
 . Wir nehmen an,
 dass das Unternehmen diese Vorgaben erfüllen
-*muss* , und daher Funktionen wie
+_muss_ , und daher Funktionen wie
 Änderungsprotokolle (Audit Trails)
 , Zugriffsberechtigungen und Daten-Backups vorhanden sein
 müssen. BITV/WCAG-konforme Barrierefreiheit ist keine explizite Anforderung (keine öffentliche
@@ -91,25 +91,22 @@ Nutzung zu erleichtern (Best Practice).
 
 # Benutzer und Kapazität: Das Tool richtet sich an interne Nutzer aus den genannten Abteilungen
 
-
 **Projektumfang & Vision:** Der Schwerpunkt liegt auf **Produktvision und fachlichem Konzept** .
 Technische Umsetzungen (Datenbanken, Frameworks etc.) werden nicht beschlossen. Ebenso sind
-*keine Entscheidungen zu konkreten Anbietern oder Tools* gefällt – der Marktvergleich dient nur der
+_keine Entscheidungen zu konkreten Anbietern oder Tools_ gefällt – der Marktvergleich dient nur der
 Orientierung. Es wird angenommen, dass eine Make-or-Buy-Entscheidung noch aussteht, d.h. die
 Ideallösung könnte durch Anpassung eines bestehenden Systems oder als Neuentwicklung erfolgen.
 Für die Analyse wird vom Optimum („Greenfield“-Ansatz) ausgegangen, um alle fachlichen
 Anforderungen zu sammeln, die Lösung jedoch möglichst technologieoffen beschrieben.
 
-
-**Abgrenzungen:** Nicht betrachtet werden tiefgehende *ERP-Funktionen* jenseits des Projektgeschäfts
+**Abgrenzungen:** Nicht betrachtet werden tiefgehende _ERP-Funktionen_ jenseits des Projektgeschäfts
 (z.B. Lagerhaltung, Personalplanung außerhalb der Projektzuordnung). Die **Finanzintegration**
 beschränkt sich auf die bedarfsgerechte Rechnungserstellung und Zahlungskontrolle für Projekte,
-jedoch *nicht* auf vollständige Buchhaltungssoftware – es wird angenommen, dass hierfür ggf. eine
+jedoch _nicht_ auf vollständige Buchhaltungssoftware – es wird angenommen, dass hierfür ggf. eine
 Schnittstelle zur bestehenden Buchhaltung (Datev o.ä.) geschaffen wird, falls notwendig. Ferner wird
 kein eigenständiges CAD- oder Grafikmodul entwickelt; die Planer nutzen weiter ihre spezialisierten
 Tools für Zeichnungen/Entwürfe, das neue System verwaltet Metadaten und Dateien daraus, ersetzt
 aber keine Design-Software.
-
 
 **Ziele** (rekapituliert): Erhöhung der **Effizienz** (Vermeidung redundanter Arbeiten, automatische
 Workflows), bessere **Zusammenarbeit** zwischen Abteilungen (einheitliche Datenbasis, Transparenz),
@@ -138,10 +135,9 @@ das CRM am intensivsten nutzen wird, da er die meisten Kundendaten zuerst erfass
 
 # Pain Points: - Medienbrüche & Nacharbeit: Er muss Notizen vom Papier erst später ins System
 
-
-| 34 |  |  | 35 |
+| 34  |     |     | 35  |
 | --- | --- | --- | --- |
-|  | 11 |  | . |
+|     | 11  |     | .   |
 
 (Adoptionsrisiko: CRMs werden oft schlecht angenommen, wenn sie als bürokratische Last empfunden
 werden
@@ -177,9 +173,9 @@ darstellen und Touren optimieren. Auch das Protokollieren von Besuchszeiten läs
 Check-in/out per App). Das erleichtert dem ADM die Planung und liefert gleichzeitig Daten für
 Spesenabrechnungen. - **Erinnerungsfunktionen & Aufgabenlisten:** Der ADM sollte automatisch
 Erinnerungen erhalten, z.B. „in 1 Woche bei Kunde X nachfassen“ oder „Anruf wegen Angebot Y steht aus“.
-Durch CRM-gestütztes *Task-Management* werden Folgeaktivitäten klar und für ihn priorisiert sichtbar
+Durch CRM-gestütztes _Task-Management_ werden Folgeaktivitäten klar und für ihn priorisiert sichtbar
 . Das verhindert, dass Interessenten vergessen werden, und erhöht die Abschlussquote. - **360°**
-**Kundensicht für Vertrieb:** Eine zentrale Empfehlung ist, dass der Vertriebsmitarbeiter *alle* relevanten Infos
+**Kundensicht für Vertrieb:** Eine zentrale Empfehlung ist, dass der Vertriebsmitarbeiter _alle_ relevanten Infos
 zu einem Kunden an einer Stelle sieht
 . Dazu zählen Kontakt- und Firmendaten,
 Gesprächsprotokolle, laufende und vergangene Projekte, Angebote sowie ggf. Service-Vorfälle. Diese
@@ -226,10 +222,10 @@ Projektfokus (wie Insightly, Zoho) erlauben es, eine **Opportunity in ein Projek
 – in
 unserem Fall heißt das: Der Innendienst kann, sobald der Kunde zusagt, per Knopfdruck alle Daten
 (Kundendaten, benötigte Leistungen/Materialien etc.) vom Vertriebsstatus ins aktive Projekt übertragen.
-Das spart Zeit und eliminiert Übertragungsfehler. Best Practice hierbei: *Kopieren aller zugehörigen Details,*
-*Aufgaben, Notizen von der Verkaufschance ins Projekt*
+Das spart Zeit und eliminiert Übertragungsfehler. Best Practice hierbei: _Kopieren aller zugehörigen Details,_
+_Aufgaben, Notizen von der Verkaufschance ins Projekt_
 . - **Versionierung und Iterationsmanagement:** Das
-System sollte *Angebotsversionen* verwalten, sodass keine manuelle Suche nötig ist, was aktuell gilt. Best
+System sollte _Angebotsversionen_ verwalten, sodass keine manuelle Suche nötig ist, was aktuell gilt. Best
 Practice ist, Änderungen im Angebot klar nachzuverfolgen und ältere Stände historisch zu behalten
 (Stichwort: Audit Trail). So kann der Innendienst jederzeit sagen, was gegenüber vorher geändert wurde –
 das erhöht Professionalität und Transparenz gegenüber dem Kunden. - **Automatisierte Workflows:** Viele
@@ -292,7 +288,6 @@ Auftragsvergabe geht der Planer in die **Werkplanung** (Detailplanung für Ferti
 
 # Pain Points: - Infoverlust bei Übergabe: Aktuell bekommt der Planer die Informationen vom ADM teils
 
-
 **Erfolgsmetriken:** Anzahl erfolgreich abgeschlossener Projekte, Kundenzufriedenheit mit Design,
 durchschnittliche Iterationsrunden bis Freigabe, Einhaltung geplanter Design-Fertigstellungs-Termine.
 Intern auch Arbeitsauslastung vs. Kapazität.
@@ -322,7 +317,7 @@ ein neuer Auftrag reinkommen, sieht man, wer noch Kapazität hat. - **Wissensman
 . Best Practice hierfür: im System sind Projekte mit
 verantwortlichem Planer markiert, sodass man auswerten kann, wer was gemacht hat. Das erleichtert
 Austausch von Best Practices im Team (Planer können sich gezielt zu ähnlichen Projekten austauschen) und
-ermöglicht der Geschäftsführung Auswertungen (z.B. *Produktivität pro Planer* – wie viel Volumen hat ein
+ermöglicht der Geschäftsführung Auswertungen (z.B. _Produktivität pro Planer_ – wie viel Volumen hat ein
 Planer geplant
 ). - **Integration mit Kalkulation:** Planer und Kalkulator sollten eng im System
 verzahnt arbeiten. Z.B. könnte der Planer Materiallisten erzeugen, die der Kalkulator direkt im System
@@ -342,13 +337,12 @@ setzen
 **Zahlungsüberwachung** der Projekte. Im beschriebenen Prozess erstellt sie **Abschlagsrechnungen und**
 **Schlussrechnungen** zu definierten Zeitpunkten und überwacht den **Zahlungseingang**
 . Konkret im
-Ladenbau werden Zahlungen typischerweise in *drei Raten* aufgeteilt: ein Teil weit vor Lieferung, ein Teil kurz
+Ladenbau werden Zahlungen typischerweise in _drei Raten_ aufgeteilt: ein Teil weit vor Lieferung, ein Teil kurz
 vor Montage, und der Rest bei Abschluss
 . Die Buchhaltung muss diese Rechnungen rechtzeitig
 stellen und ggf. das Mahnwesen übernehmen, falls Zahlungen ausbleiben
 . Außerdem ist sie für die
 **Einhaltung von GoBD** zuständig – also ordnungsgemäße Archivierung der Belege und Dokumentation.
-
 
 **Ziele:** - **Rechtzeitige Rechnungsstellung:** Sicherstellen, dass alle vereinbarten Abschläge und
 Schlusszahlungen **termingerecht in Rechnung gestellt** werden, um den Cashflow des Unternehmens zu
@@ -384,7 +378,7 @@ Lage, Rechnungen mit fortlaufender Nummer zu erzeugen. Viele CRM/ERP-Lösungen (
 sind GoBD-konform und erlauben das Erstellen von Rechnungen nach den Regeln (inkl. unveränderbarer
 Archivierung)
 . Falls das CRM kein eigenes Rechnungsmodul hat, sollte zumindest eine saubere
-*Schnittstelle* existieren, um Doppelerfassung zu vermeiden. - **Zahlungseingangs-Tracking:** Best Practice ist,
+_Schnittstelle_ existieren, um Doppelerfassung zu vermeiden. - **Zahlungseingangs-Tracking:** Best Practice ist,
 dass der Zahlungsstatus im System sichtbar ist – entweder durch automatische Rückmeldung aus der
 Buchhaltung oder händisch gepflegt. So kann z.B. der Vertrieb in der Projektübersicht sehen „Abschlag 1:
 bezahlt am…, Abschlag 2: offen (7 Tage überfällig)“ und entsprechend agieren
@@ -394,10 +388,9 @@ Transparenz und Team kann gemeinsam an schneller Begleichung arbeiten. - **Revis
 
 # 10
 
-
 ---
 
-*Page 11*
+_Page 11_
 
 ---
 
@@ -405,7 +398,7 @@ wird oder Beträge geändert werden, muss das nachvollziehbar sein)
 . Außerdem sollten wichtige
 Dokumente (Angebote, Auftragsbestätigungen, Rechnungen) im System versioniert und gegen Löschung
 geschützt abgelegt sein (z.B. durch Schreibschutz nach Freigabe). Ein PDF-Export ins Archiv sollte
-unveränderbar sein. Best Practice: *digitale Signaturen* oder Hashwerte können die Unversehrtheit von
+unveränderbar sein. Best Practice: _digitale Signaturen_ oder Hashwerte können die Unversehrtheit von
 archivierten PDFs garantieren. - **Berechtigungskonzept:** Sensible Finanzdaten sollten nur von Berechtigten
 einsehbar sein. Best Practice ist ein **rollenbasiertes Berechtigungssystem**
 : Buchhaltung sieht
@@ -433,9 +426,9 @@ immer mal in Vertriebs- oder Projektmeetings einbezogen, etwa bei wichtigen Kund
 
 # Pain Points: - Datensammlung dauert: Bisher muss er sich Zahlen von verschiedenen Personen/Listen
 
-| 99 |  | 100 |  |
+| 99  |     | 100 |     |
 | --- | --- | --- | --- |
-| st) | 101 |  | , |
+| st) | 101 |     | ,   |
 
 wenn z.B. die Planungsabteilung überlastet ist oder wenn sich Projektabschlüsse stauen. Ohne Einblick
 riskiert er, Engpässe zu spät zu bemerken. - **Reporting-Aufwand:** Monatliche Reports erstellen (z.B. für
@@ -468,7 +461,7 @@ Vertrieb will GF das **Projektportfolio** im Blick: Welche Projekte laufen, in w
 Risiken (z.B. Verzug, Budgetüberschreitung)? Ein Kanban- oder Ampelstatus-Board aller aktiven Projekte
 wäre hilfreich. Best Practice im PM-Portfolio-Management: ein **Statusreport je Projekt** (Ampel für Zeit/
 Kosten/Qualität). Eventuell kann das System den GF warnen bei Projekten im kritischen Zustand. -
-**Profitabilitätsanalyse:** Das System könnte Best-Practice-Reports liefern wie *Projekt-Nachkalkulationen* :
+**Profitabilitätsanalyse:** Das System könnte Best-Practice-Reports liefern wie _Projekt-Nachkalkulationen_ :
 Geplanter vs. tatsächlicher Aufwand/Kosten. Falls das integriert ist, sieht GF welche Projekttypen profitabler
 sind. - **Zugriff auf Details:** Zwar sieht GF primär aggregierte Daten, aber Best Practice ist, dass er bei
 Bedarf **ins Detail „durchklicken“** kann. Etwa vom Umsatzchart ins konkrete Projekt, um Infos zu sehen
@@ -486,7 +479,7 @@ dem CRM unterstützen, indem alle Daten & Bilder zentral verfügbar sind.
 
 **Rolle & Verantwortlichkeiten:** Diese Persona kümmert sich zum einen um **Marketingunterlagen und**
 **Erfolgsgeschichten** , zum anderen erfüllt sie im jetzigen Prozess eine Assistenzfunktion beim
-*Kundenkontakt-Protokoll* . Konkret: - Bei *neuen Leads* erstellt Marketing aus den vom ADM gelieferten Infos
+_Kundenkontakt-Protokoll_ . Konkret: - Bei _neuen Leads_ erstellt Marketing aus den vom ADM gelieferten Infos
 ein **Kundenkontaktprotokoll** in Word
 . Dazu recherchiert sie weitere Infos (z.B. von der Website des
 
@@ -514,9 +507,8 @@ Practice: Der ADM erfasst den Lead direkt im CRM mit allen relevanten Feldern (A
 Quelle etc.). Marketing kann dann diese Daten prüfen und anreichern, aber eben **im System selbst** . Eine
 **automatische Anreicherung** (siehe Außendienst Best Practices) kann Marketing die Web-Recherche
 
-
 abnehmen
-. Außerdem hat man damit eine *Echtzeit-Leads-Liste* im CRM – Marketing sieht jederzeit den
+. Außerdem hat man damit eine _Echtzeit-Leads-Liste_ im CRM – Marketing sieht jederzeit den
 Stand aller Anfragen, ohne manuell Listen führen zu müssen. - **Kategorisierung & Segmentierung:** Das
 System sollte erlauben, jedem Kontakt/Unternehmen **Kategorien** zu geben (Branche, Region,
 Verbandsmitgliedschaften usw.). Best Practice ist, diese Daten dann für Marketingaktionen filtern zu
@@ -524,7 +516,7 @@ können (z.B. alle Mode-Einzelhändler in Bayern). Diese Segmentierungsmöglichk
 Standard und für Marketing wertvoll. - **Templates & Branding:** Für Angebotspräsentationen könnte das
 System oder angeschlossene Tools **Templates** bereitstellen, sodass der Außendienst direkt aus dem CRM
 einen automatisch befüllten Bericht erzeugen kann. Einige CRM haben Reporting-Engines, wo man
-definierte Vorlagen (mit Logo, Farben) nutzt. Alternativ lässt sich eine *Content-Bibliothek* integrieren:
+definierte Vorlagen (mit Logo, Farben) nutzt. Alternativ lässt sich eine _Content-Bibliothek_ integrieren:
 Marketing stellt aktuelle Logos, Design-Elemente im System bereit, und Vertrieb kann sich bedienen. Best
 Practice: Minimierung manueller Layout-Arbeit durch Automatisierung, damit Marketing nur noch das
 Feintuning oder spezielle Projekte machen muss. - **Erfolgsmessung Leads:** Marketing kann CRM-Daten
@@ -556,28 +548,27 @@ jede Domäne werden typische Best Practices genannt und potenzielle Stolperstein
 (Unternehmen und Ansprechpartner), Leads, Lieferanten, Partner und Verbände. Hier werden Stammdaten
 geführt (Namen, Adressen, Kontaktinformationen, Kategorien) sowie Relationen zwischen Kontakten (z.B.
 
-
-*Kunde X gehört zu Konzern Y* , *Lieferant Z beliefert Kunde X* oder *Kontakt A ist Mitglied im Verband B* ). Ebenfalls
+_Kunde X gehört zu Konzern Y_ , _Lieferant Z beliefert Kunde X_ oder _Kontakt A ist Mitglied im Verband B_ ). Ebenfalls
 beinhaltet sind Aktivitäten auf Kontaktebene: Gesprächsnotizen, Anrufe, E-Mails, Aufgaben, die einem
 Kontakt zugeordnet sind. Diese Domäne ist quasi das Herz des CRM-Teils: Sie liefert die 360°-Sicht auf jeden
 Kunden für alle Nutzer.
 
-**Hauptobjekte/Begriffe:** - *Kundenkonto* (Account): repräsentiert ein Kundenunternehmen oder -filiale.
+**Hauptobjekte/Begriffe:** - _Kundenkonto_ (Account): repräsentiert ein Kundenunternehmen oder -filiale.
 Attribute: Name, Adresse, Branche, Unternehmensgröße, Verbandsmitgliedschaften, ggf. Kundentyp (Neu-/
-Bestandskunde). - *Kontaktperson* : individueller Ansprechpartner, verknüpft mit einem Account (z.B.
-Geschäftsführer des Ladenbesitzers). Attribute: Name, Position, Telefon, E-Mail, etc. - *Lead* : ein potentieller
-Kunde (Account oder Person) in der Akquise-Phase, der noch qualifiziert wird. - *Lieferant/Partner* : analog
+Bestandskunde). - _Kontaktperson_ : individueller Ansprechpartner, verknüpft mit einem Account (z.B.
+Geschäftsführer des Ladenbesitzers). Attribute: Name, Position, Telefon, E-Mail, etc. - _Lead_ : ein potentieller
+Kunde (Account oder Person) in der Akquise-Phase, der noch qualifiziert wird. - _Lieferant/Partner_ : analog
 Kunden als Firma mit Ansprechpartnern, jedoch mit Rolle “Lieferant”. Mögliche spezielle Felder: Gewerke/
-Leistungen die dieser liefert. - *Verband/Netzwerk* : Eine Organisation, die Kunden verbindet. Könnte als
-eigener Typ geführt werden. Beziehungen: Account X ist Mitglied in Verband Y (n:m Beziehung). - *Aktivität* :
+Leistungen die dieser liefert. - _Verband/Netzwerk_ : Eine Organisation, die Kunden verbindet. Könnte als
+eigener Typ geführt werden. Beziehungen: Account X ist Mitglied in Verband Y (n:m Beziehung). - _Aktivität_ :
 z.B. ein Besuchsbericht, Telefonat, E-Mail, Meeting – mit Datum, Notizen, und Verknüpfung zu beteiligten
-Kontakten. - *Datei/Anhang* : Dokumente auf Kontaktebene (z.B. Verträge, Briefe).
+Kontakten. - _Datei/Anhang_ : Dokumente auf Kontaktebene (z.B. Verträge, Briefe).
 
-**Schnittstellen/Abhängigkeiten:** - Enge Verbindung zur *Vertriebs-Domäne* : Aus Kontakten werden
-Opportunities generiert, Leads werden in Kunden umgewandelt. - Verknüpfung zur *Projekt-Domäne* : Ein
+**Schnittstellen/Abhängigkeiten:** - Enge Verbindung zur _Vertriebs-Domäne_ : Aus Kontakten werden
+Opportunities generiert, Leads werden in Kunden umgewandelt. - Verknüpfung zur _Projekt-Domäne_ : Ein
 Projekt hat einen oder mehrere Kundenkontakte verknüpft (Auftraggeber, Bauherr etc.). Ebenso werden
-Lieferanten aus der Kontaktverwaltung einem Projekt als Ausführende zugewiesen. - *Marketing* : greift auf
-Segmentierung der Kontakte zu, z.B. Export aller Kontakte einer Branche. - *Compliance* : DSGVO-
+Lieferanten aus der Kontaktverwaltung einem Projekt als Ausführende zugewiesen. - _Marketing_ : greift auf
+Segmentierung der Kontakte zu, z.B. Export aller Kontakte einer Branche. - _Compliance_ : DSGVO-
 Anforderungen sind hier zentral (Datenspeicherung, Einwilligungen). Auch GoBD falls z.B. Geschäftsbriefe
 hinterlegt. - Integrationen: evtl. Anbindung an E-Mail/Calendar, damit Kommunikation automatisch als
 Aktivitäten erfasst wird.
@@ -594,8 +585,8 @@ könnten z.B. dieselbe Firma leicht doppelt angelegt werden (eine unter GmbH, ei
 ausgeschriebenem Namen). Das würde die 360°-Sicht stören. - **Kategorisierung & Tagging:** Best Practice
 ist, Kontakte nach sinnvollen Kriterien zu taggen (Branche, Region, Status etc.). Dies erlaubt zielgenaue
 Filter. Stolperstein: zu viele oder unscharfe Kategorien führen zu Chaos. Es sollte also ein klar definiertes
-*Datenmodell* geben (z.B. Branchenschlüssel). - **Relationen abbilden:** In vielen CRM wird die Hierarchie
-*Firma–Kontakt* abgebildet sowie ggf. Firma–Muttergesellschaft. Bei uns kommen noch Verbände oder
+_Datenmodell_ geben (z.B. Branchenschlüssel). - **Relationen abbilden:** In vielen CRM wird die Hierarchie
+_Firma–Kontakt_ abgebildet sowie ggf. Firma–Muttergesellschaft. Bei uns kommen noch Verbände oder
 Netzwerke hinzu. Man sollte Best Practice folgend flexible Beziehungstypen erlauben (z.B. “gehört zu”,
 “Mitglied von”), um das **Netzwerk sichtbar** zu machen
 . Das hilft später im Marketing und Vertrieb
@@ -619,7 +610,7 @@ pseudonymisiert werden. Hier muss fachlich entschieden werden, wie mit solchen F
 damit Datenschutz und GoBD gleichermaßen gewahrt bleiben. - **Zugriffsrechte:** Nicht jeder Nutzer sollte
 jeden Kontakt sehen dürfen (z.B. Lieferantendaten könnten teilweise vertraulich sein). Aber in unserem
 mittelständischen Kontext vermutlich offene Datenhaltung außer vllt. Personalinfos. Dennoch Best Practice:
-*Role-Based Access Control* auf Kontakte, um im Zweifel einschränken zu können (z.B. Marketing darf
+_Role-Based Access Control_ auf Kontakte, um im Zweifel einschränken zu können (z.B. Marketing darf
 Lieferanten-Bankdaten nicht ändern). Ohne zu granular zu werden – Stolperstein hier ist
 Überadministration, was unnötig Komplexität bringt. - **Integration E-Mail/Telefon:** Um Aktivitäten
 lückenlos zu erfassen, koppelt man idealerweise E-Mail-Server (so werden E-Mails an einen Kunden
@@ -631,34 +622,34 @@ welche Kommunikation wie aufgezeichnet werden soll.
 # 2. Vertriebs- & Opportunity-Management
 
 **Beschreibung:** Diese Domäne deckt den **Vertriebsprozess von der ersten Anfrage bis zum Auftrag** ab.
-Sie beinhaltet die Verwaltung von Verkaufschancen ( *Opportunities* ), Angebotswesen und die Pipeline-
+Sie beinhaltet die Verwaltung von Verkaufschancen ( _Opportunities_ ), Angebotswesen und die Pipeline-
 Übersicht. Hier werden Fragen beantwortet wie: Welche **Phase** hat ein Interessent erreicht? Welches
 **Angebot** liegt vor und zu welchem Preis? Wie hoch ist die Abschlusswahrscheinlichkeit? Wer ist zuständig?
 Der Prozess startet typischerweise mit einem Lead/Kontakt (siehe Domäne 1), der zum **Potential** wird.
 Durch Beratung und Angebotserstellung entwickelt es sich zur Opportunity mit einem bestimmten Wert,
-und endet entweder als *gewonnen* (wird Projekt/Auftrag) oder *verloren* (abgelehnt oder nicht genommen).
+und endet entweder als _gewonnen_ (wird Projekt/Auftrag) oder _verloren_ (abgelehnt oder nicht genommen).
 
-**Hauptobjekte/Begriffe:** - *Opportunity (Verkaufschance):* Ein Datensatz, der einen möglichen Auftrag
+**Hauptobjekte/Begriffe:** - _Opportunity (Verkaufschance):_ Ein Datensatz, der einen möglichen Auftrag
 repräsentiert. Attribute: Verknüpfter Kunde/Kontakt, Beschreibung (Projektname), aktuell angebotenes
 Volumen (€), Phase (z.B. Qualifizierung, Angebot präsentiert, Verhandlung, Abschluss),
-Abschlusswahrscheinlichkeit (%) und voraussichtliches Abschlussdatum. - *Angebot:* Konkrete Offerte an den
+Abschlusswahrscheinlichkeit (%) und voraussichtliches Abschlussdatum. - _Angebot:_ Konkrete Offerte an den
 Kunden. Kann als Teil der Opportunity geführt werden oder separate Entität. Enthält Positionsliste mit
 Leistungen/Produkten und Preisen, Gesamtbetrag, Gültigkeitsdatum, Angebotsdokument (PDF). -
-*Opportunity-Phase:* Vordefinierte Stufen im Vertriebsprozess. Z.B.: Lead, Bedarf ermittelt, Angebot
+_Opportunity-Phase:_ Vordefinierte Stufen im Vertriebsprozess. Z.B.: Lead, Bedarf ermittelt, Angebot
 abgegeben, Verhandlung, Verloren/Gewonnen. Jede Stufe kann eine Standard-Wahrscheinlichkeit haben
-(z.B. “Angebot abgegeben” = 50%). - *Verkaufsaktivität:* Aktivitäten speziell mit Fokus auf Sales, z.B. Nachfass-
-Telefonat geplant am…, Demo durchgeführt etc., oft als Teil der Opportunity-Historie. - *Umsatzprognose:*
+(z.B. “Angebot abgegeben” = 50%). - _Verkaufsaktivität:_ Aktivitäten speziell mit Fokus auf Sales, z.B. Nachfass-
+Telefonat geplant am…, Demo durchgeführt etc., oft als Teil der Opportunity-Historie. - _Umsatzprognose:_
 Aggregat, kein einzelnes Objekt, aber als Ergebnis aus allen Opportunities kalkuliert (für Pipeline-Reports). -
-*Vertriebsziel:* Möglicherweise definierte Soll-Zahlen (z.B. Quartalsziel Umsatz 500k), um Performance zu
+_Vertriebsziel:_ Möglicherweise definierte Soll-Zahlen (z.B. Quartalsziel Umsatz 500k), um Performance zu
 messen. (Könnte optional als Referenzwert in Berichten hinterlegt sein.)
 
-**Schnittstellen/Abhängigkeiten:** - Baut auf *Kontakt-Domäne* auf (jeder Opportunity ist ein Kunde
-zugeordnet). - Übergibt an *Projektmanagement-Domäne* : Wenn Opportunity gewonnen, wird daraus ein
-Projekt mit Planungs- und Ausführungsphasen. - Verknüpft mit *Buchhaltung* : Preise aus Angeboten fließen
+**Schnittstellen/Abhängigkeiten:** - Baut auf _Kontakt-Domäne_ auf (jeder Opportunity ist ein Kunde
+zugeordnet). - Übergibt an _Projektmanagement-Domäne_ : Wenn Opportunity gewonnen, wird daraus ein
+Projekt mit Planungs- und Ausführungsphasen. - Verknüpft mit _Buchhaltung_ : Preise aus Angeboten fließen
 in Rechnungen; außerdem steuert Opportunity den Auftragsbestand (für Finanzforecast). - Feedback-
-Schleife zu *Marketing* : Gründe für verlorene Opportunities könnten festgehalten werden (z.B. “Budget zu
+Schleife zu _Marketing_ : Gründe für verlorene Opportunities könnten festgehalten werden (z.B. “Budget zu
 
-hoch”, “Konkurrenzangebot”) – wertvoll fürs Marketing. - Abhängigkeit von *Planung* : Der Angebotsinhalt
+hoch”, “Konkurrenzangebot”) – wertvoll fürs Marketing. - Abhängigkeit von _Planung_ : Der Angebotsinhalt
 (Leistungen) entsteht aus der Planungsarbeit. Es muss hier Schnittstellen geben, dass Planungs-Output ins
 Angebot einfließt.
 
@@ -695,8 +686,8 @@ dem Vertrieb helfen, sich zu verbessern und dem GF strategische Infos liefern (z
 Preis -> eventuell Kalkulation checken). Stolperstein: Vertriebler geben diese Gründe nicht gerne an (bei
 verloren) oder sind nicht objektiv. Hier hilft eine Pflichtauswahl beim Schließen im System. - **Aktivitäten &**
 **Reminder:** In der Opportunity sollten alle Aktivitäten protokolliert sein (Termine, Mails etc.). Best Practice:
-Das System generiert Folgeaufgaben – z.B. *“Angebot vor 10 Tagen geschickt – jetzt automatisch Aufgabe:*
-*nachtelefonieren”* . Solche CRM-Aufgaben erhöhen die Abschlussquote, weil nichts vergessen wird
+Das System generiert Folgeaufgaben – z.B. *“Angebot vor 10 Tagen geschickt – jetzt automatisch Aufgabe:\*
+_nachtelefonieren”_ . Solche CRM-Aufgaben erhöhen die Abschlussquote, weil nichts vergessen wird
 .
 Stolperstein ist, bei zu vielen automatischen Tasks kann es unübersichtlich werden, aber für kritische
 Schritte (Nachfassen, Fristende Angebot) sind sie sinnvoll. - **Team-Verkauf & Berechtigungen:** Es könnte
@@ -704,8 +695,8 @@ sein, dass mehrere Vertriebler beteiligt sind (z.B. Key Account + ADM). System s
 Beteiligte zulassen. Berechtigungen: Evtl. will man Opportunities nur firmenweit sichtbar machen, oder pro
 Vertriebsgebiet einschränken. In KMU meist offen, aber je nach Kultur. Best Practice in CRM: Transparenz
 fördern, aber man kann filtern nach Zuständigkeit. - **Reporting & KPIs:** Die Vertriebsdomäne liefert
-Kennzahlen wie *Pipeline-Wert* , *Forecast* , *Quote (Hit-Rate)* , *Durchschnittliche Verkaufsdauer* etc. Best Practice:
-vordefinierte Berichte hierfür. Z.B. *Conversion Funnel: 100 Leads -> 10 Angebote -> 4 Aufträge (40% Hit-Rate)* .
+Kennzahlen wie _Pipeline-Wert_ , _Forecast_ , _Quote (Hit-Rate)_ , _Durchschnittliche Verkaufsdauer_ etc. Best Practice:
+vordefinierte Berichte hierfür. Z.B. _Conversion Funnel: 100 Leads -> 10 Angebote -> 4 Aufträge (40% Hit-Rate)_ .
 Das System sollte diese Berechnung ermöglichen. - **Überlapp mit Projektstart:** In unserem Kontext
 werden oft schon Planungsleistungen erbracht, bevor der Auftrag 100% sicher ist (Vorleistung in Akquise).
 Best Practice: Dies innerhalb der Opportunityphase belassen, bis unterschrieben ist. Stolperstein: Sonst
@@ -715,12 +706,12 @@ könnte es passieren, dass man ein Projekt anlegt vor Bestellung, und dann bei N
 
 rückabwickeln muss. Also klarer Cut definieren: “Gewonnen” erst, wenn Auftrag erteilt (schriftlich). Davor
 bleibt es im Sales-Funnel. - **Integration E-Signature:** Könnte erwogen werden: Angebot per CRM senden
-und digital unterschreiben lassen. Das würde die *Auftragserteilung* beschleunigen und direkt
+und digital unterschreiben lassen. Das würde die _Auftragserteilung_ beschleunigen und direkt
 dokumentieren. Nicht zwingend, aber Best Practice in vielen modernisierten Vertriebsprozessen.
 
 # 3. Projektmanagement & -durchführung
 
-**Beschreibung:** Diese Domäne beginnt, sobald eine Opportunity *gewonnen* wurde – es entsteht ein **Projekt** .
+**Beschreibung:** Diese Domäne beginnt, sobald eine Opportunity _gewonnen_ wurde – es entsteht ein **Projekt** .
 Sie deckt die Planung, Ausführung bis Abschluss des Projektes ab. Hier werden das Projekt selbst, seine
 Aufgaben, Zeitpläne, Beteiligten und Status verwaltet. Im Ladenbau umfasst das: Detailplanung/
 Werkplanung, Fertigung (über Lieferanten), Logistik, Montage bis zur Laden-Eröffnung, sowie eventuelle
@@ -728,37 +719,37 @@ Nacharbeiten/Reklamationen. Fachlich ist es eine Mischung aus klassischem
 **Aufgaben- und**
 **Terminmanagement** und branchenspezifischer Projektsteuerung (Lieferzeiten, Montagekoordination).
 
-**Hauptobjekte/Begriffe:** - *Projekt:* Kernobjekt für jedes beauftragte Vorhaben. Attribute: Projekttitel (z.B.
+**Hauptobjekte/Begriffe:** - _Projekt:_ Kernobjekt für jedes beauftragte Vorhaben. Attribute: Projekttitel (z.B.
 "Neuer Shop für Kunde X in Stadt Y"), verknüpfter Kunde, Projektleiter/Verantwortlicher (z.B. der ADM oder
 Innendienstler), aktueller Status (Planung, in Produktion, Montage, Abgeschlossen etc.), Start- und
-Enddatum (geplant und Ist), Budget/Kostenschätzung, Beschreibung. - *Projektphase/Milestone:* Grobe
+Enddatum (geplant und Ist), Budget/Kostenschätzung, Beschreibung. - _Projektphase/Milestone:_ Grobe
 Phasen wie Planung abgeschlossen, Auftrag an Lieferanten erteilt, Montage fertig – als Meilensteine
-definierbar. - *Aufgaben (Tasks):* Feinere Einheiten – einzelne To-Dos mit Verantwortlichem und
+definierbar. - _Aufgaben (Tasks):_ Feinere Einheiten – einzelne To-Dos mit Verantwortlichem und
 Fälligkeitsdatum. Z.B. "Grundriss zeichnen (Planer, bis 01.05)", "Montagetrupp buchen (Innendienst, bis
-01.08)". Aufgaben können in Hierarchie (Work-Breakdown) oder flach sein. - *Ressourcen:* Die Personen oder
+01.08)". Aufgaben können in Hierarchie (Work-Breakdown) oder flach sein. - _Ressourcen:_ Die Personen oder
 Firmen, die Aufgaben ausführen. Intern z.B. Planer, Extern z.B. Schreiner-Firma. Diese können dem Projekt
-oder einzelnen Aufgaben zugewiesen sein. - *Dateien:* Alle projektbezogenen Dokumente (Pläne, Fotos,
-Verträge, Genehmigungen,…) – verwaltet in einer Struktur oder Liste am Projekt. - *Risiken/Issues:* Optional:
+oder einzelnen Aufgaben zugewiesen sein. - _Dateien:_ Alle projektbezogenen Dokumente (Pläne, Fotos,
+Verträge, Genehmigungen,…) – verwaltet in einer Struktur oder Liste am Projekt. - _Risiken/Issues:_ Optional:
 Eintrag für Probleme, die auftreten (z.B. "Lieferverzug Material", "Baustelle nicht zugänglich bis Datum").
-Hilfreich für professionelle PM-Methodik. - *Reklamationen:* Falls nach Abschluss Mängel gemeldet werden,
+Hilfreich für professionelle PM-Methodik. - _Reklamationen:_ Falls nach Abschluss Mängel gemeldet werden,
 könnten diese hier erfasst sein (oder in separatem Modul, aber fachlich gehört es zur Projekt-Nachphase). -
-*Projekt-Statusbericht:* Eine Zusammenfassung der wichtigsten Infos (Ampel für Zeit/Kosten/Qualität), oft
+_Projekt-Statusbericht:_ Eine Zusammenfassung der wichtigsten Infos (Ampel für Zeit/Kosten/Qualität), oft
 manuell aktualisiert für GF – könnte als Attribut Status (OK/Verzögert etc.) realisiert sein.
 
-**Schnittstellen/Abhängigkeiten:** - Input von *Vertrieb/Opportunity* : Projekt wird aus gewonnenem
+**Schnittstellen/Abhängigkeiten:** - Input von _Vertrieb/Opportunity_ : Projekt wird aus gewonnenem
 Verkaufsprozess erzeugt, übernimmt relevante Daten (Kunde, Umfang, Angebotssumme). - Verknüpft mit
-*Kontaktverwaltung* : Projekt hat Kunde und Lieferanten als verknüpfte Kontakte; Projektaufgaben können
-Kontakte referenzieren (z.B. "warte auf Rückruf von Kunde" als Aufgabe). - Verbindung zur *Buchhaltung* :
+_Kontaktverwaltung_ : Projekt hat Kunde und Lieferanten als verknüpfte Kontakte; Projektaufgaben können
+Kontakte referenzieren (z.B. "warte auf Rückruf von Kunde" als Aufgabe). - Verbindung zur _Buchhaltung_ :
 Projekt kennt das Budget/den Auftragswert und die Rechnungspläne, und sollte Info zum Rechnungsstatus
-bekommen (für den Status "finanziell abgeschlossen"). - Überschneidung mit *Planung* : Projekt enthält
-Planungs-Tasks und die Ausgabe (Pläne) werden hier dokumentiert. - *Lieferantenmanagement:* Externe
+bekommen (für den Status "finanziell abgeschlossen"). - Überschneidung mit _Planung_ : Projekt enthält
+Planungs-Tasks und die Ausgabe (Pläne) werden hier dokumentiert. - _Lieferantenmanagement:_ Externe
 Lieferaufträge könnten im System als Teil des Projekts auftauchen (z.B. Bestellung an Schreiner – evtl. als
-Unterobjekt oder einfach als Aufgabe mit Lieferant). - *Reporting an GF* : Der Projektstatus fließt in
-Management-Übersichten (z.B. welche Projekte sind in Verzug). - *Marketing* : Projektabschluss markiert, dass
+Unterobjekt oder einfach als Aufgabe mit Lieferant). - _Reporting an GF_ : Der Projektstatus fließt in
+Management-Übersichten (z.B. welche Projekte sind in Verzug). - _Marketing_ : Projektabschluss markiert, dass
 Daten für Erfolgsgeschichte bereit stehen.
 
 **Best Practices & Stolpersteine:** - **Projektstruktur & Workflows abbilden:** Best Practice ist,
-wiederkehrende Abläufe in **Standard-Workflows** zu gießen. Z.B. ein *Projekt-Template* "Ladenbauprojekt" mit
+wiederkehrende Abläufe in **Standard-Workflows** zu gießen. Z.B. ein _Projekt-Template_ "Ladenbauprojekt" mit
 vordefinierten Phasen und Aufgaben (Planungsphase -> Fertigungsphase -> Montagephase), inkl. typischer
 Aufgaben (“Material bestellen”, “Bauabnahme durchführen”). Das System könnte solche Templates
 
@@ -795,10 +786,10 @@ Meilenstein erreicht. Im Interview kam Wunsch nach täglicher Zusammenfassung vo
 . Best Practice: statt manueller E-Mails kann der Planer den Taskstatus updaten oder einen kurzen
 Kommentar im Projekt hinterlassen ("Plan 50% fertig"). Der ADM kann das im System einsehen oder
 bekommt automatisch Benachrichtigung. Moderne Tools erlauben auch, dem Kunden einen
-*eingeschränkten View* zu geben, damit er Fortschritte sieht – aber das ist eventuell hier nicht gefordert
+_eingeschränkten View_ zu geben, damit er Fortschritte sieht – aber das ist eventuell hier nicht gefordert
 (intern fokussiert). - **Reklamationsprozess:** Falls nach Projekt Fertigstellung Mängel auftreten, sollte es
-dokumentiert werden (ggf. separate Domäne "Service" oder als Teil des Projekts). Best Practice: *After-Sales/*
-*Service Modul* , aber minimal könnte man ein abgeschlossenes Projekt wieder öffnen mit Typ "Reklamation:
+dokumentiert werden (ggf. separate Domäne "Service" oder als Teil des Projekts). Best Practice: _After-Sales/_
+_Service Modul_ , aber minimal könnte man ein abgeschlossenes Projekt wieder öffnen mit Typ "Reklamation:
 Ersatzteillieferung defekt" etc. Da im Interview angesprochen, dass sich aus Dokumentation der
 Reklamationen Entscheidungen zu Lieferanten ableiten
 , ist es gut, diese Daten nicht unstrukturiert
@@ -834,22 +825,22 @@ Aufgaben abhaken per Handy, Drag&Drop Termine verschieben) wird die Akzeptanz si
 fachlichen Prozess der Abschlags- und Schlussrechnung orchestrieren und compliance-relevante Daten
 korrekt behandeln.
 
-**Hauptobjekte/Begriffe:** - *Rechnung:* Forderung an den Kunden, mit eindeutiger Nummer, Betrag,
+**Hauptobjekte/Begriffe:** - _Rechnung:_ Forderung an den Kunden, mit eindeutiger Nummer, Betrag,
 Leistungszeitraum, Fälligkeitsdatum. Typen: Abschlagsrechnung, Schlussrechnung. Verknüpft mit Projekt
-und Kunde. - *Rechnungsplan:* Zeitplan, welche Rechnungen zu welchem Zeitpunkt/Meilenstein gestellt
-werden (z.B. 30% bei Auftrag, 50% vor Lieferung, 20% nach Fertigstellung). - *Zahlung:* Eingangsmeldung
-(Datum, Betrag, Rechnungsnr.), Verknüpft mit Rechnung. - *Offene Posten:* Abgeleiteter Status, ob Zahlung
-eingegangen oder wie lange überfällig. - *Audit-Trail:* Änderungs- und Zugriffshistorie von Datensätzen –
-wichtig für GoBD/DSGVO Nachvollziehbarkeit. - *Archivierung:* Markierung, dass Datensatz für Aufbewahrung
-gesperrt ist (nicht löschbar vor Datum X). - *Einwilligung:* DSGVO-Einwilligungsdatensatz per Kontakt, mit
+und Kunde. - _Rechnungsplan:_ Zeitplan, welche Rechnungen zu welchem Zeitpunkt/Meilenstein gestellt
+werden (z.B. 30% bei Auftrag, 50% vor Lieferung, 20% nach Fertigstellung). - _Zahlung:_ Eingangsmeldung
+(Datum, Betrag, Rechnungsnr.), Verknüpft mit Rechnung. - _Offene Posten:_ Abgeleiteter Status, ob Zahlung
+eingegangen oder wie lange überfällig. - _Audit-Trail:_ Änderungs- und Zugriffshistorie von Datensätzen –
+wichtig für GoBD/DSGVO Nachvollziehbarkeit. - _Archivierung:_ Markierung, dass Datensatz für Aufbewahrung
+gesperrt ist (nicht löschbar vor Datum X). - _Einwilligung:_ DSGVO-Einwilligungsdatensatz per Kontakt, mit
 Zweck, Datum, Art der Zustimmung.
 
-**Schnittstellen/Abhängigkeiten:** - Verknüpft mit *Projektmanagement:* Projekte liefern die Daten, wann was
-in Rechnung gehen soll (Meilensteine). Projektabschluss und Rechnungsabschluss korrelieren. - *Vertrieb:*
+**Schnittstellen/Abhängigkeiten:** - Verknüpft mit _Projektmanagement:_ Projekte liefern die Daten, wann was
+in Rechnung gehen soll (Meilensteine). Projektabschluss und Rechnungsabschluss korrelieren. - _Vertrieb:_
 Übergibt Auftragswert an Finanzmodul. Bei Änderungen (z.B. Nachträge) muss das nachgezogen werden. -
-*Buchhaltungssystem:* Evtl. Integration, wenn vorhandenes Fibu-System Rechnungen faktisch erstellt. -
-*Compliance:* DSGVO betrifft alle personenbezogenen Daten (v.a. in Kontakt-Domäne), GoBD v.a.
-Projektdokumente und Rechnungen. - *Reporting:* Finanzauswertungen (Umsätze, Forderungsstand) fließen
+_Buchhaltungssystem:_ Evtl. Integration, wenn vorhandenes Fibu-System Rechnungen faktisch erstellt. -
+_Compliance:_ DSGVO betrifft alle personenbezogenen Daten (v.a. in Kontakt-Domäne), GoBD v.a.
+Projektdokumente und Rechnungen. - _Reporting:_ Finanzauswertungen (Umsätze, Forderungsstand) fließen
 in GF-Dashboard.
 
 **Best Practices & Stolpersteine:** - **Rechnungsworkflow steuern:** Best Practice: Hinterlegung von
@@ -861,7 +852,7 @@ System keine Fibu-Funktion hat, muss zumindest eine Erinnerung rausgehen, sonst 
 manuellen Zuruf. - **Unveränderbarkeit von Reisedaten:** GoBD verlangt, dass einmal erstellte
 rechnungsrelevante Daten nicht einfach gelöscht oder unbemerkt geändert werden können
 . Best
-Practice: *Revision-sichere Archivierung* , z.B. durch Schreibschutz oder Archivmodus. Rechnungen als PDF
+Practice: _Revision-sichere Archivierung_ , z.B. durch Schreibschutz oder Archivmodus. Rechnungen als PDF
 sollten nach Erzeugung abgelegt und nicht mehr modifizierbar sein (Storno nur mit neuer Stornorechnung).
 Stolperstein: CRM-Systeme ohne Fokus auf Finance könnten Änderungen zulassen – hier muss Konzeption
 sicherstellen, dass zumindest Logging erfolgt
@@ -869,19 +860,18 @@ sicherstellen, dass zumindest Logging erfolgt
 
 # 20
 
+---
+
+_Page 21_
 
 ---
 
-*Page 21*
-
----
-
-Buchung/Rechnung sollte im System mit einem Pfad dokumentiert sein. Best Practice: *Audit Log* für wichtige
+Buchung/Rechnung sollte im System mit einem Pfad dokumentiert sein. Best Practice: _Audit Log_ für wichtige
 Felder (wer hat Betrag geändert und wann)
 . Außerdem sollte klar nachvollziehbar sein, welche
 Leistungen eine Rechnung umfasst (Verknüpfung zum Angebot/Projektphase). Stolperstein: Wenn Teile
 offline passieren, geht diese Kette verloren. - **Datenschutzprinzipien implementieren:** Das System muss
-*Privacy by Design* haben: Nur notwendige Daten speichern (Datenminimierung)
+_Privacy by Design_ haben: Nur notwendige Daten speichern (Datenminimierung)
 , Nutzungszweck klar
 definieren (z.B. keine zweckfremde Nutzung ohne neue Einwilligung)
 , Einwilligungen dokumentieren
@@ -899,7 +889,7 @@ Software lassen sich GoBD zertifizieren, was oft voraussetzt: unveränderbare Pr
 Benutzerrechte, Verfahrensdokumentation. Best Practice: Ein **Verfahrensverzeichnis** für dieses System
 anlegen, wie Daten verarbeitet werden – hilft bei Prüfung. Stolperstein: Nicht fachlich in der Software, aber
 eine Aufgabe bei Einführung. - **Integration Fibu:** Falls z.B. Datev genutzt wird, Best Practice: eine
-*Schnittstelle (z.B. DATEV-Export)* aus den im CRM erfassten Rechnungen, sodass Buchhaltung nicht doppelt
+_Schnittstelle (z.B. DATEV-Export)_ aus den im CRM erfassten Rechnungen, sodass Buchhaltung nicht doppelt
 bucht. Oder gleich die Buchhaltung ins System ziehen (ERP-Ansatz). Das muss strategisch entschieden
 werden. Fachlich sollte die Domäne so gestaltet sein, dass entweder das System einfache
 Buchhaltungsfunktionen hat oder Datenexport bereitstellt. - **Zahlungstracking:** Best Practice, wie erwähnt,
@@ -910,7 +900,7 @@ starten" – das könnte ein Hinweis im System sein). Stolperstein: Ohne diszipl
 muss Zahlungseingänge eintragen) bleibt Anzeige rot obwohl Kunde gezahlt hat -> falscher Alarm. Also
 Prozess definieren. - **Kostenverfolgung:** Optional, aber relevant: Während Buchhaltung vor allem Ertrag/
 Rechnung sieht, könnte man auch Kosten im Projekt notieren (z.B. Lieferantenangebot 50k, unsere Marge
-20k). Das wäre advanced controlling. Best Practice in Projekt-Controlling: *Earned Value Management* etc.,
+20k). Das wäre advanced controlling. Best Practice in Projekt-Controlling: _Earned Value Management_ etc.,
 aber vermutlich Overkill. Einfache Variante: Innendienst pflegt nach Abschluss "Ist-Kosten" vs.
 "Verkaufspreis" – und GF bekommt Marge. Das nur, wenn gewünscht; könnte aber helfen, unprofitable
 Projektarten zu identifizieren. Stolperstein: Ohne Integration Finanzen ist das händisch und evtl. ungenau. -
@@ -941,7 +931,7 @@ Cases, Should sind wichtig aber notfalls iterierbar, Nice-to-have ergänzen die 
 
 # Funktionale Anforderungen
 
-**(F1) Zentrale Kontakt- und Kundenverwaltung –** ***Muss***
+**(F1) Zentrale Kontakt- und Kundenverwaltung –** **_Muss_**
 Die Anwendung muss eine zentrale Datenbank für alle **Kunden, Interessenten, Lieferanten und**
 **Ansprechpartner** bereitstellen
 . Pro Kunde sollen Stammdaten (Name, Adresse, Branche etc.) sowie
@@ -949,7 +939,7 @@ verknüpfte Kontakte (Personen) gespeichert werden. **Dublettenprüfung** bei Ne
 (nach Name, Ort, Branche) sind erforderlich. Alle relevanten Beziehungen müssen abbildbar sein: z.B.
 Kunde gehört zu Konzern/Verband
 , Lieferant beliefert bestimmte Kunden etc. Zudem sollen
-**Vertriebsregion oder Zuständigkeit** (welcher ADM betreut den Kunden) hinterlegt sein. *Best Practice:* Eine
+**Vertriebsregion oder Zuständigkeit** (welcher ADM betreut den Kunden) hinterlegt sein. _Best Practice:_ Eine
 
 # 360°-Sicht pro Kunde: D.h. im Kundenprofil werden auch zugehörige Aktivitäten, Opportunities, Projekte
 
@@ -962,9 +952,9 @@ Kunde gehört zu Konzern/Verband
 ist
 . Bei Änderungen muss entweder eine neue Angebotsversion erfasst oder der Betrag aktualisiert
 werden (inkl. Historie). **Dateiupload** des tatsächlich an Kunden gesendeten Angebotsdokuments (PDF) soll
-möglich sein. Wird eine Opportunity als *verloren* geschlossen, soll ein **Verlustgrund** ausgewählt werden
-(z.B. *Preis zu hoch* , *Kunde verschoben* , *Konkurrenz erhalten* ). Wird sie als *gewonnen* markiert, muss (F4) greifen.
-*Priorität:* Muss, da Kern des Vertriebs und Voraussetzung für Forecasts. Ohne diese Funktion kein
+möglich sein. Wird eine Opportunity als _verloren_ geschlossen, soll ein **Verlustgrund** ausgewählt werden
+(z.B. _Preis zu hoch_ , _Kunde verschoben_ , _Konkurrenz erhalten_ ). Wird sie als _gewonnen_ markiert, muss (F4) greifen.
+_Priorität:_ Muss, da Kern des Vertriebs und Voraussetzung für Forecasts. Ohne diese Funktion kein
 strukturiertes Angebots-Tracking.
 
 # (F4) Nahtlose Umwandlung gewonnener Opportunity in Projekt – Muss
@@ -981,7 +971,7 @@ fällig"
 Außerdem wünschenswert: **Aufgabenübersicht pro Nutzer** (damit jeder seine ToDo-Liste sieht, ggf. über
 Projekte hinweg) und **Benachrichtigungen** (z.B. E-Mail oder App Push), wenn neue Aufgabe zugewiesen
 oder Deadline nah/überfällig.
-*Muss* , da klare Aufgaben- und Verantwortlichkeitsverfolgung essentiell ist (eine der Hauptforderungen war,
+_Muss_ , da klare Aufgaben- und Verantwortlichkeitsverfolgung essentiell ist (eine der Hauptforderungen war,
 dass jeder schnell sieht, wer was im Projekt tut und wie der Stand ist
 ).
 
@@ -996,7 +986,7 @@ dass jeder schnell sieht, wer was im Projekt tut und wie der Stand ist
 sein, um Teamkoordination zu erleichtern. Priorität Should, weil Kalenderfeatures oft in CRM/PM integriert
 sind, aber zur Not könnte man manuell arbeiten.
 
-**(F10) Reporting & Dashboards –** ***Muss***
+**(F10) Reporting & Dashboards –** **_Muss_**
 Es muss umfangreiche **Reporting-Funktionen** geben, um die Daten auszuwerten – insbesondere für
 Geschäftsführung und Team Leads. Konkret: - **Vertriebs-Dashboard:** Pipeline-Übersicht (Anzahl
 Opportunities pro Phase, Summe wertgewichtet)
@@ -1009,11 +999,12 @@ Auslastung Planer (z.B. Anzahl Projekte pro Planer). - **Finanz-Reports:** Umsat
 Auftragseingang YTD, Auftragsbestand (Summe offener Projekte), Rechnungsausstände (Alter der offenen
 Posten), etc. Ziel ist, was GF bisher manuell aus unterschiedlichen Quellen sammeln musste, auf Klick zu
 haben. - **Marketing/CRM-Reports:** z.B. Anzahl neue Leads pro Monat, Konversionsquote Lead-
->Opportunity->Auftrag; Segmentanalysen (Umsatz nach Branche, Region). Das System sollte ermöglichen,
-**interaktive Filter** zu setzen (z.B. Zeitraum, Verantwortlicher) und die Reports möglichst grafisch
-darzustellen (Charts, Tabellen) zum schnellen Erfassen. *Muss* , da dies für Managemententscheidungen
-essentiell und explizit gefordert ist (GF will Statistiken und klare Prognosen
-).
+
+> Opportunity->Auftrag; Segmentanalysen (Umsatz nach Branche, Region). Das System sollte ermöglichen,
+> **interaktive Filter** zu setzen (z.B. Zeitraum, Verantwortlicher) und die Reports möglichst grafisch
+> darzustellen (Charts, Tabellen) zum schnellen Erfassen. _Muss_ , da dies für Managemententscheidungen
+> essentiell und explizit gefordert ist (GF will Statistiken und klare Prognosen
+> ).
 
 # (F11) Rechnungs- und Zahlungsmanagement – Muss
 
@@ -1034,7 +1025,7 @@ als auch zur Vermeidung von Missverständnissen (wer hat was geändert) unabding
 Dies sind Anforderungen, die nicht direkt eine Fach-Funktion beschreiben, sondern Qualitäten und
 Rahmenbedingungen, insb. Usability, Zugänglichkeit und Compliance-Vorgaben.
 
-**(NF1) Benutzerfreundlichkeit & UI-Design:** *Muss* . Die Anwendung muss für alle Nutzergruppen leicht
+**(NF1) Benutzerfreundlichkeit & UI-Design:** _Muss_ . Die Anwendung muss für alle Nutzergruppen leicht
 bedienbar und übersichtlich sein. **Usability-Priorität** hat hohe Bedeutung im Zielbild (”Produktvision &
 Usability – keine technischen Entscheidungen”). Konkret: - **Intuitive Navigation:** Klare Struktur nach den
 Domänen (z.B. Module Kunden, Projekte, Dashboard). Wenige Klicks, um wichtige Infos zu finden (z.B.
@@ -1045,16 +1036,17 @@ Key-Funktionen (Kontaktdetails einsehen, Notiz erstellen) müssen mobil möglich
 Bedienungsabläufe wie Datensuchen oder Speichern sollten zügig vonstattengehen, um Frustration zu
 vermeiden. Offline-Modus (Eingaben zwischenspeichern) ist stark gewünscht seit ADM oft offline ist
 .
+
 - **Mehrsprachigkeit:** In diesem Fall wohl nicht kritisch (deutsche Nutzer), aber zumindest Zeichensatz-
-Unterstützung etc. - **Personalisierung:** Nice-to-have sub-aspekt: Nutzer können sich z.B. Dashboard
-anpassen oder Favoritenkunden markieren, um noch effizienter zu arbeiten. Usability ist insofern Muss, da
-Adoption davon abhängt: *"If your users are not properly trained and can’t use the system effectively, they won’t*
-*use it."*
-.
+  Unterstützung etc. - **Personalisierung:** Nice-to-have sub-aspekt: Nutzer können sich z.B. Dashboard
+  anpassen oder Favoritenkunden markieren, um noch effizienter zu arbeiten. Usability ist insofern Muss, da
+  Adoption davon abhängt: _"If your users are not properly trained and can’t use the system effectively, they won’t_
+  _use it."_
+  .
 
 # 26
 
-**(NF2) Barrierefreiheit & Zugänglichkeit:** *Should* . Obwohl BITV nicht vorgeschrieben, soll Best-Practice
+**(NF2) Barrierefreiheit & Zugänglichkeit:** _Should_ . Obwohl BITV nicht vorgeschrieben, soll Best-Practice
 **Accessibility** eingehalten werden. Das bedeutet: - **Klare Kontraste** in Farben und ausreichend große
 Schrift
 . - **Tastaturbedienbarkeit** aller Funktionen (falls z.B. ein Mitarbeiter motorische Einschränkung
@@ -1068,13 +1060,13 @@ nach Möglichkeit, aber leichte Abweichungen sind tolerabel solange allgemeine N
 
 # (NF3) Performance und Skalierbarkeit: Should . Für die aktuelle Firmengröße wird kein riesiger Datenload
 
-**(NF4) Security & Berechtigungen:** *Muss* . Das System muss **sicherstellen, dass Daten geschützt** sind vor
+**(NF4) Security & Berechtigungen:** _Muss_ . Das System muss **sicherstellen, dass Daten geschützt** sind vor
 unbefugtem Zugriff (besonders personenbezogene Daten nach DSGVO). Fachlich bedeutet das: - **Login mit**
 **Berechtigungsstufen** : z.B. normale User, Administratoren. - **Rechtemanagement** : Es sollte möglich sein,
 falls gewünscht, den Zugriff auf sensible Module einzuschränken (etwa Buchhaltungsdaten nur für
 Buchhalter). Standardmäßig kann die Firma aber entscheiden, viel offen zu lassen – aber das System muss
-es *können* . Ein Minimum: Rollen wie *Vertrieb* , *Planer* , *Buchhaltung* , *GF* mit entsprechenden Lese-/
-Schreibrechten definieren. Z.B. *Buchhaltung* darf Finanzdaten bearbeiten, *Vertrieb* darf das nicht ändern
+es _können_ . Ein Minimum: Rollen wie _Vertrieb_ , _Planer_ , _Buchhaltung_ , _GF_ mit entsprechenden Lese-/
+Schreibrechten definieren. Z.B. _Buchhaltung_ darf Finanzdaten bearbeiten, _Vertrieb_ darf das nicht ändern
 aber sehen etc. - **Datensicherheit** : Datenübertragung verschlüsselt (HTTPS), Passwörter sicher, etc. (Das
 sind tech Details, aber ein Muss aus fachlicher Sicht, weil sonst DSGVO nicht erfüllt). Ebenso sollte das
 System **Verschlüsselung sensibler Felder** vorsehen (z.B. falls Bankdaten gespeichert würden). - **Pen-Tests**
@@ -1085,7 +1077,7 @@ dass Verfahrensvorschriften dies fordern. Kurz: Das System darf keine unbefugte 
 und muss stabil und sicher sein. Muss, da DSGVO/GoBD sonst verletzt würden.
 
 **(NF5) DSGVO-Compliance:**
-*Muss* . Einige Punkte wurden schon in F11 und NF4 erwähnt, aber
+_Muss_ . Einige Punkte wurden schon in F11 und NF4 erwähnt, aber
 zusammenfassend: - **Einwilligungs-Tracking:** Das System muss speichern können, ob und wofür ein
 Kontakt die Verwendung seiner Daten erlaubt hat
 . Z.B. Checkbox "Einwilligung für Marketing-E-Mails
@@ -1105,7 +1097,7 @@ EU o. mit Standardvertragsklauseln. (Organisatorisch). Im Großen und Ganzen mus
 gestaltet sein, dass es die Einhaltung der DSGVO erleichtert, nicht erschwert. Dieses Muss ist
 geschäftskritisch (Vermeidung von Strafen, Vertrauensverlust).
 
-**(NF6) GoBD-Compliance:** *Muss* . Das System muss die **Grundsätze ordnungsgemäßer Buchführung**
+**(NF6) GoBD-Compliance:** _Muss_ . Das System muss die **Grundsätze ordnungsgemäßer Buchführung**
 **(GoBD)** für elektronische Aufzeichnungen erfüllen, soweit anwendbar. Konkret: - **Unveränderbarkeit von**
 **originären Buchungsdaten** : Sobald z.B. eine Rechnung erstellt und versendet ist, darf sie nicht einfach
 geändert oder gelöscht werden
@@ -1125,11 +1117,11 @@ und
 zusammenhängend
 (Verknüpfungen
 erhalten).
--
-**Verfahrensdokumentation** : Das System sollte ein Vorgehen vorsehen, wie z.B. Änderungen protokolliert
-und archiviert werden, damit man es beschreiben kann. (Das ist mehr ein Doku-Thema für uns, aber System
-muss die Funktionen bieten). Muss, weil ohne diese Einhaltung die Verwendung riskant wäre und BWL/
-Steuer-Seite es nicht akzeptiert.
+
+- **Verfahrensdokumentation** : Das System sollte ein Vorgehen vorsehen, wie z.B. Änderungen protokolliert
+  und archiviert werden, damit man es beschreiben kann. (Das ist mehr ein Doku-Thema für uns, aber System
+  muss die Funktionen bieten). Muss, weil ohne diese Einhaltung die Verwendung riskant wäre und BWL/
+  Steuer-Seite es nicht akzeptiert.
 
 # (NF7) Interoperabilität & Erweiterbarkeit: Should . Es ist wünschenswert, dass die Lösung Schnittstellen
 
@@ -1153,8 +1145,8 @@ Dateneingaben).
 # Ist-Workflows
 
 **Workflow 1: Leadgenerierung & Erstkontakt**
-*Auslöser:* Ein potentieller Kunde (Lead) entsteht – etwa durch Kaltakquise (Telefon, Messe) oder Empfehlung.
-*Schritte:* 1. **Lead-Erfassung:** Bisher notiert der ADM die Kontaktdaten und Basisinfos des Leads (z.B.
+_Auslöser:_ Ein potentieller Kunde (Lead) entsteht – etwa durch Kaltakquise (Telefon, Messe) oder Empfehlung.
+_Schritte:_ 1. **Lead-Erfassung:** Bisher notiert der ADM die Kontaktdaten und Basisinfos des Leads (z.B.
 Branche, grober Bedarf) handschriftlich oder in eigener Liste. Anschließend sendet er diese Informationen
 per E-Mail an die Marketingabteilung
 . 2.
@@ -1172,15 +1164,15 @@ grundsätzlich), geht es zum ersten Kundenbesuch (Workflow 2). Falls der Lead ke
 
 # evtl. keine weitere Verfolgung (bleibt in Liste als "ruhend").
 
-*(Im neuen System würde dieser Workflow digitalisiert: Lead direkt ins CRM eingeben, Marketing und ADM greifen*
-*auf selben Datensatz zu. Siehe Anpassung A1.)*
+_(Im neuen System würde dieser Workflow digitalisiert: Lead direkt ins CRM eingeben, Marketing und ADM greifen_
+_auf selben Datensatz zu. Siehe Anpassung A1.)_
 
 **Workflow 2: Kundenbesuch & Bedarfsaufnahme**
-*Auslöser:* Ein erster Termin beim Interessenten ist vereinbart (durch Kaltakquise oder nach Lead-Workflow).
-*Schritte:* 1. **Terminvorbereitung:** ADM plant seine Route und Termin. (Derzeit manuell/Kalender, im neuen
+_Auslöser:_ Ein erster Termin beim Interessenten ist vereinbart (durch Kaltakquise oder nach Lead-Workflow).
+_Schritte:_ 1. **Terminvorbereitung:** ADM plant seine Route und Termin. (Derzeit manuell/Kalender, im neuen
 System optional via Kalenderfunktion – Nice-to-have). 2. **Kundengespräch:** Vor Ort beim Kunden führt der
 ADM ein Beratungsgespräch. **Er nimmt den Bedarf auf** : Wünsche des Kunden, räumliche Gegebenheiten,
-Budgetvorstellungen, Zeitplan. Wichtig: Der ADM nutzt *Papier und Stift* , um Notizen zu machen
+Budgetvorstellungen, Zeitplan. Wichtig: Der ADM nutzt _Papier und Stift_ , um Notizen zu machen
 . Er
 vermeidet Tippen am Tablet/Phone, um den Kunden nicht zu irritieren
 . Falls vorhanden, macht er
@@ -1203,14 +1195,12 @@ Anpassung A2).
 
 # 29
 
-
-| 134 |  | . |
+| 134 |     | .   |
 | --- | --- | --- |
-| kt | 109 |  |
+| kt  | 109 |     |
 
 unformalisiert ("nicht eindeutig geregelt"
-). - Nach einigen Tagen/Wochen ist ein Planungsentwurf fertig.
-2. **Kalkulationsphase:** Parallel oder anschließend kalkuliert der Innendienst die Kosten. Der ADM/Planer
+). - Nach einigen Tagen/Wochen ist ein Planungsentwurf fertig. 2. **Kalkulationsphase:** Parallel oder anschließend kalkuliert der Innendienst die Kosten. Der ADM/Planer
 liefern der Kalkulation die Planungsdetails: Materiallisten, Möbelliste etc. Aktuell wahrscheinlich via
 Gespräch oder E-Mail mit Planungs-PDF. Der **Kalkulator** erstellt ein detailliertes Angebot mit allen
 Positionen
@@ -1254,10 +1244,9 @@ final angepasste Angebot. Damit wird es zum Auftrag.
 
 # 30
 
-
 ---
 
-*Page 31*
+_Page 31_
 
 ---
 
@@ -1288,20 +1277,20 @@ etc., um Personalentscheidungen abzuleiten.
 
 Trotz Fokus, die Workflows weitgehend beizubehalten, wurden einige **Änderungen/Aktualisierungen**
 identifiziert, die Best Practices zufolge deutliche Vorteile bringen **und** nicht im Widerspruch zum
-Kernprozess stehen. Diese Anpassungen sind "minimal-invasiv": sie verändern nicht das *Ziel* oder *Ergebnis*
-eines Schritts, aber oft *wie* er erreicht wird (nämlich effizienter/digitaler). Hier die vorgeschlagenen
+Kernprozess stehen. Diese Anpassungen sind "minimal-invasiv": sie verändern nicht das _Ziel_ oder _Ergebnis_
+eines Schritts, aber oft _wie_ er erreicht wird (nämlich effizienter/digitaler). Hier die vorgeschlagenen
 Änderungen mit Begründung:
 
-**A1: Wegfall der doppelten Lead-Dokumentation (Marketing-Word-Dokument)** – *Begründung:* Der
+**A1: Wegfall der doppelten Lead-Dokumentation (Marketing-Word-Dokument)** – _Begründung:_ Der
 aktuelle Prozess mit Kundenkontaktprotokoll in Word und manueller Listenpflege ist zeitaufwändig
 und fehleranfällig
 . Best Practice ist, Leads direkt im CRM zu erfassen und dort anzureichern
-. *Anpassung:* Der ADM trägt neue Leads sofort ins System ein (Basisdaten per mobil/PC).
+. _Anpassung:_ Der ADM trägt neue Leads sofort ins System ein (Basisdaten per mobil/PC).
 Marketing greift diesen Datensatz und ergänzt fehlende Infos (Web-Recherche) direkt dort. Dadurch
-existiert *eine einheitliche Datenquelle* , auf die beide zugreifen – kein Hin- und Herschicken von
+existiert _eine einheitliche Datenquelle_ , auf die beide zugreifen – kein Hin- und Herschicken von
 Dokumenten. Diese Änderung verkürzt den Prozess (keine Dokumenterstellung nötig) und reduziert
 Übertragungsfehler. Sie widerspricht nicht dem definierten Prozessziel (Lead vollständig erfassen),
-sondern erreicht es effizienter. *Quelle:* Nimble CRM zeigt, dass automatisches Kontaktprofiling
+sondern erreicht es effizienter. _Quelle:_ Nimble CRM zeigt, dass automatisches Kontaktprofiling
 möglich ist
 , was hier den manuellen Schritt ersetzt. Das Interview selbst stellt fest, dass das
 Ordner/Word-Protokoll "sehr aufwendig und fehleranfällig" ist
@@ -1311,17 +1300,17 @@ ab, was ja "Ziel der Applikation" ist
 
 # 31
 
-**A2: Einführung eines strukturierten Opportunity-Prozesses** – *Begründung:* Im Ist gibt es keinen
+**A2: Einführung eines strukturierten Opportunity-Prozesses** – _Begründung:_ Im Ist gibt es keinen
 formal definierten Opportunity-Funnel; ein Interessent wird irgendwann zum "Auftrag", dazwischen
 ist viel implizit. Best Practice empfiehlt einen klaren Vertriebsprozess mit Pipeline-Stages
 .
-*Anpassung:* Nach dem ersten Kundenbesuch (Workflow 2), legt der ADM eine **Opportunity** im
+_Anpassung:_ Nach dem ersten Kundenbesuch (Workflow 2), legt der ADM eine **Opportunity** im
 System an, Phase z.B. "Bedarf ermittelt". So wird aus dem Lead ein verfolgbares Verkaufsprojekt. Alle
 weiteren Schritte (Planung, Angebot) werden in dieser Opportunity dokumentiert. Die **Phasen**
 werden dem bestehenden Vorgehen nachempfunden: z.B. "Angebot erstellt", "In Verhandlung",
 "Warten auf Entscheidung" etc. Dies macht den Vorgang transparenter für alle (GF sieht Pipeline)
 . Es ändert nicht den Prozess an sich (man hat auch bisher Angebote und Verhandlungen
-gemacht), aber formalisiert ihn. *Quelle:* Insightly betont die Vorteile, Opportunities im CRM zu
+gemacht), aber formalisiert ihn. _Quelle:_ Insightly betont die Vorteile, Opportunities im CRM zu
 managen und dann in Projekte umzuwandeln
 . Unser Kontext wünscht sich bessere Prognosen –
 dies geht nur mit Pipeline-Tracking
@@ -1338,7 +1327,7 @@ dies geht nur mit Pipeline-Tracking
 vorgeschlagenem Rechnungsdokument. Beispiel: "16 Wochen vor Montage: 2. Teilrechnung über
 50% erstellen"
 . Die Buchhalterin muss nur prüfen und freigeben. Dadurch wird der Ablauf
-standardisiert und es geht keine Rechnung vergessen. *Quelle:* Der Interviewpartner selbst sagt,
+standardisiert und es geht keine Rechnung vergessen. _Quelle:_ Der Interviewpartner selbst sagt,
 dieser Infofluss soll klar über ein System abgebildet werden, "macht natürlich Sinn"
 . Unsere
 Änderung erfüllt genau diese Forderung, mit minimaler Umstellung (Buchhaltung folgt nun
@@ -1360,8 +1349,8 @@ wird es nicht zu belastend. - A6 und A8 fügen geringe Zusatz-Aufgaben (Häkchen
 im Team als wichtig kommuniziert werden, sonst wird's evtl. ignoriert. Wenn aber integraler Teil der
 Abschlussroutine, geringes Problem.
 
-Insgesamt sind die vorgeschlagenen Änderungen moderat und folgen dem Prinzip " *digitalisieren, was*
-*analog umständlich läuft* ", ohne die bewährten menschlichen Absprachen (z.B. Meetings) komplett zu
+Insgesamt sind die vorgeschlagenen Änderungen moderat und folgen dem Prinzip " _digitalisieren, was_
+_analog umständlich läuft_ ", ohne die bewährten menschlichen Absprachen (z.B. Meetings) komplett zu
 eliminieren, außer wo eindeutig sinnvoll (Folder zu digitaler Ablage). Sie stützen sich alle auf Best Practice
 Empfehlungen und adressieren Schwachstellen, die im Interview selbst identifiziert wurden (z.B.
 Fehleranfälligkeit, Intransparenz) – jeweils mit nachvollziehbarer Quelle.
@@ -1380,50 +1369,48 @@ Differenzierungs-Chancen sich im Vergleich zu unserem Ansatz zeigen.
 gezielt für Vertrieb + Projektausführung in einem Tool
 . 2. **vTiger / SugarCRM** (bzw. deren Forks) – Open-
 Source-CRM mit Erweiterungen, teils Projekt-Addons. 3. **Dynamics 365 (Microsoft)** mit **Project Operations**
-Modul – Enterprise-Lösung, abdeckend CRM bis Ressourcenplanung. 4. **Salesforce** (mit z.B. *Salesforce PSA*
-oder Integration zu e.g. FinancialForce) – High-end CRM, das via Drittmodul Projektaufgaben steuern kann.
-5. **Monday.com / Wrike / Asana** – Moderne Work-Management-Tools, die CRM-ähnliche Sales-Tracking an
+Modul – Enterprise-Lösung, abdeckend CRM bis Ressourcenplanung. 4. **Salesforce** (mit z.B. _Salesforce PSA_
+oder Integration zu e.g. FinancialForce) – High-end CRM, das via Drittmodul Projektaufgaben steuern kann. 5. **Monday.com / Wrike / Asana** – Moderne Work-Management-Tools, die CRM-ähnliche Sales-Tracking an
 Bord haben oder durch Apps ergänzen (z.B. Monday hat Sales-CRM-Templates). 6. **Insightly** (siehe 1) und
 **Insightly** bereits genannt – doppelt, statt dessen **Insightly, Insightly** einmal, ich korrigiere: Ein weiteres: 7.
 **Zoho One (CRM + Projects)** – Zoho bietet sowohl CRM als auch ein Projects-Modul, integriert im gleichen
 Ecosystem. 8. **Branchenspezifische Software** : Möglicherweise gibt es spezielle Ladenbau/Einrichtungs-
 Branchenlösungen (z.B. pCon.planner for design, aber CRM-Koppel? Unklar). Im Handwerk/Projekt-Bau gibt
-es z.B. *pds* Software
+es z.B. _pds_ Software
 mit CRM+Auftragsabwicklung – allerdings oft mehr ERP-lastig.
 
 # Wir fokussieren auf die, die dem Bedürfnis "CRM + PM" am ehesten entsprechen: Insightly, Monday, und
 
-**Insightly (CRM+Projekt):** - *Ansatz:* "Work and win deals, then manage those projects – all in the same
+**Insightly (CRM+Projekt):** - _Ansatz:_ "Work and win deals, then manage those projects – all in the same
 tool"
 . Das entspricht exakt unserer Vision. Insightly ermöglicht es, aus Opportunities direkt Projekte zu
 machen
-. - *How it solves Anforderungen:* Es hat Module für Leads, Contacts, Opportunities (inkl. pipelines)
+. - _How it solves Anforderungen:_ Es hat Module für Leads, Contacts, Opportunities (inkl. pipelines)
 und Projects. Die Projektfunktion umfasst Aufgaben, Milestones, Kanban-Boards, etc., jedoch primär für
 interne Nutzung, nicht komplexes Gantt. Für unser Szenario (viele parallele kleinere Projekte) dürfte es
-ausreichen. - *Stärken:* Einfache, einheitliche UI für beides; umfassende **Reporting** (Dashboards und custom
+ausreichen. - _Stärken:_ Einfache, einheitliche UI für beides; umfassende **Reporting** (Dashboards und custom
 reports) – sie werben mit "Noble Biomaterials close deals faster... entire team collaborates... capture info,
 close opps, then seamlessly push data to each project"
 . Also Kollaboration und Infofluss sind top.
 
 # 34
 
-
 | 174 | . D |
 | --- | --- |
-| en | 60 |
+| en  | 60  |
 
-Außerdem Schnittstellen (Insightly API) und moderate Kosten. - *Schwächen:* Evtl. nicht speziell auf Finanz-/
-Rechnungswesen fokussiert. Es hat Möglichkeit, z.B. *Payment tracking* muss man ggf. custom machen oder
+Außerdem Schnittstellen (Insightly API) und moderate Kosten. - _Schwächen:_ Evtl. nicht speziell auf Finanz-/
+Rechnungswesen fokussiert. Es hat Möglichkeit, z.B. _Payment tracking_ muss man ggf. custom machen oder
 via Integration. Unsere Anforderungen wie GoBD wären in Standard-Insightly so nicht 100% (man könnte
-Anpassungen, aber kein offizielles Statement). - *Lücke:* Insightly deckt z.B. **Lieferantenmanagement** nicht
+Anpassungen, aber kein offizielles Statement). - _Lücke:_ Insightly deckt z.B. **Lieferantenmanagement** nicht
 spezifisch – es ist CRM, aber speziell Lieferanten/Qualität? Wohl nur als normale Contact + notizen. Unser
-Konzept, Lieferantenleistung zu tracken, wäre custom. - *Usability:* Gelobt, "easy to adopt and use across
+Konzept, Lieferantenleistung zu tracken, wäre custom. - _Usability:_ Gelobt, "easy to adopt and use across
 entire org"
-. D.h. hohe Erfolgschance, dass Team es annimmt. - *Differenzierungschance:* Wir könnten uns
+. D.h. hohe Erfolgschance, dass Team es annimmt. - _Differenzierungschance:_ Wir könnten uns
 von Standard-Insightly differenzieren, indem wir unser System gezielt auf **unsere Branche** zuschneiden –
-z.B. Terminierung dreier Rechnungen, Lieferantenbewertung – das kann Insightly nicht out-of-box. - *Quelle*
-*Vergleich:* Insightly Webseite und Customer stories
-zeigen, dass *Integration von CRM+Projects* ein
+z.B. Terminierung dreier Rechnungen, Lieferantenbewertung – das kann Insightly nicht out-of-box. - _Quelle_
+_Vergleich:_ Insightly Webseite und Customer stories
+zeigen, dass _Integration von CRM+Projects_ ein
 Trend ist und uns mit unserem Plan auf einer Linie liegt.
 
 # Monday.com (Work OS mit CRM) : - Ansatz: Monday ist primär ein flexibles Work-Management, aber sie
@@ -1433,11 +1420,11 @@ Trend ist und uns mit unserem Plan auf einer Linie liegt.
 # Microsoft Dynamics 365 Project Operations: - Ansatz: Enterprise-level, deckt von Sales (via Dynamics
 
 komplexe Projekte (mit Aufwandserfassung, Finanzen, sogar Buchhaltung). Wenn wir z.B. ein größeres
-Unternehmen wären, wäre das eine Option. - *Schwächen:* Kosten und Implementierungsaufwand extrem
-hoch für KMU. Overkill für unsere Anforderungen. - *Dennoch relevant:* Es zeigt was möglich ist: komplette
-Integration in ERP. Unser Focus aber: keine technischen Arch. - *Differenzierung:* Wir wollen eine leichtere
+Unternehmen wären, wäre das eine Option. - _Schwächen:_ Kosten und Implementierungsaufwand extrem
+hoch für KMU. Overkill für unsere Anforderungen. - _Dennoch relevant:_ Es zeigt was möglich ist: komplette
+Integration in ERP. Unser Focus aber: keine technischen Arch. - _Differenzierung:_ Wir wollen eine leichtere
 Lösung, mit mehr Fokus auf Usability und genau unserem Scope, statt generischem ERP. Also unsere
-Chance: *Einfachheit und schnelle Einführung* . - *Trends:* Mit Dynamics kann man theoretisch auch IFRS etc.
+Chance: _Einfachheit und schnelle Einführung_ . - _Trends:_ Mit Dynamics kann man theoretisch auch IFRS etc.
 abbilden, aber wir brauchen das nicht.
 
 **Salesforce + PSA:** - Ähnlich Dynamics in Enterprise. - Würde erfüllen: CRM top notch, plus modul für
@@ -1452,8 +1439,8 @@ Funktion mit 20% Komplexität.
 Anforderungen ab: 360° Kontakt mgmt, Pipeline, Aufgaben, Projekte, Kollaboration. Zum Teil gibt es
 auch Integrationen für Rechnungen (Zoho Books). Sie sind **generisch** und müssen an Branche
 angepasst werden (custom fields, workflows). Unsere Ideallösung kennt von Haus aus die
-branchenspezifischen Workflows (z.B. *3-teilige Zahlungen* , *Ladenbau-spezifische Felder wie Ladenfläche,*
-*Eröffnungsdatum* etc.). Das ist ein Differenzierungsmerkmal: ein *vorkonfiguriertes Branchen-CRM-PM* .
+branchenspezifischen Workflows (z.B. _3-teilige Zahlungen_ , _Ladenbau-spezifische Felder wie Ladenfläche,_
+_Eröffnungsdatum_ etc.). Das ist ein Differenzierungsmerkmal: ein _vorkonfiguriertes Branchen-CRM-PM_ .
 **Usability:** Modern Tools (Monday, Insightly, Nimble) setzen stark auf Nutzerfreundlichkeit – bunte
 UI, Drag&Drop, mobile apps. Unsere Lösung sollte hier mithalten. Wir haben den Vorteil, dass wir
 unnötigen Ballast weglassen können, was die UI übersichtlicher macht für Nutzer.
@@ -1491,7 +1478,7 @@ so. Wir definieren Domänen, sodass Planer im CRM Infos finden, die sonst in ERP
 Materialwunsch des Kunden). Das cross-funktionale 360° (Vertrieb & Projekt & Finanzen) in einer Lösung ist
 auf dem Markt nicht häufig komplett abgedeckt. Tools wie Insightly nähern sich, aber z.B. Financials muss
 man an anderer Stelle machen. Unsere Vision umfasst ja zumindest grundlegende Finanz-Infos
-(Teilzahlungen etc.). *Marktzitat:* "Other CRMs that offer project management include Salesforce, Zoho,
+(Teilzahlungen etc.). _Marktzitat:_ "Other CRMs that offer project management include Salesforce, Zoho,
 Insightly, Dynamics 365"
 – aber oft mit Abstrichen in Integrationstiefe. Wir wollen schlank aber
 hochintegriert.
@@ -1505,21 +1492,22 @@ weiter geklärt oder im Projektverlauf besonders beachtet werden müssen:
 
 **1. Unklare Anforderungen / Detailfragen:**
 Einige Anforderungen konnten aus dem Kontext nur implizit abgeleitet werden und bedürfen Präzisierung:
+
 - **Umfang des Finanzmoduls:** Sollen im System auch Einkaufskosten, Margen etc. abgebildet werden? Oder
-nur Rechnungsstellung an Kunden? Aktuell fokussierten wir auf Ausgangsrechnungen. Falls Margen-
-Controlling gewünscht, müsste das ergänzt werden (und Anforderungen entsprechend angepasst). -
-**Rollen- und Rechtekonzept im Detail:** Wir wissen, welche Abteilungen es gibt, aber noch nicht, ob wirklich
-z.B. ein Vertriebsmitarbeiter *keine* Projekte sehen soll, die er nicht betreut, etc. Wahrscheinlich offene Kultur,
-aber abzustimmen (z.B. darf Innendienst Preise ändern ohne GF-Freigabe? Im Ist wohl ja, aber das System
-könnte Freigabeprozesse unterstützen – Bedarf abklären). - **Dritt-Systeme:** Gibt es ein vorhandenes
-Buchhaltungssystem (Datev oder ERP), mit dem wir *verbindlich* integrieren müssen? Im Interview erwähnte
-Systeme: DSGVO, GoBD, BITV, aber kein Wort zu existierender Software. Evtl. nutzt Buchhaltung Datev oder
-Lexware. Falls ja, Schnittstellen-Details sind offen (z.B. Import Stammkunden, Export Buchungen). -
-**Datenmigration:** Aus dem Kontext wissen wir nur von Ordnern und Excel-Listen. Offen: Müssen historische
-Daten (alte Projekte, Kundenlisten) ins neue System übernommen werden, oder Neustart? Diese
-Entscheidung beeinflusst Aufwand und Systemeinrichtung erheblich. - **Kapazitätsplanungstiefe:** Sollen
-Planer zeitlich genau geplant werden (z.B. Auslastung in Stunden), oder reicht qualitatives "hat viele
-Projekte parallel"? Der Kontext deutet an, man möchte Überblick, aber kein tiefes Ressourcenmanagement
+  nur Rechnungsstellung an Kunden? Aktuell fokussierten wir auf Ausgangsrechnungen. Falls Margen-
+  Controlling gewünscht, müsste das ergänzt werden (und Anforderungen entsprechend angepasst). -
+  **Rollen- und Rechtekonzept im Detail:** Wir wissen, welche Abteilungen es gibt, aber noch nicht, ob wirklich
+  z.B. ein Vertriebsmitarbeiter _keine_ Projekte sehen soll, die er nicht betreut, etc. Wahrscheinlich offene Kultur,
+  aber abzustimmen (z.B. darf Innendienst Preise ändern ohne GF-Freigabe? Im Ist wohl ja, aber das System
+  könnte Freigabeprozesse unterstützen – Bedarf abklären). - **Dritt-Systeme:** Gibt es ein vorhandenes
+  Buchhaltungssystem (Datev oder ERP), mit dem wir _verbindlich_ integrieren müssen? Im Interview erwähnte
+  Systeme: DSGVO, GoBD, BITV, aber kein Wort zu existierender Software. Evtl. nutzt Buchhaltung Datev oder
+  Lexware. Falls ja, Schnittstellen-Details sind offen (z.B. Import Stammkunden, Export Buchungen). -
+  **Datenmigration:** Aus dem Kontext wissen wir nur von Ordnern und Excel-Listen. Offen: Müssen historische
+  Daten (alte Projekte, Kundenlisten) ins neue System übernommen werden, oder Neustart? Diese
+  Entscheidung beeinflusst Aufwand und Systemeinrichtung erheblich. - **Kapazitätsplanungstiefe:** Sollen
+  Planer zeitlich genau geplant werden (z.B. Auslastung in Stunden), oder reicht qualitatives "hat viele
+  Projekte parallel"? Der Kontext deutet an, man möchte Überblick, aber kein tiefes Ressourcenmanagement
 
 (daher wurden Planer-KPIs qualitativ genannt
 ). Offene Frage: braucht man ggf. eine einfache
@@ -1528,8 +1516,9 @@ offline)
 , aber offene Frage: Welche Module offline? Nur Kontakte und Notizen, vermutlich ja. Dies ist
 eher tech, aber fachlich: Was macht der ADM, wenn offline? Vermutlich nur Notizen eingeben und
 bestehende Kundendaten einsehen. Das definieren hilft, Prioritäten zu setzen (z.B. kein offline Gantt nötig).
+
 - **Wording und UI-Language:** Deutsch vermutlich (da Nutzer deutsch). Aber falls mal Tochter in Ausland,
-Mehrsprachigkeit? Derzeit kein Hinweis, aber im Hinterkopf behalten.
+  Mehrsprachigkeit? Derzeit kein Hinweis, aber im Hinterkopf behalten.
 
 # Wir sollten diese Punkte früh mit Stakeholdern klären, um Missverständnisse zu vermeiden.
 
@@ -1539,11 +1528,11 @@ Ein CRM/PM-System steht und fällt mit der Nutzung durch alle Mitarbeiter. Risik
 nach Termin alles im System eintippen statt nur auf Papier). Gerade ältere Kollegen oder solche, die mit
 aktuellen manuellen Methoden gut klarkommen, könnten zögern. - **Unvollständige Dateneingabe:** Wenn
 z.B. ADMs Leads nicht einpflegen, Marketing aber auf System wartet, entstehen Lücken. Oder Planer
-aktualisieren Aufgaben nicht -> Status falsch. Um den *Single Source of Truth* zu erreichen, muss konsequent
+aktualisieren Aufgaben nicht -> Status falsch. Um den _Single Source of Truth_ zu erreichen, muss konsequent
 alles ins System – das ist eine Verhaltensänderung. - **Usability-Risiko:** Wenn die Oberfläche oder
 Arbeitsfluss nicht gut durchdacht sind, könnten Nutzer frustriert abspringen und wieder Schattenprozesse
 (Excel, Notizen) nutzen. Wir haben dem mit Usability-Anforderungen vorgebeugt, doch es bleibt ein Risiko.
-Schulung und ggf. Anpassungen nach User-Feedback werden nötig sein. - *Mitigierung:* Frühzeitige
+Schulung und ggf. Anpassungen nach User-Feedback werden nötig sein. - _Mitigierung:_ Frühzeitige
 Einbindung der Key-User in Entwicklung (um Akzeptanz zu erhöhen) und ausreichende Schulungen sind
 empfohlen
 . CRM-Einführung schlägt oft an Nutzerakzeptanz fehl – das ist uns bewusst und muss
@@ -1554,12 +1543,13 @@ gemanagt werden.
 # 4. Projektumfang-Ausweitung:
 
 **5. Technische Risiken, die fachlich relevant werden:**
+
 - **Integration Externer Software:** Wenn wir auf Standardsoftware setzen (z.B. anpassen statt eigen
-entwickeln), stellt sich die Frage, ob alle fachl. Anforderungen dort konfigurierbar sind. Bsp: vTiger Projekt-
-Modul – kann es 3-fache Rechnungen? Falls wir Limitierungen feststellen, müssten wir Workarounds
-erarbeiten (Risiko erhöhter Implementierungsaufwand). - **Datenschutz-Umsetzung:** Ein praktisches Risiko:
-Implementierung von "Recht auf Vergessenwerden". Evtl. sind wir rechtlich verpflichtet, Daten zu löschen,
-aber GoBD verpflichtet uns, bestimmte 10 Jahre zu behalten – da kann fachlicher Konflikt entstehen. Z.B. wir
+  entwickeln), stellt sich die Frage, ob alle fachl. Anforderungen dort konfigurierbar sind. Bsp: vTiger Projekt-
+  Modul – kann es 3-fache Rechnungen? Falls wir Limitierungen feststellen, müssten wir Workarounds
+  erarbeiten (Risiko erhöhter Implementierungsaufwand). - **Datenschutz-Umsetzung:** Ein praktisches Risiko:
+  Implementierung von "Recht auf Vergessenwerden". Evtl. sind wir rechtlich verpflichtet, Daten zu löschen,
+  aber GoBD verpflichtet uns, bestimmte 10 Jahre zu behalten – da kann fachlicher Konflikt entstehen. Z.B. wir
 
 sollten definieren, dass wir Personendaten pseudonymisieren statt komplett löschen in solchen Fällen
 (Kompromiss). Das ist sensibel – ein falscher Umgang (zu früh löschen oder gar nicht löschbar) wäre
@@ -1569,19 +1559,20 @@ Standardregeln). Wir müssen intern klären, wer diese Doku erstellt und pflegt 
 relevant.
 
 **6. Zeit- und Kostenschätzungen unklar:** (Zwar nicht rein fachlich, aber Planungs-Risiko) - Wir wissen noch
-nicht, ob die Stakeholder eher eine *konfigurierte Standardlösung* oder eine *Neuentwicklung* bevorzugen.
+nicht, ob die Stakeholder eher eine _konfigurierte Standardlösung_ oder eine _Neuentwicklung_ bevorzugen.
 Davon hängt vieles ab (Resourcen, Timeline). Fachlich würde Standard evtl. Kompromisse bei
 Anforderungen bedeuten, Neuentwicklung Risiko von Kinderkrankheiten. Dieses strategische
 Entscheidungsrisiko ist noch offen.
 
 **7. Branchenspezifische Besonderheiten, noch unbeleuchtet:**
+
 - Eventuell gibt es in Ladenbau spezielle Compliance (Arbeitsschutz-Doku? behördliche Genehmigungen?),
-die in Workflows eingeplant werden müssten. Wurde im Interview nicht erwähnt, aber z.B. Montage in
-Laden könnte mit Verantwortlichen und Abnahmen einhergehen. Sollten wir proaktiv prüfen, ob unser
-System dafür Felder braucht (z.B. "Abnahmeprotokoll hochladen" – haben wir generisch unter Dateien,
-okay). - Garantie-/Wartungsprozesse: Machen wir Ladenbau, gibt es evtl. Garantiefristen. Wollen wir z.B. 1
-Jahr nach Abschluss eine Erinnerung, dass alles okay ist (Kundenzufriedenheitsanruf)? Nicht erwähnt, aber
-könnte ein Nice-to-have Service sein.
+  die in Workflows eingeplant werden müssten. Wurde im Interview nicht erwähnt, aber z.B. Montage in
+  Laden könnte mit Verantwortlichen und Abnahmen einhergehen. Sollten wir proaktiv prüfen, ob unser
+  System dafür Felder braucht (z.B. "Abnahmeprotokoll hochladen" – haben wir generisch unter Dateien,
+  okay). - Garantie-/Wartungsprozesse: Machen wir Ladenbau, gibt es evtl. Garantiefristen. Wollen wir z.B. 1
+  Jahr nach Abschluss eine Erinnerung, dass alles okay ist (Kundenzufriedenheitsanruf)? Nicht erwähnt, aber
+  könnte ein Nice-to-have Service sein.
 
 Wir sollten diese Risiken transparent ansprechen und bei nächsten Schritten priorisieren, welche zu
 adressieren sind. Einige – v.a. Nutzerakzeptanz – können wir durch Change Management stark
@@ -1593,23 +1584,23 @@ Um das Konzept in Richtung Umsetzung weiter voranzubringen, sind **vertiefende R
 **Validierungen** in folgenden priorisierten Bereichen empfehlenswert:
 
 **Bereich 1: Benutzeranforderungen & Usability-Tests**
-*Fragen:* Wie arbeiten die Endanwender genau und wo sehen sie den größten Nutzen/Hürden? Welche UI-
+_Fragen:_ Wie arbeiten die Endanwender genau und wo sehen sie den größten Nutzen/Hürden? Welche UI-
 Designs werden von ihnen bevorzugt?
-*Empfehlung:* Durchführen von **Workshops mit den Persona-Gruppen** (ADM, Planer, Innendienst etc.), um
+_Empfehlung:_ Durchführen von **Workshops mit den Persona-Gruppen** (ADM, Planer, Innendienst etc.), um
 das Feinkonzept mit echten Nutzungsszenarien zu testen. Beispielsweise ein Klick-Dummy durchspielen
 lassen: Kann der ADM in 5 Minuten seinen Kundenbesuch dokumentieren? Was fehlt ihm? Besonders bei
 mobilen Use-Cases sollte tatsächliches Feedback eingeholt werden (evtl. mal ADM im Auto "simulieren").
 Dies verifiziert unsere Annahmen zu A3 (digitales Briefing), A4 (Task-Handling) etc.
-Zudem könnten *Usability-Best-Practices* für interne Tools tiefer recherchiert werden (aktuelle UI/UX Pattern
+Zudem könnten _Usability-Best-Practices_ für interne Tools tiefer recherchiert werden (aktuelle UI/UX Pattern
 für CRM, z.B. von Nielsen Norman Group oder Material Design guidelines). Ziel: Das UI so gestalten, dass
 Adoption erleichtert wird (z.B. Eingabe so weit wie möglich vor-ausfüllen, gamification-Elemente für CRM-
 Pflege vielleicht).
 
 **Bereich 2: Datenschutz & Compliance Details**
-*Fragen:* Wie genau muss z.B. eine GoBD-Verfahrensdoku aussehen? Welche technischen Maßnahmen sind
+_Fragen:_ Wie genau muss z.B. eine GoBD-Verfahrensdoku aussehen? Welche technischen Maßnahmen sind
 
 minimal erforderlich für DSGVO (z.B. Verschlüsselung, 2-Faktor Auth)?
-*Empfehlung:* Rücksprache mit einem **Datenschutzbeauftragten** bzw. Rechtsberater, um unser Konzept zu
+_Empfehlung:_ Rücksprache mit einem **Datenschutzbeauftragten** bzw. Rechtsberater, um unser Konzept zu
 validieren. Insbesondere der Mechanismus zur Datenlöschung (Pseudonymisierung vs. Löschen) muss
 abgenommen werden. Eine Checkliste "GDPR features every CRM must provide"
 haben wir bereits
@@ -1621,9 +1612,9 @@ Vertiefung minimiert Risiko späterer Beanstandungen.
 # Bereich 3: Technische Machbarkeit & Tool-Auswahl
 
 **Bereich 4: Detail-Konfiguration der Workflows**
-*Fragen:* Welche Felder genau brauchen wir pro Modul? Wie nennen wir Phasen? Welche Regeln (z.B.
+_Fragen:_ Welche Felder genau brauchen wir pro Modul? Wie nennen wir Phasen? Welche Regeln (z.B.
 Angebot muss genehmigt werden >50k€)?
-*Empfehlung:* Erstellen von **Field- und Workflow-Definitionsdokumenten** gemeinsam mit Key-Usern. Etwa:
+_Empfehlung:_ Erstellen von **Field- und Workflow-Definitionsdokumenten** gemeinsam mit Key-Usern. Etwa:
 Opportunity-Phase Definition Workshop – Ziel: Auf alle einigen, wann Phase wechselt und welche
 Wahrscheinlichkeit dran hängt (so wird Forecast belastbar). Ebenso für Projekt-Template: eine Sitzung mit
 Planern und Innendienst, um Standardaufgaben und Meilensteine festzulegen. Dies stellt sicher, dass das
@@ -1632,10 +1623,10 @@ Ergebnis könnte eine Art **Playbook** sein, das dann für Schulungen genutzt wi
 tun im System").
 
 **Bereich 5: Testlauf & Pilotierung**
-Nach Konzept-Finalisierung und ggf. Umsetzung in einem System, ist eine *Pilotphase* ratsam. Hier Fragen:
+Nach Konzept-Finalisierung und ggf. Umsetzung in einem System, ist eine _Pilotphase_ ratsam. Hier Fragen:
 Greifen alle Teile sauber ineinander? Tauchen unerwartete Lücken auf (z.B. "wir haben vergessen, dass wir
 zwei parallele Angebote pro Kunde manchmal haben!")?
-*Empfehlung:* Einen **Probebetrieb mit einem Projektteam** machen. Beispiel: Der nächste neu akquirierte
+_Empfehlung:_ Einen **Probebetrieb mit einem Projektteam** machen. Beispiel: Der nächste neu akquirierte
 Kunde wird komplett im System abgewickelt, parallel führen wir alt noch in Ordner falls was schief geht.
 Dabei beobachten: Wurden alle Infos gefunden? Hat jeder gewusst, was zu tun ist? Kamen widersprüchliche
 Daten?
@@ -1646,15 +1637,14 @@ fließen dann in Feinjustierung (vielleicht Felder hinzufügen, Reports anpassen
 **Bereich 6: Ausbaufähigkeit und Zukunftsideen validieren**
 Zwar sollen wir scope klein halten, aber ein Auge auf Zukunft: Falls das Unternehmen wächst oder neue
 
-
 ---
 
-*Page 41*
+_Page 41_
 
 ---
 
 Anforderungen (z.B. Service/Wartungsverträge) kommt, wie flexibel ist unser Modell?
-*Empfehlung:*
+_Empfehlung:_
 Mit Geschäftsführung durchgehen: Welche zukünftigen Geschäftsmodelle oder
 Organisationänderungen könnten kommen? (z.B. bieten wir später Wartung an? Dann bräuchten wir Ticket-
 System; oder expandieren wir geographisch? Dann Multi-Language/UI Zeitzonen?). Solche "was wäre
@@ -1672,10 +1662,9 @@ Feinkonzept sowie einen Implementierungsplan einfließen.
 
 # Quellen
 
-**Nimble Blog –** ***Expert Picks: 5 Best CRMs for Project Management*** (Gabrielle Lohr, Nimble, 9. Jan.
-2024) – *Übersichtsartikel zu CRM-Systemen mit Projektmanagement. Enthält Vorteile von CRM-PM-*
-*Integration und nennt Beispiele wie Nimble, Wrike, Monday, Insightly, vTiger. Relevant für Best Practices*
-*und Marktvergleich.*
+**Nimble Blog –** **_Expert Picks: 5 Best CRMs for Project Management_** (Gabrielle Lohr, Nimble, 9. Jan. 2024) – _Übersichtsartikel zu CRM-Systemen mit Projektmanagement. Enthält Vorteile von CRM-PM-_
+_Integration und nennt Beispiele wie Nimble, Wrike, Monday, Insightly, vTiger. Relevant für Best Practices_
+_und Marktvergleich._
 
 1.
 
@@ -1701,9 +1690,9 @@ Feinkonzept sowie einen Implementierungsplan einfließen.
 
 # 41
 
-**GoBD-Leitfaden –** ***Zentrale GoBD-Anforderungen*** (TeamDrive Whitepaper, 2023) – *Fasst deutsche*
-*GoBD-Grundsätze zusammen. Wichtig für uns: Unveränderbarkeit, Nachvollziehbarkeit und*
-*revisionssichere Archivierung elektronischer Belege.*
+**GoBD-Leitfaden –** **_Zentrale GoBD-Anforderungen_** (TeamDrive Whitepaper, 2023) – _Fasst deutsche_
+_GoBD-Grundsätze zusammen. Wichtig für uns: Unveränderbarkeit, Nachvollziehbarkeit und_
+_revisionssichere Archivierung elektronischer Belege._
 
 7.
 
@@ -1719,7 +1708,7 @@ Feinkonzept sowie einen Implementierungsplan einfließen.
 
 10.
 
-*186*
+_186_
 
 # Hinweis: Die firmeninternen Interview-Quellen (Nr. 3 und 6) sind nicht öffentlich, wurden aber als Basis aller
 
@@ -1753,13 +1742,12 @@ file://file-X2N7Fg6zoo5PYBYJFQ9SaR
 
 ### 42
 
-
-| 3 | 4 | 5 | 6 | 7 51 84 |  | 8 52 85 | 9 53 86 | 10 |  | 11 |  | 12 |  | 13 | 14 58 91 | 15 59 94 | 16 | 22 | 23 |  | 28 |  | 29 |  | 30 |  | 31 |  |  | 32 |  |  | 33 |  |  |  | 34 | 35 71 |  | 36 |  |  | 37 |  | 38 |  | 39 |  |  | 41 |  | 42 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 44 | 45 | 48 | 49 |  |  |  |  | 54 |  | 55 |  | 56 |  | 57 |  |  | 61 | 62 | 63 |  | 64 |  | 65 |  | 66 |  | 67 |  |  | 68 |  |  | 69 |  |  |  | 70 |  |  | 72 |  |  | 73 |  | 74 |  | 75 |  |  | 76 |  | 77 |
-| 78 | 79 | 80 | 81 |  |  |  |  | 87 |  | 88 |  | 89 |  | 90 |  |  | 95 | 96 | 97 |  | 98 |  | 99 |  | 100 |  | 101 |  |  | 102 |  |  |  | 103 |  |  | 104 |  | 105 |  |  | 106 |  | 1 | 07 | 1 | 08 |  | 109 |  |  | 110 |
-| 111 | 112 | 117 150 | 12 15 | 2 1 | 123 | 124 153 | 12 15 | 5 4 | 12 | 6 5 | 12 | 7 6 | 128 |  | 129 | 130 | 131 | 134 161 |  | 135 |  | 13 | 6 4 | 13 | 7 5 | 138 |  |  | 139 |  |  | 140 |  |  |  | 141 |  | 142 |  | 143 |  |  | 144 |  | 145 |  |  |  |  |  | 14 |  |
-| 148 | 149 |  |  |  | 152 |  |  |  | 15 |  | 15 |  | 157 |  | 158 | 159 | 160 |  |  | 163 |  | 16 |  | 16 |  | 166 |  |  | 167 |  |  | 168 |  |  |  | 169 |  | 172 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| 3   | 4   | 5       | 6     | 7 51 84 |     | 8 52 85 | 9 53 86 | 10  |     | 11  |     | 12  |     | 13  | 14 58 91 | 15 59 94 | 16  | 22      | 23  |     | 28  |     | 29  |     | 30  |     | 31  |     |     | 32  |     |     | 33  |     |     |     | 34  | 35 71 |     | 36  |     |     | 37  |     | 38  |     | 39  |     |     | 41  |     | 42  |
+| --- | --- | ------- | ----- | ------- | --- | ------- | ------- | --- | --- | --- | --- | --- | --- | --- | -------- | -------- | --- | ------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 44  | 45  | 48      | 49    |         |     |         |         | 54  |     | 55  |     | 56  |     | 57  |          |          | 61  | 62      | 63  |     | 64  |     | 65  |     | 66  |     | 67  |     |     | 68  |     |     | 69  |     |     |     | 70  |       |     | 72  |     |     | 73  |     | 74  |     | 75  |     |     | 76  |     | 77  |
+| 78  | 79  | 80      | 81    |         |     |         |         | 87  |     | 88  |     | 89  |     | 90  |          |          | 95  | 96      | 97  |     | 98  |     | 99  |     | 100 |     | 101 |     |     | 102 |     |     |     | 103 |     |     | 104 |       | 105 |     |     | 106 |     | 1   | 07  | 1   | 08  |     | 109 |     |     | 110 |
+| 111 | 112 | 117 150 | 12 15 | 2 1     | 123 | 124 153 | 12 15   | 5 4 | 12  | 6 5 | 12  | 7 6 | 128 |     | 129      | 130      | 131 | 134 161 |     | 135 |     | 13  | 6 4 | 13  | 7 5 | 138 |     |     | 139 |     |     | 140 |     |     |     | 141 |     | 142   |     | 143 |     |     | 144 |     | 145 |     |     |     |     |     | 14  |     |
+| 148 | 149 |         |       |         | 152 |         |         |     | 15  |     | 15  |     | 157 |     | 158      | 159      | 160 |         |     | 163 |     | 16  |     | 16  |     | 166 |     |     | 167 |     |     | 168 |     |     |     | 169 |     | 172   |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
 
 Can Your CRM Help You With GDPR Compliance? - Cookie Law Info
 
@@ -1785,7 +1773,7 @@ unterstützt
 . Alle relevanten Kundeninformationen und Projektdaten sollen zentral in einer Anwendung
 verfügbar sein, um eine 360°-Sicht auf jeden Kunden und jedes Projekt zu ermöglichen
 . Damit
-werden Vertriebsprozesse (CRM) und Projektabwicklung in *einem* System vereint, sodass die Übergabe vom
+werden Vertriebsprozesse (CRM) und Projektabwicklung in _einem_ System vereint, sodass die Übergabe vom
 Verkauf an die Umsetzung reibungslos verläuft und Doppelarbeit sowie Medienbrüche entfallen
 .
 
@@ -1794,7 +1782,6 @@ Verkauf an die Umsetzung reibungslos verläuft und Doppelarbeit sowie Medienbrü
 # Eine vollständige Anforderungsübersicht wurde erarbeitet, priorisiert in Muss-, Soll- und Kann-Kriterien.
 
 # Ein Marktvergleich zeigt, dass bereits Lösungen existieren, die CRM und Projektmanagement vereinen (z.B.
-
 
 schaffen wir eine 360°-Kundensicht und Projektsteuerung unter einem Dach, was die Effizienz steigert und
 langfristig Wettbewerbsvorteile bringt
@@ -1819,7 +1806,6 @@ bei denen gezielt passende Kunden eingeladen werden sollen
 
 # Compliance & Datenschutz: Da Kundendaten verarbeitet werden, muss das System DSGVO-konform sein.
 
-
 **Nutzer & Mehrsprachigkeit:** Die Hauptnutzer sind deutschsprachig, daher wird die erste Auslieferung auf
 Deutsch erfolgen. Das Systemdesign soll jedoch mehrsprachig ausgelegt sein, damit z.B. eine englische
 Version (für eventuell internationale Partner oder eine Expansion) ohne größere Umbauten bereitgestellt
@@ -1833,7 +1819,7 @@ voraussichtlich weiterhin in Deutsch sein, aber Feldnamen, Buttons etc. sollen l
 # 3. Personas
 
 **Außendienstmitarbeiter (ADM) – Vertrieb im Außendienst:**
-*Rolle & Aufgaben:* Der Außendienstmitarbeiter ist für die Akquise und Betreuung von Kunden vor Ort
+_Rolle & Aufgaben:_ Der Außendienstmitarbeiter ist für die Akquise und Betreuung von Kunden vor Ort
 zuständig. Er besucht neue und bestehende Kunden (Einzelhändler, Direktvermarkter etc.), führt
 Beratungsgespräche und verfolgt Angebote bis zum Abschluss. Er ist die zentrale Schlüsselpersona, die das
 CRM am intensivsten nutzen wird, da er die meisten Kundendaten zuerst erfasst und initiiert
@@ -1855,25 +1841,25 @@ Informationsübergaben, manuelle Ablage).
 
 # Ziele:
 
+_Pain Points:_
 
-*Pain Points:*
 - **Medienbrüche & Nacharbeit:** Er muss Notizen vom Papier erst später ins System übertragen
-(Doppelarbeit) und aktuelle Ordnerstrukturen pflegen. Das führt oft zu Verzögerungen und der Gefahr, dass
-Infos verlorengehen oder Kollegen sie nicht rechtzeitig erhalten
-.
+  (Doppelarbeit) und aktuelle Ordnerstrukturen pflegen. Das führt oft zu Verzögerungen und der Gefahr, dass
+  Infos verlorengehen oder Kollegen sie nicht rechtzeitig erhalten
+  .
 - **Unterwegs offline:** Schlechte Internetverbindung unterwegs erschwert den Zugriff auf digitale
-Informationen in Echtzeit. Aktuell hat er kein mobiles CRM – d.h. wichtige Daten stehen ihm unterwegs
-nicht direkt zur Verfügung, was z.B. spontane Kundenanfragen schwierig macht
-.
+  Informationen in Echtzeit. Aktuell hat er kein mobiles CRM – d.h. wichtige Daten stehen ihm unterwegs
+  nicht direkt zur Verfügung, was z.B. spontane Kundenanfragen schwierig macht
+  .
 - **Aufgaben-Flut:** Follow-Ups (z.B. versprochener Rückruf, Angebot nachfassen) muss er sich selbst merken
-oder separat notieren. Es fehlt ein systematisches Aufgabenmanagement; nichts darf „durchrutschen“
-.
+  oder separat notieren. Es fehlt ein systematisches Aufgabenmanagement; nichts darf „durchrutschen“
+  .
 - **Reporting-Druck:** Er muss intern Bericht erstatten (z.B. Pipeline, Besuchsberichte, Spesen). Ohne
-zentrales System bedeutet das viel manuellen Aufwand (Excel-Listen, Word-Berichte erstellen)
-.
+  zentrales System bedeutet das viel manuellen Aufwand (Excel-Listen, Word-Berichte erstellen)
+  .
 - **Vertriebsfokus vs. Doku:** Er möchte lieber verkaufen als dokumentieren. Wenn die CRM-Nutzung zu
-umständlich ist, könnte er sie umgehen
-.
+  umständlich ist, könnte er sie umgehen
+  .
 
 # Neue Bedürfnisse: Der ADM benötigt mobile, offline-fähige Funktionen – er will unterwegs Kundendaten
 
@@ -1881,23 +1867,23 @@ umständlich ist, könnte er sie umgehen
 
 # Ziele:
 
-
 aktuelle Grundrisse vom Planer oder auf Lieferzusagen der Partner. Ziel ist, dass er Kunden oder Kollegen
 unmittelbar Auskunft geben kann, ohne lange suchen zu müssen.
+
 - **Lieferantenmanagement:** Er pflegt Beziehungen zu verlässlichen Lieferanten. Ein Ziel ist, die Leistung
-der Partner einschätzen zu können (Termintreue, Qualität), um bei zukünftigen Projekten die besten
-auszuwählen. Daten wie Reklamationsraten sollen auswertbar sein
-.
+  der Partner einschätzen zu können (Termintreue, Qualität), um bei zukünftigen Projekten die besten
+  auszuwählen. Daten wie Reklamationsraten sollen auswertbar sein
+  .
 
 # Pain Points:
 
-*Neue Bedürfnisse:* Der Innendienst braucht ein **zentrales Aufgaben- und Projektmanagement-Tool** . Alle
-Vorgänge eines Projekts – von *“Lieferant ABC beauftragen”* über *“Montagetermin koordinieren”* bis *“Rechnung*
-*anstoßen”* – sollen im System geplant und mit Fristen versehen sein. Das System soll automatisch erinnern,
+_Neue Bedürfnisse:_ Der Innendienst braucht ein **zentrales Aufgaben- und Projektmanagement-Tool** . Alle
+Vorgänge eines Projekts – von _“Lieferant ABC beauftragen”_ über _“Montagetermin koordinieren”_ bis _“Rechnung_
+_anstoßen”_ – sollen im System geplant und mit Fristen versehen sein. Das System soll automatisch erinnern,
 wenn Fristen nahen oder überschritten werden
 . Außerdem wünscht sich der IDM ein **Projektcockpit** , in
 dem er auf einen Blick sieht: aktuelle Phase, nächste Meilensteine, offene Punkte, Status der Lieferungen.
-Besonders wichtig: eine Art *“Ampel”* für kritische Aufgaben (wenn z.B. ein Lieferant überfällig ist, wird das
+Besonders wichtig: eine Art _“Ampel”_ für kritische Aufgaben (wenn z.B. ein Lieferant überfällig ist, wird das
 Projekt gelb/rot markiert). Auch die teamübergreifende Kommunikation soll vereinfacht werden: ein
 Kommentar- oder Chat-System im Kontext eines Projekts wäre hilfreich, damit nicht alles per E-Mail laufen
 muss. **Zeiterfassung:** Der Innendienst stempelt derzeit seine Zeiten projektbezogen in TimeCard und muss
@@ -1910,85 +1896,85 @@ allen hinterlegten Daten, anstatt sie manuell zu schreiben.
 
 # Ziele:
 
-
 keine unrealistischen Entwürfe zu erstellen.
+
 - **Effiziente Zusammenarbeit:** Der Planer ist darauf angewiesen, rechtzeitig alle nötigen Inputs vom
-Vertrieb zu bekommen (Maße, Produktwünsche, Markenrichtlinien des Kunden). Ebenso will er dem
-Innendienst seine Ergebnisse (Pläne, Stücklisten) leicht verfügbar machen, damit diese weiterverwendet
-werden können.
+  Vertrieb zu bekommen (Maße, Produktwünsche, Markenrichtlinien des Kunden). Ebenso will er dem
+  Innendienst seine Ergebnisse (Pläne, Stücklisten) leicht verfügbar machen, damit diese weiterverwendet
+  werden können.
 - **Versionierung & Dokumentation:** Bei Änderungen (und die gibt es fast immer) möchte er nicht den
-Überblick verlieren. Sein Ziel ist, alle Planungsstände sauber zu dokumentieren, damit ersichtlich bleibt,
-welche Version freigegeben wurde.
+  Überblick verlieren. Sein Ziel ist, alle Planungsstände sauber zu dokumentieren, damit ersichtlich bleibt,
+  welche Version freigegeben wurde.
 - **Kapazitätsauslastung im Griff:** Planer arbeiten oft an mehreren Projekten parallel. Er wünscht sich
-Transparenz über seine eigene Aufgabenlast und die des Planungsteams insgesamt, um Prioritäten bei
-Engpässen klar zu kommunizieren.
+  Transparenz über seine eigene Aufgabenlast und die des Planungsteams insgesamt, um Prioritäten bei
+  Engpässen klar zu kommunizieren.
 
-*Pain Points:*
-- **Verteilte Arbeitsmittel:** Aktuell werden Zeichnungen in *pCon.planner* oder CAD-Programmen erstellt und
-dann als PDFs in Ordnern abgelegt. Es gibt kein zentrales Projektinformationssystem, in dem z.B. der
-aktuelle Grundriss für alle abrufbar wäre – stattdessen müssen Kollegen den Planer direkt fragen. Das
-kostet Zeit und birgt die Gefahr, dass mit veralteten Plänen gearbeitet wird.
+_Pain Points:_
+
+- **Verteilte Arbeitsmittel:** Aktuell werden Zeichnungen in _pCon.planner_ oder CAD-Programmen erstellt und
+  dann als PDFs in Ordnern abgelegt. Es gibt kein zentrales Projektinformationssystem, in dem z.B. der
+  aktuelle Grundriss für alle abrufbar wäre – stattdessen müssen Kollegen den Planer direkt fragen. Das
+  kostet Zeit und birgt die Gefahr, dass mit veralteten Plänen gearbeitet wird.
 - **Unklare Anforderungen zu Projektstart:** Nicht immer fließen alle vertrieblichen Infos strukturiert an den
-Planer. Wenn z.B. im Kundengespräch schon bestimmte Materialpräferenzen geäußert wurden, erfährt er
-das evtl. nur mündlich. Fehlende Infos führen zu Rückfragen und Verzögerungen.
+  Planer. Wenn z.B. im Kundengespräch schon bestimmte Materialpräferenzen geäußert wurden, erfährt er
+  das evtl. nur mündlich. Fehlende Infos führen zu Rückfragen und Verzögerungen.
 - **Keine formale Änderungsverfolgung:** Änderungen am Design oder in der Ausführung (z.B. Kunde
-wünscht kurzfristig anderes Dekor) werden nicht einheitlich erfasst. Dadurch können Missverständnisse
-auftreten, wer was beschlossen hat.
+  wünscht kurzfristig anderes Dekor) werden nicht einheitlich erfasst. Dadurch können Missverständnisse
+  auftreten, wer was beschlossen hat.
 - **Überlastungsspitzen:** Ohne Überblick über die Pipeline kann es passieren, dass mehrere Projekte
-gleichzeitig in die heiße Phase gehen und das kleine Planungsteam überlastet ist. Frühwarnindikatoren für
-solche Situationen fehlen aktuell.
+  gleichzeitig in die heiße Phase gehen und das kleine Planungsteam überlastet ist. Frühwarnindikatoren für
+  solche Situationen fehlen aktuell.
 
-*Neue Bedürfnisse:* Der Planer benötigt ein integriertes **Projekt-Repository** . Alle projektbezogenen Dateien –
+_Neue Bedürfnisse:_ Der Planer benötigt ein integriertes **Projekt-Repository** . Alle projektbezogenen Dateien –
 vom ersten Entwurf bis zu Fotos des fertigen Ladens – sollten im System versioniert und geordnet abgelegt
 sein, anstatt in einer losen Ordnerstruktur
 . So könnten z.B. der Innendienst oder Marketing jederzeit
 die aktuellen Pläne einsehen, ohne Rückfrage. Änderungen sollten dokumentiert werden (Wer hat wann
 was aktualisiert?), um Nachvollziehbarkeit zu garantieren. Für das **Projektmanagement** wünscht sich der
 Planer klare Meilensteine und Aufgabenlisten, damit er weiß, bis wann er welche Planungsleistungen
-liefern muss. Branchenüblich wäre ein *Phasenmodell* (Entwurf -> Werkplanung -> Fertigung -> Montage) mit
+liefern muss. Branchenüblich wäre ein _Phasenmodell_ (Entwurf -> Werkplanung -> Fertigung -> Montage) mit
 definierten Outputs je Phase
 . Das System sollte diese Struktur bereitstellen. Zudem ist eine
 **Kapazitätsplanung** hilfreich: Der Planer würde gerne sehen, wie viele Projektstunden ihm in den
 kommenden Wochen zugeteilt sind (ggf. visualisiert als Kalender oder Auslastungsbalken), um Engpässe zu
-erkennen. Mittelfristig erwartet er, dass er seine Projektzeiten nicht doppelt (im Planungsbericht *und* in
+erkennen. Mittelfristig erwartet er, dass er seine Projektzeiten nicht doppelt (im Planungsbericht _und_ in
 TimeCard) erfassen muss, sondern nur noch an einer Stelle – idealerweise direkt auf Aufgaben im Projekt.
 So kann er am Projektende einfach Bericht erstatten, ob der Planungsaufwand im Rahmen blieb.
 
 # Buchhaltung:
 
-
 prüfen. Die Buchhaltung arbeitet eng mit dem Steuerberater (Datev-Export) zusammen und verwaltet
 intern auch Personalabrechnungen etc., was aber außerhalb des CRM/PM-Scopes liegt (Lexware deckt dies
 ab).
 
-*Ziele:*
+_Ziele:_
+
 - **Rechtzeitige Rechnungsstellung:** Sicherstellen, dass alle vereinbarten Abschläge und Schlusszahlungen
-termingerecht in Rechnung gestellt werden, um den Cashflow des Unternehmens zu sichern
-. Das
-System soll automatische Hinweise geben, wann welche Rechnung fällig ist, statt dass der Vertrieb die
-Buchhaltung manuell erinnern muss
-.
+  termingerecht in Rechnung gestellt werden, um den Cashflow des Unternehmens zu sichern
+  . Das
+  System soll automatische Hinweise geben, wann welche Rechnung fällig ist, statt dass der Vertrieb die
+  Buchhaltung manuell erinnern muss
+  .
 - **Minimierung offener Posten:** Ziel ist, dass Kunden zügig zahlen und offene Forderungen nicht aus dem
-Ruder laufen. Die Buchhaltung möchte auf einen Blick sehen, welche Rechnungen überfällig sind, um
-Mahnungen auszulösen.
+  Ruder laufen. Die Buchhaltung möchte auf einen Blick sehen, welche Rechnungen überfällig sind, um
+  Mahnungen auszulösen.
 - **Transparenz der Projektfinanzen:** Alle projektrelevanten Kosten und Erlöse sollen im System
-nachvollziehbar sein. Die Buchhalterin will am Ende eines Projekts ohne manuelle Sammelarbeit sehen
-können, wie die Marge ausfällt (Angebot vs. tatsächliche Kosten).
+  nachvollziehbar sein. Die Buchhalterin will am Ende eines Projekts ohne manuelle Sammelarbeit sehen
+  können, wie die Marge ausfällt (Angebot vs. tatsächliche Kosten).
 - **Compliance & Dokumentation:** Steuerprüfungen sollen problemlos bestanden werden. Dazu müssen
-alle Rechnungen und Belege lückenlos dokumentiert und auf Knopfdruck abrufbar sein. Änderungen an
-finanzrelevanten Daten müssen historisiert werden
-(z.B. keine nachträgliche Manipulation von
-Rechnungen ohne Protokoll). Auch intern will sie eine saubere Trennung: Der Vertrieb soll z.B. Angebote
-erstellen können, aber Preise nicht ohne Rücksprache nachträglich ändern.
+  alle Rechnungen und Belege lückenlos dokumentiert und auf Knopfdruck abrufbar sein. Änderungen an
+  finanzrelevanten Daten müssen historisiert werden
+  (z.B. keine nachträgliche Manipulation von
+  Rechnungen ohne Protokoll). Auch intern will sie eine saubere Trennung: Der Vertrieb soll z.B. Angebote
+  erstellen können, aber Preise nicht ohne Rücksprache nachträglich ändern.
 
 # Pain Points:
 
 # Neue Bedürfnisse: Die Buchhaltung profitiert erheblich von einer engen Verzahnung zwischen CRM/PM-
 
-
 ---
 
-*Page 51*
+_Page 51_
 
 ---
 
@@ -2002,31 +1988,32 @@ würde solche Kennzahlen gern auch im CRM sehen, damit die Geschäftsführung di
 
 # Geschäftsführung (GF):
 
-*Ziele:*
+_Ziele:_
+
 - **Transparenz in Pipeline & Auftragslage:** Der GF möchte stets wissen, wie viele Leads und Opportunities
-im Rennen sind und wie hoch die Wahrscheinlichkeit ist, die Quartalsziele zu erreichen
-. Ebenso
-interessiert ihn der aktuelle Auftragsbestand und ob genügend Folgeprojekte in der Pipeline sind, um die
-Fertigungsteams auszulasten.
-- **Projektstatus-Kontrolle:** Für jedes wichtige Projekt will er bei Bedarf den Status abrufen können: *“Ist der*
-*neue Hofladen für Kunde X im Plan? Gibt es Risiken wegen Lieferverzug?”* . Idealerweise sieht er in einer
-Ampelübersicht alle Projekte mit ihrem Fortschritt und kann bei roten Ampeln nachfragen
-.
+  im Rennen sind und wie hoch die Wahrscheinlichkeit ist, die Quartalsziele zu erreichen
+  . Ebenso
+  interessiert ihn der aktuelle Auftragsbestand und ob genügend Folgeprojekte in der Pipeline sind, um die
+  Fertigungsteams auszulasten.
+- **Projektstatus-Kontrolle:** Für jedes wichtige Projekt will er bei Bedarf den Status abrufen können: _“Ist der_
+  _neue Hofladen für Kunde X im Plan? Gibt es Risiken wegen Lieferverzug?”_ . Idealerweise sieht er in einer
+  Ampelübersicht alle Projekte mit ihrem Fortschritt und kann bei roten Ampeln nachfragen
+  .
 - **Finanzielle Steuerung:** Die GF benötigt aktuelle Zahlen: Umsatz laufendes Jahr vs. Vorjahr, Kosten,
-Gewinn und Cashflow-Prognosen. Auch projektbezogene Profitabilität interessiert ihn – z.B. welche
-Projekttypen bringen hohe Margen, wo liegen häufig Überziehungen. Diese Daten möchte er ohne langes
-Zusammenstellen einsehen.
+  Gewinn und Cashflow-Prognosen. Auch projektbezogene Profitabilität interessiert ihn – z.B. welche
+  Projekttypen bringen hohe Margen, wo liegen häufig Überziehungen. Diese Daten möchte er ohne langes
+  Zusammenstellen einsehen.
 - **Strategische Entscheidungen stützen:** Er möchte anhand der Daten entscheiden können, wo investiert
-oder gegengesteuert wird. Etwa: lohnt es sich, in ein bestimmtes Kundensegment mehr Marketing zu
-stecken? Müssen Preise angepasst werden, weil mehrere Projekte nur mit geringer Marge abgeschlossen
-wurden? Hierzu braucht er verlässliche Auswertungen und Zeitvergleiche.
+  oder gegengesteuert wird. Etwa: lohnt es sich, in ein bestimmtes Kundensegment mehr Marketing zu
+  stecken? Müssen Preise angepasst werden, weil mehrere Projekte nur mit geringer Marge abgeschlossen
+  wurden? Hierzu braucht er verlässliche Auswertungen und Zeitvergleiche.
 
 # Pain Points:
 
 formlos (per Zuruf/E-Mail). Dadurch fehlt manchmal die Nachvollziehbarkeit, wer was genehmigt hat, was
 bei Fehlern problematisch sein kann.
 
-*Neue Bedürfnisse:* Für die GF ist ein **Management-Dashboard** unabdingbar. Dieses sollte übersichtlich die
+_Neue Bedürfnisse:_ Für die GF ist ein **Management-Dashboard** unabdingbar. Dieses sollte übersichtlich die
 wichtigsten KPIs anzeigen: Vertriebsstand (z.B. Summe Angebote und deren Wahrscheinlichkeit),
 Projektstatus (Ampel je Projekt, vielleicht gefiltert nach Größe), Finanzübersicht (Umsatz, offene Posten,
 Kostenstruktur). Sie möchte aus dem Dashboard bei Bedarf in Details springen können – etwa in die 360°-
@@ -2034,18 +2021,18 @@ Sicht eines bestimmten Kunden, um dessen komplette Historie und aktuelle Vorgän
 . Ein
 zentrales **Projektcontrolling-Modul** ist der GF besonders wichtig: Plan-/Ist-Vergleiche pro Projekt auf
 Knopfdruck, inklusive Visualisierungen der Abweichungen
-. So erkennt sie *“Projekt A hat 15% mehr*
-*Stunden verbraucht als geplant – warum?”* und kann Gegenmaßnahmen einleiten oder bei neuen Projekten
+. So erkennt sie _“Projekt A hat 15% mehr_
+_Stunden verbraucht als geplant – warum?”_ und kann Gegenmaßnahmen einleiten oder bei neuen Projekten
 andere Kalkulationsansätze wählen. Sie legt Wert darauf, dass das System **mehrsprachigkeitsfähig** ist –
 falls die Firma expandiert oder internationale Mitarbeiter einstellt, dürfen keine technischen Hürden
 bestehen (mehrsprachige UI und Dokumente). Optional möchte sie mittelfristig **Freigabeprozesse**
 definieren können, z.B. dass größere Rabattentscheidungen im System durch sie abgenickt werden müssen
 (aktuell vertraut sie dem Team hier, aber es soll eine Kontrollmöglichkeit geben)
 . Insgesamt erwartet
-der GF, dass das System zu einem *“Single Source of Truth”* für alle Geschäftsbereiche wird und so die
+der GF, dass das System zu einem _“Single Source of Truth”_ für alle Geschäftsbereiche wird und so die
 Abhängigkeit von personengebundenem Wissen reduziert. Er möchte nicht mehr Stunden aufwenden
-müssen, um sich anhand von separaten Listen zu *“verstehen, was hier los ist”* , sondern Informationen *schnell*
-*erfassen* können
+müssen, um sich anhand von separaten Listen zu _“verstehen, was hier los ist”_ , sondern Informationen _schnell_
+_erfassen_ können
 .
 
 # Marketing/Grafik:
@@ -2057,22 +2044,23 @@ müssen, um sich anhand von separaten Listen zu *“verstehen, was hier los ist�
 Projekt-Story zusammenzustellen. Fotos liegen auf dem Netzlaufwerk, technische Details beim Innendienst,
 Kundenzitate werden per E-Mail erfragt. Dieser Prozess ist mühsam und führt teils zu Verzögerungen, bis
 Material fertig wird.
-- **Segmentierung nur mit manuellen Listen:** Für Einladungen und Mailings führt Marketing Excel-Listen
-(z.B. aller Winzer-Kunden). Diese Listen aktuell zu halten, ist aufwändig – oftmals muss Marketing doch
-beim Vertrieb nachfragen, ob z.B. Kunde X noch aktiv ist oder wer zur Kategorie Y gehört.
-- **Kein Feedback-Loop:** Marketing erfährt derzeit nur sporadisch, ob aus einem Lead tatsächlich ein Auftrag
-wurde. Mangels CRM-Einblick kann sie den Erfolg einer Messe oder Kampagne kaum beziffern. Dadurch
-fällt eine gezielte Steuerung des Marketingbudgets schwer.
-- **Aufwand für Content-Erstellung:** Geschichten schreiben, Bilder bearbeiten etc. kostet viel Zeit. Wenn
-parallel drängende Aufgaben kommen (neue Angebote, Messevorbereitung), bleibt oft wenig Raum, die
-schönen Erfolgsgeschichten zu produzieren – obwohl sie fürs Branding wichtig wären.
 
-*Neue Bedürfnisse:* Das CRM-System soll Marketing in die Lage versetzen, **Zielgruppenlisten** einfach auf
-Basis der Kundendatenbank zu erstellen. Beispielsweise soll eine Abfrage möglich sein: *“Alle Kunden vom Typ*
-*Gärtnerei in einem Umkreis von 200 km”* – das System generiert eine Liste, ohne dass händisch Excel-Listen
+- **Segmentierung nur mit manuellen Listen:** Für Einladungen und Mailings führt Marketing Excel-Listen
+  (z.B. aller Winzer-Kunden). Diese Listen aktuell zu halten, ist aufwändig – oftmals muss Marketing doch
+  beim Vertrieb nachfragen, ob z.B. Kunde X noch aktiv ist oder wer zur Kategorie Y gehört.
+- **Kein Feedback-Loop:** Marketing erfährt derzeit nur sporadisch, ob aus einem Lead tatsächlich ein Auftrag
+  wurde. Mangels CRM-Einblick kann sie den Erfolg einer Messe oder Kampagne kaum beziffern. Dadurch
+  fällt eine gezielte Steuerung des Marketingbudgets schwer.
+- **Aufwand für Content-Erstellung:** Geschichten schreiben, Bilder bearbeiten etc. kostet viel Zeit. Wenn
+  parallel drängende Aufgaben kommen (neue Angebote, Messevorbereitung), bleibt oft wenig Raum, die
+  schönen Erfolgsgeschichten zu produzieren – obwohl sie fürs Branding wichtig wären.
+
+_Neue Bedürfnisse:_ Das CRM-System soll Marketing in die Lage versetzen, **Zielgruppenlisten** einfach auf
+Basis der Kundendatenbank zu erstellen. Beispielsweise soll eine Abfrage möglich sein: _“Alle Kunden vom Typ_
+_Gärtnerei in einem Umkreis von 200 km”_ – das System generiert eine Liste, ohne dass händisch Excel-Listen
 gepflegt werden müssen
 . Zudem sollte bei jedem Lead/Kunden hinterlegt sein, über welche **Quelle**
-er ins Unternehmen kam (z.B. *Leadquelle = “Messe Agrar 2025”* ). So kann später ausgewertet werden, wie
+er ins Unternehmen kam (z.B. _Leadquelle = “Messe Agrar 2025”_ ). So kann später ausgewertet werden, wie
 viele Aufträge aus welcher Quelle resultierten, um Marketingmaßnahmen besser zu bewerten
 . Für die
 Referenzaufbereitung wird erwartet, dass Marketing **Zugriff auf Projektdaten** hat – konkret: Ist ein Projekt
@@ -2084,7 +2072,7 @@ für Texte nutzen kann. Außerdem wünscht sich Marketing, dass **Dokumentvorlag
 werden: z.B. eine Angebots-PDF-Schablone, die sie einmal im Corporate Design gestaltet und die das CRM
 für alle Angebote verwendet. So ist sichergestellt, dass alle Kunden ein konsistentes Bild der Firma erhalten.
 Letztlich soll das CRM es Marketing erleichtern, ihren Erfolg intern darzustellen – etwa durch Berichte wie
-*“Anzahl neuer Leads pro Monat”* oder *“Opportunities nach Kampagne”* . Damit kann sie der GF belegen, welche
+_“Anzahl neuer Leads pro Monat”_ oder _“Opportunities nach Kampagne”_ . Damit kann sie der GF belegen, welche
 Aktivitäten sich lohnen.
 
 # 4. Fachliche Domänen
@@ -2109,7 +2097,6 @@ Tags erleichtern das Finden von Kunden für Marketing und Vertrieb.
 
 # Projektplanung & -durchführung: Dieses Modul bildet die operative Umsetzung der Aufträge ab.
 
-
 Vertrags-/Auftragswert, geplanter Start- und Endtermin, Projekttyp, zuständiger Projektleiter etc.)
 und Verknüpfungen (zugehöriges Angebot, verantwortliche Mitarbeiter, Lieferanten). Wichtig: Wenn
 das Projekt aus einer Opportunity generiert wurde, entfallen manuelle Doppeleingaben – alle
@@ -2118,13 +2105,13 @@ zentralen Infos sind schon vorhanden
 Vorlagen für typische Ladenbau-Projektstrukturen
 . Beispielsweise können Phasen definiert sein
 (Planung, Fertigung, Montage, Nachbereitung) mit jeweils standardisierten Aufgaben (z.B.
-*“Werkplanung erstellen”* ,
-*“Material bestellen”* ,
-*“Bauabnahme durchführen”* ). Diese Vorlagen
+_“Werkplanung erstellen”_ ,
+_“Material bestellen”_ ,
+_“Bauabnahme durchführen”_ ). Diese Vorlagen
 beschleunigen die Planung, sind aber anpassbar. Jeder Aufgabe wird ein Verantwortlicher (Benutzer
 oder Rolle) und ein Fälligkeitsdatum zugewiesen. Abhängigkeiten können eingestellt werden (z.B.
 Aufgabe “Möbel bestellen” muss spätestens 8 Wochen vor Montage erledigt sein) – das System soll
-den Planer warnen, falls Termine kollidieren oder *“Deadline verpasst!”* -Situationen drohen
+den Planer warnen, falls Termine kollidieren oder _“Deadline verpasst!”_ -Situationen drohen
 . Die
 Visualisierung kann über Gantt-Charts oder Kanban-Boards erfolgen, ist aber in erster Linie
 zweckmäßig (für KMU ausreichend ist oft eine sortierbare Aufgabenliste mit Ampel-Status).
@@ -2187,7 +2174,7 @@ angenommen, dass Stammdaten (Kunden, ggf. Artikel) und Bewegungsdaten (Rechnunge
 Zahlungen) regelmäßig mit Lexware synchronisiert werden
 . So bleiben beide Systeme
 konsistent, ohne dass z.B. die Debitoren doppelt gepflegt werden müssen. Insgesamt liefert das
-Finanzmodul jene Transparenz, die bisher fehlte: Es zeigt dem Team *während* des Projektverlaufs, ob
+Finanzmodul jene Transparenz, die bisher fehlte: Es zeigt dem Team _während_ des Projektverlaufs, ob
 man im Plan ist, und erlaubt der GF im Nachgang eine fundierte Bewertung jedes Auftrags.
 
 # Auswertungen & Reporting: Dieses Modul bietet flexible Abfragen und Dashboards für alle
@@ -2208,14 +2195,14 @@ erkennen (z.B. Überlast eines Teams anhand der Aufgabenverteilung).
 
 # 5. Anforderungen
 
-Nachfolgend sind alle identifizierten Anforderungen zusammengefasst und nach Priorität eingestuft. *Muss* -
+Nachfolgend sind alle identifizierten Anforderungen zusammengefasst und nach Priorität eingestuft. _Muss_ -
 
-Kriterien sind essentielle Funktionen, *Soll* -Kriterien wichtige aber notfalls aufschiebbare Erweiterungen, und
-*Kann* -Kriterien optionale Nice-to-have-Features.
+Kriterien sind essentielle Funktionen, _Soll_ -Kriterien wichtige aber notfalls aufschiebbare Erweiterungen, und
+_Kann_ -Kriterien optionale Nice-to-have-Features.
 
 **Muss-Kriterien (Priorität 1):**
 
-*Zentrale Kontaktverwaltung:* Eine gemeinsame Datenbank für alle Kunden, Interessenten und
+_Zentrale Kontaktverwaltung:_ Eine gemeinsame Datenbank für alle Kunden, Interessenten und
 Lieferanten mit vollständigen Stammdaten. Jeder neue Kontakt wird auf Dubletten geprüft, um
 redundante Einträge zu vermeiden
 . Pro Kunde sollen alle zugehörigen Personen und
@@ -2233,22 +2220,20 @@ Aktivitäten, Opportunities, Projekte und Dokumente des Kunden übersichtlich an
 
 # 14
 
-*Aufgaben- und Kapazitätsmanagement:* Zentrales Aufgabenmodul mit persönlichen To-Do-Listen für
+_Aufgaben- und Kapazitätsmanagement:_ Zentrales Aufgabenmodul mit persönlichen To-Do-Listen für
 Mitarbeiter (filterbar nach Projekt, Priorität, Fälligkeit). Aufgaben können einander zugeordnet sein
 (Abhängigkeiten) und erzeugen Benachrichtigungen bei Fristüberschreitung. Eine Übersicht der
 Ressourcenauslastung zeigt an, wer wie vielen Aufgaben/Projekten zugeteilt ist (zur Not per Ampel:
 grün = Luft, rot = Überlast). Dieses Feature ist für MVP rudimentär ausreichend, kann aber
 ausgebaut werden.
 
-
-*Lieferanten- und Bestellmanagement:* Verwaltung aller Lieferantenstammdaten. Möglichkeit, pro
+_Lieferanten- und Bestellmanagement:_ Verwaltung aller Lieferantenstammdaten. Möglichkeit, pro
 Projekt externe Bestellungen zu erfassen: Welche Leistung wurde bei welchem Lieferanten zu
 welchem Termin beauftragt. Das System soll Liefertermine überwachen und erinnern, falls
 Lieferungen überfällig sind. Verknüpfung von Lieferanten mit Projekten (Historie) und ggf.
-Bewertung (z.B. *Lieferzuverlässigkeit* als Kennzahl).
+Bewertung (z.B. _Lieferzuverlässigkeit_ als Kennzahl).
 
-
-*Finanzmodul (Rechnungen & Controlling):* Integration eines Projektcontrollings mit laufendem Soll/Ist-
+_Finanzmodul (Rechnungen & Controlling):_ Integration eines Projektcontrollings mit laufendem Soll/Ist-
 Vergleich. **Rechnungsstellung:** Hinterlegung von Zahlungsplänen je Projekt (Termin und Betrag/
 Prozentsatz) und Ausgabe von Aufgaben/Alerts an die Buchhaltung, wenn eine Rechnung fällig wird
 . Erstellung von Rechnungen (als PDF) aus dem System oder Erfassung bereits gestellter
@@ -2270,7 +2255,7 @@ wird pro Projekt gespeichert.
 
 # 15
 
-*Usability & Performance:* Das System muss eine intuitive, aufgeräumte Benutzeroberfläche bieten, die
+_Usability & Performance:_ Das System muss eine intuitive, aufgeräumte Benutzeroberfläche bieten, die
 auf die unterschiedlichen Nutzergruppen abgestimmt ist (z.B. vereinfachte mobile Ansicht für
 ADMs). Kurze Ladezeiten und flüssige Interaktion auch bei größeren Datenmengen (1000+ Kunden,
 100+ Projekte) sind Voraussetzung. Funktionen wie Schnellsuche, Filter, Inline-Bearbeitung,
@@ -2278,9 +2263,8 @@ Drag&Drop (für Aufgaben) werden erwartet, um den Arbeitsaufwand gering zu halte
 sollte “einfach funktionieren”, damit die Mitarbeiter sie gerne nutzen und nicht als Belastung
 empfinden.
 
-
-*Compliance & Sicherheit:* Umsetzung der DSGVO-Anforderungen (z.B. Recht auf Vergessen:
-Möglichkeit, einen Kunden auf *“inaktiv/anonymisiert”* zu setzen, ohne historische Berichte zu
+_Compliance & Sicherheit:_ Umsetzung der DSGVO-Anforderungen (z.B. Recht auf Vergessen:
+Möglichkeit, einen Kunden auf _“inaktiv/anonymisiert”_ zu setzen, ohne historische Berichte zu
 verfälschen). GoBD-konforme Archivierung aller steuerlich relevanten Daten (Änderungslog,
 Unveränderbarkeit von Rechnungen nach Faktura etc.)
 . Rollenbasierte Datenzugriffskontrollen
@@ -2290,7 +2274,7 @@ Muss-Kriterien im Hintergrund.
 
 # Soll-Kriterien (Priorität 2):
 
-*Mehrsprachigkeit:* Unterstützung mehrerer UI-Sprachen. Deutsch ist primär, aber das System soll auf
+_Mehrsprachigkeit:_ Unterstützung mehrerer UI-Sprachen. Deutsch ist primär, aber das System soll auf
 Englisch (und ggf. weiteren Sprachen) umschaltbar sein
 . Dies umfasst Menüs, Fehlermeldungen,
 Feldbezeichnungen etc. – Dateninhalte (Notizen) werden nicht automatisch übersetzt.
@@ -2299,8 +2283,7 @@ Erweiterungen und internationale Mitarbeiter wünschenswert.
 
 # Erweiterte Ressourcenplanung: Graphische Darstellung der Auslastung pro Mitarbeiter (z.B. Kalender-
 
-
-*Freigabe-Workflows:*
+_Freigabe-Workflows:_
 Einrichtung von Genehmigungsprozessen für bestimmte Aktionen.
 Beispielsweise könnte ein Rabatt über X % automatisch einen Genehmigungsrequest an den
 Vertriebsleiter oder GF schicken. Solche Workflows erhöhen die Kontrolle, sind derzeit aber kein
@@ -2310,12 +2293,10 @@ um bei Bedarf aktiviert werden zu können
 
 # Zeitwirtschaft-Integration: Falls die direkte Zeiterfassung im CRM zum Start noch nicht voll entwickelt
 
-
-*Schnittstelle Finanzbuchhaltung (erweitert):* Über die Muss-Schnittstelle hinaus könnte eine *tiefere*
+_Schnittstelle Finanzbuchhaltung (erweitert):_ Über die Muss-Schnittstelle hinaus könnte eine _tiefere_
 Integration mit Lexware umgesetzt werden. Im Soll-Fall werden z.B. Kundenstammdaten synchron
 gehalten (Neukunden im CRM werden automatisch in Lexware angelegt, und umgekehrt) und
 Zahlungseingänge aus Lexware in das CRM zurückgemeldet. So hätten Vertrieb/PM stets aktuelle
-
 
 Zahlungsinformationen, ohne in Lexware nachsehen zu müssen
 . Auch ein Abgleich der
@@ -2323,8 +2304,7 @@ Artikelstammdaten oder von Kostenstellen wäre denkbar, falls relevant.
 
 # Outlook/Exchange-Integration: Synchronisation von Kalender und E-Mails mit dem System. Z.B.
 
-
-*Mobile Erweiterungen:*
+_Mobile Erweiterungen:_
 Nutzung spezieller Handy-Funktionen. Z.B.
 **Spracherkennung**
 für
@@ -2336,17 +2316,15 @@ Projektakte), sind aber nicht kriegsentscheidend zum Start und können schrittwe
 
 # Erweiterte Auswertungen & BI: Zusätzlich zu den Standardberichten könnten tiefergehende Analysen
 
-
 **Kann-Kriterien (Nice-to-have, Zukunft):**
 
-*Kundenportal:* Ein Self-Service-Portal, in dem Kunden z.B. den Projektfortschritt verfolgen oder
+_Kundenportal:_ Ein Self-Service-Portal, in dem Kunden z.B. den Projektfortschritt verfolgen oder
 Supportanfragen stellen können, ist eine mögliche zukünftige Ergänzung. Aktuell wurde so ein
 Portal nicht gefordert, da die Kunden eher telefonisch betreut werden. Perspektivisch – etwa bei
 einem wachsenden Servicegeschäft – könnte es aber sinnvoll sein, Tickets oder Wartungsanfragen
 online zu erfassen.
 
-
-*Service-/Wartungsmodul:* Sollte das Unternehmen in Zukunft auch Service-Leistungen nach
+_Service-/Wartungsmodul:_ Sollte das Unternehmen in Zukunft auch Service-Leistungen nach
 Projektabschluss anbieten (Wartungsverträge, Reparaturservice), könnte ein Modul für
 Vorgangsverwaltung/Tickets implementiert werden. Derzeit liegt der Fokus jedoch auf
 Neuprojekten; Servicefälle werden ad-hoc gelöst. Dennoch sollte die Architektur offen dafür sein,
@@ -2355,14 +2333,12 @@ später ein solches Modul zu integrieren (z.B. Ticket-Entity mit Bezug auf Kunde
 
 # Erweiterte KI-/Automationsfeatures: Denkbar, aber nicht konkret geplant, sind KI-gestützte Funktionen
 
-
-*Gamification-Elemente:* Zur Motivation der Nutzer ließen sich spielerische Elemente einführen, z.B. ein
+_Gamification-Elemente:_ Zur Motivation der Nutzer ließen sich spielerische Elemente einführen, z.B. ein
 Punkte-System für erledigte Aufgaben oder ein Vertriebs-Leaderboard. Dies kann helfen, die
-
 
 ---
 
-*Page 61*
+_Page 61_
 
 ---
 
@@ -2393,7 +2369,7 @@ hochgeladen und der jeweiligen Kundenakte (oder Projektakte) zugeordnet werden. 
 muss entscheiden, welche historischen Daten wirklich migriert werden (z.B. Kundenstammdaten der letzten
 10 Jahre, aber Protokolle vielleicht nur der letzten 3 Jahre)
 . Diese Entscheidung beeinflusst Aufwand und
-Systemeinrichtung erheblich. Wichtig ist, frühzeitig *Datenbereinigung* zu betreiben – etwa einheitliche
+Systemeinrichtung erheblich. Wichtig ist, frühzeitig _Datenbereinigung_ zu betreiben – etwa einheitliche
 Schreibweisen herzustellen und veraltete Datensätze (z.B. Karteileichen) auszusondern, bevor sie ins neue
 System gelangen. So startet das CRM mit einem konsistenten, aktuellen Datenstamm. Nach der Migration
 (idealerweise testweise in einer Sandbox und dann produktiv) sollten Alt-Systeme in den Nur-Lese-Modus
@@ -2402,6 +2378,7 @@ diesem Prozess (fehlgeschlagene Zuordnungen, Zeichensatzprobleme, Dubletten) mü
 ggf. manuelle Nachkorrektur aufgefangen werden.
 
 **Datenimport/Export (Laufender Betrieb):** Neben der initialen Migration ist Import/Export eine **laufende Funktion** für den täglichen Betrieb, nicht nur eine einmalige Migrationsfunktion:
+
 - **Kundenimport:** PLAN/ADM/GF können jederzeit Kunden aus Excel/CSV-Dateien importieren mit automatischer/manueller Feldzuordnung, Validierung, Duplikatsprüfung und Fehlerbehandlung. Nützlich für: Bulk-Kundenimporte (z.B. aus Marketing-Kampagnen), Datenaktualisierungen von externen Quellen, Migration zusätzlicher Datenbestände.
 - **Kontaktprotokoll-Import:** PLAN/ADM/GF können Word-Dokumente mit tabellarischen Kontaktprotokollen importieren. Das System extrahiert Tabellen, parst verschiedene Datumsformate (mit Fallback auf manuelle Eingabe), ordnet Protokolle Kunden zu und validiert die Daten. Nützlich für: Import historischer Protokolle, regelmäßige Protokoll-Importe von externen Quellen, Migration zusätzlicher Protokoll-Datenbestände.
 - **Datenexport:** PLAN/ADM/GF/BUCH können jederzeit Daten exportieren (CSV/Excel/JSON/DATEV für Kunden, CSV/Excel/Word/JSON für Protokolle) mit Feldauswahl, Datumsbereichs-Filterung und RBAC-Berechtigungen. Nützlich für: Backups, DSGVO-Exporte, DATEV-Integration (Lexware), Datenanalyse in externen Tools, Audit-Trails.
@@ -2416,7 +2393,7 @@ bei Rabatt über 10%), löst das System diesen jetzt aus: Der Vertriebsleiter er
 prüft das Angebot online und gibt es per Klick frei. Sobald freigegeben, kann der Innendienst das Angebot
 direkt per E-Mail aus dem CRM an den Kunden senden (das System nutzt die hinterlegte E-Mail-Vorlage,
 fügt das PDF an und protokolliert den Versand). Nach Versand wird automatisch eine Wiedervorlage gesetzt
-(z.B. *“in 7 Tagen nachfassen”* ), die im Aufgabenmodul des ADM erscheint. Sollte der Kunde rückfragen oder
+(z.B. _“in 7 Tagen nachfassen”_ ), die im Aufgabenmodul des ADM erscheint. Sollte der Kunde rückfragen oder
 Änderungen wünschen, versioniert der Innendienst das Angebot und schickt eine überarbeitete Fassung –
 alles immer nachvollziehbar im System. Im Erfolgsfall wandelt er das Angebot per Klick in ein Projekt um,
 was die Basisdaten überträgt (Kunde, Angebotssumme, Kurzbeschreibung etc.). Insgesamt wird der
@@ -2426,12 +2403,12 @@ transparenter, was eine wichtige Grundlage für mehr Abschlüsse ist.
 **Projektabwicklung und Controlling-Prozess:** Nach Auftragsgewinn startet der definierte Projektworkflow.
 **Projektplanung:** Der Innendienst überprüft bzw. ergänzt die automatisch erzeugte Projektakte. Er legt das
 Projektteam fest (zuständige Planer, Monteur-Teamleiter, etc.) und passt den generierten Phasen- und
-Aufgabenplan an. Beispielsweise definiert er konkrete Termine: *Montage geplant vom 10.05. bis 12.05.* ,
-*Lieferant X liefert am 08.05.* etc. Das System erinnert an diese Meilensteine (bzw. warnt, wenn bis Stichtag die
+Aufgabenplan an. Beispielsweise definiert er konkrete Termine: _Montage geplant vom 10.05. bis 12.05._ ,
+_Lieferant X liefert am 08.05._ etc. Das System erinnert an diese Meilensteine (bzw. warnt, wenn bis Stichtag die
 Lieferung nicht als “erledigt” markiert ist). Wöchentliche Team-Meetings können anhand der
 Projektübersicht gestaltet werden – man sieht dort alle Projekte und ggf. rote Ampeln, wo Handlungsbedarf
 besteht. **Leistungserfassung:** Parallel starten die Mitarbeiter ihre Stunden auf das Projekt zu buchen. Ein
-Planer sieht z.B. die Aufgabe *“Detailplanung durchführen”* , erledigt diese und gibt an: 20 Stunden investiert
+Planer sieht z.B. die Aufgabe _“Detailplanung durchführen”_ , erledigt diese und gibt an: 20 Stunden investiert
 (ggf. verteilt über 2 Wochen). Das System summiert diese Stunden und bewertet sie mit dem hinterlegten
 Kostensatz – so steigen die Ist-Personalkosten im Projektcontrolling modulweise an. Dasselbe passiert mit
 Eingangsrechnungen: Die Buchhaltung erfasst z.B. die Schreiner-Rechnung über 50.000€ im System und
@@ -2440,26 +2417,26 @@ kalkulierten Wert “Schreinerkosten = 45.000€“ und sieht nun Ist = 50.000�
 z.B. rot (Überschreitung). Der GF oder Projektleiter kann dies in Echtzeit sehen und würde ggf.
 nachverhandeln oder Sparmaßnahmen anstoßen. **Projekt-Durchführung & Kollaboration:** Während der
 Umsetzung aktualisieren alle Beteiligten den Fortgang: Der Planer lädt seine finalen Pläne hoch und
-markiert *“Werkplanung abgeschlossen”* . Der Außendienst ergänzt vielleicht einen Kommentar nach einem
+markiert _“Werkplanung abgeschlossen”_ . Der Außendienst ergänzt vielleicht einen Kommentar nach einem
 Baustellenbesuch. Die Monteure schicken über die mobile App ein Foto der fertig montierten Einrichtung,
 das der Innendienst direkt dem Projekt anhängen kann. Bei Unklarheiten oder Problemen kann im
 Projektraum diskutiert werden (statt in untransparenten E-Mail-Threads). **Rechnungsstellung &**
-**Nachkalkulation:** Erreicht ein Projekt einen Rechnungsmeilenstein (z.B. *“50% nach Lieferung”* ), generiert
-das System automatisch eine Aufgabe *“Rechnung 2 stellen: 50.000 € fällig zum 15.05.”* für die Buchhaltung
+**Nachkalkulation:** Erreicht ein Projekt einen Rechnungsmeilenstein (z.B. _“50% nach Lieferung”_ ), generiert
+das System automatisch eine Aufgabe _“Rechnung 2 stellen: 50.000 € fällig zum 15.05.”_ für die Buchhaltung
 . Diese erstellt die Rechnung in Lexware (oder direkt aus dem CRM) und markiert sie als gesendet.
-Sobald die Zahlung eingeht, wird der *Ist-Erlös* im Projekt aktualisiert. Nach Abschluss des Projekts erstellt
+Sobald die Zahlung eingeht, wird der _Ist-Erlös_ im Projekt aktualisiert. Nach Abschluss des Projekts erstellt
 die Buchhaltung den Nachkalkulationsreport: Das System listet Plan vs. Ist für Erlöse und Kosten auf, zeigt
-z.B. *+5.000 € Mehrumsatz durch Zusatzauftrag, -7.000 € Mehrkosten Schreiner* etc. Die Marge wird mit dem
+z.B. _+5.000 € Mehrumsatz durch Zusatzauftrag, -7.000 € Mehrkosten Schreiner_ etc. Die Marge wird mit dem
 ursprünglich kalkulierten Wert verglichen. Dieser Report wird im Projekt abgelegt und in einem
-Abschlussmeeting besprochen – etwaige Lehren (z.B. *“Schreinerkosten künftig höher ansetzen”* ) können als
-Kommentar erfasst werden. Gemäß Best Practice sollte *jedes* Projekt so ausgewertet werden
+Abschlussmeeting besprochen – etwaige Lehren (z.B. _“Schreinerkosten künftig höher ansetzen”_ ) können als
+Kommentar erfasst werden. Gemäß Best Practice sollte _jedes_ Projekt so ausgewertet werden
 , was durch
 die Software erstmals praktikabel wird (früher wurde das nur bei Problemprojekten gemacht, weil es
 manuell sehr aufwendig war). Der Controlling-Prozess ist damit nahtlos in den Projektworkflow integriert.
 
 # Benutzerverwaltung, Rechte & Freigaben: Die Einführung des Systems bringt auch neue Abläufe in der
 
-Benutzerkonto im CRM an. Er ordnet diesem eine Rolle zu (z.B. *Außendienst* ), woraufhin das System
+Benutzerkonto im CRM an. Er ordnet diesem eine Rolle zu (z.B. _Außendienst_ ), woraufhin das System
 automatisch die vordefinierten Rechte dieser Rolle zuweist. Der Mitarbeiter erhält initiale Zugangsdaten
 und muss beim ersten Login sein Passwort ändern. Ändert sich die Abteilungszugehörigkeit eines Nutzers
 (z.B. Innendienst-Mitarbeiter wechselt in Vertrieb), passt der Admin einfach die Rolle an – das System
@@ -2472,16 +2449,16 @@ Matrix festgelegt. Das System protokolliert Rechteänderungen, um im Nachhinein 
 können, falls etwa jemand unbefugt Zugriff hatte (was vermieden werden soll). **Genehmigungs-**
 **Workflows:** Wenn eine Regelverletzung droht (z.B. Rabatt >10%), löst das System einen vordefinierten
 Freigabeprozess aus. Im Beispiel
-*Rabatt >10%* : Der zuständige Verkaufsleiter/GF erhält eine
+_Rabatt >10%_ : Der zuständige Verkaufsleiter/GF erhält eine
 Benachrichtigung mit Angebotsdetails und klickt auf “Freigeben” oder “Ablehnen”. Der ADM sieht im
-Angebot den Status *“Warten auf Freigabe”* und wird benachrichtigt, sobald genehmigt. Bei Ablehnung kann
+Angebot den Status _“Warten auf Freigabe”_ und wird benachrichtigt, sobald genehmigt. Bei Ablehnung kann
 ein Kommentar (Grund) hinterlegt werden. Alle Aktionen werden im Angebot vermerkt (wer hat wann
 genehmigt/abgelehnt). Dieser Prozess ersetzt formloses Abnicken per Telefon und schafft
 Nachvollziehbarkeit. Da das Unternehmen aktuell kurze Entscheidungswege hat, können solche Workflows
 anfangs deaktiviert bleiben – aber die Infrastruktur ist vorhanden, falls die Organisation wächst oder Audits
 es erfordern. **Benutzer-Support & Governance:** Der Admin behält den Überblick über Login-Aktivitäten,
 kann Passwörter zurücksetzen und Nutzer sperren (z.B. beim Austritt). Regelmäßige Rechte-Audits (z.B. 1x
-jährlich Überprüfung, ob Rechte noch passen) sind empfohlen, um *Least Privilege* sicherzustellen. Insgesamt
+jährlich Überprüfung, ob Rechte noch passen) sind empfohlen, um _Least Privilege_ sicherzustellen. Insgesamt
 wird durch diese Mechanismen eine sichere, aber flexible Zusammenarbeit ermöglicht, die sich an
 veränderte Organisationsstrukturen schnell anpassen lässt.
 
@@ -2496,7 +2473,7 @@ Klasse **Dynamics 365** mit Project Operations und **Salesforce** mit PSA-Add-on
 bestätigen, dass unser Grundkonzept State-of-the-Art ist. Die meisten decken die Kernfunktionen ab – von
 Kontaktverwaltung über Sales-Pipeline bis zu Aufgaben- und Projektlisten
 . So wirbt Insightly z.B.
-damit: *“Work and win deals, then manage those projects – all in the same tool”*
+damit: _“Work and win deals, then manage those projects – all in the same tool”_
 , was exakt unserem Ziel
 entspricht.
 
@@ -2504,23 +2481,22 @@ entspricht.
 
 # Funktionsabgleich: Unsere Anforderungen entsprechen in vielen Punkten dem, was bekannte CRM/PM-
 
-| 100 |  | 101 |  |
+| 100 |     | 101 |     |
 | --- | --- | --- | --- |
-| ol” | 13 |  | , |
+| ol” | 13  |     | ,   |
 
 Außendienst. **Differenzierung:** Einige Bereiche gehen über das hinaus, was typische KMU-Lösungen
 standardmäßig liefern:
 
 **Projektcontrolling & Zeiterfassung:** Hier liegen wir näher an Software für Professional-Services
 (z.B. Beratungs-Tools wie Mavenlink oder ERP-Lösungen wie Haufe X360 mit integriertem
-Projektcontrolling). Klassische CRM-Systeme haben oft *keine* tiefe Kosten-/Margenverfolgung. Diese
-Lücke schließen wir bewusst. Zwar kann man etwa bei **Zoho** über das Modul *“Books”* Finanzen
+Projektcontrolling). Klassische CRM-Systeme haben oft _keine_ tiefe Kosten-/Margenverfolgung. Diese
+Lücke schließen wir bewusst. Zwar kann man etwa bei **Zoho** über das Modul _“Books”_ Finanzen
 integrieren oder in **Salesforce** via AppExchange ein Controlling-Paket anflanschen – aber in der
-Basisausführung sind die meisten CRM+PM-Tools eher *task-orientiert* als *kostenorientiert* . Unsere
+Basisausführung sind die meisten CRM+PM-Tools eher _task-orientiert_ als _kostenorientiert_ . Unsere
 Lösung mit vollständigem Soll/Ist-Abgleich und Stundenerfassung pro Projekt ist hier ein
 Alleinstellungsmerkmal im KMU-Segment. Das erhöht den Mehrwert, erfordert aber auch mehr
 Implementierungsaufwand und Disziplin bei der Dateneingabe.
-
 
 **Offline-Fähigkeit:** Viele moderne SaaS-Tools setzen ständige Internetkonnektivität voraus. Zwar gibt
 es Offline-Modi bei einigen (Insightly erlaubt z.B. in der mobilen App das Offline-Lesen/-Bearbeiten
@@ -2538,7 +2514,6 @@ Nutzungskontext ist.
 # Mehrsprachigkeit: Hier liegen wir auf Linie des Marktes. Große CRM-Lösungen sind meist
 
 # Best Practices & Usability: Etablierte Lösungen bringen erprobte UX-Konzepte mit. Wir orientieren
-
 
 **Risiken im Vergleich:** Natürlich haben etablierte Tools den Vorteil jahrelanger Entwicklung und Support-
 Teams. Unsere maßgeschneiderte Lösung muss diesen Reifegrad erst erreichen. Wir haben jedoch den
@@ -2574,14 +2549,13 @@ Team.
 
 # Nutzerakzeptanz & Change-Management: Das System entfaltet seinen Nutzen nur, wenn es von
 
-
 Gamification (Leaderboard für gepflegte Leads o.ä.), um die Nutzung attraktiv zu machen. Zudem
-sollte das Management die Nutzung aktiv einfordern (Führung *lebt es vor* ).
+sollte das Management die Nutzung aktiv einfordern (Führung _lebt es vor_ ).
 
 **Offline-Synchronisation & Konflikte:** Zwar fordern wir einen Offlinemodus, doch ist die **technische**
 **Umsetzung komplex** . Offene Frage: Wie werden Datenkonflikte gelöst, wenn z.B. zwei ADMs offline
-dieselbe Kundenadresse ändern? Hier muss die Feinkonzeption Regeln definieren (z.B. *“Zuletzt*
-*synchronisierte Änderung gewinnt, vorherige wird überschrieben”* oder Merge-Dialoge). Ungeklärt ist
+dieselbe Kundenadresse ändern? Hier muss die Feinkonzeption Regeln definieren (z.B. _“Zuletzt_
+_synchronisierte Änderung gewinnt, vorherige wird überschrieben”_ oder Merge-Dialoge). Ungeklärt ist
 auch, welche Datenmengen offline vorgehalten werden – vermutlich nicht das gesamte DMS (Fotos
 etc.), sondern Kernstammdaten und Aktivitäten. Dies muss technisch prototypisiert werden. Ein
 Risiko besteht, dass die Offline-Funktion in der ersten Version eingeschränkt ausfällt (z.B. nur
@@ -2597,12 +2571,11 @@ offline verfügbar zu machen.
 
 # Integrationsdetails (Lexware & Co.): Wir wissen, dass wir Lexware integrieren müssen, aber die
 
-
 **Umfang des Finanzmoduls:** In der ursprünglichen Analyse war der Finanzbereich nur auf
 Ausgangsrechnungen fokussiert – nun haben wir entschieden, auch Einkaufskosten, interne
 Stunden und Margen-Controlling aufzunehmen
 . Das erhöht den Projektumfang. Es besteht das
-Risiko der *Überfrachtung* : Möglicherweise werden die PM-User anfangs vom vollen Controlling
+Risiko der _Überfrachtung_ : Möglicherweise werden die PM-User anfangs vom vollen Controlling
 erschlagen oder die Datenpflege (Stunden buchen, Belege scannen) überfordert das Team. Hier gilt
 es, Prioritäten zu managen: Ggf. wird man einige Controlling-Features “stumm schalten” können,
 falls die Nutzung zu wünschen übrig lässt. Außerdem muss noch geklärt werden, wie allgemeine
@@ -2613,7 +2586,6 @@ erweitert oder vereinfacht werden kann, falls in der Praxis zu viel Aufwand ents
 
 # Zeit- & Budgetrahmen: Die umfangreichen Anforderungen bedeuten einen erheblichen
 
-
 Budgetverzug gerät, wenn man versucht, alles auf einmal umzusetzen. Um dies abzufedern, sollte
 unbedingt eine Priorisierung (wie oben erfolgt) konsequent in der Umsetzung berücksichtigt werden
 – MVP-Fokus auf den Muss-Kriterien. Features wie Offline und Controlling könnten sich als
@@ -2622,7 +2594,7 @@ Auftraggeber Scope-Adjustments vorzunehmen (z.B. Offline erst als Nachlieferung 
 Die Gefahr, sich technisch zu verzetteln, ist real – dem begegnen wir mit Prototyping und agiler
 Vorgehensweise (lieber iterative Verbesserungen als Big Bang).
 
-Zusammengefasst liegen die Hauptunsicherheiten weniger im *Was* , sondern im *Wie* . Das inhaltliche Konzept
+Zusammengefasst liegen die Hauptunsicherheiten weniger im _Was_ , sondern im _Wie_ . Das inhaltliche Konzept
 ist valide, aber die Umsetzung erfordert sorgfältige Planung, Testing und Change-Management. Besonders
 der Faktor Mensch (Akzeptanz) und die technisch kniffligen Punkte Offline & Schnittstellen verdienen
 Aufmerksamkeit. Durch frühe Pilotierungen, schrittweisen Roll-out und Flexibilität bei der Priorisierung
@@ -2635,19 +2607,18 @@ nachzusteuern.
 Um das Projekt erfolgreich in die nächste Phase (Umsetzung) zu überführen, werden folgende
 Empfehlungen ausgesprochen:
 
-**Integration der Zeiterfassung früh konzeptionell klären:** Die vollständige Ablösung von *TimeCard*
+**Integration der Zeiterfassung früh konzeptionell klären:** Die vollständige Ablösung von _TimeCard_
 ist strategisch gewollt, sollte aber schrittweise erfolgen. Wir empfehlen, in der nächsten Phase einen
 Workshop mit Vertretern der Buchhaltung, Innendienst und Mitarbeiterführung durchzuführen, um
 die Anforderungen an die **interne Zeiterfassung** im Detail festzulegen. Dabei sind Fragen zu klären
-wie: *Erfassen wir Arbeitszeiten minutengenau oder in Stundenblöcken? Brauchen wir Funktionen wie*
-*Kommen/Gehen (Arbeitszeitkonto) oder rein projektbezogene Leistungserfassung?* Das Ergebnis sollte ein
+wie: _Erfassen wir Arbeitszeiten minutengenau oder in Stundenblöcken? Brauchen wir Funktionen wie_
+_Kommen/Gehen (Arbeitszeitkonto) oder rein projektbezogene Leistungserfassung?_ Das Ergebnis sollte ein
 klarer Soll-Prozess sein, der im CRM abgebildet wird. Ggf. kann die bestehende TimeCard-Lösung
 übergangsweise angebunden werden (Datenexport), um die Mitarbeiter nicht sofort umgewöhnen
 zu müssen. Langfristig ist aber eine vollständige Integration ratsam, da nur so Echtzeit-Controlling
-möglich ist. Mögliche *Quick Win* -Empfehlung: Bereits jetzt die Mitarbeiter anhalten, bei TimeCard
+möglich ist. Mögliche _Quick Win_ -Empfehlung: Bereits jetzt die Mitarbeiter anhalten, bei TimeCard
 exakt projektbezogen zu buchen (gleiche Projektnamen verwenden), damit die Datenübernahme
 vereinfacht wird.
-
 
 **Schnittstellenstrategie für Lexware ausarbeiten:** Da die Anbindung der Finanzbuchhaltung
 kritisch ist, sollte zeitnah ein technischer Plan dafür erstellt werden. Empfohlen wird, einen
@@ -2656,11 +2627,11 @@ In einem Proof-of-Concept könnte z.B. getestet werden, einen neuen Kunden vom C
 Lexware zu übertragen und eine Rechnung aus Lexware ins CRM zu importieren
 . So erkennen
 wir früh eventuelle Hürden (z.B. Datenfelder, die nicht abgebildet werden können). Parallel sollte
-abgestimmt werden, welche Daten automatisch synchronisiert werden *müssen* und was evtl. manuell
+abgestimmt werden, welche Daten automatisch synchronisiert werden _müssen_ und was evtl. manuell
 bleibt. Vorschlag: Kundendaten und Ausgangsrechnungen via API synchron (weil hier Redundanz
 sehr kritisch), Zahlungseingänge eventuell über einen täglichen Import (falls API-Webhook nicht
-verfügbar). Wichtig ist, klare Zuständigkeiten festzulegen – z.B. *“Kundendaten werden nur im CRM*
-*gepflegt, Lexware erhält Read-only-Kundendaten vom CRM”* . Dadurch vermeiden wir widersprüchliche
+verfügbar). Wichtig ist, klare Zuständigkeiten festzulegen – z.B. _“Kundendaten werden nur im CRM_
+_gepflegt, Lexware erhält Read-only-Kundendaten vom CRM”_ . Dadurch vermeiden wir widersprüchliche
 Updates. Abschließend empfiehlt sich eine gemeinsame Testphase von Buchhaltung und IT, um die
 Schnittstelle unter realen Bedingungen zu erproben, bevor sie live geht.
 
@@ -2676,9 +2647,8 @@ ist, die Schulungen praxisnah zu gestalten (Use Cases aus dem Alltag). Außerdem
 Konzept definiert sein (wer ist erster Ansprechpartner bei Fragen? Gibt es ein FAQ-Wiki?). Ein
 begleitendes Kommunikationsmanagement (regelmäßige Updates, Erfolgsmeldungen) unterstützt
 die Adoption. Z.B. könnte man 3 Monate nach Einführung einen Workshop durchführen, in dem
-jeder Bereich berichtet, wie das System seinen Arbeitsalltag verbessert hat – um die *Quick Wins*
+jeder Bereich berichtet, wie das System seinen Arbeitsalltag verbessert hat – um die _Quick Wins_
 sichtbar zu machen.
-
 
 **Prototyping kritischer Funktionen:** Für technisch anspruchsvolle Themen (insb. Offline und mobile
 Nutzung) empfehlen wir, vor der eigentlichen Entwicklung kleine Prototypen bzw.
@@ -2698,7 +2668,6 @@ erkennen.
 # Phasenweise Umsetzung & Pilotbetrieb: Aufgrund des großen Umfangs empfehlen wir dringend,
 
 # Kontinuierliche Verbesserung & Ausblick: Nach dem Go-Live ist das Projekt nicht “zu Ende”,
-
 
 Schulungsnachbesserungen erfolgen. Ebenso sollte rechtzeitig geprüft werden, ob sich geplante
 zukünftige Anforderungen konkretisieren. Beispiel: Falls das Geschäftsjahr 2026 verstärkt
@@ -2724,6 +2693,7 @@ bleibt langfristig ein passgenaues Werkzeug.
 ### 🤖 KI-gestützte Funktionen (Pillar 1: Intelligent Co-Pilot)
 
 **Audio-Transkription & Summarization (Whisper + GPT-4/Llama 3):**
+
 - **Problem gelöst**: Außendienst muss 15-30 Min/Besuch für manuelle Protokollierung aufwenden
 - **Lösung**: Sprachmemos während Kundengespräch → automatische Transkription (Whisper) → KI-generierte 5-Zeilen-Zusammenfassung → automatische Task-Generierung
 - **Zeitersparnis**: 13-28 Min/Besuch = 2-3h/Woche pro Außendienstler
@@ -2731,12 +2701,14 @@ bleibt langfristig ein passgenaues Werkzeug.
 - **DSGVO**: Opt-In erforderlich, lokales Whisper möglich (keine Cloud-Daten)
 
 **Predictive Lead Scoring (ML-basierte Opportunity-Bewertung):**
+
 - **Problem gelöst**: Vertrieb priorisiert mit "Bauchgefühl" statt Daten → ineffiziente Akquise
 - **Lösung**: ML-Modell (XGBoost/LightGBM) berechnet Conversion-Wahrscheinlichkeit (0-100 Score) basierend auf Firmographics, Interaction History, Sentiment
 - **Erwarteter Impact**: +10-20% höhere Conversion Rate (Benchmark: Salesforce Einstein)
 - **Explainability**: SHAP/LIME für transparente KI-Entscheidungen (DSGVO-konform)
 
 **Project Risk Assessment (Risikofrüherkennung):**
+
 - **Problem gelöst**: Projekte geraten "plötzlich" in Schieflage (Budget/Verzug)
 - **Lösung**: KI-Dashboard mit automatischen Risk Indicators (Budget >80%, Zeitplan >10% Verzug, ML-Modell "Delay Prediction")
 - **Nutzen**: Proaktive Steuerung statt Reaktion, weniger Überraschungen beim Kunden
@@ -2748,17 +2720,20 @@ bleibt langfristig ein passgenaues Werkzeug.
 ### 🔔 Echtzeit-Kollaboration (Pillar 2: Active Collaboration)
 
 **Activity Feed & Smart Notifications:**
+
 - **Problem gelöst**: Wichtige Updates (Task-Assignments, Status-Änderungen) gehen in E-Mail-Flut unter
 - **Lösung**: Echtzeit-Activity-Stream + Push-Notifications (@-Mentions, Task-Assignments, Approvals)
 - **Technologie**: Socket.IO + Redis Adapter (horizontale Skalierung), WebSocket für Real-Time
 - **Intelligent Filtering**: Nur relevante Events notifizieren (kein Spam)
 
 **Contextual Commenting:**
+
 - **Problem gelöst**: Diskussionen über Angebots-Positionen/Tasks laufen in E-Mail/Slack → Kontext verloren
 - **Lösung**: Kommentare direkt AN Entitäten (Offer-Position, Task, Document) → Kontext bleibt erhalten
 - **Audit Trail**: Alle Diskussionen nachvollziehbar (GoBD-konform)
 
 **Presence Indicators (Phase 2.2):**
+
 - **Vision**: Nutzer sehen in Echtzeit, wer gerade welchen Kunden/Projekt öffnet → Kollisions-Vermeidung (weniger CouchDB-Konflikte)
 
 **Siehe auch:** `Produktvision für Projekt KOMPASS (Nordstern-Direktive).md` → Pillar 2 (Seiten 343-567)
@@ -2768,12 +2743,14 @@ bleibt langfristig ein passgenaues Werkzeug.
 ### 🌐 Customer Portal (Pillar 2: B2B2C Engagement)
 
 **Project Status Dashboard für Kunden:**
+
 - **Problem gelöst**: Kunde muss ständig anrufen "Wie weit ist das Projekt?" → Planer schreibt manuell Statusberichte
 - **Lösung**: Sicheres Kunden-Portal (Magic Link Authentication) → Kunde sieht Projekt-Status, Budget, Zeitplan, Phasen live
 - **Features**: Document Download (Angebote/Rechnungen), Approval-Workflow, Secure Communication Channel, Photo Gallery (Baufortschritt)
 - **Security**: Kunde sieht NUR eigene Projekte, keine internen Kalkulationen, Audit Log für Compliance
 
 **Erwarteter Impact:**
+
 - -40% weniger "Wo bleibt ihr?"-Anrufe
 - NPS (Net Promoter Score) >60 bei Portal-Nutzern
 - Angebots-Freigabe 2 Tage schneller (vorher 5 Tage)
@@ -2787,19 +2764,22 @@ bleibt langfristig ein passgenaues Werkzeug.
 ### 📊 Customizable Dashboards (Pillar 3: Data-Driven Insights)
 
 **Drag & Drop Dashboard-Builder:**
+
 - **Problem gelöst**: GF will unterschiedliche KPIs tracken → muss Developer beauftragen → 3 Tage Wartezeit
 - **Lösung**: Low-Code Dashboard-Editor → GF baut eigene KPI-Views in 5 Min (Widget Library: Umsatz, Pipeline, Top Deals, Team-Performance)
 - **Custom Filters & Drill-Downs**: "Zeige nur Opportunities >€50K aus Q1 2025" + Detail-Tabellen
 - **Sharing**: Dashboards mit Team teilen, Permissions konfigurieren
 
 **CQRS für High-Performance Analytics:**
+
 - **Problem gelöst**: CouchDB MapReduce-Views zu langsam (10-30s für "Umsatz pro Quartal pro Branche")
 - **Lösung**: CQRS Pattern → CouchDB (Write Store) + PostgreSQL (Read Store) → 10-100x schnellere Queries
 - **Performance**: Dashboard-Load <2s (P95) statt >10s
 - **Eventual Consistency**: 1-5s Replikations-Latenz (akzeptabel für Reports)
 - **BI-Tool-Integration**: Grafana, Metabase, Apache Superset können PostgreSQL anbinden
 
-**Siehe auch:** 
+**Siehe auch:**
+
 - `Produktvision für Projekt KOMPASS (Nordstern-Direktive).md` → Pillar 3 (Seiten 569-753)
 - `docs/architectur/` → ADR-017 (CQRS für Analytics)
 
@@ -2808,6 +2788,7 @@ bleibt langfristig ein passgenaues Werkzeug.
 ### 🗺️ Advanced Route Planning (Pillar 3: Außendienst-Effizienz)
 
 **Intelligent Route Optimization:**
+
 - **Problem gelöst**: Außendienst plant Touren manuell → suboptimale Reihenfolge → Zeitverschwendung, hohe Spritkosten
 - **Lösung**: Multi-Stop Route Optimization (Traveling Salesman Problem) + Nearby Lead Mapping (opportunistische Zusatzbesuche)
 - **Automated Check-Ins**: Geofencing → Auto-Prompt "Check-In bei Kunde X?" → One-Click-Protokoll (Voice-Memo + Whisper)
@@ -2820,14 +2801,17 @@ bleibt langfristig ein passgenaues Werkzeug.
 ## Phase 3 (Q1-Q2 2026): Autonomous Actions & Advanced AI
 
 **Automated Sales Summarization:**
+
 - System generiert automatisch Wochen-/Monatsberichte für GF ("Top 5 Deals", "Umsatzprognose Q1", "Risiken & Chancen")
 - LLM-basiert (GPT-4 oder selbst-gehostetes Llama 3 70B)
 
 **Predictive Forecasting:**
+
 - Umsatzprognose mit Time-Series-ML (ARIMA, Prophet, LightGBM)
 - "Wie viel Umsatz machen wir voraussichtlich in Q2?" → Confidence Intervals (z.B. €250K-€350K mit 80% Konfidenz)
 
 **Collaborative Editing (Real-Time):**
+
 - Live-Editing von Angeboten/Projekten mit CRDTs (Conflict-Free Replicated Data Types)
 - Google Docs-ähnliche Collaboration, offline-fähig
 
@@ -2840,13 +2824,15 @@ bleibt langfristig ein passgenaues Werkzeug.
 ### Observability & Monitoring (Phase 1.5 - parallel zum MVP)
 
 **Grafana Stack für Production-Ready Operations:**
+
 - **Problem**: Keine Sichtbarkeit in Systemverhalten → reaktives Firefighting bei Problemen
 - **Lösung**: Prometheus (Metrics) + Grafana Loki (Logs) + Grafana Tempo (Distributed Tracing) + Grafana (Dashboards)
 - **OpenTelemetry**: Standardisierte Instrumentation (NestJS + React)
 - **SLI/SLO-Definition**: API Response Time (P95 <1,5s), Error Rate (<1%), Availability (>95%)
 - **Alerting**: Grafana-Alerts bei SLO-Bruch (z.B. "API P95 überschreitet 2s")
 
-**Siehe auch:** 
+**Siehe auch:**
+
 - `docs/architectur/` → "Observability & Monitoring (Production-Ready Operations)"
 - `docs/reviews/OBSERVABILITY_STRATEGY.md`
 - ADR-015 (Observability-Stack)
@@ -2856,11 +2842,13 @@ bleibt langfristig ein passgenaues Werkzeug.
 ### Real-Time-Kommunikationsarchitektur (Phase 2)
 
 **Socket.IO + Redis Adapter:**
+
 - Bidirektionale Echtzeit-Kommunikation für AI-Job-Status-Updates, Notifications, Presence Indicators
 - Horizontale Skalierung via Redis Pub/Sub (2+ Backend-Instanzen)
 - Automatische Reconnection, Room-basierte Broadcasting
 
 **Siehe auch:**
+
 - `docs/architectur/` → "Real-Time-Kommunikationsarchitektur (Phase 2+)"
 - ADR-016 (Real-Time-Kommunikationslayer)
 
@@ -2869,11 +2857,13 @@ bleibt langfristig ein passgenaues Werkzeug.
 ### CQRS-Datenbankarchitektur (Phase 2.2)
 
 **CouchDB → PostgreSQL Replication:**
+
 - Trennung OLTP (CouchDB - Write Store) vs. OLAP (PostgreSQL - Read Store)
 - NestJS Replication Service via CouchDB `_changes` Feed
 - 10-100x Performance-Gewinn für Analytics-Queries
 
 **Siehe auch:**
+
 - `docs/architectur/` → "Erweiterte Datenbankarchitektur & Skalierung (CQRS Pattern)"
 - ADR-017 (CQRS für Analytics)
 
@@ -2881,17 +2871,17 @@ bleibt langfristig ein passgenaues Werkzeug.
 
 ## Erfolgsmetriken (KPIs für Phase 2/3)
 
-| Phase | Feature | Ziel-Metrik | Messung |
-|-------|---------|-------------|---------|
-| **2.1** | Audio-Transkription | 70% Adoption (Außendienst nutzt bei Besuchen) | CouchDB Analytics |
-| **2.1** | Lead Scoring | +15% höhere Conversion Rate | A/B-Test (mit vs. ohne KI) |
-| **2.1** | Activity Feed | -30% weniger "Hab ich nicht gesehen"-Eskalationen | Support-Tickets |
-| **2.2** | Customer Portal | 50% aller aktiven Projekte nutzen Portal | CouchDB Analytics |
-| **2.2** | Custom Dashboards | 60% Self-Service-Rate (ohne Dev-Involvement) | Support-Tickets |
-| **2.2** | Route Planning | 1,5h/Woche Zeitersparnis pro Außendienstler | User-Survey |
-| **2.2** | CQRS Analytics | Dashboard-Load <2s (P95) | Performance-Monitoring |
-| **3** | Predictive Forecasting | <10% Abweichung Prognose vs. Ist-Umsatz | Quartals-Vergleich |
-| **3** | Project Risk Precision | >70% korrekte Vorhersagen (keine False Alarms) | Historical Validation |
+| Phase   | Feature                | Ziel-Metrik                                       | Messung                    |
+| ------- | ---------------------- | ------------------------------------------------- | -------------------------- |
+| **2.1** | Audio-Transkription    | 70% Adoption (Außendienst nutzt bei Besuchen)     | CouchDB Analytics          |
+| **2.1** | Lead Scoring           | +15% höhere Conversion Rate                       | A/B-Test (mit vs. ohne KI) |
+| **2.1** | Activity Feed          | -30% weniger "Hab ich nicht gesehen"-Eskalationen | Support-Tickets            |
+| **2.2** | Customer Portal        | 50% aller aktiven Projekte nutzen Portal          | CouchDB Analytics          |
+| **2.2** | Custom Dashboards      | 60% Self-Service-Rate (ohne Dev-Involvement)      | Support-Tickets            |
+| **2.2** | Route Planning         | 1,5h/Woche Zeitersparnis pro Außendienstler       | User-Survey                |
+| **2.2** | CQRS Analytics         | Dashboard-Load <2s (P95)                          | Performance-Monitoring     |
+| **3**   | Predictive Forecasting | <10% Abweichung Prognose vs. Ist-Umsatz           | Quartals-Vergleich         |
+| **3**   | Project Risk Precision | >70% korrekte Vorhersagen (keine False Alarms)    | Historical Validation      |
 
 ---
 
@@ -2919,6 +2909,7 @@ bleibt langfristig ein passgenaues Werkzeug.
 ---
 
 **Siehe auch:**
+
 - **Vollständige Vision**: `Produktvision für Projekt KOMPASS (Nordstern-Direktive).md`
 - **Technische Architektur**: `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md`
 - **ADRs**: ADR-015 (Observability), ADR-016 (Real-Time), ADR-017 (CQRS), ADR-018 (AI Integration)
@@ -2929,7 +2920,7 @@ bleibt langfristig ein passgenaues Werkzeug.
 
 # 10. Quellen
 
-**Nimble Blog –** *Expert Picks: 5 Best CRMs for Project Management* (Gabrielle Lohr, Nimble, 9. Jan. 2024) –
+**Nimble Blog –** _Expert Picks: 5 Best CRMs for Project Management_ (Gabrielle Lohr, Nimble, 9. Jan. 2024) –
 Übersichtsartikel zu CRM-Systemen mit Projektmanagement. Enthält Vorteile der CRM-PM-
 Integration und nennt Beispiele (Nimble, Wrike, Monday, Insightly, vTiger). Relevant für Best
 Practices und Marktvergleich
@@ -2947,7 +2938,7 @@ Practices und Marktvergleich
 
 # 26
 
-**Lexware Office Public API –** *Offene Schnittstelle für individuelle Anwendungen* (Haufe-Lexware GmbH,
+**Lexware Office Public API –** _Offene Schnittstelle für individuelle Anwendungen_ (Haufe-Lexware GmbH,
 abgerufen im Nov. 2025) – Produktseite zur Lexware Office API. Beschreibt verfügbare Funktionen
 (Lesen/Anlegen von Angeboten, Rechnungen, Kontakten etc.) und ermöglicht die Integration von
 Lexware mit CRM-, Shop- oder Branchensoftware
@@ -2967,22 +2958,20 @@ Lexware mit CRM-, Shop- oder Branchensoftware
 
 # 27
 
-
-| 2 | 3 | 4 |  | 5 |  |  | 6 |  |  | 8 |  |  | 9 |  | 10 |  |  | 11 |  |
+| 2   | 3   | 4   |     | 5   |     |     | 6   |     |     | 8   |     |     | 9   |     | 10  |     |     | 11  |     |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 28 | 29 | 30 |  | 31 |  |  | 32 |  |  | 33 |  |  | 34 |  | 35 |  |  | 36 |  |
-| 51 | 52 | 53 |  | 54 |  |  | 55 |  |  | 58 |  |  | 59 |  | 51 |  |  | 56 |  |
-| 105 | 63 | 107 |  |  | 106 |  |  | 97 |  |  | 109 |  | 110 |  |  | 111 |  |  |  |
+| 28  | 29  | 30  |     | 31  |     |     | 32  |     |     | 33  |     |     | 34  |     | 35  |     |     | 36  |     |
+| 51  | 52  | 53  |     | 54  |     |     | 55  |     |     | 58  |     |     | 59  |     | 51  |     |     | 56  |     |
+| 105 | 63  | 107 |     |     | 106 |     |     | 97  |     |     | 109 |     | 110 |     |     | 111 |     |     |     |
 
-| 25 49 | 26 |  |
-| --- | --- | --- |
-|  | 50 |  |
-| 102 | 103 |  |
-
+| 25 49 | 26  |     |
+| ----- | --- | --- |
+|       | 50  |     |
+| 102   | 103 |     |
 
 ---
 
-*Page 71*
+_Page 71_
 
 ---
 
@@ -3030,14 +3019,12 @@ Nachkalkulation-und-Kennzahlenauswahl-zu-Kostenrechnung-und-Kalkulation.html
 
 ### 28
 
-
-| 1 | 2 | 3 |
+| 1   | 2   | 3   |
 | --- | --- | --- |
-| 44 | 45 | 46 |
-| 96 | 97 | 98 |
+| 44  | 45  | 46  |
+| 96  | 97  | 98  |
 
-| 6 | 7 | 8 |  | 9 |  |  | 10 |  |  | 11 |  |  |  | 12 |  |  |  | 14 |  |  | 16 |  |  | 17 |  |  | 18 | 23 | 25 | 26 | 27 |  | 28 |  |  | 32 |
+| 6   | 7   | 8   |     | 9   |     |     | 10  |     |     | 11  |     |     |     | 12  |     |     |     | 14  |     |     | 16  |     |     | 17  |     |     | 18  | 23  | 25  | 26  | 27  |     | 28  |     |     | 32  |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 48 | 49 | 50 |  | 58 |  |  | 60 |  |  | 62 |  |  |  | 63 |  |  |  | 64 |  |  | 65 |  |  | 66 |  |  | 67 | 71 | 77 | 81 | 82 |  | 83 |  |  | 84 |
-| 100 | 101 | 102 |  |  | 103 |  |  | 106 |  |  |  | 107 |  |  |  | 108 |  |  |  | 109 |  |  | 110 |  |  | 111 |  | 112 | 113 | 114 | 115 |  |  | 119 |  | Ex |
-
+| 48  | 49  | 50  |     | 58  |     |     | 60  |     |     | 62  |     |     |     | 63  |     |     |     | 64  |     |     | 65  |     |     | 66  |     |     | 67  | 71  | 77  | 81  | 82  |     | 83  |     |     | 84  |
+| 100 | 101 | 102 |     |     | 103 |     |     | 106 |     |     |     | 107 |     |     |     | 108 |     |     |     | 109 |     |     | 110 |     |     | 111 |     | 112 | 113 | 114 | 115 |     |     | 119 |     | Ex  |

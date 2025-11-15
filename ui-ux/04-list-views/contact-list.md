@@ -1,6 +1,7 @@
 # Contact List View - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Nested List View (under Customer)
 - **User Roles**: All (read), GF/INNEN (full edit), PLAN (edit including decision authority), ADM (basic edit on own customers, no decision authority)
 - **Usage Context**: View and manage contact persons within customer context
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Decision Authority**: Prominent badges showing decision-making role
 - **Contact Cards**: Avatar + key info in compact format
 - **Authority Level**: Visual indicators (stars, crown for final authority)
 - **Primary Contacts**: Distinguished for key locations
 
 ### Layout Structure
+
 - Grid or list view within customer detail
 - Card format: 360px width (desktop), full width (mobile)
 - 2-3 cards per row on desktop
 - Authority badges prominent
 
 ### shadcn/ui Components
+
 - `Card` for each contact
 - `Badge` for roles and authority
 - `Avatar` for contact photo/initials
@@ -31,11 +35,13 @@
 Create a contact list view for KOMPASS, a German CRM application. Design a card-based layout for displaying contact persons with decision-making authority badges, approval limits, and functional roles within customer context using German labels.
 
 **Context Header:**
+
 - Parent customer: "Hofladen Müller GmbH"
 - Section title: "Kontakte" (20px, semibold) with count "12"
 - Add button: "+ Kontakt hinzufügen" (blue, top-right)
 
 **Filter Bar (Above Cards):**
+
 - Left: Filter tabs
   - "Alle (12)" | "Entscheidungsträger (3)" | "Hauptansprechpartner (2)"
   - Active tab: Blue underline
@@ -45,6 +51,7 @@ Create a contact list view for KOMPASS, a German CRM application. Design a card-
 **Contact Card:**
 
 **Card Structure:**
+
 - Width: 360px (desktop), full width (mobile)
 - Border: 1px solid #e5e7eb
 - Border-radius: 8px
@@ -53,6 +60,7 @@ Create a contact list view for KOMPASS, a German CRM application. Design a card-
 - Hover: Elevation increase, blue border
 
 **Card Header:**
+
 1. **Avatar**: 56px circle, left-aligned
    - Photo or initials "HM" (blue background)
    - Status dot: Green (online/active) in bottom-right
@@ -87,6 +95,7 @@ Create a contact list view for KOMPASS, a German CRM application. Design a card-
 **Card Content:**
 
 **Contact Information:**
+
 - Icon: Phone (16px, gray) + "+49-170-1234567" (Mobile)
 - Icon: Phone (16px, gray) + "+49-89-1234567" (Office)
 - Icon: Mail (16px, gray) + "h.mueller@hofladen-mueller.de"
@@ -94,6 +103,7 @@ Create a contact list view for KOMPASS, a German CRM application. Design a card-
 - Gap: 8px between items
 
 **Approval Authority (If Applicable):**
+
 - Section: Light blue background (#f0f9ff), rounded, padding 12px
 - Icon: Shield (20px, blue)
 - Text: "Kann Bestellungen genehmigen" (12px, semibold)
@@ -101,6 +111,7 @@ Create a contact list view for KOMPASS, a German CRM application. Design a card-
 - Help icon: Tooltip "Maximaler Auftragswert für Genehmigung"
 
 **Functional Roles (If Any):**
+
 - Label: "Funktionen" (12px, gray, uppercase)
 - Badges: Small gray pills
   - "Einkaufsleiter"
@@ -108,6 +119,7 @@ Create a contact list view for KOMPASS, a German CRM application. Design a card-
 - Max 3 visible, "+2 weitere" if more
 
 **Assigned Locations:**
+
 - Icon: MapPin (16px)
 - Text: "Filiale München Süd" (primary location in bold with star)
 - Additional: "Hauptsitz" (regular weight)
@@ -115,6 +127,7 @@ Create a contact list view for KOMPASS, a German CRM application. Design a card-
 - Tooltip shows all on hover
 
 **Card Footer:**
+
 - Border-top: 1px solid #f3f4f6
 - Padding-top: 12px
 - Left: Last activity timestamp
@@ -126,6 +139,7 @@ Create a contact list view for KOMPASS, a German CRM application. Design a card-
   - MoreVertical: More actions menu
 
 **Action Menu (MoreVertical):**
+
 - "Aktivität hinzufügen" (with Activity icon)
 - "E-Mail senden" (with Mail icon)
 - Divider
@@ -135,10 +149,12 @@ Create a contact list view for KOMPASS, a German CRM application. Design a card-
 - "Löschen" (with Trash icon, red)
 
 **Primary Contact Indicator:**
+
 - For locations: Gold star badge "Hauptansprechpartner für 2 Standorte"
 - Visual: Gold star icon + badge next to assigned locations
 
 **Filter Sheet:**
+
 - Slides from right
 - Filters:
   - Decision Role: Multi-select checkboxes
@@ -149,17 +165,20 @@ Create a contact list view for KOMPASS, a German CRM application. Design a card-
 - Apply button: "Filter anwenden"
 
 **Empty State:**
+
 - Icon: Users (120px, gray)
 - Heading: "Noch keine Kontakte vorhanden"
 - Description: "Fügen Sie Kontaktpersonen hinzu, um Ansprechpartner zu verwalten"
 - Button: "Ersten Kontakt hinzufügen" (blue)
 
 **RBAC Indicators:**
+
 - Decision authority fields: Lock icon if ADM user viewing
 - Edit disabled: Pencil icon grayed with lock icon
 - Tooltip: "Entscheidungsrolle kann nur von PLAN/GF bearbeitet werden"
 
 **List View Alternative:**
+
 - Toggle: Card view | Table view
 - Table columns:
   1. Name (with avatar)
@@ -174,12 +193,14 @@ Create a contact list view for KOMPASS, a German CRM application. Design a card-
 - Compact for many contacts (>15)
 
 **Quick Actions (Card Hover):**
+
 - Phone icon: Initiate call (mobile)
 - Email icon: Compose email
 - Activity icon: Log activity
 - Visible on hover (desktop) or always (mobile)
 
 **Mobile Layout:**
+
 - Single column cards
 - Full width
 - Compact info: Name, role badge, authority level, phone
@@ -192,24 +213,28 @@ Design with clear authority indicators, easy access to contact methods, and prom
 ## Interaction Patterns
 
 ### View Contact
+
 1. Click contact card or name
 2. Opens contact detail sheet
 3. Shows full information, authority, locations, activities
 4. Actions: Edit, Delete, Add activity
 
 ### Add Contact
+
 1. Click "+ Kontakt hinzufügen"
 2. Contact form opens (see contact-form.md)
 3. User fills data
 4. Saves, new card appears
 
 ### Edit Contact
+
 1. Click edit icon
 2. Form opens with current data
 3. User makes changes
 4. Saves, card updates
 
 ### Contact Actions
+
 1. Click phone icon: Opens phone dialer (mobile) or copies number (desktop)
 2. Click email icon: Opens email client with contact email pre-filled
 3. Click activity icon: Opens activity form with contact pre-selected
@@ -217,11 +242,13 @@ Design with clear authority indicators, easy access to contact methods, and prom
 ## German Labels & Content
 
 ### Section
+
 - **Kontakte**: Contacts
 - **Kontakt hinzufügen**: Add contact
 - **Kontaktpersonen**: Contact persons
 
 ### Decision Roles
+
 - **Entscheidungsträger**: Decision maker
 - **Schlüsselbeeinflusser**: Key influencer
 - **Empfehler**: Recommender
@@ -230,12 +257,14 @@ Design with clear authority indicators, easy access to contact methods, and prom
 - **Informativ**: Informational
 
 ### Authority Levels
+
 - **Niedrig**: Low
 - **Mittel**: Medium
 - **Hoch**: High
 - **Finale Autorität**: Final authority
 
 ### Fields
+
 - **Position**: Position
 - **Kann Bestellungen genehmigen**: Can approve orders
 - **Genehmigungslimit**: Approval limit
@@ -245,6 +274,7 @@ Design with clear authority indicators, easy access to contact methods, and prom
 - **Letzte Aktivität**: Last activity
 
 ### Actions
+
 - **Details anzeigen**: Show details
 - **Bearbeiten**: Edit
 - **Aktivität hinzufügen**: Add activity
@@ -253,6 +283,7 @@ Design with clear authority indicators, easy access to contact methods, and prom
 - **Löschen**: Delete
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Cards: role="article"
 - Action buttons: aria-label with action description
@@ -262,6 +293,7 @@ Design with clear authority indicators, easy access to contact methods, and prom
 - Screen reader: Announces role and authority
 
 ## Mobile Considerations
+
 - Full-width cards
 - Compact layout: Essential info only
 - Tap to expand for full details
@@ -272,6 +304,7 @@ Design with clear authority indicators, easy access to contact methods, and prom
 ## Example Data
 
 **Contact 1 (Decision Maker):**
+
 - Avatar: "HM"
 - Name: "Dr. Hans Müller"
 - Position: "Geschäftsführer"
@@ -284,6 +317,7 @@ Design with clear authority indicators, easy access to contact methods, and prom
 - Last activity: "Vor 3 Tagen"
 
 **Contact 2 (Key Influencer):**
+
 - Avatar: "MS"
 - Name: "Maria Schmidt"
 - Position: "Einkaufsleiterin"
@@ -298,6 +332,7 @@ Design with clear authority indicators, easy access to contact methods, and prom
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add card
 npx shadcn-ui@latest add avatar
@@ -308,6 +343,7 @@ npx shadcn-ui@latest add tooltip
 ```
 
 ### Component Dependencies
+
 - Parent customer context
 - Contact API (filtered by customer)
 - Location list for assignments
@@ -316,9 +352,9 @@ npx shadcn-ui@latest add tooltip
 - Activity logging integration
 
 ### State Management
+
 - Contacts list (filtered by customer)
 - View mode (cards vs table)
 - Filter criteria (role, authority)
 - Sort order
 - Expanded card state (mobile)
-

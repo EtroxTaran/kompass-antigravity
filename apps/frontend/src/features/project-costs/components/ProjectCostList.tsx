@@ -1,5 +1,14 @@
-import { useState } from 'react';
 import { Check, X, FileText, Euro } from 'lucide-react';
+import { useState } from 'react';
+
+import type {
+  ProjectCostResponseDto,
+  ProjectCostStatus,
+  ProjectCostType,
+} from '@kompass/shared/types/entities/project-cost';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -8,21 +17,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
-import type {
-  ProjectCostResponseDto,
-  ProjectCostStatus,
-  ProjectCostType,
-} from '@kompass/shared/types/entities/project-cost';
+
 import { projectCostApi } from '../services/project-cost-api';
+
+import { useToast } from '@/hooks/use-toast';
 
 /**
  * Project Cost List Component
- * 
+ *
  * Displays list of project costs with actions.
- * 
+ *
  * @see Phase 1 of Time Tracking Implementation Plan
  */
 interface ProjectCostListProps {
@@ -83,7 +87,7 @@ export function ProjectCostList({
    * Get status badge variant
    */
   function getStatusVariant(
-    status: ProjectCostStatus,
+    status: ProjectCostStatus
   ): 'default' | 'secondary' | 'outline' | 'destructive' {
     switch (status) {
       case 'planned':
@@ -161,7 +165,9 @@ export function ProjectCostList({
           <TableHead className="text-right">Gesamt</TableHead>
           <TableHead className="text-right">Inkl. MwSt</TableHead>
           <TableHead>Status</TableHead>
-          {showActions && <TableHead className="text-right">Aktionen</TableHead>}
+          {showActions && (
+            <TableHead className="text-right">Aktionen</TableHead>
+          )}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -270,4 +276,3 @@ export function ProjectCostList({
     </Table>
   );
 }
-

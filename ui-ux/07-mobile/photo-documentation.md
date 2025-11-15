@@ -1,6 +1,7 @@
 # Photo Documentation (Mobile) - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Platform**: Mobile PWA (camera access)
 - **User Role**: ADM, PLAN (primarily field users)
 - **Usage Context**: Document project progress, customer sites, products
@@ -11,12 +12,14 @@
 Create a mobile photo documentation interface for KOMPASS with multi-photo capture, annotation, tagging, entity linking, and offline support with German labels.
 
 **Entry Points:**
+
 - Project detail: "Fotos hinzufügen" button
 - Activity log: Camera icon
 - Customer detail: "Dokumentation" tab → "+ Foto"
 - FAB on dashboard: Camera icon (quick access)
 
 **Screen 1: Camera View**
+
 - Full-screen camera preview
 - Camera controls:
   - Flash: Top-right (auto/on/off)
@@ -30,6 +33,7 @@ Create a mobile photo documentation interface for KOMPASS with multi-photo captu
 - Photo count: Badge on gallery thumbnail "3" (if multiple photos taken)
 
 **Multi-Photo Mode:**
+
 - After first capture: Button changes to "Weiter aufnehmen" (circular arrow icon)
 - Thumbnail strip: Bottom of screen (horizontal scroll)
 - Shows: All captured photos (48px thumbnails)
@@ -38,6 +42,7 @@ Create a mobile photo documentation interface for KOMPASS with multi-photo captu
 - Counter: "3 von 10" (limit: 10 photos per session)
 
 **Screen 2: Photo Review**
+
 - Triggered by: "Fertig" button or capture limit reached
 - Grid view: All captured photos (2 columns)
 - Each photo:
@@ -50,11 +55,13 @@ Create a mobile photo documentation interface for KOMPASS with multi-photo captu
   - "Weiter" (large blue button)
 
 **Screen 3: Annotation & Tagging**
+
 - Shows: First photo (full-width)
 - Swipe left/right: Navigate through photos
 - Photo counter: "1 von 3" (top-center)
 
 **Annotation Tools:**
+
 - Floating toolbar (bottom):
   - Pen icon: Draw/markup (freehand)
   - Text icon: Add text label
@@ -67,12 +74,12 @@ Create a mobile photo documentation interface for KOMPASS with multi-photo captu
 - Save: Auto-saves markup
 
 **Tagging Section (Below Photo):**
+
 - **Beschreibung:**
   - Textarea: "Beschreibung hinzufügen..."
   - Voice-to-text: Microphone icon
   - Examples: "Rohbau abgeschlossen", "Elektroinstallation fertig"
   - Character count: 200 max
-  
 - **Verknüpfung:**
   - Dropdown: "Verknüpfen mit..."
   - Options:
@@ -81,22 +88,22 @@ Create a mobile photo documentation interface for KOMPASS with multi-photo captu
     - "Aktivität" → Select activity
     - "Opportunity" → Select opportunity
   - Selected: Shows chip with name
-  
 - **Tags:**
   - Chips (pre-defined): "Rohbau", "Elektrik", "Möbel", "Beleuchtung", "Fertigstellung"
   - Add custom: "+ Tag hinzufügen"
   - Multiple selection: Chips can be toggled on/off
-  
 - **Sichtbarkeit:**
   - Toggle: "Für Team sichtbar" (default: ON)
   - Toggle: "Für Kunde sichtbar" (default: OFF)
 
 **Navigation:**
+
 - "Zurück" button: Previous photo (or previous screen if first photo)
 - "Weiter" button: Next photo (or save if last photo)
 - Skip: "Alle überspringen und speichern" (link)
 
 **Screen 4: Final Review**
+
 - List of all photos with metadata
 - Each item:
   - Thumbnail (80px)
@@ -108,10 +115,12 @@ Create a mobile photo documentation interface for KOMPASS with multi-photo captu
 - Reorder: Long-press and drag
 
 **Actions (Bottom, Sticky):**
+
 - Primary: "Fotos speichern" (large blue button)
 - Secondary: "Abbrechen" (gray)
 
 **Offline Behavior:**
+
 - Photos saved locally (IndexedDB or PouchDB)
 - Queued for upload when online
 - Status indicator: "3 Fotos warten auf Upload" (amber)
@@ -119,17 +128,20 @@ Create a mobile photo documentation interface for KOMPASS with multi-photo captu
 - Compression: Photos compressed to reduce storage
 
 **Upload Progress:**
+
 - Shows when online and uploading
 - Progress bar: "Uploading 1 von 3..."
 - Thumbnail: Shows upload status (spinner, checkmark, error)
 - Retry: Tap failed photo to retry upload
 
 **Success Feedback:**
+
 - Toast: "3 Fotos gespeichert" (green checkmark)
 - Or: "3 Fotos in Warteschlange - werden hochgeladen" (amber)
 - Navigate: Returns to entity detail (project/customer) or dashboard
 
 **Gallery View (Alternative Entry):**
+
 - View existing photos for entity
 - Grid layout: 3 columns
 - Filters: Date, tags, linked entity
@@ -137,6 +149,7 @@ Create a mobile photo documentation interface for KOMPASS with multi-photo captu
 - Download: Long-press photo → "Herunterladen"
 
 **Full-Screen Photo View:**
+
 - Swipe left/right: Navigate
 - Pinch to zoom
 - Metadata overlay (bottom):
@@ -151,6 +164,7 @@ Create a mobile photo documentation interface for KOMPASS with multi-photo captu
   - Delete (trash icon, if owner)
 
 **Mobile Optimizations:**
+
 - Camera: Use native camera API for best quality
 - Compression: Compress images to < 1 MB per photo
 - Thumbnails: Generate low-res thumbnails for preview
@@ -159,17 +173,20 @@ Create a mobile photo documentation interface for KOMPASS with multi-photo captu
 - Haptic feedback: On capture, on save
 
 **Accessibility:**
+
 - ARIA labels for all camera controls
 - Voice-over: Describes captured photos
 - High contrast: Clear buttons on dark overlay
 - Large touch targets: 44px minimum
 
 **Storage Management:**
+
 - Warn if storage > 80%: "Speicher fast voll - Fotos werden komprimiert"
 - Auto-cleanup: Delete uploaded photos after 30 days (optional setting)
 - Manual cleanup: "Alte Fotos löschen" in settings
 
 **Example Flow:**
+
 1. User in project detail, taps "Fotos hinzufügen"
 2. Camera opens, full-screen preview
 3. User takes 3 photos of project progress
@@ -190,6 +207,7 @@ Create a mobile photo documentation interface for KOMPASS with multi-photo captu
 18. Complete: Toast "3 Fotos hochgeladen" (green)
 
 ## Implementation Notes
+
 ```bash
 npx shadcn-ui@latest add button textarea sheet toast badge
 # Camera: Use <input type="file" capture="environment" multiple>
@@ -197,4 +215,3 @@ npx shadcn-ui@latest add button textarea sheet toast badge
 # Storage: Use IndexedDB for offline photos
 # Compression: Use browser-image-compression
 ```
-

@@ -1,10 +1,11 @@
 # Produktvision: KI & Automation-Features für KOMPASS
 
-*Document Version: 1.0*  
-*Erstellt: 2025-01-27*  
-*Basierend auf: Projekt KOMPASS – Erweiterungen Gesamtkonzept*
+_Document Version: 1.0_  
+_Erstellt: 2025-01-27_  
+_Basierend auf: Projekt KOMPASS – Erweiterungen Gesamtkonzept_
 
 **⚡ Verknüpfte Dokumente:**
+
 - **Nordstern-Direktive**: `Produktvision für Projekt KOMPASS (Nordstern-Direktive).md` – Pillar 4: Erweiterte Vision 2025
 - **Persona-Anforderungen**: Alle 5 Personas enthalten "Erweiterungen 2025"-Abschnitte mit spezifischen AI/Automation-Requirements
 - **Architektur**: `Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md` – Wird erweitert mit RAG, n8n, Neo4j, BI-Layer
@@ -37,22 +38,27 @@ Dieses Dokument definiert die **Produktvision für AI- und Automation-Features**
 **Beschreibung**: Natural Language Search über gesamte Knowledge Base (Projekte, Protokolle, Angebote, E-Mails, CAD-Beschreibungen)
 
 **Technologie-Stack**:
+
 - **Vector Database**: Weaviate (Self-Hosted) oder Pinecone (Cloud) [^1]
 - **Embedding Model**: Multilingual E5 (optimiert für Deutsch) [^2]
 - **Orchestration**: LlamaIndex (Document Ingestion + Query Engine) [^3]
 - **LLM**: Llama 3 70B (On-Premise) oder GPT-4 (Cloud optional)
 
 [^1]: Quelle: Research "Vector Databases" – Weaviate vs Pinecone Feature Comparison
+
 [^2]: Quelle: Research "Embedding Strategies" – Multilingual E5 Best for German
+
 [^3]: Quelle: Research "LlamaIndex" – Optimized for Enterprise Knowledge Base
 
 **Funktionen**:
+
 - **Hybrid Search**: 70% Vector (semantische Ähnlichkeit) + 30% Keyword (exakte Treffer)
 - **Multi-Turn-Conversations**: System erinnert sich an vorherige Fragen im Dialog
 - **Source Attribution**: Jede Antwort mit CRM-IDs, Projekt-Links, Dokumenten-Referenzen
 - **Confidence Scores**: "Diese Antwort basiert auf 12 Datenpunkten (Konfidenz: 92%)"
 
 **Use Cases pro Persona**:
+
 - **GF**: "Warum ist Umsatz Q1 gesunken?" → KI analysiert Daten & liefert Ursachen mit Quellen
 - **Außendienst**: "Zeig mir erfolgreiche Pitches für Hofläden" → Best-Practice-Beispiele
 - **Innendienst**: "Was kostete Position X im letzten ähnlichen Projekt?" → Preis-Historie mit Inflation-Adjustment
@@ -60,11 +66,13 @@ Dieses Dokument definiert die **Produktvision für AI- und Automation-Features**
 - **Buchhaltung**: "Welche Kunden zahlen am häufigsten zu spät?" → Risiko-Ranking mit DSO-Metriken
 
 **Performance-Ziele**:
+
 - Query Response Time: <2s (P95)
 - Relevanz-Score: >85% (User-Feedback-basiert)
 - Adoption: >70% monatlich aktive User
 
 **DSGVO-Konformität**:
+
 - On-Premise LLM Option (Llama 3 70B lokal gehostet)
 - RBAC-respektierend (User sehen nur autorisierte Dokumente)
 - Audit Trails (Alle Queries geloggt: Wer, Wann, Was)
@@ -76,11 +84,13 @@ Dieses Dokument definiert die **Produktvision für AI- und Automation-Features**
 **Beschreibung**: LLM-generierte Zusammenfassungen aus Rohdaten (Protokolle, Projekt-Notizen, Wochen-Events)
 
 **Technologie-Stack**:
+
 - **LLM**: Llama 3 70B (On-Premise) oder GPT-4 (Cloud)
 - **Orchestration**: n8n Workflow (Scheduled Execution)
 - **Template Engine**: Prompt Templates für verschiedene Report-Typen
 
 **Funktionen**:
+
 - **Weekly Executive Summary** (Freitags 17 Uhr):
   - Aggregiert: Umsatz, Pipeline-Änderungen, neue Projekte, Risiken, Chancen
   - LLM generiert 1-Seiten-Zusammenfassung mit Highlights, Risks, Actions
@@ -95,6 +105,7 @@ Dieses Dokument definiert die **Produktvision für AI- und Automation-Features**
 **Time Savings**: 2h/Woche pro GF/Lead (von manueller Excel-Report-Erstellung)
 
 **Quality Assurance**:
+
 - Human-Review: Reports werden vor Versand zur Review vorgelegt (optional)
 - Hallucination Detection: System warnt bei Konfidenz <75%
 - Traceability: Jede Aussage referenziert Quelldaten
@@ -106,6 +117,7 @@ Dieses Dokument definiert die **Produktvision für AI- und Automation-Features**
 **Beschreibung**: Komplexe Queries über mehrere verknüpfte Entities hinweg (Customer → Project → Invoice → Payment)
 
 **Technologie-Stack**:
+
 - **Graph Database**: Neo4j (für Relationship-Modeling) [^4]
 - **Hybrid Query Engine**: Neo4j Cypher + Vector Search
 - **LLM**: Natural Language → Cypher Query Translation
@@ -113,6 +125,7 @@ Dieses Dokument definiert die **Produktvision für AI- und Automation-Features**
 [^4]: Quelle: Research "Neo4j" – Knowledge Graphs für CRM/PM
 
 **Funktionen**:
+
 - **Graph-Enhanced RAG**:
   - Query: "Welche Projekte von Kunde X verwendeten Material Y von Lieferant Z?"
   - Neo4j traversiert Beziehungen → Vector Search findet semantisch ähnliche Materialien
@@ -124,6 +137,7 @@ Dieses Dokument definiert die **Produktvision für AI- und Automation-Features**
   - "Kunde Y Bonität gesunken → Offene Opportunities?" → Risk-Aggregation
 
 **Use Cases**:
+
 - **Procurement Risk**: "Lieferant-Ausfall-Szenario" → Welche Projekte gefährdet?
 - **Customer Relationship Mapping**: Visualisierung "Wer kennt wen bei Kunde X?"
 - **Competitive Intelligence**: "Welche Kunden kaufen bei uns UND Wettbewerber Y?"
@@ -137,11 +151,13 @@ Dieses Dokument definiert die **Produktvision für AI- und Automation-Features**
 **Beschreibung**: ML-basierte Extraktion wiederkehrender Design-Patterns aus historischen Projekten
 
 **Technologie-Stack**:
+
 - **Pattern Recognition**: Clustering (K-Means) + LLM-Labeling
 - **Vector Search**: Ähnlichkeits-Suche für Pattern-Matching
 - **Template Storage**: CouchDB (CAD-Templates als Attachments)
 
 **Funktionen**:
+
 - **Automatische Pattern-Extraktion**: System identifiziert wiederkehrende Layouts
   - "Standard-Hofladen-Layout": U-förmige Regal-Anordnung (verwendet in 12/15 Projekten)
   - "Vinothek-Präsentations-Wand": Rückwand mit Weinregalen + Beleuchtung (verwendet in 9/10 Vinotheken)
@@ -162,6 +178,7 @@ Dieses Dokument definiert die **Produktvision für AI- und Automation-Features**
 **Trigger**: Angebot versendet, keine Antwort nach X Tagen
 
 **Workflow**:
+
 ```
 Day 0: Angebot versendet
   ↓
@@ -185,6 +202,7 @@ Day 21: Eskalation Vertriebsleiter + "Lost?"-Vorschlag
 **Trigger**: Täglich 6 Uhr morgens (Cron)
 
 **Workflow**:
+
 1. **Für jeden Kunden**: Analysiere Engagement-Metriken
    - Letzte Interaktion >90 Tage → "At-Risk"
    - Offene Rechnungen >30 Tage → "Payment-Risk"
@@ -207,6 +225,7 @@ Day 21: Eskalation Vertriebsleiter + "Lost?"-Vorschlag
 **Trigger**: Opportunity-Status → "Won"
 
 **Workflow** (7 Schritte):
+
 1. **Projekt auto-anlegen**: Opportunity → Projekt (alle Daten übertragen)
 2. **Teams benachrichtigen**: @Planung, @Innendienst, @Montage (Slack/E-Mail)
 3. **Standard-Tasks generieren**: "Materialbestellung", "CAD-Erstellung", "Liefertermin"
@@ -226,6 +245,7 @@ Day 21: Eskalation Vertriebsleiter + "Lost?"-Vorschlag
 **Trigger**: Kontinuierlich (Event-driven bei jeder Lieferung)
 
 **Workflow**:
+
 1. **Liefertermin-Tracking**: Vergleich "zugesagt" vs. "tatsächlich"
 2. **Scoring-Update**: Lieferanten-Reliability-Score neu berechnen
    - Lieferant A: 95% pünktlich (grün, zuverlässig)
@@ -243,6 +263,7 @@ Day 21: Eskalation Vertriebsleiter + "Lost?"-Vorschlag
 **Trigger**: Rechnung fällig + X Tage
 
 **Workflow** (5 Mahnstufen):
+
 ```
 Day 0: Rechnung fällig
   ↓
@@ -268,6 +289,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 **Trigger**: Lieferanten-Preislisten ändern sich (Webhook von Lieferanten-APIs)
 
 **Workflow**:
+
 1. **Empfange Preisänderung**: Webhook → n8n
 2. **Interne Preisliste auto-updaten**: CouchDB Price-Catalog
 3. **Impact-Analyse**: Berechne Auswirkungen auf offene Angebote
@@ -285,6 +307,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 **Trigger**: Freitags 17 Uhr (Cron)
 
 **Workflow**:
+
 1. **Daten aggregieren**: Pipeline, Umsatz, Margen, Liquidität, Team-Auslastung (aus CouchDB/PostgreSQL)
 2. **ML-Forecasts ausführen**:
    - Opportunity Win-Probability (Random Forest)
@@ -309,6 +332,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 **Trigger**: Stündlich (Cron)
 
 **Workflow**:
+
 1. **ML-Modelle ausführen** (Batch-Prediction):
    - Project-Delay-Risk (XGBoost): Projekt A = 85% Verzögerungs-Risiko
    - Budget-Overrun-Risk (Random Forest): Projekt B = 72% Überschreitungs-Risiko
@@ -332,6 +356,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 **Trigger**: Angebot benötigt Sonderteile (nicht in Preisliste)
 
 **Workflow**:
+
 1. **Specs extrahieren**: LLM parst Angebots-Position → "Spezial-Kühltheke 2,5m, Edelstahl, EU-Stecker"
 2. **Lieferanten-APIs abfragen**: REST-Calls an 3 Lieferanten
 3. **Antworten sammeln**: Async (Timeout 48h)
@@ -349,6 +374,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 **Trigger**: Neuer Großkunde (Opportunity >€50K)
 
 **Workflow**:
+
 1. **Bonitätsprüfung**: Creditreform/Schufa-API
 2. **Credit-Score abrufen** (z.B. 580/1000)
 3. **Risk-Assessment**:
@@ -370,6 +396,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 **Beschreibung**: ML-basierte Umsatzprognose basierend auf gewichteter Pipeline
 
 **Technologie-Stack**:
+
 - **ML-Modell**: Random Forest (Opportunity Win-Prediction) [^5]
 - **Features**: Opportunity-Größe, Branche, Verkäufer, Kundenhistorie, Engagement-Metriken, Alter
 - **Training**: Supervised Learning auf historischen Daten (2022-2024, ~200 Opportunities)
@@ -378,6 +405,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 [^5]: Quelle: Research "ML Opportunity Scoring" – Random Forest Best Practice
 
 **Funktionen**:
+
 - **Gewichtete Pipeline-Berechnung**:
   - Opportunity A: €50K × 85% Wahrscheinlichkeit = €42,5K gewichtet
   - Opportunity B: €30K × 45% Wahrscheinlichkeit = €13,5K gewichtet
@@ -392,6 +420,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 [^6]: Quelle: Research "Forecasting Methods" – Monte Carlo für Confidence Intervals
 
 **Persona-Nutzen**:
+
 - **GF**: Fundierte Budget-Planung, Stakeholder-Kommunikation
 - **Außendienst**: Realistische Zielvorgaben (keine unmöglichen Targets)
 - **Innendienst**: Workload-Prognose (Wie viele Angebote kommen?)
@@ -403,6 +432,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 **Beschreibung**: 6-Monats-Liquiditäts-Prognose mit Payment Pattern Recognition
 
 **Technologie-Stack**:
+
 - **ML-Modell**: Random Forest (Payment Probability Prediction) [^7]
 - **Features**: Customer Payment History, Invoice Amount, Due Date, Industry, Season
 - **Accuracy**: ±3 Tage Abweichung bei 70% der Vorhersagen
@@ -411,6 +441,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 [^7]: Quelle: Research "Cash Flow Prediction" – Payment Pattern ML
 
 **Funktionen**:
+
 - **Invoice Aging Analysis**: Kategorisierung (Fällig 0-7 Tage, 8-30, Überfällig 1-30, >30)
 - **Payment Prediction**: ML berechnet Wahrscheinlichkeit pünktlicher Zahlung pro Kunde
   - Kunde A: 95% pünktlich (Historie: 12/12 on-time)
@@ -427,11 +458,13 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 - **What-If-Analysen**: "Kunde X zahlt 4 Wochen später?" → Liquidität sinkt auf €38K (kritisch!)
 
 **Alerts**:
+
 - Gelb (<€60K): "Liquiditätspuffer schwindet"
 - Orange (<€50K): "Zahlungsfähigkeit gefährdet! GF informiert"
 - Rot (<€40K): "NOTFALL: Liquiditätsengpass – Kreditlinie aktivieren!"
 
 **Persona-Nutzen**:
+
 - **GF**: Risiko-Sichtbarkeit, proaktive Finanzsteuerung
 - **Buchhaltung**: Collection-Priorisierung, Mahnmanagement
 
@@ -442,6 +475,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 **Beschreibung**: ML-Prognose realistischer Fertigstellungsdaten mit Critical Path Analysis
 
 **Technologie-Stack**:
+
 - **ML-Modell**: XGBoost (Project Completion Date Prediction) [^8]
 - **Features**: Project-Type, Complexity, Team-Erfahrung, Parallel-Workload, Lieferanten-Reliability
 - **Algorithm**: Critical Path Method (CPM) + ML-Enhancements
@@ -450,6 +484,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 [^8]: Quelle: Research "Forecasting Methods" – XGBoost für Timeline Prediction
 
 **Funktionen**:
+
 - **Predictive Completion Date**:
   - Projekt A: Geplant KW 16, ML-Forecast KW 17 (1 Woche Delay, 75% Wahrscheinlichkeit)
   - Grund: "CAD-Phase 80% Zeit verbraucht, aber erst 60% fertig"
@@ -459,10 +494,12 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 - **What-If-Analysen**: "Projekt A priorisieren?" → Projekt B & C verzögern sich je 3 Tage
 
 **Alerts**:
+
 - "⚠️ Projekt X: 89% Risiko für 2-Wochen-Verzögerung (CAD überfällig)"
 - "🔴 Projekt Y: Kritischer Pfad blockiert – Empfehlung: Sofort Eskalation"
 
 **Persona-Nutzen**:
+
 - **Planung**: Realistische Timeline-Planung, Kapazitäts-Management
 - **GF**: Frühe Intervention, Kunden-Kommunikation
 
@@ -473,6 +510,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 **Beschreibung**: Team-Auslastungs-Prognose mit Überlastungs-Alerts
 
 **Technologie-Stack**:
+
 - **Algorithm**: Resource Leveling (aus klassischem PM) [^9]
 - **ML**: Workload-Complexity-Estimation (Random Forest)
 - **Input**: Geplante Projekte, Team-Verfügbarkeit, Skill-Matrix
@@ -481,6 +519,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 [^9]: Quelle: Research "Capacity Forecasting" – Resource Leveling Algorithms
 
 **Funktionen**:
+
 - **Workload-Forecast**:
   ```
   KW 15: ███████░░░ 74% (78h / 105h) – Grün
@@ -493,11 +532,13 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
   - "Oder: Projekt C um 2 Wochen verschieben → Auslastung auf 94%"
 
 **Alerts**:
+
 - Gelb (80-95%): "Team nähert sich Kapazitätsgrenze"
 - Orange (95-105%): "Grenzbereich – Überwachung intensivieren"
 - Rot (>105%): "ÜBERLASTUNG! – Extern eskalieren oder Projekte verschieben"
 
 **Persona-Nutzen**:
+
 - **Planung**: Workload-Balancing, Burn-Out-Prävention
 - **GF**: Hiring-Entscheidungen ("Brauchen wir 2 zusätzliche Planer?")
 
@@ -510,6 +551,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 **Beschreibung**: Real-Time Executive Command Center mit Drill-Down-Funktionalität
 
 **Technologie-Stack**:
+
 - **Frontend**: Custom React Dashboards (shadcn/ui Components)
 - **Backend**: PostgreSQL (via CQRS Pattern) [^10]
 - **Charting**: Recharts oder Plotly.js
@@ -518,6 +560,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 [^10]: Quelle: Research "BI Solutions" – CQRS Pattern (CouchDB → PostgreSQL)
 
 **Top-Level KPIs** (Always Visible):
+
 - Umsatz MTD/QTD/YTD mit Sparklines (↗ +12% vs. Vormonat)
 - Pipeline-Wert (gewichtet): €1,2M mit Wahrscheinlichkeitsverteilung
 - Aktuelle Liquidität: €87K (grün, Puffer €37K über Minimum)
@@ -525,6 +568,7 @@ Day 45: Eskalation GF + Inkasso-Vorschlag
 - Offene Rechnungen: 12 Stück, €145K (3 überfällig)
 
 **Drill-Down-Hierarchien**:
+
 ```
 Umsatz €320K (Q1 2025)
   └─> Nach Branche:
@@ -540,6 +584,7 @@ Umsatz €320K (Q1 2025)
 ```
 
 **Interactive Features**:
+
 - **Click-to-Drill-Down**: Jedes Chart klickbar für Details
 - **Custom Filters**: Nach Datum, Branche, Verkäufer, Status filtern
 - **Export**: PDF/Excel/PowerPoint für Board-Meetings
@@ -552,17 +597,20 @@ Umsatz €320K (Q1 2025)
 **Beschreibung**: Workload-Visualisierung & Kapazitäts-Management
 
 **KPIs**:
+
 - Team-Auslastung (% pro Woche)
 - Aktive Projekte/Angebote
 - Überfällige Tasks
 - Avg. Response Time
 
 **Visualisierungen**:
+
 - **Gantt-Chart**: Projekt-Timelines mit Meilensteinen
 - **Heatmap**: Wer ist über-/unterlastet? (Farbcodierung)
 - **Priority Queue**: Sortierte Liste nach Dringlichkeit
 
 **Alerts**:
+
 - Warnung bei >90% Auslastung
 - Kritisch bei >105% Auslastung
 
@@ -573,6 +621,7 @@ Umsatz €320K (Q1 2025)
 **Beschreibung**: Liquidität, Forderungen, Margen, P&L in Echtzeit
 
 **KPIs**:
+
 - Aktuelle Liquidität mit 6-Month-Forecast
 - Offene Forderungen mit Aging-Breakdown
 - DSO (Days Sales Outstanding)
@@ -580,9 +629,11 @@ Umsatz €320K (Q1 2025)
 - P&L Summary (MTD/QTD/YTD)
 
 **Drill-Down**:
+
 - Offene Forderungen → Nach Kunde → Nach Rechnung → Historie (Mahnungen, Zahlungserinnerungen)
 
 **Alerts**:
+
 - Liquidität <€60K: "Puffer schwindet"
 - Liquidität <€50K: "KRITISCH – GF informiert"
 - Rechnung >30 Tage überfällig: "Mahnung intensivieren"
@@ -600,6 +651,7 @@ Umsatz €320K (Q1 2025)
 [^11]: Quelle: Research "BI Solutions" – Metabase Best for Business-User-Friendly BI
 
 **Funktionen**:
+
 - **Visual Query Builder**: Drag & Drop (keine SQL-Kenntnisse nötig)
   - "Zeige mir Umsatz pro Branche pro Quartal" → Auto-SQL-Generation
 - **Custom Dashboards**: GF kann eigene Dashboard-Layouts erstellen
@@ -619,6 +671,7 @@ Umsatz €320K (Q1 2025)
 ### ROI-Kalkulation (Konsolidiert)
 
 **Investitionskosten**:
+
 - **Entwicklung**: €180K (RAG + n8n + ML-Modelle + BI-Dashboards)
   - RAG-System: €60K (Vector DB, LlamaIndex, LLM Integration)
   - n8n-Workflows: €40K (30 Workflows, Integrations, Error Handling)
@@ -629,12 +682,14 @@ Umsatz €320K (Q1 2025)
 - **Gesamt Jahr 1**: €204K
 
 **Nutzen**:
+
 - **Zeitersparnis**: €82K/Jahr (39,5h/Woche × €40/h × 52 Wochen)
 - **Fehlerreduktion**: €15K/Jahr (weniger Bad Debt, Budget-Überschreitungen, Projekt-Verzögerungen)
 - **Opportunity-Uplift**: €25K/Jahr (+15% Conversion-Rate durch besseres Follow-Up = +5 Deals à €5K)
 - **Gesamt Nutzen**: €122K/Jahr
 
 **ROI**:
+
 - **Jahr 1**: (€122K - €24K Betrieb) / €204K = 48% ROI, Break-Even Monat 25
 - **Jahr 2**: (€122K - €24K) / €24K = 408% ROI (kumulativ 145%)
 - **Jahr 3**: 508% kumulativer ROI
@@ -666,21 +721,25 @@ Umsatz €320K (Q1 2025)
 **Unique Selling Propositions**:
 
 **1. On-Premise AI-CRM** (vs. Salesforce/HubSpot Cloud):
+
 - **100% Datensouveränität**: Keine Daten verlassen Deutschland
 - **DSGVO-Garantie**: Keine US-Cloud-Provider (kein Cloud-Act-Risiko)
 - **No Vendor-Lock-In**: Open-Source-Basis (LlamaIndex, Llama 3, Weaviate)
 
 **2. n8n-Native Automation** (vs. Zapier/Make):
+
 - **Visual Workflow-Editor**: Nicht-Entwickler können Workflows modifizieren
 - **Self-Hosted**: Keine monatlichen Automatisierungs-Kosten (€299/Monat bei Zapier Pro)
 - **Unbegrenzte Workflows**: Keine Execution-Limits (Make: 10K Operations/Monat, dann Extra-Kosten)
 
 **3. Branchenspezifische AI** (vs. Generic CRM):
+
 - **Trainiert auf Ladenbau-Daten**: Patterns, Templates, Best Practices aus Branche
 - **Deutsche Sprache**: Optimiert für deutsche Geschäftskommunikation
 - **Mittelstands-fokussiert**: Nicht Enterprise-overgrown (wie SAP), nicht Startup-simplistic (wie Pipedrive)
 
 **4. Predictive-First** (vs. Reactive CRM):
+
 - **Forecasting built-in**: Liquidität, Pipeline, Timeline standardmäßig enthalten
 - **Proactive Alerts**: System warnt BEVOR Probleme kritisch werden
 - **ML-Powered Insights**: Nicht nur Reporting, sondern Recommendations
@@ -694,6 +753,7 @@ Umsatz €320K (Q1 2025)
 **Architektur-Prinzipien** [^12]:
 
 **1. Data Minimization:**
+
 - RAG: Nur notwendige Context-Chunks an LLM gesendet (nicht gesamte Datenbank)
 - Pseudonymisierung: Bei Cloud-LLM-Nutzung (Namen → IDs, Adressen → Regionen)
 - Aggregation: Dashboards zeigen aggregierte Daten (keine Einzelpersonen-Details)
@@ -701,6 +761,7 @@ Umsatz €320K (Q1 2025)
 [^12]: Quelle: Research "DSGVO Compliance for LLMs" – Architecture Best Practices
 
 **2. Purpose Limitation:**
+
 - **Consent Management**: User-Opt-In für AI-Features (Checkboxen in Settings)
   - ☑ "AI-Transkription erlauben"
   - ☑ "Forecasting-Modelle verwenden"
@@ -708,23 +769,27 @@ Umsatz €320K (Q1 2025)
 - **Granulare Kontrolle**: Pro Feature separat aktivierbar
 
 **3. Storage Limitation:**
+
 - **Auto-Deletion**: AI-Logs nach 90 Tagen gelöscht (konfigurierbar)
 - **Vector DB Cleanup**: Nicht mehr aktuelle Embeddings regelmäßig bereinigt
 - **RTBF (Right To Be Forgotten)**: Bei Löschantrag → Kunde-Daten aus Vector DB entfernt
 
 **4. Security Measures:**
+
 - **Field-Level Encryption**: Sensitive Felder (Margen, Gehälter) verschlüsselt at-rest
 - **TLS 1.3**: Alle API-Kommunikation verschlüsselt in-transit
 - **Access Control**: RAG respektiert RBAC (User sehen nur autorisierte Dokumente)
 - **Audit Trails**: Alle KI-Queries geloggt (Wer, Wann, Was abgerufen)
 
 **5. Transparency & Explainability:**
+
 - **Reasoning Traces**: User können nachvollziehen wie KI zu Antwort kam
 - **Source Attribution**: Jede AI-Antwort mit Quellenangaben (CRM-IDs, Dokument-Links)
 - **Confidence Scores**: "Diese Antwort basiert auf 8 Projekten (Konfidenz: 91%)"
 - **Hallucination Detection**: Warnung bei Konfidenz <70% ("Manuelle Prüfung empfohlen")
 
 **6. Human-in-the-Loop:**
+
 - **Kritische Entscheidungen** (>€10K Finanz, Vertrags-Änderungen) → Manuelle Bestätigung erforderlich
 - **Review-Modus**: AI-generierte Reports werden vor Versand zur Review vorgelegt
 
@@ -737,14 +802,17 @@ Umsatz €320K (Q1 2025)
 **Lösung**:
 
 **1. Kennzeichnungspflicht:**
+
 - Alle AI-generierten Dokumente erhalten Watermark: "AI-GENERATED (Modell: Llama-3-70B, Version: 1.2, Datum: 2025-01-15)"
 - Unterscheidung: Human-Created vs. AI-Assisted vs. AI-Generated
 
 **2. Immutability:**
+
 - AI-Reports nach Finalisierung unveränderbar (Hash-basiert)
 - Änderungen nur via Change-Log (wie bei Rechnungen)
 
 **3. Traceability:**
+
 - **Jede AI-Generierung** referenziert:
   - Input-Daten (CRM-IDs, Datenbank-Query)
   - Modell-Version (Llama-3-70B-v1.2)
@@ -753,10 +821,12 @@ Umsatz €320K (Q1 2025)
 - **Reproduzierbarkeit**: Bei gleichem Input + Modell → ähnliches Output (Determinismus wo möglich)
 
 **4. Human-Review:**
+
 - **Kritische Dokumente** (Rechnungen, Verträge, Compliance-Reports) → IMMER manuell geprüft
 - **Unkritische Dokumente** (Interne Summaries, Benachrichtigungen) → Auto-versendbar
 
 **5. Archivierung:**
+
 - AI-Reports 10 Jahre archiviert (wie Rechnungen)
 - Modell-Versionen archiviert (für Reproduzierbarkeit bei Prüfungen)
 
@@ -771,11 +841,13 @@ Umsatz €320K (Q1 2025)
 **Lösung: Mehrstufiges Adoption-Programm**
 
 **Phase 1: Awareness (Woche 1-2)**
+
 - **Kickoff-Meeting**: GF präsentiert Vision & Benefits
 - **Demo-Session**: Live-Demo der AI-Features (Use Cases zeigen)
 - **FAQ-Dokument**: "10 häufigste Fragen zu AI in KOMPASS beantwortet"
 
 **Phase 2: Training (Woche 3-6)**
+
 - **Rolle-spezifische Workshops**: 2h Training pro Persona
   - Außendienst: Transkription, AI-Recherche, Pipeline-Forecast
   - Innendienst: n8n-Workflows, Quote-Assist, Workload-Dashboard
@@ -786,11 +858,13 @@ Umsatz €320K (Q1 2025)
 - **Sandbox-Umgebung**: Testdaten zum Ausprobieren ohne Produktiv-Risiko
 
 **Phase 3: Pilot (Woche 7-10)**
+
 - **Power-User-Gruppe**: 3-5 Early Adopters pro Team
 - **Feedback-Loop**: Wöchentliche Retrospektiven (Was funktioniert? Was nicht?)
 - **Iterative Verbesserungen**: Bugs fixen, UX anpassen, Prompts optimieren
 
 **Phase 4: Rollout (Woche 11-14)**
+
 - **Gesamt-Team-Rollout**: Alle User aktiviert
 - **Support-Hotline**: 2 Wochen intensive Support-Phase (Slack-Channel + E-Mail)
 - **Erfolgsmessung**: Adoption-Rate, Time-Savings-Surveys, NPS-Umfrage
@@ -800,6 +874,7 @@ Umsatz €320K (Q1 2025)
 **Incentivierung**: Top 3 Power-User erhalten Bonus/Anerkennung (Gamification)
 
 **Success Metrics**:
+
 - **Adoption Rate**: >70% nutzen mindestens 1 AI-Feature monatlich (nach 3 Monaten)
 - **User Satisfaction**: NPS >40 für AI-Features
 - **Support-Ticket-Rate**: <10% der User benötigen Support (nach 6 Monaten)
@@ -815,16 +890,19 @@ Umsatz €320K (Q1 2025)
 **Lösung**: **Multi-Layered Testing Approach**
 
 **1. Unit Tests (Komponenten)**:
+
 - **Embedding Pipeline**: Test dass Dokumente korrekt embedded werden
 - **Vector Search**: Test dass Top-K-Results semantisch relevant sind
 - **ML-Modelle**: Test dass Predictions im erwarteten Range (0-100%)
 
 **2. Integration Tests (End-to-End)**:
+
 - **RAG-Pipeline**: Input-Query → Output-Antwort (mit Mocked LLM für Determinismus)
 - **n8n-Workflows**: Vollständige Workflow-Execution (mit Test-Daten)
 - **Dashboard-Queries**: SQL-Performance-Tests (Queries <100ms)
 
 **3. AI-Evaluation (Qualität)**:
+
 - **Relevanz-Tests**: Ground-Truth-Dataset (50 Fragen mit erwarteten Antworten)
   - Metric: Precision@5 (Sind Top-5-Results relevant?) → Ziel: >85%
 - **Hallucination-Tests**: Fragen stellen wo keine Daten existieren
@@ -832,16 +910,19 @@ Umsatz €320K (Q1 2025)
 - **Source-Attribution-Tests**: Prüfung dass Quellenangaben korrekt (CRM-IDs valide)
 
 **4. Load Tests (Skalierung)**:
+
 - **Concurrent Users**: 20 User gleichzeitig RAG-Queries → Response Time <2s (P95)
 - **ML-Batch-Predictions**: 100 Opportunities scorehen → <5s
 - **Dashboard-Load**: 10 User öffnen gleichzeitig Executive Dashboard → <3s Load
 
 **5. User Acceptance Tests (UAT)**:
+
 - **Beta-User-Gruppe**: 5 Power-User pro Persona testen Features
 - **Task-Based-Testing**: "Finde ähnliche Hofläden-Projekte" → Erfolgsquote >90%
 - **Feedback-Scores**: Rating 1-5 Sterne pro Feature → Ziel: Ø >4,2
 
 **6. A/B-Testing (Optimization)**:
+
 - **Prompt-Varianten**: Welcher Prompt liefert bessere Antworten?
 - **Workflow-Timing**: Tag 3 vs. Tag 5 für Follow-Up → Welche Conversion-Rate?
 - **Dashboard-Layouts**: Layout A vs. B → Welches wird häufiger verwendet?
@@ -851,6 +932,7 @@ Umsatz €320K (Q1 2025)
 ### Monitoring & Continuous Improvement
 
 **Production-Monitoring**:
+
 - **Grafana Dashboards**:
   - RAG-Metrics: Query-Latency, Relevanz-Score, Cache-Hit-Rate
   - n8n-Metrics: Workflow-Execution-Count, Error-Rate, Avg-Duration
@@ -859,12 +941,14 @@ Umsatz €320K (Q1 2025)
 - **User-Feedback-Loop**: "War diese Antwort hilfreich? 👍 👎" → Metrics-Tracking
 
 **Model Retraining Pipeline**:
+
 - **Quarterly Retraining**: ML-Modelle alle 3 Monate neu trainiert (mit neuesten Daten)
 - **Automated via n8n**: Workflow triggert Training-Job (Python-Script auf GPU-Server)
 - **Performance-Validation**: Neues Modell muss besser sein als altes (sonst nicht deployed)
 - **Rollback-Mechanismus**: Bei Performance-Degradation → Automatisches Rollback zu vorheriger Modell-Version
 
 **Feature-Usage-Analytics**:
+
 - Welche AI-Features werden am häufigsten genutzt? (Top 5 Tracking)
 - Welche Personas adopten AI am schnellsten? (Außendienst vs. Buchhaltung)
 - Wo brechen User ab? (z.B. RAG-Query ohne Ergebnis → Verbesserungspotenzial)
@@ -875,22 +959,23 @@ Umsatz €320K (Q1 2025)
 
 ### MoSCoW-Priorisierung für MVP AI-Features
 
-| Feature | Priority | Complexity | Value | Phase |
-|---------|----------|------------|-------|-------|
-| **RAG Q&A (Basic)** | MUST | High | Very High | Q2 2025 |
-| **n8n Follow-Up Automation** | MUST | Medium | High | Q2 2025 |
-| **Opportunity Win-Scoring** | SHOULD | Medium | High | Q3 2025 |
-| **Cash Flow Forecast** | SHOULD | High | Very High | Q3 2025 |
-| **Executive Dashboard** | MUST | Medium | Very High | Q3 2025 |
-| **Timeline Forecast** | SHOULD | Medium | Medium | Q3 2025 |
-| **Neo4j Graph Search** | COULD | High | Medium | Q4 2025 |
-| **Metabase Self-Service BI** | SHOULD | Low | Medium | Q4 2025 |
-| **Design Pattern Library** | COULD | Medium | Medium | Q4 2025 |
-| **Automated Report Generation** | SHOULD | Low | High | Q4 2025 |
-| **Invoice-PO Matching (AI)** | WON'T | High | Low | 2026+ |
-| **Sentiment Analysis** | WON'T | Medium | Low | 2026+ |
+| Feature                         | Priority | Complexity | Value     | Phase   |
+| ------------------------------- | -------- | ---------- | --------- | ------- |
+| **RAG Q&A (Basic)**             | MUST     | High       | Very High | Q2 2025 |
+| **n8n Follow-Up Automation**    | MUST     | Medium     | High      | Q2 2025 |
+| **Opportunity Win-Scoring**     | SHOULD   | Medium     | High      | Q3 2025 |
+| **Cash Flow Forecast**          | SHOULD   | High       | Very High | Q3 2025 |
+| **Executive Dashboard**         | MUST     | Medium     | Very High | Q3 2025 |
+| **Timeline Forecast**           | SHOULD   | Medium     | Medium    | Q3 2025 |
+| **Neo4j Graph Search**          | COULD    | High       | Medium    | Q4 2025 |
+| **Metabase Self-Service BI**    | SHOULD   | Low        | Medium    | Q4 2025 |
+| **Design Pattern Library**      | COULD    | Medium     | Medium    | Q4 2025 |
+| **Automated Report Generation** | SHOULD   | Low        | High      | Q4 2025 |
+| **Invoice-PO Matching (AI)**    | WON'T    | High       | Low       | 2026+   |
+| **Sentiment Analysis**          | WON'T    | Medium     | Low       | 2026+   |
 
 **Prioritäts-Kriterien**:
+
 - **MUST**: Kritisch für Value-Proposition, hohe User-Nachfrage, Wettbewerbsvorteil
 - **SHOULD**: Signifikanter Nutzen, mittlere Komplexität, ROI >100%
 - **COULD**: Nice-to-Have, geringer Nutzen oder hohe Komplexität
@@ -905,12 +990,13 @@ Umsatz €320K (Q1 2025)
 **Ziel**: RAG-Prototyp + n8n-Basics
 
 **Deliverables**:
+
 - [ ] **Vector Database Setup** (Woche 1-2):
   - Weaviate installiert (Docker Self-Hosted)
   - Embedding-Pipeline (CouchDB → Weaviate)
   - Index erstellt für Customers, Projects, Protocols
 - [ ] **LlamaIndex Integration** (Woche 3-4):
-  - Document-Ingestion-Pipeline (CouchDB _changes Feed → LlamaIndex)
+  - Document-Ingestion-Pipeline (CouchDB \_changes Feed → LlamaIndex)
   - Query-Engine (Natural Language → Vector Search → Context Assembly)
   - Basic Frontend (React Chat-Interface mit shadcn/ui)
 - [ ] **On-Premise LLM Setup** (Woche 5-6):
@@ -926,6 +1012,7 @@ Umsatz €320K (Q1 2025)
   - Security-Audit (DSGVO-Compliance-Check)
 
 **Risiken**:
+
 - LLM-Hosting komplex (GPU-Server-Setup) → Mitigation: Cloud-LLM-Fallback (GPT-4 temp.)
 - Embedding-Quality unklar → Mitigation: A/B-Test verschiedene Embedding-Modelle
 
@@ -936,6 +1023,7 @@ Umsatz €320K (Q1 2025)
 **Ziel**: ML-Forecasts + BI-Dashboards + Advanced n8n
 
 **Deliverables**:
+
 - [ ] **ML-Modelle trainieren** (Woche 1-3):
   - Opportunity Win-Scoring (Random Forest, Features: 12, Training-Data: 200 Opportunities)
   - Payment Prediction (Random Forest, Features: 8, Training-Data: 500 Invoices)
@@ -962,6 +1050,7 @@ Umsatz €320K (Q1 2025)
   - Performance-Optimization (Query-Caching, Index-Tuning)
 
 **Risiken**:
+
 - ML-Accuracy unklar (historische Daten limitiert) → Mitigation: Start mit einfachen Modellen, iterativ verbessern
 - PostgreSQL-Replication-Lag → Mitigation: CDC-Optimierung, Eventual-Consistency akzeptabel für Dashboards
 
@@ -972,6 +1061,7 @@ Umsatz €320K (Q1 2025)
 **Ziel**: Neo4j + Metabase + Automated Reporting
 
 **Deliverables**:
+
 - [ ] **Neo4j Integration** (Woche 1-2):
   - Neo4j installiert (Docker)
   - Schema-Design (Customer, Project, Contact, Supplier, Material → Relationships)
@@ -986,7 +1076,7 @@ Umsatz €320K (Q1 2025)
   - Initial Dashboards für GF (Umsatz, Pipeline, Margen)
   - User-Training: "Eigene Dashboards erstellen" (1h Workshop)
 - [ ] **CQRS Pattern** (Woche 7):
-  - CDC-Pipeline optimiert (CouchDB _changes → PostgreSQL <2s Latenz)
+  - CDC-Pipeline optimiert (CouchDB \_changes → PostgreSQL <2s Latenz)
   - Materialized Views (vorberechnete Aggregationen)
   - Index-Strategy (Performance-Tuning)
 - [ ] **Automated Report Generation** (Woche 8):
@@ -995,6 +1085,7 @@ Umsatz €320K (Q1 2025)
   - Quarterly-Executive-Report (GF, Board-ready)
 
 **Risiken**:
+
 - Neo4j-Komplexität (neue Technologie für Team) → Mitigation: Externe Neo4j-Beratung (2 Tage)
 - Metabase-Adoption unklar (User nutzen es nicht?) → Mitigation: Intensive Schulungen + Templates
 
@@ -1005,6 +1096,7 @@ Umsatz €320K (Q1 2025)
 **Ziel**: Continuous Improvement, Mobile, Advanced Forecasting
 
 **Deliverables**:
+
 - [ ] **Model Retraining Pipeline** (Woche 1-2):
   - Automatisierter Retraining-Workflow (n8n triggert Python-Script)
   - Model-Versioning (MLflow oder DVC)
@@ -1023,6 +1115,7 @@ Umsatz €320K (Q1 2025)
   - Voice-Input für RAG-Queries (Whisper Speech-to-Text)
 
 **Risiken**:
+
 - Retraining-Pipeline komplex (MLOps-Expertise nötig) → Mitigation: Externe MLOps-Berater (3 Tage)
 
 ---
@@ -1031,45 +1124,45 @@ Umsatz €320K (Q1 2025)
 
 ### Adoption Metrics
 
-| Metrik | Ziel (Monat 3) | Ziel (Monat 6) | Messung |
-|--------|----------------|----------------|---------|
-| **AI-Feature-Nutzung** | >50% aktive User | >70% aktive User | User-Analytics (mindestens 1 AI-Feature/Monat) |
-| **RAG-Query-Count** | >100 Queries/Woche | >200 Queries/Woche | Backend-Logs |
-| **n8n-Workflow-Executions** | >500/Woche | >1000/Woche | n8n-Metrics |
-| **Dashboard-Nutzung** | >60% GF/Leads | >80% GF/Leads | Grafana-Analytics |
-| **NPS (AI-Features)** | >30 | >40 | User-Surveys (quartalsweise) |
+| Metrik                      | Ziel (Monat 3)     | Ziel (Monat 6)     | Messung                                        |
+| --------------------------- | ------------------ | ------------------ | ---------------------------------------------- |
+| **AI-Feature-Nutzung**      | >50% aktive User   | >70% aktive User   | User-Analytics (mindestens 1 AI-Feature/Monat) |
+| **RAG-Query-Count**         | >100 Queries/Woche | >200 Queries/Woche | Backend-Logs                                   |
+| **n8n-Workflow-Executions** | >500/Woche         | >1000/Woche        | n8n-Metrics                                    |
+| **Dashboard-Nutzung**       | >60% GF/Leads      | >80% GF/Leads      | Grafana-Analytics                              |
+| **NPS (AI-Features)**       | >30                | >40                | User-Surveys (quartalsweise)                   |
 
 ### Performance Metrics
 
-| Metrik | Ziel | Messung |
-|--------|------|---------|
-| **RAG Query Response Time** | <2s (P95) | APM-Monitoring (Elastic APM) |
-| **ML-Prediction-Latency** | <500ms (Batch-100) | Backend-Logs |
-| **Dashboard-Load-Time** | <3s (P95) | Lighthouse/WebPageTest |
-| **n8n-Workflow-Duration** | <10s (P95) | n8n-Execution-Logs |
-| **Forecast-Accuracy** | >90% (Quartals-Umsatz) | Post-Hoc-Validation (Forecast vs. Actual) |
+| Metrik                      | Ziel                   | Messung                                   |
+| --------------------------- | ---------------------- | ----------------------------------------- |
+| **RAG Query Response Time** | <2s (P95)              | APM-Monitoring (Elastic APM)              |
+| **ML-Prediction-Latency**   | <500ms (Batch-100)     | Backend-Logs                              |
+| **Dashboard-Load-Time**     | <3s (P95)              | Lighthouse/WebPageTest                    |
+| **n8n-Workflow-Duration**   | <10s (P95)             | n8n-Execution-Logs                        |
+| **Forecast-Accuracy**       | >90% (Quartals-Umsatz) | Post-Hoc-Validation (Forecast vs. Actual) |
 
 ### Business Value Metrics
 
-| Metrik | Ziel (Jahr 1) | Messung |
-|--------|---------------|---------|
-| **Time Savings** | >35h/Woche | Time-Tracking-Surveys (quartalsweise) |
-| **Error Reduction** | -40% Prozess-Fehler | Incident-Tracking (vs. Baseline) |
-| **Conversion-Rate-Uplift** | +10% | Sales-Analytics (Opportunities Won) |
-| **DSO Reduction** | -3 Tage | Financial-Analytics (Invoice → Payment) |
-| **Projekt-Pünktlichkeit** | +10% On-Time-Delivery | Project-Analytics (Actual vs. Planned) |
+| Metrik                     | Ziel (Jahr 1)         | Messung                                 |
+| -------------------------- | --------------------- | --------------------------------------- |
+| **Time Savings**           | >35h/Woche            | Time-Tracking-Surveys (quartalsweise)   |
+| **Error Reduction**        | -40% Prozess-Fehler   | Incident-Tracking (vs. Baseline)        |
+| **Conversion-Rate-Uplift** | +10%                  | Sales-Analytics (Opportunities Won)     |
+| **DSO Reduction**          | -3 Tage               | Financial-Analytics (Invoice → Payment) |
+| **Projekt-Pünktlichkeit**  | +10% On-Time-Delivery | Project-Analytics (Actual vs. Planned)  |
 
 ### Cost Metrics
 
-| Metrik | Jahr 1 | Jahr 2 | Jahr 3 |
-|--------|--------|--------|--------|
-| **Entwicklungskosten** | €180K | €0 | €0 |
-| **Infrastruktur** | €12K | €12K | €12K |
-| **Betrieb & Wartung** | €12K | €12K | €12K |
-| **Gesamt Kosten** | €204K | €24K | €24K |
-| **Gesamt Nutzen** | €122K | €122K | €122K |
-| **Net Value** | -€82K | +€98K | +€98K |
-| **ROI** | 48% | 408% | 508% (kumulativ) |
+| Metrik                 | Jahr 1 | Jahr 2 | Jahr 3           |
+| ---------------------- | ------ | ------ | ---------------- |
+| **Entwicklungskosten** | €180K  | €0     | €0               |
+| **Infrastruktur**      | €12K   | €12K   | €12K             |
+| **Betrieb & Wartung**  | €12K   | €12K   | €12K             |
+| **Gesamt Kosten**      | €204K  | €24K   | €24K             |
+| **Gesamt Nutzen**      | €122K  | €122K  | €122K            |
+| **Net Value**          | -€82K  | +€98K  | +€98K            |
+| **ROI**                | 48%    | 408%   | 508% (kumulativ) |
 
 ---
 
@@ -1078,23 +1171,26 @@ Umsatz €320K (Q1 2025)
 ### Skalierungs-Vision (2026+)
 
 **Multi-Tenancy-Support**:
+
 - **Isolierte Daten pro Mandant**: Separate CouchDB-Databases, Vector-DB-Namespaces
 - **Shared AI-Infrastruktur**: 1 LLM-Server für alle Mandanten (Cost-Efficiency)
 - **Tenant-Aware RAG**: Queries nur über eigene Dokumente (strikte Isolation)
 
 **Internationalization**:
+
 - **Multi-Lingual RAG**: Embeddings unterstützen Englisch, Französisch, Italienisch
 - **LLM-Adaptation**: Antworten in User-Sprache (Auto-Detection oder User-Preference)
 - **Locale-Aware-Formatting**: Währungen, Datumsformate, Zahlenformate
 
 **Skalierungs-Ziele**:
+
 - **100 Tenants** (KMU-Kunden): Shared-Infrastructure, Managed-Service-Modell
 - **1000 Concurrent Users**: Horizontal-Scaling (Load-Balancer, Multiple LLM-Replicas)
 - **10M Documents**: Vector-DB-Sharding, Distributed Search
 
 ---
 
-Persona-Profil_ Geschäftsführer (CEO) im Projektgeschäft.pdf
+Persona-Profil\_ Geschäftsführer (CEO) im Projektgeschäft.pdf
 
 ## file://file-6u9mbbeUE2U8xbjEUwdjcN
 
@@ -1109,15 +1205,15 @@ Basierend auf: `Projekt KOMPASS – Erweiterungen Gesamtkonzept.md`
 ---
 
 **Genehmigungen & Sign-Off**:
+
 - [ ] GF (Geschäftsführer): Strategische Freigabe & Budget-Approval
 - [ ] CTO/Lead-Developer: Technische Machbarkeit bestätigt
 - [ ] Key-Stakeholder (1× pro Persona): User-Acceptance & Requirements-Alignment
 
 **Version Control**:
+
 - Version 1.0: Initiale Vision (2025-01-27)
 - Version 1.1: Geplant nach Q2-2025-Pilot-Feedback
 - Version 2.0: Geplant nach Q4-2025-Rollout (Retrospektive-Learnings)
 
 ---
-
-

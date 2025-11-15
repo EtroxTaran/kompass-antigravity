@@ -10,60 +10,60 @@ This document lists all required GitHub secrets for CI/CD pipelines.
 
 These secrets are used across multiple workflows.
 
-| Secret Name | Description | Example | Required |
-|------------|-------------|---------|----------|
-| `SNYK_TOKEN` | Snyk API token for security scanning | `abcd1234-...` | Yes |
-| `DOCKER_REGISTRY_TOKEN` | Optional for private registry | `ghp_...` | No |
+| Secret Name             | Description                          | Example        | Required |
+| ----------------------- | ------------------------------------ | -------------- | -------- |
+| `SNYK_TOKEN`            | Snyk API token for security scanning | `abcd1234-...` | Yes      |
+| `DOCKER_REGISTRY_TOKEN` | Optional for private registry        | `ghp_...`      | No       |
 
 ---
 
 ## Staging Environment Secrets
 
-| Secret Name | Description | Example | Required |
-|------------|-------------|---------|----------|
-| `STAGING_HOST` | Staging server IP or domain | `staging.kompass.de` or `192.168.1.100` | Yes |
-| `STAGING_USER` | SSH user for deployment | `deploy` | Yes |
-| `STAGING_DEPLOY_KEY` | Private SSH key for deployment | `-----BEGIN OPENSSH PRIVATE KEY-----...` | Yes |
-| `STAGING_API_URL` | Backend API URL | `https://api.staging.kompass.de` | Yes |
-| `STAGING_URL` | Frontend URL | `https://staging.kompass.de` | Yes |
-| `STAGING_DATABASE_URL` | CouchDB connection URL | `http://couchdb:5984` | Yes |
-| `STAGING_COUCHDB_USER` | CouchDB admin username | `admin` | Yes |
-| `STAGING_COUCHDB_PASSWORD` | CouchDB admin password | `SecurePassword123!` | Yes |
-| `STAGING_MEILISEARCH_URL` | MeiliSearch URL | `http://meilisearch:7700` | Yes |
-| `STAGING_MEILI_MASTER_KEY` | MeiliSearch master key | `min32charssecurekey` | Yes |
-| `STAGING_KEYCLOAK_URL` | Keycloak URL | `http://keycloak:8080` | Yes |
-| `STAGING_KEYCLOAK_ADMIN` | Keycloak admin username | `admin` | Yes |
-| `STAGING_KEYCLOAK_ADMIN_PASSWORD` | Keycloak admin password | `SecurePassword123!` | Yes |
-| `STAGING_KEYCLOAK_CLIENT_SECRET` | Keycloak client secret | `client-secret-here` | Yes |
-| `STAGING_JWT_SECRET` | JWT signing secret (min 32 chars) | `min-32-characters-random-string-here` | Yes |
-| `STAGING_ALLOWED_ORIGINS` | CORS allowed origins | `https://staging.kompass.de` | Yes |
+| Secret Name                       | Description                       | Example                                  | Required |
+| --------------------------------- | --------------------------------- | ---------------------------------------- | -------- |
+| `STAGING_HOST`                    | Staging server IP or domain       | `staging.kompass.de` or `192.168.1.100`  | Yes      |
+| `STAGING_USER`                    | SSH user for deployment           | `deploy`                                 | Yes      |
+| `STAGING_DEPLOY_KEY`              | Private SSH key for deployment    | `-----BEGIN OPENSSH PRIVATE KEY-----...` | Yes      |
+| `STAGING_API_URL`                 | Backend API URL                   | `https://api.staging.kompass.de`         | Yes      |
+| `STAGING_URL`                     | Frontend URL                      | `https://staging.kompass.de`             | Yes      |
+| `STAGING_DATABASE_URL`            | CouchDB connection URL            | `http://couchdb:5984`                    | Yes      |
+| `STAGING_COUCHDB_USER`            | CouchDB admin username            | `admin`                                  | Yes      |
+| `STAGING_COUCHDB_PASSWORD`        | CouchDB admin password            | `SecurePassword123!`                     | Yes      |
+| `STAGING_MEILISEARCH_URL`         | MeiliSearch URL                   | `http://meilisearch:7700`                | Yes      |
+| `STAGING_MEILI_MASTER_KEY`        | MeiliSearch master key            | `min32charssecurekey`                    | Yes      |
+| `STAGING_KEYCLOAK_URL`            | Keycloak URL                      | `http://keycloak:8080`                   | Yes      |
+| `STAGING_KEYCLOAK_ADMIN`          | Keycloak admin username           | `admin`                                  | Yes      |
+| `STAGING_KEYCLOAK_ADMIN_PASSWORD` | Keycloak admin password           | `SecurePassword123!`                     | Yes      |
+| `STAGING_KEYCLOAK_CLIENT_SECRET`  | Keycloak client secret            | `client-secret-here`                     | Yes      |
+| `STAGING_JWT_SECRET`              | JWT signing secret (min 32 chars) | `min-32-characters-random-string-here`   | Yes      |
+| `STAGING_ALLOWED_ORIGINS`         | CORS allowed origins              | `https://staging.kompass.de`             | Yes      |
 
 ---
 
 ## Production Environment Secrets
 
-| Secret Name | Description | Example | Required |
-|------------|-------------|---------|----------|
-| `PRODUCTION_HOST` | Production server IP or domain | `kompass.de` or `192.168.1.200` | Yes |
-| `PRODUCTION_USER` | SSH user for deployment | `deploy` | Yes |
-| `PRODUCTION_DEPLOY_KEY` | Private SSH key for deployment | `-----BEGIN OPENSSH PRIVATE KEY-----...` | Yes |
-| `PRODUCTION_API_URL` | Backend API URL | `https://api.kompass.de` | Yes |
-| `PRODUCTION_URL` | Frontend URL | `https://kompass.de` | Yes |
-| `PRODUCTION_DATABASE_URL` | CouchDB connection URL | `http://couchdb:5984` | Yes |
-| `PRODUCTION_COUCHDB_USER` | CouchDB admin username | `admin` | Yes |
-| `PRODUCTION_COUCHDB_PASSWORD` | CouchDB admin password | Use strong password! | Yes |
-| `PRODUCTION_MEILISEARCH_URL` | MeiliSearch URL | `http://meilisearch:7700` | Yes |
-| `PRODUCTION_MEILI_MASTER_KEY` | MeiliSearch master key | Use strong key (min 32 chars)! | Yes |
-| `PRODUCTION_KEYCLOAK_URL` | Keycloak URL | `http://keycloak:8080` | Yes |
-| `PRODUCTION_KEYCLOAK_ADMIN` | Keycloak admin username | `admin` | Yes |
-| `PRODUCTION_KEYCLOAK_ADMIN_PASSWORD` | Keycloak admin password | Use strong password! | Yes |
-| `PRODUCTION_KEYCLOAK_CLIENT_SECRET` | Keycloak client secret | Use strong secret! | Yes |
-| `PRODUCTION_JWT_SECRET` | JWT signing secret | Use cryptographically secure random string (min 32 chars)! | Yes |
-| `PRODUCTION_ALLOWED_ORIGINS` | CORS allowed origins | `https://kompass.de` | Yes |
-| `PRODUCTION_POSTGRES_HOST` | PostgreSQL host for Keycloak | `postgres.example.com` | Yes |
-| `PRODUCTION_POSTGRES_USER` | PostgreSQL username | `keycloak` | Yes |
-| `PRODUCTION_POSTGRES_PASSWORD` | PostgreSQL password | Use strong password! | Yes |
-| `PRODUCTION_HOSTNAME` | Public hostname for Keycloak | `kompass.de` | Yes |
+| Secret Name                          | Description                    | Example                                                    | Required |
+| ------------------------------------ | ------------------------------ | ---------------------------------------------------------- | -------- |
+| `PRODUCTION_HOST`                    | Production server IP or domain | `kompass.de` or `192.168.1.200`                            | Yes      |
+| `PRODUCTION_USER`                    | SSH user for deployment        | `deploy`                                                   | Yes      |
+| `PRODUCTION_DEPLOY_KEY`              | Private SSH key for deployment | `-----BEGIN OPENSSH PRIVATE KEY-----...`                   | Yes      |
+| `PRODUCTION_API_URL`                 | Backend API URL                | `https://api.kompass.de`                                   | Yes      |
+| `PRODUCTION_URL`                     | Frontend URL                   | `https://kompass.de`                                       | Yes      |
+| `PRODUCTION_DATABASE_URL`            | CouchDB connection URL         | `http://couchdb:5984`                                      | Yes      |
+| `PRODUCTION_COUCHDB_USER`            | CouchDB admin username         | `admin`                                                    | Yes      |
+| `PRODUCTION_COUCHDB_PASSWORD`        | CouchDB admin password         | Use strong password!                                       | Yes      |
+| `PRODUCTION_MEILISEARCH_URL`         | MeiliSearch URL                | `http://meilisearch:7700`                                  | Yes      |
+| `PRODUCTION_MEILI_MASTER_KEY`        | MeiliSearch master key         | Use strong key (min 32 chars)!                             | Yes      |
+| `PRODUCTION_KEYCLOAK_URL`            | Keycloak URL                   | `http://keycloak:8080`                                     | Yes      |
+| `PRODUCTION_KEYCLOAK_ADMIN`          | Keycloak admin username        | `admin`                                                    | Yes      |
+| `PRODUCTION_KEYCLOAK_ADMIN_PASSWORD` | Keycloak admin password        | Use strong password!                                       | Yes      |
+| `PRODUCTION_KEYCLOAK_CLIENT_SECRET`  | Keycloak client secret         | Use strong secret!                                         | Yes      |
+| `PRODUCTION_JWT_SECRET`              | JWT signing secret             | Use cryptographically secure random string (min 32 chars)! | Yes      |
+| `PRODUCTION_ALLOWED_ORIGINS`         | CORS allowed origins           | `https://kompass.de`                                       | Yes      |
+| `PRODUCTION_POSTGRES_HOST`           | PostgreSQL host for Keycloak   | `postgres.example.com`                                     | Yes      |
+| `PRODUCTION_POSTGRES_USER`           | PostgreSQL username            | `keycloak`                                                 | Yes      |
+| `PRODUCTION_POSTGRES_PASSWORD`       | PostgreSQL password            | Use strong password!                                       | Yes      |
+| `PRODUCTION_HOSTNAME`                | Public hostname for Keycloak   | `kompass.de`                                               | Yes      |
 
 ---
 
@@ -132,13 +132,13 @@ gh secret list
 
 ## Secret Rotation Schedule
 
-| Secret Type | Rotation Frequency | Notes |
-|------------|-------------------|-------|
-| SSH Deploy Keys | Annually | Rotate immediately if compromised |
-| Database Passwords | Quarterly | Coordinate with database backups |
-| JWT Secrets | Quarterly | Will invalidate all active sessions |
-| API Keys | Quarterly | Update in dependent services |
-| Keycloak Secrets | Annually | Test thoroughly in staging first |
+| Secret Type        | Rotation Frequency | Notes                               |
+| ------------------ | ------------------ | ----------------------------------- |
+| SSH Deploy Keys    | Annually           | Rotate immediately if compromised   |
+| Database Passwords | Quarterly          | Coordinate with database backups    |
+| JWT Secrets        | Quarterly          | Will invalidate all active sessions |
+| API Keys           | Quarterly          | Update in dependent services        |
+| Keycloak Secrets   | Annually           | Test thoroughly in staging first    |
 
 ---
 
@@ -199,4 +199,3 @@ gh secret list
 **Maintained By**: DevOps & Security Team  
 **Last Review**: 2025-01-27  
 **Next Review**: Q2 2025
-

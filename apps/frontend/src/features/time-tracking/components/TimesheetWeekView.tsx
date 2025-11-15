@@ -1,12 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import type { TimeEntryResponseDto } from '@kompass/shared/types/entities/time-entry';
+
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 /**
  * Timesheet Week View Component
- * 
+ *
  * Displays time entries in a weekly calendar grid view.
- * 
+ *
  * @see Phase 1.3 of Time Tracking Implementation Plan
  */
 interface TimesheetWeekViewProps {
@@ -51,7 +52,7 @@ export function TimesheetWeekView({
     const dayEntries = getEntriesForDay(date);
     return dayEntries.reduce(
       (sum, entry) => sum + entry.durationMinutes / 60,
-      0,
+      0
     );
   }
 
@@ -139,4 +140,3 @@ export function TimesheetWeekView({
     </div>
   );
 }
-

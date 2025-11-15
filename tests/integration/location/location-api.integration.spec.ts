@@ -1,20 +1,24 @@
 /**
  * Integration Test: Location API
- * 
+ *
  * Tests Location API endpoints with real database
  * Validates CRUD operations, RBAC, and business rules
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, HttpStatus } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
-import { AppModule } from '../../../apps/backend/src/app.module';
+
 import { LocationType } from '@kompass/shared/types/enums';
+
+import { AppModule } from '../../../apps/backend/src/app.module';
 
 describe('Location API (Integration)', () => {
   let app: INestApplication;
   let admToken: string;
-  let planToken: string;
+  let _planToken: string; // Reserved for future PLAN role tests
   let gfToken: string;
   let customerId: string;
 
@@ -35,7 +39,7 @@ describe('Location API (Integration)', () => {
     const planResponse = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ email: 'plan@example.com', password: 'test123' });
-    planToken = planResponse.body.token;
+    _planToken = planResponse.body.token;
 
     const gfResponse = await request(app.getHttpServer())
       .post('/auth/login')
@@ -234,4 +238,3 @@ describe('Location API (Integration)', () => {
     });
   });
 });
-

@@ -58,6 +58,7 @@ node scripts/validate-data-model.ts
 ```
 
 **What This Does:**
+
 - Renames `address` → `billingAddress` in all Customer documents
 - Adds `locations: []`, `contactPersons: []` with empty arrays
 - Adds `customerType` if missing (defaults to 'active')
@@ -84,6 +85,7 @@ cat contact-migration-report.csv
 ```
 
 **What This Does:**
+
 - Adds `decisionMakingRole`, `authorityLevel`, `canApproveOrders` fields
 - Intelligently infers roles from position titles
 - Sets `canApproveOrders: false` by default (must be manually enabled)
@@ -98,6 +100,7 @@ node scripts/migrations/002-create-couchdb-views.ts
 ```
 
 **What This Does:**
+
 - Creates views: `location/by_customer`, `contact/by_customer`, `contact/decision_makers_by_customer`
 - Creates Mango indexes for Location and Contact queries
 - Improves query performance
@@ -112,6 +115,7 @@ node scripts/validate-data-model.ts
 ```
 
 **Validation Checks:**
+
 - All customers have `billingAddress` field
 - All locations have valid `customerId` references
 - All contacts have required decision fields
@@ -154,6 +158,7 @@ const customerLocations = customer.locations; // Array of Location IDs
 5. Set approval limits for contacts who can approve orders
 
 **Priority Contacts to Review:**
+
 - Geschäftsführer (CEO/Owner) → Should be decision_maker
 - Einkaufsleiter (Purchasing Manager) → Should be key_influencer
 - Assistants → Should be gatekeeper
@@ -190,10 +195,11 @@ curl http://localhost:3000/health
 After verifying migration success, you may want to:
 
 1. **Remove old `address` field** (if still present due to partial migration):
+
    ```javascript
    // CouchDB admin console
-   db.allDocs({include_docs: true}).then(result => {
-     result.rows.forEach(row => {
+   db.allDocs({ include_docs: true }).then((result) => {
+     result.rows.forEach((row) => {
        if (row.doc.type === 'customer' && row.doc.address) {
          delete row.doc.address;
          db.put(row.doc);
@@ -261,6 +267,7 @@ node scripts/migrations/rollback-003-contact.ts
 **Symptom**: Script exits with error
 
 **Solution**:
+
 1. Check CouchDB is running: `curl http://localhost:5984`
 2. Verify credentials in environment variables
 3. Check disk space: `df -h`
@@ -272,6 +279,7 @@ node scripts/migrations/rollback-003-contact.ts
 **Symptom**: `validate-data-model.ts` reports errors
 
 **Solution**:
+
 1. Review specific error messages
 2. Fix documents manually via CouchDB admin UI (Fauxton)
 3. Re-run validation
@@ -282,6 +290,7 @@ node scripts/migrations/rollback-003-contact.ts
 **Symptom**: UI displays undefined or errors
 
 **Solution**:
+
 1. Clear browser cache and localStorage
 2. Hard refresh (Ctrl+Shift+R)
 3. Check that backend returns new structure: `curl http://localhost:3000/api/v1/customers/{id}`
@@ -292,6 +301,7 @@ node scripts/migrations/rollback-003-contact.ts
 **Symptom**: ADM users see "Forbidden" when updating contacts
 
 **Solution**:
+
 - **Expected Behavior**: ADM users CANNOT update decision-making roles
 - Only PLAN and GF users have `Contact.UPDATE_DECISION_ROLE` permission
 - ADM users can update basic contact info (name, email, phone)
@@ -318,18 +328,19 @@ pnpm test contact
 ## Support
 
 For migration issues or questions:
+
 - Check documentation: `docs/reviews/DATA_MODEL_SPECIFICATION.md`
 - Review architecture: `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md`
 - Contact dev team: dev@kompass.de
 
 ## Version Compatibility
 
-| Component | Minimum Version | Recommended |
-|-----------|----------------|-------------|
-| Node.js | 18.0.0 | 20.x LTS |
-| CouchDB | 3.2.0 | 3.3.x |
-| pnpm | 8.0.0 | 8.x |
-| TypeScript | 5.0.0 | 5.3.x |
+| Component  | Minimum Version | Recommended |
+| ---------- | --------------- | ----------- |
+| Node.js    | 18.0.0          | 20.x LTS    |
+| CouchDB    | 3.2.0           | 3.3.x       |
+| pnpm       | 8.0.0           | 8.x         |
+| TypeScript | 5.0.0           | 5.3.x       |
 
 ## Next Steps
 
@@ -339,4 +350,3 @@ After successful migration:
 2. **Phase 2.2 (Q2 2025)**: Integrate n8n automation
 3. **Phase 2.3 (Q3 2025)**: Add ML predictive analytics
 4. **Phase 3 (Q4 2025)**: Neo4j knowledge graph integration
-

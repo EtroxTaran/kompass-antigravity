@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useState, useEffect } from 'react';
+
 import type { ProfitabilityReport } from '@kompass/shared/types/entities/project';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 /**
  * useProfitability Hook
- * 
+ *
  * Custom hook for fetching project profitability report.
- * 
+ *
  * @see Phase 1.4 of Time Tracking Implementation Plan
  */
 export function useProfitability(projectId: string) {
@@ -25,12 +26,14 @@ export function useProfitability(projectId: string) {
 
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/api/v1/projects/${projectId}/profitability`,
+        `${API_BASE_URL}/api/v1/projects/${projectId}/profitability`
       );
       setReport(response.data);
     } catch (err) {
       setError(
-        err instanceof Error ? err : new Error('Failed to fetch profitability report'),
+        err instanceof Error
+          ? err
+          : new Error('Failed to fetch profitability report')
       );
       setReport(null);
     } finally {
@@ -61,4 +64,3 @@ export function useProfitability(projectId: string) {
     refetch,
   };
 }
-

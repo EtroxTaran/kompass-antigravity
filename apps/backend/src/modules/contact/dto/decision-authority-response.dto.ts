@@ -1,11 +1,16 @@
 /**
  * Response DTO for Contact Decision Authority
- * 
+ *
  * Returns decision-making role and authority information
  */
 
 import { ApiProperty } from '@nestjs/swagger';
-import { DecisionMakingRole, FunctionalRole, type AuthorityLevel } from '@kompass/shared/types/enums';
+
+import {
+  DecisionMakingRole,
+  FunctionalRole,
+  type AuthorityLevel,
+} from '@kompass/shared/types/enums';
 
 /**
  * Decision Authority Response DTO
@@ -81,4 +86,3 @@ export class DecisionAuthorityResponseDto {
   })
   updatedBy: string;
 }
-

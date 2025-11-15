@@ -1,5 +1,7 @@
-import { useState } from 'react';
 import { Calendar, Download } from 'lucide-react';
+import { useState } from 'react';
+
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,34 +9,34 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { TimeEntryList } from '../components/TimeEntryList';
 import { TimesheetWeekView } from '../components/TimesheetWeekView';
 import { useMyTimesheets } from '../hooks/useTimeTracking';
 
 /**
  * My Timesheets Page
- * 
+ *
  * Personal timesheets page for individual users.
- * 
+ *
  * Features:
  * - View personal time entries
  * - Weekly view with quick entry
  * - Submit for approval
  * - Export timesheets
- * 
+ *
  * @see Phase 1.3 of Time Tracking Implementation Plan
  */
 export function MyTimesheetsPage() {
   // Date range filters
   const [startDate, setStartDate] = useState<string>(
-    getStartOfWeek().toISOString().split('T')[0],
+    getStartOfWeek().toISOString().split('T')[0]
   );
   const [endDate, setEndDate] = useState<string>(
-    getEndOfWeek().toISOString().split('T')[0],
+    getEndOfWeek().toISOString().split('T')[0]
   );
 
   // Fetch timesheets
@@ -48,7 +50,7 @@ export function MyTimesheetsPage() {
    */
   const totalHours = entries.reduce(
     (sum, entry) => sum + entry.durationMinutes / 60,
-    0,
+    0
   );
   const approvedHours = entries
     .filter((e) => e.status === 'approved')
@@ -140,13 +142,17 @@ export function MyTimesheetsPage() {
         <Card>
           <CardHeader className="pb-3">
             <CardDescription>Genehmigt</CardDescription>
-            <CardTitle className="text-2xl">{approvedHours.toFixed(1)}h</CardTitle>
+            <CardTitle className="text-2xl">
+              {approvedHours.toFixed(1)}h
+            </CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader className="pb-3">
             <CardDescription>Ausstehend</CardDescription>
-            <CardTitle className="text-2xl">{pendingHours.toFixed(1)}h</CardTitle>
+            <CardTitle className="text-2xl">
+              {pendingHours.toFixed(1)}h
+            </CardTitle>
           </CardHeader>
         </Card>
       </div>
@@ -236,4 +242,3 @@ export function MyTimesheetsPage() {
     </div>
   );
 }
-

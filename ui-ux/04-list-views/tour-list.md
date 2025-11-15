@@ -1,6 +1,7 @@
 # Tour List View - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: List View with Calendar Integration
 - **User Roles**: ADM (own tours), INNEN/GF (all tours), PLAN (read-only)
 - **Usage Context**: View and manage planned tours, track tour history, analyze efficiency
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Calendar/List toggle**: Switch between calendar and list views
 - **Status indicators**: Clear visual states for planned/active/completed
 - **Cost summary**: Visible tour costs and efficiency metrics
 - **Quick actions**: Start tour, edit, duplicate
 
 ### List Structure
+
 - Filterable by date range, ADM, status
 - Sortable by date, distance, cost, stops
 - Groupable by week/month
 - Summary statistics at top
 
 ### shadcn/ui Components
+
 - Table, Calendar, Badge, Button, Filter panel
 - Tabs for view switching
 - Card for summary metrics
@@ -32,6 +36,7 @@ Create a comprehensive tour list view for KOMPASS that displays planned and comp
 **Page Layout (Desktop - 1440px):**
 
 **Header Section:**
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ Tourenübersicht                                             │
@@ -41,6 +46,7 @@ Create a comprehensive tour list view for KOMPASS that displays planned and comp
 ```
 
 **Summary Cards (4 × 280px):**
+
 ```
 ┌─────────────┬─────────────┬─────────────┬─────────────┐
 │ Diese Woche │ Gefahren    │ Ø Effizienz │ Kosten MTD  │
@@ -50,6 +56,7 @@ Create a comprehensive tour list view for KOMPASS that displays planned and comp
 ```
 
 **List View:**
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ [□] Tour         Datum      ADM        Stopps  km    Status │
@@ -70,6 +77,7 @@ Create a comprehensive tour list view for KOMPASS that displays planned and comp
 ```
 
 **Calendar View:**
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ Februar 2025                                   [< Mo >]     │
@@ -95,6 +103,7 @@ Create a comprehensive tour list view for KOMPASS that displays planned and comp
 ```
 
 **Filter Panel (Dropdown):**
+
 ```
 ┌─────────────────────────────────────┐
 │ Filter                         [×] │
@@ -117,6 +126,7 @@ Create a comprehensive tour list view for KOMPASS that displays planned and comp
 ```
 
 **Tour Row Expanded:**
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ ▼ München Nord Tour - Do., 06.02.2025                      │
@@ -135,6 +145,7 @@ Create a comprehensive tour list view for KOMPASS that displays planned and comp
 ```
 
 **Mobile View (375px):**
+
 ```
 ┌─────────────────────────────┐
 │ [☰] Touren    [Cal] [+ New] │
@@ -159,25 +170,29 @@ Create a comprehensive tour list view for KOMPASS that displays planned and comp
 ```
 
 **Quick Actions:**
+
 - **Start Tour**: Green play button, opens tour execution mode
 - **Edit**: Opens tour planning form
 - **Duplicate**: Creates copy for next week/month
 - **Delete**: With confirmation dialog
 
 **Status Indicators:**
+
 - **Geplant** (gray): Future tour
 - **Aktiv** (blue pulse): Currently running with GPS tracking
 - **Abgeschlossen** (green check): Completed tour
 - **Abgebrochen** (red): Cancelled/incomplete tour
 
 **Efficiency Metrics:**
+
 - Planned vs actual distance
-- Planned vs actual duration  
+- Planned vs actual duration
 - Cost per stop
 - Average time per stop
 - Route optimization savings
 
 ## Interaction Patterns
+
 - **Row click**: Expand to show stop details
 - **Double click**: Open tour detail page
 - **Hover**: Show quick stats tooltip
@@ -185,8 +200,9 @@ Create a comprehensive tour list view for KOMPASS that displays planned and comp
 - **Calendar click**: Filter to selected date
 
 ## German Labels & Content
+
 - **Geplant**: Planned
-- **Aktiv**: Active  
+- **Aktiv**: Active
 - **Abgeschlossen**: Completed
 - **Stopps**: Stops
 - **Effizienz**: Efficiency
@@ -195,6 +211,7 @@ Create a comprehensive tour list view for KOMPASS that displays planned and comp
 - **Gefahrene Strecke**: Distance driven
 
 ## Accessibility Requirements
+
 - Table has proper header associations
 - Status communicated via text and color
 - Keyboard navigation for all actions
@@ -202,6 +219,7 @@ Create a comprehensive tour list view for KOMPASS that displays planned and comp
 - Focus indicators on interactive elements
 
 ## Mobile Considerations
+
 - **Swipe actions**: Right to start, left for options
 - **Condensed cards**: Essential info only
 - **Bottom tabs**: Quick filter access
@@ -209,12 +227,14 @@ Create a comprehensive tour list view for KOMPASS that displays planned and comp
 - **Offline indicator**: Show cached data age
 
 ## Performance Requirements
+
 - Initial load < 1 second for 50 tours
 - Smooth scrolling with 500+ tours
 - Calendar renders instantly
 - Filter updates < 200ms
 
 ## Implementation Notes
+
 ```bash
 # Required shadcn/ui components
 npx shadcn-ui@latest add table calendar tabs
@@ -229,6 +249,7 @@ npx shadcn-ui@latest add dropdown-menu sheet
 ```
 
 ## Analytics Events
+
 - tour_list_viewed (view_type)
 - tour_started_from_list
 - tour_duplicated

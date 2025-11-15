@@ -6,14 +6,14 @@ import { Module } from '@nestjs/common';
 
 /**
  * Customer Module
- * 
+ *
  * Provides customer management functionality:
  * - CRUD operations
  * - RBAC enforcement
  * - Offline sync support
  * - Duplicate detection
  * - DSGVO compliance
- * 
+ *
  * TODO: Implement CustomerController, CustomerService, CustomerRepository
  * Currently only DTOs and entities are defined.
  */
@@ -27,4 +27,3 @@ import { Module } from '@nestjs/common';
   // exports: [CustomerService],
 })
 export class CustomerModule {}
-

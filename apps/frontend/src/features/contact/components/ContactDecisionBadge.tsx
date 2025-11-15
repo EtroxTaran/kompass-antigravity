@@ -1,14 +1,22 @@
 /**
  * ContactDecisionBadge Component
- * 
+ *
  * Badge displaying decision-making role and authority level
  * Uses shadcn/ui Badge component with icons
  */
 
-import { Badge } from '@/components/ui/badge';
 import { Crown, User, MessageSquare, Shield, Users, Info } from 'lucide-react';
-import { DecisionMakingRole, type AuthorityLevel } from '@kompass/shared/types/enums';
-import { getDecisionMakingRoleLabel, getAuthorityLevelLabel } from '@kompass/shared/types/entities/contact';
+
+import {
+  getDecisionMakingRoleLabel,
+  getAuthorityLevelLabel,
+} from '@kompass/shared/types/entities/contact';
+import {
+  DecisionMakingRole,
+  type AuthorityLevel,
+} from '@kompass/shared/types/enums';
+
+import { Badge } from '@/components/ui/badge';
 
 interface ContactDecisionBadgeProps {
   role: DecisionMakingRole;
@@ -41,7 +49,9 @@ function getRoleIcon(role: DecisionMakingRole) {
 /**
  * Get badge variant for role
  */
-function getRoleVariant(role: DecisionMakingRole): 'default' | 'secondary' | 'destructive' | 'outline' {
+function getRoleVariant(
+  role: DecisionMakingRole
+): 'default' | 'secondary' | 'destructive' | 'outline' {
   switch (role) {
     case DecisionMakingRole.DECISION_MAKER:
       return 'default';
@@ -85,4 +95,3 @@ export function ContactDecisionBadge({
     </div>
   );
 }
-

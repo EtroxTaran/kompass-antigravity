@@ -1,6 +1,7 @@
 # Contact Form - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Nested Entity Form (under Customer)
 - **User Roles**: GF, PLAN (full access), ADM (own customers, limited fields)
 - **Usage Context**: Add/edit contact persons within customer context
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Form Title**: "Neuer Kontakt" or "Kontakt bearbeiten"
 - **Parent Context**: Customer name shown
 - **Special Section**: Decision-making authority (restricted to PLAN/GF)
 - **Tabs**: Basic Info | Decision Authority | Location Assignment
 
 ### Layout Structure
+
 - Dialog: 800px width, 2-column layout
 - Tabs for section organization
 - Field spacing: 16px
 - RBAC indicators for restricted fields
 
 ### shadcn/ui Components
+
 - `Dialog`, `Tabs`
 - `Form` with all field components
 - `Badge` for role/authority indicators
@@ -31,6 +35,7 @@
 Create a comprehensive contact person form for KOMPASS, a German CRM application. Design a form with tabs for personal information, decision-making authority (RBAC-restricted), and location assignments with German labels based on DATA_MODEL_SPECIFICATION.md.
 
 **Form Container:**
+
 - Dialog: 800px width
 - Header:
   - Title: "Neuer Kontakt" or "Kontakt bearbeiten"
@@ -39,12 +44,14 @@ Create a comprehensive contact person form for KOMPASS, a German CRM application
 
 **Tab Navigation:**
 Tabs: "Grunddaten" | "Entscheidungsbefugnis" | "Standortzuordnung"
+
 - Active tab: Blue underline indicator
 - Tab content: Scrollable form sections
 
 **Tab 1: Grunddaten (Basic Information)**
 
 **Personal Information:**
+
 1. **Anrede** (Optional):
    - Label: "Anrede"
    - Select: "Herr", "Frau", "Divers"
@@ -56,13 +63,13 @@ Tabs: "Grunddaten" | "Entscheidungsbefugnis" | "Standortzuordnung"
    - Placeholder: "Dr.", "Prof."
 
 3. **Vorname** (Required):
-   - Label: "Vorname *"
+   - Label: "Vorname \*"
    - Input: Text, left column, 50%
    - Placeholder: "Hans"
    - Validation: 2-50 characters, letters only
 
 4. **Nachname** (Required):
-   - Label: "Nachname *"
+   - Label: "Nachname \*"
    - Input: Text, right column, 50%
    - Placeholder: "Müller"
    - Validation: 2-50 characters, letters only
@@ -106,6 +113,7 @@ Tabs: "Grunddaten" | "Entscheidungsbefugnis" | "Standortzuordnung"
 **RBAC Note:** This section restricted to PLAN and GF roles only
 
 **Restriction Indicator (if ADM user):**
+
 - Alert banner at top of tab:
   - Lock icon (amber)
   - Text: "Diese Felder können nur von Planung oder Geschäftsführung bearbeitet werden"
@@ -114,7 +122,7 @@ Tabs: "Grunddaten" | "Entscheidungsbefugnis" | "Standortzuordnung"
 **Decision-Making Role:**
 
 1. **Rolle im Entscheidungsprozess** (Required):
-   - Label: "Entscheidungsrolle *"
+   - Label: "Entscheidungsrolle \*"
    - Select dropdown with descriptions
    - Options:
      - Entscheidungsträger (Decision Maker) - "Kann finale Entscheidungen treffen"
@@ -125,7 +133,7 @@ Tabs: "Grunddaten" | "Entscheidungsbefugnis" | "Standortzuordnung"
      - Informativ (Informational) - "Wird informiert, keine Entscheidungsmacht"
 
 2. **Autoritätslevel** (Required):
-   - Label: "Autoritätslevel *"
+   - Label: "Autoritätslevel \*"
    - Radio group with icons:
      - Niedrig (Low) - 1 star
      - Mittel (Medium) - 2 stars
@@ -138,7 +146,7 @@ Tabs: "Grunddaten" | "Entscheidungsbefugnis" | "Standortzuordnung"
    - When checked: Approval limit field appears below
 
 4. **Genehmigungslimit** (Required if checkbox checked):
-   - Label: "Genehmigungslimit *"
+   - Label: "Genehmigungslimit \*"
    - Input: Number, with "€" suffix
    - Placeholder: "50000"
    - Validation: 0-10,000,000
@@ -197,6 +205,7 @@ Tabs: "Grunddaten" | "Entscheidungsbefugnis" | "Standortzuordnung"
    - **Mobile**: Simplified toolbar (Bold, Italic, Lists only)
 
 **Form Footer (Sticky, spans all tabs):**
+
 - Buttons:
   - "Abbrechen" (cancel, outlined)
   - "Kontakt speichern" (save, blue)
@@ -204,22 +213,26 @@ Tabs: "Grunddaten" | "Entscheidungsbefugnis" | "Standortzuordnung"
 **Validation Warnings:**
 
 **CO-001 Validation:**
+
 - If "Kann Bestellungen genehmigen" checked but no approval limit
 - Error below approval limit field: "Bitte geben Sie ein Genehmigungslimit ein"
 - Cannot submit until resolved
 
 **CO-002 Validation:**
+
 - If primary for location not in assigned list
 - Error below field: "Dieser Standort muss in 'Zugewiesene Standorte' ausgewählt sein"
 - Suggestion: "Automatisch zuweisen?" button
 
 **RBAC Indicators:**
+
 - Lock icon next to restricted field labels
 - Tooltip on lock: "Nur für PLAN und GF bearbeitbar"
 - Fields disabled for ADM users
 - Shows read-only values if editing existing contact
 
 **Mobile Layout:**
+
 - Full-screen dialog
 - Tabs become dropdown selector at top
 - Single column
@@ -231,6 +244,7 @@ Design with clear visual hierarchy, helpful validation messages, and RBAC indica
 ## Interaction Patterns
 
 ### Tab Navigation
+
 1. User fills "Grunddaten" tab
 2. Clicks "Entscheidungsbefugnis" tab
 3. If ADM user: Restriction notice shown, fields disabled
@@ -240,11 +254,13 @@ Design with clear visual hierarchy, helpful validation messages, and RBAC indica
 7. Clicks "Kontakt speichern"
 
 ### Approval Limit Field
+
 - Checkbox unchecked: Limit field hidden
 - Check checkbox: Limit field appears with animation
 - Required validation applies only when checkbox checked
 
 ### Location Assignment
+
 - Select locations in first field
 - Primary location field updates to show only selected locations
 - Automatic validation between the two fields
@@ -252,11 +268,13 @@ Design with clear visual hierarchy, helpful validation messages, and RBAC indica
 ## German Labels & Content
 
 ### Tab Labels
+
 - **Grunddaten**: Basic information
 - **Entscheidungsbefugnis**: Decision authority
 - **Standortzuordnung**: Location assignment
 
 ### Personal Info Fields
+
 - **Anrede**: Salutation (Herr, Frau, Divers)
 - **Titel**: Title
 - **Vorname**: First name
@@ -269,6 +287,7 @@ Design with clear visual hierarchy, helpful validation messages, and RBAC indica
 - **Sprache**: Language
 
 ### Decision Authority Fields
+
 - **Entscheidungsrolle**: Decision role
 - **Autoritätslevel**: Authority level
 - **Kann Bestellungen genehmigen**: Can approve orders
@@ -277,15 +296,18 @@ Design with clear visual hierarchy, helpful validation messages, and RBAC indica
 - **Abteilungseinfluss**: Department influence
 
 ### Location Fields
+
 - **Zugewiesene Standorte**: Assigned locations
 - **Hauptansprechpartner für**: Primary contact for
 
 ### RBAC Messages
+
 - **Nur für PLAN und GF bearbeitbar**: Editable only for PLAN and GF
 - **Sie haben keine Berechtigung**: You have no permission
 - **Eingeschränkter Zugriff**: Limited access
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Tabs: role="tablist", keyboard navigation with arrows
 - Restricted fields: aria-disabled="true" for ADM users
@@ -294,6 +316,7 @@ Design with clear visual hierarchy, helpful validation messages, and RBAC indica
 - Form submission prevented until validation passes
 
 ## Mobile Considerations
+
 - Full-screen on mobile
 - Tabs become dropdown or accordion
 - Single column layout
@@ -303,6 +326,7 @@ Design with clear visual hierarchy, helpful validation messages, and RBAC indica
 ## Example Data
 
 **New Contact:**
+
 - Anrede: Herr
 - Vorname: Hans
 - Nachname: Müller
@@ -322,6 +346,7 @@ Design with clear visual hierarchy, helpful validation messages, and RBAC indica
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add dialog
 npx shadcn-ui@latest add tabs
@@ -336,6 +361,7 @@ npx shadcn-ui@latest add tooltip   # For rich text editor toolbar
 ```
 
 ### TipTap Rich Text Editor Installation
+
 ```bash
 # Core TipTap packages for basic toolbar (internal notes)
 pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-placeholder
@@ -343,29 +369,46 @@ pnpm add @tiptap/extension-link @tiptap/extension-underline
 ```
 
 ### Contact Schema
+
 ```typescript
-const contactSchema = z.object({
-  firstName: z.string().min(2).max(50),
-  lastName: z.string().min(2).max(50),
-  decisionMakingRole: z.enum(['decision_maker', 'key_influencer', 'recommender', 'gatekeeper', 'operational_contact', 'informational']),
-  authorityLevel: z.enum(['low', 'medium', 'high', 'final_authority']),
-  canApproveOrders: z.boolean(),
-  approvalLimitEur: z.number().min(0).max(10000000).optional(),
-}).refine(data => !data.canApproveOrders || (data.approvalLimitEur && data.approvalLimitEur > 0), {
-  message: "Genehmigungslimit erforderlich wenn Bestellungen genehmigt werden können",
-  path: ["approvalLimitEur"]
-});
+const contactSchema = z
+  .object({
+    firstName: z.string().min(2).max(50),
+    lastName: z.string().min(2).max(50),
+    decisionMakingRole: z.enum([
+      'decision_maker',
+      'key_influencer',
+      'recommender',
+      'gatekeeper',
+      'operational_contact',
+      'informational',
+    ]),
+    authorityLevel: z.enum(['low', 'medium', 'high', 'final_authority']),
+    canApproveOrders: z.boolean(),
+    approvalLimitEur: z.number().min(0).max(10000000).optional(),
+  })
+  .refine(
+    (data) =>
+      !data.canApproveOrders ||
+      (data.approvalLimitEur && data.approvalLimitEur > 0),
+    {
+      message:
+        'Genehmigungslimit erforderlich wenn Bestellungen genehmigt werden können',
+      path: ['approvalLimitEur'],
+    }
+  );
 ```
 
 ### Component Dependencies
+
 - Parent customer context
 - Location list from customer
 - RBAC context for field restrictions
 - Validation schemas from shared
 
 ### State Management
+
 - Form state with tabs
 - Current user role for RBAC
 - Customer locations list
 - Conditional field visibility (approval limit)
-

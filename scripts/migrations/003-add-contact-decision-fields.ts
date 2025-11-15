@@ -1,18 +1,21 @@
 /**
  * Migration Script: Add Contact Decision-Making Fields
- * 
+ *
  * Adds new decision-making fields to existing Contact documents
  * Fields: decisionMakingRole, authorityLevel, canApproveOrders, functionalRoles, etc.
- * 
+ *
  * Usage:
  *   node 003-add-contact-decision-fields.ts --dry-run
  *   node 003-add-contact-decision-fields.ts --execute
- * 
+ *
  * Based on DATA_MODEL_SPECIFICATION.md Section 7: Migration Strategy
  */
 
 import * as Nano from 'nano';
-import { DecisionMakingRole, FunctionalRole } from '@kompass/shared/types/enums';
+import {
+  DecisionMakingRole,
+  FunctionalRole,
+} from '@kompass/shared/types/enums';
 import * as fs from 'fs';
 
 // CouchDB configuration
@@ -21,7 +24,9 @@ const COUCHDB_USER = process.env.COUCHDB_ADMIN_USER || 'admin';
 const COUCHDB_PASSWORD = process.env.COUCHDB_ADMIN_PASSWORD || 'changeme';
 const DATABASE = process.env.COUCHDB_DATABASE || 'kompass';
 
-const nano = Nano.default(`http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@${COUCHDB_URL.replace('http://', '')}`);
+const nano = Nano.default(
+  `http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@${COUCHDB_URL.replace('http://', '')}`
+);
 const db = nano.use(DATABASE);
 
 interface OldContact {
@@ -98,7 +103,10 @@ function inferDecisionMakingRole(position?: string): {
   }
 
   // Financial controller patterns
-  if (positionLower.includes('controller') || positionLower.includes('finanz')) {
+  if (
+    positionLower.includes('controller') ||
+    positionLower.includes('finanz')
+  ) {
     return {
       role: DecisionMakingRole.RECOMMENDER,
       authorityLevel: 'medium',
@@ -130,8 +138,12 @@ function inferDecisionMakingRole(position?: string): {
 /**
  * Migrate Contact documents
  */
-async function migrateContacts(dryRun: boolean = true): Promise<MigrationResult> {
-  console.log(`🚀 Starting Contact migration (${dryRun ? 'DRY RUN' : 'EXECUTE'})...`);
+async function migrateContacts(
+  dryRun: boolean = true
+): Promise<MigrationResult> {
+  console.log(
+    `🚀 Starting Contact migration (${dryRun ? 'DRY RUN' : 'EXECUTE'})...`
+  );
 
   const result: MigrationResult = {
     total: 0,
@@ -187,7 +199,8 @@ async function migrateContacts(dryRun: boolean = true): Promise<MigrationResult>
         // Add to report
         result.report.push({
           contactId: contact._id,
-          contactName: `${contact.firstName || ''} ${contact.lastName || ''}`.trim(),
+          contactName:
+            `${contact.firstName || ''} ${contact.lastName || ''}`.trim(),
           position: contact.position || 'N/A',
           suggestedRole: inferred.role,
           suggestedAuthority: inferred.authorityLevel,
@@ -226,15 +239,19 @@ async function migrateContacts(dryRun: boolean = true): Promise<MigrationResult>
 
     // Generate CSV report
     if (!dryRun) {
-      const csvHeader = 'Contact ID,Name,Position,Assigned Role,Authority Level\n';
+      const csvHeader =
+        'Contact ID,Name,Position,Assigned Role,Authority Level\n';
       const csvRows = result.report.map(
-        (r) => `${r.contactId},"${r.contactName}","${r.position}",${r.suggestedRole},${r.suggestedAuthority}`
+        (r) =>
+          `${r.contactId},"${r.contactName}","${r.position}",${r.suggestedRole},${r.suggestedAuthority}`
       );
       const csv = csvHeader + csvRows.join('\n');
 
       fs.writeFileSync('contact-migration-report.csv', csv);
       console.log('\n📄 Report saved to: contact-migration-report.csv');
-      console.log('⚠️  Please review assigned roles and adjust manually if needed!');
+      console.log(
+        '⚠️  Please review assigned roles and adjust manually if needed!'
+      );
     }
 
     if (dryRun) {
@@ -259,10 +276,12 @@ async function main() {
   const dryRun = !args.includes('--execute');
 
   if (dryRun) {
-    console.log('⚠️  Running in DRY RUN mode. Use --execute to apply changes.\n');
+    console.log(
+      '⚠️  Running in DRY RUN mode. Use --execute to apply changes.\n'
+    );
   } else {
     console.log('⚠️  EXECUTING migration. Changes will be applied!\n');
-    
+
     // Confirmation prompt
     const readline = require('readline');
     const rl = readline.createInterface({
@@ -271,14 +290,17 @@ async function main() {
     });
 
     await new Promise<void>((resolve) => {
-      rl.question('Are you sure you want to execute this migration? (yes/no): ', (answer: string) => {
-        rl.close();
-        if (answer.toLowerCase() !== 'yes') {
-          console.log('Migration cancelled.');
-          process.exit(0);
+      rl.question(
+        'Are you sure you want to execute this migration? (yes/no): ',
+        (answer: string) => {
+          rl.close();
+          if (answer.toLowerCase() !== 'yes') {
+            console.log('Migration cancelled.');
+            process.exit(0);
+          }
+          resolve();
         }
-        resolve();
-      });
+      );
     });
   }
 
@@ -294,4 +316,3 @@ if (require.main === module) {
 }
 
 export { migrateContacts };
-

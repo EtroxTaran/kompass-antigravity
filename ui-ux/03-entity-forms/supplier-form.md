@@ -1,6 +1,7 @@
 # Supplier Form - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Entity:** Supplier / Subcontractor
 - **Users:** INN (primary creator), PLAN (can create), GF (approval)
 - **Purpose:** Onboard and manage external partners (suppliers, subcontractors, craftsmen)
@@ -13,6 +14,7 @@ Create a supplier/subcontractor form for KOMPASS for onboarding external partner
 **Form Title:** "Lieferant / Subunternehmer erfassen"
 
 **Form Actions:**
+
 - **Save Draft:** "Entwurf speichern" (secondary button, left)
 - **Submit for Approval:** "Zur Freigabe senden" (primary button, right) - Sets status = 'PendingApproval'
 - **Cancel:** "Abbrechen" (text link)
@@ -139,6 +141,7 @@ Create a supplier/subcontractor form for KOMPASS for onboarding external partner
    - Options: "Deutschland", "Österreich", "Schweiz", "Andere EU", "Andere"
 
 **Additional Delivery Addresses:**
+
 - Checkbox: "Weitere Lieferadressen hinzufügen"
 - If checked: Show repeatable address group (max 5)
 - Each with label: "Lieferadresse 2", "Lieferadresse 3", etc.
@@ -206,7 +209,6 @@ Create a supplier/subcontractor form for KOMPASS for onboarding external partner
      - Required: Yes
      - Options: "Rechnung" (Invoice), "Lastschrift" (DirectDebit), "Überweisung" (BankTransfer), "Bar" (Cash)
      - Default: "Rechnung"
-   
    - **Zahlungsziel** (Days Until Due)
      - Type: Number input with quick select buttons
      - Required: Yes
@@ -215,7 +217,6 @@ Create a supplier/subcontractor form for KOMPASS for onboarding external partner
      - Unit: "Tage"
      - Default: 30
      - Error: "Zahlungsziel ist erforderlich (0-120 Tage)"
-   
    - **Skonto** (Early Payment Discount)
      - Checkbox: "Skonto gewährt"
      - If checked, show:
@@ -285,6 +286,7 @@ Create a supplier/subcontractor form for KOMPASS for onboarding external partner
    - Label: "Referenzschreiben"
 
 **Upload UI:**
+
 - Drag-and-drop zone: "Dateien hier ablegen oder klicken zum Auswählen"
 - Accepted formats: "PDF, JPG, PNG (max. 10 MB pro Datei)"
 - Progress bar during upload
@@ -442,6 +444,7 @@ Create a supplier/subcontractor form for KOMPASS for onboarding external partner
 ```
 
 **Mobile Optimizations:**
+
 - Collapsible sections (accordion) - only first section expanded by default
 - Sticky save buttons at bottom
 - One field per row (stacked)
@@ -462,12 +465,14 @@ Create a supplier/subcontractor form for KOMPASS for onboarding external partner
 ### Save Behavior
 
 **Save Draft:**
+
 - Minimal validation (only required fields if filled)
 - Status: 'Draft'
 - Success toast: "Entwurf gespeichert"
 - Redirect: Supplier list
 
 **Submit for Approval:**
+
 - Full validation (all required fields)
 - Document checks: Insurance certificate required for service providers
 - Status: 'PendingApproval'
@@ -479,12 +484,13 @@ Create a supplier/subcontractor form for KOMPASS for onboarding external partner
 
 - On company name blur: Check for similar suppliers (fuzzy match)
 - If found: Show warning modal:
+
   ```
   ⚠️ Ähnlicher Lieferant gefunden
-  
+
   "Schreinerei Mueller GmbH" (München)
   Ähnlichkeit: 95%
-  
+
   [Vorhandenen Lieferanten anzeigen]  [Trotzdem erstellen]
   ```
 
@@ -501,11 +507,25 @@ npx shadcn-ui@latest add form input textarea select checkbox radio-group button 
 ```tsx
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 
 const supplierSchema = z.object({
   companyName: z.string().min(2).max(200),
-  supplierType: z.enum(['material_supplier', 'service_provider', 'subcontractor', 'craftsman', 'logistics', 'mixed']),
+  supplierType: z.enum([
+    'material_supplier',
+    'service_provider',
+    'subcontractor',
+    'craftsman',
+    'logistics',
+    'mixed',
+  ]),
   email: z.string().email(),
   phone: z.string().min(7).max(20),
   // ... all fields
@@ -538,4 +558,3 @@ const supplierSchema = z.object({
 ---
 
 **End of supplier-form.md**
-

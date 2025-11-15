@@ -1,10 +1,11 @@
 # Innendienst (Vertriebsinnendienst & Kalkulation) – Referenzprofil
 
-*Converted from: Innendienst (Vertriebsinnendienst & Kalkulation) – Referenzprofil.pdf*  
-*Document Version: 2.0*  
-*Last Updated: 2025-11-10*
+_Converted from: Innendienst (Vertriebsinnendienst & Kalkulation) – Referenzprofil.pdf_  
+_Document Version: 2.0_  
+_Last Updated: 2025-11-10_
 
 **⚡ Relevante Spezifikationen für Innendienst-Rolle:**
+
 - **Rollengrenzen (GAP-JOURNEY-004):** Siehe RBAC_PERMISSION_MATRIX.md §9
   - **Innendienst** = Vertriebsrolle (Pre-Sales): Angebotserstellung, Pricing, Kunden-Koordination
   - **Handoff-Punkt:** Opportunity "Won" → Projekt erstellt → Planning übernimmt
@@ -41,7 +42,7 @@ Zusammenspiel verschiedener Abteilungen.
 # Persona-Übersicht
 
 **Rollenbeschreibung:** Die Persona **Innendienst (Vertriebsinnendienst & Kalkulation)** umfasst mehrere
-Funktionen im Unternehmen. Zum einen gehört die **Kalkulation** dazu: *Kalkulator* ‐Mitarbeiter im
+Funktionen im Unternehmen. Zum einen gehört die **Kalkulation** dazu: _Kalkulator_ ‐Mitarbeiter im
 Innendienst erstellen detaillierte Kostenvoranschläge und Angebote auf Basis der vom Außendienst und
 der Planung gelieferten Informationen
 . Sie brechen Material- und Leistungskosten fein säuberlich
@@ -60,7 +61,6 @@ mit ausfüllt, ggf. in Zusammenarbeit mit dem Außendienst
 .) Je nach Unternehmensgröße können diese
 Aufgabengebiete auf mehrere Mitarbeiter verteilt sein (im Interview ist von **„Kalkulatoren“** als Teil des
 
-
 Innendienst-Teams die Rede)
 . Für das Referenzprofil werden sie zusammengefasst, da all diese
 Tätigkeiten eng verzahnt sind.
@@ -70,7 +70,6 @@ Tätigkeiten eng verzahnt sind.
 # Ziele & Motivation: Hauptziel dieser Persona ist es, Kundenanfragen schnell und präzise in Angebote
 
 # Pain Points: Der aktuelle Prozess bringt aus Sicht des Innendienstes einige Schmerzen und
-
 
 problematischen Lieferanten frühzeitig zu identifizieren)
 . Schließlich leidet der Innendienst unter
@@ -113,13 +112,12 @@ später die Daten nochmals ins ERP eingegeben werden müssen
 – ein doppelter Schritt, der im
 zukünftigen System entfallen soll.
 
-
-| 32 | . W |
+| 32  | . W |
 | --- | --- |
-| ist | 16 |
+| ist | 16  |
 
 **Angebotspräsentation & Iterationen:** Ist das erste Angebot erstellt, wird es intern geprüft und dann vom
-ADM dem Kunden präsentiert – häufig in Form einer *gebundenen Projektmappe* mit Visualisierungen der
+ADM dem Kunden präsentiert – häufig in Form einer _gebundenen Projektmappe_ mit Visualisierungen der
 Planung
 . Der Innendienst arbeitet hierfür eng mit der **Grafik/Marketing-Abteilung** zusammen, die
 ansprechende **Projekt-Präsentationen** gestaltet (Layouts, Bilder, Texte), damit der Kunde einen
@@ -163,7 +161,6 @@ Einbautermin zu finden.
 
 # Die Projektfortschrittsüberwachung gehört ebenfalls zu seinen Aufgaben. Der Innendienst beobachtet
 
-
 Sobald ein Projekt in die **Umsetzungsphase** geht, bleibt der Innendienst Ansprechperson für interne und
 externe Beteiligte. Er **hält den Kunden auf dem Laufenden** über Fortschritte und etwaige
 Terminänderungen
@@ -195,7 +192,7 @@ passieren, dass der Planer Änderungen am Entwurf vornimmt, aber der Kalkulator 
 wird und mit veralteten Daten kalkuliert.
 
 Der Innendienst wünscht sich daher **transparente, zentrale Kommunikationskanäle** . Im neuen System
-soll es möglich sein, *projektbezogen* zu kommunizieren – z. B. via Kommentarfunktionen direkt in der
+soll es möglich sein, _projektbezogen_ zu kommunizieren – z. B. via Kommentarfunktionen direkt in der
 Projektakte, mit @Mention der verantwortlichen Kollegen
 . Wenn der Planer also einen neuen Entwurf
 hochlädt, könnte er den Innendienst taggen: „@Innendienst Neuer Grundriss hochgeladen, bitte
@@ -206,14 +203,13 @@ beantwortet, statt als Einzelgespräche „unter vier Augen“
 vermeidet doppelte Nachfragen. Auch mit **Lieferanten** kommuniziert der Innendienst – hier meist per E-
 Mail/Telefon bei Bestellungen oder Reklamationen. Eine Anbindung von Lieferanten ans System (z. B. über
 ein Lieferantenportal) ist perspektivisch denkbar, aber kurzfristig nicht im Fokus. Wichtig ist dem
-Innendienst jedoch, intern stets zu wissen, *wer zuletzt was mit welchem Lieferanten besprochen hat* , um im
+Innendienst jedoch, intern stets zu wissen, _wer zuletzt was mit welchem Lieferanten besprochen hat_ , um im
 Vertretungsfall schnell einsteigen zu können.
-
 
 Wenn es um den **Kundenkontakt** geht, ist zwar primär der Außendienst zuständig, doch gerade in der
 Auftragsabwicklung meldet sich der Kunde oft direkt beim Innendienst (z. B. um einen Liefertermin zu
 ändern oder eine Frage zur Rechnung zu klären). Der Innendienst übernimmt dann die Rolle eines
-*kompetenten Ansprechpartners* am Telefon. Dafür muss er schnell auf alle **Kundendaten und Projektinfos**
+_kompetenten Ansprechpartners_ am Telefon. Dafür muss er schnell auf alle **Kundendaten und Projektinfos**
 zugreifen können. Mit der geplanten 360°-Kundensicht im neuen CRM kann der Innendienst-Mitarbeiter im
 Kundenanruf beispielsweise sofort sehen, welche Projekte und Angebote der Kunde laufen hat, welchen
 Status sie haben, und ob es offene Punkte gibt
@@ -226,7 +222,7 @@ deutlich.
 # Dokumentation & Versionsmanagement
 
 Die sorgfältige **Dokumentation** ist für den Innendienst essenziell. In der bestehenden Prozesslandschaft
-wird viel über *Dateiablagen* (Netzlaufwerk-Ordner) organisiert
+wird viel über _Dateiablagen_ (Netzlaufwerk-Ordner) organisiert
 . Für jedes Projekt existiert typischerweise
 ein Ordner mit Unterordnern für Angebot, Planung, Schriftverkehr etc. Dieses manuelle Ablagesystem ist
 fehleranfällig – Informationen können falsch abgelegt oder bei E-Mail-Kommunikation gar nicht erst im
@@ -262,8 +258,8 @@ Lösung sollte folgende funktionale und nicht-funktionale Anforderungen erfülle
 
 **Integrierte Datenbasis & 360°-Sicht:** Alle kunden- und projektbezogenen Informationen müssen
 zentral und abteilungsübergreifend verfügbar sein
-. Der Innendienst erwartet eine *einheitliche*
-*Plattform* statt diverser Einzellösungen. Medienbrüche – etwa zwischen CRM, Excel-Listen und
+. Der Innendienst erwartet eine _einheitliche_
+_Plattform_ statt diverser Einzellösungen. Medienbrüche – etwa zwischen CRM, Excel-Listen und
 Ordnerablage – sind zu vermeiden. Jeder im Team sollte den gleichen aktuellen Informationsstand
 abrufen können (Single Source of Truth). Dadurch entfällt das mühsame Zusammenführen
 verstreuter Daten, und **Übergabeverluste** werden minimiert
@@ -272,7 +268,6 @@ verstreuter Daten, und **Übergabeverluste** werden minimiert
 # Effizientes Angebotsmodul mit Versionierung: Das System soll die Erstellung von Angeboten
 
 # Automatisierte Workflows & Erinnerungen: Viele Routineaufgaben des Innendiensts sollten durch
-
 
 (z. B. automatisch erinnern, wenn ein Angebot 10 Tage ohne Kundenreaktion offen ist)
 – dies
@@ -289,7 +284,6 @@ auf inhaltliche Themen konzentrieren kann.
 # Echtzeit-Status & Kollaboration: Das neue Tool muss bereits während der Angebotserstellung
 
 # Ressourcen- und Kapazitätsübersicht: Der Innendienst möchte Projekte auch hinsichtlich interner
-
 
 (z. B. keinen Montagetermin einplanen, wenn das Montageteam schon ausgebucht ist). In der
 aktuellen Struktur fehlt so eine Übersicht – man ist auf Zuruf oder manuelle Excel-Pläne angewiesen.
@@ -315,8 +309,7 @@ Salesforce mit Projektmodul, Monday.com), die genau dieses Prinzip verfolgen
 . Eine gewonnene
 Verkaufschance lässt sich dabei mit einem Klick in ein Projekt umwandeln, ohne Medienbruch
 .
-*Best Practice* ist es, sämtliche Daten aus der Akquise ins Projekt zu übertragen (Kundendaten,
-
+_Best Practice_ ist es, sämtliche Daten aus der Akquise ins Projekt zu übertragen (Kundendaten,
 
 Angebote, Notizen), sodass kein Informationsverlust entsteht
 . Dieser durchgängige Prozess wird
@@ -332,10 +325,9 @@ mittlerweile als Standard angesehen, weil er Effizienz und Datenqualität erhebl
 
 # 10
 
-
 ---
 
-*Page 11*
+_Page 11_
 
 ---
 
@@ -348,7 +340,7 @@ sind zum Standard geworden, da sie ortsunabhängigen Zugriff ermöglichen
 . Tools wie
 gemeinsame Kanban-Boards, Activity-Feeds oder @Mentions sind inzwischen gängig in
 Projektmanagement-Software und fördern die bereichsübergreifende Zusammenarbeit. Anstatt in
-Silos zu arbeiten, sieht jeder beteiligte Mitarbeiter den *aktuellen Status aller seiner Projekte* . Das
+Silos zu arbeiten, sieht jeder beteiligte Mitarbeiter den _aktuellen Status aller seiner Projekte_ . Das
 erhöht die **Reaktionsgeschwindigkeit** – z. B. kann der Innendienst sofort mit der Kalkulation
 starten, wenn der Planer den Entwurf fertig markiert, ohne auf Meetings warten zu müssen
 .
@@ -369,7 +361,7 @@ Synergien.
 
 # Rollenprofil: Innendienst (Vertriebsinnendienst & Kalkulation)
 
-**Persona-Name/Rolle:** *Claudia Beispiel* (stellvertretend für den **Innendienst – Vertriebsinnendienst &**
+**Persona-Name/Rolle:** _Claudia Beispiel_ (stellvertretend für den **Innendienst – Vertriebsinnendienst &**
 **Kalkulation** in einem Ladenbau-Unternehmen).
 
 **Kurzbeschreibung:** Claudia arbeitet im Vertriebsinnendienst eines Innenausbau-Projektgeschäfts. Sie ist
@@ -451,7 +443,7 @@ oft Feedback ein. Geringe Reklamationszahlen wertet Claudia als Erfolg ihrer Qua
 können **interne KPIs** wie „Angebote pro Monat erstellt“ oder „Projekte pro Innendienst-Mitarbeiter“
 herangezogen werden, um Effizienz zu beurteilen
 . Eine sinnvolle Kennzahl ist hier z. B. das Verhältnis
-*Anzahl Projekte zu Innendienst-Personalstunden* , um die Produktivität zu tracken. Schließlich dienen
+_Anzahl Projekte zu Innendienst-Personalstunden_ , um die Produktivität zu tracken. Schließlich dienen
 **Lieferanten-KPIs** (Reklamationsquote, Durchschnittliche Lieferzeit) als indirektes Maß für Claudias Erfolg
 im Lieferantenmanagement
 . Insgesamt hat Claudia den Anspruch, in all diesen Kennzahlen gute Werte
@@ -555,6 +547,7 @@ Der Innendienst benötigt **transparente Einblicke in kommende Arbeitslast** um 
 **Kernanforderungen:**
 
 **Angebots-Pipeline-Prognose:**
+
 - **Gewichtete Incoming-Pipeline**: System zeigt erwartete Angebots-Requests basierend auf Opportunity-Status[^1]
   - Nächste 2 Wochen: 8 Opportunities in "Proposal"-Phase → voraussichtlich 5 Angebotsanfragen (Ø 62% Conversion)
   - Nächste 4 Wochen: 15 Opportunities gesamt → Forecast: 9 konkrete Anforderungen
@@ -569,6 +562,7 @@ Der Innendienst benötigt **transparente Einblicke in kommende Arbeitslast** um 
 - **Bottleneck-Alerts**: "WARNUNG: KW 18 Kapazitätsgrenze um 19% überschritten → Empfehlung: Externe Kalkulator-Unterstützung buchen"
 
 **Projekt-Staffing-Prognose:**
+
 - **Resource Allocation Forecast**: Welche Projekte wann starten (aus Won Opportunities)
   - Projekt A (Hofladen Müller): Start voraussichtlich KW 16 → Innendienst-Koordination 5h/Woche für 8 Wochen
   - Projekt B (Vinothek Schmidt): Start KW 18 → 8h/Woche für 12 Wochen
@@ -579,6 +573,7 @@ Der Innendienst benötigt **transparente Einblicke in kommende Arbeitslast** um 
   - Projekt C: Noch 2 Wochen Puffer → niedrigere Priorität
 
 **Workload-Visualisierung:**
+
 - **Gantt-Chart-Style-Ansicht**: Zeigt geplante Arbeitsbelastung pro Woche
   ```
   KW 14: ████░░░░░░ 40% (42h / 105h) – Ruhige Woche
@@ -591,14 +586,19 @@ Der Innendienst benötigt **transparente Einblicke in kommende Arbeitslast** um 
 - **Drill-Down**: Klick auf Woche → Details: Welche Angebote/Projekte treiben Workload?
 
 **Technische Umsetzung**:
+
 - **Predictive Models**: Random Forest für Angebots-Complexity-Scoring[^3]
 - **Resource Capacity Planning**: Algorithmus aus Project Management Best Practices[^4]
 - **Real-Time Updates**: CDC (Change Data Capture) triggert Neuberechnung bei Opportunity-Änderungen[^5]
 
 [^1]: Quelle: Research "Sales Forecasting Methods" – Opportunity-to-Proposal Conversion Rates
+
 [^2]: Quelle: Research "Forecasting Methods" – ML-Based Workload Estimation
+
 [^3]: Quelle: Research "ML Opportunity Scoring" – Complexity Scoring via Random Forest
+
 [^4]: Quelle: Research "Capacity Forecasting" – Resource Allocation Best Practices
+
 [^5]: Quelle: Research "Real-Time Dashboards" – CDC für Live-Updates
 
 ## 📈 Dashboard & Alerts
@@ -610,6 +610,7 @@ Ein **zentrales Dashboard** gibt dem Innendienst-Team Echtzeit-Überblick über 
 **Dashboard-Struktur:**
 
 **Top-Level KPIs (Always Visible):**
+
 - **Offene Angebotsanfragen**: 12 Stück (davon 3 überfällig >48h ⚠️)
 - **Aktive Projekte**: 8 Stück in Koordinationsphase
 - **Team-Auslastung**: 87% (diese Woche), Prognose nächste Woche: 119% (rot)
@@ -617,6 +618,7 @@ Ein **zentrales Dashboard** gibt dem Innendienst-Team Echtzeit-Überblick über 
 - **Angebots-Conversion-Rate**: 58% (letzten 30 Tage)
 
 **Priority Queue:**
+
 - **Sortiert nach Dringlichkeit**:
   1. 🔴 **Hofladen Müller**: Angebot überfällig (3 Tage), Kunde wartet
   2. 🔴 **Projekt Y**: Materialbestellung blockiert, Lieferanten-Eskalation erforderlich
@@ -629,6 +631,7 @@ Ein **zentrales Dashboard** gibt dem Innendienst-Team Echtzeit-Überblick über 
   - Interne Abhängigkeiten (blockiert Projekt X andere Tasks?)
 
 **Angebots-Status-Übersicht:**
+
 - **Kanban-Board-View**:
   ```
   Neu (4) | In Kalkulation (6) | Warte auf Freigabe (3) | Gesendet (8) | Angenommen (2)
@@ -638,6 +641,7 @@ Ein **zentrales Dashboard** gibt dem Innendienst-Team Echtzeit-Überblick über 
 - **Quick Actions**: Rechtsklick → "Angebot als PDF exportieren", "Version anlegen", "Kunde kontaktieren"
 
 **Projekt-Koordinations-Dashboard:**
+
 - **Active Projects Overview**:
   - Projekt A: Material bestellt ✓, Montage geplant KW 16, Team zugewiesen
   - Projekt B: Lieferanten-Problem (Verzögerung 1 Woche) ⚠️
@@ -646,6 +650,7 @@ Ein **zentrales Dashboard** gibt dem Innendienst-Team Echtzeit-Überblick über 
 - **Team Assignments**: Wer koordiniert welches Projekt? Überlastet jemand?
 
 **Automated Alerts:**
+
 - **Proaktive Warnungen**[^6]:
   - "⚠️ Angebot 'Hofladen Müller' seit 72h ohne Bearbeitung"
   - "🔴 Projekt Y: Liefertermin gefährdet – Material-Lieferung verzögert"
@@ -655,6 +660,7 @@ Ein **zentrales Dashboard** gibt dem Innendienst-Team Echtzeit-Überblick über 
 - **Escalation Rules**: Bei kritischen Delays → Auto-Benachrichtigung an Teamleiter
 
 **Real-Time Collaboration Indicators:**
+
 - **Live-Status**: Zeigt wer gerade an welchem Angebot arbeitet ("Julia bearbeitet gerade Kalkulation X")
 - **Lock Mechanism**: Verhindert gleichzeitiges Bearbeiten desselben Angebots
 - **Recent Activity**: "Markus hat vor 5 Minuten Kommentar hinzugefügt"
@@ -670,6 +676,7 @@ Der Innendienst profitiert von **n8n-gesteuerten Automatisierungen**, die repeti
 **Automated Quote Reminders:**
 
 **Trigger**: Angebot versendet, aber keine Rückmeldung nach X Tagen
+
 - **Tag 3**: System sendet freundliche Nachfass-E-Mail an Kunde[^7]
   - "Guten Tag Herr Müller, haben Sie Gelegenheit gehabt unser Angebot zu prüfen? Bei Fragen stehen wir gerne zur Verfügung."
 - **Tag 7**: Zweite Erinnerung + Benachrichtigung an Innendienst
@@ -682,6 +689,7 @@ Der Innendienst profitiert von **n8n-gesteuerten Automatisierungen**, die repeti
 **Supplier Auto-Inquiry:**
 
 **Trigger**: Neues Angebot benötigt Sonderteile (nicht in Preisliste)
+
 - **n8n Workflow**[^8]:
   1. Erkennt: "Position 'Spezial-Kühltheke 2,5m' nicht in Standardpreisliste"
   2. Extrahiert Spezifikationen aus Angebot
@@ -694,6 +702,7 @@ Der Innendienst profitiert von **n8n-gesteuerten Automatisierungen**, die repeti
 **Automated Project Kickoff:**
 
 **Trigger**: Angebot wird vom Kunden angenommen (Status → "Won")
+
 - **n8n Auto-Actions**[^9]:
   1. **Projekt anlegen**: Aus Opportunity automatisch Projekt erstellen (alle Daten übertragen)
   2. **Team benachrichtigen**: Planungsabteilung + Montage-Team informieren
@@ -711,6 +720,7 @@ Der Innendienst profitiert von **n8n-gesteuerten Automatisierungen**, die repeti
 **Supplier Performance Tracking:**
 
 **Continuous Monitoring**: n8n überwacht Lieferanten-Zuverlässigkeit[^10]
+
 - **Liefertermin-Tracking**: Vergleich "zugesagt" vs. "tatsächlich geliefert"
   - Lieferant A: 95% pünktlich (grün, zuverlässig)
   - Lieferant B: 68% pünktlich (gelb, Verzögerungen häufig)
@@ -722,6 +732,7 @@ Der Innendienst profitiert von **n8n-gesteuerten Automatisierungen**, die repeti
 **Price Update Monitoring:**
 
 **Trigger**: Lieferanten-Preislisten ändern sich
+
 - **n8n Webhook**: Empfängt Preisänderungen von Lieferanten-APIs[^11]
 - **Auto-Update**: Interne Preislisten werden aktualisiert
 - **Impact Analysis**: System berechnet Auswirkungen auf offene Angebote
@@ -732,6 +743,7 @@ Der Innendienst profitiert von **n8n-gesteuerten Automatisierungen**, die repeti
 **Automated Report Generation:**
 
 **Weekly Innendienst Performance Report**:
+
 - **Trigger**: Jeden Freitagabend 17 Uhr
 - **n8n Workflow** aggregiert Wochendaten:
   - Anzahl erstellte Angebote (diese Woche: 12)
@@ -744,9 +756,13 @@ Der Innendienst profitiert von **n8n-gesteuerten Automatisierungen**, die repeti
 - **Export**: PDF-Report via E-Mail an Team + GF
 
 [^7]: Quelle: Research "n8n Automation" – Automated Follow-Up Workflows
+
 [^8]: Quelle: Research "n8n CRM Automation" – Supplier Inquiry Automation Pattern
+
 [^9]: Quelle: Research "n8n Agent Orchestration" – Multi-Step Project Kickoff Workflows
+
 [^10]: Quelle: Research "n8n Monitoring" – Continuous Supplier Performance Tracking
+
 [^11]: Quelle: Research "n8n Integration Patterns" – Webhook-Based Price Update Monitoring
 
 ## 💡 KI-gestützte Angebotserstellung
@@ -758,6 +774,7 @@ Künstliche Intelligenz unterstützt den Innendienst bei der **schnelleren, prä
 **Smart Quote Templates:**
 
 **KI-Vorschlagsengine**:
+
 - Innendienst wählt Projekttyp: "Hofladen, 60qm, Standard"
 - **LLM-System** (LlamaIndex)[^12] sucht ähnliche historische Projekte via **Vector Search**
 - **Top 3 ähnlichste Projekte** werden vorgeschlagen:
@@ -771,6 +788,7 @@ Künstliche Intelligenz unterstützt den Innendienst bei der **schnelleren, prä
 - **Zeitersparnis**: Statt 3h Neu-Kalkulation → 45 Min Review & Anpassung
 
 **Semantic Search für Positionen:**
+
 - Innendienst sucht: **"Weinregal mit Beleuchtung"**
 - Vector Search (Pinecone/Weaviate)[^13] findet semantisch ähnliche Positionen:
   - "Premium-Weinregal mit integrierter LED-Beleuchtung" (Projekt X)
@@ -782,6 +800,7 @@ Künstliche Intelligenz unterstützt den Innendienst bei der **schnelleren, prä
 **Margin Optimization Suggestions:**
 
 **KI-Marge-Analyse**:
+
 - System analysiert Angebot während Erstellung
 - **Alerts bei niedrigen Margen**:
   - "⚠️ Position 'Spezial-Kühltheke': Marge nur 12% (Ziel: >25%) → Preis zu niedrig oder Kosten zu hoch?"
@@ -791,6 +810,7 @@ Künstliche Intelligenz unterstützt den Innendienst bei der **schnelleren, prä
 - **Comparative Analysis**: "Ähnliche Projekte hatten Durchschnitts-Marge 30% → Dein Angebot: 24% (6% unter Durchschnitt)"
 
 **Automated Quality Checks:**
+
 - **Vollständigkeits-Check**: "Fehlt: Transportkosten, Montagekosten (in 95% ähnlicher Angebote enthalten)"
 - **Plausibilitäts-Check**: "Ungewöhnlich: Position 'Regalsystem' nur €2.200 (Durchschnitt bei ähnlichen Projekten: €4.500) → Prüfung empfohlen"
 - **Fehler-Detection**: "Duplikat erkannt: Position 14 und 28 sind identisch"
@@ -798,6 +818,7 @@ Künstliche Intelligenz unterstützt den Innendienst bei der **schnelleren, prä
 **Natural Language Query für Preise:**
 
 **Conversational Interface**:
+
 - Innendienst fragt: **"Was hat eine 3m-Kühltheke beim letzten Vinothek-Projekt gekostet?"**
 - **RAG-System** (LlamaIndex)[^15]:
   1. Vector Search findet relevante Projekte (Embeddings: "Kühltheke", "Vinothek", "3m")
@@ -811,6 +832,7 @@ Künstliche Intelligenz unterstützt den Innendienst bei der **schnelleren, prä
 **Automated Proposal Generation (Experimental):**
 
 **End-to-End AI Assistant**:
+
 - **Input**: Opportunity-Daten + Kundenbriefing + Planungsunterlagen
 - **n8n Workflow** orchestriert LLM-Chain[^16]:
   1. **Analyse**: LLM extrahiert Kernanforderungen aus Kundenbriefing
@@ -824,31 +846,40 @@ Künstliche Intelligenz unterstützt den Innendienst bei der **schnelleren, prä
 - **Zeitersparnis**: Erst-Entwurf in 10 Min statt 2h
 
 **DSGVO-Konformität**:
+
 - **On-Premise LLM Option**: Lokales Llama 70B für sensible Kundendaten[^17]
 - **Data Filtering**: Nur nicht-personenbezogene Daten an Cloud-LLMs
 - **Audit Trails**: Alle KI-Generierungen geloggt (wer, wann, was)
 
 [^12]: Quelle: Research "LlamaIndex" – Optimiert für Document Retrieval in CRM
+
 [^13]: Quelle: Research "Vector Databases" – Semantic Search für Produkt-Positionen
+
 [^14]: Quelle: Research "ML Models" – Margin Optimization via Comparative Analysis
+
 [^15]: Quelle: Research "RAG Architecture" – Conversational Query über Geschäftsdaten
+
 [^16]: Quelle: Research "LangChain Agents" – Multi-Step Workflow Orchestration für Proposal Generation
+
 [^17]: Quelle: Research "DSGVO Compliance for LLMs" – On-Premise Hosting für Datenschutz
 
 **Collaborative AI Editing:**
 
 **Gemini-Style Inline Suggestions**:
+
 - Innendienst tippt in Angebots-Beschreibung: "Regalsystem für..."
 - **AI Auto-Complete**: "...regionale Produkte, 3m Breite, Massivholz Eiche, inkl. LED-Beleuchtung"
 - **Accept/Reject**: Innendienst kann Vorschlag annehmen oder modifizieren
 - **Context-Aware**: KI berücksichtigt Projektkontext (Hofladen vs. Vinothek → andere Vorschläge)
 
 **Tone & Style Assistance**:
+
 - Innendienst schreibt technische Angebots-Beschreibung: "Regalsystem 3m, Holz, LED"
 - **LLM poliert auf**: "Hochwertiges Regalsystem aus massiver Eiche, 3 Meter Breite, mit integrierter LED-Beleuchtung für optimale Produktpräsentation"
 - **Mehrsprachig**: Auto-Übersetzung für internationale Kunden (Englisch, Französisch)
 
 **Learning from Feedback:**
+
 - System trackt: Welche KI-Vorschläge wurden angenommen/abgelehnt?
 - **Continuous Improvement**: ML-Modell lernt Präferenzen des Teams
 - Beispiel: "Team lehnt immer 'Massivholz' ab bei Budget <€40K → KI schlägt künftig 'Furnierholz' vor"
@@ -864,6 +895,7 @@ Künstliche Intelligenz unterstützt den Innendienst bei der **schnelleren, prä
 **Problem:** Wichtige Updates (Angebots-Freigabe, Task-Assignment, Außendienst hat neuen Lead übergeben) gehen in E-Mail-Flut unter.
 
 **Lösung:**
+
 - **Real-Time Activity Stream:** Innendienst sieht LIVE was passiert (Socket.IO WebSocket)
   - "Außendienst Markus hat Lead 'Hofladen Schmidt' übergeben – bitte Angebot erstellen"
   - "Planer hat Design für Projekt XY fertiggestellt – bereit für Kalkulation"
@@ -873,6 +905,7 @@ Künstliche Intelligenz unterstützt den Innendienst bei der **schnelleren, prä
 - **Mobile Push:** PWA-Benachrichtigungen auf Smartphone (auch offline-fähig)
 
 **Impact:**
+
 - -40% weniger "Hab ich nicht mitbekommen"-Eskalationen
 - 2-3x schnellere Reaktionszeit (vorher 1 Tag → jetzt <4h)
 - Weniger E-Mail-Overhead (von 50 E-Mails/Tag → 20 E-Mails/Tag)
@@ -884,6 +917,7 @@ Künstliche Intelligenz unterstützt den Innendienst bei der **schnelleren, prä
 **Problem:** Diskussionen über Angebots-Positionen laufen in E-Mail/Slack → Kontext verloren, nicht nachvollziehbar.
 
 **Lösung:**
+
 - **Kommentare direkt AN Entitäten:**
   - Angebots-Position: "Kann man hier günstigeres Material verwenden?"
   - Task: "Warum dauert Lieferung 3 Wochen statt 1 Woche?"
@@ -893,6 +927,7 @@ Künstliche Intelligenz unterstützt den Innendienst bei der **schnelleren, prä
 - **@-Mentions:** "@Planer: Bitte alternative Grundriss-Variante entwerfen"
 
 **Impact:**
+
 - 100% Transparenz (keine "Lost E-Mails")
 - GoBD-konform: Änderungsrechtfertigungen dokumentiert
 - Weniger Missverständnisse (Kontext bleibt erhalten)
@@ -900,10 +935,10 @@ Künstliche Intelligenz unterstützt den Innendienst bei der **schnelleren, prä
 ---
 
 **Siehe auch:**
+
 - `Produktvision für Projekt KOMPASS (Nordstern-Direktive).md` → Pillar 2 (Collaboration)
 - `docs/architectur/` → Real-Time-Kommunikationsarchitektur (Socket.IO)
 
 ---
 
 ### 16
-

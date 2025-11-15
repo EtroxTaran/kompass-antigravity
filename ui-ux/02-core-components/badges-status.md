@@ -1,6 +1,7 @@
 # Badges & Status Indicators - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Badge & Status Indicator Components
 - **User Roles**: All (GF, PLAN, ADM, KALK, BUCH)
 - **Usage Context**: Status display, counts, labels, tags
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Status Badges**: Color-coded for quick scanning (green=active, red=overdue, amber=pending)
 - **Count Badges**: Notification counts, item counts
 - **Role Badges**: User role indicators (GF, PLAN, ADM, etc.)
 - **Tag Badges**: Categories, labels, keywords
 
 ### Layout Structure
+
 - Height: 24px (default), 20px (small), 28px (large)
 - Padding: 8px horizontal, 4px vertical
 - Border-radius: 12px (pill shape)
 - Font: 12px (default), 11px (small), 13px (large), medium weight
 
 ### shadcn/ui Components
+
 - `Badge` with variants: default, secondary, destructive, outline, success
 
 ## Figma Make Prompt
@@ -28,6 +32,7 @@
 Create a comprehensive badge and status indicator system for KOMPASS, a German CRM application. Design badge variants for status, counts, roles, and tags with German labels and appropriate color coding.
 
 **Standard Badge (Default):**
+
 - Background: Light gray (#f3f4f6)
 - Text: Dark gray (#374151), 12px, medium weight
 - Height: 24px
@@ -62,6 +67,7 @@ Create a comprehensive badge and status indicator system for KOMPASS, a German C
    - Examples: "Neu", "Info", "Entwurf"
 
 **Count Badges (Notification Style):**
+
 - Shape: Circle (20px diameter) or pill (if count >99)
 - Background: Red (#ef4444)
 - Text: White, 11px, bold, centered
@@ -71,6 +77,7 @@ Create a comprehensive badge and status indicator system for KOMPASS, a German C
 
 **Role Badges:**
 Design badges for RBAC roles with distinct colors:
+
 1. **GF (Geschäftsführung/CEO):**
    - Background: Purple (#f3e8ff)
    - Text: Dark purple (#6b21a8)
@@ -102,6 +109,7 @@ Design badges for RBAC roles with distinct colors:
    - Text: "BUCH"
 
 **Priority Badges:**
+
 1. **High Priority:**
    - Background: Red (#fee2e2)
    - Text: "Hoch" (dark red)
@@ -118,6 +126,7 @@ Design badges for RBAC roles with distinct colors:
    - Icon: Circle (gray, 14px)
 
 **Tag Badges (Categories):**
+
 - Background: White
 - Border: 1px solid gray (#d1d5db)
 - Text: Gray (#374151), 12px
@@ -127,6 +136,7 @@ Design badges for RBAC roles with distinct colors:
 - Examples: "Großkunde", "VIP", "Landwirtschaft", "Bio"
 
 **Badge with Icon:**
+
 - Icon position: Left of text, 14px size
 - Gap: 4px between icon and text
 - Icon color: Matches text color
@@ -136,6 +146,7 @@ Design badges for RBAC roles with distinct colors:
   - XCircle + "Inaktiv"
 
 **Badge Sizes:**
+
 1. **Small (sm):**
    - Height: 20px
    - Padding: 6px horizontal, 2px vertical
@@ -155,6 +166,7 @@ Design badges for RBAC roles with distinct colors:
    - Use for: Prominent status displays
 
 **Outline Badge:**
+
 - Background: Transparent
 - Border: 1px solid (color varies by type)
 - Text: Color matches border
@@ -185,12 +197,14 @@ Design badges for RBAC roles with distinct colors:
    - GoBD indicator: "Abgeschlossen" (gray, immutable badge)
 
 **Interactive Badges (Removable Tags):**
+
 - Hover state: Slightly darker background
 - Remove "×" icon: 14px, appears on hover or always visible
 - Click "×": Removes badge from view
 - Example: Filter tags that can be removed
 
 **Badge Animations:**
+
 - Pulse animation for notification count changes
 - Fade in/out when added/removed
 - Smooth color transitions (200ms) when status changes
@@ -200,22 +214,26 @@ Design all badges with clear legibility and sufficient contrast (WCAG AA).
 ## Interaction Patterns
 
 ### Static Badges
+
 - No interaction (display only)
 - Hover: No change (unless removable)
 - Click: No action
 
 ### Removable Tag Badges
+
 - Hover: Background slightly darker
 - Click "×": Fade out and remove (300ms animation)
 - Focus: Blue outline on "×" button
 
 ### Count Badges
+
 - Update: Pulse animation when count changes
 - Click parent element: Open related content (e.g., notifications)
 
 ## German Labels & Content
 
 ### Status Labels
+
 - **Aktiv**: Active
 - **Inaktiv**: Inactive
 - **In Bearbeitung**: In progress
@@ -230,11 +248,13 @@ Design all badges with clear legibility and sufficient contrast (WCAG AA).
 - **Fehlgeschlagen**: Failed
 
 ### Priority Labels
+
 - **Hoch**: High
 - **Mittel**: Medium
 - **Niedrig**: Low
 
 ### Role Labels
+
 - **GF**: CEO
 - **PLAN**: Planning
 - **ADM**: Sales
@@ -242,6 +262,7 @@ Design all badges with clear legibility and sufficient contrast (WCAG AA).
 - **BUCH**: Accounting
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA contrast: 4.5:1 for text on background
 - Color is not the only indicator (text/icons also used)
 - Screen reader text: aria-label for icon-only badges
@@ -250,6 +271,7 @@ Design all badges with clear legibility and sufficient contrast (WCAG AA).
 - Keyboard accessible: Removable badge "×" focusable with Tab
 
 ## Mobile Considerations
+
 - Slightly larger badges on mobile (26px height vs 24px)
 - Touch-friendly remove button (28px hit area)
 - Adequate spacing between badges (8px gap minimum)
@@ -258,37 +280,44 @@ Design all badges with clear legibility and sufficient contrast (WCAG AA).
 ## Example Data
 
 **Customer Status:**
+
 - "Aktiv" (green) - 85% of customers
 - "Inaktiv" (red) - 15% of customers
 
 **Project Status:**
+
 - "Neu" (blue)
 - "In Bearbeitung" (amber)
 - "Abgeschlossen" (green)
 - "Storniert" (red)
 
 **Invoice Payment Status:**
+
 - "Bezahlt" (green)
 - "Ausstehend" (amber)
 - "Überfällig" (red)
 
 **User Roles:**
+
 - "Michael Schmidt" - "ADM" badge (green)
 - "Dr. Anna Weber" - "GF" badge (purple)
 - "Thomas Fischer" - "PLAN" badge (blue)
 
 **Notification Count:**
+
 - Bell icon with "3" badge (red circle)
 - Sync status with "5 ausstehend" badge (amber)
 
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add badge
 ```
 
 ### Badge Usage
+
 ```typescript
 import { Badge } from '@/components/ui/badge';
 
@@ -320,22 +349,24 @@ import { Badge } from '@/components/ui/badge';
 ```
 
 ### Custom Variants
+
 ```typescript
 // Define custom badge variants in component
 const badgeVariants = {
-  success: "bg-green-100 text-green-900",
-  warning: "bg-amber-100 text-amber-900",
-  info: "bg-blue-100 text-blue-900",
+  success: 'bg-green-100 text-green-900',
+  warning: 'bg-amber-100 text-amber-900',
+  info: 'bg-blue-100 text-blue-900',
 };
 ```
 
 ### Component Dependencies
+
 - Design tokens (colors for semantic variants)
 - Icons from lucide-react (CheckCircle, AlertCircle, X)
 - Conditional styling for variants
 
 ### State Management
+
 - Badge content from application state
 - Count badges updated when data changes
 - Removable tags trigger callback on removal
-

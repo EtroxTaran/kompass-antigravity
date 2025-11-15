@@ -42,17 +42,18 @@ KOMPASS follows RESTful API design principles as defined in `.cursorrules`:
 
 #### HTTP Methods
 
-| Method | Purpose | Idempotent | Safe |
-|--------|---------|------------|------|
-| GET | Retrieve resource(s) | ✅ | ✅ |
-| POST | Create new resource | ❌ | ❌ |
-| PUT | Update entire resource (full replacement) | ✅ | ❌ |
-| PATCH | Update partial resource | ❌ | ❌ |
-| DELETE | Remove resource | ✅ | ❌ |
+| Method | Purpose                                   | Idempotent | Safe |
+| ------ | ----------------------------------------- | ---------- | ---- |
+| GET    | Retrieve resource(s)                      | ✅         | ✅   |
+| POST   | Create new resource                       | ❌         | ❌   |
+| PUT    | Update entire resource (full replacement) | ✅         | ❌   |
+| PATCH  | Update partial resource                   | ❌         | ❌   |
+| DELETE | Remove resource                           | ✅         | ❌   |
 
 #### URL Structure
 
 **✅ CORRECT: Resource-based URLs**
+
 ```
 /api/v1/customers
 /api/v1/customers/{customerId}
@@ -63,6 +64,7 @@ KOMPASS follows RESTful API design principles as defined in `.cursorrules`:
 ```
 
 **❌ WRONG: Action-based URLs**
+
 ```
 /api/v1/getCustomers
 /api/v1/createCustomer
@@ -72,12 +74,14 @@ KOMPASS follows RESTful API design principles as defined in `.cursorrules`:
 ### Nested Resources
 
 For parent-child relationships (e.g., Customer → Location), use nested resource URLs:
+
 - `/api/v1/customers/{customerId}/locations` - All locations for a customer
 - `/api/v1/customers/{customerId}/locations/{locationId}` - Specific location
 
 ### Query Parameters
 
 Use query parameters for filtering, sorting, and pagination:
+
 - **Filtering:** `?locationType=branch&isActive=true`
 - **Sorting:** `?sort=locationName&order=asc`
 - **Pagination:** `?page=1&limit=20`
@@ -92,6 +96,7 @@ KOMPASS uses **dual versioning** to support both header-based and path-based API
 ### Path-Based Versioning (Primary)
 
 All endpoints are prefixed with `/api/v1/`:
+
 ```
 /api/v1/customers/{customerId}/locations
 ```
@@ -99,6 +104,7 @@ All endpoints are prefixed with `/api/v1/`:
 ### Header-Based Versioning (Optional)
 
 Clients can specify version via header:
+
 ```http
 X-API-Version: 1
 ```
@@ -120,12 +126,12 @@ KOMPASS follows **RFC 7807 Problem Details for HTTP APIs** for consistent error 
 
 ```typescript
 interface ProblemDetails {
-  type: string;        // URI reference to problem type
-  title: string;       // Human-readable summary
-  status: number;      // HTTP status code
-  detail?: string;     // Human-readable explanation
-  instance?: string;   // URI reference to specific occurrence
-  [key: string]: any;  // Additional context-specific fields
+  type: string; // URI reference to problem type
+  title: string; // Human-readable summary
+  status: number; // HTTP status code
+  detail?: string; // Human-readable explanation
+  instance?: string; // URI reference to specific occurrence
+  [key: string]: any; // Additional context-specific fields
 }
 ```
 
@@ -239,6 +245,7 @@ Retrieves all roles assigned to a user.
 #### Request
 
 **Path Parameters:**
+
 - `userId` (string, required) - User ID
 
 **Required Permission:** `User.READ_ROLES` (GF, ADMIN, or self)
@@ -246,6 +253,7 @@ Retrieves all roles assigned to a user.
 #### Response
 
 **200 OK:**
+
 ```json
 {
   "userId": "user-abc123",
@@ -287,11 +295,13 @@ Assigns multiple roles to a user. Only GF and ADMIN can assign roles.
 #### Request
 
 **Path Parameters:**
+
 - `userId` (string, required) - User ID
 
 **Required Permission:** `User.ASSIGN_ROLES` (GF, ADMIN only)
 
 **Request Body:**
+
 ```json
 {
   "roles": ["ADM", "PLAN"],
@@ -301,6 +311,7 @@ Assigns multiple roles to a user. Only GF and ADMIN can assign roles.
 ```
 
 **Validation:**
+
 - `roles`: Required, non-empty array, all values must be valid `UserRole` enum
 - `primaryRole`: Required, must be in `roles[]` array
 - `reason`: Required, 10-500 characters
@@ -308,6 +319,7 @@ Assigns multiple roles to a user. Only GF and ADMIN can assign roles.
 #### Response
 
 **200 OK:**
+
 ```json
 {
   "userId": "user-abc123",
@@ -325,6 +337,7 @@ Assigns multiple roles to a user. Only GF and ADMIN can assign roles.
 **404 Not Found:** User ID does not exist
 
 #### Notes
+
 - All existing roles are **replaced** with new roles array
 - Audit log entry created with reason
 - User's `roleChangeHistory` updated
@@ -340,12 +353,14 @@ Removes a specific role from a user. Only GF and ADMIN can revoke roles.
 #### Request
 
 **Path Parameters:**
+
 - `userId` (string, required) - User ID
 - `roleId` (string, required) - Role to revoke (e.g., "PLAN")
 
 **Required Permission:** `User.REVOKE_ROLES` (GF, ADMIN only)
 
 **Request Body:**
+
 ```json
 {
   "reason": "User transferred to different department"
@@ -353,12 +368,14 @@ Removes a specific role from a user. Only GF and ADMIN can revoke roles.
 ```
 
 **Validation:**
+
 - `reason`: Required, 10-500 characters
 - User must have at least one role remaining (cannot revoke last role)
 
 #### Response
 
 **200 OK:**
+
 ```json
 {
   "userId": "user-abc123",
@@ -377,6 +394,7 @@ Removes a specific role from a user. Only GF and ADMIN can revoke roles.
 **404 Not Found:** User ID or role ID does not exist
 
 #### Notes
+
 - If revoked role was `primaryRole`, system automatically sets `primaryRole` to first remaining role
 - Audit log entry created with reason
 
@@ -391,11 +409,13 @@ Changes the user's primary role. Users can change their own primary role if the 
 #### Request
 
 **Path Parameters:**
+
 - `userId` (string, required) - User ID
 
 **Required Permission:** Self (for own primary role), GF, ADMIN (for any user)
 
 **Request Body:**
+
 ```json
 {
   "primaryRole": "PLAN"
@@ -403,12 +423,14 @@ Changes the user's primary role. Users can change their own primary role if the 
 ```
 
 **Validation:**
+
 - `primaryRole`: Required, must be valid `UserRole` enum
 - `primaryRole` must be in user's `roles[]` array
 
 #### Response
 
 **200 OK:**
+
 ```json
 {
   "userId": "user-abc123",
@@ -440,11 +462,13 @@ Retrieves all role definitions.
 **Required Permission:** `Role.READ` (all roles can view)
 
 **Query Parameters:**
+
 - `active` (boolean, optional) - Filter by active status
 
 #### Response
 
 **200 OK:**
+
 ```json
 {
   "roles": [
@@ -478,6 +502,7 @@ Retrieves detailed information about a specific role.
 #### Request
 
 **Path Parameters:**
+
 - `roleId` (string, required) - Role identifier (e.g., "PLAN")
 
 **Required Permission:** `Role.READ` (all roles can view)
@@ -485,6 +510,7 @@ Retrieves detailed information about a specific role.
 #### Response
 
 **200 OK:**
+
 ```json
 {
   "_id": "role-plan",
@@ -527,6 +553,7 @@ Retrieves the permission matrix for a specific role.
 #### Request
 
 **Path Parameters:**
+
 - `roleId` (string, required) - Role identifier
 
 **Required Permission:** `Role.READ`
@@ -534,6 +561,7 @@ Retrieves the permission matrix for a specific role.
 #### Response
 
 **200 OK:**
+
 ```json
 {
   "roleId": "PLAN",
@@ -584,11 +612,13 @@ Updates the permission matrix for a role. Only ADMIN can modify role permissions
 #### Request
 
 **Path Parameters:**
+
 - `roleId` (string, required) - Role identifier
 
 **Required Permission:** `Role.UPDATE_PERMISSIONS` (ADMIN only)
 
 **Request Body:**
+
 ```json
 {
   "permissions": {
@@ -605,12 +635,14 @@ Updates the permission matrix for a role. Only ADMIN can modify role permissions
 ```
 
 **Validation:**
+
 - `permissions`: Required, valid entity-permission mapping
 - `reason`: Required, 10-500 characters
 
 #### Response
 
 **200 OK:**
+
 ```json
 {
   "roleId": "PLAN",
@@ -628,6 +660,7 @@ Updates the permission matrix for a role. Only ADMIN can modify role permissions
 **404 Not Found:** Role ID does not exist
 
 #### Notes
+
 - Changes take effect immediately for all users with this role
 - Audit log entry created with reason
 - All active users notified of permission changes
@@ -651,11 +684,13 @@ Retrieves the currently active permission matrix.
 **Required Permission:** `Role.READ` (all roles can view)
 
 **Query Parameters:**
+
 - `version` (string, optional) - Specific version to retrieve (default: active version)
 
 #### Response
 
 **200 OK:**
+
 ```json
 {
   "_id": "permission-matrix-v2.0",
@@ -703,6 +738,7 @@ Creates a new version of the permission matrix. Previous version is deactivated.
 **Required Permission:** `Role.UPDATE_PERMISSIONS` (ADMIN only)
 
 **Request Body:**
+
 ```json
 {
   "version": "2.1",
@@ -716,6 +752,7 @@ Creates a new version of the permission matrix. Previous version is deactivated.
 ```
 
 **Validation:**
+
 - `version`: Required, semantic version format, must be unique
 - `matrix`: Required, complete permission matrix for all roles
 - `effectiveDate`: Required, cannot be in the past if activating immediately
@@ -725,6 +762,7 @@ Creates a new version of the permission matrix. Previous version is deactivated.
 #### Response
 
 **201 Created:**
+
 ```json
 {
   "_id": "permission-matrix-v2.1",
@@ -740,6 +778,7 @@ Creates a new version of the permission matrix. Previous version is deactivated.
 **403 Forbidden:** User is not ADMIN
 
 #### Notes
+
 - If `activateImmediately: true`, previous matrix version is deactivated
 - Changes take effect immediately for all users
 - All active users notified of permission changes
@@ -758,6 +797,7 @@ Updates the active permission matrix (creates new version automatically).
 **Required Permission:** `Role.UPDATE_PERMISSIONS` (ADMIN only)
 
 **Request Body:**
+
 ```json
 {
   "updates": {
@@ -772,12 +812,14 @@ Updates the active permission matrix (creates new version automatically).
 ```
 
 **Validation:**
+
 - `updates`: Required, partial matrix updates
 - `changelog`: Required, 10-500 characters
 
 #### Response
 
 **200 OK:**
+
 ```json
 {
   "version": "2.2",
@@ -789,6 +831,7 @@ Updates the active permission matrix (creates new version automatically).
 ```
 
 #### Notes
+
 - Automatically increments minor version (e.g., 2.1 → 2.2)
 - Merges updates with current matrix
 - Creates new matrix version and activates it
@@ -806,12 +849,14 @@ Lists all permission matrix versions with metadata.
 **Required Permission:** `Role.READ`
 
 **Query Parameters:**
+
 - `limit` (integer, optional) - Max results (default: 50)
 - `includeInactive` (boolean, optional) - Include inactive versions (default: false)
 
 #### Response
 
 **200 OK:**
+
 ```json
 {
   "versions": [
@@ -849,11 +894,13 @@ Activates a previous permission matrix version (rollback functionality).
 #### Request
 
 **Path Parameters:**
+
 - `version` (string, required) - Version to activate (e.g., "1.0")
 
 **Required Permission:** `Role.UPDATE_PERMISSIONS` (ADMIN only)
 
 **Request Body:**
+
 ```json
 {
   "reason": "Rolling back due to issues with v2.0 - PLAN users reporting access problems"
@@ -863,6 +910,7 @@ Activates a previous permission matrix version (rollback functionality).
 #### Response
 
 **200 OK:**
+
 ```json
 {
   "version": "1.0",
@@ -888,14 +936,17 @@ Creates a new delivery location for a customer.
 #### Request
 
 **Path Parameters:**
+
 - `customerId` (string, required) - Customer ID (format: `customer-{uuid}`)
 
 **Request Body:**
+
 ```typescript
-CreateLocationDto
+CreateLocationDto;
 ```
 
 **Example Request:**
+
 ```http
 POST /api/v1/customers/customer-12345/locations HTTP/1.1
 Authorization: Bearer {jwt_token}
@@ -920,6 +971,7 @@ Content-Type: application/json
 #### Response
 
 **201 Created**
+
 ```json
 {
   "_id": "location-67890",
@@ -948,6 +1000,7 @@ Content-Type: application/json
 ```
 
 **Possible Errors:**
+
 - `400` - Validation error (invalid address format, missing required fields)
 - `401` - Unauthorized (no valid token)
 - `403` - Forbidden (user cannot create locations for this customer)
@@ -955,6 +1008,7 @@ Content-Type: application/json
 - `409` - Conflict (location name already exists for customer)
 
 #### Permission Required
+
 - `Location.CREATE` AND `Customer.READ` (for the parent customer)
 - ADM can only create locations for their own customers
 - GF/PLAN can create locations for any customer
@@ -970,15 +1024,18 @@ Retrieves all locations for a specific customer.
 #### Request
 
 **Path Parameters:**
+
 - `customerId` (string, required) - Customer ID
 
 **Query Parameters:**
+
 - `locationType` (string, optional) - Filter by location type (`branch`, `warehouse`, etc.)
 - `isActive` (boolean, optional) - Filter by active status
 - `sort` (string, optional) - Sort field (default: `locationName`)
 - `order` (string, optional) - Sort order (`asc` or `desc`, default: `asc`)
 
 **Example Request:**
+
 ```http
 GET /api/v1/customers/customer-12345/locations?locationType=branch&isActive=true HTTP/1.1
 Authorization: Bearer {jwt_token}
@@ -987,6 +1044,7 @@ Authorization: Bearer {jwt_token}
 #### Response
 
 **200 OK**
+
 ```json
 {
   "data": [
@@ -1028,11 +1086,13 @@ Authorization: Bearer {jwt_token}
 ```
 
 **Possible Errors:**
+
 - `401` - Unauthorized
 - `403` - Forbidden (user cannot view this customer's locations)
 - `404` - Customer not found
 
 #### Permission Required
+
 - `Location.READ` AND `Customer.READ`
 
 ---
@@ -1046,10 +1106,12 @@ Retrieves a specific location by ID.
 #### Request
 
 **Path Parameters:**
+
 - `customerId` (string, required) - Customer ID
 - `locationId` (string, required) - Location ID
 
 **Example Request:**
+
 ```http
 GET /api/v1/customers/customer-12345/locations/location-67890 HTTP/1.1
 Authorization: Bearer {jwt_token}
@@ -1058,6 +1120,7 @@ Authorization: Bearer {jwt_token}
 #### Response
 
 **200 OK**
+
 ```json
 {
   "_id": "location-67890",
@@ -1076,7 +1139,7 @@ Authorization: Bearer {jwt_token}
     "state": "Bayern",
     "country": "Deutschland",
     "latitude": 48.1351,
-    "longitude": 11.5820
+    "longitude": 11.582
   },
   "primaryContactPersonId": "contact-111",
   "contactPersons": ["contact-111", "contact-112"],
@@ -1092,11 +1155,13 @@ Authorization: Bearer {jwt_token}
 ```
 
 **Possible Errors:**
+
 - `401` - Unauthorized
 - `403` - Forbidden
 - `404` - Location or Customer not found
 
 #### Permission Required
+
 - `Location.READ` AND `Customer.READ`
 
 ---
@@ -1110,15 +1175,18 @@ Updates an existing location (full replacement).
 #### Request
 
 **Path Parameters:**
+
 - `customerId` (string, required) - Customer ID
 - `locationId` (string, required) - Location ID
 
 **Request Body:**
+
 ```typescript
-UpdateLocationDto
+UpdateLocationDto;
 ```
 
 **Example Request:**
+
 ```http
 PUT /api/v1/customers/customer-12345/locations/location-67890 HTTP/1.1
 Authorization: Bearer {jwt_token}
@@ -1148,6 +1216,7 @@ Content-Type: application/json
 #### Response
 
 **200 OK**
+
 ```json
 {
   "_id": "location-67890",
@@ -1180,6 +1249,7 @@ Content-Type: application/json
 ```
 
 **Possible Errors:**
+
 - `400` - Validation error
 - `401` - Unauthorized
 - `403` - Forbidden (user cannot update this location)
@@ -1187,6 +1257,7 @@ Content-Type: application/json
 - `409` - Conflict (e.g., new location name already exists)
 
 #### Permission Required
+
 - `Location.UPDATE` AND `Customer.READ`
 
 ---
@@ -1200,10 +1271,12 @@ Deletes a location. Note: Cannot delete location if it's referenced in active pr
 #### Request
 
 **Path Parameters:**
+
 - `customerId` (string, required) - Customer ID
 - `locationId` (string, required) - Location ID
 
 **Example Request:**
+
 ```http
 DELETE /api/v1/customers/customer-12345/locations/location-67890 HTTP/1.1
 Authorization: Bearer {jwt_token}
@@ -1216,12 +1289,14 @@ Authorization: Bearer {jwt_token}
 (Empty response body)
 
 **Possible Errors:**
+
 - `401` - Unauthorized
 - `403` - Forbidden (user cannot delete this location)
 - `404` - Location or Customer not found
 - `409` - Conflict (location is referenced in active projects/quotes)
 
 **Example 409 Conflict Response:**
+
 ```json
 {
   "type": "https://api.kompass.de/errors/conflict",
@@ -1231,14 +1306,15 @@ Authorization: Bearer {jwt_token}
   "instance": "/api/v1/customers/customer-12345/locations/location-67890",
   "conflictType": "location_in_use",
   "referencedBy": [
-    {"type": "project", "id": "project-111"},
-    {"type": "project", "id": "project-222"},
-    {"type": "quote", "id": "quote-333"}
+    { "type": "project", "id": "project-111" },
+    { "type": "project", "id": "project-222" },
+    { "type": "quote", "id": "quote-333" }
   ]
 }
 ```
 
 #### Permission Required
+
 - `Location.DELETE` AND `Customer.READ`
 
 ---
@@ -1254,9 +1330,11 @@ Retrieves decision-making role and authority information for a contact.
 #### Request
 
 **Path Parameters:**
+
 - `contactId` (string, required) - Contact ID
 
 **Example Request:**
+
 ```http
 GET /api/v1/contacts/contact-111/decision-authority HTTP/1.1
 Authorization: Bearer {jwt_token}
@@ -1265,6 +1343,7 @@ Authorization: Bearer {jwt_token}
 #### Response
 
 **200 OK**
+
 ```json
 {
   "contactId": "contact-111",
@@ -1283,11 +1362,13 @@ Authorization: Bearer {jwt_token}
 ```
 
 **Possible Errors:**
+
 - `401` - Unauthorized
 - `403` - Forbidden (user cannot view this contact)
 - `404` - Contact not found
 
 #### Permission Required
+
 - `Contact.VIEW_AUTHORITY_LEVELS` (all roles have this permission)
 
 ---
@@ -1301,14 +1382,17 @@ Updates decision-making role and authority for a contact. **Restricted to ADM+ u
 #### Request
 
 **Path Parameters:**
+
 - `contactId` (string, required) - Contact ID
 
 **Request Body:**
+
 ```typescript
-UpdateDecisionAuthorityDto
+UpdateDecisionAuthorityDto;
 ```
 
 **Example Request:**
+
 ```http
 PUT /api/v1/contacts/contact-111/decision-authority HTTP/1.1
 Authorization: Bearer {jwt_token}
@@ -1327,6 +1411,7 @@ Content-Type: application/json
 #### Response
 
 **200 OK**
+
 ```json
 {
   "contactId": "contact-111",
@@ -1345,12 +1430,14 @@ Content-Type: application/json
 ```
 
 **Possible Errors:**
+
 - `400` - Validation error (e.g., missing approval limit when canApproveOrders=true)
 - `401` - Unauthorized
 - `403` - Forbidden (only ADM+ can update decision-making roles)
 - `404` - Contact not found
 
 **Example 403 Forbidden Response:**
+
 ```json
 {
   "type": "https://api.kompass.de/errors/forbidden",
@@ -1364,6 +1451,7 @@ Content-Type: application/json
 ```
 
 #### Permission Required
+
 - `Contact.UPDATE_DECISION_ROLE` (restricted to PLAN and GF roles)
 
 ---
@@ -1373,7 +1461,15 @@ Content-Type: application/json
 ### CreateLocationDto
 
 ```typescript
-import { IsString, IsEnum, IsBoolean, IsOptional, Length, Matches, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsBoolean,
+  IsOptional,
+  Length,
+  Matches,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -1382,26 +1478,27 @@ export class CreateLocationDto {
     description: 'Descriptive name for the location',
     example: 'Filiale München Süd',
     minLength: 2,
-    maxLength: 100
+    maxLength: 100,
   })
   @IsString()
   @Length(2, 100)
   @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/, {
-    message: 'Location name can only contain letters, numbers, and basic punctuation'
+    message:
+      'Location name can only contain letters, numbers, and basic punctuation',
   })
   locationName: string;
 
   @ApiProperty({
     description: 'Type of location',
     enum: ['headquarter', 'branch', 'warehouse', 'project_site', 'other'],
-    example: 'branch'
+    example: 'branch',
   })
   @IsEnum(['headquarter', 'branch', 'warehouse', 'project_site', 'other'])
   locationType: string;
 
   @ApiProperty({
     description: 'Delivery address for this location',
-    type: () => AddressDto
+    type: () => AddressDto,
   })
   @ValidateNested()
   @Type(() => AddressDto)
@@ -1409,7 +1506,7 @@ export class CreateLocationDto {
 
   @ApiProperty({
     description: 'Whether the location is currently operational',
-    example: true
+    example: true,
   })
   @IsBoolean()
   isActive: boolean;
@@ -1417,7 +1514,7 @@ export class CreateLocationDto {
   @ApiProperty({
     description: 'Primary contact person ID for this location',
     example: 'contact-111',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -1427,7 +1524,7 @@ export class CreateLocationDto {
     description: 'Array of contact person IDs assigned to this location',
     type: [String],
     example: ['contact-111', 'contact-112'],
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString({ each: true })
@@ -1436,7 +1533,7 @@ export class CreateLocationDto {
   @ApiProperty({
     description: 'Special delivery instructions',
     example: 'Hintereingang nutzen, Parkplatz vorhanden',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -1446,7 +1543,7 @@ export class CreateLocationDto {
   @ApiProperty({
     description: 'Operating hours',
     example: 'Mo-Fr 8:00-18:00, Sa 9:00-14:00',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -1456,7 +1553,7 @@ export class CreateLocationDto {
   @ApiProperty({
     description: 'Parking and access instructions',
     example: 'Parkplätze vor dem Gebäude',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -1502,7 +1599,7 @@ export class UpdateLocationDto {
 export class AddressDto {
   @ApiProperty({
     description: 'Street name',
-    example: 'Lindwurmstraße'
+    example: 'Lindwurmstraße',
   })
   @IsString()
   @Length(2, 100)
@@ -1511,7 +1608,7 @@ export class AddressDto {
   @ApiProperty({
     description: 'House/building number',
     example: '85',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -1521,7 +1618,7 @@ export class AddressDto {
   @ApiProperty({
     description: 'Additional address information',
     example: 'Hintereingang, 2. Stock',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -1530,7 +1627,7 @@ export class AddressDto {
 
   @ApiProperty({
     description: 'Postal code',
-    example: '80337'
+    example: '80337',
   })
   @IsString()
   @Matches(/^\d{5}$/, { message: 'German postal code must be 5 digits' })
@@ -1538,7 +1635,7 @@ export class AddressDto {
 
   @ApiProperty({
     description: 'City name',
-    example: 'München'
+    example: 'München',
   })
   @IsString()
   @Length(2, 100)
@@ -1547,7 +1644,7 @@ export class AddressDto {
   @ApiProperty({
     description: 'State/Bundesland',
     example: 'Bayern',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -1557,7 +1654,7 @@ export class AddressDto {
   @ApiProperty({
     description: 'Country name',
     example: 'Deutschland',
-    default: 'Deutschland'
+    default: 'Deutschland',
   })
   @IsString()
   @Length(2, 100)
@@ -1566,7 +1663,7 @@ export class AddressDto {
   @ApiProperty({
     description: 'GPS latitude',
     example: 48.1351,
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsNumber()
@@ -1574,8 +1671,8 @@ export class AddressDto {
 
   @ApiProperty({
     description: 'GPS longitude',
-    example: 11.5820,
-    required: false
+    example: 11.582,
+    required: false,
   })
   @IsOptional()
   @IsNumber()
@@ -1649,20 +1746,34 @@ export class LocationResponseDto {
 export class UpdateDecisionAuthorityDto {
   @ApiProperty({
     description: 'Decision-making role',
-    enum: ['decision_maker', 'key_influencer', 'recommender', 'gatekeeper', 'operational_contact', 'informational']
+    enum: [
+      'decision_maker',
+      'key_influencer',
+      'recommender',
+      'gatekeeper',
+      'operational_contact',
+      'informational',
+    ],
   })
-  @IsEnum(['decision_maker', 'key_influencer', 'recommender', 'gatekeeper', 'operational_contact', 'informational'])
+  @IsEnum([
+    'decision_maker',
+    'key_influencer',
+    'recommender',
+    'gatekeeper',
+    'operational_contact',
+    'informational',
+  ])
   decisionMakingRole: string;
 
   @ApiProperty({
     description: 'Authority level',
-    enum: ['low', 'medium', 'high', 'final_authority']
+    enum: ['low', 'medium', 'high', 'final_authority'],
   })
   @IsEnum(['low', 'medium', 'high', 'final_authority'])
   authorityLevel: string;
 
   @ApiProperty({
-    description: 'Can approve orders/quotes'
+    description: 'Can approve orders/quotes',
   })
   @IsBoolean()
   canApproveOrders: boolean;
@@ -1670,7 +1781,7 @@ export class UpdateDecisionAuthorityDto {
   @ApiProperty({
     description: 'Maximum order value they can approve (EUR)',
     example: 50000,
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsNumber()
@@ -1681,7 +1792,16 @@ export class UpdateDecisionAuthorityDto {
   @ApiProperty({
     description: 'Functional roles',
     type: [String],
-    enum: ['owner_ceo', 'purchasing_manager', 'facility_manager', 'store_manager', 'project_coordinator', 'financial_controller', 'operations_manager', 'administrative']
+    enum: [
+      'owner_ceo',
+      'purchasing_manager',
+      'facility_manager',
+      'store_manager',
+      'project_coordinator',
+      'financial_controller',
+      'operations_manager',
+      'administrative',
+    ],
   })
   @IsString({ each: true })
   functionalRoles: string[];
@@ -1689,7 +1809,7 @@ export class UpdateDecisionAuthorityDto {
   @ApiProperty({
     description: 'Departments this contact influences',
     type: [String],
-    example: ['purchasing', 'operations']
+    example: ['purchasing', 'operations'],
   })
   @IsString({ each: true })
   departmentInfluence: string[];
@@ -1747,8 +1867,24 @@ All endpoints MUST include complete OpenAPI documentation using NestJS decorator
 ### Controller Documentation Example
 
 ```typescript
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBody,
+} from '@nestjs/swagger';
 import { JwtAuthGuard, RbacGuard } from '@/guards';
 import { RequirePermission } from '@/decorators';
 import { CurrentUser } from '@/decorators';
@@ -1759,38 +1895,38 @@ import { User } from '@/types';
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class LocationController {
-  
   @Post()
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Create new location for customer',
-    description: 'Creates a new delivery location with address and operational details. Location names must be unique within a customer.'
+    description:
+      'Creates a new delivery location with address and operational details. Location names must be unique within a customer.',
   })
-  @ApiParam({ 
-    name: 'customerId', 
+  @ApiParam({
+    name: 'customerId',
     description: 'Customer ID',
-    example: 'customer-12345'
+    example: 'customer-12345',
   })
   @ApiBody({ type: CreateLocationDto })
-  @ApiResponse({ 
-    status: 201, 
+  @ApiResponse({
+    status: 201,
     description: 'Location created successfully',
-    type: LocationResponseDto
+    type: LocationResponseDto,
   })
-  @ApiResponse({ 
-    status: 400, 
-    description: 'Validation error - invalid input data'
+  @ApiResponse({
+    status: 400,
+    description: 'Validation error - invalid input data',
   })
-  @ApiResponse({ 
-    status: 403, 
-    description: 'Forbidden - insufficient permissions'
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - insufficient permissions',
   })
-  @ApiResponse({ 
-    status: 404, 
-    description: 'Customer not found'
+  @ApiResponse({
+    status: 404,
+    description: 'Customer not found',
   })
-  @ApiResponse({ 
-    status: 409, 
-    description: 'Conflict - location name already exists for this customer'
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict - location name already exists for this customer',
   })
   @RequirePermission('Location', 'CREATE')
   async createLocation(
@@ -1802,23 +1938,24 @@ export class LocationController {
   }
 
   @Get()
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'List all locations for customer',
-    description: 'Retrieves all delivery locations for a specific customer with optional filtering.'
+    description:
+      'Retrieves all delivery locations for a specific customer with optional filtering.',
   })
   @ApiParam({ name: 'customerId', description: 'Customer ID' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Locations retrieved successfully',
-    type: [LocationResponseDto]
+    type: [LocationResponseDto],
   })
-  @ApiResponse({ 
-    status: 403, 
-    description: 'Forbidden - insufficient permissions'
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - insufficient permissions',
   })
-  @ApiResponse({ 
-    status: 404, 
-    description: 'Customer not found'
+  @ApiResponse({
+    status: 404,
+    description: 'Customer not found',
   })
   @RequirePermission('Location', 'READ')
   async listLocations(
@@ -1854,9 +1991,11 @@ Retrieves all tasks assigned to a specific user.
 ##### Request
 
 **Path Parameters:**
+
 - `userId` (string, required) - User ID
 
 **Query Parameters:**
+
 - `status` (string, optional) - Filter by status: 'open', 'in_progress', 'completed', 'cancelled'
 - `priority` (string, optional) - Filter by priority: 'low', 'medium', 'high', 'urgent'
 - `relatedTo` (string, optional) - Filter by related entity ID (customer/opportunity/project)
@@ -1867,6 +2006,7 @@ Retrieves all tasks assigned to a specific user.
 **Required Permission:** `UserTask.READ` (self for own tasks; GF for any user)
 
 **Example Request:**
+
 ```http
 GET /api/v1/users/user-abc123/tasks?status=open&priority=high&sort=dueDate&order=asc HTTP/1.1
 Authorization: Bearer {jwt_token}
@@ -1875,6 +2015,7 @@ Authorization: Bearer {jwt_token}
 ##### Response
 
 **200 OK:**
+
 ```json
 {
   "data": [
@@ -1905,6 +2046,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **Possible Errors:**
+
 - `401` - Unauthorized
 - `403` - Forbidden (cannot view other users' tasks unless GF)
 - `404` - User not found
@@ -1920,6 +2062,7 @@ Retrieves a specific user task by ID.
 ##### Request
 
 **Path Parameters:**
+
 - `userId` (string, required) - User ID
 - `taskId` (string, required) - Task ID
 
@@ -1928,6 +2071,7 @@ Retrieves a specific user task by ID.
 ##### Response
 
 **200 OK:**
+
 ```json
 {
   "_id": "usertask-12345",
@@ -1950,6 +2094,7 @@ Retrieves a specific user task by ID.
 ```
 
 **Possible Errors:**
+
 - `403` - Forbidden
 - `404` - Task not found
 
@@ -1964,11 +2109,13 @@ Creates a new user task.
 ##### Request
 
 **Path Parameters:**
+
 - `userId` (string, required) - User ID
 
 **Required Permission:** `UserTask.CREATE`
 
 **Request Body:**
+
 ```json
 {
   "title": "Follow up with customer about quote",
@@ -1983,6 +2130,7 @@ Creates a new user task.
 ```
 
 **Validation:**
+
 - `title`: Required, 5-200 chars
 - `status`: Required, enum ['open', 'in_progress', 'completed', 'cancelled']
 - `priority`: Required, enum ['low', 'medium', 'high', 'urgent']
@@ -1992,6 +2140,7 @@ Creates a new user task.
 ##### Response
 
 **201 Created:**
+
 ```json
 {
   "_id": "usertask-12345",
@@ -2014,6 +2163,7 @@ Creates a new user task.
 ```
 
 **Possible Errors:**
+
 - `400` - Validation error
 - `403` - Forbidden (trying to assign to other user without permission)
 - `404` - Related entity not found
@@ -2029,12 +2179,14 @@ Updates an existing user task (full replacement).
 ##### Request
 
 **Path Parameters:**
+
 - `userId` (string, required) - User ID
 - `taskId` (string, required) - Task ID
 
 **Required Permission:** `UserTask.UPDATE` (own task or GF)
 
 **Request Body:**
+
 ```json
 {
   "title": "Call Hofladen Müller - URGENT",
@@ -2050,6 +2202,7 @@ Updates an existing user task (full replacement).
 **200 OK:** (Returns updated task)
 
 **Possible Errors:**
+
 - `403` - Forbidden (cannot update other users' tasks)
 - `404` - Task not found
 
@@ -2064,10 +2217,12 @@ Quick endpoint to update only task status (common operation).
 ##### Request
 
 **Path Parameters:**
+
 - `userId` (string, required) - User ID
 - `taskId` (string, required) - Task ID
 
 **Request Body:**
+
 ```json
 {
   "status": "completed"
@@ -2077,6 +2232,7 @@ Quick endpoint to update only task status (common operation).
 ##### Response
 
 **200 OK:**
+
 ```json
 {
   "_id": "usertask-12345",
@@ -2088,6 +2244,7 @@ Quick endpoint to update only task status (common operation).
 ```
 
 **Notes:**
+
 - Automatically sets `completedAt` and `completedBy` when marking completed
 - Status transitions are validated
 
@@ -2102,6 +2259,7 @@ Deletes a user task.
 ##### Request
 
 **Path Parameters:**
+
 - `userId` (string, required) - User ID
 - `taskId` (string, required) - Task ID
 
@@ -2112,6 +2270,7 @@ Deletes a user task.
 **204 No Content**
 
 **Possible Errors:**
+
 - `403` - Forbidden
 - `404` - Task not found
 
@@ -2132,9 +2291,11 @@ Retrieves all tasks for a specific project.
 ##### Request
 
 **Path Parameters:**
+
 - `projectId` (string, required) - Project ID
 
 **Query Parameters:**
+
 - `status` (string, optional) - Filter by status: 'todo', 'in_progress', 'review', 'done', 'blocked'
 - `priority` (string, optional) - Filter by priority
 - `phase` (string, optional) - Filter by phase: 'planning', 'execution', 'delivery', 'closure'
@@ -2145,6 +2306,7 @@ Retrieves all tasks for a specific project.
 **Required Permission:** `ProjectTask.READ` AND `Project.READ`
 
 **Example Request:**
+
 ```http
 GET /api/v1/projects/project-98765/tasks?status=in_progress&phase=planning&sort=dueDate&order=asc HTTP/1.1
 Authorization: Bearer {jwt_token}
@@ -2153,6 +2315,7 @@ Authorization: Bearer {jwt_token}
 ##### Response
 
 **200 OK:**
+
 ```json
 {
   "data": [
@@ -2184,6 +2347,7 @@ Authorization: Bearer {jwt_token}
 ```
 
 **Possible Errors:**
+
 - `403` - Forbidden (user cannot access this project)
 - `404` - Project not found
 
@@ -2198,6 +2362,7 @@ Retrieves a specific project task by ID.
 ##### Request
 
 **Path Parameters:**
+
 - `projectId` (string, required) - Project ID
 - `taskId` (string, required) - Task ID
 
@@ -2206,6 +2371,7 @@ Retrieves a specific project task by ID.
 ##### Response
 
 **200 OK:**
+
 ```json
 {
   "_id": "projecttask-11111",
@@ -2233,6 +2399,7 @@ Retrieves a specific project task by ID.
 ```
 
 **Possible Errors:**
+
 - `403` - Forbidden
 - `404` - Task or Project not found
 
@@ -2247,11 +2414,13 @@ Creates a new project task.
 ##### Request
 
 **Path Parameters:**
+
 - `projectId` (string, required) - Project ID
 
 **Required Permission:** `ProjectTask.CREATE` AND `Project.READ`
 
 **Request Body:**
+
 ```json
 {
   "title": "Order custom furniture from supplier",
@@ -2265,6 +2434,7 @@ Creates a new project task.
 ```
 
 **Validation:**
+
 - `title`: Required, 5-200 chars
 - `status`: Required, enum ['todo', 'in_progress', 'review', 'done', 'blocked']
 - `priority`: Required, enum ['low', 'medium', 'high', 'critical']
@@ -2275,6 +2445,7 @@ Creates a new project task.
 ##### Response
 
 **201 Created:**
+
 ```json
 {
   "_id": "projecttask-22222",
@@ -2297,6 +2468,7 @@ Creates a new project task.
 ```
 
 **Possible Errors:**
+
 - `400` - Validation error (invalid assignee, missing required fields)
 - `403` - Forbidden (cannot create tasks for this project)
 - `404` - Project not found
@@ -2312,12 +2484,14 @@ Updates an existing project task (full replacement).
 ##### Request
 
 **Path Parameters:**
+
 - `projectId` (string, required) - Project ID
 - `taskId` (string, required) - Task ID
 
 **Required Permission:** `ProjectTask.UPDATE` AND `Project.READ`
 
 **Request Body:**
+
 ```json
 {
   "title": "Order custom furniture from supplier - BLOCKED",
@@ -2332,6 +2506,7 @@ Updates an existing project task (full replacement).
 ```
 
 **Validation:**
+
 - `blockingReason`: Required if status = 'blocked', 10-500 chars
 
 ##### Response
@@ -2339,6 +2514,7 @@ Updates an existing project task (full replacement).
 **200 OK:** (Returns updated task)
 
 **Possible Errors:**
+
 - `400` - Validation error (e.g., missing blockingReason when blocked)
 - `403` - Forbidden
 - `404` - Task or Project not found
@@ -2354,10 +2530,12 @@ Quick endpoint to update only task status.
 ##### Request
 
 **Path Parameters:**
+
 - `projectId` (string, required) - Project ID
 - `taskId` (string, required) - Task ID
 
 **Request Body:**
+
 ```json
 {
   "status": "done",
@@ -2368,6 +2546,7 @@ Quick endpoint to update only task status.
 ##### Response
 
 **200 OK:**
+
 ```json
 {
   "_id": "projecttask-11111",
@@ -2379,6 +2558,7 @@ Quick endpoint to update only task status.
 ```
 
 **Notes:**
+
 - Automatically sets `completedAt` and `completedBy` when marking done
 - Validates status transitions
 
@@ -2393,6 +2573,7 @@ Deletes a project task.
 ##### Request
 
 **Path Parameters:**
+
 - `projectId` (string, required) - Project ID
 - `taskId` (string, required) - Task ID
 
@@ -2403,6 +2584,7 @@ Deletes a project task.
 **204 No Content**
 
 **Possible Errors:**
+
 - `403` - Forbidden (INNEN/KALK can only delete own created tasks)
 - `404` - Task or Project not found
 
@@ -2417,6 +2599,7 @@ Retrieves project tasks grouped by project phase.
 ##### Request
 
 **Path Parameters:**
+
 - `projectId` (string, required) - Project ID
 
 **Required Permission:** `ProjectTask.READ` AND `Project.READ`
@@ -2424,6 +2607,7 @@ Retrieves project tasks grouped by project phase.
 ##### Response
 
 **200 OK:**
+
 ```json
 {
   "projectId": "project-98765",
@@ -2467,6 +2651,7 @@ Retrieves project tasks grouped by assigned user (workload view).
 ##### Request
 
 **Path Parameters:**
+
 - `projectId` (string, required) - Project ID
 
 **Required Permission:** `ProjectTask.READ` AND `Project.READ`
@@ -2474,6 +2659,7 @@ Retrieves project tasks grouped by assigned user (workload view).
 ##### Response
 
 **200 OK:**
+
 ```json
 {
   "projectId": "project-98765",
@@ -2530,6 +2716,7 @@ Retrieves all tasks (UserTask + ProjectTask) assigned to current user.
 ##### Request
 
 **Query Parameters:**
+
 - `status` (string, optional) - Filter by status
 - `priority` (string, optional) - Filter by priority
 - `overdue` (boolean, optional) - Show only overdue tasks
@@ -2538,6 +2725,7 @@ Retrieves all tasks (UserTask + ProjectTask) assigned to current user.
 **Required Permission:** Authenticated user (self)
 
 **Example Request:**
+
 ```http
 GET /api/v1/tasks/my-tasks?overdue=false&dueWithin=7 HTTP/1.1
 Authorization: Bearer {jwt_token}
@@ -2546,6 +2734,7 @@ Authorization: Bearer {jwt_token}
 ##### Response
 
 **200 OK:**
+
 ```json
 {
   "userTasks": [
@@ -2590,6 +2779,7 @@ Retrieves tasks for user's team (filtered by role permissions).
 ##### Request
 
 **Query Parameters:**
+
 - `status` (string, optional) - Filter by status
 - `priority` (string, optional) - Filter by priority
 
@@ -2598,6 +2788,7 @@ Retrieves tasks for user's team (filtered by role permissions).
 ##### Response
 
 **200 OK:**
+
 ```json
 {
   "projectTasks": [
@@ -2632,6 +2823,7 @@ Retrieves tasks for user's team (filtered by role permissions).
 ```
 
 **Notes:**
+
 - GF sees all project tasks across all projects
 - PLAN sees tasks for assigned projects
 - INNEN/KALK see all project tasks
@@ -2653,6 +2845,7 @@ Retrieves all overdue tasks for current user (or team if GF/PLAN).
 ##### Response
 
 **200 OK:**
+
 ```json
 {
   "userTasks": [
@@ -2681,7 +2874,7 @@ export class CreateUserTaskDto {
     description: 'Task title',
     example: 'Call Hofladen Müller about delivery',
     minLength: 5,
-    maxLength: 200
+    maxLength: 200,
   })
   @IsString()
   @Length(5, 200)
@@ -2691,7 +2884,7 @@ export class CreateUserTaskDto {
   @ApiProperty({
     description: 'Detailed description',
     required: false,
-    maxLength: 2000
+    maxLength: 2000,
   })
   @IsOptional()
   @IsString()
@@ -2701,21 +2894,21 @@ export class CreateUserTaskDto {
   @ApiProperty({
     description: 'Task status',
     enum: ['open', 'in_progress', 'completed', 'cancelled'],
-    default: 'open'
+    default: 'open',
   })
   @IsEnum(['open', 'in_progress', 'completed', 'cancelled'])
   status: string;
 
   @ApiProperty({
     description: 'Task priority',
-    enum: ['low', 'medium', 'high', 'urgent']
+    enum: ['low', 'medium', 'high', 'urgent'],
   })
   @IsEnum(['low', 'medium', 'high', 'urgent'])
   priority: string;
 
   @ApiProperty({
     description: 'Due date',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsDateString()
@@ -2723,7 +2916,7 @@ export class CreateUserTaskDto {
 
   @ApiProperty({
     description: 'User ID to assign task to (defaults to current user)',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -2731,7 +2924,7 @@ export class CreateUserTaskDto {
 
   @ApiProperty({
     description: 'Related customer ID',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -2739,7 +2932,7 @@ export class CreateUserTaskDto {
 
   @ApiProperty({
     description: 'Related opportunity ID',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -2747,7 +2940,7 @@ export class CreateUserTaskDto {
 
   @ApiProperty({
     description: 'Related project ID',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -2763,7 +2956,7 @@ export class CreateProjectTaskDto {
     description: 'Task title',
     example: 'Create technical drawings',
     minLength: 5,
-    maxLength: 200
+    maxLength: 200,
   })
   @IsString()
   @Length(5, 200)
@@ -2773,7 +2966,7 @@ export class CreateProjectTaskDto {
   @ApiProperty({
     description: 'Detailed description',
     required: false,
-    maxLength: 2000
+    maxLength: 2000,
   })
   @IsOptional()
   @IsString()
@@ -2783,28 +2976,28 @@ export class CreateProjectTaskDto {
   @ApiProperty({
     description: 'Task status',
     enum: ['todo', 'in_progress', 'review', 'done', 'blocked'],
-    default: 'todo'
+    default: 'todo',
   })
   @IsEnum(['todo', 'in_progress', 'review', 'done', 'blocked'])
   status: string;
 
   @ApiProperty({
     description: 'Task priority',
-    enum: ['low', 'medium', 'high', 'critical']
+    enum: ['low', 'medium', 'high', 'critical'],
   })
   @IsEnum(['low', 'medium', 'high', 'critical'])
   priority: string;
 
   @ApiProperty({
     description: 'User ID to assign task to (must have Project.READ)',
-    required: true
+    required: true,
   })
   @IsString()
   assignedTo: string;
 
   @ApiProperty({
     description: 'Due date',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsDateString()
@@ -2813,7 +3006,7 @@ export class CreateProjectTaskDto {
   @ApiProperty({
     description: 'Project phase',
     enum: ['planning', 'execution', 'delivery', 'closure'],
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsEnum(['planning', 'execution', 'delivery', 'closure'])
@@ -2821,7 +3014,7 @@ export class CreateProjectTaskDto {
 
   @ApiProperty({
     description: 'Milestone ID',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -2831,7 +3024,7 @@ export class CreateProjectTaskDto {
     description: 'Blocking reason (required if status = blocked)',
     required: false,
     minLength: 10,
-    maxLength: 500
+    maxLength: 500,
   })
   @IsOptional()
   @IsString()
@@ -2848,15 +3041,16 @@ export class UpdateTaskStatusDto {
     description: 'New status',
     enum: {
       UserTask: ['open', 'in_progress', 'completed', 'cancelled'],
-      ProjectTask: ['todo', 'in_progress', 'review', 'done', 'blocked']
-    }
+      ProjectTask: ['todo', 'in_progress', 'review', 'done', 'blocked'],
+    },
   })
   @IsString()
   status: string;
 
   @ApiProperty({
-    description: 'Blocking reason (required if status = blocked for ProjectTask)',
-    required: false
+    description:
+      'Blocking reason (required if status = blocked for ProjectTask)',
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -2910,6 +3104,7 @@ GET    /api/v1/tours/{tourId}/cost-summary     - Get tour cost breakdown
 ```
 
 **Query Parameters (GET /api/v1/tours):**
+
 - `status`: Filter by status (planned, active, completed, cancelled)
 - `startDate`, `endDate`: Date range filters
 - `userId`: Filter by user (GF/PLAN only)
@@ -2917,6 +3112,7 @@ GET    /api/v1/tours/{tourId}/cost-summary     - Get tour cost breakdown
 - `sort`, `order`: Sorting
 
 **Business Rules:**
+
 - ADM can only manage own tours
 - PLAN/GF can manage all tours
 - Cannot delete tour if expenses linked
@@ -2936,12 +3132,14 @@ POST   /api/v1/meetings/{meetingId}/link-tour - Link meeting to tour
 ```
 
 **Query Parameters (GET /api/v1/meetings):**
+
 - `status`: Filter by status (scheduled, completed, cancelled)
 - `scheduledFrom`, `scheduledTo`: Date range
 - `customerId`, `tourId`: Relationship filters
 - `userId`: Filter by user (GF/PLAN only)
 
 **Business Rules:**
+
 - Auto-suggests tours on meeting creation (same day, <50km)
 - GPS check-in validates proximity (500m tolerance)
 - Check-in auto-creates activity protocol
@@ -2960,12 +3158,14 @@ GET    /api/v1/hotels/my-preferences                      - Get user's preferred
 ```
 
 **Query Parameters (GET /api/v1/hotels/search):**
+
 - `latitude`, `longitude`: GPS coordinates (required)
 - `radius`: Search radius in km (default: 10)
 - `minRating`, `maxPrice`: Filtering
 - `userPreferences`: Include past hotels (default: true)
 
 **Business Rules:**
+
 - Auto-creates expense entry for hotel
 - Adds to preferences if rating ≥ 4
 - Cannot delete if expense approved/paid
@@ -2989,6 +3189,7 @@ GET    /api/v1/expenses/report                         - Generate expense report
 ```
 
 **Query Parameters (GET /api/v1/expenses):**
+
 - `status`: Filter by status (draft, submitted, approved, rejected, paid)
 - `category`: Filter by category (mileage, hotel, meal, fuel, etc.)
 - `userId`, `tourId`, `meetingId`, `projectId`: Relationship filters
@@ -2996,6 +3197,7 @@ GET    /api/v1/expenses/report                         - Generate expense report
 - `page`, `limit`: Pagination
 
 **Business Rules:**
+
 - Receipt required for amounts > €25 (except mileage)
 - OCR auto-extracts amount/vendor (user verifies)
 - Approval workflow: draft → submitted → approved → paid
@@ -3005,6 +3207,7 @@ GET    /api/v1/expenses/report                         - Generate expense report
 - Audit log for all status changes
 
 **Expense Report Formats:**
+
 - `format=json`: JSON response
 - `format=pdf`: PDF download
 - `format=csv`: CSV download
@@ -3022,6 +3225,7 @@ GET    /api/v1/mileage-logs/{mileageLogId}/route             - Get GPS route aud
 ```
 
 **Business Rules:**
+
 - Auto-creates expense entry for mileage
 - GPS distance vs. claimed distance validated (±5%)
 - If outside tolerance, manual override required (GF + reason)
@@ -3064,6 +3268,7 @@ GET    /api/v1/customers/{customerId}/offers/{id}/pdf  - Download offer PDF
 ```
 
 **Business Rules:**
+
 - Offers can be created as PDF upload OR form-based entry
 - Status: Draft → Sent → Accepted → Rejected
 - Only Draft offers can be deleted
@@ -3083,6 +3288,7 @@ GET    /api/v1/customers/{customerId}/contracts/{id}/pdf - Download contract PDF
 ```
 
 **Business Rules:**
+
 - Contracts are **immutable after Signed status** (GoBD compliance)
 - Status: Draft → Signed → InProgress → Completed
 - Only Draft contracts can be deleted or modified
@@ -3099,6 +3305,7 @@ GET    /api/v1/projects/{projectId}/lexware-invoices  - List Lexware invoices fo
 ```
 
 **Business Rules:**
+
 - Phase 1: No integration, manual workflows in Lexware
 - Phase 2+: Read-only API to fetch invoice status (sent/paid) for project dashboards
 - KOMPASS does NOT create invoices in Lexware via API
@@ -3122,14 +3329,14 @@ Retrieves calendar events aggregated from multiple sources (tasks, projects, opp
 
 ##### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `startDate` | ISO 8601 | Yes | Start date for event range (e.g., "2025-01-01T00:00:00Z") |
-| `endDate` | ISO 8601 | Yes | End date for event range (e.g., "2025-01-31T23:59:59Z") |
-| `types[]` | string[] | No | Filter by event types (user_task, project_task, project_deadline, opportunity_close) |
-| `assignedTo` | string | No | Filter events assigned to specific user ID |
-| `status[]` | string[] | No | Filter by status (open, in_progress, completed, etc.) |
-| `priority[]` | string[] | No | Filter by priority (low, medium, high, urgent, critical) |
+| Parameter    | Type     | Required | Description                                                                          |
+| ------------ | -------- | -------- | ------------------------------------------------------------------------------------ |
+| `startDate`  | ISO 8601 | Yes      | Start date for event range (e.g., "2025-01-01T00:00:00Z")                            |
+| `endDate`    | ISO 8601 | Yes      | End date for event range (e.g., "2025-01-31T23:59:59Z")                              |
+| `types[]`    | string[] | No       | Filter by event types (user_task, project_task, project_deadline, opportunity_close) |
+| `assignedTo` | string   | No       | Filter events assigned to specific user ID                                           |
+| `status[]`   | string[] | No       | Filter by status (open, in_progress, completed, etc.)                                |
+| `priority[]` | string[] | No       | Filter by priority (low, medium, high, urgent, critical)                             |
 
 ##### RBAC
 
@@ -3141,6 +3348,7 @@ Retrieves calendar events aggregated from multiple sources (tasks, projects, opp
 ##### Response
 
 **200 OK:**
+
 ```json
 {
   "events": [
@@ -3190,6 +3398,7 @@ Retrieves calendar events aggregated from multiple sources (tasks, projects, opp
 ```
 
 **400 Bad Request:**
+
 ```json
 {
   "type": "https://api.kompass.de/errors/validation-error",
@@ -3243,12 +3452,12 @@ Retrieves team-wide calendar events for management overview.
 
 ##### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `startDate` | ISO 8601 | Yes | Start date for event range |
-| `endDate` | ISO 8601 | Yes | End date for event range |
-| `teamMemberIds[]` | string[] | No | Filter to specific team members |
-| `types[]` | string[] | No | Filter by event types |
+| Parameter         | Type     | Required | Description                     |
+| ----------------- | -------- | -------- | ------------------------------- |
+| `startDate`       | ISO 8601 | Yes      | Start date for event range      |
+| `endDate`         | ISO 8601 | Yes      | End date for event range        |
+| `teamMemberIds[]` | string[] | No       | Filter to specific team members |
+| `types[]`         | string[] | No       | Filter by event types           |
 
 ##### RBAC
 
@@ -3259,7 +3468,9 @@ Retrieves team-wide calendar events for management overview.
 
 ```json
 {
-  "events": [ /* CalendarEvent[] */ ],
+  "events": [
+    /* CalendarEvent[] */
+  ],
   "teamMembers": [
     {
       "userId": "user-plan-001",
@@ -3299,6 +3510,7 @@ Same as `/api/v1/calendar/events` for filtering events to export.
 ##### Response
 
 **200 OK:**
+
 - **Content-Type**: `text/calendar; charset=utf-8`
 - **Content-Disposition**: `attachment; filename="kompass-calendar-2025-01-28.ics"`
 
@@ -3351,41 +3563,52 @@ END:VCALENDAR
 export class CalendarEventDto {
   @ApiProperty({
     description: 'Unique event ID',
-    example: 'usertask-123'
+    example: 'usertask-123',
   })
   id: string;
 
   @ApiProperty({
     description: 'Event type',
-    enum: ['user_task', 'project_task', 'project_deadline', 'project_start', 'project_milestone', 'opportunity_close', 'invoice_due', 'activity_scheduled', 'user_vacation', 'holiday']
+    enum: [
+      'user_task',
+      'project_task',
+      'project_deadline',
+      'project_start',
+      'project_milestone',
+      'opportunity_close',
+      'invoice_due',
+      'activity_scheduled',
+      'user_vacation',
+      'holiday',
+    ],
   })
   type: CalendarEventType;
 
   @ApiProperty({
     description: 'Event title',
     example: 'Follow up with customer',
-    maxLength: 200
+    maxLength: 200,
   })
   title: string;
 
   @ApiProperty({
     description: 'Event description',
     required: false,
-    maxLength: 2000
+    maxLength: 2000,
   })
   description?: string;
 
   @ApiProperty({
     description: 'Hex color for visual coding',
     example: '#3B82F6',
-    pattern: '^#[0-9A-F]{6}$'
+    pattern: '^#[0-9A-F]{6}$',
   })
   color: string;
 
   @ApiProperty({
     description: 'Icon name for event type',
     example: 'CheckSquare',
-    required: false
+    required: false,
   })
   icon?: string;
 
@@ -3393,7 +3616,7 @@ export class CalendarEventDto {
     description: 'Event start date/time',
     type: 'string',
     format: 'date-time',
-    example: '2025-02-05T00:00:00Z'
+    example: '2025-02-05T00:00:00Z',
   })
   startDate: Date;
 
@@ -3401,65 +3624,74 @@ export class CalendarEventDto {
     description: 'Event end date/time',
     type: 'string',
     format: 'date-time',
-    required: false
+    required: false,
   })
   endDate?: Date;
 
   @ApiProperty({
     description: 'True if all-day event',
-    example: true
+    example: true,
   })
   allDay: boolean;
 
   @ApiProperty({
     description: 'Reference to source entity ID',
-    example: 'usertask-123'
+    example: 'usertask-123',
   })
   entityId: string;
 
   @ApiProperty({
     description: 'Source entity type',
-    enum: ['UserTask', 'ProjectTask', 'Project', 'Opportunity', 'Invoice', 'Activity', 'User', 'System']
+    enum: [
+      'UserTask',
+      'ProjectTask',
+      'Project',
+      'Opportunity',
+      'Invoice',
+      'Activity',
+      'User',
+      'System',
+    ],
   })
   entityType: CalendarEntityType;
 
   @ApiProperty({
     description: 'Entity-specific status',
-    example: 'open'
+    example: 'open',
   })
   status: string;
 
   @ApiProperty({
     description: 'Priority level',
     enum: ['low', 'medium', 'high', 'urgent', 'critical'],
-    required: false
+    required: false,
   })
   priority?: CalendarPriority;
 
   @ApiProperty({
     description: 'User IDs assigned to event',
     type: [String],
-    required: false
+    required: false,
   })
   assignedTo?: string[];
 
   @ApiProperty({
     description: 'Physical location',
-    required: false
+    required: false,
   })
   location?: string;
 
   @ApiProperty({
     description: 'Custom tags for filtering',
     type: [String],
-    required: false
+    required: false,
   })
   tags?: string[];
 
   @ApiProperty({
     description: 'Deep link to entity detail page',
     example: '/tasks/usertask-123',
-    required: false
+    required: false,
   })
   url?: string;
 }
@@ -3473,7 +3705,7 @@ export class CalendarQueryDto {
     description: 'Start date for event range',
     type: 'string',
     format: 'date-time',
-    example: '2025-01-01T00:00:00Z'
+    example: '2025-01-01T00:00:00Z',
   })
   @IsISO8601()
   startDate: string;
@@ -3482,7 +3714,7 @@ export class CalendarQueryDto {
     description: 'End date for event range',
     type: 'string',
     format: 'date-time',
-    example: '2025-01-31T23:59:59Z'
+    example: '2025-01-31T23:59:59Z',
   })
   @IsISO8601()
   endDate: string;
@@ -3491,7 +3723,12 @@ export class CalendarQueryDto {
     description: 'Filter by event types',
     type: [String],
     required: false,
-    enum: ['user_task', 'project_task', 'project_deadline', 'opportunity_close']
+    enum: [
+      'user_task',
+      'project_task',
+      'project_deadline',
+      'opportunity_close',
+    ],
   })
   @IsOptional()
   @IsArray()
@@ -3499,7 +3736,7 @@ export class CalendarQueryDto {
 
   @ApiProperty({
     description: 'Filter events assigned to specific user',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -3508,7 +3745,7 @@ export class CalendarQueryDto {
   @ApiProperty({
     description: 'Filter by status',
     type: [String],
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsArray()
@@ -3518,7 +3755,7 @@ export class CalendarQueryDto {
     description: 'Filter by priority',
     type: [String],
     required: false,
-    enum: ['low', 'medium', 'high', 'urgent', 'critical']
+    enum: ['low', 'medium', 'high', 'urgent', 'critical'],
   })
   @IsOptional()
   @IsArray()
@@ -3531,22 +3768,26 @@ export class CalendarQueryDto {
 ### 10.4 Calendar Business Rules
 
 **CR-001: Date Range Validation**
+
 - Maximum date range: 90 days per request
 - Dates must be in ISO 8601 format
 - endDate must be >= startDate
 
 **CR-002: Event Density Limits**
+
 - Maximum 1000 events per API response
 - If limit exceeded, return 413 Payload Too Large with suggestion to narrow date range
 - Events sorted by startDate ascending, then by priority descending
 
 **CR-003: RBAC Filtering**
+
 - Events automatically filtered by user permissions
 - ADM: Sees own tasks + assigned project tasks only
 - PLAN/GF: Sees all team events
 - Users never see events for entities they lack READ permission for
 
 **CR-004: ICS Export Standards**
+
 - Follows RFC 5545 (iCalendar) specification
 - UTF-8 encoding required
 - Timezone: Europe/Berlin (default)
@@ -3555,6 +3796,7 @@ export class CalendarQueryDto {
 - STATUS: CONFIRMED for all events
 
 **CR-005: Color Accessibility**
+
 - All colors meet WCAG AA contrast ratio (4.5:1)
 - Color + icon combination (not color alone)
 - Default colors defined in CalendarEvent interface (DATA_MODEL_SPECIFICATION.md Section 17)
@@ -3564,16 +3806,19 @@ export class CalendarQueryDto {
 ### 10.5 Calendar Performance Considerations
 
 **Caching:**
+
 - Calendar event aggregation cached for 5 minutes (TTL: 300s)
 - Cache key includes: userId, startDate, endDate, filters
 - Cache invalidation on task/project/opportunity updates
 
 **Query Optimization:**
+
 - Use CouchDB Mango queries with date range indexes
 - Parallel aggregation from UserTask, ProjectTask, Project, Opportunity collections
 - Limit database queries to date range +/- 1 day buffer
 
 **Export Performance:**
+
 - ICS generation should complete in <2 seconds for 1000 events
 - Stream large exports to avoid memory issues
 - Consider background job for exports >5000 events (Phase 2)
@@ -3592,6 +3837,7 @@ export class CalendarQueryDto {
 Create a new time entry (start timer or manual entry).
 
 **Request Body:**
+
 ```typescript
 {
   "projectId": "project-abc123",
@@ -3605,6 +3851,7 @@ Create a new time entry (start timer or manual entry).
 ```
 
 **Success Response (201 Created):**
+
 ```typescript
 {
   "_id": "time-entry-550e8400-e29b-41d4-a716-446655440000",
@@ -3631,12 +3878,14 @@ Create a new time entry (start timer or manual entry).
 ```
 
 **Error Responses:**
+
 - `400 Bad Request` - Validation error (taskDescription too short, invalid projectId)
 - `401 Unauthorized` - No authentication token
 - `403 Forbidden` - User lacks CREATE permission for TimeEntry
 - `409 Conflict` - User already has an active timer running
 
 **RBAC:**
+
 - PLAN: Can create time entries for assigned projects
 - INNEN: Can create time entries for any project
 - GF: Can create time entries for any project
@@ -3648,6 +3897,7 @@ Create a new time entry (start timer or manual entry).
 List time entries with filtering and sorting.
 
 **Query Parameters:**
+
 ```typescript
 ?projectId=project-abc123           // Filter by project
 &userId=user-123                    // Filter by user
@@ -3662,6 +3912,7 @@ List time entries with filtering and sorting.
 ```
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "data": [
@@ -3692,6 +3943,7 @@ List time entries with filtering and sorting.
 ```
 
 **RBAC:**
+
 - PLAN: Can view own entries + all entries for assigned projects
 - GF: Can view all entries
 - KALK: Can view all entries (read-only for cost estimation)
@@ -3704,6 +3956,7 @@ List time entries with filtering and sorting.
 Get specific time entry details.
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "_id": "time-entry-550e8400-e29b-41d4-a716-446655440000",
@@ -3728,6 +3981,7 @@ Get specific time entry details.
 ```
 
 **Error Responses:**
+
 - `404 Not Found` - Time entry does not exist
 
 ---
@@ -3737,6 +3991,7 @@ Get specific time entry details.
 Update time entry (editable fields depend on status).
 
 **Request Body:**
+
 ```typescript
 {
   "taskDescription": "Implemented and tested customer authentication",
@@ -3747,11 +4002,13 @@ Update time entry (editable fields depend on status).
 ```
 
 **Business Rules:**
+
 - `IN_PROGRESS`: Can edit taskDescription, hourlyRateEur
 - `COMPLETED`: Can edit taskDescription, startTime, endTime
 - `APPROVED`/`REJECTED`: Read-only, no edits allowed
 
 **Error Responses:**
+
 - `403 Forbidden` - Cannot edit approved/rejected entries
 - `409 Conflict` - Invalid status transition
 
@@ -3764,6 +4021,7 @@ Delete time entry (only if status = IN_PROGRESS or COMPLETED).
 **Success Response (204 No Content)**
 
 **Error Responses:**
+
 - `403 Forbidden` - Cannot delete approved entries (GoBD compliance)
 - `404 Not Found` - Time entry does not exist
 
@@ -3776,6 +4034,7 @@ Delete time entry (only if status = IN_PROGRESS or COMPLETED).
 Stop running timer for a time entry.
 
 **Request Body:**
+
 ```typescript
 {
   "endTime": "2025-01-28T12:30:00Z"  // Optional, defaults to now
@@ -3783,6 +4042,7 @@ Stop running timer for a time entry.
 ```
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "_id": "time-entry-550e8400-e29b-41d4-a716-446655440000",
@@ -3796,12 +4056,14 @@ Stop running timer for a time entry.
 ```
 
 **Business Rules:**
+
 - Automatically calculates durationMinutes
 - Fetches user's current hourlyRateEur and caches it
 - Calculates totalCostEur = (durationMinutes / 60) × hourlyRateEur
 - Updates status to COMPLETED
 
 **Error Responses:**
+
 - `400 Bad Request` - Timer not running (status != IN_PROGRESS)
 - `400 Bad Request` - endTime < startTime
 
@@ -3812,6 +4074,7 @@ Stop running timer for a time entry.
 Get active timer for current user (if any).
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "_id": "time-entry-550e8400-e29b-41d4-a716-446655440000",
@@ -3834,6 +4097,7 @@ Get active timer for current user (if any).
 Approve multiple time entries at once (GF/PLAN managers only).
 
 **Request Body:**
+
 ```typescript
 {
   "entryIds": [
@@ -3844,6 +4108,7 @@ Approve multiple time entries at once (GF/PLAN managers only).
 ```
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "approved": 2,
@@ -3864,16 +4129,19 @@ Approve multiple time entries at once (GF/PLAN managers only).
 ```
 
 **Business Rules:**
+
 - All entries must belong to same project
 - Requires APPROVE permission for TimeEntry
 - Cannot mix entries from different users or projects
 - Only COMPLETED entries can be approved
 
 **RBAC:**
+
 - PLAN: Can approve entries for assigned project team members
 - GF: Can approve all entries
 
 **Error Responses:**
+
 - `400 Bad Request` - Entries from different projects
 - `403 Forbidden` - User lacks APPROVE permission
 
@@ -3884,6 +4152,7 @@ Approve multiple time entries at once (GF/PLAN managers only).
 Reject a time entry (with mandatory reason).
 
 **Request Body:**
+
 ```typescript
 {
   "rejectionReason": "Task not part of project scope. Please revise."
@@ -3891,6 +4160,7 @@ Reject a time entry (with mandatory reason).
 ```
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "_id": "time-entry-550e8400-e29b-41d4-a716-446655440000",
@@ -3902,6 +4172,7 @@ Reject a time entry (with mandatory reason).
 ```
 
 **Error Responses:**
+
 - `400 Bad Request` - rejectionReason required (10-500 chars)
 
 ---
@@ -3913,6 +4184,7 @@ Reject a time entry (with mandatory reason).
 Calculate labor cost summary for a project.
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "projectId": "project-abc123",
@@ -3956,11 +4228,13 @@ Calculate labor cost summary for a project.
 ```
 
 **Business Rules:**
+
 - Only APPROVED time entries included in calculations
 - Summary cached for 5 minutes (TTL: 300s)
 - Cache invalidated when entries are approved/rejected
 
 **RBAC:**
+
 - PLAN: Can view labor costs for assigned projects
 - GF: Can view labor costs for all projects
 - KALK: Can view labor costs (read-only for cost estimation)
@@ -3973,12 +4247,14 @@ Calculate labor cost summary for a project.
 Get all time entries pending approval (for managers).
 
 **Query Parameters:**
+
 ```typescript
 ?projectId=project-abc123        // Optional: Filter by project
 &userId=user-123                // Optional: Filter by user
 ```
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "data": [
@@ -3999,6 +4275,7 @@ Get all time entries pending approval (for managers).
 ```
 
 **RBAC:**
+
 - PLAN: Sees pending entries for assigned projects only
 - GF: Sees all pending entries
 
@@ -4016,6 +4293,7 @@ Get all time entries pending approval (for managers).
 Create a new project cost entry.
 
 **Request Body:**
+
 ```typescript
 {
   "projectId": "project-abc123",
@@ -4033,6 +4311,7 @@ Create a new project cost entry.
 ```
 
 **Success Response (201 Created):**
+
 ```typescript
 {
   "_id": "project-cost-550e8400-e29b-41d4-a716-446655440000",
@@ -4062,10 +4341,12 @@ Create a new project cost entry.
 ```
 
 **Error Responses:**
+
 - `400 Bad Request` - Validation error (invalid costType, quantity <= 0)
 - `403 Forbidden` - User lacks CREATE permission for ProjectCost
 
 **RBAC:**
+
 - PLAN: Can create costs for all projects
 - KALK: Can create costs (for cost estimation)
 - GF: Can create costs for all projects
@@ -4077,6 +4358,7 @@ Create a new project cost entry.
 List project costs with filtering and sorting.
 
 **Query Parameters:**
+
 ```typescript
 ?projectId=project-abc123           // Filter by project
 &costType=material                  // Filter by type (material|contractor|external_service|equipment|other)
@@ -4091,6 +4373,7 @@ List project costs with filtering and sorting.
 ```
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "data": [
@@ -4116,6 +4399,7 @@ List project costs with filtering and sorting.
 ```
 
 **RBAC:**
+
 - PLAN: Can view costs for assigned projects
 - KALK: Can view all costs (read-only)
 - GF: Can view all costs
@@ -4128,6 +4412,7 @@ List project costs with filtering and sorting.
 Get specific project cost details.
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "_id": "project-cost-550e8400-e29b-41d4-a716-446655440000",
@@ -4163,6 +4448,7 @@ Get specific project cost details.
 Update project cost (editable fields depend on status).
 
 **Request Body:**
+
 ```typescript
 {
   "description": "Oak wood planks for shelving (55 pieces - updated)",
@@ -4176,12 +4462,14 @@ Update project cost (editable fields depend on status).
 ```
 
 **Business Rules:**
+
 - `PLANNED`: All fields editable
 - `ORDERED`: Can edit status, invoiceNumber, invoiceDate
 - `RECEIVED`/`INVOICED`: Can only update status and payment info
 - `PAID`: Read-only (GoBD compliance)
 
 **Error Responses:**
+
 - `403 Forbidden` - Cannot edit paid costs (GoBD compliance)
 - `409 Conflict` - Invalid status transition
 
@@ -4194,6 +4482,7 @@ Delete project cost (only if status = PLANNED or ORDERED).
 **Success Response (204 No Content)**
 
 **Error Responses:**
+
 - `403 Forbidden` - Cannot delete received/invoiced/paid costs (GoBD compliance)
 - `404 Not Found` - Project cost does not exist
 
@@ -4206,11 +4495,14 @@ Delete project cost (only if status = PLANNED or ORDERED).
 Approve a project cost (required before marking as PAID).
 
 **Request Body:**
+
 ```typescript
-{} // Empty body
+{
+} // Empty body
 ```
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "_id": "project-cost-550e8400-e29b-41d4-a716-446655440000",
@@ -4222,15 +4514,18 @@ Approve a project cost (required before marking as PAID).
 ```
 
 **Business Rules:**
+
 - Costs < €500: PLAN can approve
 - Costs >= €500: Requires GF approval (dual control)
 - Approval required before status can move to PAID
 
 **RBAC:**
+
 - PLAN: Can approve costs < €500 for assigned projects
 - GF: Can approve all costs
 
 **Error Responses:**
+
 - `403 Forbidden` - Cost >= €500 requires GF approval
 
 ---
@@ -4242,6 +4537,7 @@ Approve a project cost (required before marking as PAID).
 Calculate material cost summary for a project.
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "projectId": "project-abc123",
@@ -4286,11 +4582,13 @@ Calculate material cost summary for a project.
 ```
 
 **Business Rules:**
+
 - Summary cached for 5 minutes (TTL: 300s)
 - Cache invalidated when costs are added/updated
 - Pending payment includes all INVOICED status costs
 
 **RBAC:**
+
 - PLAN: Can view material costs for assigned projects
 - GF: Can view material costs for all projects
 - KALK: Can view material costs (read-only)
@@ -4303,12 +4601,14 @@ Calculate material cost summary for a project.
 Get all costs awaiting payment (INVOICED status).
 
 **Query Parameters:**
+
 ```typescript
 ?projectId=project-abc123        // Optional: Filter by project
 &supplierName=Holz Schmidt      // Optional: Filter by supplier
 ```
 
 **Success Response (200 OK):**
+
 ```typescript
 {
   "data": [
@@ -4328,6 +4628,7 @@ Get all costs awaiting payment (INVOICED status).
 ```
 
 **RBAC:**
+
 - GF: Can view all pending payments
 - BUCH: Can view all pending payments (read-only)
 
@@ -4343,18 +4644,18 @@ export class CreateProjectCostDto {
   @IsString()
   projectId: string;
 
-  @ApiProperty({ 
-    description: 'Cost type', 
-    enum: ['material', 'contractor', 'external_service', 'equipment', 'other']
+  @ApiProperty({
+    description: 'Cost type',
+    enum: ['material', 'contractor', 'external_service', 'equipment', 'other'],
   })
   @IsEnum(ProjectCostType)
   costType: ProjectCostType;
 
-  @ApiProperty({ 
-    description: 'Cost description', 
+  @ApiProperty({
+    description: 'Cost description',
     example: 'Oak wood planks for shelving',
     minLength: 10,
-    maxLength: 500
+    maxLength: 500,
   })
   @IsString()
   @Length(10, 500)
@@ -4371,12 +4672,16 @@ export class CreateProjectCostDto {
   @Min(0.01)
   quantity: number;
 
-  @ApiProperty({ description: 'Unit price in EUR', example: 45.00 })
+  @ApiProperty({ description: 'Unit price in EUR', example: 45.0 })
   @IsNumber()
   @Min(0)
   unitPriceEur: number;
 
-  @ApiProperty({ description: 'Tax rate (0-1)', example: 0.19, required: false })
+  @ApiProperty({
+    description: 'Tax rate (0-1)',
+    example: 0.19,
+    required: false,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
@@ -4398,9 +4703,9 @@ export class CreateProjectCostDto {
   @IsString()
   orderNumber?: string;
 
-  @ApiProperty({ 
-    description: 'Cost status', 
-    enum: ['planned', 'ordered', 'received', 'invoiced', 'paid']
+  @ApiProperty({
+    description: 'Cost status',
+    enum: ['planned', 'ordered', 'received', 'invoiced', 'paid'],
   })
   @IsEnum(ProjectCostStatus)
   status: ProjectCostStatus;
@@ -4418,6 +4723,7 @@ Offer endpoints manage the Opportunity → Offer → Contract conversion workflo
 Create a new offer from an opportunity.
 
 **Request Body:**
+
 ```typescript
 {
   "opportunityId": "opportunity-abc123",
@@ -4445,6 +4751,7 @@ Create a new offer from an opportunity.
 ```
 
 **Response** (201 Created):
+
 ```typescript
 {
   "_id": "offer-abc123",
@@ -4460,6 +4767,7 @@ Create a new offer from an opportunity.
 ```
 
 **Business Rules:**
+
 - Only INNEN, GF, ADM (own customers), KALK can create offers
 - Opportunity must exist and be in eligible status
 - Line items must have at least 1 item
@@ -4472,6 +4780,7 @@ Create a new offer from an opportunity.
 List offers with filtering and pagination.
 
 **Query Parameters:**
+
 - `customerId` - Filter by customer
 - `opportunityId` - Filter by opportunity
 - `status` - Filter by status (draft, sent, viewed, accepted, rejected, expired)
@@ -4481,6 +4790,7 @@ List offers with filtering and pagination.
 - `sortOrder` (default: desc, options: asc, desc)
 
 **RBAC Filtering:**
+
 - INNEN, GF, KALK: All offers
 - ADM: Only offers for own customers
 - PLAN: Only offers related to their projects (post-acceptance)
@@ -4492,6 +4802,7 @@ List offers with filtering and pagination.
 Get single offer by ID.
 
 **Response** (200 OK):
+
 ```typescript
 {
   "_id": "offer-abc123",
@@ -4526,6 +4837,7 @@ Update offer (only if status = draft or not finalized).
 **Request Body:** Partial offer update (same structure as POST)
 
 **Business Rules:**
+
 - Cannot modify finalized offers (status >= sent)
 - Line item changes recalculate totals
 - INNEN/GF can update all fields
@@ -4540,6 +4852,7 @@ Delete offer (only drafts, requires GF approval for sent offers).
 **Response** (204 No Content)
 
 **Business Rules:**
+
 - Draft offers: INNEN/GF/ADM (own) can delete
 - Sent/Viewed offers: Only GF can delete with audit log
 - Accepted offers: Cannot delete (linked to contract)
@@ -4551,6 +4864,7 @@ Delete offer (only drafts, requires GF approval for sent offers).
 Send offer to customer via email and finalize it (make immutable).
 
 **Request Body:**
+
 ```typescript
 {
   "recipientEmail": "customer@example.com",
@@ -4561,6 +4875,7 @@ Send offer to customer via email and finalize it (make immutable).
 ```
 
 **Response** (200 OK):
+
 ```typescript
 {
   "success": true,
@@ -4573,6 +4888,7 @@ Send offer to customer via email and finalize it (make immutable).
 ```
 
 **Business Rules:**
+
 - Offer must be in draft status
 - System generates PDF if not exists
 - Offer becomes finalized (immutable)
@@ -4586,6 +4902,7 @@ Send offer to customer via email and finalize it (make immutable).
 Accept offer and create contract.
 
 **Request Body:**
+
 ```typescript
 {
   "acceptedByContactId": "contact-person-456",
@@ -4596,6 +4913,7 @@ Accept offer and create contract.
 ```
 
 **Response** (201 Created):
+
 ```typescript
 {
   "offer": {
@@ -4615,6 +4933,7 @@ Accept offer and create contract.
 ```
 
 **Business Rules:**
+
 - Only INNEN/GF can accept offers
 - Offer must be in sent/viewed status
 - Automatically creates Contract entity
@@ -4628,6 +4947,7 @@ Accept offer and create contract.
 Reject offer (customer declined).
 
 **Request Body:**
+
 ```typescript
 {
   "rejectionReason": "Preis zu hoch, Konkurrenzangebot günstiger",
@@ -4636,6 +4956,7 @@ Reject offer (customer declined).
 ```
 
 **Response** (200 OK):
+
 ```typescript
 {
   "_id": "offer-abc123",
@@ -4646,6 +4967,7 @@ Reject offer (customer declined).
 ```
 
 **Business Rules:**
+
 - Updates Opportunity status to "Lost"
 - Requires rejection reason (min 10 characters)
 - Only INNEN/GF can reject offers
@@ -4659,6 +4981,7 @@ Create new offer version, marking current one as superseded.
 **Request Body:** (Same as POST /api/v1/offers)
 
 **Response** (201 Created):
+
 ```typescript
 {
   "oldOffer": {
@@ -4675,6 +4998,7 @@ Create new offer version, marking current one as superseded.
 ```
 
 **Business Rules:**
+
 - Original offer marked as superseded
 - New offer created with incremented number
 - Line items copied and can be modified
@@ -4689,6 +5013,7 @@ Download offer PDF.
 **Response** (200 OK): PDF file
 
 **Business Rules:**
+
 - Generates PDF on-the-fly if not cached
 - Includes company branding, logo, terms
 - Tracking pixel embedded if sent status
@@ -4705,6 +5030,7 @@ Contract endpoints manage signed agreements and project creation workflow.
 Create contract (typically from accepted offer).
 
 **Request Body:**
+
 ```typescript
 {
   "offerId": "offer-abc123",
@@ -4724,6 +5050,7 @@ Create contract (typically from accepted offer).
 ```
 
 **Response** (201 Created):
+
 ```typescript
 {
   "_id": "contract-xyz789",
@@ -4735,6 +5062,7 @@ Create contract (typically from accepted offer).
 ```
 
 **Business Rules:**
+
 - Only INNEN/GF can create contracts
 - Offer must be in accepted status
 - Contract value must match offer total
@@ -4747,6 +5075,7 @@ Create contract (typically from accepted offer).
 List contracts with filtering.
 
 **Query Parameters:**
+
 - `customerId` - Filter by customer
 - `offerId` - Filter by source offer
 - `status` - Filter by status (draft, pending_signature, signed, active, completed, terminated)
@@ -4754,6 +5083,7 @@ List contracts with filtering.
 - `page`, `pageSize`, `sortBy`, `sortOrder`
 
 **RBAC Filtering:**
+
 - INNEN, GF: All contracts
 - PLAN: All contracts (read-only, for project planning)
 - ADM: Own customer contracts only
@@ -4775,6 +5105,7 @@ Update contract (only if not finalized/signed).
 **Request Body:** Partial contract update
 
 **Business Rules:**
+
 - Cannot modify signed contracts (finalized = true)
 - GF can correct signed contracts with audit trail
 - INNEN can edit draft contracts
@@ -4788,6 +5119,7 @@ Delete contract (drafts only).
 **Response** (204 No Content)
 
 **Business Rules:**
+
 - Only draft contracts can be deleted
 - GF approval required for pending_signature contracts
 - Signed contracts cannot be deleted (GoBD)
@@ -4799,6 +5131,7 @@ Delete contract (drafts only).
 Mark contract as signed and finalize it (make immutable).
 
 **Request Body:**
+
 ```typescript
 {
   "customerSignature": "data:image/png;base64,iVBORw0KGgoAAAA...",
@@ -4808,6 +5141,7 @@ Mark contract as signed and finalize it (make immutable).
 ```
 
 **Response** (200 OK):
+
 ```typescript
 {
   "_id": "contract-xyz789",
@@ -4820,6 +5154,7 @@ Mark contract as signed and finalize it (make immutable).
 ```
 
 **Business Rules:**
+
 - Contract becomes immutable (GoBD compliance)
 - immutableHash generated from contract data
 - Status changes to signed
@@ -4832,6 +5167,7 @@ Mark contract as signed and finalize it (make immutable).
 Convert signed contract into active project.
 
 **Request Body:**
+
 ```typescript
 {
   "projectNumber": "P-2025-B042",
@@ -4843,6 +5179,7 @@ Convert signed contract into active project.
 ```
 
 **Response** (201 Created):
+
 ```typescript
 {
   "contract": {
@@ -4863,6 +5200,7 @@ Convert signed contract into active project.
 ```
 
 **Business Rules:**
+
 - Contract must be in signed status
 - Only PLAN or GF can create projects
 - Project linked back to contract (projectId)
@@ -4876,6 +5214,7 @@ Convert signed contract into active project.
 Mark contract as completed (project delivered).
 
 **Request Body:**
+
 ```typescript
 {
   "completionDate": "2025-06-30",
@@ -4884,6 +5223,7 @@ Mark contract as completed (project delivered).
 ```
 
 **Response** (200 OK):
+
 ```typescript
 {
   "_id": "contract-xyz789",
@@ -4893,6 +5233,7 @@ Mark contract as completed (project delivered).
 ```
 
 **Business Rules:**
+
 - Contract must be in active status
 - Project must be in completed/delivered status
 - Only PLAN or GF can mark as completed
@@ -4904,6 +5245,7 @@ Mark contract as completed (project delivered).
 Terminate contract early (cancellation).
 
 **Request Body:**
+
 ```typescript
 {
   "terminationReason": "Customer requested cancellation",
@@ -4912,6 +5254,7 @@ Terminate contract early (cancellation).
 ```
 
 **Response** (200 OK):
+
 ```typescript
 {
   "_id": "contract-xyz789",
@@ -4922,6 +5265,7 @@ Terminate contract early (cancellation).
 ```
 
 **Business Rules:**
+
 - Requires GF approval
 - Related project marked as cancelled
 - Audit trail logged
@@ -4987,6 +5331,7 @@ Create new supplier.
 **Permission:** Supplier.CREATE
 
 **Request Body:**
+
 ```typescript
 {
   "companyName": "Schreinerei Müller GmbH",
@@ -5002,6 +5347,7 @@ Create new supplier.
 ```
 
 **Response** (201 Created):
+
 ```typescript
 {
   "_id": "supplier-abc123",
@@ -5018,6 +5364,7 @@ List suppliers with filtering.
 **Permission:** Supplier.READ
 
 **Query Parameters:**
+
 - `status` (string): 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval'
 - `supplierType` (string): Filter by type
 - `serviceCategory` (string): Filter by service category
@@ -5026,17 +5373,18 @@ List suppliers with filtering.
 - `order` ('asc' | 'desc'): Sort order
 
 **Response** (200 OK):
+
 ```typescript
 [
   {
-    "_id": "supplier-abc123",
-    "companyName": "Schreinerei Müller GmbH",
-    "supplierType": "subcontractor",
-    "rating": { "overall": 4.8, "reviewCount": 12 },
-    "activeProjectCount": 5,
-    "status": "Active"
-  }
-]
+    _id: 'supplier-abc123',
+    companyName: 'Schreinerei Müller GmbH',
+    supplierType: 'subcontractor',
+    rating: { overall: 4.8, reviewCount: 12 },
+    activeProjectCount: 5,
+    status: 'Active',
+  },
+];
 ```
 
 ### GET /api/v1/suppliers/:id
@@ -5063,6 +5411,7 @@ Approve pending supplier.
 **Permission:** Supplier.APPROVE
 
 **Response** (200 OK):
+
 ```typescript
 {
   "_id": "supplier-abc123",
@@ -5080,6 +5429,7 @@ Blacklist supplier.
 **Permission:** Supplier.BLACKLIST
 
 **Request Body:**
+
 ```typescript
 {
   "reason": "Multiple quality issues and missed deadlines"
@@ -5094,6 +5444,7 @@ Create supplier contract.
 **Permission:** SupplierContract.CREATE
 
 **Request Body:**
+
 ```typescript
 {
   "projectId": "project-123",  // Optional, null for framework contract
@@ -5137,6 +5488,7 @@ Create new material in catalog.
 **Permission:** Material.CREATE
 
 **Request Body:**
+
 ```typescript
 {
   "materialCode": "MAT-LED-001",
@@ -5161,6 +5513,7 @@ Create new material in catalog.
 ```
 
 **Response** (201 Created):
+
 ```typescript
 {
   "_id": "material-xyz123",
@@ -5179,6 +5532,7 @@ Search material catalog.
 **Permission:** Material.READ
 
 **Query Parameters:**
+
 - `category` (string): Filter by category
 - `search` (string): Search name, description, tags
 - `supplierId` (string): Materials from specific supplier
@@ -5187,20 +5541,21 @@ Search material catalog.
 - `order` ('asc' | 'desc'): Sort order
 
 **Response** (200 OK):
+
 ```typescript
 [
   {
-    "_id": "material-xyz123",
-    "materialCode": "MAT-LED-001",
-    "materialName": "LED-Panel 60x60cm warmweiß",
-    "category": "ceiling_lights",
-    "unit": "piece",
-    "averagePrice": 145.00,
-    "lowestPrice": 138.00,
-    "supplierCount": 2,
-    "timesUsed": 12
-  }
-]
+    _id: 'material-xyz123',
+    materialCode: 'MAT-LED-001',
+    materialName: 'LED-Panel 60x60cm warmweiß',
+    category: 'ceiling_lights',
+    unit: 'piece',
+    averagePrice: 145.0,
+    lowestPrice: 138.0,
+    supplierCount: 2,
+    timesUsed: 12,
+  },
+];
 ```
 
 ### POST /api/v1/materials/:id/supplier-prices
@@ -5211,6 +5566,7 @@ Add or update supplier pricing.
 **Permission:** Material.UPDATE_PRICES
 
 **Request Body:**
+
 ```typescript
 {
   "supplierId": "supplier-456",
@@ -5242,6 +5598,7 @@ Add material to project BOM.
 **Permission:** ProjectMaterial.CREATE
 
 **Request Body:**
+
 ```typescript
 {
   "materialId": "material-xyz123",
@@ -5263,28 +5620,30 @@ Get project BOM.
 **Permission:** ProjectMaterial.READ
 
 **Query Parameters:**
+
 - `phase` (string): Filter by project phase
 - `status` (string): Filter by requirement status
 - `supplierId` (string): Filter by supplier
 
 **Response** (200 OK):
+
 ```typescript
 [
   {
-    "_id": "project-material-123",
-    "materialId": "material-xyz123",
-    "materialName": "LED-Panel 60x60cm",
-    "phase": "installation",
-    "estimatedQuantity": 24,
-    "actualQuantity": 24,
-    "estimatedTotalCost": 3480.00,
-    "actualTotalCost": 3408.00,
-    "costVariance": -72.00,
-    "costVariancePercentage": -2.1,
-    "deliveryStatus": "delivered",
-    "requirementStatus": "delivered"
-  }
-]
+    _id: 'project-material-123',
+    materialId: 'material-xyz123',
+    materialName: 'LED-Panel 60x60cm',
+    phase: 'installation',
+    estimatedQuantity: 24,
+    actualQuantity: 24,
+    estimatedTotalCost: 3480.0,
+    actualTotalCost: 3408.0,
+    costVariance: -72.0,
+    costVariancePercentage: -2.1,
+    deliveryStatus: 'delivered',
+    requirementStatus: 'delivered',
+  },
+];
 ```
 
 ### GET /api/v1/projects/:projectId/material-costs
@@ -5295,6 +5654,7 @@ Get material cost summary.
 **Permission:** ProjectMaterial.READ
 
 **Response** (200 OK):
+
 ```typescript
 {
   "projectId": "project-123",
@@ -5328,6 +5688,7 @@ Create purchase order.
 **Permission:** PurchaseOrder.CREATE
 
 **Request Body:**
+
 ```typescript
 {
   "projectId": "project-123",
@@ -5350,6 +5711,7 @@ Create purchase order.
 ```
 
 **Response** (201 Created):
+
 ```typescript
 {
   "_id": "purchase-order-456",
@@ -5368,6 +5730,7 @@ Approve purchase order.
 **Permission:** PurchaseOrder.APPROVE
 
 **Response** (200 OK):
+
 ```typescript
 {
   "_id": "purchase-order-456",
@@ -5385,6 +5748,7 @@ Send PO to supplier.
 **Permission:** PurchaseOrder.SEND
 
 **Request Body:**
+
 ```typescript
 {
   "orderMethod": "Email",
@@ -5393,6 +5757,7 @@ Send PO to supplier.
 ```
 
 **Response** (200 OK):
+
 ```typescript
 {
   "_id": "purchase-order-456",
@@ -5409,6 +5774,7 @@ Record material delivery.
 **Permission:** PurchaseOrder.RECEIVE_DELIVERY
 
 **Request Body:**
+
 ```typescript
 {
   "lineItems": [
@@ -5423,6 +5789,7 @@ Record material delivery.
 ```
 
 **Response** (200 OK):
+
 ```typescript
 {
   "_id": "purchase-order-456",
@@ -5434,6 +5801,7 @@ Record material delivery.
 ```
 
 **Side Effects:**
+
 - Updates ProjectMaterialRequirement.actualQuantity and actualTotalCost
 - Recalculates project.actualMaterialCosts
 - Triggers budget alert if project exceeds budget threshold
@@ -5453,6 +5821,7 @@ Create supplier invoice record.
 **Permission:** SupplierInvoice.CREATE
 
 **Request Body:**
+
 ```typescript
 {
   "invoiceNumber": "R-SUP-24-456",  // Supplier's invoice number
@@ -5471,6 +5840,7 @@ Create supplier invoice record.
 ```
 
 **Response** (201 Created):
+
 ```typescript
 {
   "_id": "supplier-invoice-789",
@@ -5487,6 +5857,7 @@ Approve invoice for payment.
 **Permission:** SupplierInvoice.APPROVE
 
 **Response** (200 OK):
+
 ```typescript
 {
   "_id": "supplier-invoice-789",
@@ -5504,6 +5875,7 @@ Mark invoice as paid.
 **Permission:** SupplierInvoice.MARK_PAID
 
 **Request Body:**
+
 ```typescript
 {
   "paidDate": "2025-02-20",
@@ -5512,6 +5884,7 @@ Mark invoice as paid.
 ```
 
 **Response** (200 OK):
+
 ```typescript
 {
   "_id": "supplier-invoice-789",
@@ -5522,6 +5895,7 @@ Mark invoice as paid.
 ```
 
 **Side Effects:**
+
 - Updates project.actualSupplierCosts
 - Updates supplier.outstandingInvoices
 - Syncs to Lexware (Phase 2+)
@@ -5541,6 +5915,7 @@ Log communication with supplier.
 **Permission:** Communication.CREATE
 
 **Request Body:**
+
 ```typescript
 {
   "projectId": "project-123",  // Optional
@@ -5584,24 +5959,35 @@ Upload Excel/CSV file for customer import.
 **Permission:** Customer.IMPORT
 
 **Request:**
+
 - **Content-Type:** `multipart/form-data`
 - **Body:** File (Excel `.xlsx`, `.xls` or CSV `.csv`)
 - **Max file size:** 10 MB
 - **Max rows:** 10,000
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-123",
   "filename": "customers.xlsx",
   "rowCount": 512,
-  "headers": ["companyName", "vatNumber", "email", "phone", "address_street", "address_zip", "address_city"],
+  "headers": [
+    "companyName",
+    "vatNumber",
+    "email",
+    "phone",
+    "address_street",
+    "address_zip",
+    "address_city"
+  ],
   "status": "uploaded",
   "uploadedAt": "2025-01-27T10:00:00Z"
 }
 ```
 
 **Error Response (400 Bad Request):**
+
 ```json
 {
   "type": "https://api.kompass.de/errors/validation-error",
@@ -5622,6 +6008,7 @@ Map CSV/Excel columns to internal fields. Supports automatic mapping with manual
 **Permission:** Customer.IMPORT
 
 **Request Body:**
+
 ```typescript
 {
   "mappings": {
@@ -5638,6 +6025,7 @@ Map CSV/Excel columns to internal fields. Supports automatic mapping with manual
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-123",
@@ -5658,6 +6046,7 @@ Map CSV/Excel columns to internal fields. Supports automatic mapping with manual
 ```
 
 **Error Response (400 Bad Request):**
+
 ```json
 {
   "type": "https://api.kompass.de/errors/validation-error",
@@ -5679,6 +6068,7 @@ Validate imported data and check for duplicates.
 **Permission:** Customer.IMPORT
 
 **Request Body:**
+
 ```typescript
 {
   "checkDuplicates": true,        // Check for duplicate customers
@@ -5687,6 +6077,7 @@ Validate imported data and check for duplicates.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-123",
@@ -5759,6 +6150,7 @@ Execute customer import with specified options.
 **Permission:** Customer.IMPORT
 
 **Request Body:**
+
 ```typescript
 {
   "options": {
@@ -5771,6 +6163,7 @@ Execute customer import with specified options.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-123",
@@ -5779,11 +6172,7 @@ Execute customer import with specified options.
   "errorCount": 15,
   "duplicateCount": 10,
   "updatedCount": 0,
-  "importedCustomerIds": [
-    "customer-789",
-    "customer-790",
-    "customer-791"
-  ],
+  "importedCustomerIds": ["customer-789", "customer-790", "customer-791"],
   "status": "completed",
   "completedAt": "2025-01-27T10:15:00Z",
   "errorLogUrl": "/api/v1/customers/import/import-123/errors"
@@ -5800,6 +6189,7 @@ Get error log for customer import (CSV format for download).
 **Permission:** Customer.IMPORT
 
 **Response (200 OK):**
+
 - **Content-Type:** `text/csv`
 - **Content-Disposition:** `attachment; filename="customer_import_errors_2025-01-27.csv"`
 - **Body:** CSV file with columns: `row`, `field`, `error`, `value`, `suggestedValue`
@@ -5816,12 +6206,14 @@ Upload Word document for protocol import.
 **Permission:** Protocol.IMPORT
 
 **Request:**
+
 - **Content-Type:** `multipart/form-data`
 - **Body:** File (Word `.docx`, `.doc`)
 - **Max file size:** 10 MB
 - **Max protocols:** 1,000
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
@@ -5834,6 +6226,7 @@ Upload Word document for protocol import.
 ```
 
 **Error Response (400 Bad Request):**
+
 ```json
 {
   "type": "https://api.kompass.de/errors/validation-error",
@@ -5854,6 +6247,7 @@ Extract table from Word document. Supports multiple tables - user selects which 
 **Permission:** Protocol.IMPORT
 
 **Request Body:**
+
 ```typescript
 {
   "tableIndex": 0,  // Index of table to extract (0-based)
@@ -5866,6 +6260,7 @@ Extract table from Word document. Supports multiple tables - user selects which 
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
@@ -5898,6 +6293,7 @@ Extract table from Word document. Supports multiple tables - user selects which 
 ```
 
 **Error Response (400 Bad Request):**
+
 ```json
 {
   "type": "https://api.kompass.de/errors/validation-error",
@@ -5919,6 +6315,7 @@ Parse dates from protocol import. Supports various date formats with fallback to
 **Permission:** Protocol.IMPORT
 
 **Request Body:**
+
 ```typescript
 {
   "dateFormats": [  // Optional: specify expected formats
@@ -5932,6 +6329,7 @@ Parse dates from protocol import. Supports various date formats with fallback to
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
@@ -5961,7 +6359,7 @@ Parse dates from protocol import. Supports various date formats with fallback to
       "parsedValue": "2024-01-15T00:00:00Z",
       "format": "DD MMM YY",
       "status": "success",
-      "confidence": 0.90
+      "confidence": 0.9
     },
     {
       "rowIndex": 25,
@@ -5989,6 +6387,7 @@ Manually correct dates that failed to parse.
 **Permission:** Protocol.IMPORT
 
 **Request Body:**
+
 ```typescript
 {
   "dateCorrections": [
@@ -6007,6 +6406,7 @@ Manually correct dates that failed to parse.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
@@ -6026,6 +6426,7 @@ Assign customers to protocols. Supports single customer assignment or per-row as
 **Permission:** Protocol.IMPORT
 
 **Request Body:**
+
 ```typescript
 {
   "defaultCustomerId": "customer-123",  // Default customer for all protocols
@@ -6044,6 +6445,7 @@ Assign customers to protocols. Supports single customer assignment or per-row as
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
@@ -6066,6 +6468,7 @@ Validate imported protocols.
 **Permission:** Protocol.IMPORT
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
@@ -6117,6 +6520,7 @@ Execute protocol import with specified options.
 **Permission:** Protocol.IMPORT
 
 **Request Body:**
+
 ```typescript
 {
   "options": {
@@ -6129,17 +6533,14 @@ Execute protocol import with specified options.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "importId": "import-456",
   "importedCount": 140,
   "skippedCount": 10,
   "errorCount": 10,
-  "importedProtocolIds": [
-    "protocol-789",
-    "protocol-790",
-    "protocol-791"
-  ],
+  "importedProtocolIds": ["protocol-789", "protocol-790", "protocol-791"],
   "status": "completed",
   "completedAt": "2025-01-27T10:50:00Z",
   "errorLogUrl": "/api/v1/protocols/import/import-456/errors"
@@ -6156,6 +6557,7 @@ Get error log for protocol import (CSV format for download).
 **Permission:** Protocol.IMPORT
 
 **Response (200 OK):**
+
 - **Content-Type:** `text/csv`
 - **Content-Disposition:** `attachment; filename="protocol_import_errors_2025-01-27.csv"`
 - **Body:** CSV file with columns: `row`, `field`, `error`, `value`, `suggestedValue`
@@ -6172,6 +6574,7 @@ Export customers to CSV/Excel/JSON/DATEV format.
 **Permission:** Customer.EXPORT
 
 **Query Parameters:**
+
 - `format` (string, required): `csv` | `excel` | `json` | `datev`
 - `dateRange` (string, optional): `all` | `last30days` | `last90days` | `custom`
 - `startDate` (string, optional): ISO date (required if `dateRange=custom`)
@@ -6183,7 +6586,8 @@ Export customers to CSV/Excel/JSON/DATEV format.
   - `status` (string): Filter by status
 
 **Response (200 OK):**
-- **Content-Type:** 
+
+- **Content-Type:**
   - `text/csv` (CSV format)
   - `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` (Excel format)
   - `application/json` (JSON format)
@@ -6191,11 +6595,13 @@ Export customers to CSV/Excel/JSON/DATEV format.
 - **Content-Disposition:** `attachment; filename="customers_export_2025-01-27.csv"`
 
 **Example Request:**
+
 ```
 GET /api/v1/customers/export?format=csv&dateRange=last30days&fields=companyName,vatNumber,email,phone
 ```
 
 **Example Response (CSV):**
+
 ```csv
 companyName,vatNumber,email,phone
 Hofladen Müller GmbH,DE123456789,info@hofladen-mueller.de,+49-89-1234567
@@ -6203,6 +6609,7 @@ REWE Store München,DE987654321,store@rewe.de,+49-89-9876543
 ```
 
 **Error Response (400 Bad Request):**
+
 ```json
 {
   "type": "https://api.kompass.de/errors/validation-error",
@@ -6225,6 +6632,7 @@ Export contact protocols to CSV/Excel/Word/JSON format.
 **Permission:** Protocol.EXPORT
 
 **Query Parameters:**
+
 - `format` (string, required): `csv` | `excel` | `word` | `json`
 - `customerId` (string, optional): Filter by customer ID
 - `contactId` (string, optional): Filter by contact ID
@@ -6235,6 +6643,7 @@ Export contact protocols to CSV/Excel/Word/JSON format.
 - `fields` (string, optional): Comma-separated field list (default: all fields)
 
 **Response (200 OK):**
+
 - **Content-Type:**
   - `text/csv` (CSV format)
   - `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` (Excel format)
@@ -6243,17 +6652,20 @@ Export contact protocols to CSV/Excel/Word/JSON format.
 - **Content-Disposition:** `attachment; filename="protocols_export_2025-01-27.docx"`
 
 **Example Request:**
+
 ```
 GET /api/v1/protocols/export?format=word&customerId=customer-123&dateRange=last30days
 ```
 
 **Word Export Format:**
+
 - Table structure with headers: Date, Note, Action, Customer, Contact, User
 - Date format: `DD.MM.YYYY` (German format)
 - Professional table styling with headers
 - Supports multiple pages if needed
 
 **Error Response (400 Bad Request):**
+
 ```json
 {
   "type": "https://api.kompass.de/errors/validation-error",
@@ -6281,7 +6693,7 @@ interface CustomerImportUploadDto {
 
 // Map Request
 interface CustomerImportMapDto {
-  mappings: Record<string, string>;  // CSV column -> internal field
+  mappings: Record<string, string>; // CSV column -> internal field
   autoDetect?: boolean;
 }
 
@@ -6425,7 +6837,7 @@ interface ProtocolImportCorrectDatesDto {
 
 interface DateCorrection {
   rowIndex: number;
-  correctedDate: string;  // ISO 8601 format
+  correctedDate: string; // ISO 8601 format
   originalValue: string;
 }
 
@@ -6601,19 +7013,17 @@ interface ProtocolImportExecuteResponseDto {
 
 ## Document History
 
-| Version | Date       | Author | Changes |
-|---------|------------|--------|---------|
-| 1.0     | 2025-01-28 | System | Initial specification: RESTful conventions, versioning, RFC 7807 errors, Location management endpoints, Contact decision authority endpoints, complete DTOs |
-| 1.1     | 2025-01-27 | System | Added User Role Management endpoints (assign/revoke roles), Role Configuration endpoints (view/update role permissions), Permission Matrix endpoints (manage runtime permissions), updated section numbering |
-| 1.2     | 2025-01-28 | System | Added Task Management endpoints (UserTask and ProjectTask): CRUD operations, status updates, dashboard views (my-tasks, team-tasks, overdue), project task grouping (by-phase, by-assignee), cross-entity task queries, complete DTOs with validation decorators |
-| 1.3     | 2025-01-28 | System | **Added Tour Planning & Expense Management endpoints (Phase 2)**: Tour management (CRUD, completion, cost summary), Meeting management (CRUD, GPS check-in, outcome tracking, tour auto-suggestion), Hotel Stay management (nested under tours, search with Google Places API, preferences), Expense management (CRUD, receipt upload with OCR, approval workflow with GF-only approval, bulk operations, report generation in JSON/PDF/CSV), Mileage Log management (nested under tours, GPS tracking, distance validation, GF override with audit trail), complete query parameters, business rules, nested resource patterns |
-| 1.4     | 2025-01-28 | System | **Added Calendar & Export Endpoints (MVP)**: Get calendar events (unified view of tasks, projects, opportunities), My calendar events (user-specific), Team calendar events (GF/PLAN only), ICS export (one-time download for Outlook/Google/Apple Calendar), complete CalendarEvent and CalendarQuery DTOs, business rules (date range validation, event density limits, RBAC filtering, ICS standards, color accessibility), performance considerations (caching, query optimization, export performance) |
-| 1.5     | 2025-01-28 | System | **Added Time Tracking & Project Cost Management Endpoints (Phase 1 MVP)**: TimeEntry endpoints (CRUD, timer start/stop, bulk approve/reject, labor cost reports, pending approval queue) with complete DTOs; ProjectCost endpoints (CRUD, approval workflow, material cost summaries, pending payment tracking) with complete DTOs. Includes comprehensive RBAC permissions, business rules, status lifecycle transitions, cost calculations, and GoBD compliance for approved/paid entries |
-| 1.6     | 2025-11-12 | System | **CRITICAL UPDATE - Added Supplier & Material Management Endpoints (Phase 1 MVP)**: Complete REST API for Supplier management (CRUD, approval, blacklist, contracts), Material catalog (CRUD, multi-supplier pricing, search), Project Material Requirements (BOM management, cost tracking), Purchase Orders (CRUD, approval workflow, delivery recording with real-time project cost updates), Supplier Invoices (CRUD, 3-way match, approval workflow, payment tracking), Supplier Communications (logging). Addresses Pre-Mortem Danger #3 (Critical Workflow Gaps). See [Supplier Management Spec](../../specifications/SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md) and [Material Management Spec](../../specifications/MATERIAL_INVENTORY_MANAGEMENT_SPEC.md) for complete business logic. |
+| Version | Date       | Author | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------- | ---------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.0     | 2025-01-28 | System | Initial specification: RESTful conventions, versioning, RFC 7807 errors, Location management endpoints, Contact decision authority endpoints, complete DTOs                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| 1.1     | 2025-01-27 | System | Added User Role Management endpoints (assign/revoke roles), Role Configuration endpoints (view/update role permissions), Permission Matrix endpoints (manage runtime permissions), updated section numbering                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| 1.2     | 2025-01-28 | System | Added Task Management endpoints (UserTask and ProjectTask): CRUD operations, status updates, dashboard views (my-tasks, team-tasks, overdue), project task grouping (by-phase, by-assignee), cross-entity task queries, complete DTOs with validation decorators                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| 1.3     | 2025-01-28 | System | **Added Tour Planning & Expense Management endpoints (Phase 2)**: Tour management (CRUD, completion, cost summary), Meeting management (CRUD, GPS check-in, outcome tracking, tour auto-suggestion), Hotel Stay management (nested under tours, search with Google Places API, preferences), Expense management (CRUD, receipt upload with OCR, approval workflow with GF-only approval, bulk operations, report generation in JSON/PDF/CSV), Mileage Log management (nested under tours, GPS tracking, distance validation, GF override with audit trail), complete query parameters, business rules, nested resource patterns                                                                                                                                                                                                                                                              |
+| 1.4     | 2025-01-28 | System | **Added Calendar & Export Endpoints (MVP)**: Get calendar events (unified view of tasks, projects, opportunities), My calendar events (user-specific), Team calendar events (GF/PLAN only), ICS export (one-time download for Outlook/Google/Apple Calendar), complete CalendarEvent and CalendarQuery DTOs, business rules (date range validation, event density limits, RBAC filtering, ICS standards, color accessibility), performance considerations (caching, query optimization, export performance)                                                                                                                                                                                                                                                                                                                                                                                  |
+| 1.5     | 2025-01-28 | System | **Added Time Tracking & Project Cost Management Endpoints (Phase 1 MVP)**: TimeEntry endpoints (CRUD, timer start/stop, bulk approve/reject, labor cost reports, pending approval queue) with complete DTOs; ProjectCost endpoints (CRUD, approval workflow, material cost summaries, pending payment tracking) with complete DTOs. Includes comprehensive RBAC permissions, business rules, status lifecycle transitions, cost calculations, and GoBD compliance for approved/paid entries                                                                                                                                                                                                                                                                                                                                                                                                  |
+| 1.6     | 2025-11-12 | System | **CRITICAL UPDATE - Added Supplier & Material Management Endpoints (Phase 1 MVP)**: Complete REST API for Supplier management (CRUD, approval, blacklist, contracts), Material catalog (CRUD, multi-supplier pricing, search), Project Material Requirements (BOM management, cost tracking), Purchase Orders (CRUD, approval workflow, delivery recording with real-time project cost updates), Supplier Invoices (CRUD, 3-way match, approval workflow, payment tracking), Supplier Communications (logging). Addresses Pre-Mortem Danger #3 (Critical Workflow Gaps). See [Supplier Management Spec](../../specifications/SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md) and [Material Management Spec](../../specifications/MATERIAL_INVENTORY_MANAGEMENT_SPEC.md) for complete business logic.                                                                                              |
 | 1.7     | 2025-01-27 | System | **Added Import/Export Endpoints (MVP)**: Customer import endpoints (upload Excel/CSV, map fields, validate, execute, error log) with automatic/manual field mapping, duplicate detection, and validation; Protocol import endpoints (upload Word document, extract table, parse dates with fallback to manual entry, assign customers, validate, execute, error log) with table extraction, date parsing (multiple formats), and customer assignment; Customer export endpoints (CSV/Excel/JSON/DATEV) with field selection and filtering; Protocol export endpoints (CSV/Excel/Word/JSON) with customer/protocol type filtering. Includes complete DTOs, business rules, performance considerations, and RBAC permissions. Required for data migration and ongoing operations. See [Import/Export Specification](../../specifications/IMPORT_EXPORT_SPECIFICATION.md) for complete details. |
 
 ---
 
 **End of API_SPECIFICATION.md v1.7**
-
-

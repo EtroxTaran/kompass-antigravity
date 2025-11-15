@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsDate,
@@ -10,7 +11,7 @@ import {
   Max,
   Length,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+
 import { MeetingType } from '@kompass/shared/types/entities/meeting';
 
 /**
@@ -55,7 +56,8 @@ export class CreateMeetingDto {
 
   @ApiPropertyOptional({
     description: 'Meeting description',
-    example: 'Detaillierte Besprechung der Anforderungen für den neuen Ladenbau',
+    example:
+      'Detaillierte Besprechung der Anforderungen für den neuen Ladenbau',
     maxLength: 500,
   })
   @IsString()
@@ -81,7 +83,6 @@ export class CreateMeetingDto {
   })
   @IsEnum(MeetingType)
   meetingType: MeetingType;
-
 
   @ApiProperty({
     description: 'Customer ID',
@@ -140,4 +141,3 @@ export class CreateMeetingDto {
   @IsOptional()
   opportunityId?: string;
 }
-

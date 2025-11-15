@@ -10,16 +10,19 @@ This directory contains all technical specifications and requirements for the KO
 ## Core Specifications
 
 ### System Architecture & Design
+
 - **[Data Model](./data-model.md)** - Complete entity definitions, validation rules, and relationships
 - **[API Specification](./api-specification.md)** - REST API documentation (OpenAPI 3.0)
 - **[RBAC Permissions](./rbac-permissions.md)** - Role-based access control matrix
 - **[Test Strategy](./test-strategy.md)** - Testing approach, coverage, and automation
 
 ### Performance & Quality
+
 - **[Non-Functional Requirements](./nfr-specification.md)** - Performance, scalability, availability
 - **[Conflict Resolution](./conflict-resolution-specification.md)** - Offline sync conflict handling
 
 ### Integration & Data Flow
+
 - **[AI Data Requirements](./AI_DATA_REQUIREMENTS.md)** - AI/ML data specifications
 - **[Financial Data Flow](./FINANCIAL_DATA_FLOW.md)** - Financial system integration
 - **[Import/Export Specification](./IMPORT_EXPORT_SPECIFICATION.md)** - Data import/export formats
@@ -27,6 +30,7 @@ This directory contains all technical specifications and requirements for the KO
 - **[Offline PWA Data Strategy](./OFFLINE_PWA_DATA_STRATEGY.md)** - Offline-first data management
 
 ### Domain-Specific Specs
+
 - **[Material Inventory Management](./MATERIAL_INVENTORY_MANAGEMENT_SPEC.md)** - Inventory tracking
 - **[Supplier & Subcontractor Management](./SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md)** - Vendor management
 
@@ -44,11 +48,13 @@ This directory contains all technical specifications and requirements for the KO
 ## Document Maintenance
 
 ### Ownership
+
 - **Core Specifications** (Data Model, API, RBAC, Test Strategy): Architecture Team
 - **Integration Specifications**: Integration Team
 - **Domain Specifications**: Product Team + Domain Experts
 
 ### Update Process
+
 1. Create Linear issue for specification changes
 2. Update specification document
 3. Review with stakeholders
@@ -56,7 +62,9 @@ This directory contains all technical specifications and requirements for the KO
 5. Notify dependent teams
 
 ### Cross-References
+
 All specifications are cross-linked to maintain consistency:
+
 - Changes to Data Model → Update API Specification
 - Changes to RBAC → Update Test Strategy
 - Changes to Integrations → Update NFR Specification

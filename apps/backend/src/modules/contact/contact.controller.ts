@@ -1,13 +1,13 @@
 /**
  * Contact Controller
- * 
+ *
  * Handles HTTP requests for Contact management
  * Includes decision authority endpoints (RESTRICTED)
- * 
+ *
  * All endpoints require:
  * - JwtAuthGuard: User must be authenticated
  * - RbacGuard: User must have required permissions
- * 
+ *
  * Permissions:
  * - Contact.CREATE: GF, PLAN, ADM (own customers)
  * - Contact.READ: All roles
@@ -23,7 +23,6 @@ import {
   Put,
   Body,
   Param,
-  UseGuards,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -35,9 +34,10 @@ import {
   ApiParam,
   ApiBody,
 } from '@nestjs/swagger';
+
 import { ContactService } from './contact.service';
-import { UpdateDecisionAuthorityDto } from './dto/update-decision-authority.dto';
 import { DecisionAuthorityResponseDto } from './dto/decision-authority-response.dto';
+import { UpdateDecisionAuthorityDto } from './dto/update-decision-authority.dto';
 
 /**
  * Placeholder guards and decorators
@@ -47,8 +47,11 @@ interface User {
   role: 'GF' | 'PLAN' | 'ADM' | 'KALK' | 'BUCH';
 }
 
-const CurrentUser = () => (target: any, propertyKey: string, parameterIndex: number) => {};
-const RequirePermission = (entity: string, action: string) => (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {};
+const CurrentUser =
+  () => (target: any, propertyKey: string, parameterIndex: number) => {};
+const RequirePermission =
+  (entity: string, action: string) =>
+  (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {};
 const JwtAuthGuard = class {};
 const RbacGuard = class {};
 
@@ -97,14 +100,14 @@ export class ContactController {
   @RequirePermission('Contact', 'VIEW_AUTHORITY_LEVELS')
   async getDecisionAuthority(
     @Param('contactId') contactId: string,
-    @CurrentUser() user: User,
+    @CurrentUser() user: User
   ): Promise<DecisionAuthorityResponseDto> {
     return this.contactService.getDecisionAuthority(contactId, user);
   }
 
   /**
    * Update decision authority for a contact
-   * 
+   *
    * RESTRICTED: Only PLAN and GF roles
    */
   @Put(':contactId/decision-authority')
@@ -128,7 +131,8 @@ export class ContactController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Validation error - missing approval limit when canApproveOrders=true',
+    description:
+      'Validation error - missing approval limit when canApproveOrders=true',
   })
   @ApiResponse({
     status: 401,
@@ -136,13 +140,15 @@ export class ContactController {
   })
   @ApiResponse({
     status: 403,
-    description: 'Forbidden - only ADM+ (PLAN, GF) can update decision-making roles',
+    description:
+      'Forbidden - only ADM+ (PLAN, GF) can update decision-making roles',
     schema: {
       example: {
         type: 'https://api.kompass.de/errors/forbidden',
         title: 'Forbidden',
         status: 403,
-        detail: 'Only ADM+ users (PLAN, GF) can update contact decision-making roles',
+        detail:
+          'Only ADM+ users (PLAN, GF) can update contact decision-making roles',
         instance: '/api/v1/contacts/contact-111/decision-authority',
         requiredPermission: 'Contact.UPDATE_DECISION_ROLE',
         userRole: 'ADM',
@@ -157,9 +163,12 @@ export class ContactController {
   async updateDecisionAuthority(
     @Param('contactId') contactId: string,
     @Body() updateDecisionAuthorityDto: UpdateDecisionAuthorityDto,
-    @CurrentUser() user: User,
+    @CurrentUser() user: User
   ): Promise<DecisionAuthorityResponseDto> {
-    return this.contactService.updateDecisionAuthority(contactId, updateDecisionAuthorityDto, user);
+    return this.contactService.updateDecisionAuthority(
+      contactId,
+      updateDecisionAuthorityDto,
+      user
+    );
   }
 }
-

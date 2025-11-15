@@ -1,23 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import {
+import { v4 as uuidv4 } from 'uuid';
+
+import type {
   ProjectCost,
-  ProjectCostStatus,
   ProjectCostType,
   MaterialCostSummary,
   CostTypeSummary,
   CostStatusSummary,
 } from '@kompass/shared/types/entities/project-cost';
-import {
+import { ProjectCostStatus } from '@kompass/shared/types/entities/project-cost';
+
+import type {
   IProjectCostRepository,
   ProjectCostFilters,
 } from './project-cost.repository.interface';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Project Cost Repository Implementation
- * 
+ *
  * Implements data access operations for project costs using CouchDB.
  * Handles CRUD operations, filtering, and cost aggregations.
  */
@@ -25,13 +27,11 @@ import { v4 as uuidv4 } from 'uuid';
 export class ProjectCostRepository implements IProjectCostRepository {
   private readonly collectionName = 'project_costs';
 
-  constructor(
-    @InjectConnection() private readonly connection: Connection,
-  ) {}
+  constructor(@InjectConnection() private readonly connection: Connection) {}
 
   /**
    * Get CouchDB database instance
-   * 
+   *
    * Note: This is a placeholder. Actual implementation will use CouchDB/Nano client
    */
   private getDb() {
@@ -99,7 +99,7 @@ export class ProjectCostRepository implements IProjectCostRepository {
     // TODO: Implement CouchDB query with filters
     // const db = this.getDb();
     // const selector: any = { type: 'project_cost' };
-    
+
     // if (filters) {
     //   if (filters.projectId) selector.projectId = filters.projectId;
     //   if (filters.costType) selector.costType = filters.costType;
@@ -134,18 +134,20 @@ export class ProjectCostRepository implements IProjectCostRepository {
     return this.findAll({ costType });
   }
 
-  async calculateMaterialCosts(projectId: string): Promise<MaterialCostSummary> {
+  async calculateMaterialCosts(
+    projectId: string
+  ): Promise<MaterialCostSummary> {
     // Get all project costs for project
     const costs = await this.findByProject(projectId);
 
     // Calculate totals
     const totalCostEur = costs.reduce(
       (sum, cost) => sum + cost.totalCostEur,
-      0,
+      0
     );
     const totalWithTaxEur = costs.reduce(
       (sum, cost) => sum + cost.totalWithTaxEur,
-      0,
+      0
     );
 
     // Group by cost type
@@ -207,4 +209,3 @@ export class ProjectCostRepository implements IProjectCostRepository {
     return this.findAll({ supplierName });
   }
 }
-

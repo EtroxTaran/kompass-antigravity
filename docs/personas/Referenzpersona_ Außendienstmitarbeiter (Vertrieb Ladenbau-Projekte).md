@@ -1,10 +1,11 @@
-# Referenzpersona_ Außendienstmitarbeiter (Vertrieb Ladenbau-Projekte)
+# Referenzpersona\_ Außendienstmitarbeiter (Vertrieb Ladenbau-Projekte)
 
-*Converted from: Referenzpersona_ Außendienstmitarbeiter (Vertrieb Ladenbau-Projekte).pdf*  
-*Document Version: 2.0 – Updated with Gap Resolutions*  
-*Last Updated: 2025-11-10*
+_Converted from: Referenzpersona\_ Außendienstmitarbeiter (Vertrieb Ladenbau-Projekte).pdf_  
+_Document Version: 2.0 – Updated with Gap Resolutions_  
+_Last Updated: 2025-11-10_
 
 **⚡ Relevante Spezifikationen für ADM-Rolle:**
+
 - **Offline-Speicher:** 31 MB ✅ (unter iOS 50MB-Limit) – Siehe DATA_MODEL_SPECIFICATION.md §8.1
   - Eigene Kunden (150): 300 KB, Opportunities (20): 100 KB, Activities (100): 100 KB, Pinned Files (3×10MB): 30 MB
   - 3-Tier-Strategie: Essential (5MB) + Recent (10MB) + Pinned (35MB)
@@ -67,7 +68,6 @@ erfolgsgetrieben: Er möchte Umsatzziele erreichen oder übertreffen und neue Ku
 weiterer Antrieb ist seine **Autonomie und Abwechslung** im Job: Er schätzt es, eigenverantwortlich zu
 arbeiten, viel herumzukommen und jeden Tag andere Menschen und Orte kennenzulernen.
 
-
 **Umfeld & Arbeitsweise:** Markus’ Arbeitsplatz ist **„im Auto und beim Kunden“** – er ist in ländlichen
 Regionen und Städten unterwegs, oft mehrere Tage pro Woche auf Reisen. Morgens prüft er seine Termine
 und Tourenplanung, dann fährt er zu Kundenstandorten, führt Beratungsgespräche und Besichtigungen
@@ -101,7 +101,6 @@ Unternehmen sowie Referenzprojekte vor. Sein Ziel: einen **Vor-Ort-Termin** zu v
 Projekt persönlich zu besprechen. Bereits in dieser Phase sammelt er erste Informationen: **Wer ist**
 **der Entscheider? Was ist der Bedarf?** – diese werden idealerweise gleich im CRM erfasst.
 
-
 **Kundenbesuch & Bedarfsanalyse:** Beim ersten Termin vor Ort nimmt Markus eine **Beratungsrolle**
 ein. Er betrachtet die vorhandene Ladenfläche, fragt gezielt nach den Wünschen des Kunden
 (Designvorstellungen, Budgetrahmen, Sortimentsschwerpunkte) und misst ggf. Räumlichkeiten aus.
@@ -119,7 +118,6 @@ Betriebe; Markus gewinnt ihr Vertrauen durch authentisches Auftreten, Fachkenntn
 Gefühl, verstanden zu werden.
 
 # Interne Abstimmung & Angebotserstellung: Nach dem Termin bereitet Markus intern alles für ein
-
 
 **Präsentation & Verhandlung:**
 Markus vereinbart einen
@@ -146,7 +144,6 @@ Projektbeteiligten einen großen Schritt voranbringt.
 
 # Administrative Aufgaben & Reporting: Neben dem operativen Geschäft muss Markus auch
 
-
 das oft zeitverzögert (z.B. abends vom Hotel aus), was zu Informationslücken führte
 . Mit der
 neuen Lösung soll dies möglichst **in Echtzeit oder zeitnah** nach jedem Termin erfolgen. Ein gutes
@@ -156,11 +153,13 @@ Markus
 **Spesenabrechnung & Ausgabenverwaltung (Phase 2):** Markus muss monatlich alle Geschäftsausgaben abrechnen. Die neue Lösung macht dies deutlich einfacher:
 
 **Unterwegs Ausgaben erfassen:**
+
 - **Belege fotografieren:** Nach dem Mittagessen fotografiert Markus die Quittung direkt mit der App. Die **OCR-Funktion** (Tesseract.js) erkennt automatisch Betrag, Datum und Händler. Markus prüft die erkannten Daten und korrigiert bei Bedarf.
 - **Automatische Zuordnung:** Die App schlägt automatisch vor, welche Tour oder welcher Kunde mit dieser Ausgabe verknüpft werden soll (basierend auf Datum und GPS-Standort).
 - **Kategorisierung:** Markus wählt die Kategorie (Mahlzeit, Parken, Maut, etc.) und die App speichert alles lokal (offline-fähig).
 
 **Kilometer automatisch erfassen:**
+
 - **GPS-Tracking:** Wenn Markus eine Tour startet, zeichnet die App automatisch seine Route auf (GPS-Tracking). Am Ende der Tour wird automatisch ein **Kilometerlog** erstellt mit:
   - Gesamte gefahrene Distanz
   - Route als GeoJSON (für Steuerprüfung)
@@ -169,11 +168,13 @@ Markus
 - **Validierung:** Die App vergleicht die eingegebene Distanz mit der GPS-Route (±5% Toleranz). Bei größeren Abweichungen kann der GF eine manuelle Übernahme genehmigen.
 
 **Hotelübernachtungen:**
+
 - **Vergangene Hotels:** Die App zeigt eine Liste aller Hotels, in denen Markus bereits übernachtet hat, mit Bewertungen und Preisen. Beim Planen einer neuen Tour kann er schnell ein bekanntes Hotel auswählen.
 - **Hotel-Suche:** Über die integrierte **Google Maps/Places API** kann Markus Hotels in der Nähe seiner Termine suchen. Die App zeigt Preise, Bewertungen und Entfernung zu seinen Kundenstandorten.
 - **Hotel hinzufügen:** Markus fügt das Hotel zu seiner Tour hinzu und die App erstellt automatisch einen **Expense-Eintrag** für die Übernachtung.
 
 **Monatliche Abrechnung:**
+
 - **Report-Generator:** Am Monatsende öffnet Markus die "Monatliche Spesenübersicht" und wählt den Zeitraum (z.B. Juni 2025). Die App generiert automatisch einen **PDF-Report** mit:
   - Alle Ausgaben nach Kategorie gruppiert
   - Kilometerpauschalen pro Tour
@@ -226,6 +227,7 @@ Datenverluste oder Verzögerungen.
 Das System schlägt automatisch **8-12 Kundenbesuche** vor, die Markus mit einem Klick zu seiner Tour hinzufügen kann. Er kann Vorschläge ablehnen oder manuell weitere Termine hinzufügen.
 
 **Automatische Routenoptimierung:** Sobald Markus mehrere Termine zu seiner Tour hinzugefügt hat, optimiert das System die Route automatisch (TSP-Algorithmus). Die optimierte Route zeigt:
+
 - **Reihenfolge der Besuche** (nummeriert: 1, 2, 3, ...)
 - **Geschätzte Fahrtzeiten** zwischen den Stopps
 - **Gesamte Distanz** der Tour (z.B. 450 km)
@@ -234,6 +236,7 @@ Das System schlägt automatisch **8-12 Kundenbesuche** vor, die Markus mit einem
 Markus kann die Route manuell anpassen (z.B. wenn er einen Kunden zuerst besuchen möchte) und das System berechnet die neue Route neu.
 
 **GPS-gestützte Navigation:** Während der Tour zeigt die App eine **interaktive Karte** mit:
+
 - **Aktueller Standort** (blauer Punkt)
 - **Geplante Besuche** (nummerierte Marker)
 - **Route** (gestrichelte Linie zwischen Stopps)
@@ -250,7 +253,6 @@ Markus kann direkt aus der App heraus zur **Google Maps Navigation** wechseln ("
 # Integriertes Projektstatus-Tracking: Da Vertrieb und Projektabwicklung im Ladenbau eng verzahnt
 
 # Vertriebsprozess-Unterstützung & Angebotsmanagement: Das Tool soll Markus im gesamten
-
 
 der Pipeline sind und wo Handlungsbedarf besteht. Zudem wünscht er sich eine **mobile**
 **Angebotserstellung** : Vorlagen für Angebote, die bereits Produkt- und Preisdaten enthalten und
@@ -277,7 +279,6 @@ Lösung sollte hierbei unterstützen, um Markus rechtlich abzusichern
 erwartet er eine **intuitive und einfache Bedienung** . Die Benutzeroberfläche muss übersichtlich
 sein, mit klarem Fokus auf die wichtigsten Tagesaufgaben (z.B. „heutige Termine“, „aktuelle
 
-
 Aufgaben“ auf dem Startbildschirm). Mobil sind **Offline-Bedienung, schnelle Ladezeiten und eine**
 **klare Navigation** entscheidend – er darf nicht fünf Mal klicken müssen, um z.B. einen
 Kundenbericht zu öffnen. **Spracheingabe** oder Diktierfunktionen für Notizen wären ein großer
@@ -290,7 +291,6 @@ noch Berichte zu schreiben
 .
 
 # Performance & Stabilität: Im Kundentermin hat Markus oft nur Sekunden, um z.B. eine
-
 
 **Integrationen & Flexibilität:** Wie erwähnt sollte die Lösung sich gut in bestehende Infrastruktur
 einfügen: **Kalender- und E-Mail-Integration** (Outlook)
@@ -328,7 +328,6 @@ Backoffice. Dadurch verbessern sich nicht nur die Produktivität der Verkäufer,
 
 # Integrierte Touren- und Visit-Planung: Ein wiederkehrendes Thema im Außendienst ist die
 
-
 Anforderungen von Markus (offline, Touren, Spesen) heutzutage technisch lösbar und in
 erfolgreichen Tools umgesetzt sind.
 
@@ -354,10 +353,9 @@ dieses System einspeisen sollen.
 
 # 10
 
-
 ---
 
-*Page 11*
+_Page 11_
 
 ---
 
@@ -495,7 +493,7 @@ führen zu höherem Umsatz und zufriedeneren Kunden
 # Schnellreferenz Persona (Überblick)
 
 **Persona-Name**
-*Markus Müller* (Beispielname) – Außendienstmitarbeiter Vertrieb Ladenbau
+_Markus Müller_ (Beispielname) – Außendienstmitarbeiter Vertrieb Ladenbau
 
 **Alter / Erfahrung**
 35 Jahre, >8 Jahre Vertriebserfahrung im B2B-Ladenbau (bundesweit)
@@ -567,7 +565,7 @@ Vorgesetzte bei größeren Entscheidungen hinzu.
 **Entscheidungsstil**
 
 **Persona-Name**
-*Markus Müller* (Beispielname) – Außendienstmitarbeiter Vertrieb Ladenbau
+_Markus Müller_ (Beispielname) – Außendienstmitarbeiter Vertrieb Ladenbau
 
 Umsatz (Quartal/Jahr), gewonnene Projekte, Angebots-Konversionsrate,
 Kundenbesuchsanzahl, Reiseaufwand vs. Ertrag.
@@ -579,7 +577,7 @@ Projekterfolg).
 
 # Quellenübersicht
 
-**Interne Projektinputs:** *Gesamtkonzept Integriertes CRM- und PM-Tool (Interview-Auszüge, 2025).* –
+**Interne Projektinputs:** _Gesamtkonzept Integriertes CRM- und PM-Tool (Interview-Auszüge, 2025)._ –
 Enthält Anforderungen der verschiedenen Rollen (ADM, Planer, GF etc.), z.B. zum Bedarf an
 Kundenüberblick, Aufgaben-Tracking, Offline-Fähigkeit
 . Diese Inputs flossen maßgeblich in
@@ -609,10 +607,9 @@ werden müssen, um Erfolg zu haben.
 
 ### 15
 
-
-| 3 | 44 |
+| 3   | 44  |
 | --- | --- |
-| 6 , |  |
+| 6 , |     |
 
 Mobiles CRM im Außendienst: 7
 revolutionäre Funktionen, die Ihren Vertrieb in Deutschland antreiben
@@ -656,6 +653,7 @@ Markus profitiert von **präzisen Forecasts seiner Verkaufschancen**, die ihm he
 **Kernanforderungen:**
 
 **Opportunity-Wahrscheinlichkeitsberechnung:**
+
 - Das System berechnet für jedes Angebot die **Abschlusswahrscheinlichkeit** basierend auf:
   - **Historischen Daten**: Vergangene Win-Rates pro Kundensegment (Hofläden: 65%, Vinotheken: 45%)
   - **Engagement-Signalen**: Antwortzeit des Kunden, Anzahl Meetings, E-Mail-Interaktionen
@@ -665,6 +663,7 @@ Markus profitiert von **präzisen Forecasts seiner Verkaufschancen**, die ihm he
 - Beispiel: "Hofladen Müller: 72% Abschlusswahrscheinlichkeit (Grund: Ähnliche Projekte 70% Win-Rate, schnelle Responses, Budget passt)"
 
 **Umsatzprognose-Aggregation:**
+
 - **Gewichtete Pipeline**: Jede Opportunity wird mit ihrer Wahrscheinlichkeit multipliziert
   - Projekt A: €50.000 × 80% = €40.000 erwarteter Umsatz
   - Projekt B: €30.000 × 40% = €12.000 erwarteter Umsatz
@@ -673,22 +672,27 @@ Markus profitiert von **präzisen Forecasts seiner Verkaufschancen**, die ihm he
 - **Visualisierung**: Kurvendiagramm "Voraussichtlicher Umsatz Q1-Q4 2025"
 
 **Frühwarnsignale für Markus:**
+
 - **Dünnstellenwarnungen**: "Pipeline für Q3 nur bei €120K (Ziel: €200K) – 3 zusätzliche Leads benötigt"
 - **At-Risk-Deals**: "Projekt XY: Keine Aktivität seit 14 Tagen, Wahrscheinlichkeit von 60% auf 35% gefallen"
 - **Opportunity-Aging**: Warnung wenn Deals zu lange in einer Phase verharren (>30 Tage in "Proposal")
 
 **Persönliche Leistungsmetriken:**
+
 - Forecast Accuracy Tracking: Vergleich "prognostizierter Umsatz" vs. "tatsächlicher Umsatz"
 - Win-Rate-Trends: "Deine Conversion-Rate ist von 55% (Q1) auf 62% (Q2) gestiegen"
 - Pipeline-Velocity: Durchschnittliche Zeit von Lead zu Abschluss (aktuell 45 Tage, Ziel: <40 Tage)
 
 **Technische Umsetzung** basiert auf bewährten Ansätzen:
+
 - Predictive Analytics wie bei Salesforce Einstein Lead Scoring[^3]
 - ML-Opportunity Scoring mit Features aus CRM-Historie (ähnlich HubSpot's Predictive Lead Scoring)
 - Probability-basierte Forecasting-Methoden aus der Vertriebspraxis[^2]
 
 [^1]: Quelle: Research "ML Models for Opportunity Scoring" – Random Forests und logistische Regression sind Standard für CRM-Scoring
+
 [^2]: Quelle: Research "Sales Pipeline Forecasting Methods" – Weighted Pipeline als Best Practice
+
 [^3]: Quelle: Competitive Analysis Salesforce Einstein – Lead/Opportunity Scoring Mechanismen
 
 ## 🔍 KI-gestützte Kundenrecherche
@@ -700,8 +704,9 @@ Vor jedem Kundentermin erhält Markus **automatisch zusammengestellte Recherche-
 **Funktionsumfang:**
 
 **Automatische Unternehmensrecherche:**
+
 - **Trigger**: Neuer Termin wird angelegt → KI startet Recherche-Workflow (n8n-Automation)[^4]
-- **Datenquellen**: 
+- **Datenquellen**:
   - Unternehmensregister (Handelsregister, Creditreform)
   - Öffentliche News & Social Media (Filiale-Eröffnungen, Management-Wechsel)
   - Branchentrends (z.B. "Bio-Hofläden: +15% Wachstum 2024")
@@ -712,32 +717,38 @@ Vor jedem Kundentermin erhält Markus **automatisch zusammengestellte Recherche-
   - Potenzielle Pain Points ("Hofladen hat alte Ladeneinrichtung aus 1998")
 
 **Wettbewerbsanalyse:**
+
 - Identifikation von Konkurrenzprojekten: "Konkurrent Y hat ähnlichen Hofladen in Region Z ausgestattet"
 - Preispositionierung: "Marktüblicher Preis für 80qm Hofladen: €40-60K"
 - Unique Selling Points: "Unsere Stärke vs. Konkurrent: Nachhaltige Materialien"
 
 **Referenzprojekt-Matching:**
+
 - KI durchsucht interne Projektdatenbank nach ähnlichen Abschlüssen
 - **RAG-basiert**: Semantische Suche findet "Hofladen mit Weinregal und Kühltheke" in Projekt-Historie
 - Markus sieht: "3 ähnliche Projekte: Hofladen Schmidt (€45K, 2023), Obstgut Wagner (€38K, 2024)"
 - **Vorteile**: Realistische Kalkulation, bewährte Konzepte als Inspiration
 
 **Risiko-Assessment:**
+
 - **Bonitätsprüfung**: Automatischer Check via Creditreform API
 - **Zahlungshistorie**: Falls Bestandskunde → Warnung bei überfälligen Rechnungen
 - **Projektrisiken**: "Achtung: Kunde hat unrealistische Zeitvorstellung (4 Wochen für 120qm Umbau)"
 
 **Conversation Intelligence:**
+
 - **Nach Kundengespräch**: Transkription + KI-Analyse (wie bereits in Phase 2 beschrieben)
 - **Zusätzlich**: Sentiment-Erkennung ("Kunde wirkt skeptisch bzgl. Preis"), Intent-Detection ("Kunde plant zweite Filiale in 2026")
 - **Actionable Insights**: "Empfehlung: Finanzierungsoptionen ansprechen"
 
 **Implementierung** folgt Best Practices:
+
 - n8n "Customer Monitoring Agent" läuft täglich und scannt relevante Datenquellen[^4]
 - RAG-System (LlamaIndex) für semantische Suche in Projektdatenbank[^5]
 - LLM (GPT-4 oder lokales Llama) generiert Briefing-Zusammenfassungen
 
 [^4]: Quelle: Research "n8n Automation Patterns" – Customer Monitoring Agent, automatisierte Recherche-Workflows
+
 [^5]: Quelle: Research "LlamaIndex" – Optimiert für schnelle semantische Dokumenten-Retrieval
 
 ## 📈 Pipeline-Visualisierung
@@ -749,6 +760,7 @@ Markus benötigt eine **visuelle, leicht verständliche Darstellung seiner Vertr
 **Dashboard-Komponenten:**
 
 **Pipeline-Kanban-Board:**
+
 - **Spalten**: New → Qualifying → Proposal → Negotiation → Won/Lost
 - **Opportunities als Karten** mit:
   - Kundennamen, Projektwert, Wahrscheinlichkeit (farbcodiert: >70% grün, 40-70% gelb, <40% rot)
@@ -757,6 +769,7 @@ Markus benötigt eine **visuelle, leicht verständliche Darstellung seiner Vertr
 - **Aggregierte Zahlen**: Summe pro Phase (z.B. "Proposal: 5 Opportunities, €180K gewichtet")
 
 **Forecast-Kurvendiagramm:**
+
 - **X-Achse**: Zeit (Monate/Quartale)
 - **Y-Achse**: Erwarteter Umsatz in €
 - **Kurven**:
@@ -766,26 +779,31 @@ Markus benötigt eine **visuelle, leicht verständliche Darstellung seiner Vertr
 - **Confidence Intervals**: Markierung von Best-Case/Worst-Case-Szenarien (Monte Carlo Simulation)
 
 **Funnel-Analyse:**
+
 - **Conversion-Trichter**: Wie viele Leads → Opportunities → Wins
 - Beispiel: "Von 20 Leads → 12 Opportunities (60%) → 7 Wins (58% Close-Rate)"
 - **Engpass-Identifikation**: "Viele Opportunities stagnieren in 'Proposal' → Empfehlung: Nachfass-Automation"
 
 **Aktivitäten-Heatmap:**
+
 - Kalendersicht zeigt "Besuchsfrequenz pro Kunde"
 - Farbcodierung: Grün = regelmäßiger Kontakt, Rot = "Kunde wurde >60 Tage nicht kontaktiert"
 - **Automatische Erinnerungen**: "A-Kunde Müller nicht seit 45 Tagen besucht → Termin vorschlagen?"
 
 **What-If-Szenarien:**
+
 - Markus kann spielen: "Was passiert wenn ich 2 zusätzliche Leads/Woche akquiriere?"
 - System berechnet: "Bei +2 Leads/Woche → +€25K Umsatz in Q3 (bei 55% Conversion)"
 - Hilft bei Ressourcenplanung und Zielsetzung
 
 **Mobile-Optimierung:**
+
 - **Kompakte Ansicht** für Smartphone: "Meine Top 5 Deals diese Woche"
 - **Offline-Verfügbar**: Pipeline-Daten gecacht, Änderungen synchronisieren bei Verbindung
 - **Push-Notifications**: "Deal XY: Abschlusswahrscheinlichkeit auf 85% gestiegen (Kunde hat Vertrag angefordert)"
 
 **Technische Umsetzung**:
+
 - BI-Dashboard mit **Metabase** (für einfache Self-Service-Analysen) oder **Grafana** (für Echtzeit-Metriken)[^6]
 - Integration mit **PowerBI** für Management-Reporting
 - Data Warehouse (Star Schema) aggregiert CRM-Daten für schnelle Abfragen[^6]
@@ -793,6 +811,7 @@ Markus benötigt eine **visuelle, leicht verständliche Darstellung seiner Vertr
 [^6]: Quelle: Research "BI & Reporting Solutions" – Metabase für Business User, Grafana für Real-Time, PowerBI für Enterprise Reporting
 
 **Best Practices aus der Industrie:**
+
 - Salesforce Einstein Analytics: Predictive Dashboards mit Abschlusswahrscheinlichkeiten[^7]
 - Microsoft Dynamics 365 Copilot: AI-gestützte Pipeline-Insights und Next-Best-Action-Empfehlungen[^7]
 - HubSpot AI Lead Scoring: Automatische Priorisierung + Conversion-Prognosen[^7]
@@ -810,16 +829,19 @@ Markus benötigt eine **visuelle, leicht verständliche Darstellung seiner Vertr
 **Aktuelles Problem:** Markus verbringt 15-30 Min NACH Kundengespräch mit manueller Protokollierung → Zeitverschwendung, Details gehen verloren.
 
 **Lösung:**
+
 - **Während Kundengespräch:** Markus nimmt Sprachmemo auf (PWA-App, 1-Click-Start)
 - **Automatisch:** Whisper transkribiert Audio → GPT-4 generiert 5-Zeilen-Zusammenfassung
 - **Intelligente Task-Generierung:** KI erkennt "Ich schicke nächste Woche Muster" → Auto-Task "Muster versenden" mit Due-Date
 - **Real-Time-Progress:** Markus sieht auf Smartphone "Transkription läuft... 60% fertig" (Socket.IO WebSocket)
 
 **Zeitersparnis:**
+
 - Von 20 Min manuelle Protokollierung → 2 Min Review + Approve = **18 Min/Besuch gespart**
 - Bei 4 Besuchen/Tag = **1,2h/Tag** = **6h/Woche** = **24h/Monat** = **~3 Arbeitstage/Monat**
 
 **DSGVO-Konform:**
+
 - Kunde muss Aufnahme zustimmen (1-Click-Consent im CRM)
 - Optional: Lokales Whisper (keine Cloud-Daten)
 - Automatische Löschung nach 30 Tagen (nur Transkript bleibt)
@@ -831,6 +853,7 @@ Markus benötigt eine **visuelle, leicht verständliche Darstellung seiner Vertr
 **Aktuelles Problem:** Markus priorisiert Leads mit "Bauchgefühl" → oft Zeit bei Low-Value-Leads verschwendet.
 
 **Lösung:**
+
 - **ML-Modell** (XGBoost/LightGBM) berechnet **Conversion-Score** (0-100%) für jeden Lead basierend auf:
   - Firmographics (Branche, Unternehmensgröße, Budget-Range)
   - Interaction History (Wie oft Kontakt? Response-Zeit?)
@@ -840,6 +863,7 @@ Markus benötigt eine **visuelle, leicht verständliche Darstellung seiner Vertr
   - Lead B: 32% Score (Grund: "Unternehmensgröße <5 Mitarbeiter, Budget <€20K → niedrige Chance")
 
 **Impact:**
+
 - +15-20% höhere Conversion Rate (Fokus auf High-Value-Leads)
 - -30% Zeit für "Dead-End"-Leads
 - Bessere Tourenplanung (High-Score-Leads geografisch clustern)
@@ -851,22 +875,24 @@ Markus benötigt eine **visuelle, leicht verständliche Darstellung seiner Vertr
 **Problem:** Markus plant Touren manuell → suboptimale Reihenfolge, hohe Spritkosten.
 
 **Lösung:**
+
 - **Multi-Stop Route Optimization** (Traveling Salesman Problem)
   - Input: Markus wählt 5 Kunden für morgen → KI berechnet beste Route (Zeit/Distanz optimiert)
 - **Nearby Lead Mapping:** "Auf deiner Route liegt Lead XY (Score 75%) nur 2km entfernt – möchtest du auch besuchen?"
 - **Automated Check-Ins:** Geofencing → Auto-Prompt "Check-In bei Kunde Z?" → 1-Click-Protokoll
 
 **Einsparungen:**
+
 - 1-2h/Woche Zeitersparnis
 - €50-100/Monat weniger Sprit = €600-1200/Jahr pro Außendienstler
 
 ---
 
 **Siehe auch:**
+
 - `Produktvision für Projekt KOMPASS (Nordstern-Direktive).md` → Pillar 1 (AI-Transkription), Pillar 3 (Route Planning)
 - `docs/architectur/` → KI-Integrationsarchitektur (BullMQ + n8n + Whisper)
 
 ---
 
 ### 16
-

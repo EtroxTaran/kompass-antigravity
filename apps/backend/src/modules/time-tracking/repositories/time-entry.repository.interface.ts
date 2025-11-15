@@ -1,4 +1,4 @@
-import {
+import type {
   TimeEntry,
   TimeEntryStatus,
   LaborCostSummary,
@@ -6,7 +6,7 @@ import {
 
 /**
  * Time Entry Repository Interface
- * 
+ *
  * Defines data access operations for time entries.
  * Follows repository pattern for clean architecture.
  */
@@ -74,7 +74,7 @@ export interface ITimeEntryRepository {
 
 /**
  * Time Entry Filters
- * 
+ *
  * Optional filters for querying time entries.
  */
 export interface TimeEntryFilters {
@@ -85,4 +85,3 @@ export interface TimeEntryFilters {
   endDate?: Date;
   isManualEntry?: boolean;
 }
-

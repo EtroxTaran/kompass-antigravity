@@ -3,7 +3,7 @@
 **Document Version:** 1.0  
 **Date:** 2025-11-12  
 **Status:** Active Strategy  
-**Owner:** Product & UX Team  
+**Owner:** Product & UX Team
 
 ---
 
@@ -12,6 +12,7 @@
 The pre-mortem analysis warned: **"A tool's success is determined by user adoption."** If users find KOMPASS complex, slow, invasive, or incomplete, they will revert to their comfortable, familiar tools (Excel, notebooks, email).
 
 **Pre-Mortem Quote:**
+
 > "By building a tool for the executive buyer instead of the daily user, adoption will plummet. If Markus finds the PWA complex or slow, he will revert to his notebook. If Claudia can't easily manage her subcontractors, she'll go back to Excel."
 
 **Our Response:** Design and build KOMPASS **for the daily user first**, not the executive buyer. Make it faster, simpler, and more reliable than the tools they currently use.
@@ -28,6 +29,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 - **What users don't say:** "I need AI to predict my cashflow"
 
 **Strategy:**
+
 - Interview each persona: "What are your top 3 time-wasters?"
 - Build solutions for those specific pains first
 - Measure: Time saved per week (quantifiable value)
@@ -37,6 +39,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **KOMPASS must be faster than Excel/notebook/email for daily tasks.**
 
 **Benchmarks:**
+
 - Log customer visit: KOMPASS (20 seconds with voice input) vs. Notebook (60 seconds writing)
 - Find past project info: KOMPASS (10 seconds RAG search) vs. Email search (5 minutes)
 - Create purchase order: KOMPASS (2 minutes) vs. Excel + Email (10 minutes)
@@ -48,6 +51,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **The ADM persona lives on mobile. If mobile sucks, we fail.**
 
 **Non-Negotiables:**
+
 - Max 3 taps to key actions
 - Works flawlessly offline
 - <2s load time on 3G
@@ -59,6 +63,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Users reject tools that feel like surveillance.**
 
 **Strategy:**
+
 - GPS tracking: Optional, with clear value prop, can be paused
 - Activity logging: User-initiated, not auto-tracked
 - AI recommendations: Suggestions, not mandates (user has final say)
@@ -89,6 +94,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Make KOMPASS faster than notebook.
 
 **Tactics:**
+
 - **Voice-First:** "Kunde Müller anrufen" → System creates activity, logs call
 - **3-Tap Max:** Key actions (log visit, create note, capture expense) in ≤3 taps
 - **Contextual FAB:** FAB button changes based on context (during tour: "Check-in", otherwise: "Aktivität")
@@ -102,6 +108,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Make GPS tracking feel helpful, not invasive.
 
 **Tactics:**
+
 - **Explicit Opt-In:** "GPS-Tracking aktivieren? Vorteile: Automatische Kilometererfassung, Zeitersparnis"
 - **User Control:** Can pause tracking anytime, big visible button: "Tracking pausieren"
 - **Value Visualization:** Monthly report shows: "GPS spart Ihnen 2,5 Std/Woche (Kilometererfassung automatisch)"
@@ -115,6 +122,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Markus becomes productive in 15 minutes.
 
 **Tactics:**
+
 - **Interactive Tutorial (First Launch):**
   - "Willkommen! Lernen Sie KOMPASS in 3 Minuten kennen."
   - Step 1: Log mock customer visit (3 taps)
@@ -149,6 +157,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Claudia can do 100% of supplier work in KOMPASS (zero Excel).
 
 **Tactics:**
+
 - **Full Supplier Module:** Onboarding, contracts, invoices, communications, ratings
 - **Purchase Order Workflow:** From requirements → approval → delivery → cost update
 - **Supplier Directory:** Searchable, filterable, with performance ratings
@@ -162,6 +171,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Don't force Claudia to start from zero.
 
 **Tactics:**
+
 - **Supplier Import:** CSV template for bulk supplier import
 - **Guided Migration:** Step-by-step wizard: "Import your existing supplier list (Excel → CSV → KOMPASS)"
 - **Data Cleanup:** System flags invalid data, Claudia fixes during import
@@ -174,6 +184,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Claudia sees immediate value in first week.
 
 **Tactics:**
+
 - **Week 1 Win:** Import suppliers, send first RFQ via system (faster than email)
 - **Week 2 Win:** Create first PO, track delivery (no email chaos)
 - **Week 3 Win:** Rate supplier after project, see rating influence future recommendations
@@ -203,6 +214,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Thomas trusts project budget data.
 
 **Tactics:**
+
 - **Instant Updates:** Material delivery → cost update in <2 seconds
 - **Visual Feedback:** Progress bar updates live, budget status changes color
 - **Variance Alerts:** Notification when material delivered: "Material-Kosten aktualisiert: + € 3.408"
@@ -216,6 +228,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Clean, usable Gantt for planning (no AI noise).
 
 **Tactics:**
+
 - **Phase 1 Gantt:** No AI overlays, predictions, risk zones (toggle OFF)
 - **Simple View:** Blue bars (on time), Red bars (delayed), no purple AI predictions
 - **Drag & Drop (Phase 2):** Adjust timelines directly on chart
@@ -229,6 +242,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Thomas believes the numbers.
 
 **Tactics:**
+
 - **Walkthrough Demo:** Show Thomas full material flow:
   1. KALK estimates material: € 3.480
   2. INN orders material: € 3.408 (actual)
@@ -262,6 +276,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Anna knows Phase 1 CSV is temporary, not permanent.
 
 **Tactics:**
+
 - **Transparent Communication:** Week 1 message: "Phase 1 uses CSV. It's not perfect. Phase 2 (automated) launches: Month 3."
 - **Roadmap Visibility:** Anna sees Integration Roadmap dashboard: "Phase 2: 45% complete"
 - **Tooling Support:** CSV validation, reconciliation dashboard, error highlighting
@@ -274,6 +289,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Reduce Phase 1 weekly reconciliation from 60 minutes to 30 minutes.
 
 **Tactics:**
+
 - **Automated Validation:** CSV export checks: Valid customer numbers, correct formats, no missing fields
 - **Reconciliation Dashboard:** Shows matched/unmatched items visually:
   - "✓ 45 abgeglichen (98%)"
@@ -290,6 +306,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Anna trusts KOMPASS financial data enough to use for reports.
 
 **Tactics:**
+
 - **Accuracy Guarantee:** 100% data match in round-trip testing (KOMPASS → Lexware → KOMPASS)
 - **Audit Trail:** Complete log of all sync operations (GoBD compliance)
 - **Validation Reports:** Anna can generate: "Sync health report" showing 99%+ accuracy
@@ -319,6 +336,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Stefan finds material prices faster in KOMPASS than anywhere else.
 
 **Tactics:**
+
 - **Comprehensive Catalog:** Pre-load 200+ common materials with pricing
 - **Multi-Supplier Pricing:** Each material shows 2-3 supplier options
 - **Price Comparison View:** Table showing: Supplier, Price, MOQ, Lead Time, Rating
@@ -332,6 +350,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Stefan improves estimate accuracy over time.
 
 **Tactics:**
+
 - **Variance Reports:** After project completion, show: Estimated vs. Actual costs per material
 - **Learning:** "Your LED estimates average -2% under (good). Your carpentry estimates average +8% over (improve)."
 - **Template Refinement:** System suggests: "Update template: Increase carpentry by 5%"
@@ -354,6 +373,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Build features that help Markus, Claudia, Thomas FIRST. GF benefits follow automatically.
 
 **Tactics:**
+
 - **Resource Allocation:** 80% effort on ADM/INN/PLAN features, 20% on GF dashboards
 - **Feature Prioritization:** If choice between "ADM voice notes" vs. "GF predictive analytics" → ADM wins
 - **Data Entry Incentive:** Make data entry so easy that users do it voluntarily (voice input, auto-fill, OCR)
@@ -364,6 +384,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** GF (Dr. Schmidt) actively promotes KOMPASS to team.
 
 **Tactics:**
+
 - **Weekly Team Meeting:** GF shows one KOMPASS insight: "Look, we can now see supplier performance!"
 - **Recognition:** GF thanks users who enter complete data: "Thanks to Markus's detailed protocols, we won REWE deal."
 - **Lead by Example:** GF uses KOMPASS publicly (not Excel) to set norm
@@ -380,16 +401,19 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Participants:** 1 user per role (5 total)
 
 **Goals:**
+
 - Identify critical bugs before wider launch
 - Validate core workflows with real users
 - Collect feedback on usability and speed
 
 **Activities:**
+
 - Day 1: Individual onboarding sessions (30 minutes each)
 - Day 2-7: Daily usage with support available
 - Day 7: Feedback session: "What worked? What didn't?"
 
 **Success Criteria:**
+
 - Zero data loss
 - All core workflows completable
 - ≥4/5 satisfaction from beta users
@@ -399,17 +423,20 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Rollout Plan:**
 
 **Week 1: Training**
+
 - Day 1: Full team workshop (2 hours): Product vision, core workflows
 - Day 2-5: Role-specific training (30 minutes per role)
 - Materials: Video tutorials, quick reference cards, help documentation
 
 **Week 2-4: Adoption Support**
+
 - Daily check-ins: Product Owner available for questions
 - Weekly feedback: "What's working? What's frustrating?"
 - Bug fixes: High-priority issues resolved within 24 hours
 - Feature adjustments: Quick wins implemented weekly
 
 **Success Criteria:**
+
 - 80%+ daily active users by Week 4
 - Core workflows completed without support by Week 3
 - <5 support tickets per user per week
@@ -419,12 +446,14 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** KOMPASS becomes the default tool, not an afterthought.
 
 **Tactics:**
+
 - **Data Quality Gamification:** Leaderboard: "Markus: 95% field completion (Top performer!)"
 - **Visible Wins:** Share success stories: "INN reduced procurement time by 40%"
 - **Remove Alternatives:** Gently phase out Excel for specific workflows (e.g., supplier tracking)
 - **Integration:** Export to tools users still need (PDF, Excel, CSV)
 
 **Success Criteria:**
+
 - 90%+ daily active users
 - Excel usage declining (measured via survey)
 - Users proactively suggest features (high engagement)
@@ -434,12 +463,14 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Goal:** Refine based on real usage data.
 
 **Tactics:**
+
 - **Analytics Review:** Which features used most? Which ignored?
 - **Performance Optimization:** Slow pages identified and optimized
 - **Feature Pruning:** Remove unused features (reduce bloat)
 - **Power User Features:** Advanced features for high-engagement users
 
 **Success Criteria:**
+
 - 95%+ daily active users
 - Users cannot imagine working without KOMPASS
 - Feature requests are refinements, not basic gaps
@@ -450,23 +481,23 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 
 ### Leading Indicators (Predict Adoption)
 
-| Metric | Target | Warning | Critical |
-|--------|--------|---------|----------|
-| **Daily Active Users** | >90% | <80% | <70% |
-| **Avg. Session Duration** | >15 min | <10 min | <5 min |
-| **Offline Sync Success** | >95% | <90% | <85% |
-| **Data Entry Completeness** | >80% | <70% | <60% |
+| Metric                       | Target  | Warning | Critical |
+| ---------------------------- | ------- | ------- | -------- |
+| **Daily Active Users**       | >90%    | <80%    | <70%     |
+| **Avg. Session Duration**    | >15 min | <10 min | <5 min   |
+| **Offline Sync Success**     | >95%    | <90%    | <85%     |
+| **Data Entry Completeness**  | >80%    | <70%    | <60%     |
 | **Support Tickets per User** | <2/week | >5/week | >10/week |
 
 ### Lagging Indicators (Measure Success)
 
-| Metric | Phase 1 Target | Phase 2 Target | Phase 3 Target |
-|--------|----------------|----------------|----------------|
-| **User Satisfaction (NPS)** | ≥3/5 | ≥4/5 | 5/5 |
-| **Excel Usage (Self-Reported)** | <50% | <20% | <5% |
-| **Feature Adoption Rate** | >60% | >75% | >85% |
-| **Time Saved (Self-Reported)** | >2h/week | >5h/week | >8h/week |
-| **Data Quality (Field Completion)** | >70% | >80% | >90% |
+| Metric                              | Phase 1 Target | Phase 2 Target | Phase 3 Target |
+| ----------------------------------- | -------------- | -------------- | -------------- |
+| **User Satisfaction (NPS)**         | ≥3/5           | ≥4/5           | 5/5            |
+| **Excel Usage (Self-Reported)**     | <50%           | <20%           | <5%            |
+| **Feature Adoption Rate**           | >60%           | >75%           | >85%           |
+| **Time Saved (Self-Reported)**      | >2h/week       | >5h/week       | >8h/week       |
+| **Data Quality (Field Completion)** | >70%           | >80%           | >90%           |
 
 ### Adoption Failure Triggers
 
@@ -484,21 +515,25 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 ### Communication Strategy
 
 **Pre-Launch (Month -1):**
+
 - Announcement: "New tool coming - designed to save you time"
 - Demo: Show key workflows in team meeting
 - FAQ: Address concerns proactively
 
 **Launch (Month 0):**
+
 - Training: Role-specific workshops
 - Support: Daily availability for questions
 - Celebration: "We're live! Here's how to get started..."
 
 **Post-Launch (Month 1-3):**
+
 - Weekly Updates: "This week's improvements based on your feedback..."
 - Success Stories: "Markus saved 3 hours this week using voice notes"
 - Roadmap Visibility: "Coming next: Semi-automated Lexware sync"
 
 **Ongoing:**
+
 - Monthly: Feature updates, training refreshers
 - Quarterly: User feedback sessions, NPS surveys
 - Annually: Strategic review, roadmap updates
@@ -508,6 +543,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Scenario: "I prefer Excel"**
 
 **Response:**
+
 - Acknowledge: "Excel is comfortable. We understand."
 - Demonstrate: Show side-by-side: Excel (5 minutes) vs. KOMPASS (1 minute) for same task
 - Offer: "Try KOMPASS for 2 weeks. If not faster, you can stay with Excel."
@@ -516,6 +552,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Scenario: "Too complicated"**
 
 **Response:**
+
 - Simplify: Show only essential features, hide advanced
 - Tutorial: One-on-one walkthrough of user's specific tasks
 - Quick Wins: Identify one task that's much easier in KOMPASS, start there
@@ -524,6 +561,7 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 **Scenario: "I don't trust it"**
 
 **Response:**
+
 - Evidence: Show successful usage by peer users
 - Transparency: Show audit trail, sync logs, data quality reports
 - Safety Net: "Old data still available for 90 days"
@@ -536,12 +574,14 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 ### ADM Success Story (Markus)
 
 **Before KOMPASS:**
+
 - 5-10 customer visits per day
 - 60 minutes writing visit notes in car (handwritten → typed later)
 - 30 minutes searching old emails for past project info
 - 15 minutes manual mileage logging
 
 **After KOMPASS (Month 3):**
+
 - Same 5-10 visits
 - 10 minutes voice notes (transcribed automatically)
 - 5 minutes RAG search for past projects
@@ -553,12 +593,14 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 ### INN Success Story (Claudia)
 
 **Before KOMPASS:**
+
 - Supplier info: 5 Excel files, multiple email folders
 - Finding supplier info: 10 minutes per search
 - Creating POs: Email back-and-forth (45 minutes per PO)
 - Invoice tracking: Manual spreadsheet (2 hours/week reconciliation)
 
 **After KOMPASS (Month 3):**
+
 - Supplier info: Searchable directory (10 seconds per search)
 - PO creation: 2 minutes (template + autofill)
 - Invoice tracking: Automated approvals + dashboard (15 minutes/week)
@@ -579,7 +621,6 @@ The pre-mortem analysis warned: **"A tool's success is determined by user adopti
 
 ## Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-11-12 | Product & UX Team | Initial adoption strategy addressing pre-mortem concerns |
-
+| Version | Date       | Author            | Changes                                                  |
+| ------- | ---------- | ----------------- | -------------------------------------------------------- |
+| 1.0     | 2025-11-12 | Product & UX Team | Initial adoption strategy addressing pre-mortem concerns |

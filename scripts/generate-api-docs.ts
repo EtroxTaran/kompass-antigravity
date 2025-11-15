@@ -2,7 +2,7 @@
 /**
  * API Documentation Generator
  * Generates markdown documentation from OpenAPI/NestJS decorators
- * 
+ *
  * Usage: pnpm run generate:api-docs
  */
 
@@ -41,7 +41,7 @@ function main() {
   console.log('📝 Generating API documentation...\n');
 
   // Create directories if they don't exist
-  [DOCS_API_DIR, DOCS_API_REFERENCE_DIR].forEach(dir => {
+  [DOCS_API_DIR, DOCS_API_REFERENCE_DIR].forEach((dir) => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
       console.log(`✅ Created directory: ${dir}`);
@@ -50,12 +50,12 @@ function main() {
 
   // Generate OpenAPI spec from NestJS app
   console.log('🔧 Extracting OpenAPI specification from NestJS...');
-  
+
   // TODO: This requires the NestJS app to be built
   // For now, create a placeholder that will be replaced by actual implementation
-  
+
   const timestamp = new Date().toISOString().split('T')[0];
-  
+
   // Create placeholder API documentation
   const apiEndpointsDoc = `# API Endpoints Reference
 
@@ -309,7 +309,9 @@ See [RBAC Permission Matrix](../../specifications/RBAC_PERMISSION_MATRIX.md) for
   console.log('   - docs/api/reference/endpoints.md');
   console.log('   - docs/api/reference/authentication.md');
   console.log('\n💡 Note: This is a placeholder implementation.');
-  console.log('   Once the NestJS backend is implemented, this script will extract');
+  console.log(
+    '   Once the NestJS backend is implemented, this script will extract'
+  );
   console.log('   actual OpenAPI specifications from Swagger decorators.');
 }
 
@@ -318,4 +320,3 @@ if (require.main === module) {
 }
 
 export { main as generateApiDocs };
-

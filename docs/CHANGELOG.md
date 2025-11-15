@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Breaking Changes 🚨
 
 #### Customer Entity Schema Change
+
 - **BREAKING**: Renamed `address` field to `billingAddress` in Customer entity
 - **Migration Required**: Run `scripts/migrations/001-customer-address-to-billing-address.ts`
 - **Impact**: All code referencing `customer.address` must be updated to `customer.billingAddress`
@@ -14,6 +15,7 @@ All notable changes to this project will be documented in this file.
 ### Added ✨
 
 #### Location Management (Phase 1)
+
 - New `Location` entity for managing multiple delivery addresses per customer
 - Location types: headquarter, branch, warehouse, project_site, other
 - Nested REST API: `/api/v1/customers/{customerId}/locations`
@@ -22,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - Frontend components: `LocationForm`, `LocationCard`, `LocationList`
 
 #### Contact Decision-Making Roles (Phase 1)
+
 - Enhanced `ContactPerson` entity with decision-making capabilities
 - Decision roles: decision_maker, key_influencer, recommender, gatekeeper, operational_contact, informational
 - Authority levels: low, medium, high, final_authority
@@ -33,12 +36,14 @@ All notable changes to this project will be documented in this file.
 - Frontend components: `ContactDecisionBadge`, `DecisionAuthorityCard`, `DecisionAuthorityForm`
 
 #### Customer Entity Enhancements
+
 - Added `locations: string[]` - array of Location IDs
 - Added `defaultDeliveryLocationId: string` - default delivery location
 - Added `contactPersons: string[]` - array of Contact IDs
 - Added `customerBusinessType` enum field
 
 #### New Enums
+
 - `DecisionMakingRole`: Decision-making roles in purchasing process
 - `FunctionalRole`: Functional responsibilities
 - `AuthorityLevel`: Authority level type
@@ -47,18 +52,21 @@ All notable changes to this project will be documented in this file.
 - `CustomerBusinessType`: Type of customer business
 
 #### AI & Automation Groundwork (Phase 2.x Prep)
+
 - Feature flags for AI extensions (`AI_RAG_ENABLED`, `AI_N8N_ENABLED`, `AI_ML_ENABLED`)
 - Stub services: `RagService`, `N8nService`, `ForecastingService`
 - Updated `.env.example` with AI configuration options
 - Feature flag management in `packages/shared/src/constants/feature-flags.ts`
 
 #### Database Migrations
+
 - Migration script: Customer address → billingAddress
 - Migration script: Add Contact decision fields with intelligent inference
 - Migration script: Create CouchDB views and indexes
 - Validation script: Verify data model compliance
 
 #### Documentation & Rules
+
 - New rule: `.cursor/rules/nested-resources.mdc` - Nested REST API patterns
 - Updated `.cursor/rules/domain-model.mdc` - Location and Contact validation rules
 - Updated API specification with Location and Contact endpoints
@@ -67,11 +75,13 @@ All notable changes to this project will be documented in this file.
 ### Changed 📝
 
 #### Customer Entity
+
 - `address` → `billingAddress` (BREAKING)
 - `customerType` now uses `CustomerType` enum (previously string union)
 - `rating` now uses `CustomerRating` type
 
 #### RBAC Permissions
+
 - Added `Location.CREATE`, `Location.READ`, `Location.UPDATE`, `Location.DELETE` permissions
 - Added `Location.VIEW_ALL`, `Location.VIEW_ASSIGNED` record-level permissions
 - Added `Contact.UPDATE_DECISION_ROLE` (RESTRICTED: PLAN/GF only)
@@ -82,30 +92,33 @@ All notable changes to this project will be documented in this file.
 #### For Existing Installations
 
 1. **Backup Database**
+
    ```bash
    # Backup CouchDB before migration
    curl -X GET http://localhost:5984/kompass/_all_docs?include_docs=true > backup.json
    ```
 
 2. **Run Migrations (Dry Run First)**
+
    ```bash
    # Test customer migration
    node scripts/migrations/001-customer-address-to-billing-address.ts --dry-run
-   
+
    # Execute customer migration
    node scripts/migrations/001-customer-address-to-billing-address.ts --execute
-   
+
    # Test contact migration
    node scripts/migrations/003-add-contact-decision-fields.ts --dry-run
-   
+
    # Execute contact migration
    node scripts/migrations/003-add-contact-decision-fields.ts --execute
-   
+
    # Create CouchDB views
    node scripts/migrations/002-create-couchdb-views.ts
    ```
 
 3. **Validate Data Model**
+
    ```bash
    node scripts/validate-data-model.ts
    ```
@@ -115,6 +128,7 @@ All notable changes to this project will be documented in this file.
    - Manually adjust roles if needed via UI (PLAN/GF users)
 
 5. **Update Environment Variables**
+
    ```bash
    # Add AI feature flags to .env
    AI_RAG_ENABLED=false
@@ -135,16 +149,19 @@ All notable changes to this project will be documented in this file.
 ### Roadmap 🗺️
 
 #### Phase 2.1: RAG Implementation (Q2 2025)
+
 - LlamaIndex integration for document intelligence
 - Weaviate vector database for semantic search
 - Customer insights and document Q&A
 
 #### Phase 2.2: n8n Automation (Q2 2025)
+
 - Intelligent workflow automation
 - Email/Slack notifications
 - Third-party integrations
 
 #### Phase 2.3: ML Predictive Analytics (Q3 2025)
+
 - Opportunity win probability prediction
 - Cash flow forecasting
 - Customer churn prediction
@@ -155,4 +172,3 @@ All notable changes to this project will be documented in this file.
 - Data model: `docs/reviews/DATA_MODEL_SPECIFICATION.md`
 - API specification: `docs/reviews/API_SPECIFICATION.md`
 - RBAC matrix: `docs/reviews/RBAC_PERMISSION_MATRIX.md`
-

@@ -1,15 +1,22 @@
 /**
  * Integration Test: Contact Decision Authority API
- * 
+ *
  * Tests decision authority endpoints with real database
  * Validates RBAC restrictions (PLAN/GF only)
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, HttpStatus } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
+
+import {
+  DecisionMakingRole,
+  FunctionalRole,
+} from '@kompass/shared/types/enums';
+
 import { AppModule } from '../../../apps/backend/src/app.module';
-import { DecisionMakingRole, FunctionalRole } from '@kompass/shared/types/enums';
 
 describe('Contact Decision Authority API (Integration)', () => {
   let app: INestApplication;
@@ -158,4 +165,3 @@ describe('Contact Decision Authority API (Integration)', () => {
     });
   });
 });
-

@@ -18,6 +18,7 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ## CRITICAL CORRECTIONS NEEDED
 
 ### ❌ INCORRECT (Current State)
+
 - PLAN can delete customers
 - PLAN can edit/update customers
 - PLAN shown alongside GF as having "admin rights"
@@ -25,6 +26,7 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 - PLAN can import customers
 
 ### ✅ CORRECT (Target State)
+
 - **PLAN CANNOT** delete customers (only GF can)
 - **PLAN CANNOT** edit/update customers (only GF, INNEN, ADM can)
 - **PLAN has READ-ONLY access** to customers for project-related needs
@@ -36,14 +38,14 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 
 ## ROLE HIERARCHY CLARIFICATION
 
-| Role | Customer Access | Location Access | Contact Access | Project Access | Invoice Access |
-|------|----------------|-----------------|----------------|----------------|----------------|
-| **GF** | Full CRUD | Full CRUD | Full CRUD | Full CRUD | Full CRUD |
-| **INNEN** | Full CRUD | Full CRUD | Full CRUD | Read-only | Read-only |
-| **PLAN** | **Read-only** | Create/Edit | Edit + Decision | Full CRUD | **No access** |
-| **ADM** | Own only | Own customers | Own customers | Read-only | **No access** |
-| **KALK** | Read-only | Read-only | Read-only | Read-only | **No access** |
-| **BUCH** | Read-only | Read-only | Read-only | Read-only | Full CRUD |
+| Role      | Customer Access | Location Access | Contact Access  | Project Access | Invoice Access |
+| --------- | --------------- | --------------- | --------------- | -------------- | -------------- |
+| **GF**    | Full CRUD       | Full CRUD       | Full CRUD       | Full CRUD      | Full CRUD      |
+| **INNEN** | Full CRUD       | Full CRUD       | Full CRUD       | Read-only      | Read-only      |
+| **PLAN**  | **Read-only**   | Create/Edit     | Edit + Decision | Full CRUD      | **No access**  |
+| **ADM**   | Own only        | Own customers   | Own customers   | Read-only      | **No access**  |
+| **KALK**  | Read-only       | Read-only       | Read-only       | Read-only      | **No access**  |
+| **BUCH**  | Read-only       | Read-only       | Read-only       | Read-only      | Full CRUD      |
 
 **Key Insight:** PLAN is an **internal service role** for project execution after sales handoff, NOT a customer management or sales role.
 
@@ -54,16 +56,19 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ### Component: customer-form.md
 
 **FIND:**
+
 ```
 - **User Roles**: GF, PLAN, ADM (create own), KALK (read-only), BUCH (read-only)
 ```
 
 **REPLACE WITH:**
+
 ```
 - **User Roles**: GF, INNEN (full), ADM (create own), PLAN (read-only), KALK (read-only), BUCH (read-only)
 ```
 
 **UI Impact:**
+
 - For PLAN users viewing customer form: All fields become read-only (gray background)
 - "Speichern" button: Disabled with lock icon
 - Banner at top: "Nur-Lese-Zugriff - Sie können Kunden für Projektplanung einsehen. Für Änderungen kontaktieren Sie INNEN oder GF."
@@ -73,16 +78,19 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ### Component: location-list.md
 
 **FIND:**
+
 ```
 - **User Roles**: All (read), GF/PLAN (create/edit/delete), ADM (create/edit own customers only)
 ```
 
 **REPLACE WITH:**
+
 ```
 - **User Roles**: All (read), GF/INNEN (full CRUD), PLAN (create/edit), ADM (create/edit own customers only)
 ```
 
 **UI Impact:**
+
 - For PLAN users: "Löschen" button becomes disabled with lock icon
 - Tooltip: "Keine Berechtigung - Nur GF/INNEN können Standorte löschen"
 - "Neuer Standort" button: Remains enabled (PLAN can create)
@@ -93,16 +101,19 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ### Component: contact-list.md
 
 **FIND:**
+
 ```
 - **User Roles**: All (read), GF/PLAN (full edit), ADM (basic edit on own customers)
 ```
 
 **REPLACE WITH:**
+
 ```
 - **User Roles**: All (read), GF/INNEN (full edit), PLAN (edit including decision authority), ADM (basic edit on own customers, no decision authority)
 ```
 
 **UI Impact:**
+
 - For PLAN users: Can edit contacts including decision-making fields
 - For PLAN users: "Löschen" button disabled with lock icon
 - Tooltip: "Keine Berechtigung - Nur GF/INNEN können Kontakte löschen"
@@ -112,16 +123,19 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ### Component: invoice-form.md
 
 **FIND:**
+
 ```
 - **User Roles**: GF (full), BUCH (full), PLAN (limited), ADM (read-only)
 ```
 
 **REPLACE WITH:**
+
 ```
 - **User Roles**: GF (full), BUCH (full), INNEN (read for projects), PLAN (read-only), ADM (read-only)
 ```
 
 **UI Impact:**
+
 - For PLAN users: All fields read-only, no invoice creation/editing
 - For INNEN users: Read-only access (context for project quotes)
 - Banner for PLAN: "Nur-Lese-Zugriff - Rechnung können nur von BUCH oder GF erstellt werden."
@@ -131,28 +145,33 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ### Component: opportunity-form.md
 
 **FIND (Line 5):**
+
 ```
 - **User Roles**: GF, PLAN, ADM (create own), KALK (read-only)
 ```
 
 **REPLACE WITH:**
+
 ```
 - **User Roles**: GF, INNEN, ADM (create own), PLAN (read for projects), KALK (read-only)
 ```
 
 **FIND (Line 178-180):**
+
 ```
    - Select: ADM or PLAN users
    - For GF/PLAN: Can assign to any ADM/PLAN user
 ```
 
 **REPLACE WITH:**
+
 ```
    - Select: ADM or INNEN users
    - For GF/INNEN: Can assign to any ADM/INNEN user
 ```
 
 **UI Impact:**
+
 - For PLAN users: Form is read-only, viewing opportunities in project context
 - "Speichern" button: Disabled for PLAN users
 - "Verantwortlicher Mitarbeiter" dropdown: Does not show PLAN users
@@ -162,22 +181,26 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ### Component: bulk-import-form.md
 
 **FIND (Line 5):**
+
 ```
 - **User Roles**: GF, PLAN (full access), ADM (own data only)
 ```
 
 **REPLACE WITH:**
+
 ```
 - **User Roles**: GF, INNEN (full access), ADM (own data only), PLAN (read-only, no import)
 ```
 
 **FIND (Line 228-229):**
+
 ```
 - GF/PLAN: Can assign imported customers to any ADM user
 - Setting: "Alle importierten Kunden zuweisen zu:" dropdown (select ADM user)
 ```
 
 **REPLACE WITH:**
+
 ```
 - GF/INNEN: Can assign imported customers to any ADM user
 - Setting: "Alle importierten Kunden zuweisen zu:" dropdown (select ADM user)
@@ -185,6 +208,7 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ```
 
 **UI Impact:**
+
 - For PLAN users: Bulk import menu item hidden or disabled
 - If PLAN user tries to access: Show permission denied dialog
 
@@ -193,16 +217,19 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ### Component: rbac-permission-indicators.md
 
 **FIND (Line 78):**
+
 ```
 - Detail: "Nur GF und PLAN können Kunden löschen"
 ```
 
 **REPLACE WITH:**
+
 ```
 - Detail: "Nur GF kann Kunden löschen"
 ```
 
 **FIND (Scenario 3, Lines 198-201):**
+
 ```
 **Scenario 3: PLAN views any customer**
 - All fields: Editable
@@ -211,6 +238,7 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ```
 
 **REPLACE WITH:**
+
 ```
 **Scenario 3: PLAN views any customer (Project-Related)**
 - All fields: Read-only (PLAN has no customer edit permission)
@@ -220,6 +248,7 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ```
 
 **UI Impact:**
+
 - Permission tooltip changes across all delete customer actions
 - Scenario 3 visual completely redesigned to show restrictions
 
@@ -228,11 +257,13 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ### Component: README.md (RBAC Summary)
 
 **FIND (Line 299):**
+
 ```
 - **GF/PLAN**: Full CRUD on all entities
 ```
 
 **REPLACE WITH:**
+
 ```
 - **GF**: Full CRUD on all entities
 - **PLAN**: Full CRUD on projects/tasks, read-only customers, limited other entities
@@ -240,6 +271,7 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 ```
 
 **UI Impact:**
+
 - README role summary table updated
 - PLAN role properly scoped to project management
 
@@ -252,6 +284,7 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 **Component:** Button with lock icon overlay
 
 **Specifications:**
+
 - Button base: Ghost variant, grayed out (opacity 40%)
 - Lock icon: 16px, positioned top-right corner of button
 - Lock icon color: #EF4444 (red-500)
@@ -259,6 +292,7 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 - Hover: Shows tooltip (see below)
 
 **Button Labels (German):**
+
 - "Bearbeiten" (Edit) - Disabled with lock for PLAN
 - "Löschen" (Delete) - Disabled with lock for PLAN
 - "Kunde anlegen" (Create Customer) - Disabled with lock for PLAN
@@ -270,6 +304,7 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 **Component:** Dark tooltip with lock icon
 
 **Specifications:**
+
 - Background: #374151 (gray-700)
 - Text color: White (#FFFFFF)
 - Font size: 14px
@@ -279,12 +314,14 @@ You are updating the KOMPASS CRM/PM application Figma designs to correct role-ba
 - Shadow: 0 4px 6px rgba(0, 0, 0, 0.1)
 
 **Icon:**
+
 - Lock icon (lucide-react: Lock)
 - Size: 20px
 - Color: #EF4444 (red-500)
 - Position: Left of text
 
 **Text Structure:**
+
 ```
 🔒 Keine Berechtigung
 Nur GF kann Kunden löschen.
@@ -303,6 +340,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Component:** Form input with visual read-only indicators
 
 **Specifications:**
+
 - Input background: #F5F5F5 (gray-100)
 - Border: 1px solid #E5E7EB (gray-200)
 - Text color: #6B7280 (gray-500)
@@ -310,11 +348,13 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 - Opacity: 100% (don't reduce opacity of disabled fields)
 
 **Label Enhancement:**
+
 - Eye icon: 16px, #6B7280 (gray-500), positioned after label text
 - Example: "Firmenname 👁" or use lucide-react Eye icon
 - Tooltip on icon: "Nur-Lese-Zugriff"
 
 **Banner at Top of Form (PLAN users):**
+
 - Background: #FEF3C7 (amber-100)
 - Border: 1px solid #FCD34D (amber-300)
 - Icon: Info (amber-600)
@@ -330,14 +370,14 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 
 **Specifications:**
 
-| Role | Badge Color | Text Color | Label (German) |
-|------|-------------|------------|----------------|
-| GF | #FFD700 (gold) | #78350F (brown-900) | Geschäftsführer |
-| PLAN | #3B82F6 (blue-500) | #FFFFFF (white) | Planung |
-| INNEN | #8B5CF6 (purple-500) | #FFFFFF (white) | Innendienst |
-| ADM | #10B981 (green-500) | #FFFFFF (white) | Außendienst |
-| KALK | #F59E0B (amber-500) | #FFFFFF (white) | Kalkulation |
-| BUCH | #8B5CF6 (purple-600) | #FFFFFF (white) | Buchhaltung |
+| Role  | Badge Color          | Text Color          | Label (German)  |
+| ----- | -------------------- | ------------------- | --------------- |
+| GF    | #FFD700 (gold)       | #78350F (brown-900) | Geschäftsführer |
+| PLAN  | #3B82F6 (blue-500)   | #FFFFFF (white)     | Planung         |
+| INNEN | #8B5CF6 (purple-500) | #FFFFFF (white)     | Innendienst     |
+| ADM   | #10B981 (green-500)  | #FFFFFF (white)     | Außendienst     |
+| KALK  | #F59E0B (amber-500)  | #FFFFFF (white)     | Kalkulation     |
+| BUCH  | #8B5CF6 (purple-600) | #FFFFFF (white)     | Buchhaltung     |
 
 **Size:** Small (height 24px), medium (height 32px)
 **Border-radius:** 12px (pill shape)
@@ -353,6 +393,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Screen:** customer-detail.md
 
 **Changes:**
+
 - **Header Actions (Top-Right):**
   - PLAN users: "Kunde bearbeiten" button disabled with lock icon
   - PLAN users: "Löschen" in more actions menu disabled with lock icon
@@ -379,10 +420,10 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Screen:** customer-list.md
 
 **Changes:**
+
 - **List Actions:**
   - PLAN users: "Neuer Kunde" button disabled with lock icon
   - Tooltip: "Keine Berechtigung - Nur GF, INNEN, ADM können Kunden erstellen"
-  
 - **Row Actions:**
   - PLAN users: "Ansehen" button enabled (can view details)
   - PLAN users: "Bearbeiten" button disabled with lock icon
@@ -399,15 +440,18 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Screen:** customer-form.md
 
 **Changes:**
+
 - **Form Access:**
   - PLAN users: Cannot access "Neuer Kunde" dialog (button disabled)
   - PLAN users viewing existing: All fields read-only
 
 - **Banner (Top of Form for PLAN):**
+
   ```
   ⚠️ Sie haben Nur-Lese-Zugriff auf Kundendaten für Projektplanung.
   Für Änderungen kontaktieren Sie INNEN oder GF.
   ```
+
   - Background: #FEF3C7 (amber-100)
   - Border: 1px solid #FCD34D (amber-300)
   - Icon: AlertCircle (amber-600)
@@ -427,6 +471,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Screen:** location-list.md
 
 **Changes:**
+
 - **Header Actions:**
   - PLAN users: "Neuer Standort" button **ENABLED** (PLAN can create locations)
   - No changes to create action
@@ -443,6 +488,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Screen:** contact-list.md
 
 **Changes:**
+
 - **Header Actions:**
   - PLAN users: "Neuer Kontakt" button **ENABLED** (PLAN can create contacts)
 
@@ -462,6 +508,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Screen:** contact-form.md
 
 **Changes:**
+
 - **Tab 2: Entscheidungsbefugnis**
   - Current state: ADM users see restriction banner
   - **UPDATE:** PLAN users do NOT see restriction banner (PLAN can edit these fields)
@@ -469,9 +516,11 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
   - KALK/BUCH users: Add restriction banner
 
 - **Restriction Banner (for ADM/KALK/BUCH only):**
+
   ```
   🔒 Diese Felder können nur von GF, INNEN oder PLAN bearbeitet werden
   ```
+
   - Background: #FEF3C7 (amber-100)
   - Height: 48px
   - Full width
@@ -487,6 +536,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Screen:** invoice-form.md
 
 **Changes:**
+
 - **Form Access:**
   - PLAN users: Cannot access invoice creation (button hidden/disabled)
   - PLAN users viewing existing: All fields read-only
@@ -502,6 +552,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Screen:** opportunity-form.md
 
 **Changes:**
+
 - **Form Access:**
   - PLAN users: Can view opportunities (read-only) in project context
   - PLAN users: Cannot create or edit opportunities
@@ -517,6 +568,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Screen:** bulk-import-form.md
 
 **Changes:**
+
 - **Navigation:**
   - PLAN users: Bulk import menu item **HIDDEN** or **DISABLED**
   - If PLAN user tries to access URL directly: Show permission denied screen
@@ -535,6 +587,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Screen:** rbac-permission-indicators.md
 
 **Changes:**
+
 - **Example Tooltips:**
   - Update all tooltips mentioning "GF und PLAN" to "Nur GF" for customer delete
   - Update permission examples to reflect correct PLAN restrictions
@@ -561,6 +614,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Screen:** plan-dashboard.md
 
 **Changes:**
+
 - **Context Note:**
   - Update line 6: "**Access**: ALL projects (full CRUD), ALL customers (read-only for project context)"
   - Add line 8: "**Note**: PLAN is internal service role for project execution, not customer management"
@@ -577,6 +631,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Screen:** customer-detail.md
 
 **Changes:**
+
 - **Header Actions (for PLAN):**
   - "Kunde bearbeiten" button: Show but disabled with lock icon
   - Hover tooltip: "Keine Berechtigung - Kundendaten sind für PLAN nur lesbar"
@@ -595,6 +650,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **General Pattern for PLAN Users:**
 
 **Action Button States:**
+
 - "Bearbeiten" for customers: Disabled with lock icon
 - "Löschen" for customers: Disabled with lock icon
 - "Bearbeiten" for locations: **ENABLED**
@@ -604,6 +660,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 - "Neue [Entity]" buttons: Follow rules above
 
 **Field Visibility:**
+
 - Customer financial data: Hidden or masked for PLAN
 - All other fields: Visible but read-only for customer entities
 - Project fields: Fully editable for PLAN users
@@ -617,6 +674,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **For PLAN Users Viewing Customer-Related Forms:**
 
 **Banner Component:**
+
 - Height: 56px
 - Background: Linear gradient from #FEF3C7 to #FDE68A (amber-100 to amber-200)
 - Border: 1px solid #FCD34D (amber-300)
@@ -625,6 +683,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 - Margin-bottom: 24px (space before form fields)
 
 **Banner Content:**
+
 - Icon: AlertCircle (lucide-react)
 - Icon size: 20px
 - Icon color: #D97706 (amber-600)
@@ -632,6 +691,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 - Text (detail): Role-specific message - 13px, normal, #78350F (amber-800)
 
 **PLAN-Specific Banner Messages:**
+
 - Customer form: "Sie haben Lesezugriff auf Kundendaten für Projektplanung. Für Änderungen kontaktieren Sie INNEN oder GF."
 - Invoice form: "Rechnungen können nur von BUCH oder GF erstellt werden."
 - Opportunity form: "Opportunities können nur von GF, INNEN oder ADM erstellt werden."
@@ -642,18 +702,19 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 
 ### Permission States
 
-| State | Background | Border | Text | Icon |
-|-------|------------|--------|------|------|
-| **Allowed** | White (#FFFFFF) | Gray-300 (#D1D5DB) | Black (#000000) | Blue (#3B82F6) |
-| **Restricted** | Gray-100 (#F5F5F5) | Gray-200 (#E5E7EB) | Gray-500 (#6B7280) | Red (#EF4444) |
-| **Warning** | Amber-100 (#FEF3C7) | Amber-300 (#FCD34D) | Amber-900 (#92400E) | Amber-600 (#D97706) |
-| **Denied** | Red-50 (#FEF2F2) | Red-200 (#FECACA) | Red-900 (#7F1D1D) | Red-600 (#DC2626) |
+| State          | Background          | Border              | Text                | Icon                |
+| -------------- | ------------------- | ------------------- | ------------------- | ------------------- |
+| **Allowed**    | White (#FFFFFF)     | Gray-300 (#D1D5DB)  | Black (#000000)     | Blue (#3B82F6)      |
+| **Restricted** | Gray-100 (#F5F5F5)  | Gray-200 (#E5E7EB)  | Gray-500 (#6B7280)  | Red (#EF4444)       |
+| **Warning**    | Amber-100 (#FEF3C7) | Amber-300 (#FCD34D) | Amber-900 (#92400E) | Amber-600 (#D97706) |
+| **Denied**     | Red-50 (#FEF2F2)    | Red-200 (#FECACA)   | Red-900 (#7F1D1D)   | Red-600 (#DC2626)   |
 
 ---
 
 ## ICONS FOR RBAC
 
 **Required Icons (lucide-react):**
+
 - Lock (16px, 20px variants) - Restricted actions
 - Eye (16px) - Read-only fields
 - AlertCircle (20px) - Warning banners
@@ -662,6 +723,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 - Shield (16px) - Financial data protection
 
 **Usage:**
+
 - Lock: Overlaid on disabled buttons (top-right corner)
 - Eye: Suffix on read-only field labels
 - AlertCircle: Left of banner text
@@ -678,6 +740,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 **Component:** Dropdown in top-right near user avatar
 
 **Specifications:**
+
 - Trigger button:
   - Height: 40px
   - Padding: 8px 12px
@@ -686,6 +749,7 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
   - Display: "Aktiv: [Role Name] [Badge]" + ChevronDown icon
 
 **Dropdown Menu:**
+
 - Width: 280px
 - Max-height: 400px
 - Padding: 8px
@@ -694,29 +758,33 @@ Kontaktieren Sie Ihren Administrator für Zugriff.
 - Border-radius: 12px
 
 **Menu Items (Roles):**
+
 - Height: 48px per item
 - Padding: 12px 16px
 - Hover: Blue-50 background
 - Active role: Blue-100 background + checkmark icon
 
 **Item Layout:**
+
 - Left: Role badge (24px height)
 - Middle: Role name (14px, semibold) + description (12px, gray)
 - Right: Checkmark icon (if active)
 
 **Example Content:**
+
 ```
 Currently Active: Außendienst ✓
 
 Roles:
   [ADM Badge] Außendienst ✓
              Zugriff auf eigene Kunden
-  
+
   [PLAN Badge] Planung
               Projekt- und Ressourcenplanung
 ```
 
 **Switching Behavior:**
+
 - Click role: Switch primary role immediately
 - Page refreshes to show role-appropriate dashboard
 - No confirmation dialog (instant switch)
@@ -729,6 +797,7 @@ Roles:
 After applying all changes, verify:
 
 ### Customer Management (PLAN Users)
+
 - [ ] Customer list: "Neuer Kunde" button is disabled with lock icon
 - [ ] Customer detail: "Kunde bearbeiten" button is disabled
 - [ ] Customer detail: "Löschen" action is disabled
@@ -737,12 +806,14 @@ After applying all changes, verify:
 - [ ] Bulk import: Menu item hidden or disabled for PLAN
 
 ### Location Management (PLAN Users)
+
 - [ ] Location list: "Neuer Standort" button is **ENABLED**
 - [ ] Location detail: "Bearbeiten" button is **ENABLED**
 - [ ] Location detail: "Löschen" button is **DISABLED** with lock icon
 - [ ] Location form: All fields are editable for PLAN
 
 ### Contact Management (PLAN Users)
+
 - [ ] Contact list: "Neuer Kontakt" button is **ENABLED**
 - [ ] Contact detail: "Bearbeiten" button is **ENABLED**
 - [ ] Contact detail: "Löschen" button is **DISABLED** with lock icon
@@ -750,12 +821,14 @@ After applying all changes, verify:
 - [ ] Contact form: Decision authority tab editable (no restriction banner for PLAN)
 
 ### Project Management (PLAN Users)
+
 - [ ] Project list: Full access to all actions
 - [ ] Project detail: Full edit capabilities
 - [ ] Project form: Can create/edit assigned projects
 - [ ] Task management: Full CRUD access
 
 ### Permission Indicators
+
 - [ ] Lock icon: Consistent 16px size, red-500 color
 - [ ] Eye icon: Consistent 16px size, gray-500 color
 - [ ] Tooltips: Follow dark gray (#374151) background pattern
@@ -763,11 +836,13 @@ After applying all changes, verify:
 - [ ] Banner: Amber gradient with proper padding
 
 ### Tooltips and Messages
+
 - [ ] "Nur GF kann Kunden löschen" (not "GF und PLAN")
 - [ ] PLAN customer access: "Lesezugriff für Projektplanung"
 - [ ] All German labels: Grammatically correct, professional tone
 
 ### Role Badge Display
+
 - [ ] GF: Gold (#FFD700)
 - [ ] PLAN: Blue (#3B82F6)
 - [ ] INNEN: Purple (#8B5CF6)
@@ -776,6 +851,7 @@ After applying all changes, verify:
 - [ ] BUCH: Purple-600 (#8B5CF6)
 
 ### Multi-Role Support (if implementing)
+
 - [ ] Role switcher visible for users with multiple roles
 - [ ] Role switcher shows all assigned roles
 - [ ] Current role indicated with checkmark
@@ -790,6 +866,7 @@ After applying all changes, verify:
 **Scenario:** PLAN user clicks customer name from project detail page
 
 **Expected Behavior:**
+
 - Navigate to customer detail page
 - All fields shown as read-only
 - Banner: "Projektbezogener Kundenzugriff - Lesemodus"
@@ -803,6 +880,7 @@ After applying all changes, verify:
 **Scenario:** PLAN user setting up delivery location for new project
 
 **Expected Behavior:**
+
 - "Neuer Standort" button fully enabled
 - Form fields all editable
 - No restriction banners
@@ -815,6 +893,7 @@ After applying all changes, verify:
 **Scenario:** PLAN user updating contact approval limits for project planning
 
 **Expected Behavior:**
+
 - Decision authority tab: All fields **EDITABLE** for PLAN
 - No lock icons on decision fields
 - Save button: Enabled
@@ -827,6 +906,7 @@ After applying all changes, verify:
 **Scenario:** User has both ADM and PLAN roles, primary role is ADM
 
 **Expected Behavior:**
+
 - Top-right: Role switcher showing "Aktiv: Außendienst (ADM)"
 - Can switch to PLAN role via dropdown
 - When viewing as ADM: See own customers with full edit
@@ -842,6 +922,7 @@ After applying all changes, verify:
 **Add new variant: locked="true"**
 
 **Properties:**
+
 - Base button: Ghost or outline variant
 - Opacity: 40%
 - Cursor: not-allowed
@@ -855,6 +936,7 @@ After applying all changes, verify:
 **Add new variant: readonly="true"**
 
 **Properties:**
+
 - Background: #F5F5F5 (gray-100)
 - Border: 1px solid #E5E7EB (gray-200)
 - Text: #6B7280 (gray-500)
@@ -868,9 +950,11 @@ After applying all changes, verify:
 **New component: PermissionBanner**
 
 **Variants:**
+
 - type: "read-only" | "restricted" | "denied"
 
 **Properties (read-only variant):**
+
 - Background: #FEF3C7 (amber-100)
 - Border: 1px solid #FCD34D (amber-300)
 - Height: Auto (min 56px)
@@ -885,9 +969,11 @@ After applying all changes, verify:
 **Update existing RoleBadge component**
 
 **Add role prop with values:**
+
 - GF, PLAN, INNEN, ADM, KALK, BUCH
 
 **Color mapping (update):**
+
 - GF: #FFD700 / #78350F
 - PLAN: #3B82F6 / #FFFFFF
 - INNEN: #8B5CF6 / #FFFFFF (NEW)
@@ -902,12 +988,14 @@ After applying all changes, verify:
 **New component: RoleSwitcher**
 
 **Component structure:**
+
 - Trigger: Button with role badge + name + ChevronDown
 - Menu: Dropdown with all user roles
 - Active indicator: Checkmark icon
 - Size: Medium (40px height)
 
 **Properties:**
+
 - roles: Array of {roleId, name, description}
 - activeRole: String (current role)
 - onSwitch: Function (callback)
@@ -917,6 +1005,7 @@ After applying all changes, verify:
 ## TESTING INSTRUCTIONS FOR FIGMA MAKE
 
 ### Test Scenario 1: PLAN User Customer Access
+
 1. Log in as PLAN user in prototype
 2. Navigate to Customers list
 3. Verify "Neuer Kunde" button is disabled with lock
@@ -926,6 +1015,7 @@ After applying all changes, verify:
 7. Verify amber banner shows read-only message
 
 ### Test Scenario 2: PLAN User Location Management
+
 1. Still as PLAN user
 2. Navigate to customer detail > Standorte tab
 3. Verify "Neuer Standort" button is **ENABLED**
@@ -934,6 +1024,7 @@ After applying all changes, verify:
 6. For existing location: "Bearbeiten" **ENABLED**, "Löschen" **DISABLED**
 
 ### Test Scenario 3: PLAN User Contact Decision Authority
+
 1. Still as PLAN user
 2. Navigate to customer detail > Kontakte tab
 3. Click contact: Navigate to contact detail or edit
@@ -943,12 +1034,14 @@ After applying all changes, verify:
 7. Can change approval limit, authority level
 
 ### Test Scenario 4: Permission Tooltips
+
 1. As PLAN user, hover over disabled "Kunde bearbeiten" button
 2. Verify tooltip shows: "Keine Berechtigung"
 3. Verify detail: "Nur GF kann Kunden löschen" (not "GF und PLAN")
 4. Repeat for all disabled actions across screens
 
 ### Test Scenario 5: Multi-Role User (if implementing)
+
 1. Log in as user with roles: ADM + PLAN
 2. Verify role switcher visible in top-right
 3. Default view: ADM dashboard
@@ -961,18 +1054,21 @@ After applying all changes, verify:
 ## IMPLEMENTATION PRIORITY
 
 ### High Priority (Critical Fixes)
+
 1. ✅ rbac-permission-indicators.md - Tooltip corrections
 2. ✅ customer-form.md - Remove PLAN edit access
 3. ✅ customer-detail.md - Disable edit/delete for PLAN
 4. ✅ bulk-import-form.md - Hide/disable for PLAN
 
 ### Medium Priority (Important Clarifications)
+
 5. ✅ location-list.md - Keep create/edit for PLAN, remove delete
 6. ✅ contact-list.md - Keep edit for PLAN (including decision authority)
 7. ✅ opportunity-form.md - Remove PLAN from creation
 8. ✅ invoice-form.md - Clarify PLAN read-only
 
 ### Low Priority (Documentation Updates)
+
 9. ✅ plan-dashboard.md - Clarify read-only customer access
 10. ✅ README.md - Update RBAC summary
 
@@ -1002,17 +1098,20 @@ After applying all changes, verify:
 **User Concern:** PLAN role was incorrectly shown with "admin rights" and customer management permissions in UI/UX designs.
 
 **Reality:** PLAN is an **internal service role** focused on:
+
 - Project planning and execution
 - Resource allocation
 - Timeline management
 - Technical/interior design planning
 
 **PLAN should NOT:**
+
 - Create, edit, or delete customers (sales responsibility)
 - Manage financial data (accounting responsibility)
 - Import customer data (data entry responsibility)
 
 **PLAN should:**
+
 - View all customers (read-only, for project context)
 - Fully manage projects and tasks
 - Create/edit locations (for project delivery setup)
@@ -1036,4 +1135,3 @@ END OF PROMPT
 **Related Plan:** rbac-multi-role-system.plan.md  
 **Related Documentation:** docs/specifications/reviews/RBAC_PERMISSION_MATRIX.md  
 **Related Audit:** docs/implementation/UI_UX_RBAC_AUDIT_FINDINGS.md
-

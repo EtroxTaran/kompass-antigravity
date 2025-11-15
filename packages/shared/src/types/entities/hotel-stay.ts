@@ -1,9 +1,9 @@
 /**
  * Hotel Stay Entity for KOMPASS
- * 
+ *
  * Represents overnight accommodation during business tours
  * Tracks hotel preferences and costs for expense reporting
- * 
+ *
  * Validation rules:
  * - hotelName: 2-200 chars, required
  * - locationId: Must reference existing Location (hotel address)
@@ -11,7 +11,7 @@
  * - checkOut: Required, must be after checkIn
  * - pricePerNight: >= 0
  * - rating: 1-5 stars if provided
- * 
+ *
  * Business Rules:
  * - HS-001: Check-out must be after check-in
  * - HS-002: Total cost = nights × pricePerNight
@@ -28,7 +28,7 @@ export interface HotelStay extends BaseEntity {
   type: 'hotel_stay';
 
   // ==================== Tour Association ====================
-  
+
   /** Tour ID this hotel stay belongs to */
   tourId: string;
 
@@ -36,7 +36,7 @@ export interface HotelStay extends BaseEntity {
   userId: string;
 
   // ==================== Hotel Information ====================
-  
+
   /** Hotel name */
   hotelName: string;
 
@@ -53,7 +53,7 @@ export interface HotelStay extends BaseEntity {
   phone?: string;
 
   // ==================== Stay Details ====================
-  
+
   /** Check-in date */
   checkIn: Date;
 
@@ -67,7 +67,7 @@ export interface HotelStay extends BaseEntity {
   roomType?: string;
 
   // ==================== Costs ====================
-  
+
   /** Price per night in EUR */
   pricePerNight: number;
 
@@ -81,7 +81,7 @@ export interface HotelStay extends BaseEntity {
   expenseId?: string;
 
   // ==================== Experience Tracking ====================
-  
+
   /** Hotel rating (1-5 stars) */
   rating?: number;
 
@@ -95,7 +95,7 @@ export interface HotelStay extends BaseEntity {
   amenities?: string[];
 
   // ==================== Booking Details ====================
-  
+
   /** How booking was made (e.g., "Booking.com", "Direct", "Phone") */
   bookedVia?: string;
 
@@ -183,7 +183,9 @@ export interface HotelStayValidationError {
 /**
  * Validates hotel stay data
  */
-export function validateHotelStay(hotelStay: Partial<HotelStay>): HotelStayValidationError[] {
+export function validateHotelStay(
+  hotelStay: Partial<HotelStay>
+): HotelStayValidationError[] {
   const errors: HotelStayValidationError[] = [];
 
   // Required fields
@@ -195,8 +197,15 @@ export function validateHotelStay(hotelStay: Partial<HotelStay>): HotelStayValid
     errors.push({ field: 'userId', message: 'User ID is required' });
   }
 
-  if (!hotelStay.hotelName || hotelStay.hotelName.length < 2 || hotelStay.hotelName.length > 200) {
-    errors.push({ field: 'hotelName', message: 'Hotel name must be 2-200 characters' });
+  if (
+    !hotelStay.hotelName ||
+    hotelStay.hotelName.length < 2 ||
+    hotelStay.hotelName.length > 200
+  ) {
+    errors.push({
+      field: 'hotelName',
+      message: 'Hotel name must be 2-200 characters',
+    });
   }
 
   if (!hotelStay.locationId) {
@@ -212,7 +221,10 @@ export function validateHotelStay(hotelStay: Partial<HotelStay>): HotelStayValid
   }
 
   if (hotelStay.pricePerNight === undefined) {
-    errors.push({ field: 'pricePerNight', message: 'Price per night is required' });
+    errors.push({
+      field: 'pricePerNight',
+      message: 'Price per night is required',
+    });
   }
 
   if (hotelStay.totalCost === undefined) {
@@ -222,7 +234,10 @@ export function validateHotelStay(hotelStay: Partial<HotelStay>): HotelStayValid
   // Date validation
   if (hotelStay.checkIn && hotelStay.checkOut) {
     if (new Date(hotelStay.checkOut) <= new Date(hotelStay.checkIn)) {
-      errors.push({ field: 'checkOut', message: 'Check-out date must be after check-in date' });
+      errors.push({
+        field: 'checkOut',
+        message: 'Check-out date must be after check-in date',
+      });
     }
   }
 
@@ -231,26 +246,35 @@ export function validateHotelStay(hotelStay: Partial<HotelStay>): HotelStayValid
     const oneYearAgo = new Date();
     oneYearAgo.setDate(oneYearAgo.getDate() - 365);
     if (new Date(hotelStay.checkIn) < oneYearAgo) {
-      errors.push({ 
-        field: 'checkIn', 
-        message: 'Check-in date cannot be more than 365 days in the past' 
+      errors.push({
+        field: 'checkIn',
+        message: 'Check-in date cannot be more than 365 days in the past',
       });
     }
   }
 
   // Price validation
   if (hotelStay.pricePerNight !== undefined && hotelStay.pricePerNight < 0) {
-    errors.push({ field: 'pricePerNight', message: 'Price per night cannot be negative' });
+    errors.push({
+      field: 'pricePerNight',
+      message: 'Price per night cannot be negative',
+    });
   }
 
   if (hotelStay.totalCost !== undefined && hotelStay.totalCost < 0) {
-    errors.push({ field: 'totalCost', message: 'Total cost cannot be negative' });
+    errors.push({
+      field: 'totalCost',
+      message: 'Total cost cannot be negative',
+    });
   }
 
   // Rating validation
   if (hotelStay.rating !== undefined) {
     if (hotelStay.rating < 1 || hotelStay.rating > 5) {
-      errors.push({ field: 'rating', message: 'Rating must be between 1 and 5 stars' });
+      errors.push({
+        field: 'rating',
+        message: 'Rating must be between 1 and 5 stars',
+      });
     }
   }
 
@@ -292,7 +316,9 @@ export function calculateNights(checkIn: Date, checkOut: Date): number {
 /**
  * Calculates total cost
  */
-export function calculateTotalCost(pricePerNight: number, nights: number): number {
+export function calculateTotalCost(
+  pricePerNight: number,
+  nights: number
+): number {
   return Math.round(pricePerNight * nights * 100) / 100; // Round to 2 decimals
 }
-

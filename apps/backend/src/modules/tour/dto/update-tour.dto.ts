@@ -1,4 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsDate,
@@ -8,13 +9,13 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+
+import type { RouteWaypoint } from '@kompass/shared/types/entities/tour';
 import { TourStatus } from '@kompass/shared/types/entities/tour';
-import { RouteWaypoint } from '@kompass/shared/types/entities/tour';
 
 /**
  * Update Tour DTO
- * 
+ *
  * Used for updating existing tours
  * All fields are optional
  */
@@ -127,4 +128,3 @@ export class UpdateTourDto {
   @IsOptional()
   completionNotes?: string;
 }
-

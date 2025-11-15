@@ -17,8 +17,8 @@ export class LocationRepository implements ILocationRepository {
   private readonly logger = new Logger(LocationRepository.name);
   private db: DocumentScope<Location>;
 
-  constructor() // For now, this is a placeholder pattern // Inject CouchDB connection - actual injection happens in module
-  {
+  constructor() {
+    // For now, this is a placeholder pattern // Inject CouchDB connection - actual injection happens in module
     // TODO: Inject Nano instance and get database
     // this.db = nano.use<Location>('kompass');
   }

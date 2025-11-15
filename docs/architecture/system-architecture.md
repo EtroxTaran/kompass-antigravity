@@ -57,18 +57,18 @@ KOMPASS is an **integrated CRM and Project Management system** designed as an **
 
 ### Technology Stack
 
-| Layer | Technology | Purpose | Status |
-|-------|------------|---------|--------|
-| **Frontend** | React 18+ PWA (TypeScript) | UI/UX, Offline capability | ✅ MVP |
-| **State Management** | React Query + Context | Server state caching, local state | ✅ MVP |  
-| **UI Components** | shadcn/ui (Radix + Tailwind) | Accessible, consistent UI | ✅ MVP |
-| **Backend** | NestJS (TypeScript) | Business logic, API gateway | ✅ MVP |
-| **Primary Database** | CouchDB 3.x | Document storage, offline sync | ✅ MVP |
-| **Offline Database** | PouchDB (IndexedDB) | Client-side document storage | ✅ MVP |
-| **Search** | MeiliSearch | Full-text search, filtering | ✅ MVP |
-| **Authentication** | Keycloak (OIDC) | Identity provider, SSO | ✅ MVP |
-| **Automation** | n8n | Workflow automation, AI orchestration | 📋 Phase 2 |
-| **Monitoring** | Prometheus + Grafana + Loki | Observability stack | 📋 Phase 1.5 |
+| Layer                | Technology                   | Purpose                               | Status       |
+| -------------------- | ---------------------------- | ------------------------------------- | ------------ |
+| **Frontend**         | React 18+ PWA (TypeScript)   | UI/UX, Offline capability             | ✅ MVP       |
+| **State Management** | React Query + Context        | Server state caching, local state     | ✅ MVP       |
+| **UI Components**    | shadcn/ui (Radix + Tailwind) | Accessible, consistent UI             | ✅ MVP       |
+| **Backend**          | NestJS (TypeScript)          | Business logic, API gateway           | ✅ MVP       |
+| **Primary Database** | CouchDB 3.x                  | Document storage, offline sync        | ✅ MVP       |
+| **Offline Database** | PouchDB (IndexedDB)          | Client-side document storage          | ✅ MVP       |
+| **Search**           | MeiliSearch                  | Full-text search, filtering           | ✅ MVP       |
+| **Authentication**   | Keycloak (OIDC)              | Identity provider, SSO                | ✅ MVP       |
+| **Automation**       | n8n                          | Workflow automation, AI orchestration | 📋 Phase 2   |
+| **Monitoring**       | Prometheus + Grafana + Loki  | Observability stack                   | 📋 Phase 1.5 |
 
 ---
 
@@ -84,22 +84,24 @@ KOMPASS is an **integrated CRM and Project Management system** designed as an **
 
 To manage iOS 50MB storage limits, we implement automatic 3-tier data management:
 
-| Tier | Size | Content | Management |
-|------|------|---------|------------|
-| **Essential** | 5MB | User profile, owned customers, active opportunities | Always synced |
-| **Recent** | 10MB | Last 30 days protocols, recent projects | LRU cache |
-| **On-Demand** | 35MB | User-pinned documents, historical data | Manual selection |
+| Tier          | Size | Content                                             | Management       |
+| ------------- | ---- | --------------------------------------------------- | ---------------- |
+| **Essential** | 5MB  | User profile, owned customers, active opportunities | Always synced    |
+| **Recent**    | 10MB | Last 30 days protocols, recent projects             | LRU cache        |
+| **On-Demand** | 35MB | User-pinned documents, historical data              | Manual selection |
 
 **Total Budget**: ~50MB (iOS Safari safe zone with buffer)
 
 #### Conflict Resolution Strategy
 
 **90% Automatic Resolution:**
-- **Last-Write-Wins**: For metadata fields (tags, categories)  
+
+- **Last-Write-Wins**: For metadata fields (tags, categories)
 - **Merge-Append**: For text fields (notes, comments)
 - **Boolean-True-Wins**: For status flags
 
-**10% Manual Resolution:** 
+**10% Manual Resolution:**
+
 - Financial data conflicts
 - Status transitions
 - Critical customer information
@@ -114,10 +116,10 @@ To manage iOS 50MB storage limits, we implement automatic 3-tier data management
 async function auditThenWrite(operation: Operation): Promise<Document> {
   // 1. Calculate hash of new document state
   const newHash = sha256(JSON.stringify(newDocument));
-  
+
   // 2. Get previous hash (creates cryptographic chain)
   const previousHash = await getLastAuditHash(documentId);
-  
+
   // 3. Create audit log entry with digital signature
   const auditEntry = {
     documentId,
@@ -127,12 +129,12 @@ async function auditThenWrite(operation: Operation): Promise<Document> {
     signature: await signWithPrivateKey(newHash),
     userId: currentUser.id,
     timestamp: new Date(),
-    changes: detectFieldChanges(oldDocument, newDocument)
+    changes: detectFieldChanges(oldDocument, newDocument),
   };
-  
+
   // 4. Write to immutable audit log FIRST
   await auditDatabase.insert(auditEntry);
-  
+
   // 5. Only then write operational document
   return await operationalDatabase.update(newDocument);
 }
@@ -150,6 +152,7 @@ Controller → Service → Repository → Database
 ```
 
 **Dependency Rules:**
+
 - Controllers handle HTTP, delegate to services
 - Services contain business logic, use repository interfaces
 - Repositories handle data persistence only
@@ -158,13 +161,15 @@ Controller → Service → Repository → Database
 ### 4. RBAC Security Model
 
 **5-Role System:**
+
 - **ADM** (Außendienst): Own customers and opportunities only
-- **INNEN** (Innendienst): Team customers, all opportunities  
+- **INNEN** (Innendienst): Team customers, all opportunities
 - **PLAN** (Planning): Assigned projects, resource management
 - **BUCH** (Accounting): Financial data, compliance reporting
 - **GF** (Management): Complete system access, executive dashboards
 
 **Entity + Field-Level Permissions:**
+
 - Entity-level: Can user access customer data?
 - Record-level: Can user access THIS specific customer?
 - Field-level: Can user see margin/profit information?
@@ -176,6 +181,7 @@ Controller → Service → Repository → Database
 ### Phase 1: MVP Foundation (Current - 4 months)
 
 **Core Capabilities:**
+
 - ✅ Customer, Contact, Location management
 - ✅ Opportunity tracking and pipeline management
 - ✅ Basic project coordination
@@ -184,14 +190,16 @@ Controller → Service → Repository → Database
 - ✅ GoBD-compliant audit trails
 
 **Technology Stack:**
+
 - React PWA + PouchDB (offline storage)
-- NestJS + CouchDB (backend + primary database)  
+- NestJS + CouchDB (backend + primary database)
 - MeiliSearch (search functionality)
 - Keycloak (authentication)
 
 ### Phase 1.5: Production Observability (Parallel)
 
 **Monitoring Stack:**
+
 - **Prometheus**: Metrics collection (API latency, error rates)
 - **Grafana Loki**: Log aggregation and analysis
 - **Grafana Tempo**: Distributed tracing
@@ -219,6 +227,7 @@ Controller → Service → Repository → Database
 ```
 
 **New Capabilities:**
+
 - **RAG Knowledge Management**: Semantic search across all documents
 - **Audio Transcription**: Whisper-powered meeting notes
 - **Automated Workflows**: n8n-orchestrated business processes
@@ -243,6 +252,7 @@ CouchDB (Operational/OLTP)     PostgreSQL (Analytical/OLAP)
 ```
 
 **Advanced Capabilities:**
+
 - **CQRS Pattern**: Separate read/write stores for performance
 - **Knowledge Graph**: Complex relationship queries via Neo4j
 - **Self-Service BI**: Metabase dashboards for business users
@@ -255,6 +265,7 @@ CouchDB (Operational/OLTP)     PostgreSQL (Analytical/OLAP)
 ### Backend Architecture (NestJS)
 
 **Module Structure:**
+
 ```
 apps/backend/src/
 ├── modules/
@@ -277,6 +288,7 @@ apps/backend/src/
 ```
 
 **Security Implementation:**
+
 - Every endpoint has `@UseGuards(JwtAuthGuard, RbacGuard)`
 - Repository layer enforces record-level permissions
 - Audit service logs all data modifications
@@ -285,6 +297,7 @@ apps/backend/src/
 ### Frontend Architecture (React PWA)
 
 **Feature-Based Structure:**
+
 ```
 apps/frontend/src/
 ├── features/
@@ -306,6 +319,7 @@ apps/frontend/src/
 ```
 
 **Offline Implementation:**
+
 - PouchDB for local document storage
 - React Query for server state caching
 - Service Worker for app shell caching
@@ -314,9 +328,10 @@ apps/frontend/src/
 ### Database Design
 
 **Entity Relationships:**
+
 ```
 Customer 1:N Location
-Customer 1:N Contact  
+Customer 1:N Contact
 Customer 1:N Opportunity
 Opportunity 1:1 Project (when won)
 Project 1:N Invoice
@@ -324,6 +339,7 @@ Project 1:N Task
 ```
 
 **Validation Rules:**
+
 - Company name: 2-200 chars, pattern-validated
 - VAT number: German format `DE123456789`
 - Email: Standard validation with domain check
@@ -337,6 +353,7 @@ Project 1:N Task
 ### DSGVO (GDPR) Compliance
 
 **Data Protection Measures:**
+
 - All data stored on company-controlled infrastructure
 - Granular consent management for AI features
 - Automatic data retention and deletion policies
@@ -344,6 +361,7 @@ Project 1:N Task
 - DPO workflows with impact assessment templates
 
 **Consent Management:**
+
 ```typescript
 interface DSGVOConsent {
   marketing: boolean;
@@ -358,6 +376,7 @@ interface DSGVOConsent {
 ### GoBD Financial Compliance
 
 **Immutability Requirements:**
+
 - Invoice data immutable after finalization
 - Cryptographic integrity chain for audit trail
 - Change logging with user attribution
@@ -365,13 +384,14 @@ interface DSGVOConsent {
 - 10-year retention for financial records
 
 **Audit Trail Implementation:**
+
 ```typescript
 interface AuditLogEntry {
   documentId: string;
   operation: 'CREATE' | 'UPDATE' | 'DELETE';
-  hash: string;              // SHA-256 of document state
-  previousHash: string;      // Blockchain-style chain
-  signature: string;         // Digital signature
+  hash: string; // SHA-256 of document state
+  previousHash: string; // Blockchain-style chain
+  signature: string; // Digital signature
   userId: string;
   timestamp: Date;
   changes: FieldChange[];
@@ -381,6 +401,7 @@ interface AuditLogEntry {
 ### Security Architecture
 
 **Multi-Layer Security:**
+
 1. **Frontend**: Input validation, XSS prevention, CSP headers
 2. **API**: Rate limiting, CORS, JWT authentication
 3. **Backend**: RBAC enforcement, SQL injection prevention
@@ -388,6 +409,7 @@ interface AuditLogEntry {
 5. **Network**: TLS 1.3, internal service isolation, firewall rules
 
 **Authentication Flow:**
+
 1. User logs in via Keycloak (OIDC)
 2. Backend receives JWT token with roles
 3. Backend creates CouchDB user credentials with filtered access
@@ -416,12 +438,14 @@ await transcriptionQueue.add('transcribe', { jobId, fileUrl });
 ### RAG (Retrieval-Augmented Generation)
 
 **Components:**
+
 - **Vector Database**: Weaviate for semantic search
 - **Embeddings**: Multilingual-E5-Large for German documents
 - **LLM**: Llama 3 70B (self-hosted) or GPT-4 (cloud option)
 - **Framework**: LlamaIndex for document processing pipeline
 
 **Query Flow:**
+
 1. User asks question in natural language
 2. System retrieves relevant documents via semantic search
 3. LLM generates answer based on retrieved context
@@ -430,6 +454,7 @@ await transcriptionQueue.add('transcribe', { jobId, fileUrl });
 ### Workflow Automation
 
 **n8n Integration:**
+
 - Automated follow-up sequences
 - Meeting transcription and summarization
 - Invoice reminders and payment tracking
@@ -442,13 +467,13 @@ await transcriptionQueue.add('transcribe', { jobId, fileUrl });
 
 ### Performance Targets
 
-| Metric | Target | Monitoring |
-|--------|--------|------------|
-| API Response P50 | ≤ 400ms | Prometheus |
-| API Response P95 | ≤ 1.5s | Prometheus |
-| Dashboard Load | ≤ 3s | Grafana |
-| Search Response | ≤ 500ms | MeiliSearch metrics |
-| Offline Sync | ≤ 30s for 100 changes | Custom metrics |
+| Metric           | Target                | Monitoring          |
+| ---------------- | --------------------- | ------------------- |
+| API Response P50 | ≤ 400ms               | Prometheus          |
+| API Response P95 | ≤ 1.5s                | Prometheus          |
+| Dashboard Load   | ≤ 3s                  | Grafana             |
+| Search Response  | ≤ 500ms               | MeiliSearch metrics |
+| Offline Sync     | ≤ 30s for 100 changes | Custom metrics      |
 
 ### Scaling Strategy
 
@@ -456,6 +481,7 @@ await transcriptionQueue.add('transcribe', { jobId, fileUrl });
 **Scaling Approach**: Vertical scaling first, then horizontal
 
 **Scale-Out Plan:**
+
 - **Backend**: Multiple NestJS instances behind load balancer
 - **Database**: CouchDB clustering (3-node cluster)
 - **Search**: MeiliSearch sharding or migration to Elasticsearch
@@ -470,28 +496,31 @@ await transcriptionQueue.add('transcribe', { jobId, fileUrl });
 **Docker Compose**: All services containerized for consistent deployment
 
 **Environments:**
+
 - **Development**: Local Docker Compose with hot reload
 - **Staging**: Production-like with anonymized data
 - **Production**: Full stack with monitoring and backups
 
 ### Backup Strategy
 
-| Component | Frequency | Retention | Recovery Time |
-|-----------|-----------|-----------|---------------|
-| CouchDB | Daily | 30 days | <1 hour |
-| Configuration | With each change | 90 days | <15 minutes |
-| Application Code | Git repository | Permanent | <10 minutes |
-| User Files | Daily | 30 days | <1 hour |
+| Component        | Frequency        | Retention | Recovery Time |
+| ---------------- | ---------------- | --------- | ------------- |
+| CouchDB          | Daily            | 30 days   | <1 hour       |
+| Configuration    | With each change | 90 days   | <15 minutes   |
+| Application Code | Git repository   | Permanent | <10 minutes   |
+| User Files       | Daily            | 30 days   | <1 hour       |
 
 ### Monitoring & Alerting
 
 **Health Checks:**
+
 - Application health endpoints
-- Database connectivity checks  
+- Database connectivity checks
 - Service dependency verification
 - Automated container restarts
 
 **Alerting Thresholds:**
+
 - API error rate >1% → Immediate alert
 - Response time P95 >3s → Warning
 - Disk usage >90% → Warning
@@ -513,6 +542,7 @@ The architecture is designed for **non-breaking evolution**:
 ### Breaking Change Policy
 
 **Avoid breaking changes** through:
+
 - Feature flags for new functionality
 - Backward-compatible API versioning
 - Database migrations with rollback procedures
@@ -521,6 +551,7 @@ The architecture is designed for **non-breaking evolution**:
 ### Technology Upgrade Path
 
 **Planned Evolutions:**
+
 - CouchDB single-node → CouchDB cluster (when needed)
 - MeiliSearch → Elasticsearch (if scaling requires)
 - Cloud AI → Self-hosted AI (for complete data sovereignty)
@@ -548,11 +579,13 @@ The architecture is designed for **non-breaking evolution**:
 ## Implementation Roadmap
 
 ### Phase 1 (Q1-Q2 2025): MVP Foundation ✅
+
 **Duration**: 16 weeks  
 **Team**: 6.75 FTE  
 **Budget**: €230K
 
 **Deliverables:**
+
 - Core CRM entities and workflows
 - Offline-first PWA with 50MB quota management
 - RBAC system with 5 roles
@@ -561,21 +594,25 @@ The architecture is designed for **non-breaking evolution**:
 - Basic reporting dashboard
 
 ### Phase 2 (Q2-Q3 2025): AI & Automation 📋
+
 **Duration**: 8 weeks  
 **Budget**: €60K
 
 **Deliverables:**
+
 - Audio transcription (Whisper integration)
 - RAG knowledge management system
 - n8n workflow automation
 - WebSocket real-time updates
 - Predictive lead scoring
 
-### Phase 3 (Q4 2025): Advanced Analytics 📋  
+### Phase 3 (Q4 2025): Advanced Analytics 📋
+
 **Duration**: 8-10 weeks
 **Budget**: €70K
 
 **Deliverables:**
+
 - CQRS analytics layer (PostgreSQL)
 - Neo4j knowledge graph
 - Advanced ML forecasting
@@ -587,7 +624,7 @@ The architecture is designed for **non-breaking evolution**:
 ## Related Documentation
 
 - **[Data Model Specification](../specifications/data-model.md)** - Complete entity definitions and validation
-- **[API Specification](../specifications/api-specification.md)** - REST endpoint documentation  
+- **[API Specification](../specifications/api-specification.md)** - REST endpoint documentation
 - **[RBAC Permissions](../specifications/rbac-permissions.md)** - Security model and permissions
 - **[Test Strategy](../specifications/test-strategy.md)** - Quality assurance approach
 - **[NFR Specification](../specifications/nfr-specification.md)** - Performance and scalability requirements
@@ -600,14 +637,16 @@ The architecture is designed for **non-breaking evolution**:
 ### Decision Framework
 
 **All architectural decisions follow ADR (Architecture Decision Record) pattern:**
+
 1. Document context and options evaluated
-2. State decision with clear rationale  
+2. State decision with clear rationale
 3. Track implementation and outcomes
 4. Review decisions quarterly for relevance
 
 ### Change Management
 
 **Architectural changes require:**
+
 - Linear issue with impact assessment
 - Architecture team review and approval
 - Documentation updates
@@ -617,6 +656,7 @@ The architecture is designed for **non-breaking evolution**:
 ### Quality Assurance
 
 **Architecture compliance checked via:**
+
 - Code review guidelines
 - Automated linting rules
 - Integration test coverage

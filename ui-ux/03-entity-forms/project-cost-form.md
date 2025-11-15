@@ -1,6 +1,7 @@
 # Project Cost Form - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Cost Entry Form for Projects
 - **User Roles**: PLAN (create/edit), KALK (review), GF (approve), BUCH (process)
 - **Usage Context**: Track material costs, subcontractor costs, other project expenses
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Project context prominent**: Clear project association
 - **Cost categorization**: Material, labor, subcontractor, other
 - **Budget impact**: Show remaining budget
 - **Approval workflow**: Clear status indicators
 
 ### Form Structure
+
 - Project selector with budget info
 - Cost type classification
 - Amount and quantity inputs
@@ -23,6 +26,7 @@
 - Approval routing
 
 ### shadcn/ui Components
+
 - Form, Select, Input, DatePicker
 - FileUpload, Card, Progress
 - Alert for budget warnings
@@ -250,6 +254,7 @@ Create a comprehensive project cost entry form for KOMPASS that enables tracking
 ```
 
 ## Interaction Patterns
+
 - **Budget visualization**: Real-time impact preview
 - **Smart categorization**: Suggest based on vendor/description
 - **Receipt OCR**: Extract data from photo
@@ -257,6 +262,7 @@ Create a comprehensive project cost entry form for KOMPASS that enables tracking
 - **Duplicate detection**: Warn if similar cost exists
 
 ## German Labels & Content
+
 - **Projektkosten**: Project costs
 - **Fremdleistung**: External services
 - **Einzelpreis**: Unit price
@@ -266,6 +272,7 @@ Create a comprehensive project cost entry form for KOMPASS that enables tracking
 - **Überschreitung**: Exceeded
 
 ## Validation Rules
+
 - Project required and active
 - Amount > 0
 - Receipt/invoice required
@@ -274,15 +281,17 @@ Create a comprehensive project cost entry form for KOMPASS that enables tracking
 - Budget warnings if exceeded
 
 ## Cost Approval Matrix
-| Amount | Approver | SLA |
-|-------|----------|-----|
-| < €1.000 | Auto-approve | Instant |
-| < €5.000 | PLAN | 1 day |
-| < €20.000 | KALK | 2 days |
-| > €20.000 | GF | 3 days |
-| Over budget | GF | Special |
+
+| Amount      | Approver     | SLA     |
+| ----------- | ------------ | ------- |
+| < €1.000    | Auto-approve | Instant |
+| < €5.000    | PLAN         | 1 day   |
+| < €20.000   | KALK         | 2 days  |
+| > €20.000   | GF           | 3 days  |
+| Over budget | GF           | Special |
 
 ## Implementation Notes
+
 ```bash
 # Integrations
 - ERP system for vendor master data
@@ -304,6 +313,7 @@ Create a comprehensive project cost entry form for KOMPASS that enables tracking
 ```
 
 ## Analytics Events
+
 - cost_entry_created
 - budget_warning_shown
 - approval_requested

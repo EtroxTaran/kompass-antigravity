@@ -1,10 +1,11 @@
 /**
  * useLocation Hook
- * 
+ *
  * React Query hook for fetching a single location
  */
 
 import { useQuery } from '@tanstack/react-query';
+
 import { locationApi } from '../services/location-api';
 
 /**
@@ -18,4 +19,3 @@ export function useLocation(customerId: string, locationId: string) {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
-

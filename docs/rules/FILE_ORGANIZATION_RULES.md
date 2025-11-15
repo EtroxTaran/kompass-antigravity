@@ -18,6 +18,7 @@ This document summarizes the comprehensive file organization rules implemented t
 **Enforcement**: STRICTLY ENFORCED
 
 **Forbidden Patterns:**
+
 - Backup patterns: `*_backup*`, `*.backup*`, `*.bak`, `*~`, `*.swp`, `*.tmp`
 - Version patterns: `*_v[0-9]*`, `*.v[0-9]*`, `*_version*`, `*.version*`
 - Status patterns: `*_fixed*`, `*.fixed*`, `*_final*`, `*.final*`, `*_working*`, `*.working*`
@@ -27,6 +28,7 @@ This document summarizes the comprehensive file organization rules implemented t
 - Test patterns: `*_test.ts`, `*.test.ts` (use `__tests__/` instead)
 
 **Solution**: Use Git for all versioning needs:
+
 - `git log` - See file history
 - `git diff` - Compare versions
 - `git revert` - Restore previous versions
@@ -35,6 +37,7 @@ This document summarizes the comprehensive file organization rules implemented t
 ### 2. Root Directory Standards (`.cursor/rules/project-structure.mdc`)
 
 **Allowed in Root:**
+
 - `README.md` - Project overview
 - `CHANGELOG.md` - Version history (optional)
 - `LICENSE` - License file
@@ -43,6 +46,7 @@ This document summarizes the comprehensive file organization rules implemented t
 - CI/CD configs (`.github/`, `.husky/`, etc.)
 
 **Forbidden in Root:**
+
 - Implementation reports (`IMPLEMENTATION_*.md`)
 - Development guides (`DEVELOPMENT.md`, `USAGE_GUIDE.md`)
 - Coding standards (`CODING_STANDARDS.md`)
@@ -55,6 +59,7 @@ This document summarizes the comprehensive file organization rules implemented t
 ### 3. File Organization Standards (`.cursor/rules/file-organization.mdc`)
 
 **Key Principles:**
+
 1. One file, one purpose
 2. Colocate related files
 3. Use directories for grouping
@@ -62,6 +67,7 @@ This document summarizes the comprehensive file organization rules implemented t
 5. No orphaned files
 
 **Directory Structure:**
+
 ```
 kompass/
 ├── apps/                    # Applications
@@ -80,12 +86,14 @@ kompass/
 ### Pre-Commit Hooks
 
 Pre-commit hooks detect and reject:
+
 1. Forbidden file patterns (backup, old, copy, etc.)
 2. Files in wrong directories
 3. Empty directories without README
 4. Documentation files in root
 
 **Example Hook:**
+
 ```bash
 # Check for forbidden patterns
 if git diff --cached --name-only | grep -E '(_backup|\.backup|\.bak|_old|\.old|_v[0-9]|\.v[0-9]|_fixed|\.fixed|_copy|\.copy|_temp|\.temp|~$|\.swp$|\.tmp$)'; then
@@ -98,6 +106,7 @@ fi
 ### CI/CD Checks
 
 CI/CD pipelines scan for:
+
 1. Forbidden patterns
 2. Directory structure violations
 3. Root directory violations
@@ -106,6 +115,7 @@ CI/CD pipelines scan for:
 ### Code Review Checklist
 
 Reviewers check:
+
 1. No duplicate files created
 2. Files in correct directories
 3. Proper naming conventions
@@ -154,15 +164,18 @@ Based on industry standards from monorepo projects, enterprise codebases, and op
 ### Code Files
 
 **Backend (NestJS):**
+
 - `kebab-case.ts`: `customer.service.ts`, `create-customer.dto.ts`
 - Classes: `PascalCase`: `CustomerService`, `CreateCustomerDto`
 
 **Frontend (React):**
+
 - Components: `PascalCase.tsx`: `CustomerList.tsx`
 - Hooks: `camelCase.ts`: `useCustomer.ts`
 - Utilities: `kebab-case.ts`: `api-client.ts`
 
 **Shared Package:**
+
 - All files: `kebab-case.ts`: `id-generator.ts`
 
 ### Test Files
@@ -239,15 +252,17 @@ kompass/
 If you have files violating these rules:
 
 1. **Duplicate/Backup Files:**
+
    ```bash
    # Remove duplicate files
    rm file_backup.ts file.old.ts file_v2.ts
-   
+
    # Use Git to see history instead
    git log --follow file.ts
    ```
 
 2. **Documentation in Root:**
+
    ```bash
    # Move to docs/
    mv IMPLEMENTATION_COMPLETE.md docs/implementation/
@@ -285,4 +300,3 @@ If you have files violating these rules:
 **Status**: ✅ Rules implemented and enforced  
 **Enforcement**: Pre-commit hooks, CI/CD checks, code review  
 **Next Step**: Run cleanup script (optional) to move existing files
-

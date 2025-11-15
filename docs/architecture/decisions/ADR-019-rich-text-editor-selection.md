@@ -19,6 +19,7 @@ KOMPASS requires a rich text editor for various use cases:
 ### Requirements
 
 **Functional:**
+
 - WYSIWYG editing experience (familiar to users)
 - Support for basic formatting: Bold, Italic, Underline, Lists
 - Support for structured content: Headings, Blockquotes, Code blocks
@@ -29,6 +30,7 @@ KOMPASS requires a rich text editor for various use cases:
 - Voice-to-text integration (for activity protocols)
 
 **Non-Functional:**
+
 - WCAG 2.1 AA accessibility compliance
 - Mobile-optimized (touch interface, responsive toolbar)
 - TypeScript-first with full type safety
@@ -38,6 +40,7 @@ KOMPASS requires a rich text editor for various use cases:
 - Offline-first compatible (HTML storage in CouchDB)
 
 **Technical Constraints:**
+
 - Must integrate with existing shadcn/ui component library
 - Must follow KOMPASS design system (Tailwind CSS)
 - Must support GoBD compliance (immutable HTML after finalization)
@@ -64,18 +67,21 @@ TipTap will be used for:
 ### Extensions Configuration
 
 **Basic Toolbar** (Customer, Contact, Location, Invoice notes):
+
 - Bold, Italic, Underline, Strikethrough
 - Bullet List, Numbered List
 - Link
 - Clear Formatting
 
 **Standard Toolbar** (Activity Protocols, Opportunities):
+
 - All Basic features
 - Headings (H2, H3)
 - Task List (checkboxes)
 - Blockquote
 
 **Advanced Toolbar** (Projects):
+
 - All Standard features
 - Tables
 - Code Block
@@ -148,19 +154,19 @@ TipTap will be used for:
 
 ### Comparison with Alternatives
 
-| Feature | TipTap | Lexical | Editor.js | Markdown |
-|---------|--------|---------|-----------|----------|
-| **Headless** | ✅ Yes | ✅ Yes | ⚠️ Partial | ✅ N/A |
-| **WYSIWYG** | ✅ Yes | ✅ Yes | ⚠️ Blocks | ❌ No |
-| **TypeScript** | ✅ Excellent | ✅ Excellent | ✅ Good | ✅ N/A |
-| **shadcn/ui Integration** | ✅ Perfect | ⚠️ Manual | ⚠️ Manual | ✅ Perfect |
-| **Accessibility** | ✅ Excellent | ✅ Best-in-class | ✅ Good | ✅ Native |
-| **Mobile/Touch** | ✅ Excellent | ✅ Excellent | ✅ Best | ✅ Native |
-| **Bundle Size** | 🟢 50KB | 🟡 80KB | 🟢 45KB | 🟢 5KB |
-| **Learning Curve** | 🟢 Easy | 🟡 Moderate | 🟢 Easy | 🟡 Moderate |
-| **Documentation** | ✅ Excellent | ✅ Excellent | ✅ Good | ✅ N/A |
-| **React Integration** | ✅ Official | ✅ Official | ⚠️ Community | ✅ N/A |
-| **Voice-to-Text** | ✅ Perfect | ✅ Perfect | ✅ Good | ✅ Perfect |
+| Feature                   | TipTap       | Lexical          | Editor.js    | Markdown    |
+| ------------------------- | ------------ | ---------------- | ------------ | ----------- |
+| **Headless**              | ✅ Yes       | ✅ Yes           | ⚠️ Partial   | ✅ N/A      |
+| **WYSIWYG**               | ✅ Yes       | ✅ Yes           | ⚠️ Blocks    | ❌ No       |
+| **TypeScript**            | ✅ Excellent | ✅ Excellent     | ✅ Good      | ✅ N/A      |
+| **shadcn/ui Integration** | ✅ Perfect   | ⚠️ Manual        | ⚠️ Manual    | ✅ Perfect  |
+| **Accessibility**         | ✅ Excellent | ✅ Best-in-class | ✅ Good      | ✅ Native   |
+| **Mobile/Touch**          | ✅ Excellent | ✅ Excellent     | ✅ Best      | ✅ Native   |
+| **Bundle Size**           | 🟢 50KB      | 🟡 80KB          | 🟢 45KB      | 🟢 5KB      |
+| **Learning Curve**        | 🟢 Easy      | 🟡 Moderate      | 🟢 Easy      | 🟡 Moderate |
+| **Documentation**         | ✅ Excellent | ✅ Excellent     | ✅ Good      | ✅ N/A      |
+| **React Integration**     | ✅ Official  | ✅ Official      | ⚠️ Community | ✅ N/A      |
+| **Voice-to-Text**         | ✅ Perfect   | ✅ Perfect       | ✅ Good      | ✅ Perfect  |
 
 ---
 
@@ -169,6 +175,7 @@ TipTap will be used for:
 ### 1. Lexical (Meta/Facebook)
 
 **Pros:**
+
 - Developed and used by Meta (Facebook, Instagram)
 - Best-in-class accessibility (WCAG 2.1 AAA capable)
 - Excellent performance (virtual rendering)
@@ -176,6 +183,7 @@ TipTap will be used for:
 - Strong TypeScript support
 
 **Cons:**
+
 - More complex API (steeper learning curve)
 - Newer ecosystem (less mature than TipTap)
 - Requires more custom UI development
@@ -183,6 +191,7 @@ TipTap will be used for:
 - More configuration needed for shadcn/ui integration
 
 **Why Not Chosen:**
+
 - Overly complex for our use cases
 - Would require 2-3x more development time for UI integration
 - TipTap's simplicity better fits our team's skills
@@ -190,6 +199,7 @@ TipTap will be used for:
 ### 2. Editor.js (Block-Based)
 
 **Pros:**
+
 - Perfect for structured content (blocks)
 - Clean JSON output
 - Excellent mobile experience
@@ -197,6 +207,7 @@ TipTap will be used for:
 - Modern, intuitive UX
 
 **Cons:**
+
 - Different UX paradigm (blocks vs continuous text)
 - Less familiar to users (not traditional WYSIWYG)
 - Limited inline formatting
@@ -204,6 +215,7 @@ TipTap will be used for:
 - Not suitable for free-form meeting notes
 
 **Why Not Chosen:**
+
 - Block-based editing not suitable for meeting notes
 - Users expect traditional WYSIWYG (Word-like) experience
 - Would confuse non-technical users (ADM field sales)
@@ -211,6 +223,7 @@ TipTap will be used for:
 ### 3. Plain Markdown (with Parser)
 
 **Pros:**
+
 - Simplest implementation
 - No dependencies (lightweight)
 - Fast, performant
@@ -218,6 +231,7 @@ TipTap will be used for:
 - Developer-friendly
 
 **Cons:**
+
 - Users must learn Markdown syntax
 - No WYSIWYG preview while editing
 - Less user-friendly for non-technical users
@@ -225,6 +239,7 @@ TipTap will be used for:
 - Not suitable for field sales (ADM)
 
 **Why Not Chosen:**
+
 - Non-technical users (ADM, BUCH) would struggle
 - Markdown learning curve unacceptable
 - Need WYSIWYG for mass adoption
@@ -232,18 +247,21 @@ TipTap will be used for:
 ### 4. Quill
 
 **Pros:**
+
 - Mature, stable library
 - Good documentation
 - Decent accessibility
 - Smaller than Lexical
 
 **Cons:**
+
 - Not headless (comes with built-in UI)
 - Harder to customize for shadcn/ui
 - Less active development than TipTap
 - Older architecture
 
 **Why Not Chosen:**
+
 - Built-in UI conflicts with shadcn/ui design system
 - TipTap's headless approach more flexible
 
@@ -270,19 +288,20 @@ TipTap will be used for:
 
 ### Risks & Mitigation
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|------------|
-| TipTap becomes unmaintained | Low | High | Large user base (GitLab, Substack), can fork if needed |
-| Performance issues with large documents | Low | Medium | TipTap handles 10,000+ paragraphs, our use case <500 |
-| Accessibility regressions | Low | High | Automated a11y testing with axe-core in E2E tests |
-| Mobile keyboard issues | Medium | Medium | Extensive mobile testing, fallback to plain textarea |
-| Bundle size creep | Medium | Low | Tree-shaking, only load needed extensions |
+| Risk                                    | Probability | Impact | Mitigation                                             |
+| --------------------------------------- | ----------- | ------ | ------------------------------------------------------ |
+| TipTap becomes unmaintained             | Low         | High   | Large user base (GitLab, Substack), can fork if needed |
+| Performance issues with large documents | Low         | Medium | TipTap handles 10,000+ paragraphs, our use case <500   |
+| Accessibility regressions               | Low         | High   | Automated a11y testing with axe-core in E2E tests      |
+| Mobile keyboard issues                  | Medium      | Medium | Extensive mobile testing, fallback to plain textarea   |
+| Bundle size creep                       | Medium      | Low    | Tree-shaking, only load needed extensions              |
 
 ---
 
 ## Implementation Plan
 
 ### Phase 1: Foundation (Week 1)
+
 - Create `MeetingNotesEditor` component wrapper
 - Create `EditorToolbar` component with shadcn/ui buttons
 - Configure basic extensions (Bold, Italic, Lists)
@@ -290,6 +309,7 @@ TipTap will be used for:
 - Add to Storybook for testing
 
 ### Phase 2: Form Integration (Week 2)
+
 - Replace Activity Protocol textarea with rich text editor
 - Add voice-to-text integration (microphone button)
 - Add to Customer/Contact/Location forms (optional notes field)
@@ -297,6 +317,7 @@ TipTap will be used for:
 - E2E tests for editor functionality
 
 ### Phase 3: Advanced Features (Week 3)
+
 - Upgrade Opportunity form with task lists
 - Upgrade Project forms with tables and links
 - Add mentions (@contact) support
@@ -304,6 +325,7 @@ TipTap will be used for:
 - Accessibility audit with screen readers
 
 ### Phase 4: Testing & Refinement (Week 4)
+
 - Cross-browser testing (Chrome, Safari, Firefox, Edge)
 - Mobile device testing (iOS Safari, Android Chrome)
 - Accessibility testing (WCAG 2.1 AA compliance)
@@ -315,17 +337,20 @@ TipTap will be used for:
 ## References
 
 ### External Documentation
+
 - **TipTap Official Docs**: https://tiptap.dev/docs/editor/introduction
 - **TipTap React Guide**: https://tiptap.dev/docs/editor/getting-started/install/react
 - **ProseMirror (underlying engine)**: https://prosemirror.net/docs/
 - **shadcn/ui Integration**: Custom implementation using Button, Separator components
 
 ### Research Sources
+
 - Perplexity Search: "Best React text editors 2025 TypeScript shadcn accessibility"
 - Perplexity Search: "TipTap Lexical accessibility mobile keyboard navigation"
 - Ref Documentation: TipTap GitHub repository and examples
 
 ### Internal Documentation
+
 - `.cursor/rules/ui-components.mdc` - UI component standards (shadcn/ui only)
 - `docs/specifications/NFR_SPECIFICATION.md` - Performance targets (<400ms P50)
 - `docs/specifications/TEST_STRATEGY_DOCUMENT.md` - Accessibility testing requirements
@@ -343,7 +368,6 @@ TipTap will be used for:
 
 ## Changelog
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0 | 2025-01-27 | Initial ADR - TipTap selection for rich text editing |
-
+| Version | Date       | Changes                                              |
+| ------- | ---------- | ---------------------------------------------------- |
+| 1.0     | 2025-01-27 | Initial ADR - TipTap selection for rich text editing |

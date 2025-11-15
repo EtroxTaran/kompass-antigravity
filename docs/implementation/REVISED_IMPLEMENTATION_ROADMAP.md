@@ -3,7 +3,7 @@
 **Document Version:** 1.0  
 **Date:** 2025-11-12  
 **Status:** Active Roadmap (Post-Pre-Mortem)  
-**Owner:** Product & Engineering Leadership  
+**Owner:** Product & Engineering Leadership
 
 ---
 
@@ -12,12 +12,14 @@
 This roadmap reflects a **radical course correction** based on the pre-mortem analysis findings. Instead of an AI-first platform launch, we're building a **rock-solid, offline-first CRM/PM foundation** with complete workflows for Ladenbau, then adding intelligence progressively.
 
 **Key Changes from Original Plan:**
+
 1. ✅ **De-scope AI:** Move all predictive AI to Phase 3 (Month 12+)
 2. ✅ **Fill workflow gaps:** Prioritize Supplier + Material modules (Months 1-3)
 3. ✅ **Fix Lexware integration:** Commit to automation roadmap (Phase 2 by Month 6)
 4. ✅ **Prove offline works:** Tiered storage, robust sync, conflict resolution (Months 1-6)
 
 **Pre-Mortem Recommendation:**
+
 > "IMMEDIATE & DRASTIC DE-SCOPING: Halt all new AI feature development. Re-focus all resources on the original, much more valuable 'Nordstern-Direktive' MVP."
 
 **Our Response:** Implemented. This roadmap prioritizes foundational value over speculative AI.
@@ -29,7 +31,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Phase 1: Foundation (Months 1-6) - MVP Launch
 
 **Sprint 1-3:** Critical Gap Closure (Danger #3)  
-**Sprint 4-6:** Phase 1 AI (Simple Intelligence)  
+**Sprint 4-6:** Phase 1 AI (Simple Intelligence)
 
 ### Phase 2: Simple Intelligence (Months 6-12)
 
@@ -53,6 +55,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 1-2: Backend (Supplier Module)
 
 **Tasks:**
+
 - [ ] `Supplier` entity implementation (CouchDB schema, validation)
 - [ ] `SupplierContract` entity implementation
 - [ ] `SupplierInvoice` entity implementation
@@ -64,6 +67,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Supplier rating system (4-dimension calculation)
 
 **Deliverables:**
+
 - Working API: POST/GET/PUT/DELETE `/api/v1/suppliers`
 - Working API: Supplier contracts, invoices, communications
 - Unit tests: 90%+ coverage
@@ -72,6 +76,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 3-4: Frontend (Supplier UI)
 
 **Tasks:**
+
 - [ ] Supplier form (create/edit supplier)
 - [ ] Supplier list view (searchable, filterable directory)
 - [ ] Supplier detail page (profile, contracts, projects, performance)
@@ -81,6 +86,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Rating UI (post-project completion)
 
 **Deliverables:**
+
 - Complete supplier management UI
 - Mobile-responsive forms and lists
 - Offline-capable (Tier 1 data: 50 suppliers)
@@ -104,6 +110,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 1-2: Backend (Material Module)
 
 **Tasks:**
+
 - [ ] `Material` entity implementation (catalog, multi-supplier pricing)
 - [ ] `ProjectMaterialRequirement` entity implementation (BOM)
 - [ ] `PurchaseOrder` entity implementation
@@ -115,6 +122,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Real-time cost update logic (delivery → project.actualCost)
 
 **Deliverables:**
+
 - Working API: Material catalog management
 - Working API: Project BOM management
 - Working API: Purchase order lifecycle
@@ -124,6 +132,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 3-4: Frontend (Material UI)
 
 **Tasks:**
+
 - [ ] Material catalog form (create/edit material, multi-supplier pricing)
 - [ ] Material catalog list (searchable, price comparison)
 - [ ] Project materials view (BOM with cost tracking)
@@ -133,6 +142,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Real-time cost update indicators (toast notifications, budget alerts)
 
 **Deliverables:**
+
 - Complete material management UI
 - Project BOM view with real-time costs
 - PO workflow from creation → approval → delivery
@@ -158,6 +168,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 1: Lexware CSV Integration
 
 **Tasks:**
+
 - [ ] CSV export service (contracts → Lexware format)
 - [ ] CSV import service (payments → KOMPASS)
 - [ ] CSV validation (format, required fields, referential integrity)
@@ -168,6 +179,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Documentation: Step-by-step CSV process guide
 
 **Deliverables:**
+
 - Working CSV export/import
 - Reconciliation dashboard for BUCH
 - BUCH training materials
@@ -175,6 +187,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 2: INN Dashboard Complete
 
 **Tasks:**
+
 - [ ] Finish INN dashboard (all sections)
 - [ ] Today's deliveries section
 - [ ] Open purchase orders section
@@ -184,12 +197,14 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Mobile-optimized INN dashboard
 
 **Deliverables:**
+
 - Complete INN dashboard
 - All supplier/material workflows accessible
 
 ### Week 3-4: Integration Testing & Polish
 
 **Tasks:**
+
 - [ ] End-to-end supplier workflow testing
 - [ ] End-to-end material workflow testing
 - [ ] Lexware CSV round-trip testing
@@ -199,6 +214,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Bug fixes from beta feedback
 
 **Deliverables:**
+
 - All critical bugs fixed
 - Performance: Dashboards load in <3s on 3G
 - Beta user satisfaction: ≥4/5
@@ -221,6 +237,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 1-2: RAG Implementation
 
 **Tasks:**
+
 - [ ] Vector embedding service (OpenAI or local model)
 - [ ] Index customer descriptions, notes, protocols
 - [ ] Index project summaries and descriptions
@@ -230,6 +247,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Result ranking and relevance scoring
 
 **Deliverables:**
+
 - Working RAG search across customers, projects, materials
 - Query: "Ladeneinrichtung für Bio-Laden in München" → Returns relevant past projects
 - Performance: <500ms response time
@@ -237,6 +255,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 3-4: Audio Transcription
 
 **Tasks:**
+
 - [ ] Whisper API integration (or local German STT model)
 - [ ] Audio recording UI (mobile PWA)
 - [ ] Audio upload and processing
@@ -246,6 +265,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Offline queue for audio (compress before storing)
 
 **Deliverables:**
+
 - ADM can record voice note
 - System transcribes (≥85% accuracy for German)
 - Transcription saved as protocol
@@ -268,6 +288,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 1-2: Tiered Storage Implementation
 
 **Tasks:**
+
 - [ ] Implement Tier 1 (Essential, 5 MB) caching
 - [ ] Implement Tier 2 (Recent, 10 MB) LRU eviction
 - [ ] Implement Tier 3 (Pinned, 35 MB) user-controlled
@@ -277,6 +298,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Audio transcription & deletion (5MB audio → 5KB text)
 
 **Deliverables:**
+
 - Tiered storage fully functional
 - Quota never exceeds 50MB
 - Users can pin/unpin content
@@ -285,6 +307,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 3-4: Conflict Resolution
 
 **Tasks:**
+
 - [ ] Field-level conflict detection
 - [ ] Auto-merge rules (non-conflicting fields, last-write-wins)
 - [ ] Conflict resolution UI (manual resolution for semantic conflicts)
@@ -293,6 +316,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Manual intervention dashboard (for stuck syncs)
 
 **Deliverables:**
+
 - Conflict detection: 100% of conflicts caught
 - Auto-merge: 70% of conflicts resolved automatically
 - Manual resolution UI: Clear, user-friendly
@@ -316,6 +340,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 1: Testing & Bug Fixes
 
 **Tasks:**
+
 - [ ] Run complete pre-mortem validation checklist
 - [ ] All Danger #1 tests (AI de-scoping)
 - [ ] All Danger #2 tests (zero data functionality)
@@ -328,6 +353,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 2: Documentation & Training
 
 **Tasks:**
+
 - [ ] User documentation (per role)
 - [ ] Video tutorials (5-10 minutes each)
 - [ ] Quick reference cards (laminated, printed)
@@ -338,6 +364,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 3: Beta Launch (5 Users)
 
 **Tasks:**
+
 - [ ] Deploy to beta environment
 - [ ] Onboard 1 user per role (Markus, Claudia, Thomas, Stefan, Anna)
 - [ ] Daily check-ins: Issues, feedback
@@ -347,6 +374,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Week 4: Production Launch
 
 **Tasks:**
+
 - [ ] Deploy to production
 - [ ] Team workshop (2 hours): Product vision, core workflows
 - [ ] Role-specific training (30 minutes each)
@@ -354,6 +382,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Support availability: Daily for Month 1
 
 **Deliverables:**
+
 - Fully tested MVP
 - All users trained
 - Production environment stable
@@ -378,6 +407,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Sprint 7: Automated File Sync Service
 
 **Tasks:**
+
 - [ ] Scheduled export job (nightly: contracts → shared folder)
 - [ ] Scheduled import job (hourly: payments → KOMPASS)
 - [ ] File monitoring service (watch for new Lexware exports)
@@ -389,6 +419,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Sprint 8: Automated Validation & Matching
 
 **Tasks:**
+
 - [ ] 3-way match automation (Invoice vs. PO vs. Delivery)
 - [ ] Fuzzy matching for unmatched items (by customer, amount, date)
 - [ ] Automated discrepancy resolution (where safe)
@@ -398,6 +429,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Sprint 9: Testing & Rollout
 
 **Tasks:**
+
 - [ ] Phase 2 integration testing (1000+ transaction test set)
 - [ ] Parallel run (Phase 1 and Phase 2 simultaneously for 2 weeks)
 - [ ] Compare results: Data consistency, time savings, error rate
@@ -405,6 +437,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Cutover to Phase 2 (deprecate manual CSV)
 
 **Deliverables:**
+
 - 90%+ sync auto-resolved
 - Payment status latency: <4 hours
 - BUCH weekly reconciliation: <15 minutes
@@ -426,6 +459,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Sprint 10: Data Quality Audit Tools
 
 **Tasks:**
+
 - [ ] Data quality dashboard (field completion rates, accuracy audit)
 - [ ] Automated data validation queries (run daily)
 - [ ] Data cleanup tools (deduplicate, fix formats, complete missing fields)
@@ -435,6 +469,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Sprint 11: Historical Data Collection
 
 **Tasks:**
+
 - [ ] Import tool for past projects (if available)
 - [ ] Import tool for past opportunities with outcomes
 - [ ] Data enrichment: Add outcome labels (won/lost), reasons, final costs
@@ -444,6 +479,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Sprint 12: Phase 3 Readiness Assessment
 
 **Tasks:**
+
 - [ ] Run all data quality validations (see AI Data Requirements)
 - [ ] Check: 100+ opportunities (50 won, 50 lost)? ✓ or ✗
 - [ ] Check: 50+ completed projects with full cost tracking? ✓ or ✗
@@ -452,6 +488,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 - [ ] Decision: GREEN-LIGHT Phase 3 or WAIT longer
 
 **Deliverables:**
+
 - Data quality report card
 - Phase 3 readiness assessment
 - Go/No-Go decision for AI features
@@ -467,6 +504,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Sprint 13-15: ML Model Development
 
 **Tasks:**
+
 - [ ] Lead scoring model (train, validate, deploy)
 - [ ] Risk assessment model (budget/timeline predictions)
 - [ ] Backtesting on historical data (validate ≥75% accuracy)
@@ -477,6 +515,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Sprint 16-18: Predictive Features UI
 
 **Tasks:**
+
 - [ ] AI insights sections on dashboards (with toggle)
 - [ ] Confidence scores and explanation links
 - [ ] Feedback mechanism ("Was this helpful?")
@@ -486,6 +525,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Sprint 19-21: Lexware Integration Phase 3
 
 **Tasks:**
+
 - [ ] Real-time webhook integration
 - [ ] Bidirectional sync service
 - [ ] Conflict resolution automation
@@ -495,6 +535,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Sprint 22-24: Polish & Optimization
 
 **Tasks:**
+
 - [ ] Performance optimization across all modules
 - [ ] UX refinements based on 12 months of user feedback
 - [ ] Feature pruning (remove unused features)
@@ -507,37 +548,42 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 ### Team Composition (Phase 1: Months 1-6)
 
 **Backend:** 2 FTE
+
 - Sprint 1: Supplier module
 - Sprint 2: Material module
 - Sprint 3: Lexware integration
 - Sprint 4-6: AI features (RAG, STT)
 
 **Frontend:** 2 FTE
+
 - Sprint 1: Supplier UI
 - Sprint 2: Material UI
 - Sprint 3: INN dashboard
 - Sprint 4-6: Offline optimization, conflict resolution
 
 **QA:** 1 FTE (full-time)
+
 - All sprints: Testing, validation, pre-mortem checklist
 
 **Product Owner:** 0.5 FTE
+
 - User research, feedback collection, roadmap prioritization
 
 **DevOps:** 0.5 FTE
+
 - Deployment, monitoring, performance optimization
 
 **Total:** 6 FTE for Phase 1
 
 ### Budget (Phase 1)
 
-| Category | Cost | Notes |
-|----------|------|-------|
-| Development | €180k | 6 FTE × €30k/month × 1 month (Sprint 1) × 6 sprints = €180k |
-| Infrastructure | €5k | CouchDB, hosting, monitoring |
-| Tools & Services | €3k | OpenAI API (STT, RAG), development tools |
-| Training & Docs | €2k | Video production, documentation |
-| **Total Phase 1** | **€190k** | 6-month MVP development |
+| Category          | Cost      | Notes                                                       |
+| ----------------- | --------- | ----------------------------------------------------------- |
+| Development       | €180k     | 6 FTE × €30k/month × 1 month (Sprint 1) × 6 sprints = €180k |
+| Infrastructure    | €5k       | CouchDB, hosting, monitoring                                |
+| Tools & Services  | €3k       | OpenAI API (STT, RAG), development tools                    |
+| Training & Docs   | €2k       | Video production, documentation                             |
+| **Total Phase 1** | **€190k** | 6-month MVP development                                     |
 
 ---
 
@@ -548,6 +594,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 **Risk:** Stakeholders request Phase 3 AI features during Phase 1.
 
 **Mitigation:**
+
 - **Firm "No":** Reference this roadmap and pre-mortem analysis
 - **Explain Why:** "Data requirements not met. Would deliver inaccurate predictions."
 - **Promise Future:** "In Phase 3 (Month 12+), when data supports it."
@@ -558,6 +605,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 **Risk:** Complex modules delay MVP launch.
 
 **Mitigation:**
+
 - **MVP Within MVP:** Start with 80% of features, defer edge cases
 - **Parallel Development:** Backend and frontend teams work simultaneously
 - **Frequent Integration:** Daily builds, weekly demos
@@ -568,6 +616,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 **Risk:** CSV process doesn't work reliably with real Lexware instance.
 
 **Mitigation:**
+
 - **Early Testing:** Test with real Lexware by Week 2 of Sprint 3
 - **Lexware Expert:** Consult with Lexware support engineer
 - **Fallback Plan:** If Phase 1 CSV unworkable, jump directly to Phase 2 (file-based automation)
@@ -578,6 +627,7 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 **Risk:** Users resist change, continue using Excel.
 
 **Mitigation:**
+
 - **User Research:** Interview resisters, understand root causes
 - **Quick Wins:** Identify one easy task that's much faster in KOMPASS
 - **Champions:** Recruit early adopters to evangelize
@@ -590,31 +640,31 @@ This roadmap reflects a **radical course correction** based on the pre-mortem an
 
 ### Sprint-Level Metrics
 
-| Sprint | Key Metric | Target |
-|--------|------------|--------|
-| Sprint 1 | Supplier endpoints functional | 100% API tests pass |
-| Sprint 2 | Material cost updates real-time | <2s latency |
-| Sprint 3 | CSV reconciliation time | <60 minutes |
-| Sprint 4 | RAG search relevance | >80% useful results |
-| Sprint 5 | Offline sync success rate | >95% |
-| Sprint 6 | MVP launch readiness | All pre-mortem tests pass |
+| Sprint   | Key Metric                      | Target                    |
+| -------- | ------------------------------- | ------------------------- |
+| Sprint 1 | Supplier endpoints functional   | 100% API tests pass       |
+| Sprint 2 | Material cost updates real-time | <2s latency               |
+| Sprint 3 | CSV reconciliation time         | <60 minutes               |
+| Sprint 4 | RAG search relevance            | >80% useful results       |
+| Sprint 5 | Offline sync success rate       | >95%                      |
+| Sprint 6 | MVP launch readiness            | All pre-mortem tests pass |
 
 ### Phase-Level Metrics
 
-| Phase | Key Metric | Target |
-|-------|------------|--------|
-| **Phase 1 (Month 6)** | Daily active users | >80% |
-| | User satisfaction | ≥4/5 |
-| | Core workflows completable | 100% without support |
-| | Excel usage declining | <50% (down from 100%) |
-| | INN supplier workflow complete | 100% in KOMPASS |
-| | Material cost tracking real-time | <2s latency |
-| **Phase 2 (Month 9)** | Lexware sync automation | >90% |
-| | BUCH reconciliation time | <15 minutes |
-| | Sync error rate | <5% |
-| **Phase 3 (Month 18)** | AI prediction accuracy | ≥75% |
-| | Phase 3 data gates passed | ✓ |
-| | Real-time sync latency | <10 minutes |
+| Phase                  | Key Metric                       | Target                |
+| ---------------------- | -------------------------------- | --------------------- |
+| **Phase 1 (Month 6)**  | Daily active users               | >80%                  |
+|                        | User satisfaction                | ≥4/5                  |
+|                        | Core workflows completable       | 100% without support  |
+|                        | Excel usage declining            | <50% (down from 100%) |
+|                        | INN supplier workflow complete   | 100% in KOMPASS       |
+|                        | Material cost tracking real-time | <2s latency           |
+| **Phase 2 (Month 9)**  | Lexware sync automation          | >90%                  |
+|                        | BUCH reconciliation time         | <15 minutes           |
+|                        | Sync error rate                  | <5%                   |
+| **Phase 3 (Month 18)** | AI prediction accuracy           | ≥75%                  |
+|                        | Phase 3 data gates passed        | ✓                     |
+|                        | Real-time sync latency           | <10 minutes           |
 
 ---
 
@@ -653,6 +703,7 @@ Year 2 (Month 12-24): Phase 3 AI (IF data gates passed)
 ### MVP Launch (Month 6) - Go/No-Go
 
 **GO if:**
+
 - ✅ All Danger #1-4 validation tests pass
 - ✅ Zero critical bugs
 - ✅ Beta users: ≥4/5 satisfaction
@@ -661,6 +712,7 @@ Year 2 (Month 12-24): Phase 3 AI (IF data gates passed)
 - ✅ INN + PLAN + KALK workflows 100% complete
 
 **NO-GO if:**
+
 - ❌ Any critical bug (data loss, security vulnerability, compliance violation)
 - ❌ Performance: >5s dashboard load
 - ❌ Offline: <85% sync success
@@ -672,12 +724,14 @@ Year 2 (Month 12-24): Phase 3 AI (IF data gates passed)
 ### Phase 3 AI (Month 12+) - Go/No-Go
 
 **GO if:**
+
 - ✅ All data quality gates passed (90%+ completion, <5% error rate, 100+ opportunities, 50+ projects, 12+ months data)
 - ✅ ML models validated: ≥75% accuracy on test set
 - ✅ User adoption solid: 90%+ daily active users, ≥4/5 satisfaction
 - ✅ Phase 1 and 2 success metrics met
 
 **NO-GO if:**
+
 - ❌ Data quality insufficient (<90% completion or >5% error rate)
 - ❌ Insufficient training data (<100 opportunities or <50 projects)
 - ❌ ML model accuracy <70%
@@ -701,7 +755,6 @@ Year 2 (Month 12-24): Phase 3 AI (IF data gates passed)
 
 ## Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-11-12 | Product Team | Initial post-pre-mortem roadmap with sprint-level priorities |
-
+| Version | Date       | Author       | Changes                                                      |
+| ------- | ---------- | ------------ | ------------------------------------------------------------ |
+| 1.0     | 2025-11-12 | Product Team | Initial post-pre-mortem roadmap with sprint-level priorities |

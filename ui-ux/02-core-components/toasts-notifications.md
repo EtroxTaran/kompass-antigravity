@@ -1,6 +1,7 @@
 # Toasts & Notifications - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Toast Notifications & Alert System
 - **User Roles**: All (GF, PLAN, ADM, KALK, BUCH)
 - **Usage Context**: Success confirmations, error messages, warnings, info updates
@@ -9,6 +10,7 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Success**: Green with checkmark icon
 - **Error**: Red with alert icon
 - **Warning**: Amber with warning icon
@@ -17,6 +19,7 @@
 - **Manual dismiss**: "×" button always available
 
 ### Layout Structure
+
 - Position: Top-right corner (desktop), top center (mobile)
 - Width: 360px (desktop), 90% (mobile)
 - Stack vertically with 8px gap
@@ -24,6 +27,7 @@
 - Max 3 visible toasts, oldest auto-dismisses
 
 ### shadcn/ui Components
+
 - `Toast`, `ToastAction`, `ToastClose`, `ToastDescription`, `ToastTitle`
 - `useToast` hook for triggering
 - `Toaster` provider component
@@ -33,6 +37,7 @@
 Create a comprehensive toast notification system for KOMPASS, a German CRM application. Design toast variants for success, error, warning, and info messages with German text.
 
 **Toast Container:**
+
 - Width: 360px (desktop), calc(100% - 32px) mobile
 - Background: White
 - Border: 1px solid (varies by type)
@@ -42,6 +47,7 @@ Create a comprehensive toast notification system for KOMPASS, a German CRM appli
 - Animation: Slide in from right (desktop) or top (mobile), 300ms ease-out
 
 **Success Toast:**
+
 - Border-left: 4px solid green (#10b981)
 - Icon: CheckCircle (24px, green) at left
 - Title: 16px, semibold, #1f2937, "Erfolgreich gespeichert"
@@ -50,6 +56,7 @@ Create a comprehensive toast notification system for KOMPASS, a German CRM appli
 - Auto-dismiss: 5 seconds
 
 **Error Toast:**
+
 - Border-left: 4px solid red (#ef4444)
 - Icon: AlertCircle (24px, red) at left
 - Title: 16px, semibold, #1f2937, "Fehler"
@@ -59,6 +66,7 @@ Create a comprehensive toast notification system for KOMPASS, a German CRM appli
 - Auto-dismiss: 7 seconds (longer for errors)
 
 **Warning Toast:**
+
 - Border-left: 4px solid amber (#f59e0b)
 - Icon: AlertTriangle (24px, amber) at left
 - Title: "Achtung"
@@ -68,6 +76,7 @@ Create a comprehensive toast notification system for KOMPASS, a German CRM appli
 - Auto-dismiss: 6 seconds
 
 **Info Toast:**
+
 - Border-left: 4px solid blue (#3b82f6)
 - Icon: Info (24px, blue) at left
 - Title: "Information"
@@ -77,6 +86,7 @@ Create a comprehensive toast notification system for KOMPASS, a German CRM appli
 - Auto-dismiss: 10 seconds (longer for important info)
 
 **Toast Layout (Content Structure):**
+
 ```
 ┌─────────────────────────────────┐
 │ [Icon] Title              [×]   │
@@ -84,6 +94,7 @@ Create a comprehensive toast notification system for KOMPASS, a German CRM appli
 │        [Action Button]          │
 └─────────────────────────────────┘
 ```
+
 - Icon: 24px, left-aligned, 4px from colored border
 - Title: 16px, semibold, next to icon
 - Description: 14px, below title, wraps to multiple lines if needed
@@ -91,6 +102,7 @@ Create a comprehensive toast notification system for KOMPASS, a German CRM appli
 - Close button: 20px, top-right corner
 
 **Progress Toast (Loading):**
+
 - Border-left: Blue
 - Icon: Spinner (24px, blue, rotating animation)
 - Title: "Wird verarbeitet..."
@@ -100,6 +112,7 @@ Create a comprehensive toast notification system for KOMPASS, a German CRM appli
 - Updates to success or error toast when complete
 
 **Sync Status Toast (Persistent):**
+
 - Special toast type for offline sync
 - Icon: CloudSync (24px, animated when syncing)
 - Title: "Synchronisierung"
@@ -109,6 +122,7 @@ Create a comprehensive toast notification system for KOMPASS, a German CRM appli
 - Auto-dismiss after 3 seconds when complete
 
 **Toast with Rich Content:**
+
 - Icon + Title + Close as normal
 - Content area can include:
   - Multiple lines of text
@@ -118,12 +132,14 @@ Create a comprehensive toast notification system for KOMPASS, a German CRM appli
 - Example: "3 Kunden importiert, 2 Fehler" with expandable details
 
 **Toast Stacking:**
+
 - New toasts appear at top of stack
 - Maximum 3 visible toasts
 - Older toasts auto-dismiss when new ones arrive
 - Each toast slides down to make room for new toast above
 
 **Toast Positions:**
+
 - Default: Top-right (desktop), Top-center (mobile)
 - Alternative positions (configurable):
   - Top-left
@@ -133,17 +149,20 @@ Create a comprehensive toast notification system for KOMPASS, a German CRM appli
   - Bottom-center
 
 **Accessibility Announcements:**
+
 - Success: "Erfolgreich gespeichert"
 - Error: "Fehler: Die Aktion ist fehlgeschlagen"
 - Warning: "Achtung: Wichtige Information"
 - Info: "Information: Neue Version verfügbar"
 
 **Toast Animations:**
+
 - Enter: Slide in from right (desktop) or top (mobile), 300ms
 - Exit: Fade out and slide out (200ms)
 - Dismiss: Click close or swipe right (mobile)
 
 **Mobile-Specific:**
+
 - Full width minus 16px margins each side
 - Positioned at top center
 - Swipe right to dismiss
@@ -155,6 +174,7 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 ## Interaction Patterns
 
 ### Toast Lifecycle
+
 1. User action triggers toast (e.g., save customer)
 2. Toast slides in from right (or top on mobile)
 3. Auto-dismiss timer starts (3-10 seconds based on type)
@@ -163,12 +183,14 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 6. Next toast (if any) moves up to fill space
 
 ### User Interactions
+
 - **Click Close "×"**: Dismisses toast immediately
 - **Click Action Button**: Executes action (e.g., "Erneut versuchen" retries operation)
 - **Hover (desktop)**: Pauses auto-dismiss timer
 - **Swipe Right (mobile)**: Dismisses toast
 
 ### Auto-Dismiss Timing
+
 - Success: 5 seconds
 - Warning: 6 seconds
 - Error: 7 seconds
@@ -176,6 +198,7 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 - Progress: No auto-dismiss (remains until complete)
 
 ### Stacking Behavior
+
 - Maximum 3 visible toasts
 - Newest at top
 - Oldest auto-dismisses when limit reached
@@ -184,6 +207,7 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 ## German Labels & Content
 
 ### Toast Titles
+
 - **Erfolg**: Success
 - **Erfolgreich gespeichert**: Successfully saved
 - **Fehler**: Error
@@ -193,6 +217,7 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 - **Synchronisierung**: Synchronization
 
 ### Toast Descriptions
+
 - **Der Kunde wurde erfolgreich angelegt**: Customer created successfully
 - **Die Änderungen wurden gespeichert**: Changes saved
 - **Die Aktion ist fehlgeschlagen**: Action failed
@@ -202,6 +227,7 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 - **X Änderungen werden synchronisiert**: X changes syncing
 
 ### Action Buttons
+
 - **OK**: OK
 - **Verstanden**: Understood
 - **Erneut versuchen**: Try again
@@ -210,6 +236,7 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 - **Schließen**: Close
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Toast container has role="status" or role="alert"
 - Live region for screen reader announcements
@@ -221,6 +248,7 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 - Sufficient contrast for text (4.5:1)
 
 ## Mobile Considerations
+
 - Full width with 16px margins
 - Top-center position (easier to see)
 - Swipe right to dismiss gesture
@@ -232,12 +260,14 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 ## Example Data
 
 **Success - Customer Created:**
+
 - Icon: Green checkmark
 - Title: "Kunde angelegt"
 - Description: "Hofladen Müller GmbH wurde erfolgreich angelegt"
 - Duration: 5 seconds
 
 **Error - Save Failed:**
+
 - Icon: Red alert circle
 - Title: "Speichern fehlgeschlagen"
 - Description: "Die Kundendaten konnten nicht gespeichert werden. Bitte überprüfen Sie Ihre Internetverbindung."
@@ -245,6 +275,7 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 - Duration: 7 seconds
 
 **Warning - Unsaved Changes:**
+
 - Icon: Amber warning triangle
 - Title: "Ungespeicherte Änderungen"
 - Description: "Sie haben ungespeicherte Änderungen. Diese gehen verloren, wenn Sie die Seite verlassen."
@@ -252,6 +283,7 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 - Duration: 6 seconds
 
 **Info - Update Available:**
+
 - Icon: Blue info circle
 - Title: "Update verfügbar"
 - Description: "Eine neue Version von KOMPASS ist verfügbar. Bitte laden Sie die Seite neu, um die neueste Version zu verwenden."
@@ -259,6 +291,7 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 - Duration: 10 seconds
 
 **Progress - Syncing:**
+
 - Icon: Blue spinner (animated)
 - Title: "Synchronisierung läuft..."
 - Description: "5 Änderungen werden synchronisiert"
@@ -268,11 +301,13 @@ Design all toasts with clear hierarchy, adequate spacing, and smooth animations.
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add toast
 ```
 
 ### Toast Usage
+
 ```typescript
 import { useToast } from '@/hooks/use-toast';
 
@@ -301,6 +336,7 @@ toast({
 ```
 
 ### Toaster Provider
+
 ```typescript
 // In root layout or App component
 import { Toaster } from '@/components/ui/toaster';
@@ -316,14 +352,15 @@ function App() {
 ```
 
 ### Component Dependencies
+
 - Design tokens (colors, spacing, shadows)
 - Icons from lucide-react (CheckCircle, AlertCircle, AlertTriangle, Info)
 - Animation utilities from Tailwind CSS
 - Portal component for rendering outside DOM hierarchy
 
 ### State Management
+
 - Toast queue managed by shadcn/ui toast context
 - Toast state: visible, dismissed, duration remaining
 - Auto-dismiss timers managed internally
 - User can programmatically dismiss toasts by ID
-

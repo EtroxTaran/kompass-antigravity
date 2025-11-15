@@ -1,19 +1,20 @@
-import { useCustomerList } from '../hooks/useCustomer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+
+import { useCustomerList } from '../hooks/useCustomer';
 import { useCustomerStore } from '../store/customerStore';
 
 /**
  * CustomerList Component
- * 
+ *
  * Displays list of customers with:
  * - Search functionality
  * - Filtering
  * - Offline support
  * - Loading states
- * 
+ *
  * Uses shadcn/ui components exclusively
  */
 export function CustomerList(): JSX.Element {
@@ -80,7 +81,10 @@ export function CustomerList(): JSX.Element {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredCustomers.map((customer) => (
-            <Card key={customer._id} className="cursor-pointer hover:shadow-lg transition-shadow">
+            <Card
+              key={customer._id}
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+            >
               <CardHeader>
                 <CardTitle>{customer.companyName}</CardTitle>
               </CardHeader>
@@ -105,7 +109,9 @@ export function CustomerList(): JSX.Element {
                   {customer.rating && (
                     <div>
                       <dt className="text-muted-foreground inline">Rating: </dt>
-                      <dd className="inline font-semibold">{customer.rating}</dd>
+                      <dd className="inline font-semibold">
+                        {customer.rating}
+                      </dd>
                     </div>
                   )}
                 </dl>
@@ -117,4 +123,3 @@ export function CustomerList(): JSX.Element {
     </div>
   );
 }
-

@@ -1,6 +1,7 @@
 # User Profile Management - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: User profile view and edit
 - **User Roles**: All (own profile), GF (all profiles)
 - **Usage Context**: View/edit user information, activity, performance
@@ -13,6 +14,7 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 **Profile View:**
 
 **Header:**
+
 - Background: Blue gradient or photo
 - Avatar: Large (120px), editable (click to change)
   - Initials: "MS" if no photo
@@ -22,12 +24,14 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 - Actions: "Bearbeiten" (button, if own profile), "Nachricht senden" (if viewing others)
 
 **Quick Contact Bar (Below Header):**
+
 - E-Mail: "m.schmidt@kompass.de" (mail icon, clickable)
 - Telefon: "+49-170-1234567" (phone icon, clickable)
 - Mobil: "+49-160-9876543" (smartphone icon)
 - Standort: "München" (map-pin icon)
 
 **Tab Navigation:**
+
 - "Übersicht" | "Aktivität" | "Statistiken" | "Team" (if PLAN/GF)
 
 ---
@@ -35,6 +39,7 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 **Tab: Übersicht**
 
 **Section: Über mich**
+
 - Card with editable text (if own profile)
 - Position: "Senior Außendienstmitarbeiter"
 - Abteilung: "Vertrieb"
@@ -43,6 +48,7 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 - Bio: Textarea "Verantwortlich für Kunden in München und Umgebung..."
 
 **Section: Berechtigungen**
+
 - Role: "Außendienst (ADM)" (green badge, large)
 - Permissions summary:
   - ✅ Eigene Kunden verwalten
@@ -53,12 +59,14 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 - Link: "Alle Berechtigungen anzeigen" (opens RBAC details)
 
 **Section: Kontaktpräferenzen**
+
 - Bevorzugte Kontaktmethode: "E-Mail"
 - Sprache: "Deutsch"
 - Zeitzone: "Europe/Berlin (GMT+1)"
 - Verfügbarkeit: "Mo-Fr, 08:00-18:00"
 
 **Section: Meine Kunden**
+
 - Count: "32 Kunden" (blue badge)
 - Top customers (avatars or initials):
   - Hofladen Müller
@@ -68,6 +76,7 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 - Link: "Alle Kunden anzeigen"
 
 **Section: Aktuelle Opportunities**
+
 - Count: "12 Opportunities (€ 850.000)" (amber badge)
 - Top opportunities:
   - REWE München - € 125k (75%)
@@ -80,6 +89,7 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 **Tab: Aktivität**
 
 **Activity Timeline (Last 30 Days):**
+
 - Chronological list
 - Each activity:
   - Icon: Phone, email, visit, note
@@ -90,11 +100,13 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
   - Duration: "15 Minuten" (if applicable)
 
 **Activity Filters:**
+
 - Type: Checkboxes "Anrufe", "Besuche", "E-Mails", "Notizen"
 - Date range: "Letzte 7 Tage", "Letzter Monat", "Dieses Quartal"
 - Customer: Dropdown (own customers)
 
 **Activity Summary Card:**
+
 - Total activities: "124 Aktivitäten"
 - Breakdown:
   - Anrufe: 45
@@ -108,6 +120,7 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 **Tab: Statistiken (Performance Metrics)**
 
 **KPI Cards (Top Row):**
+
 1. **Meine Kunden**
    - Count: "32"
    - Trend: "+3 diesen Monat"
@@ -127,24 +140,29 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 **Charts:**
 
 **Opportunities by Stage (Funnel):**
+
 - Stages: Neu → Qualifizierung → Angebot → Verhandlung → Gewonnen
 - Values: Count and € value for each stage
 
 **Monthly Revenue (Line Chart):**
+
 - X-axis: Months (last 12)
 - Y-axis: € value
 - Line: Revenue from won opportunities
 - Target line: Monthly goal
 
 **Activities by Type (Pie Chart):**
+
 - Segments: Anrufe (36%), Besuche (26%), E-Mails (23%), Notizen (15%)
 
 **Customer Growth (Bar Chart):**
+
 - X-axis: Months
 - Y-axis: Count
 - Bars: New customers per month
 
 **Performance Comparison (If GF/PLAN viewing):**
+
 - Table: Compare user with team average
 - Columns: Metric, User, Team Avg, Rank
 - Rows: Customers, Opportunities, Conversion Rate, Activities
@@ -155,6 +173,7 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 **Tab: Team (If PLAN/GF or Team Lead)**
 
 **Section: Mein Team**
+
 - List of team members (if team lead or manager)
 - Each member:
   - Avatar + name
@@ -164,11 +183,13 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
   - Action: "Profil anzeigen", "Nachricht senden"
 
 **Section: Manager**
+
 - Shows: Direct manager
 - Card: Avatar, name, role, contact
 - Action: "Kontaktieren"
 
 **Section: Kollegen**
+
 - Shows: Other ADM users (peers)
 - Horizontal scrollable cards
 - Each: Avatar, name, customers, opportunities
@@ -178,11 +199,13 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 **Edit Profile (If Own Profile):**
 
 **Edit Mode:**
+
 - Triggered by: "Bearbeiten" button in header
 - Inline editing: Fields become editable
 - Changes: Auto-save or "Speichern" button
 
 **Editable Fields:**
+
 - Avatar: Click to change (upload or camera on mobile)
 - Name: Input
 - Position: Input
@@ -193,11 +216,13 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 - Verfügbarkeit: Time range picker
 
 **Non-Editable:**
+
 - E-Mail (set by admin)
 - Role (set by admin)
 - Im Team seit (auto-calculated)
 
 **Avatar Change:**
+
 - Dialog: "Profilbild ändern"
 - Options:
   - "Foto hochladen" (file picker)
@@ -211,6 +236,7 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 ---
 
 **Public Profile (Viewing Others):**
+
 - Shows: Limited info (no sensitive data)
 - Visible:
   - Name, role, position
@@ -223,6 +249,7 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
   - Full activity log
 
 **Privacy Settings:**
+
 - Toggle: "Profil für Team sichtbar" (default: ON)
 - Toggle: "Aktivitäten für Team sichtbar" (default: OFF)
 - Toggle: "Kontaktdaten für Team sichtbar" (default: ON)
@@ -230,22 +257,24 @@ Create a user profile interface for KOMPASS showing user info, role, contact det
 ---
 
 **Mobile View:**
+
 - Header: Full-width, scrollable
 - Tabs: Horizontal chips (swipeable)
 - Sections: Collapsible cards
 - Edit: Full-screen modal
 
 **Accessibility:**
+
 - ARIA labels: Describe all sections
 - Keyboard navigation: Tab through profile
 - Screen reader: Reads all info
 - High contrast: Clear visual hierarchy
 
 ## Implementation Notes
+
 ```bash
 npx shadcn-ui@latest add card badge button avatar tabs
 # Profile: Store in user document (CouchDB)
 # Avatar: Store in cloud storage or base64
 # Stats: Calculate from activity and opportunity data
 ```
-

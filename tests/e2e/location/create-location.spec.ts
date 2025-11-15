@@ -1,6 +1,6 @@
 /**
  * E2E Test: Create Location
- * 
+ *
  * Tests the complete flow of creating a new location for a customer
  * Validates RBAC permissions, form validation, and UI feedback
  */
@@ -30,7 +30,7 @@ test.describe('Location Management - Create Location', () => {
 
     // Fill location form
     await page.fill('[name="locationName"]', 'Filiale München Süd');
-    
+
     // Select location type
     await page.click('[name="locationType"]');
     await page.click('text=Filiale');
@@ -49,7 +49,9 @@ test.describe('Location Management - Create Location', () => {
     await page.click('button:has-text("Erstellen")');
 
     // Verify success toast
-    await expect(page.locator('.toast-success')).toContainText('Standort erfolgreich erstellt');
+    await expect(page.locator('.toast-success')).toContainText(
+      'Standort erfolgreich erstellt'
+    );
 
     // Verify location appears in list
     await expect(page.locator('text=Filiale München Süd')).toBeVisible();
@@ -69,7 +71,7 @@ test.describe('Location Management - Create Location', () => {
 
     // Fix validation error
     await page.fill('[name="locationName"]', 'Test Filiale');
-    
+
     // Try with invalid postal code
     await page.fill('[name="deliveryAddress.zipCode"]', '123'); // Too short
     await page.click('button:has-text("Erstellen")');
@@ -77,10 +79,12 @@ test.describe('Location Management - Create Location', () => {
     await expect(page.locator('text=PLZ muss 5-stellig sein')).toBeVisible();
   });
 
-  test('should prevent ADM from creating location for non-owned customer', async ({ page }) => {
+  test('should prevent ADM from creating location for non-owned customer', async ({
+    page,
+  }) => {
     // Navigate to customer NOT owned by this ADM user
     await page.goto('/customers/customer-999');
-    
+
     // Try to create location
     await page.click('button:has-text("Standorte")');
     await page.click('button:has-text("Neuer Standort")');
@@ -89,11 +93,13 @@ test.describe('Location Management - Create Location', () => {
     await page.fill('[name="deliveryAddress.street"]', 'Test');
     await page.fill('[name="deliveryAddress.zipCode"]', '80331');
     await page.fill('[name="deliveryAddress.city"]', 'München');
-    
+
     await page.click('button:has-text("Erstellen")');
 
     // Verify forbidden error
-    await expect(page.locator('.toast-error')).toContainText('Zugriff verweigert');
+    await expect(page.locator('.toast-error')).toContainText(
+      'Zugriff verweigert'
+    );
   });
 
   test('should detect duplicate location name', async ({ page }) => {
@@ -106,11 +112,12 @@ test.describe('Location Management - Create Location', () => {
     await page.fill('[name="deliveryAddress.street"]', 'Test');
     await page.fill('[name="deliveryAddress.zipCode"]', '80331');
     await page.fill('[name="deliveryAddress.city"]', 'München');
-    
+
     await page.click('button:has-text("Erstellen")');
 
     // Verify conflict error
-    await expect(page.locator('.toast-error')).toContainText('bereits vorhanden');
+    await expect(page.locator('.toast-error')).toContainText(
+      'bereits vorhanden'
+    );
   });
 });
-

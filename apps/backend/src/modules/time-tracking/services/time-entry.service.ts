@@ -5,23 +5,23 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
-import {
+import { v4 as uuidv4 } from 'uuid';
+
+import type {
   TimeEntry,
-  TimeEntryStatus,
   CreateTimeEntryDto,
   UpdateTimeEntryDto,
   TimeEntryResponseDto,
   LaborCostSummary,
 } from '@kompass/shared/types/entities/time-entry';
-import {
-  ITimeEntryRepository,
-  TimeEntryFilters,
-} from '../repositories/time-entry.repository.interface';
-import { v4 as uuidv4 } from 'uuid';
+import { TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
+
+import type { TimeEntryFilters } from '../repositories/time-entry.repository.interface';
+import { ITimeEntryRepository } from '../repositories/time-entry.repository.interface';
 
 /**
  * Time Entry Service
- * 
+ *
  * Business logic for time tracking functionality including:
  * - Starting/stopping timers
  * - Manual time entry
@@ -32,7 +32,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class TimeEntryService {
   constructor(
     @Inject('ITimeEntryRepository')
-    private readonly repository: ITimeEntryRepository,
+    private readonly repository: ITimeEntryRepository
   ) {}
 
   /**
@@ -40,14 +40,14 @@ export class TimeEntryService {
    */
   async create(
     dto: CreateTimeEntryDto,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<TimeEntryResponseDto> {
     // Validate that user doesn't have another active timer
     if (!dto.isManualEntry && !dto.endTime) {
       const activeTimer = await this.repository.findActiveByUser(currentUserId);
       if (activeTimer) {
         throw new BadRequestException(
-          'You already have an active timer running. Please stop it before starting a new one.',
+          'You already have an active timer running. Please stop it before starting a new one.'
         );
       }
     }
@@ -57,7 +57,7 @@ export class TimeEntryService {
     if (dto.startTime && dto.endTime) {
       durationMinutes = this.calculateDurationMinutes(
         dto.startTime,
-        dto.endTime,
+        dto.endTime
       );
     }
 
@@ -104,7 +104,7 @@ export class TimeEntryService {
    */
   async stopTimer(
     entryId: string,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<TimeEntryResponseDto> {
     const entry = await this.repository.findById(entryId);
 
@@ -114,23 +114,19 @@ export class TimeEntryService {
 
     // Verify ownership
     if (entry.userId !== currentUserId) {
-      throw new ForbiddenException(
-        'You can only stop your own time entries',
-      );
+      throw new ForbiddenException('You can only stop your own time entries');
     }
 
     // Verify entry is in progress
     if (entry.status !== TimeEntryStatus.IN_PROGRESS) {
-      throw new BadRequestException(
-        'Timer is not running',
-      );
+      throw new BadRequestException('Timer is not running');
     }
 
     // Stop timer
     const endTime = new Date();
     const durationMinutes = this.calculateDurationMinutes(
       entry.startTime,
-      endTime,
+      endTime
     );
 
     // Calculate cost
@@ -156,13 +152,13 @@ export class TimeEntryService {
 
   /**
    * Pause a running timer
-   * 
+   *
    * Note: Pausing is implemented by stopping the current entry
    * and creating a new entry when resumed.
    */
   async pauseTimer(
     entryId: string,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<TimeEntryResponseDto> {
     // For simplicity, pause is same as stop
     // When user resumes, they start a new timer
@@ -175,7 +171,7 @@ export class TimeEntryService {
   async update(
     entryId: string,
     dto: UpdateTimeEntryDto,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<TimeEntryResponseDto> {
     const entry = await this.repository.findById(entryId);
 
@@ -186,16 +182,12 @@ export class TimeEntryService {
     // Verify ownership or approval permission
     if (entry.userId !== currentUserId) {
       // TODO: Check if user has TimeEntry.UPDATE permission for others
-      throw new ForbiddenException(
-        'You can only update your own time entries',
-      );
+      throw new ForbiddenException('You can only update your own time entries');
     }
 
     // Cannot update approved entries
     if (entry.status === TimeEntryStatus.APPROVED) {
-      throw new ForbiddenException(
-        'Cannot update approved time entries',
-      );
+      throw new ForbiddenException('Cannot update approved time entries');
     }
 
     // Recalculate duration if times changed
@@ -241,16 +233,12 @@ export class TimeEntryService {
 
     // Verify ownership
     if (entry.userId !== currentUserId) {
-      throw new ForbiddenException(
-        'You can only delete your own time entries',
-      );
+      throw new ForbiddenException('You can only delete your own time entries');
     }
 
     // Cannot delete approved entries
     if (entry.status === TimeEntryStatus.APPROVED) {
-      throw new ForbiddenException(
-        'Cannot delete approved time entries',
-      );
+      throw new ForbiddenException('Cannot delete approved time entries');
     }
 
     await this.repository.delete(entryId);
@@ -261,7 +249,7 @@ export class TimeEntryService {
    */
   async findById(
     entryId: string,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<TimeEntryResponseDto> {
     const entry = await this.repository.findById(entryId);
 
@@ -272,9 +260,7 @@ export class TimeEntryService {
     // TODO: Check RBAC permissions
     // For now, users can only see their own entries
     if (entry.userId !== currentUserId) {
-      throw new ForbiddenException(
-        'You can only view your own time entries',
-      );
+      throw new ForbiddenException('You can only view your own time entries');
     }
 
     return this.mapToResponseDto(entry);
@@ -286,15 +272,16 @@ export class TimeEntryService {
   async findAll(
     filters: TimeEntryFilters,
     currentUserId: string,
-    userRole?: string,
+    userRole?: string
   ): Promise<TimeEntryResponseDto[]> {
     // Apply RBAC filters based on user role
     // Managers (GF, PLAN) can see team entries
     // Other roles can only see their own entries
-    const isManager = userRole === 'GF' || userRole === 'PLAN' || userRole === 'BUCH';
-    
+    const isManager =
+      userRole === 'GF' || userRole === 'PLAN' || userRole === 'BUCH';
+
     const userFilters: TimeEntryFilters = { ...filters };
-    
+
     // Non-managers can only see their own entries
     if (!isManager) {
       userFilters.userId = currentUserId;
@@ -308,7 +295,9 @@ export class TimeEntryService {
   /**
    * Get user's active timer
    */
-  async getActiveTimer(currentUserId: string): Promise<TimeEntryResponseDto | null> {
+  async getActiveTimer(
+    currentUserId: string
+  ): Promise<TimeEntryResponseDto | null> {
     const entry = await this.repository.findActiveByUser(currentUserId);
     return entry ? this.mapToResponseDto(entry) : null;
   }
@@ -318,7 +307,7 @@ export class TimeEntryService {
    */
   async approve(
     entryId: string,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<TimeEntryResponseDto> {
     const entry = await this.repository.findById(entryId);
 
@@ -331,7 +320,7 @@ export class TimeEntryService {
     // Only completed entries can be approved
     if (entry.status !== TimeEntryStatus.COMPLETED) {
       throw new BadRequestException(
-        'Only completed time entries can be approved',
+        'Only completed time entries can be approved'
       );
     }
 
@@ -357,7 +346,7 @@ export class TimeEntryService {
   async reject(
     entryId: string,
     reason: string,
-    currentUserId: string,
+    currentUserId: string
   ): Promise<TimeEntryResponseDto> {
     const entry = await this.repository.findById(entryId);
 
@@ -384,13 +373,13 @@ export class TimeEntryService {
    */
   async bulkApprove(
     entryIds: string[],
-    currentUserId: string,
+    currentUserId: string
   ): Promise<{ approvedCount: number }> {
     // TODO: Check if user has approval permission
 
     const approvedCount = await this.repository.bulkApprove(
       entryIds,
-      currentUserId,
+      currentUserId
     );
 
     // TODO: Trigger project cost recalculation for affected projects
@@ -402,7 +391,7 @@ export class TimeEntryService {
    * Calculate labor costs for a project
    */
   async calculateProjectLaborCosts(
-    projectId: string,
+    projectId: string
   ): Promise<LaborCostSummary> {
     return this.repository.calculateLaborCosts(projectId);
   }
@@ -431,4 +420,3 @@ export class TimeEntryService {
     };
   }
 }
-

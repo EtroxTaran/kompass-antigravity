@@ -19,10 +19,12 @@ Update the KOMPASS design system to integrate comprehensive tour planning featur
 ### GPS Coordinates Addition
 
 **FIND in Location Form:**
+
 - Section with "Lieferadresse" fields
 - After country field
 
 **ADD NEW FIELDS:**
+
 ```
 GPS-Koordinaten (optional)
 ┌────────────────────┬────────────────────┐
@@ -35,6 +37,7 @@ GPS-Koordinaten (optional)
 ```
 
 **Specifications:**
+
 - Field width: 50% each (with 16px gap)
 - Input height: 48px
 - Label: Inter 14px medium (#374151)
@@ -46,9 +49,11 @@ GPS-Koordinaten (optional)
 ### Hotel Rating Field (Conditional)
 
 **FIND in Location Form:**
+
 - After "isActive" toggle field
 
 **ADD CONDITIONAL FIELD:**
+
 ```
 Wenn locationType = "hotel":
 
@@ -58,6 +63,7 @@ Hotel-Bewertung
 ```
 
 **Specifications:**
+
 - Show only when locationType = "hotel"
 - Star rating: 24px stars, #F59E0B (filled), #E5E7EB (empty)
 - Dropdown contains: 1-5 star options
@@ -70,10 +76,12 @@ Hotel-Bewertung
 ### Tour Planning Section
 
 **FIND in Customer Form:**
+
 - After "Kontaktpersonen" section
 - Before form action buttons
 
 **ADD NEW SECTION:**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Tourenplanung                               │
@@ -104,6 +112,7 @@ Hotel-Bewertung
 ```
 
 **Specifications:**
+
 - Section card: Same style as other form sections
 - Dropdown height: 48px
 - Checkbox: Standard shadcn/ui checkbox
@@ -117,10 +126,12 @@ Hotel-Bewertung
 ### GF Dashboard - Tour Overview Widget
 
 **FIND in GF Dashboard:**
+
 - In the metrics grid area
 - Add as new widget
 
 **ADD NEW WIDGET:**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Toureneffizienz diese Woche                 │
@@ -141,6 +152,7 @@ Hotel-Bewertung
 ```
 
 **Specifications:**
+
 - Widget size: 400px × 280px
 - Day cells: 64px wide, centered values
 - Metric text: Inter 24px semibold
@@ -151,10 +163,12 @@ Hotel-Bewertung
 ### ADM Dashboard - Route Widget
 
 **FIND in ADM Dashboard:**
+
 - Below task widgets
 - Above activity feed
 
 **ADD NEW WIDGET:**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Heutige Tour                                │
@@ -174,6 +188,7 @@ Hotel-Bewertung
 ```
 
 **Specifications:**
+
 - Widget width: Full width on mobile, 400px on desktop
 - Progress bar: 8px height, primary blue (#3B82F6)
 - Route name: Inter 18px semibold
@@ -187,9 +202,11 @@ Hotel-Bewertung
 ### Location Form Fields
 
 **FIND:**
+
 - Country field in address section
 
 **REPLACE WITH:**
+
 - Country field
 - GPS coordinates fields (as specified above)
 - Conditional hotel rating (if locationType = "hotel")
@@ -197,9 +214,11 @@ Hotel-Bewertung
 ### Customer Form Sections
 
 **FIND:**
+
 - Space after "Kontaktpersonen" section
 
 **REPLACE WITH:**
+
 - Tour planning section (as specified above)
 
 ---
@@ -209,6 +228,7 @@ Hotel-Bewertung
 ### GPS Coordinate Validation
 
 **Pattern**: `-?[0-9]{1,3}\.?[0-9]{0,7}`
+
 - Latitude: -90 to 90
 - Longitude: -180 to 180
 - Decimal degrees format
@@ -229,6 +249,7 @@ Hotel-Bewertung
 ### Location Form Mobile (375px)
 
 **GPS fields stack vertically:**
+
 ```
 Breitengrad
 [48.1351253_______________]
@@ -242,6 +263,7 @@ Längengrad
 ### Customer Form Mobile (375px)
 
 **Tour planning dropdowns:**
+
 - Full width
 - Stack vertically
 - 16px spacing between fields
@@ -249,6 +271,7 @@ Längengrad
 ### Dashboard Widgets Mobile
 
 **Tour widgets:**
+
 - Full width (padding: 16px)
 - Efficiency chart: Scroll horizontally if needed
 - Route widget: Condense text, maintain hierarchy
@@ -258,6 +281,7 @@ Längengrad
 ## COLOR & STYLING CONSISTENCY
 
 Use existing design system:
+
 - Primary: #3B82F6
 - Success: #10B981
 - Warning: #F59E0B
@@ -269,6 +293,7 @@ Use existing design system:
 ## QUALITY CHECKLIST
 
 After applying this prompt, verify:
+
 - [ ] GPS coordinate fields appear in all location forms
 - [ ] GPS format validation shows proper helper text
 - [ ] Hotel rating shows ONLY when locationType = "hotel"

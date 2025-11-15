@@ -1,6 +1,7 @@
 # Project Materials View (BOM) - Figma Make Prompt
 
 ## Context & Purpose
+
 - **View:** Project Bill of Materials (BOM) with Cost Tracking
 - **Users:** PLAN (primary - manages requirements), INN (procurement), KALK (cost analysis), BUCH (budget monitoring)
 - **Purpose:** View, track, and manage all materials for a project
@@ -13,9 +14,11 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 **Page Title:** "Materialbedarf - Projekt P-2025-M003"
 
 **Breadcrumb:**
+
 - "Projekte" > "P-2025-M003: REWE München" > "Materialien"
 
 **Header Actions:**
+
 - **Add Material:** "+ Material hinzufügen" (PLAN/INN only)
 - **Create PO:** "Bestellung erstellen" (INN only) - for selected materials
 - **Export:** "Export" dropdown (CSV, PDF) - all roles
@@ -36,21 +39,25 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 ```
 
 **Card 1: Geschätzter Gesamtbetrag (Estimated Total)**
+
 - Value: "€ 125.000" (36px, blue)
 - Source: "KALK-Schätzung"
 - Count: "12 Materialien"
 
 **Card 2: Bestellt (Ordered)**
+
 - Value: "€ 118.450" (36px, amber)
 - Status: "8 von 12 Positionen bestellt"
 - Pending: "4 Positionen offen"
 
 **Card 3: Geliefert (Delivered)**
+
 - Value: "€ 95.200" (36px, green)
 - Status: "5 von 12 Positionen geliefert"
 - In transit: "3 in Lieferung"
 
 **Card 4: Varianz (Variance)**
+
 - Value: "+ € 6.550" (red if positive, green if negative)
 - Percentage: "(+5,2%)" (vs. estimate)
 - Status: "❌ Über Budget" (red) if positive, "✓ Unter Budget" (green) if negative
@@ -61,11 +68,11 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 
 **Table Columns:**
 
-| # | Material | Phase | Menge (Geschätzt/Ist) | Preis (Geschätzt/Ist) | Gesamtkosten | Lieferant | Status | Lieferung | Aktionen |
-|---|----------|-------|----------------------|---------------------|--------------|-----------|--------|-----------|----------|
-| 1 | LED-Panel 60x60cm | Installation | 24/24 Stk | €145/€142 | €3.408 (€3.480) | Müller GmbH | ✓ Geliefert | 05.02.25 | [...] |
-| 2 | Ladenregal Eiche | Construction | 8/— Stk | €850/— | €6.800 (—) | Weber KG | 🟡 Bestellt | ETA: 15.02 | [...] |
-| 3 | Bodenbelag Vinyl | Finishing | 45/— m² | €35/— | €1.575 (—) | Schmidt | ⏳ Nicht bestellt | — | [...] |
+| #   | Material          | Phase        | Menge (Geschätzt/Ist) | Preis (Geschätzt/Ist) | Gesamtkosten    | Lieferant   | Status            | Lieferung  | Aktionen |
+| --- | ----------------- | ------------ | --------------------- | --------------------- | --------------- | ----------- | ----------------- | ---------- | -------- |
+| 1   | LED-Panel 60x60cm | Installation | 24/24 Stk             | €145/€142             | €3.408 (€3.480) | Müller GmbH | ✓ Geliefert       | 05.02.25   | [...]    |
+| 2   | Ladenregal Eiche  | Construction | 8/— Stk               | €850/—                | €6.800 (—)      | Weber KG    | 🟡 Bestellt       | ETA: 15.02 | [...]    |
+| 3   | Bodenbelag Vinyl  | Finishing    | 45/— m²               | €35/—                 | €1.575 (—)      | Schmidt     | ⏳ Nicht bestellt | —          | [...]    |
 
 **Column Details:**
 
@@ -127,6 +134,7 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
       - "Aus Projekt entfernen" (PLAN)
 
 **Table Features:**
+
 - **Row Selection:** Checkbox for bulk actions
 - **Row Click:** Expands to show full details
 - **Sorting:** By phase, status, cost variance, delivery date
@@ -134,6 +142,7 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 - **Search:** Material name, code, supplier
 
 **Bulk Actions:**
+
 - Select multiple materials (same supplier recommended)
 - **Create PO:** "Bestellung erstellen für ausgewählte (3)" button
 - **Update Status:** Change multiple statuses at once
@@ -170,6 +179,7 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 ```
 
 **Phase Cards:**
+
 - Collapsible sections
 - Header shows: Phase name, material count, cost (estimated/actual)
 - Cost indicator: Green if under, red if over, blue if not complete
@@ -248,19 +258,21 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 
 **Variance Summary Table:**
 
-| Kategorie | Geschätzt | Ist | Varianz | % | Grund |
-|-----------|-----------|-----|---------|---|-------|
-| Regale | € 43.000 | € 41.200 | - € 1.800 | -4,2% | Besserer Preis ausgehandelt |
-| Beleuchtung | € 35.000 | € 33.850 | - € 1.150 | -3,3% | Mengenrabatt erhalten |
-| Elektrik | € 25.000 | € 28.400 | + € 3.400 | +13,6% | Zusätzliche Steckdosen benötigt |
-| **Gesamt** | **€ 125.000** | **€ 95.200** | **- € 6.550** | **-5,2%** | - |
+| Kategorie   | Geschätzt     | Ist          | Varianz       | %         | Grund                           |
+| ----------- | ------------- | ------------ | ------------- | --------- | ------------------------------- |
+| Regale      | € 43.000      | € 41.200     | - € 1.800     | -4,2%     | Besserer Preis ausgehandelt     |
+| Beleuchtung | € 35.000      | € 33.850     | - € 1.150     | -3,3%     | Mengenrabatt erhalten           |
+| Elektrik    | € 25.000      | € 28.400     | + € 3.400     | +13,6%    | Zusätzliche Steckdosen benötigt |
+| **Gesamt**  | **€ 125.000** | **€ 95.200** | **- € 6.550** | **-5,2%** | -                               |
 
 **Status Indicators:**
+
 - Green: Variance < -5% (under budget, good)
 - Blue: Variance -5% to +5% (on budget, acceptable)
 - Red: Variance > +5% (over budget, needs attention)
 
 **Variance Reason Column:**
+
 - User-entered text explaining why actual differs
 - Link: "Grund erfassen" if not yet entered
 - Important for KALK to improve future estimates
@@ -316,6 +328,7 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 ### Filters
 
 **Status:**
+
 - ☐ Alle anzeigen (default)
 - ☐ Nicht bestellt
 - ☐ Bestellt
@@ -324,6 +337,7 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 - ☐ Verzögert
 
 **Phase:**
+
 - ☐ Alle Phasen (default)
 - ☐ Planung
 - ☐ Vorbereitung
@@ -332,6 +346,7 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 - ☐ Finishing
 
 **Kategorie:**
+
 - ☐ Alle Kategorien (default)
 - ☐ Regale
 - ☐ Beleuchtung
@@ -339,10 +354,12 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 - ... (material categories)
 
 **Lieferant:**
+
 - Searchable dropdown
 - Shows only suppliers used in this project
 
 **Budget-Varianz:**
+
 - ☐ Alle
 - ☐ Unter Budget (actual < estimated)
 - ☐ Im Budget (±5%)
@@ -363,6 +380,7 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 ### Bulk Material Actions
 
 **Select multiple materials (checkbox):**
+
 - **Create PO:** "Bestellung erstellen" (INN) - creates single PO for selected materials from same supplier
 - **Update Status:** Change status for multiple materials
 - **Assign to Phase:** Move materials to different phase (PLAN)
@@ -371,6 +389,7 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 ### Individual Material Actions
 
 **[...] Menu per row:**
+
 - **Details anzeigen** → Expands row or opens modal with full specs
 - **Bearbeiten** → Edit material requirement (quantity, phase, notes)
 - **Preise vergleichen** → Shows pricing from all suppliers for this material
@@ -386,6 +405,7 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 **Trigger:** Select materials + click "Bestellung erstellen"
 
 **Step 1: Group by Supplier**
+
 ```
 ┌────────────────────────────────────────────────────────┐
 │ Bestellung erstellen                                   │
@@ -414,6 +434,7 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 ```
 
 **Step 2: PO Form** (opens for each supplier group)
+
 - Pre-filled: Supplier, materials, quantities, prices, project
 - INN reviews: Adjusts quantities if needed, adds shipping cost
 - INN sets: Required delivery date, delivery address
@@ -466,6 +487,7 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 ```
 
 **Actions after submit:**
+
 - Updates: ProjectMaterialRequirement.actualQuantity, actualUnitPrice, deliveryStatus
 - Recalculates: Project actual material costs real-time
 - Updates: PO status (Delivered or PartiallyDelivered)
@@ -519,6 +541,7 @@ Create a project materials view (Bill of Materials) for KOMPASS showing material
 ```
 
 **Mobile Optimizations:**
+
 - Cost summary: Compact card at top
 - Tab view: List / Phases / Cost Analysis
 - Cards: Full-width, key info only
@@ -563,6 +586,7 @@ Project Detail:
 ```
 
 **Quick Access from Project Dashboard:**
+
 - PLAN dashboard card: "Materialbedarf prüfen" (if materials pending)
 - Budget alert: "Material-Kosten anzeigen" link
 
@@ -596,6 +620,7 @@ Toast notification: "Material geliefert. Projektkosten aktualisiert."
 **From material row, click PO number:** Opens PO detail modal or page
 
 **PO Detail Quick View:**
+
 - PO number, date, supplier
 - All line items with quantities
 - Total amount
@@ -611,6 +636,7 @@ npx shadcn-ui@latest add table card badge button tabs dialog progress separator
 ```
 
 ### Charts
+
 ```bash
 # Install recharts for cost analysis charts
 npm install recharts
@@ -642,4 +668,3 @@ npm install recharts
 ---
 
 **End of project-materials.md**
-

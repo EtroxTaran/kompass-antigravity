@@ -1,4 +1,6 @@
 import { TrendingUp, RefreshCw } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -6,28 +8,30 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+
 import { ProfitabilityDashboard } from '../components/ProfitabilityDashboard';
 import { useProfitability } from '../hooks/useProfitability';
 
 /**
  * Project Profitability Page
- * 
+ *
  * Displays comprehensive profitability analysis for a project.
- * 
+ *
  * Features:
  * - Budget vs actual comparison
  * - Cost breakdown by labor and materials
  * - Profit margin analysis
  * - Budget alerts and warnings
- * 
+ *
  * @see Phase 1.4 of Time Tracking Implementation Plan
  */
 interface ProjectProfitabilityPageProps {
   projectId: string;
 }
 
-export function ProjectProfitabilityPage({ projectId }: ProjectProfitabilityPageProps) {
+export function ProjectProfitabilityPage({
+  projectId,
+}: ProjectProfitabilityPageProps) {
   const { report, loading, error, refetch } = useProfitability(projectId);
 
   if (loading) {
@@ -87,4 +91,3 @@ export function ProjectProfitabilityPage({ projectId }: ProjectProfitabilityPage
     </div>
   );
 }
-

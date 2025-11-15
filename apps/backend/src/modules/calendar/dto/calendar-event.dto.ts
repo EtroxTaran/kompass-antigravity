@@ -1,5 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEnum, IsOptional, IsBoolean, IsArray, IsISO8601, MaxLength, Matches } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsOptional,
+  IsBoolean,
+  IsArray,
+  IsISO8601,
+  MaxLength,
+  Matches,
+} from 'class-validator';
 
 export enum CalendarEventType {
   USER_TASK = 'user_task',
@@ -182,5 +191,3 @@ export class CalendarEventDto {
   @IsString()
   url?: string;
 }
-
-

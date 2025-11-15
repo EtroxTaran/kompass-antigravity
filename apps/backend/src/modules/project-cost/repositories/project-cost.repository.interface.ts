@@ -1,4 +1,4 @@
-import {
+import type {
   ProjectCost,
   ProjectCostStatus,
   ProjectCostType,
@@ -7,7 +7,7 @@ import {
 
 /**
  * Project Cost Repository Interface
- * 
+ *
  * Defines data access operations for project costs.
  * Follows repository pattern for clean architecture.
  */
@@ -70,7 +70,7 @@ export interface IProjectCostRepository {
 
 /**
  * Project Cost Filters
- * 
+ *
  * Optional filters for querying project costs.
  */
 export interface ProjectCostFilters {
@@ -81,4 +81,3 @@ export interface ProjectCostFilters {
   startDate?: Date;
   endDate?: Date;
 }
-

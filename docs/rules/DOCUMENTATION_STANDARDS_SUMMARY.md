@@ -69,6 +69,7 @@
 ### Duplicate Prevention
 
 **Rules prevent:**
+
 - Versioned filenames (`*_v*.md`)
 - Duplicate content in different folders
 - Multiple documents for same topic
@@ -118,21 +119,25 @@ docs/
 ## Migration Plan
 
 ### Phase 1: Create Structure
+
 - Create new category folders
 - Create README.md files for each category
 
 ### Phase 2: Move Files
+
 - Move root-level files to appropriate categories
 - Rename `architectur/` → `architecture/`
 - Move `reviews/` → `specifications/`
 - Organize files within categories
 
 ### Phase 3: Update Links
+
 - Update all cross-references
 - Update main README.md
 - Verify all links work
 
 ### Phase 4: Create Indexes
+
 - Create category README.md files
 - Add document lists and descriptions
 - Add quick links
@@ -144,6 +149,7 @@ docs/
 ### Pre-Commit Hooks
 
 Check for:
+
 - New docs in correct category folder
 - No duplicate filenames
 - README.md updated in category folder
@@ -153,6 +159,7 @@ Check for:
 ### CI/CD Checks
 
 Validate:
+
 - All README.md files exist
 - No broken internal links
 - Documentation structure compliance
@@ -161,6 +168,7 @@ Validate:
 ### Code Review Checklist
 
 Reviewers check:
+
 - Document in correct category
 - No duplicates created
 - README.md updated
@@ -208,4 +216,3 @@ Reviewers check:
 **Status**: ✅ Standards implemented and enforced  
 **Enforcement**: Pre-commit hooks, CI/CD checks, code review  
 **Maintenance**: Quarterly reviews per category
-

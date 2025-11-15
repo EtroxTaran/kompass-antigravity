@@ -15,6 +15,7 @@
 The pre-mortem analysis identified the **complete absence of Supplier & Subcontractor Management** as a fatal gap. The INN (Internal Services) persona's primary role is coordinating external partners—craftsmen, suppliers, installers—yet KOMPASS provides no dedicated tools for this workflow.
 
 **Without this module:**
+
 - Claudia (INN) is forced to use Excel and email, creating data silos
 - Project cost tracking is incomplete (missing supplier invoices)
 - Supplier performance cannot be measured or improved
@@ -30,67 +31,67 @@ The pre-mortem analysis identified the **complete absence of Supplier & Subcontr
 
 ```typescript
 interface Supplier extends BaseEntity {
-  _id: string;                    // "supplier-{uuid}"
+  _id: string; // "supplier-{uuid}"
   _rev: string;
   type: 'supplier';
-  
+
   // Basic Information
-  companyName: string;             // Required, 2-200 chars
-  legalForm?: string;              // "GmbH", "e.K.", "GbR", etc.
-  vatNumber?: string;              // Optional, format: DE123456789
-  taxId?: string;                  // Steuernummer (German tax ID)
-  
+  companyName: string; // Required, 2-200 chars
+  legalForm?: string; // "GmbH", "e.K.", "GbR", etc.
+  vatNumber?: string; // Optional, format: DE123456789
+  taxId?: string; // Steuernummer (German tax ID)
+
   // Contact Information
-  email: string;                   // Required
-  phone: string;                   // Required
+  email: string; // Required
+  phone: string; // Required
   mobile?: string;
-  fax?: string;                    // Legacy, optional
+  fax?: string; // Legacy, optional
   website?: string;
-  
+
   // Address
-  billingAddress: Address;         // Required
-  deliveryAddresses?: Address[];   // Optional multiple delivery addresses
-  
+  billingAddress: Address; // Required
+  deliveryAddresses?: Address[]; // Optional multiple delivery addresses
+
   // Supplier Classification
-  supplierType: SupplierType;      // Required
+  supplierType: SupplierType; // Required
   serviceCategories: ServiceCategory[]; // Required, at least 1
-  serviceDescription: string;      // Required, 50-1000 chars
-  
+  serviceDescription: string; // Required, 50-1000 chars
+
   // Business Details
-  paymentTerms: PaymentTerms;      // Required
-  minimumOrderValue?: number;      // Optional, € minimum
-  deliveryLeadTime?: number;       // Days, optional
-  workingRadius?: number;          // km, for location-based services
-  
+  paymentTerms: PaymentTerms; // Required
+  minimumOrderValue?: number; // Optional, € minimum
+  deliveryLeadTime?: number; // Days, optional
+  workingRadius?: number; // km, for location-based services
+
   // Performance Tracking
-  rating: SupplierRating;          // 1-5 stars, calculated
-  qualityScore: number;            // 0-100, calculated from project feedback
-  reliabilityScore: number;        // 0-100, on-time delivery rate
-  priceCompetitiveness: number;    // 0-100, vs. market average
-  totalProjectCount: number;       // Count of projects worked on
-  activeProjectCount: number;      // Current active assignments
-  
+  rating: SupplierRating; // 1-5 stars, calculated
+  qualityScore: number; // 0-100, calculated from project feedback
+  reliabilityScore: number; // 0-100, on-time delivery rate
+  priceCompetitiveness: number; // 0-100, vs. market average
+  totalProjectCount: number; // Count of projects worked on
+  activeProjectCount: number; // Current active assignments
+
   // Financial
-  totalContractValue: number;      // Sum of all contracts
-  outstandingInvoices: number;     // Sum of unpaid invoices
-  creditLimit?: number;            // Optional, € maximum
-  
+  totalContractValue: number; // Sum of all contracts
+  outstandingInvoices: number; // Sum of unpaid invoices
+  creditLimit?: number; // Optional, € maximum
+
   // Documents
   insuranceCertificate?: Document; // Required for liability work
-  tradeLicense?: Document;         // Gewerbeanmeldung
-  qualifications?: Document[];     // Certifications, Meisterbrief
-  references?: Document[];         // Reference letters
-  
+  tradeLicense?: Document; // Gewerbeanmeldung
+  qualifications?: Document[]; // Certifications, Meisterbrief
+  references?: Document[]; // Reference letters
+
   // Status
   status: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval';
-  blacklistReason?: string;        // Required if Blacklisted
-  approvedBy?: string;             // User ID (GF approval for first contract)
+  blacklistReason?: string; // Required if Blacklisted
+  approvedBy?: string; // User ID (GF approval for first contract)
   approvedAt?: Date;
-  
+
   // Relationships
-  primaryContactId?: string;       // Main contact person at supplier
-  accountManagerId: string;        // INN user managing this supplier
-  
+  primaryContactId?: string; // Main contact person at supplier
+  accountManagerId: string; // INN user managing this supplier
+
   // Audit Trail (from BaseEntity)
   createdBy: string;
   createdAt: Date;
@@ -100,55 +101,60 @@ interface Supplier extends BaseEntity {
 }
 
 enum SupplierType {
-  MATERIAL_SUPPLIER = 'material_supplier',         // Sells materials
-  SERVICE_PROVIDER = 'service_provider',           // Provides services
-  SUBCONTRACTOR = 'subcontractor',                 // Full subcontracted work
-  CRAFTSMAN = 'craftsman',                         // Individual tradesman
-  LOGISTICS = 'logistics',                         // Transport/delivery
-  MIXED = 'mixed'                                  // Materials + services
+  MATERIAL_SUPPLIER = 'material_supplier', // Sells materials
+  SERVICE_PROVIDER = 'service_provider', // Provides services
+  SUBCONTRACTOR = 'subcontractor', // Full subcontracted work
+  CRAFTSMAN = 'craftsman', // Individual tradesman
+  LOGISTICS = 'logistics', // Transport/delivery
+  MIXED = 'mixed', // Materials + services
 }
 
 enum ServiceCategory {
   // Trades
-  CARPENTRY = 'carpentry',                         // Tischlerei
-  METALWORK = 'metalwork',                         // Metallbau
-  ELECTRICAL = 'electrical',                       // Elektrik
-  PLUMBING = 'plumbing',                           // Sanitär
-  HVAC = 'hvac',                                   // Heizung/Klima
-  PAINTING = 'painting',                           // Malerei
-  FLOORING = 'flooring',                           // Bodenbeläge
-  
+  CARPENTRY = 'carpentry', // Tischlerei
+  METALWORK = 'metalwork', // Metallbau
+  ELECTRICAL = 'electrical', // Elektrik
+  PLUMBING = 'plumbing', // Sanitär
+  HVAC = 'hvac', // Heizung/Klima
+  PAINTING = 'painting', // Malerei
+  FLOORING = 'flooring', // Bodenbeläge
+
   // Materials
-  WOOD_MATERIALS = 'wood_materials',               // Holzmaterialien
-  METAL_MATERIALS = 'metal_materials',             // Metallmaterialien
-  LIGHTING = 'lighting',                           // Beleuchtung
-  FURNITURE = 'furniture',                         // Möbel
-  FIXTURES = 'fixtures',                           // Einrichtungsgegenstände
-  
+  WOOD_MATERIALS = 'wood_materials', // Holzmaterialien
+  METAL_MATERIALS = 'metal_materials', // Metallmaterialien
+  LIGHTING = 'lighting', // Beleuchtung
+  FURNITURE = 'furniture', // Möbel
+  FIXTURES = 'fixtures', // Einrichtungsgegenstände
+
   // Services
-  INSTALLATION = 'installation',                   // Montage
-  TRANSPORT = 'transport',                         // Transport
-  DISPOSAL = 'disposal',                           // Entsorgung
-  CLEANING = 'cleaning',                           // Reinigung
-  
-  OTHER = 'other'
+  INSTALLATION = 'installation', // Montage
+  TRANSPORT = 'transport', // Transport
+  DISPOSAL = 'disposal', // Entsorgung
+  CLEANING = 'cleaning', // Reinigung
+
+  OTHER = 'other',
 }
 
 interface PaymentTerms {
-  paymentMethod: 'Invoice' | 'DirectDebit' | 'CreditCard' | 'Cash' | 'BankTransfer';
-  daysUntilDue: number;            // Standard: 30, can be 14, 21, 60, 90
-  discountPercentage?: number;     // Optional, e.g., 2% for payment within 10 days
-  discountDays?: number;           // Days for discount eligibility
-  partialPaymentAllowed: boolean;  // Anzahlungen möglich
+  paymentMethod:
+    | 'Invoice'
+    | 'DirectDebit'
+    | 'CreditCard'
+    | 'Cash'
+    | 'BankTransfer';
+  daysUntilDue: number; // Standard: 30, can be 14, 21, 60, 90
+  discountPercentage?: number; // Optional, e.g., 2% for payment within 10 days
+  discountDays?: number; // Days for discount eligibility
+  partialPaymentAllowed: boolean; // Anzahlungen möglich
 }
 
 interface SupplierRating {
-  overall: number;                 // 1-5 stars, weighted average
-  quality: number;                 // 1-5
-  reliability: number;             // 1-5
-  communication: number;           // 1-5
-  priceValue: number;              // 1-5
-  reviewCount: number;             // How many projects rated
+  overall: number; // 1-5 stars, weighted average
+  quality: number; // 1-5
+  reliability: number; // 1-5
+  communication: number; // 1-5
+  priceValue: number; // 1-5
+  reviewCount: number; // How many projects rated
   lastUpdated: Date;
 }
 ```
@@ -157,53 +163,53 @@ interface SupplierRating {
 
 ```typescript
 interface SupplierContract extends BaseEntity {
-  _id: string;                     // "supplier-contract-{uuid}"
+  _id: string; // "supplier-contract-{uuid}"
   _rev: string;
   type: 'supplier_contract';
-  
+
   // Contract Basics
-  contractNumber: string;          // Required, unique, "SC-2025-00123"
-  supplierId: string;              // Required, reference to Supplier
-  projectId?: string;              // Optional, null = framework contract
-  
+  contractNumber: string; // Required, unique, "SC-2025-00123"
+  supplierId: string; // Required, reference to Supplier
+  projectId?: string; // Optional, null = framework contract
+
   // Contract Details
-  contractType: ContractType;      // Required
-  title: string;                   // Required, 10-200 chars
-  description: string;             // Required, 50-2000 chars
-  scope: string[];                 // Work packages, required
-  
+  contractType: ContractType; // Required
+  title: string; // Required, 10-200 chars
+  description: string; // Required, 50-2000 chars
+  scope: string[]; // Work packages, required
+
   // Financial
-  contractValue: number;           // Required, € total
+  contractValue: number; // Required, € total
   valueType: 'Fixed' | 'TimeAndMaterial' | 'UnitPrice' | 'CostPlus';
   paymentSchedule: PaymentMilestone[]; // Required
-  retentionPercentage?: number;    // Gewährleistungseinbehalt, typically 5-10%
-  
+  retentionPercentage?: number; // Gewährleistungseinbehalt, typically 5-10%
+
   // Timeline
-  startDate: Date;                 // Required
-  endDate: Date;                   // Required
-  noticePeriod?: number;           // Days for termination notice
-  
+  startDate: Date; // Required
+  endDate: Date; // Required
+  noticePeriod?: number; // Days for termination notice
+
   // Legal
-  contractDocument?: Document;     // Signed PDF
-  termsAccepted: boolean;          // Required
-  insuranceRequired: boolean;      // Required
+  contractDocument?: Document; // Signed PDF
+  termsAccepted: boolean; // Required
+  insuranceRequired: boolean; // Required
   minimumInsuranceAmount?: number; // € if insuranceRequired true
-  
+
   // Status
-  status: ContractStatus;          // Required
+  status: ContractStatus; // Required
   signedBySupplier: boolean;
   signedByUs: boolean;
   signedDate?: Date;
-  approvedBy?: string;             // GF approval for >€50k
+  approvedBy?: string; // GF approval for >€50k
   approvedAt?: Date;
-  
+
   // Performance
-  actualValue?: number;            // Final billed amount
+  actualValue?: number; // Final billed amount
   actualEndDate?: Date;
   performanceRating?: SupplierRating; // Post-completion
-  
+
   // Audit Trail
-  createdBy: string;               // INN or PLAN
+  createdBy: string; // INN or PLAN
   createdAt: Date;
   modifiedBy: string;
   modifiedAt: Date;
@@ -211,31 +217,31 @@ interface SupplierContract extends BaseEntity {
 }
 
 enum ContractType {
-  FRAMEWORK = 'framework',         // Rahmenvertrag (ongoing)
-  PROJECT = 'project',             // Project-specific
+  FRAMEWORK = 'framework', // Rahmenvertrag (ongoing)
+  PROJECT = 'project', // Project-specific
   SERVICE_AGREEMENT = 'service_agreement', // Wartungsvertrag
-  PURCHASE_ORDER = 'purchase_order' // Simple PO
+  PURCHASE_ORDER = 'purchase_order', // Simple PO
 }
 
 enum ContractStatus {
   DRAFT = 'draft',
-  PENDING_APPROVAL = 'pending_approval',  // Awaiting GF approval
-  SENT_TO_SUPPLIER = 'sent_to_supplier',  // Awaiting supplier signature
-  SIGNED = 'signed',                       // Active
-  IN_EXECUTION = 'in_execution',           // Work underway
+  PENDING_APPROVAL = 'pending_approval', // Awaiting GF approval
+  SENT_TO_SUPPLIER = 'sent_to_supplier', // Awaiting supplier signature
+  SIGNED = 'signed', // Active
+  IN_EXECUTION = 'in_execution', // Work underway
   COMPLETED = 'completed',
   TERMINATED = 'terminated',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 interface PaymentMilestone {
-  description: string;             // e.g., "50% Anzahlung"
-  percentage: number;              // % of contract value
-  amount: number;                  // Calculated: contractValue * percentage
-  dueCondition: string;            // "Bei Auftragserteilung", "Nach Lieferung"
-  dueDate?: Date;                  // Optional specific date
-  invoiceId?: string;              // Link to invoice when billed
-  paidDate?: Date;                 // When payment completed
+  description: string; // e.g., "50% Anzahlung"
+  percentage: number; // % of contract value
+  amount: number; // Calculated: contractValue * percentage
+  dueCondition: string; // "Bei Auftragserteilung", "Nach Lieferung"
+  dueDate?: Date; // Optional specific date
+  invoiceId?: string; // Link to invoice when billed
+  paidDate?: Date; // When payment completed
   status: 'Pending' | 'Invoiced' | 'Paid';
 }
 ```
@@ -244,40 +250,40 @@ interface PaymentMilestone {
 
 ```typescript
 interface SupplierInvoice extends BaseEntity {
-  _id: string;                     // "supplier-invoice-{uuid}"
+  _id: string; // "supplier-invoice-{uuid}"
   _rev: string;
   type: 'supplier_invoice';
-  
+
   // Invoice Basics
-  invoiceNumber: string;           // Supplier's invoice number
-  supplierId: string;              // Required
-  contractId?: string;             // Optional, link to contract
-  projectId: string;               // Required, which project is this for
-  
+  invoiceNumber: string; // Supplier's invoice number
+  supplierId: string; // Required
+  contractId?: string; // Optional, link to contract
+  projectId: string; // Required, which project is this for
+
   // Financial
-  invoiceDate: Date;               // Required
-  dueDate: Date;                   // Required
-  netAmount: number;               // Required
-  taxRate: number;                 // Usually 19% or 7%
-  taxAmount: number;               // Calculated
-  grossAmount: number;             // netAmount + taxAmount
-  
+  invoiceDate: Date; // Required
+  dueDate: Date; // Required
+  netAmount: number; // Required
+  taxRate: number; // Usually 19% or 7%
+  taxAmount: number; // Calculated
+  grossAmount: number; // netAmount + taxAmount
+
   // Line Items
   lineItems: SupplierInvoiceLineItem[];
-  
+
   // Payment
   paymentStatus: 'Pending' | 'Approved' | 'Paid' | 'Disputed';
-  approvedBy?: string;             // BUCH or GF
+  approvedBy?: string; // BUCH or GF
   approvedAt?: Date;
   paidDate?: Date;
-  paidAmount?: number;             // May differ if disputed
-  
+  paidAmount?: number; // May differ if disputed
+
   // Documents
-  invoiceDocument: Document;       // PDF of invoice
-  deliveryNote?: Document;         // Lieferschein
-  
+  invoiceDocument: Document; // PDF of invoice
+  deliveryNote?: Document; // Lieferschein
+
   // Audit Trail
-  createdBy: string;               // Usually INN who receives invoice
+  createdBy: string; // Usually INN who receives invoice
   createdAt: Date;
   modifiedBy: string;
   modifiedAt: Date;
@@ -287,11 +293,11 @@ interface SupplierInvoice extends BaseEntity {
 interface SupplierInvoiceLineItem {
   description: string;
   quantity: number;
-  unit: string;                    // "Stück", "m²", "Stunden", "Pauschale"
+  unit: string; // "Stück", "m²", "Stunden", "Pauschale"
   unitPrice: number;
-  netAmount: number;               // quantity * unitPrice
+  netAmount: number; // quantity * unitPrice
   taxRate: number;
-  materialId?: string;             // Link to material catalog if applicable
+  materialId?: string; // Link to material catalog if applicable
 }
 ```
 
@@ -299,43 +305,43 @@ interface SupplierInvoiceLineItem {
 
 ```typescript
 interface ProjectSubcontractor extends BaseEntity {
-  _id: string;                     // "project-subcontractor-{uuid}"
+  _id: string; // "project-subcontractor-{uuid}"
   _rev: string;
   type: 'project_subcontractor';
-  
+
   // Assignment
-  projectId: string;               // Required
-  supplierId: string;              // Required
-  contractId?: string;             // Optional, link to contract
-  
+  projectId: string; // Required
+  supplierId: string; // Required
+  contractId?: string; // Optional, link to contract
+
   // Work Details
-  workPackage: string;             // Required, e.g., "Elektrik Installation"
+  workPackage: string; // Required, e.g., "Elektrik Installation"
   serviceCategory: ServiceCategory; // Required
-  description: string;             // Required, scope of work
-  
+  description: string; // Required, scope of work
+
   // Schedule
-  plannedStartDate: Date;          // Required
-  plannedEndDate: Date;            // Required
+  plannedStartDate: Date; // Required
+  plannedEndDate: Date; // Required
   actualStartDate?: Date;
   actualEndDate?: Date;
-  
+
   // Financial
-  estimatedCost: number;           // Required, from KALK
-  actualCost?: number;             // Updated as invoices arrive
+  estimatedCost: number; // Required, from KALK
+  actualCost?: number; // Updated as invoices arrive
   budgetStatus: 'OnTrack' | 'Warning' | 'Exceeded';
-  
+
   // Status
   status: 'Planned' | 'Confirmed' | 'InProgress' | 'Completed' | 'Cancelled';
-  completionPercentage: number;    // 0-100
-  
+  completionPercentage: number; // 0-100
+
   // Performance
-  qualityRating?: number;          // 1-5, after completion
-  timelinessRating?: number;       // 1-5, on-time delivery
-  communicationRating?: number;    // 1-5, responsiveness
-  notes?: string;                  // Issues, feedback
-  
+  qualityRating?: number; // 1-5, after completion
+  timelinessRating?: number; // 1-5, on-time delivery
+  communicationRating?: number; // 1-5, responsiveness
+  notes?: string; // Issues, feedback
+
   // Audit Trail
-  assignedBy: string;              // INN or PLAN
+  assignedBy: string; // INN or PLAN
   assignedAt: Date;
   modifiedBy: string;
   modifiedAt: Date;
@@ -347,31 +353,31 @@ interface ProjectSubcontractor extends BaseEntity {
 
 ```typescript
 interface SupplierCommunication extends BaseEntity {
-  _id: string;                     // "supplier-comm-{uuid}"
+  _id: string; // "supplier-comm-{uuid}"
   _rev: string;
   type: 'supplier_communication';
-  
+
   // Context
-  supplierId: string;              // Required
-  projectId?: string;              // Optional
-  contractId?: string;             // Optional
-  
+  supplierId: string; // Required
+  projectId?: string; // Optional
+  contractId?: string; // Optional
+
   // Communication Details
   communicationType: 'Email' | 'Phone' | 'InPerson' | 'Video' | 'SMS';
   direction: 'Inbound' | 'Outbound';
-  subject: string;                 // Required, 10-200 chars
-  content: string;                 // Required, 20-5000 chars
-  
+  subject: string; // Required, 10-200 chars
+  content: string; // Required, 20-5000 chars
+
   // Metadata
-  communicationDate: Date;         // Required
-  participants: string[];          // User IDs
+  communicationDate: Date; // Required
+  participants: string[]; // User IDs
   attachments?: Document[];
-  
+
   // Follow-up
   requiresFollowUp: boolean;
   followUpDate?: Date;
   followUpCompleted?: boolean;
-  
+
   // Audit Trail
   createdBy: string;
   createdAt: Date;
@@ -387,38 +393,43 @@ interface SupplierCommunication extends BaseEntity {
 
 ### Permission Matrix
 
-| Role | Supplier (CRUD) | Contract (CRUD) | Invoice (View/Approve) | Rating |
-|------|----------------|----------------|------------------------|--------|
-| **INN** | Full CRUD | Create, Update | View, Flag for approval | Rate |
-| **PLAN** | Read, Create | Read | View | Rate (post-project) |
-| **KALK** | Read | Read | View | - |
-| **BUCH** | Read | Read | View, Approve, Mark paid | - |
-| **ADM** | Read (limited) | - | - | - |
-| **GF** | Full CRUD | Full CRUD, Approve >€50k | View, Approve >€10k | View all |
+| Role     | Supplier (CRUD) | Contract (CRUD)          | Invoice (View/Approve)   | Rating              |
+| -------- | --------------- | ------------------------ | ------------------------ | ------------------- |
+| **INN**  | Full CRUD       | Create, Update           | View, Flag for approval  | Rate                |
+| **PLAN** | Read, Create    | Read                     | View                     | Rate (post-project) |
+| **KALK** | Read            | Read                     | View                     | -                   |
+| **BUCH** | Read            | Read                     | View, Approve, Mark paid | -                   |
+| **ADM**  | Read (limited)  | -                        | -                        | -                   |
+| **GF**   | Full CRUD       | Full CRUD, Approve >€50k | View, Approve >€10k      | View all            |
 
 ### Business Rules
 
 **SU-001:** INN is primary owner of Supplier module
+
 - INN can create, update, and manage all suppliers
 - INN assigns suppliers to projects
 - INN receives and logs supplier invoices
 
 **SU-002:** Contract approval workflow
+
 - Contracts <€50k: Auto-approved after INN creates
 - Contracts ≥€50k: Require GF approval before sending to supplier
 - Contracts >€200k: Require GF + BUCH pre-approval
 
 **SU-003:** Invoice approval workflow
+
 - Invoices <€1k: Auto-approved if matches PO
 - Invoices €1k-€10k: Require BUCH approval
 - Invoices >€10k: Require GF approval
 
 **SU-004:** Blacklist protection
+
 - Only GF can blacklist a supplier
 - Blacklisted suppliers cannot be assigned to new projects
 - Must provide reason for blacklist
 
 **SU-005:** Rating requirements
+
 - Suppliers cannot be rated until project completion
 - Rating must include all 4 dimensions (quality, timeliness, communication, value)
 - Rating visible to all users (transparency)
@@ -456,6 +467,7 @@ interface SupplierCommunication extends BaseEntity {
    - Supplier added to supplier directory
 
 **Edge Cases:**
+
 - **Rejection:** INN can re-submit after addressing GF feedback
 - **Incomplete documents:** System warns but allows saving as draft
 - **Duplicate detection:** System checks for similar company names (Phase 2 feature)
@@ -495,6 +507,7 @@ interface SupplierCommunication extends BaseEntity {
    - Proceed to Contract Negotiation workflow
 
 **Edge Cases:**
+
 - **No quotes received:** System sends reminder after 7 days
 - **All quotes too high:** INN can expand supplier search or adjust scope
 - **Supplier declines:** Status marked, not counted as negative
@@ -540,6 +553,7 @@ interface SupplierCommunication extends BaseEntity {
    - PLAN notified: Supplier available for project scheduling
 
 **Edge Cases:**
+
 - **Supplier requests changes:** Status = 'UnderNegotiation', INN revises
 - **Contract expires unsigned:** System alerts INN after 30 days
 - **Insurance insufficient:** System blocks signing until updated
@@ -582,6 +596,7 @@ interface SupplierCommunication extends BaseEntity {
    - System: Updates supplier activeProjectCount -= 1
 
 **Edge Cases:**
+
 - **Supplier cancels:** INN finds replacement, logs reason
 - **Work delayed:** INN adjusts dates, logs delay reason
 - **Quality issues:** INN logs communication, may affect rating
@@ -630,6 +645,7 @@ interface SupplierCommunication extends BaseEntity {
    - BUCH imports payment confirmation back to KOMPASS
 
 **Edge Cases:**
+
 - **Invoice disputed:** Status = 'Disputed', INN contacts supplier
 - **Partial payment:** BUCH enters partial amount, invoice remains 'Approved' until fully paid
 - **Early payment discount:** BUCH calculates discount, enters discounted amount
@@ -663,6 +679,7 @@ interface SupplierCommunication extends BaseEntity {
    - Multiple low ratings may lead to blacklist recommendation
 
 **Edge Cases:**
+
 - **Delayed rating:** System reminds weekly until completed
 - **Disputed rating:** Supplier can request clarification (manual process)
 - **Rating correction:** GF can edit ratings if clearly erroneous
@@ -927,10 +944,10 @@ GET    /api/v1/suppliers/:supplierId/communications
 - If linked to contract:
   - Check: Invoice amount ≤ contract remaining value + 10% tolerance
   - Warning: "Invoice exceeds contract value by €X"
-  
+
 - If work not marked completed:
   - Warning: "Work assignment not yet marked complete. Confirm delivery before approving."
-  
+
 - If duplicate invoice number detected:
   - Error: "Invoice number already exists for this supplier"
 ```
@@ -946,27 +963,26 @@ function calculateOverallRating(ratings: ProjectRating[]): SupplierRating {
   if (ratings.length === 0) {
     return null; // Not yet rated
   }
-  
+
   // Weighted average of all project ratings
   const weights = {
     quality: 0.35,
-    reliability: 0.30,
-    communication: 0.20,
-    priceValue: 0.15
+    reliability: 0.3,
+    communication: 0.2,
+    priceValue: 0.15,
   };
-  
-  const avgQuality = average(ratings.map(r => r.quality));
-  const avgReliability = average(ratings.map(r => r.reliability));
-  const avgCommunication = average(ratings.map(r => r.communication));
-  const avgPriceValue = average(ratings.map(r => r.priceValue));
-  
-  const overall = (
+
+  const avgQuality = average(ratings.map((r) => r.quality));
+  const avgReliability = average(ratings.map((r) => r.reliability));
+  const avgCommunication = average(ratings.map((r) => r.communication));
+  const avgPriceValue = average(ratings.map((r) => r.priceValue));
+
+  const overall =
     avgQuality * weights.quality +
     avgReliability * weights.reliability +
     avgCommunication * weights.communication +
-    avgPriceValue * weights.priceValue
-  );
-  
+    avgPriceValue * weights.priceValue;
+
   return {
     overall: round(overall, 1),
     quality: round(avgQuality, 1),
@@ -974,7 +990,7 @@ function calculateOverallRating(ratings: ProjectRating[]): SupplierRating {
     communication: round(avgCommunication, 1),
     priceValue: round(avgPriceValue, 1),
     reviewCount: ratings.length,
-    lastUpdated: new Date()
+    lastUpdated: new Date(),
   };
 }
 ```
@@ -983,15 +999,15 @@ function calculateOverallRating(ratings: ProjectRating[]): SupplierRating {
 
 ```typescript
 const VALID_CONTRACT_TRANSITIONS = {
-  'Draft': ['PendingApproval', 'Cancelled'],
-  'PendingApproval': ['Draft', 'SentToSupplier', 'Cancelled'],
-  'SentToSupplier': ['UnderNegotiation', 'Signed', 'Cancelled'],
-  'UnderNegotiation': ['SentToSupplier', 'Cancelled'],
-  'Signed': ['InExecution', 'Terminated'],
-  'InExecution': ['Completed', 'Terminated'],
-  'Completed': [],  // Terminal state
-  'Terminated': [],  // Terminal state
-  'Cancelled': []   // Terminal state
+  Draft: ['PendingApproval', 'Cancelled'],
+  PendingApproval: ['Draft', 'SentToSupplier', 'Cancelled'],
+  SentToSupplier: ['UnderNegotiation', 'Signed', 'Cancelled'],
+  UnderNegotiation: ['SentToSupplier', 'Cancelled'],
+  Signed: ['InExecution', 'Terminated'],
+  InExecution: ['Completed', 'Terminated'],
+  Completed: [], // Terminal state
+  Terminated: [], // Terminal state
+  Cancelled: [], // Terminal state
 };
 ```
 
@@ -1003,30 +1019,38 @@ async function updateProjectCostsFromSupplierInvoice(
 ): Promise<void> {
   // When supplier invoice is marked paid, update project actual costs
   const project = await projectRepository.findById(invoice.projectId);
-  
+
   // Add invoice amount to project's actual supplier costs
   project.actualSupplierCosts += invoice.grossAmount;
-  project.actualCost = project.actualLaborCosts + project.actualMaterialCosts + project.actualSupplierCosts;
-  project.currentMargin = ((project.contractValue - project.actualCost) / project.contractValue) * 100;
-  
+  project.actualCost =
+    project.actualLaborCosts +
+    project.actualMaterialCosts +
+    project.actualSupplierCosts;
+  project.currentMargin =
+    ((project.contractValue - project.actualCost) / project.contractValue) *
+    100;
+
   // Update budget status
   if (project.actualCost > project.budget) {
     project.budgetStatus = 'Exceeded';
-  } else if (project.actualCost > project.budget * 0.90) {
+  } else if (project.actualCost > project.budget * 0.9) {
     project.budgetStatus = 'Warning';
   } else {
     project.budgetStatus = 'OnTrack';
   }
-  
+
   await projectRepository.update(project);
-  
+
   // Notify PLAN and BUCH if budget warning
-  if (project.budgetStatus === 'Warning' || project.budgetStatus === 'Exceeded') {
+  if (
+    project.budgetStatus === 'Warning' ||
+    project.budgetStatus === 'Exceeded'
+  ) {
     await notificationService.send({
       recipients: [project.projectManager, 'BUCH'],
       type: 'BudgetAlert',
       message: `Project ${project.projectNumber}: Budget at ${percentage}%`,
-      link: `/projects/${project.id}`
+      link: `/projects/${project.id}`,
     });
   }
 }
@@ -1060,6 +1084,7 @@ async function updateProjectCostsFromSupplierInvoice(
 ## UI/UX Considerations
 
 See dedicated UI/UX documentation:
+
 - [Supplier Form](../../ui-ux/03-entity-forms/supplier-form.md)
 - [Supplier List](../../ui-ux/04-list-views/supplier-list.md)
 - [Supplier Detail](../../ui-ux/05-detail-pages/supplier-detail.md)
@@ -1101,12 +1126,14 @@ See dedicated UI/UX documentation:
 **Source:** Likely Excel spreadsheets, email contacts, business cards
 
 **Import Fields:**
+
 - Company name (required)
 - Contact person (name, email, phone)
 - Service category (map from free text to enum)
 - Past project associations (if traceable)
 
 **Data Cleaning:**
+
 - Deduplicate suppliers (fuzzy name matching)
 - Standardize phone numbers
 - Validate VAT numbers where present
@@ -1125,7 +1152,6 @@ See dedicated UI/UX documentation:
 
 ## Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-11-12 | Product Team | Initial specification addressing pre-mortem gap |
-
+| Version | Date       | Author       | Changes                                         |
+| ------- | ---------- | ------------ | ----------------------------------------------- |
+| 1.0     | 2025-11-12 | Product Team | Initial specification addressing pre-mortem gap |

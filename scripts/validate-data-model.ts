@@ -1,9 +1,9 @@
 /**
  * Data Model Validation Script
- * 
+ *
  * Validates that all documents conform to the updated data model
  * Checks for missing fields, invalid relationships, and business rule violations
- * 
+ *
  * Usage:
  *   node validate-data-model.ts
  */
@@ -16,7 +16,9 @@ const COUCHDB_USER = process.env.COUCHDB_ADMIN_USER || 'admin';
 const COUCHDB_PASSWORD = process.env.COUCHDB_ADMIN_PASSWORD || 'changeme';
 const DATABASE = process.env.COUCHDB_DATABASE || 'kompass';
 
-const nano = Nano.default(`http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@${COUCHDB_URL.replace('http://', '')}`);
+const nano = Nano.default(
+  `http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@${COUCHDB_URL.replace('http://', '')}`
+);
 const db = nano.use(DATABASE);
 
 interface ValidationError {
@@ -107,7 +109,9 @@ async function validateCustomers(): Promise<ValidationError[]> {
     }
   }
 
-  console.log(`  Found ${customers.docs.length} customers, ${errors.length} issues`);
+  console.log(
+    `  Found ${customers.docs.length} customers, ${errors.length} issues`
+  );
   return errors;
 }
 
@@ -174,7 +178,9 @@ async function validateLocations(): Promise<ValidationError[]> {
     }
   }
 
-  console.log(`  Found ${locations.docs.length} locations, ${errors.length} issues`);
+  console.log(
+    `  Found ${locations.docs.length} locations, ${errors.length} issues`
+  );
   return errors;
 }
 
@@ -266,7 +272,9 @@ async function validateContacts(): Promise<ValidationError[]> {
     }
   }
 
-  console.log(`  Found ${contacts.docs.length} contacts, ${errors.length} issues`);
+  console.log(
+    `  Found ${contacts.docs.length} contacts, ${errors.length} issues`
+  );
   return errors;
 }
 
@@ -304,21 +312,27 @@ async function main() {
     if (report.errors.length > 0) {
       console.log('\n❌ Errors:');
       report.errors.forEach((err) => {
-        console.log(`  - ${err.documentType} ${err.documentId}: ${err.field} - ${err.message}`);
+        console.log(
+          `  - ${err.documentType} ${err.documentId}: ${err.field} - ${err.message}`
+        );
       });
     }
 
     if (report.warnings.length > 0) {
       console.log('\n⚠️  Warnings:');
       report.warnings.forEach((warn) => {
-        console.log(`  - ${warn.documentType} ${warn.documentId}: ${warn.field} - ${warn.message}`);
+        console.log(
+          `  - ${warn.documentType} ${warn.documentId}: ${warn.field} - ${warn.message}`
+        );
       });
     }
 
     if (report.errors.length === 0) {
       console.log('\n✅ Data model validation passed!');
     } else {
-      console.log('\n❌ Data model validation failed. Please fix errors before proceeding.');
+      console.log(
+        '\n❌ Data model validation failed. Please fix errors before proceeding.'
+      );
       process.exit(1);
     }
   } catch (error) {
@@ -336,4 +350,3 @@ if (require.main === module) {
 }
 
 export { validateCustomers, validateLocations, validateContacts };
-

@@ -30,6 +30,7 @@
 ## 1. Test Strategy Overview
 
 KOMPASS follows a **70/20/10 test pyramid strategy** as defined in `.cursorrules`:
+
 - **70% Unit Tests** - Fast, isolated tests of business logic
 - **20% Integration Tests** - API and database integration tests
 - **10% E2E Tests** - End-to-end user workflows with Playwright
@@ -78,12 +79,14 @@ tests/e2e/
 ### 70% Unit Tests
 
 **Characteristics:**
+
 - Test individual functions, methods, classes in isolation
 - Mock all external dependencies (database, HTTP, external services)
 - Run in milliseconds
 - No database, no network, no file system
 
 **What to Test:**
+
 - Business logic in services
 - Validation rules (DTOs, entities)
 - Utility functions
@@ -91,6 +94,7 @@ tests/e2e/
 - Permission checks (with mocked user context)
 
 **Example Unit Test:**
+
 ```typescript
 // location.service.spec.ts
 describe('LocationService', () => {
@@ -118,10 +122,10 @@ describe('LocationService', () => {
 
   describe('validateUniqueLocationName', () => {
     it('should throw error when location name already exists for customer', async () => {
-      const existingLocation = { 
-        _id: 'location-123', 
+      const existingLocation = {
+        _id: 'location-123',
         locationName: 'Filiale München',
-        customerId: 'customer-456'
+        customerId: 'customer-456',
       };
       repository.findByCustomerAndName.mockResolvedValue(existingLocation);
 
@@ -144,18 +148,21 @@ describe('LocationService', () => {
 ### 20% Integration Tests
 
 **Characteristics:**
+
 - Test multiple components working together
 - Use real database (test instance)
 - Test HTTP endpoints with real request/response
 - Run in seconds
 
 **What to Test:**
+
 - API endpoints (request → controller → service → repository → database)
 - Database queries and transactions
 - DTO validation and transformation
 - Authentication and authorization guards
 
 **Example Integration Test:**
+
 ```typescript
 // customer-location-api.integration.spec.ts
 describe('Location API (Integration)', () => {
@@ -215,13 +222,13 @@ describe('Location API (Integration)', () => {
       await request(app.getHttpServer())
         .post('/api/v1/customers/customer-test-123/locations')
         .set('Authorization', `Bearer ${authToken}`)
-        .send({ locationName: 'Duplicate', locationType: 'branch', /* ... */ });
+        .send({ locationName: 'Duplicate', locationType: 'branch' /* ... */ });
 
       // Try to create duplicate
       const response = await request(app.getHttpServer())
         .post('/api/v1/customers/customer-test-123/locations')
         .set('Authorization', `Bearer ${authToken}`)
-        .send({ locationName: 'Duplicate', locationType: 'branch', /* ... */ })
+        .send({ locationName: 'Duplicate', locationType: 'branch' /* ... */ })
         .expect(409);
 
       expect(response.body).toMatchObject({
@@ -236,12 +243,14 @@ describe('Location API (Integration)', () => {
 ### 10% E2E Tests
 
 **Characteristics:**
+
 - Test complete user workflows in browser
 - Use Playwright for browser automation
 - Test UI interactions and user experience
 - Run in minutes
 
 **What to Test:**
+
 - Critical user journeys
 - Multi-step workflows
 - Cross-module integration
@@ -254,13 +263,13 @@ describe('Location API (Integration)', () => {
 
 ### Overall Coverage Requirements
 
-| Metric | Target | Enforcement |
-|--------|--------|-------------|
-| **Overall Coverage** | ≥ 80% | CI pipeline fails if below |
-| **Business Logic (Services)** | ≥ 90% | Critical path |
-| **React Components** | ≥ 80% | User-facing code |
-| **Utilities** | ≥ 85% | Shared code must be reliable |
-| **Controllers/Routes** | ≥ 70% | Covered by integration tests |
+| Metric                        | Target | Enforcement                  |
+| ----------------------------- | ------ | ---------------------------- |
+| **Overall Coverage**          | ≥ 80%  | CI pipeline fails if below   |
+| **Business Logic (Services)** | ≥ 90%  | Critical path                |
+| **React Components**          | ≥ 80%  | User-facing code             |
+| **Utilities**                 | ≥ 85%  | Shared code must be reliable |
+| **Controllers/Routes**        | ≥ 70%  | Covered by integration tests |
 
 ### Coverage Configuration
 
@@ -293,6 +302,7 @@ module.exports = {
 ### Coverage Exclusions
 
 Do NOT require coverage for:
+
 - Type definitions (`*.types.ts`, `*.interface.ts`)
 - Configuration files (`*.config.ts`)
 - Migration scripts (`migrations/*.ts`)
@@ -318,7 +328,7 @@ describe('LocationService - Validation', () => {
         'Hauptstandort (Zentrale)',
         'Außenlager 2',
       ];
-      validNames.forEach(name => {
+      validNames.forEach((name) => {
         expect(() => service.validateLocationName(name)).not.toThrow();
       });
     });
@@ -330,12 +340,8 @@ describe('LocationService - Validation', () => {
     });
 
     it('should reject location names with invalid characters', () => {
-      const invalidNames = [
-        'Location@123',
-        'Filiale#München',
-        'Test<script>',
-      ];
-      invalidNames.forEach(name => {
+      const invalidNames = ['Location@123', 'Filiale#München', 'Test<script>'];
+      invalidNames.forEach((name) => {
         expect(() => service.validateLocationName(name)).toThrow(
           'Location name can only contain letters, numbers, and basic punctuation'
         );
@@ -352,10 +358,10 @@ describe('LocationService - Validation', () => {
     });
 
     it('should throw when location name exists for same customer', async () => {
-      const existing = { 
+      const existing = {
         _id: 'location-456',
         customerId: 'customer-123',
-        locationName: 'Existing Location'
+        locationName: 'Existing Location',
       };
       repository.findByCustomerAndName.mockResolvedValue(existing);
 
@@ -414,6 +420,7 @@ describe('LocationService - Contact Assignment', () => {
 **Test File:** `tests/integration/location/location-crud.integration.spec.ts`
 
 #### Test ID: INT-LOC-001: Create Location
+
 ```typescript
 it('INT-LOC-001: should create location for customer', async () => {
   const customer = await createTestCustomer();
@@ -439,6 +446,7 @@ it('INT-LOC-001: should create location for customer', async () => {
 ```
 
 #### Test ID: INT-LOC-002: List Customer Locations
+
 ```typescript
 it('INT-LOC-002: should list all locations for customer', async () => {
   const customer = await createTestCustomer();
@@ -456,10 +464,11 @@ it('INT-LOC-002: should list all locations for customer', async () => {
 ```
 
 #### Test ID: INT-LOC-003: Update Location
+
 ```typescript
 it('INT-LOC-003: should update location details', async () => {
   const location = await createTestLocation('customer-123', 'Old Name');
-  
+
   const updates = {
     locationName: 'Updated Name',
     deliveryNotes: 'New delivery instructions',
@@ -477,6 +486,7 @@ it('INT-LOC-003: should update location details', async () => {
 ```
 
 #### Test ID: INT-LOC-004: Delete Location
+
 ```typescript
 it('INT-LOC-004: should delete location not referenced in projects', async () => {
   const location = await createTestLocation('customer-123', 'To Delete');
@@ -495,6 +505,7 @@ it('INT-LOC-004: should delete location not referenced in projects', async () =>
 ```
 
 #### Test ID: INT-LOC-005: Prevent Duplicate Location Names
+
 ```typescript
 it('INT-LOC-005: should return 409 for duplicate location name', async () => {
   const customer = await createTestCustomer();
@@ -522,8 +533,11 @@ it('INT-LOC-005: should return 409 for duplicate location name', async () => {
 **Test File:** `tests/e2e/location/multi-location-customer.spec.ts`
 
 #### Test ID: E2E-LOC-001: Create Multi-Location Customer
+
 ```typescript
-test('E2E-LOC-001: Create customer with headquarters + 2 branches', async ({ page }) => {
+test('E2E-LOC-001: Create customer with headquarters + 2 branches', async ({
+  page,
+}) => {
   // Login as ADM
   await page.goto('/login');
   await page.fill('[name="email"]', 'adm@example.com');
@@ -539,7 +553,9 @@ test('E2E-LOC-001: Create customer with headquarters + 2 branches', async ({ pag
   await page.click('button:has-text("Save")');
 
   // Verify customer created
-  await expect(page.locator('h1')).toContainText('Bäckerei Müller Franchise GmbH');
+  await expect(page.locator('h1')).toContainText(
+    'Bäckerei Müller Franchise GmbH'
+  );
 
   // Navigate to locations tab
   await page.click('[data-testid="tab-locations"]');
@@ -566,27 +582,38 @@ test('E2E-LOC-001: Create customer with headquarters + 2 branches', async ({ pag
   await page.click('button:has-text("Save Location")');
 
   // Verify both locations visible
-  await expect(page.locator('[data-testid="location-list"]')).toContainText('Hauptstandort München');
-  await expect(page.locator('[data-testid="location-list"]')).toContainText('Filiale Nürnberg');
-  
+  await expect(page.locator('[data-testid="location-list"]')).toContainText(
+    'Hauptstandort München'
+  );
+  await expect(page.locator('[data-testid="location-list"]')).toContainText(
+    'Filiale Nürnberg'
+  );
+
   // Verify location count
-  const locationCount = await page.locator('[data-testid="location-card"]').count();
+  const locationCount = await page
+    .locator('[data-testid="location-card"]')
+    .count();
   expect(locationCount).toBe(2);
 });
 ```
 
 #### Test ID: E2E-LOC-002: Assign Contacts to Locations
+
 ```typescript
-test('E2E-LOC-002: Assign different contacts to different locations', async ({ page }) => {
+test('E2E-LOC-002: Assign different contacts to different locations', async ({
+  page,
+}) => {
   // Setup: Create customer with 2 locations and 2 contacts
   const customer = await setupMultiLocationCustomer();
-  
+
   await page.goto(`/customers/${customer._id}`);
   await page.click('[data-testid="tab-locations"]');
 
   // Edit first location
-  await page.click('[data-testid="location-card"]:nth-child(1) button:has-text("Edit")');
-  
+  await page.click(
+    '[data-testid="location-card"]:nth-child(1) button:has-text("Edit")'
+  );
+
   // Assign contact
   await page.click('[data-testid="add-contact-button"]');
   await page.selectOption('[name="contactPerson"]', 'contact-store-manager-1');
@@ -599,7 +626,9 @@ test('E2E-LOC-002: Assign different contacts to different locations', async ({ p
   ).toContainText('Thomas Schmidt (Primary)');
 
   // Edit second location
-  await page.click('[data-testid="location-card"]:nth-child(2) button:has-text("Edit")');
+  await page.click(
+    '[data-testid="location-card"]:nth-child(2) button:has-text("Edit")'
+  );
   await page.click('[data-testid="add-contact-button"]');
   await page.selectOption('[name="contactPerson"]', 'contact-store-manager-2');
   await page.check('[name="isPrimary"]');
@@ -613,30 +642,40 @@ test('E2E-LOC-002: Assign different contacts to different locations', async ({ p
 ```
 
 #### Test ID: E2E-LOC-003: Select Delivery Location in Quote
+
 ```typescript
-test('E2E-LOC-003: Select delivery location when creating quote', async ({ page }) => {
+test('E2E-LOC-003: Select delivery location when creating quote', async ({
+  page,
+}) => {
   const customer = await setupMultiLocationCustomer();
-  
+
   // Create new opportunity
   await page.goto('/opportunities/new');
   await page.selectOption('[name="customer"]', customer._id);
-  
+
   // Delivery location dropdown should appear (multi-location customer)
   await expect(page.locator('[name="deliveryLocationId"]')).toBeVisible();
-  
+
   // Select specific location
-  await page.selectOption('[name="deliveryLocationId"]', 'location-branch-nuernberg');
-  
+  await page.selectOption(
+    '[name="deliveryLocationId"]',
+    'location-branch-nuernberg'
+  );
+
   // Verify delivery address preview shows correct location
-  await expect(page.locator('[data-testid="delivery-address-preview"]')).toContainText('Hauptmarkt 12, 90403 Nürnberg');
-  
+  await expect(
+    page.locator('[data-testid="delivery-address-preview"]')
+  ).toContainText('Hauptmarkt 12, 90403 Nürnberg');
+
   // Complete opportunity creation
   await page.fill('[name="title"]', 'New Store Installation');
   await page.fill('[name="estimatedValue"]', '50000');
   await page.click('button:has-text("Create Opportunity")');
-  
+
   // Verify opportunity created with correct location
-  await expect(page.locator('[data-testid="opportunity-details"]')).toContainText('Delivery: Filiale Nürnberg');
+  await expect(
+    page.locator('[data-testid="opportunity-details"]')
+  ).toContainText('Delivery: Filiale Nürnberg');
 });
 ```
 
@@ -732,6 +771,7 @@ describe('ContactService - Decision Authority', () => {
 **Test File:** `tests/integration/contact/decision-authority.integration.spec.ts`
 
 #### Test ID: INT-DEC-001: Get Decision Authority
+
 ```typescript
 it('INT-DEC-001: should retrieve contact decision authority', async () => {
   const contact = await createTestContact({
@@ -757,10 +797,11 @@ it('INT-DEC-001: should retrieve contact decision authority', async () => {
 ```
 
 #### Test ID: INT-DEC-002: Update Decision Authority (ADM+)
+
 ```typescript
 it('INT-DEC-002: should allow PLAN to update decision authority', async () => {
   const contact = await createTestContact();
-  
+
   const updates = {
     decisionMakingRole: 'decision_maker',
     authorityLevel: 'final_authority',
@@ -781,10 +822,11 @@ it('INT-DEC-002: should allow PLAN to update decision authority', async () => {
 ```
 
 #### Test ID: INT-DEC-003: Reject ADM Update (Forbidden)
+
 ```typescript
 it('INT-DEC-003: should forbid ADM from updating decision authority', async () => {
   const contact = await createTestContact();
-  
+
   const updates = {
     decisionMakingRole: 'decision_maker',
     authorityLevel: 'high',
@@ -804,10 +846,11 @@ it('INT-DEC-003: should forbid ADM from updating decision authority', async () =
 ```
 
 #### Test ID: INT-DEC-004: Validate Approval Limit Required
+
 ```typescript
 it('INT-DEC-004: should reject when approval limit missing', async () => {
   const contact = await createTestContact();
-  
+
   const invalidUpdates = {
     decisionMakingRole: 'key_influencer',
     canApproveOrders: true,
@@ -834,8 +877,11 @@ it('INT-DEC-004: should reject when approval limit missing', async () => {
 **Test File:** `tests/e2e/contact/decision-authority-workflow.spec.ts`
 
 #### Test ID: E2E-DEC-001: Update Contact to Decision Maker
+
 ```typescript
-test('E2E-DEC-001: Update contact role with €50k approval limit', async ({ page }) => {
+test('E2E-DEC-001: Update contact role with €50k approval limit', async ({
+  page,
+}) => {
   // Login as PLAN user (has UPDATE_DECISION_ROLE permission)
   await page.goto('/login');
   await page.fill('[name="email"]', 'plan@example.com');
@@ -847,7 +893,9 @@ test('E2E-DEC-001: Update contact role with €50k approval limit', async ({ pag
   await page.click('[data-testid="tab-contacts"]');
 
   // Edit contact
-  await page.click('[data-testid="contact-card"]:first-child button:has-text("Edit")');
+  await page.click(
+    '[data-testid="contact-card"]:first-child button:has-text("Edit")'
+  );
 
   // Update decision-making role
   await page.selectOption('[name="decisionMakingRole"]', 'key_influencer');
@@ -868,7 +916,7 @@ test('E2E-DEC-001: Update contact role with €50k approval limit', async ({ pag
   await expect(
     page.locator('[data-testid="contact-card"]:first-child')
   ).toContainText('Key Influencer');
-  
+
   // Verify approval limit displayed
   await expect(
     page.locator('[data-testid="contact-card"]:first-child')
@@ -877,62 +925,75 @@ test('E2E-DEC-001: Update contact role with €50k approval limit', async ({ pag
 ```
 
 #### Test ID: E2E-DEC-002: Opportunity Warning for Exceeding Authority
+
 ```typescript
-test('E2E-DEC-002: Warn when opportunity exceeds contact approval authority', async ({ page }) => {
+test('E2E-DEC-002: Warn when opportunity exceeds contact approval authority', async ({
+  page,
+}) => {
   // Setup: Create customer with contact (€50k approval limit)
   const customer = await setupCustomerWithDecisionMaker(50000);
-  
+
   await page.goto('/opportunities/new');
-  
+
   // Select customer
   await page.selectOption('[name="customer"]', customer._id);
-  
+
   // Select contact with approval limit
   await page.selectOption('[name="primaryContact"]', 'contact-decision-maker');
-  
+
   // Enter opportunity value exceeding approval limit
   await page.fill('[name="estimatedValue"]', '75000');
-  
+
   // Warning should appear
   await expect(page.locator('[data-testid="approval-warning"]')).toBeVisible();
   await expect(page.locator('[data-testid="approval-warning"]')).toContainText(
-    'This opportunity (€75,000) exceeds the contact\'s approval limit (€50,000)'
+    "This opportunity (€75,000) exceeds the contact's approval limit (€50,000)"
   );
   await expect(page.locator('[data-testid="approval-warning"]')).toContainText(
     'Additional approval may be required'
   );
-  
+
   // User can still create opportunity (warning, not blocker)
   await page.fill('[name="title"]', 'Large Project');
   await page.click('button:has-text("Create Opportunity")');
-  
+
   // Verify opportunity created with warning flag
-  await expect(page.locator('[data-testid="opportunity-details"]')).toContainText('Requires higher approval');
+  await expect(
+    page.locator('[data-testid="opportunity-details"]')
+  ).toContainText('Requires higher approval');
 });
 ```
 
 #### Test ID: E2E-DEC-003: Filter Contacts by Decision Maker
+
 ```typescript
-test('E2E-DEC-003: Filter contacts by decision-making role', async ({ page }) => {
+test('E2E-DEC-003: Filter contacts by decision-making role', async ({
+  page,
+}) => {
   await page.goto('/contacts');
-  
+
   // Apply decision maker filter
   await page.click('[data-testid="filter-decision-role"]');
   await page.check('[value="decision_maker"]');
   await page.check('[value="key_influencer"]');
   await page.click('button:has-text("Apply Filters")');
-  
+
   // Verify only decision makers shown
   const contactCards = page.locator('[data-testid="contact-card"]');
   const count = await contactCards.count();
-  
+
   for (let i = 0; i < count; i++) {
     const card = contactCards.nth(i);
-    await expect(card).toHaveAttribute('data-role', /(decision_maker|key_influencer)/);
+    await expect(card).toHaveAttribute(
+      'data-role',
+      /(decision_maker|key_influencer)/
+    );
   }
-  
+
   // Verify badge visible on all results
-  await expect(page.locator('[data-testid="decision-badge"]')).toHaveCount(count);
+  await expect(page.locator('[data-testid="decision-badge"]')).toHaveCount(
+    count
+  );
 });
 ```
 
@@ -1015,62 +1076,66 @@ describe('ConflictResolverService - Location Conflicts', () => {
 **Test File:** `tests/integration/sync/offline-location-sync.integration.spec.ts`
 
 #### Test ID: INT-SYNC-001: Sync Location Changes After Offline
+
 ```typescript
 it('INT-SYNC-001: should sync location changes made offline', async () => {
   // Setup: Create location online
   const location = await createTestLocation('customer-123', 'Test Location');
-  
+
   // Simulate offline: Update location in local PouchDB
   const localDB = new PouchDB('test-offline-db');
   location.deliveryNotes = 'Updated offline';
   location._queuedForSync = true;
   await localDB.put(location);
-  
+
   // Simulate going back online: Trigger sync
   const response = await request(app.getHttpServer())
     .post('/api/v1/sync/locations')
     .set('Authorization', `Bearer ${admToken}`)
     .send({ changes: [location] })
     .expect(200);
-  
+
   // Verify changes synced
   expect(response.body.synced).toBe(1);
   expect(response.body.conflicts).toBe(0);
-  
+
   // Verify on server
   const serverLocation = await request(app.getHttpServer())
     .get(`/api/v1/customers/customer-123/locations/${location._id}`)
     .set('Authorization', `Bearer ${admToken}`)
     .expect(200);
-  
+
   expect(serverLocation.body.deliveryNotes).toBe('Updated offline');
 });
 ```
 
 #### Test ID: INT-SYNC-002: Detect and Resolve Conflicts
+
 ```typescript
 it('INT-SYNC-002: should detect conflicts and require user resolution', async () => {
   const location = await createTestLocation('customer-123', 'Test Location');
-  
+
   // User A updates offline
   const localDB = new PouchDB('user-a-db');
   location.deliveryAddress.street = 'Hauptstraße'; // Change 1
   await localDB.put(location);
-  
+
   // User B updates online (faster)
   await request(app.getHttpServer())
     .put(`/api/v1/customers/customer-123/locations/${location._id}`)
     .set('Authorization', `Bearer ${planToken}`)
-    .send({ deliveryAddress: { ...location.deliveryAddress, street: 'Nebenstraße' } })
+    .send({
+      deliveryAddress: { ...location.deliveryAddress, street: 'Nebenstraße' },
+    })
     .expect(200);
-  
+
   // User A syncs (conflict detected)
   const response = await request(app.getHttpServer())
     .post('/api/v1/sync/locations')
     .set('Authorization', `Bearer ${admToken}`)
     .send({ changes: [location] })
     .expect(409); // Conflict response
-  
+
   expect(response.body.conflicts).toHaveLength(1);
   expect(response.body.conflicts[0]).toMatchObject({
     field: 'deliveryAddress.street',
@@ -1086,53 +1151,63 @@ it('INT-SYNC-002: should detect conflicts and require user resolution', async ()
 **Test File:** `tests/e2e/offline/location-conflict-resolution.spec.ts`
 
 #### Test ID: E2E-SYNC-001: Offline Location Address Change Conflict
+
 ```typescript
-test('E2E-SYNC-001: Resolve location address conflict after offline edit', async ({ page, context }) => {
+test('E2E-SYNC-001: Resolve location address conflict after offline edit', async ({
+  page,
+  context,
+}) => {
   // Setup: Create test location
   const customer = await setupTestCustomer();
   const location = await createTestLocation(customer._id, 'Test Location');
-  
+
   // User A opens location for editing
   await page.goto(`/customers/${customer._id}/locations/${location._id}/edit`);
-  
+
   // Simulate going offline
   await context.setOffline(true);
-  
+
   // User A edits delivery address offline
   await page.fill('[name="deliveryAddress.street"]', 'Offline Street Update');
   await page.click('button:has-text("Save")');
-  
+
   // Verify saved locally
   await expect(page.locator('.toast-info')).toContainText('Saved offline');
-  
+
   // Simulate another user updating online (in separate session)
-  await updateLocationOnline(location._id, { 
-    deliveryAddress: { street: 'Online Street Update' }
+  await updateLocationOnline(location._id, {
+    deliveryAddress: { street: 'Online Street Update' },
   });
-  
+
   // User A goes back online
   await context.setOffline(false);
-  
+
   // Trigger sync
   await page.click('[data-testid="sync-button"]');
-  
+
   // Conflict detected - UI shows resolution dialog
   await expect(page.locator('[data-testid="conflict-dialog"]')).toBeVisible();
   await expect(page.locator('[data-testid="conflict-dialog"]')).toContainText(
     'Conflict detected in deliveryAddress.street'
   );
-  
+
   // Show both versions
-  await expect(page.locator('[data-testid="local-value"]')).toContainText('Offline Street Update');
-  await expect(page.locator('[data-testid="remote-value"]')).toContainText('Online Street Update');
-  
+  await expect(page.locator('[data-testid="local-value"]')).toContainText(
+    'Offline Street Update'
+  );
+  await expect(page.locator('[data-testid="remote-value"]')).toContainText(
+    'Online Street Update'
+  );
+
   // User chooses local version
   await page.click('[data-testid="choose-local"]');
   await page.click('button:has-text("Resolve Conflict")');
-  
+
   // Verify conflict resolved
-  await expect(page.locator('.toast-success')).toContainText('Conflict resolved');
-  
+  await expect(page.locator('.toast-success')).toContainText(
+    'Conflict resolved'
+  );
+
   // Verify final value
   const finalLocation = await page.locator('[data-testid="delivery-address"]');
   await expect(finalLocation).toContainText('Offline Street Update');
@@ -1229,7 +1304,9 @@ export const testAddress: Address = {
 
 ```typescript
 // tests/fixtures/contacts.fixture.ts
-export const createTestContact = (overrides?: Partial<ContactPerson>): ContactPerson => {
+export const createTestContact = (
+  overrides?: Partial<ContactPerson>
+): ContactPerson => {
   return {
     _id: `contact-${generateId()}`,
     _rev: '1-ghi',
@@ -1256,7 +1333,9 @@ export const createTestContact = (overrides?: Partial<ContactPerson>): ContactPe
   };
 };
 
-export const createDecisionMakerContact = (approvalLimit: number): ContactPerson => {
+export const createDecisionMakerContact = (
+  approvalLimit: number
+): ContactPerson => {
   return createTestContact({
     firstName: 'Anna',
     lastName: 'Müller',
@@ -1276,6 +1355,7 @@ export const createDecisionMakerContact = (approvalLimit: number): ContactPerson
 ## 9. Calendar & Resource Management Tests (NEW)
 
 **Related:**
+
 - Data Model: CalendarEvent interface, User.workingHours, User.availability
 - API: `/api/v1/calendar/*` endpoints
 - UI/UX: `ui-ux/02-core-components/calendar-view.md`, `ui-ux/08-specialized/calendar-export.md`
@@ -1304,10 +1384,18 @@ describe('CalendarService - Event Aggregation', () => {
     const startDate = new Date('2025-02-01');
     const endDate = new Date('2025-02-28');
 
-    const mockUserTasks = [/* ... */];
-    const mockProjectTasks = [/* ... */];
-    const mockProjects = [/* ... */];
-    const mockOpportunities = [/* ... */];
+    const mockUserTasks = [
+      /* ... */
+    ];
+    const mockProjectTasks = [
+      /* ... */
+    ];
+    const mockProjects = [
+      /* ... */
+    ];
+    const mockOpportunities = [
+      /* ... */
+    ];
 
     userTaskRepo.findByDateRange.mockResolvedValue(mockUserTasks);
     projectTaskRepo.findByDateRange.mockResolvedValue(mockProjectTasks);
@@ -1316,8 +1404,16 @@ describe('CalendarService - Event Aggregation', () => {
 
     const events = await service.getEvents(startDate, endDate, mockUser);
 
-    expect(events.length).toBe(mockUserTasks.length + mockProjectTasks.length + mockProjects.length + mockOpportunities.length);
-    expect(userTaskRepo.findByDateRange).toHaveBeenCalledWith(startDate, endDate);
+    expect(events.length).toBe(
+      mockUserTasks.length +
+        mockProjectTasks.length +
+        mockProjects.length +
+        mockOpportunities.length
+    );
+    expect(userTaskRepo.findByDateRange).toHaveBeenCalledWith(
+      startDate,
+      endDate
+    );
   });
 
   it('should apply RBAC filtering - ADM sees only own events', async () => {
@@ -1325,8 +1421,10 @@ describe('CalendarService - Event Aggregation', () => {
     const events = await service.getEvents(startDate, endDate, admUser);
 
     // Verify only events owned by or assigned to ADM
-    events.forEach(event => {
-      expect(event.createdBy === 'user-123' || event.assignedTo === 'user-123').toBeTruthy();
+    events.forEach((event) => {
+      expect(
+        event.createdBy === 'user-123' || event.assignedTo === 'user-123'
+      ).toBeTruthy();
     });
   });
 
@@ -1346,8 +1444,9 @@ describe('CalendarService - Event Aggregation', () => {
     const startDate = new Date('2025-01-01');
     const endDate = new Date('2025-04-15'); // > 90 days
 
-    await expect(service.getEvents(startDate, endDate, mockUser))
-      .rejects.toThrow('Date range cannot exceed 90 days');
+    await expect(
+      service.getEvents(startDate, endDate, mockUser)
+    ).rejects.toThrow('Date range cannot exceed 90 days');
   });
 
   it('should limit event density to 1000 events', async () => {
@@ -1401,22 +1500,28 @@ describe('IcsGeneratorService', () => {
   });
 
   it('should escape special characters in ICS fields', () => {
-    const events = [{
-      title: 'Meeting: Q1 Review, Budget Discussion',
-      description: 'Discuss Q1 results;\nReview budget allocations',
-    }];
+    const events = [
+      {
+        title: 'Meeting: Q1 Review, Budget Discussion',
+        description: 'Discuss Q1 results;\nReview budget allocations',
+      },
+    ];
 
     const ics = service.generateICS(events);
 
     expect(ics).toContain('SUMMARY:Meeting: Q1 Review\\, Budget Discussion');
-    expect(ics).toContain('DESCRIPTION:Discuss Q1 results\\;\\nReview budget allocations');
+    expect(ics).toContain(
+      'DESCRIPTION:Discuss Q1 results\\;\\nReview budget allocations'
+    );
   });
 
   it('should handle German characters in UTF-8', () => {
-    const events = [{
-      title: 'Kundenbesuch bei Hofladen Müller',
-      location: 'München',
-    }];
+    const events = [
+      {
+        title: 'Kundenbesuch bei Hofladen Müller',
+        location: 'München',
+      },
+    ];
 
     const ics = service.generateICS(events);
 
@@ -1425,11 +1530,13 @@ describe('IcsGeneratorService', () => {
   });
 
   it('should handle all-day events', () => {
-    const events = [{
-      title: 'Company Holiday',
-      startDate: new Date('2025-12-25'),
-      allDay: true,
-    }];
+    const events = [
+      {
+        title: 'Company Holiday',
+        startDate: new Date('2025-12-25'),
+        allDay: true,
+      },
+    ];
 
     const ics = service.generateICS(events);
 
@@ -1498,7 +1605,7 @@ describe('Calendar API (Integration)', () => {
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
-      response.body.events.forEach(event => {
+      response.body.events.forEach((event) => {
         expect(['USER_TASK', 'PROJECT_TASK']).toContain(event.type);
       });
     });
@@ -1514,7 +1621,7 @@ describe('Calendar API (Integration)', () => {
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
-      response.body.events.forEach(event => {
+      response.body.events.forEach((event) => {
         expect(['TODO', 'IN_PROGRESS']).toContain(event.status);
       });
     });
@@ -1543,8 +1650,12 @@ describe('Calendar API (Integration)', () => {
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
-      expect(response.headers['content-type']).toBe('text/calendar; charset=utf-8');
-      expect(response.headers['content-disposition']).toContain('attachment; filename=');
+      expect(response.headers['content-type']).toBe(
+        'text/calendar; charset=utf-8'
+      );
+      expect(response.headers['content-disposition']).toContain(
+        'attachment; filename='
+      );
       expect(response.text).toContain('BEGIN:VCALENDAR');
       expect(response.text).toContain('END:VCALENDAR');
     });
@@ -1592,7 +1703,9 @@ test.describe('Calendar View & Export Workflow', () => {
     await expect(page.locator('.calendar-day-header')).toHaveCount(7);
   });
 
-  test('should switch between views (month/week/day/agenda)', async ({ page }) => {
+  test('should switch between views (month/week/day/agenda)', async ({
+    page,
+  }) => {
     await page.goto('/calendar');
 
     // Switch to week view
@@ -1666,7 +1779,9 @@ test.describe('Calendar View & Export Workflow', () => {
     await page.check('[name="exportEventType-PROJECT_TASK"]');
 
     // Preview event count should update
-    await expect(page.locator('[data-testid="export-event-count"]')).toContainText(/\d+ events/);
+    await expect(
+      page.locator('[data-testid="export-event-count"]')
+    ).toContainText(/\d+ events/);
 
     // Start download
     const [download] = await Promise.all([
@@ -1682,7 +1797,9 @@ test.describe('Calendar View & Export Workflow', () => {
     await page.goto('/calendar');
 
     // Get current month
-    const currentMonth = await page.locator('.calendar-month-title').textContent();
+    const currentMonth = await page
+      .locator('.calendar-month-title')
+      .textContent();
 
     // Click next month
     await page.click('[data-testid="calendar-next"]');
@@ -1753,11 +1870,31 @@ describe('AvailabilityService - Working Hours', () => {
       enabled: true,
       timezone: 'Europe/Berlin',
       days: {
-        monday: { isWorkday: true, startTime: '09:00', endTime: '17:00', breakDuration: 60 },
-        tuesday: { isWorkday: true, startTime: '09:00', endTime: '17:00', breakDuration: 60 },
+        monday: {
+          isWorkday: true,
+          startTime: '09:00',
+          endTime: '17:00',
+          breakDuration: 60,
+        },
+        tuesday: {
+          isWorkday: true,
+          startTime: '09:00',
+          endTime: '17:00',
+          breakDuration: 60,
+        },
         wednesday: { isWorkday: true, startTime: '09:00', endTime: '13:00' }, // Half day
-        thursday: { isWorkday: true, startTime: '09:00', endTime: '17:00', breakDuration: 60 },
-        friday: { isWorkday: true, startTime: '09:00', endTime: '17:00', breakDuration: 60 },
+        thursday: {
+          isWorkday: true,
+          startTime: '09:00',
+          endTime: '17:00',
+          breakDuration: 60,
+        },
+        friday: {
+          isWorkday: true,
+          startTime: '09:00',
+          endTime: '17:00',
+          breakDuration: 60,
+        },
         saturday: { isWorkday: false },
         sunday: { isWorkday: false },
       },
@@ -1771,12 +1908,20 @@ describe('AvailabilityService - Working Hours', () => {
     const user: User = {
       workingHours: {
         vacationDays: [
-          { startDate: new Date('2025-02-10'), endDate: new Date('2025-02-14'), reason: 'Annual Leave' },
+          {
+            startDate: new Date('2025-02-10'),
+            endDate: new Date('2025-02-14'),
+            reason: 'Annual Leave',
+          },
         ],
       },
     };
 
-    const capacity = service.calculateCapacity(user, new Date('2025-02-01'), new Date('2025-02-28'));
+    const capacity = service.calculateCapacity(
+      user,
+      new Date('2025-02-01'),
+      new Date('2025-02-28')
+    );
 
     // Verify vacation days are excluded
     expect(capacity.totalDays).toBe(28);
@@ -1790,7 +1935,9 @@ describe('AvailabilityService - Working Hours', () => {
       endTime: '09:00', // Invalid: end before start
     };
 
-    expect(() => service.validateWorkingHours(invalidDay)).toThrow('End time must be after start time');
+    expect(() => service.validateWorkingHours(invalidDay)).toThrow(
+      'End time must be after start time'
+    );
   });
 });
 ```
@@ -1857,16 +2004,40 @@ export const mockWorkingHoursSchedule: WorkingHoursSchedule = {
   enabled: true,
   timezone: 'Europe/Berlin',
   days: {
-    monday: { isWorkday: true, startTime: '09:00', endTime: '17:00', breakDuration: 60 },
-    tuesday: { isWorkday: true, startTime: '09:00', endTime: '17:00', breakDuration: 60 },
-    wednesday: { isWorkday: true, startTime: '09:00', endTime: '17:00', breakDuration: 60 },
-    thursday: { isWorkday: true, startTime: '09:00', endTime: '17:00', breakDuration: 60 },
+    monday: {
+      isWorkday: true,
+      startTime: '09:00',
+      endTime: '17:00',
+      breakDuration: 60,
+    },
+    tuesday: {
+      isWorkday: true,
+      startTime: '09:00',
+      endTime: '17:00',
+      breakDuration: 60,
+    },
+    wednesday: {
+      isWorkday: true,
+      startTime: '09:00',
+      endTime: '17:00',
+      breakDuration: 60,
+    },
+    thursday: {
+      isWorkday: true,
+      startTime: '09:00',
+      endTime: '17:00',
+      breakDuration: 60,
+    },
     friday: { isWorkday: true, startTime: '09:00', endTime: '13:00' }, // Half day Friday
     saturday: { isWorkday: false },
     sunday: { isWorkday: false },
   },
   vacationDays: [
-    { startDate: new Date('2025-12-23'), endDate: new Date('2025-12-31'), reason: 'Christmas Holiday' },
+    {
+      startDate: new Date('2025-12-23'),
+      endDate: new Date('2025-12-31'),
+      reason: 'Christmas Holiday',
+    },
   ],
   publicHolidays: [
     new Date('2025-01-01'), // New Year
@@ -1882,26 +2053,31 @@ export const mockWorkingHoursSchedule: WorkingHoursSchedule = {
 ## 8. Future Test Scenarios (Placeholders)
 
 ### Customer CRUD Tests (TBD)
+
 - Unit: Customer validation (company name, VAT number, email)
 - Integration: Customer CRUD API endpoints
 - E2E: Create customer workflow, duplicate detection
 
 ### Opportunity Workflow Tests (TBD)
+
 - Unit: Opportunity status transitions, probability validation
 - Integration: Opportunity API with approval checks
 - E2E: Lead → Opportunity → Won workflow with location selection
 
 ### Project Management Tests (TBD)
+
 - Unit: Project budget validation, date constraints
 - Integration: Project creation with location assignment
 - E2E: Opportunity → Project conversion with delivery location
 
 ### Full CRM Workflow Tests (TBD)
+
 - E2E: Complete sales cycle (Lead → Customer → Opportunity → Project → Invoice)
 - E2E: Multi-user collaboration scenarios
 - E2E: Offline-first complete workflows
 
 ### Performance Tests (TBD)
+
 - Load: 20 concurrent users performing CRUD operations
 - Stress: Database with 5,000 customers, 10,000 locations
 - Sync: 100 offline changes syncing simultaneously
@@ -2374,13 +2550,12 @@ test('Budget Warning Display', async ({ page }) => {
 
 ## Document History
 
-| Version | Date       | Author | Changes |
-|---------|------------|--------|---------|
-| 1.0     | 2025-01-28 | System | Initial specification: 70/20/10 pyramid, coverage targets, location management tests, decision authority tests, offline conflict tests, test fixtures |
-| 1.1     | 2025-01-28 | System | Added calendar & resource management test scenarios (Section 9) |
+| Version | Date       | Author | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ------- | ---------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.0     | 2025-01-28 | System | Initial specification: 70/20/10 pyramid, coverage targets, location management tests, decision authority tests, offline conflict tests, test fixtures                                                                                                                                                                                                                                                                                                                                                                 |
+| 1.1     | 2025-01-28 | System | Added calendar & resource management test scenarios (Section 9)                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | 1.2     | 2025-01-28 | System | **Added Time Tracking & Project Cost Management test scenarios (Phase 1 MVP)**: TimeEntry tests (Sections 10.1-10.3) covering timer start/stop, manual entry, approval workflow, bulk operations, labor cost calculations; ProjectCost tests (Sections 11.1-11.3) covering cost creation with calculations, status lifecycle, approval thresholds, invoice management, budget warnings, material cost summaries. Includes unit tests (70%), integration tests (20%), and E2E tests (10%) with complete test scenarios |
 
 ---
 
 **End of TEST_STRATEGY_DOCUMENT.md v1.2**
-

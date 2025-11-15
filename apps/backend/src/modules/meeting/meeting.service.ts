@@ -1,8 +1,8 @@
 /**
  * Meeting Service
- * 
+ *
  * Business logic for Meeting management
- * 
+ *
  * Responsibilities:
  * - Validate meeting data and business rules
  * - Check RBAC permissions
@@ -10,7 +10,7 @@
  * - Tour linkage and auto-suggestion
  * - Meeting outcome tracking
  * - Orchestrate repository calls
- * 
+ *
  * Business Rules:
  * - MT-001: Auto-tour suggestion: Same day ±1 day, Region <50km
  * - MT-002: GPS check-in requires proximity to location (<100m)
@@ -25,18 +25,25 @@ import {
   Inject,
   Logger,
 } from '@nestjs/common';
-import type { Meeting, MeetingOutcome } from '@kompass/shared/types/entities/meeting';
+
+import type { Location } from '@kompass/shared/types/entities/location';
+import type {
+  Meeting,
+  MeetingOutcome,
+} from '@kompass/shared/types/entities/meeting';
 import {
   validateMeeting,
   createMeeting,
   MeetingOutcome as MeetingOutcomeEnum,
 } from '@kompass/shared/types/entities/meeting';
-import type { Location } from '@kompass/shared/types/entities/location';
 import type { Tour } from '@kompass/shared/types/entities/tour';
-import { IMeetingRepository, MeetingFilters } from './meeting.repository';
-import { CreateMeetingDto, MeetingStatus } from './dto/create-meeting.dto';
-import { UpdateMeetingDto, CheckInDto } from './dto/update-meeting.dto';
-import { MeetingResponseDto } from './dto/meeting-response.dto';
+
+import type { CreateMeetingDto } from './dto/create-meeting.dto';
+import { MeetingStatus } from './dto/create-meeting.dto';
+import type { MeetingResponseDto } from './dto/meeting-response.dto';
+import type { UpdateMeetingDto, CheckInDto } from './dto/update-meeting.dto';
+import { IMeetingRepository } from './meeting.repository';
+import type { MeetingFilters } from './meeting.repository';
 
 /**
  * Placeholder User type
@@ -57,7 +64,11 @@ interface ILocationService {
  * Tour Service Interface (placeholder)
  */
 interface ITourService {
-  suggestToursForMeeting(meetingDate: Date, locationId: string, userId: string): Promise<Tour[]>;
+  suggestToursForMeeting(
+    meetingDate: Date,
+    locationId: string,
+    userId: string
+  ): Promise<Tour[]>;
 }
 
 /**
@@ -102,13 +113,16 @@ export class MeetingService {
     @Inject('ITourService')
     private readonly tourService: ITourService,
     @Inject('IAuditService')
-    private readonly auditService: IAuditService,
+    private readonly auditService: IAuditService
   ) {}
 
   /**
    * List meetings for user with optional filters
    */
-  async findAll(user: User, filters?: MeetingFilters): Promise<MeetingResponseDto[]> {
+  async findAll(
+    user: User,
+    filters?: MeetingFilters
+  ): Promise<MeetingResponseDto[]> {
     let meetings: Meeting[];
 
     if (user.role === 'ADM') {
@@ -188,7 +202,7 @@ export class MeetingService {
         followUpDate: dto.followUpDate,
         attended: false,
       },
-      user.id,
+      user.id
     );
 
     // Save to database
@@ -211,7 +225,11 @@ export class MeetingService {
   /**
    * Update meeting
    */
-  async update(id: string, dto: UpdateMeetingDto, user: User): Promise<MeetingResponseDto> {
+  async update(
+    id: string,
+    dto: UpdateMeetingDto,
+    user: User
+  ): Promise<MeetingResponseDto> {
     const meeting = await this.meetingRepository.findById(id);
 
     if (!meeting) {
@@ -226,7 +244,7 @@ export class MeetingService {
     // Business Rule MT-003: Outcome required if attended = true
     if (dto.attended === true && !dto.outcome) {
       throw new BadRequestException(
-        'Meeting outcome is required if meeting was attended',
+        'Meeting outcome is required if meeting was attended'
       );
     }
 
@@ -245,7 +263,11 @@ export class MeetingService {
     if (dto.outcome !== undefined) {
       // Map string outcome to MeetingOutcome enum if it matches
       const outcomeValue = dto.outcome.toLowerCase();
-      if (Object.values(MeetingOutcomeEnum).includes(outcomeValue as MeetingOutcome)) {
+      if (
+        Object.values(MeetingOutcomeEnum).includes(
+          outcomeValue as MeetingOutcome
+        )
+      ) {
         updateData.outcome = outcomeValue as MeetingOutcome;
       } else {
         // If outcome is a long text, store in notes instead
@@ -254,7 +276,8 @@ export class MeetingService {
     }
     if (dto.notes !== undefined) updateData.notes = dto.notes;
     if (dto.tourId !== undefined) updateData.tourId = dto.tourId;
-    if (dto.followUpDate !== undefined) updateData.followUpDate = dto.followUpDate;
+    if (dto.followUpDate !== undefined)
+      updateData.followUpDate = dto.followUpDate;
 
     // Update meeting
     const updated: Meeting = {
@@ -308,7 +331,9 @@ export class MeetingService {
 
     // Business Rule: Can only delete meetings that haven't been attended
     if (meeting.attended === true) {
-      throw new BadRequestException('Cannot delete meetings that have been attended');
+      throw new BadRequestException(
+        'Cannot delete meetings that have been attended'
+      );
     }
 
     // Delete meeting
@@ -328,10 +353,14 @@ export class MeetingService {
 
   /**
    * GPS check-in for meeting
-   * 
+   *
    * Business Rule MT-002: GPS check-in requires proximity to location (<100m)
    */
-  async checkIn(id: string, checkInDto: CheckInDto, user: User): Promise<MeetingResponseDto> {
+  async checkIn(
+    id: string,
+    checkInDto: CheckInDto,
+    user: User
+  ): Promise<MeetingResponseDto> {
     const meeting = await this.meetingRepository.findById(id);
 
     if (!meeting) {
@@ -340,7 +369,9 @@ export class MeetingService {
 
     // RBAC check: Only ADM can check in for own meetings
     if (user.role !== 'ADM' || meeting.createdBy !== user.id) {
-      throw new ForbiddenException('Only ADM can check in for their own meetings');
+      throw new ForbiddenException(
+        'Only ADM can check in for their own meetings'
+      );
     }
 
     // Get location GPS coordinates
@@ -354,13 +385,13 @@ export class MeetingService {
       checkInDto.latitude,
       checkInDto.longitude,
       location.gpsCoordinates.latitude,
-      location.gpsCoordinates.longitude,
+      location.gpsCoordinates.longitude
     );
 
     // Business Rule MT-002: Must be within 100m
     if (distance > this.GPS_CHECK_IN_DISTANCE_METERS) {
       throw new BadRequestException(
-        `Too far from location. Distance: ${Math.round(distance)}m (required: <${this.GPS_CHECK_IN_DISTANCE_METERS}m)`,
+        `Too far from location. Distance: ${Math.round(distance)}m (required: <${this.GPS_CHECK_IN_DISTANCE_METERS}m)`
       );
     }
 
@@ -394,7 +425,9 @@ export class MeetingService {
       timestamp: new Date(),
     });
 
-    this.logger.log(`Meeting check-in: ${saved._id} by user ${user.id} at distance ${Math.round(distance)}m`);
+    this.logger.log(
+      `Meeting check-in: ${saved._id} by user ${user.id} at distance ${Math.round(distance)}m`
+    );
 
     return this.mapToResponseDto(saved);
   }
@@ -406,7 +439,7 @@ export class MeetingService {
     id: string,
     outcome: string,
     notes: string | undefined,
-    user: User,
+    user: User
   ): Promise<MeetingResponseDto> {
     const meeting = await this.meetingRepository.findById(id);
 
@@ -421,13 +454,18 @@ export class MeetingService {
 
     // Business Rule MT-003: Outcome required if attended
     if (meeting.attended && !outcome) {
-      throw new BadRequestException('Meeting outcome is required if meeting was attended');
+      throw new BadRequestException(
+        'Meeting outcome is required if meeting was attended'
+      );
     }
 
     // Map string outcome to MeetingOutcome enum if it matches, otherwise store in notes
     let outcomeEnum: MeetingOutcome | undefined;
     const outcomeLower = outcome?.toLowerCase();
-    if (outcomeLower && Object.values(MeetingOutcomeEnum).includes(outcomeLower as MeetingOutcome)) {
+    if (
+      outcomeLower &&
+      Object.values(MeetingOutcomeEnum).includes(outcomeLower as MeetingOutcome)
+    ) {
       outcomeEnum = outcomeLower as MeetingOutcome;
     }
 
@@ -457,7 +495,11 @@ export class MeetingService {
   /**
    * Link meeting to tour
    */
-  async linkToTour(id: string, tourId: string, user: User): Promise<MeetingResponseDto> {
+  async linkToTour(
+    id: string,
+    tourId: string,
+    user: User
+  ): Promise<MeetingResponseDto> {
     const meeting = await this.meetingRepository.findById(id);
 
     if (!meeting) {
@@ -466,7 +508,9 @@ export class MeetingService {
 
     // RBAC check: ADM can only link own meetings
     if (user.role === 'ADM' && meeting.createdBy !== user.id) {
-      throw new ForbiddenException('You can only link your own meetings to tours');
+      throw new ForbiddenException(
+        'You can only link your own meetings to tours'
+      );
     }
 
     const updated: Meeting = {
@@ -494,15 +538,19 @@ export class MeetingService {
 
   /**
    * Get tour suggestions for meeting
-   * 
+   *
    * Business Rule MT-001: Auto-tour suggestion
    */
   async getTourSuggestions(
     meetingDate: Date,
     locationId: string,
-    user: User,
+    user: User
   ): Promise<Tour[]> {
-    return this.tourService.suggestToursForMeeting(meetingDate, locationId, user.id);
+    return this.tourService.suggestToursForMeeting(
+      meetingDate,
+      locationId,
+      user.id
+    );
   }
 
   /**
@@ -520,9 +568,7 @@ export class MeetingService {
   async areAllMeetingsCompleted(tourId: string): Promise<boolean> {
     const meetings = await this.meetingRepository.findByTour(tourId);
     return meetings.every(
-      (meeting) => 
-        (meeting.attended === true) || 
-        (meeting.outcome === 'cancelled'),
+      (meeting) => meeting.attended === true || meeting.outcome === 'cancelled'
     );
   }
 
@@ -534,7 +580,7 @@ export class MeetingService {
     lat1: number,
     lon1: number,
     lat2: number,
-    lon2: number,
+    lon2: number
   ): number {
     const R = 6371000; // Earth radius in meters
     const φ1 = (lat1 * Math.PI) / 180;
@@ -591,10 +637,12 @@ export class MeetingService {
     if (meeting.outcome === MeetingOutcomeEnum.CANCELLED) {
       return MeetingStatus.CANCELLED;
     }
-    if (meeting.actualStartTime && new Date(meeting.actualStartTime) > new Date()) {
+    if (
+      meeting.actualStartTime &&
+      new Date(meeting.actualStartTime) > new Date()
+    ) {
       return MeetingStatus.RESCHEDULED;
     }
     return MeetingStatus.SCHEDULED;
   }
 }
-

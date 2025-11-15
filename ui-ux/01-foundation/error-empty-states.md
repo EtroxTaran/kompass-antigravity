@@ -1,6 +1,7 @@
 # Error & Empty States - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Error Handling & Empty State Patterns
 - **User Roles**: All (GF, PLAN, ADM, KALK, BUCH)
 - **Usage Context**: Display when errors occur, data is empty, or user lacks permissions
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Error States**: Alert styling with error color, clear message, action buttons
 - **Empty States**: Neutral styling with helpful illustration, call-to-action
 - **Permission Denied**: Clear indication of RBAC restrictions with upgrade path
 - **No Results**: Search/filter-specific empty state with suggestions
 
 ### Layout Structure
+
 - Centered content for full-page states
 - Inline alerts for contextual errors
 - Toast notifications for transient errors
 - Modal dialogs for critical errors requiring acknowledgment
 
 ### shadcn/ui Components
+
 - `Alert` for inline error messages
 - `AlertDialog` for critical errors
 - `Card` for empty state containers
@@ -134,6 +138,7 @@ Create comprehensive error and empty state designs for KOMPASS, a German CRM app
    - Note: Edit buttons are disabled/hidden
 
 **GoBD Immutable Field Error:**
+
 1. **Finalized Invoice Edit Attempt:**
    - Modal dialog
    - Warning icon (amber, 48px)
@@ -144,6 +149,7 @@ Create comprehensive error and empty state designs for KOMPASS, a German CRM app
    - Button: "Verstanden" (close dialog)
 
 **Conflict Resolution State:**
+
 1. **Data Conflict Detected:**
    - Full-page or modal view
    - Two-column comparison:
@@ -163,6 +169,7 @@ Design all states in light mode with professional, calm aesthetic. Use German la
 ## Interaction Patterns
 
 ### Error Recovery Flow
+
 1. Error occurs (validation, network, permission)
 2. Appropriate error state displays immediately
 3. User reads error message and understands issue
@@ -171,6 +178,7 @@ Design all states in light mode with professional, calm aesthetic. Use German la
 6. Success state or persistent error if unresolved
 
 ### Empty State Flow
+
 1. User navigates to section or applies filters
 2. System determines no data matches criteria
 3. Empty state displays with illustration and CTA
@@ -179,6 +187,7 @@ Design all states in light mode with professional, calm aesthetic. Use German la
 6. Data appears (or creation form opens)
 
 ### Permission Denied Flow
+
 1. User attempts restricted action
 2. System checks RBAC permissions
 3. Permission denied state displays (not navigation)
@@ -188,6 +197,7 @@ Design all states in light mode with professional, calm aesthetic. Use German la
 ## German Labels & Content
 
 ### Error Messages
+
 - **Fehler**: Error
 - **Fehler beim Laden**: Error loading
 - **Synchronisierung fehlgeschlagen**: Sync failed
@@ -198,6 +208,7 @@ Design all states in light mode with professional, calm aesthetic. Use German la
 - **Verbindung erneut prüfen**: Check connection again
 
 ### Empty States
+
 - **Noch keine [X] vorhanden**: No [X] yet
 - **Keine Ergebnisse für '[Y]'**: No results for '[Y]'
 - **Keine [X] gefunden**: No [X] found
@@ -207,18 +218,21 @@ Design all states in light mode with professional, calm aesthetic. Use German la
 - **Alle [X] anzeigen**: Show all [X]
 
 ### Permission Messages
+
 - **Zugriff eingeschränkt**: Access restricted
 - **Keine Berechtigung**: No permission
 - **Erforderliche Rolle**: Required role
 - **Administrator kontaktieren**: Contact administrator
 
 ### GoBD Messages
+
 - **Rechnung ist abgeschlossen**: Invoice is finalized
 - **Kann nicht geändert werden**: Cannot be modified
 - **Änderungsprotokoll anzeigen**: Show change log
 - **Stornorechnung erstellen**: Create cancellation invoice
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Error messages have `role="alert"` for screen reader announcement
 - Color is not the only indicator (icons also used)
@@ -229,6 +243,7 @@ Design all states in light mode with professional, calm aesthetic. Use German la
 - Minimum 4.5:1 contrast for error text on background
 
 ## Mobile Considerations
+
 - Toast notifications positioned at top (avoid keyboard overlap)
 - Full-screen error dialogs on mobile (not modals)
 - Touch-friendly action buttons (minimum 44px height)
@@ -240,19 +255,23 @@ Design all states in light mode with professional, calm aesthetic. Use German la
 ## Example Data
 
 **Form Validation Error:**
+
 - Field: "Umsatzsteuer-ID"
 - Invalid input: "123456789"
 - Error: "Die Umsatzsteuer-ID muss im Format DE123456789 sein"
 
 **Network Error:**
+
 - Pending changes: "Kunde 'Hofladen Müller' aktualisiert", "Neue Aktivität für 'REWE Köln' erstellt", "Angebot #2024-045 gespeichert"
 - Offline duration: "Seit 14:30 Uhr offline (2 Stunden)"
 
 **Empty Customer List:**
+
 - Company: "Musterunternehmen GmbH" (new tenant, no data yet)
 - CTA: "Ersten Kunden anlegen"
 
 **Permission Denied:**
+
 - User: "Michael Schmidt" (ADM role)
 - Attempted action: "Rechnung erstellen"
 - Required role: "GF oder BUCH"
@@ -260,6 +279,7 @@ Design all states in light mode with professional, calm aesthetic. Use German la
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add alert
 npx shadcn-ui@latest add alert-dialog
@@ -270,6 +290,7 @@ npx shadcn-ui@latest add badge
 ```
 
 ### Inline Error Alert
+
 ```typescript
 <Alert variant="destructive">
   <AlertCircle className="h-4 w-4" />
@@ -281,6 +302,7 @@ npx shadcn-ui@latest add badge
 ```
 
 ### Empty State Component
+
 ```typescript
 <Card className="border-dashed">
   <CardContent className="flex flex-col items-center justify-center py-10">
@@ -297,27 +319,29 @@ npx shadcn-ui@latest add badge
 ```
 
 ### Toast Notification
+
 ```typescript
 import { useToast } from '@/hooks/use-toast';
 
 const { toast } = useToast();
 
 toast({
-  variant: "destructive",
-  title: "Fehler",
-  description: "Kunde konnte nicht gespeichert werden.",
+  variant: 'destructive',
+  title: 'Fehler',
+  description: 'Kunde konnte nicht gespeichert werden.',
 });
 ```
 
 ### Component Dependencies
+
 - Design tokens (error colors, spacing)
 - Icons from lucide-react (AlertCircle, AlertTriangle, Lock, Users)
 - Toast notification system
 - RBAC context for permission checks
 
 ### State Management
+
 - Error states triggered by API errors or validation
 - Empty states derived from data queries
 - Permission states checked against user role
 - Offline state from service worker
-

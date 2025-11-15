@@ -1,14 +1,15 @@
 /**
  * Location Module
- * 
+ *
  * Manages customer delivery locations
  * Implements nested REST API under Customer resource
  */
 
 import { Module } from '@nestjs/common';
+
 import { LocationController } from './location.controller';
-import { LocationService } from './location.service';
 import { LocationRepository } from './location.repository';
+import { LocationService } from './location.service';
 
 @Module({
   imports: [
@@ -27,4 +28,3 @@ import { LocationRepository } from './location.repository';
   exports: [LocationService],
 })
 export class LocationModule {}
-

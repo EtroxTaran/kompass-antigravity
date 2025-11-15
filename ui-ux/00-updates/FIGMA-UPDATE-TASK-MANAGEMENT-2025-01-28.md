@@ -42,23 +42,25 @@ Create comprehensive task management UI components for KOMPASS application suppo
 
 **Priority Badge Colors:**
 
-| Priority | Background | Text | Border |
-|----------|------------|------|--------|
-| Low | #F3F4F6 | #6B7280 | 1px #E5E7EB |
-| Medium | #DBEAFE | #1E40AF | none |
-| High | #FEF3C7 | #B45309 | none |
-| Urgent | #FEE2E2 | #991B1B | none |
-| Critical | #DC2626 | #FFFFFF | none |
+| Priority | Background | Text    | Border      |
+| -------- | ---------- | ------- | ----------- |
+| Low      | #F3F4F6    | #6B7280 | 1px #E5E7EB |
+| Medium   | #DBEAFE    | #1E40AF | none        |
+| High     | #FEF3C7    | #B45309 | none        |
+| Urgent   | #FEE2E2    | #991B1B | none        |
+| Critical | #DC2626    | #FFFFFF | none        |
 
 **Status Badge Styles:**
 
 UserTask Status:
+
 - Open: Gray outline (#6B7280), no fill
 - In Progress: Blue fill (#3B82F6), white text
 - Completed: Green fill (#10B981), white text with ✓
 - Cancelled: Red outline (#EF4444), strikethrough text
 
 ProjectTask Status:
+
 - Todo: Gray outline (#6B7280), no fill
 - In Progress: Blue fill (#3B82F6), white text
 - Review: Purple fill (#8B5CF6), white text
@@ -66,6 +68,7 @@ ProjectTask Status:
 - Blocked: Red fill (#EF4444), white text with ⚠️
 
 **Interactive States:**
+
 - Hover: Shadow 0px 4px 12px rgba(0,0,0,0.08), background #F9FAFB
 - Selected: Border 2px #3B82F6, background tint #EFF6FF
 - Focus: Outline 3px #93C5FD
@@ -165,10 +168,9 @@ ProjectTask Status:
 
 **Button Styles:**
 
-- Primary "Create Task": 
+- Primary "Create Task":
   - Background #3B82F6, text white, height 48px
   - Disabled: Background #9CA3AF, cursor not-allowed
-  
 - Secondary "Cancel":
   - Border 1px #D1D5DB, text #374151, height 48px
 
@@ -241,11 +243,13 @@ ProjectTask Status:
 - Padding: 20px
 
 Widget Structure:
+
 1. Top: Icon + Label (Inter 12px Semibold, uppercase, #6B7280)
 2. Center: Large number (Inter 36px Bold, color varies by widget)
 3. Bottom: Subtitle (Inter 14px Regular, #9CA3AF)
 
 Widget Colors:
+
 - Open: #6B7280 (gray)
 - In Progress: #3B82F6 (blue)
 - Overdue: #EF4444 (red) if count > 0
@@ -259,8 +263,9 @@ Widget Colors:
 - Padding: 16px
 
 Filter Section:
+
 - Section title: Inter 12px Semibold, uppercase, #9CA3AF, margin-bottom: 8px
-- Checkbox item: 
+- Checkbox item:
   - Height: 36px
   - Font: Inter 14px Regular, #374151
   - Count badge: (gray, right-aligned)
@@ -396,6 +401,7 @@ Filter Section:
 ## COLOR PALETTE
 
 ### Priority Colors
+
 ```
 Low:      #9CA3AF (gray-400)
 Medium:   #3B82F6 (blue-500)
@@ -405,6 +411,7 @@ Critical: #B91C1C (red-700)
 ```
 
 ### Status Colors (UserTask)
+
 ```
 Open:       #6B7280 (gray-500)
 In Progress: #3B82F6 (blue-500)
@@ -413,6 +420,7 @@ Cancelled:  #EF4444 (red-500)
 ```
 
 ### Status Colors (ProjectTask)
+
 ```
 Todo:       #6B7280 (gray-500)
 In Progress: #3B82F6 (blue-500)
@@ -422,6 +430,7 @@ Blocked:    #EF4444 (red-500)
 ```
 
 ### UI Background Colors
+
 ```
 Page Background:    #F9FAFB (gray-50)
 Card Background:    #FFFFFF (white)
@@ -435,26 +444,28 @@ Disabled Background: #F3F4F6 (gray-100)
 ## TYPOGRAPHY
 
 ### Font Family
+
 Primary: Inter (Google Fonts)
 Fallback: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
 
 ### Font Sizes & Weights
 
-| Element | Size | Weight | Line Height |
-|---------|------|--------|-------------|
-| Page Title | 24px | 700 (Bold) | 32px |
-| Section Title | 18px | 600 (Semibold) | 28px |
-| Card Title | 16px | 500 (Medium) | 24px |
-| Body Text | 14px | 400 (Regular) | 20px |
-| Small Text | 12px | 400 (Regular) | 16px |
-| Caption | 11px | 400 (Regular) | 14px |
-| Button Text | 14px | 500 (Medium) | 20px |
+| Element       | Size | Weight         | Line Height |
+| ------------- | ---- | -------------- | ----------- |
+| Page Title    | 24px | 700 (Bold)     | 32px        |
+| Section Title | 18px | 600 (Semibold) | 28px        |
+| Card Title    | 16px | 500 (Medium)   | 24px        |
+| Body Text     | 14px | 400 (Regular)  | 20px        |
+| Small Text    | 12px | 400 (Regular)  | 16px        |
+| Caption       | 11px | 400 (Regular)  | 14px        |
+| Button Text   | 14px | 500 (Medium)   | 20px        |
 
 ---
 
 ## SPACING & SIZING
 
 ### Spacing Scale (8px base)
+
 ```
 4px  (0.5x)  - Extra tight
 8px  (1x)    - Tight
@@ -466,6 +477,7 @@ Fallback: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
 ```
 
 ### Border Radius
+
 ```
 Small:  4px  (buttons, badges)
 Medium: 8px  (inputs, cards)
@@ -474,6 +486,7 @@ Round:  50%  (avatars, icons)
 ```
 
 ### Shadow Elevation
+
 ```
 Level 1: 0px 1px 2px rgba(0,0,0,0.05)
 Level 2: 0px 1px 3px rgba(0,0,0,0.1)
@@ -486,25 +499,27 @@ Level 4: 0px 8px 16px rgba(0,0,0,0.12)
 ## ICON SPECIFICATIONS
 
 ### Icon Library
+
 Use Heroicons v2 (outline style for non-filled, solid for filled)
 
 ### Common Icons & Sizes
 
-| Element | Icon Name | Size |
-|---------|-----------|------|
-| Calendar | calendar | 16px |
-| User Avatar | user-circle | 28px |
-| Priority | exclamation-circle | 16px |
-| Status | check-circle | 16px |
-| Menu | ellipsis-vertical | 24px |
-| Close | x-mark | 24px |
-| Add | plus | 24px |
-| Edit | pencil-square | 16px |
-| Delete | trash | 16px |
-| Search | magnifying-glass | 20px |
-| Filter | funnel | 20px |
+| Element     | Icon Name          | Size |
+| ----------- | ------------------ | ---- |
+| Calendar    | calendar           | 16px |
+| User Avatar | user-circle        | 28px |
+| Priority    | exclamation-circle | 16px |
+| Status      | check-circle       | 16px |
+| Menu        | ellipsis-vertical  | 24px |
+| Close       | x-mark             | 24px |
+| Add         | plus               | 24px |
+| Edit        | pencil-square      | 16px |
+| Delete      | trash              | 16px |
+| Search      | magnifying-glass   | 20px |
+| Filter      | funnel             | 20px |
 
 ### Icon Colors
+
 - Default: #6B7280 (gray-500)
 - Hover: #374151 (gray-700)
 - Active: #3B82F6 (blue-500)
@@ -515,6 +530,7 @@ Use Heroicons v2 (outline style for non-filled, solid for filled)
 ## BUTTON SPECIFICATIONS
 
 ### Primary Button
+
 - Background: #3B82F6
 - Text: White (#FFFFFF)
 - Height: 48px (desktop), 44px (mobile)
@@ -526,6 +542,7 @@ Use Heroicons v2 (outline style for non-filled, solid for filled)
 - Disabled: Background #9CA3AF, cursor not-allowed
 
 ### Secondary Button
+
 - Background: Transparent
 - Border: 1px #D1D5DB
 - Text: #374151
@@ -537,6 +554,7 @@ Use Heroicons v2 (outline style for non-filled, solid for filled)
 - Active: Border #3B82F6
 
 ### Destructive Button
+
 - Background: #EF4444
 - Text: White (#FFFFFF)
 - (Other specs same as Primary)
@@ -547,16 +565,19 @@ Use Heroicons v2 (outline style for non-filled, solid for filled)
 ## ACCESSIBILITY REQUIREMENTS
 
 ### Focus States
+
 - Outline: 3px solid #93C5FD (blue-300)
 - Offset: 2px
 - Border-radius: Same as element + 2px
 
 ### Contrast Ratios
+
 - Body text on background: Min 4.5:1
 - Large text (18px+) on background: Min 3:1
 - Priority/status badges: Min 7:1 (AAA level)
 
 ### Touch Targets (Mobile)
+
 - Minimum: 44px × 44px (Apple HIG)
 - Recommended: 48px × 48px (Material Design)
 - Spacing between targets: Min 8px
@@ -593,12 +614,10 @@ After implementing these components in Figma, verify:
 **Total Components:** 15+  
 **Total Variants:** 30+  
 **Design System:** Tailwind CSS compatible  
-**Accessibility:** WCAG 2.1 AA compliant  
+**Accessibility:** WCAG 2.1 AA compliant
 
 ---
 
 END OF PROMPT
 
 **Note:** This prompt creates the complete task management UI system including desktop dashboards, mobile views, forms, cards, and all interactive states. All components follow KOMPASS design system and are ready for developer handoff.
-
-

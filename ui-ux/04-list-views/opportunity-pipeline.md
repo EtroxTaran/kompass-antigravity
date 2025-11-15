@@ -1,6 +1,7 @@
 # Opportunity Pipeline View - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Kanban Pipeline Board
 - **User Roles**: GF (all), PLAN (all), ADM (own), KALK (read-only)
 - **Usage Context**: Visualize and manage sales pipeline with drag-and-drop
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Kanban Columns**: One per status (Neu, Qualifizierung, Angebot, Verhandlung, Gewonnen, Verloren)
 - **Opportunity Cards**: Compact, draggable cards with key info
 - **Pipeline Value**: Total and weighted value per column
 - **Status Transition**: Visual drag-and-drop between stages
 
 ### Layout Structure
+
 - Horizontal scrollable board
 - Column width: 320px each, 6 columns visible
 - Card height: Auto (120-160px)
@@ -22,6 +25,7 @@
 - Horizontal scroll for all columns
 
 ### shadcn/ui Components
+
 - `Card` for opportunity cards (draggable)
 - `Badge` for status and priority
 - `Progress` for probability
@@ -32,6 +36,7 @@
 Create an opportunity pipeline Kanban board for KOMPASS, a German CRM application. Design a drag-and-drop board with columns for each sales stage, opportunity cards with value and probability, and pipeline value summaries with German labels.
 
 **Pipeline Board Layout:**
+
 - Horizontal scrollable container
 - 6 columns side by side
 - Total width: 6 × 320px = 1920px (scrollable)
@@ -41,6 +46,7 @@ Create an opportunity pipeline Kanban board for KOMPASS, a German CRM applicatio
 **Kanban Columns (One for Each Status):**
 
 **Column Structure:**
+
 - Width: 320px
 - Background: White (or light color per status)
 - Border-radius: 8px
@@ -49,6 +55,7 @@ Create an opportunity pipeline Kanban board for KOMPASS, a German CRM applicatio
 - Gap: 12px between cards
 
 **Column Header:**
+
 - Status name: "Neu" (16px, bold)
 - Card count badge: "5" (gray badge)
 - Total value: "€ 625.000" (14px, semibold)
@@ -102,6 +109,7 @@ Create an opportunity pipeline Kanban board for KOMPASS, a German CRM applicatio
 **Opportunity Card (Draggable):**
 
 **Card Appearance:**
+
 - Width: 288px (fits column with padding)
 - Background: White
 - Border: 1px solid #e5e7eb
@@ -146,16 +154,19 @@ Create an opportunity pipeline Kanban board for KOMPASS, a German CRM applicatio
    - Font: 10px
 
 **Card Footer:**
+
 - Last activity: "Follow-up: Vor 2 Tagen" (11px, gray)
 - Activity icon: Small (12px)
 
 **Card Interaction States:**
+
 - **Default**: White background, border gray
 - **Hover**: Shadow increases, border blue
 - **Dragging**: Opacity 0.8, rotated, following cursor
 - **Drop target**: Column background highlights (light blue)
 
 **Drag-and-Drop Behavior:**
+
 - Grab card: Cursor changes to grabbing
 - Drag to column: Column highlights
 - Drop: Card animates into position
@@ -164,6 +175,7 @@ Create an opportunity pipeline Kanban board for KOMPASS, a German CRM applicatio
 - Example: Cannot drop "Neu" directly into "Gewonnen" (business rule)
 
 **Pipeline Summary (Top):**
+
 - Above columns
 - Cards showing totals:
   1. **Gesamtwert Pipeline**: "€ 4.725.000" (all opportunities)
@@ -173,16 +185,19 @@ Create an opportunity pipeline Kanban board for KOMPASS, a German CRM applicatio
 - Each card: Icon + label + large value
 
 **Filter Bar:**
+
 - Above pipeline
 - Filters: Owner (multi-select), Date range, Value range, Tags
 - Active filters: Chips "Inhaber: M. Schmidt ×", "Wert: > € 50.000 ×"
 
 **View Options:**
+
 - Toggle: Kanban view | List view | Calendar view
 - Active: Blue
 - Icons: LayoutDashboard, List, Calendar
 
 **Column Actions (Header Dropdown):**
+
 - MoreVertical icon in column header
 - Actions:
   - "Spalte minimieren" (collapse to title only)
@@ -190,12 +205,14 @@ Create an opportunity pipeline Kanban board for KOMPASS, a German CRM applicatio
   - "Karten sortieren nach..." (Date, Value, Probability)
 
 **Empty Column:**
+
 - Dashed border card in column
 - Icon: Plus (gray, 48px)
 - Text: "Keine Opportunities in 'Neu'"
 - Button: "Opportunity hinzufügen" (gray, outlined)
 
 **Mobile Layout:**
+
 - Vertical accordion: One column at a time
 - Tabs at top: Select status to view
 - Cards: Full width
@@ -207,6 +224,7 @@ Design with clear visual pipeline flow, intuitive drag-and-drop, and prominent v
 ## Interaction Patterns
 
 ### Drag-and-Drop Flow
+
 1. User clicks and holds opportunity card
 2. Card lifts (shadow, opacity change)
 3. User drags to new column
@@ -218,12 +236,14 @@ Design with clear visual pipeline flow, intuitive drag-and-drop, and prominent v
 9. If conditional fields required (e.g., Lost reason): Dialog opens
 
 ### Status Transition Validation
+
 - Only valid transitions allowed
 - Invalid drop targets grayed out during drag
 - Example: "Neu" can only go to "Qualifizierung" or "Verloren"
 - Attempting invalid drop: Red highlight, card returns, error toast
 
 ### Card Click
+
 - Click card (not dragging): Opens opportunity detail
 - Click customer name: Navigate to customer detail
 - Click owner avatar: Show user info popover
@@ -231,6 +251,7 @@ Design with clear visual pipeline flow, intuitive drag-and-drop, and prominent v
 ## German Labels & Content
 
 ### Status Columns
+
 - **Neu**: New
 - **Qualifizierung**: Qualifying
 - **Angebot erstellt**: Proposal
@@ -239,23 +260,27 @@ Design with clear visual pipeline flow, intuitive drag-and-drop, and prominent v
 - **Verloren**: Lost
 
 ### Card Labels
+
 - **Erwartet**: Expected (close date)
 - **Verantwortlich**: Responsible (owner)
 - **Letzte Aktivität**: Last activity
 
 ### Pipeline Summary
+
 - **Gesamtwert Pipeline**: Total pipeline value
 - **Gewichteter Wert**: Weighted value
 - **Durchschn. Wahrscheinlichkeit**: Average probability
 - **Opportunities gesamt**: Total opportunities
 
 ### Actions
+
 - **Opportunity hinzufügen**: Add opportunity
 - **Bearbeiten**: Edit
 - **Verschieben nach**: Move to
 - **Löschen**: Delete
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Drag-and-drop: Keyboard alternative (button to move between columns)
 - Cards: role="button", aria-label with opportunity title
@@ -264,6 +289,7 @@ Design with clear visual pipeline flow, intuitive drag-and-drop, and prominent v
 - Focus visible: Blue outline on keyboard navigation
 
 ## Mobile Considerations
+
 - Vertical column view (tabs or accordion)
 - Select status tab to view opportunities in that stage
 - Cards full width
@@ -273,6 +299,7 @@ Design with clear visual pipeline flow, intuitive drag-and-drop, and prominent v
 ## Example Data
 
 **Pipeline (Kanban Columns):**
+
 - Neu: 8 opportunities, € 485.000
 - Qualifizierung: 12 opportunities, € 890.000
 - Angebot: 6 opportunities, € 550.000
@@ -281,6 +308,7 @@ Design with clear visual pipeline flow, intuitive drag-and-drop, and prominent v
 - Verloren: 7 opportunities, € 420.000
 
 **Sample Opportunity Card (in Verhandlung):**
+
 - Customer: "REWE München Süd"
 - Title: "Ladeneinrichtung Neueröffnung"
 - Value: "€ 125.000"
@@ -292,6 +320,7 @@ Design with clear visual pipeline flow, intuitive drag-and-drop, and prominent v
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add card
 npx shadcn-ui@latest add badge
@@ -300,11 +329,13 @@ npx shadcn-ui@latest add avatar
 ```
 
 ### Drag-and-Drop Library
+
 ```bash
 pnpm add @dnd-kit/core @dnd-kit/sortable
 ```
 
 ### Component Dependencies
+
 - Opportunity API
 - Drag-and-drop state management
 - Status transition validation logic
@@ -312,9 +343,9 @@ pnpm add @dnd-kit/core @dnd-kit/sortable
 - RBAC for visibility (ADM own opportunities)
 
 ### State Management
+
 - Opportunities grouped by status
 - Drag-and-drop state
 - Filter and sort state
 - Selected opportunity for details
 - Status transition validation
-

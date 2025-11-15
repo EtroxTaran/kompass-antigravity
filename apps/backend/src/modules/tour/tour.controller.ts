@@ -1,12 +1,12 @@
 /**
  * Tour Controller
- * 
+ *
  * Handles HTTP requests for Tour management
- * 
+ *
  * All endpoints require:
  * - JwtAuthGuard: User must be authenticated
  * - RbacGuard: User must have required permissions
- * 
+ *
  * Permissions:
  * - Tour.READ: GF, PLAN, ADM (own), BUCH
  * - Tour.CREATE: GF, PLAN, ADM
@@ -25,7 +25,6 @@ import {
   Body,
   Param,
   Query,
-  UseGuards,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -38,11 +37,13 @@ import {
   ApiQuery,
   ApiBody,
 } from '@nestjs/swagger';
-import { TourService } from './tour.service';
-import { CreateTourDto } from './dto/create-tour.dto';
-import { UpdateTourDto } from './dto/update-tour.dto';
-import { TourResponseDto, TourCostSummaryDto } from './dto/tour-response.dto';
+
 import { TourStatus } from '@kompass/shared/types/entities/tour';
+
+import { CreateTourDto } from './dto/create-tour.dto';
+import { TourResponseDto, TourCostSummaryDto } from './dto/tour-response.dto';
+import { UpdateTourDto } from './dto/update-tour.dto';
+import { TourService } from './tour.service';
 
 /**
  * Placeholder guards and decorators
@@ -52,8 +53,11 @@ interface User {
   role: 'GF' | 'PLAN' | 'ADM' | 'KALK' | 'BUCH';
 }
 
-const CurrentUser = () => (target: any, propertyKey: string, parameterIndex: number) => {};
-const RequirePermission = (entity: string, action: string) => (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {};
+const CurrentUser =
+  () => (target: any, propertyKey: string, parameterIndex: number) => {};
+const RequirePermission =
+  (entity: string, action: string) =>
+  (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {};
 const JwtAuthGuard = class {};
 const RbacGuard = class {};
 
@@ -74,7 +78,8 @@ export class TourController {
   @RequirePermission('Tour', 'READ')
   @ApiOperation({
     summary: 'List user tours',
-    description: 'Returns tours for the current user. ADM sees own tours, PLAN/GF see all tours.',
+    description:
+      'Returns tours for the current user. ADM sees own tours, PLAN/GF see all tours.',
   })
   @ApiQuery({
     name: 'status',
@@ -110,7 +115,7 @@ export class TourController {
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
     @Query('region') region?: string,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<TourResponseDto[]> {
     const filters: any = {};
     if (status) filters.status = status;
@@ -142,7 +147,7 @@ export class TourController {
   })
   async create(
     @Body() dto: CreateTourDto,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<TourResponseDto> {
     return this.tourService.create(dto, user!);
   }
@@ -176,7 +181,7 @@ export class TourController {
   })
   async findOne(
     @Param('tourId') tourId: string,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<TourResponseDto> {
     return this.tourService.findById(tourId, user!);
   }
@@ -211,7 +216,7 @@ export class TourController {
   async update(
     @Param('tourId') tourId: string,
     @Body() dto: UpdateTourDto,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<TourResponseDto> {
     return this.tourService.update(tourId, dto, user!);
   }
@@ -224,7 +229,8 @@ export class TourController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Delete tour',
-    description: 'Deletes a tour. Can only delete planned tours without linked expenses.',
+    description:
+      'Deletes a tour. Can only delete planned tours without linked expenses.',
   })
   @ApiParam({
     name: 'tourId',
@@ -244,7 +250,7 @@ export class TourController {
   })
   async delete(
     @Param('tourId') tourId: string,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<void> {
     return this.tourService.delete(tourId, user!);
   }
@@ -287,7 +293,7 @@ export class TourController {
   async complete(
     @Param('tourId') tourId: string,
     @Body('completionNotes') completionNotes: string,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<TourResponseDto> {
     return this.tourService.complete(tourId, completionNotes || '', user!);
   }
@@ -299,7 +305,8 @@ export class TourController {
   @RequirePermission('Tour', 'VIEW_COSTS')
   @ApiOperation({
     summary: 'Get tour cost breakdown',
-    description: 'Returns detailed cost breakdown including expenses, mileage, and hotel costs.',
+    description:
+      'Returns detailed cost breakdown including expenses, mileage, and hotel costs.',
   })
   @ApiParam({
     name: 'tourId',
@@ -312,9 +319,8 @@ export class TourController {
   })
   async getCostSummary(
     @Param('tourId') tourId: string,
-    @CurrentUser() user?: User,
+    @CurrentUser() user?: User
   ): Promise<TourCostSummaryDto> {
     return this.tourService.getCostSummary(tourId, user!);
   }
 }
-

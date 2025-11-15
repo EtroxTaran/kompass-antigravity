@@ -1,6 +1,7 @@
 # Grid System & Layout - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Layout Foundation
 - **User Roles**: All (GF, PLAN, ADM, KALK, BUCH)
 - **Usage Context**: Responsive grid system for all KOMPASS pages and components
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **12-column grid** for desktop (1280px+ wide)
 - **8-column grid** for tablet (768px-1279px)
 - **4-column grid** for mobile (0-767px)
 - Consistent gutters and margins for visual rhythm
 
 ### Layout Structure
+
 - Container max-width: 1440px centered on larger screens
 - Gutter width: 24px (desktop), 16px (tablet/mobile)
 - Margin: 32px (desktop), 24px (tablet), 16px (mobile)
 - Breakpoints: mobile (0px), tablet (768px), desktop (1280px), wide (1440px)
 
 ### shadcn/ui Components
+
 - Uses Tailwind CSS grid utilities
 - Responsive container component
 - Flexbox for component-level layouts
@@ -31,6 +35,7 @@ Create a responsive grid system for KOMPASS that supports desktop, tablet, and m
 
 **Desktop Layout (1280px+):**
 Design a 12-column grid system with:
+
 - Column count: 12 equal columns
 - Gutter width: 24px between columns
 - Outer margins: 32px on left and right
@@ -40,6 +45,7 @@ Design a 12-column grid system with:
 
 **Tablet Layout (768px-1279px):**
 Design an 8-column grid system with:
+
 - Column count: 8 equal columns
 - Gutter width: 16px between columns
 - Outer margins: 24px on left and right
@@ -48,6 +54,7 @@ Design an 8-column grid system with:
 
 **Mobile Layout (0-767px):**
 Design a 4-column grid system with:
+
 - Column count: 4 equal columns
 - Gutter width: 16px between columns
 - Outer margins: 16px on left and right
@@ -66,12 +73,14 @@ Show examples of these layouts on the grid:
 
 **Spacing System:**
 Demonstrate consistent vertical rhythm:
+
 - Section spacing: 48px between major sections
 - Component spacing: 24px between related components
 - Element spacing: 16px between form fields
 - Inline spacing: 8px between buttons, badges, tags
 
 **Visual Indicators:**
+
 - Show grid columns in light red/pink overlay
 - Show gutters in light blue
 - Show margins in light green
@@ -80,12 +89,14 @@ Demonstrate consistent vertical rhythm:
 Ensure all examples follow German business use cases (customer lists, project timelines, invoice forms).
 
 ## Interaction Patterns
+
 - Grid is responsive and adapts automatically
 - No user interaction required
 - Components snap to grid columns
 - Breakpoint transitions are smooth
 
 ## German Labels & Content
+
 - **Spalten**: Columns
 - **Abstand**: Gutter
 - **Seitenrand**: Margin
@@ -95,12 +106,14 @@ Ensure all examples follow German business use cases (customer lists, project ti
 - **Mobil-Ansicht**: Mobile view
 
 ## Accessibility Requirements
+
 - Grid system is semantic (does not affect screen readers)
 - Maintains logical reading order at all breakpoints
 - Focus order follows visual layout
 - No horizontal scrolling on any device
 
 ## Mobile Considerations
+
 - Touch-friendly spacing (minimum 44px touch targets)
 - Mobile-first approach: design for mobile, scale up
 - Collapsible navigation on mobile
@@ -110,15 +123,18 @@ Ensure all examples follow German business use cases (customer lists, project ti
 ## Example Data
 
 **Dashboard Example:**
+
 - Sidebar: 3 columns (navigation menu, filters)
 - Main area: 9 columns (KPI cards in 3x3 grid, then full-width table)
 
 **Customer Detail Page:**
+
 - Mobile: Full-width stacked sections
 - Tablet: 8-column full width with tabs
 - Desktop: 12-column with optional sidebar for related entities
 
 **Form Example:**
+
 - Mobile: 4 columns (full width)
 - Tablet: 6 columns centered (2 col margin each side)
 - Desktop: 6 columns centered (3 col margin each side)
@@ -126,6 +142,7 @@ Ensure all examples follow German business use cases (customer lists, project ti
 ## Implementation Notes
 
 ### Tailwind Grid Classes
+
 ```html
 <!-- Desktop: 12 columns -->
 <div class="grid grid-cols-12 gap-6">
@@ -142,6 +159,7 @@ Ensure all examples follow German business use cases (customer lists, project ti
 ```
 
 ### Container Component
+
 ```html
 <div class="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl">
   <!-- Content -->
@@ -149,28 +167,30 @@ Ensure all examples follow German business use cases (customer lists, project ti
 ```
 
 ### Breakpoint Reference
+
 ```javascript
 // tailwind.config.js
 module.exports = {
   theme: {
     screens: {
-      'sm': '640px',
-      'md': '768px',  // Tablet
-      'lg': '1024px',
-      'xl': '1280px', // Desktop
+      sm: '640px',
+      md: '768px', // Tablet
+      lg: '1024px',
+      xl: '1280px', // Desktop
       '2xl': '1440px', // Wide
     },
   },
-}
+};
 ```
 
 ### Component Dependencies
+
 - Requires design tokens (spacing scale)
 - Used by all page layouts and components
 - Foundation for responsive design system
 
 ### State Management
+
 - No state management needed
 - Grid is purely presentational CSS
 - Responsive behavior handled by media queries
-

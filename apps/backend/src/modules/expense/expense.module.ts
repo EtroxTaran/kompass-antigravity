@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+
 import { ExpenseController } from './expense.controller';
-import { ExpenseService } from './expense.service';
 import { ExpenseRepository } from './expense.repository';
+import { ExpenseService } from './expense.service';
 
 /**
  * Expense Module
- * 
+ *
  * Provides expense tracking and approval functionality:
  * - CRUD operations for expenses
  * - Receipt upload and OCR processing (via n8n)
@@ -13,7 +14,7 @@ import { ExpenseRepository } from './expense.repository';
  * - Expense reporting and export
  * - RBAC enforcement
  * - Offline sync support
- * 
+ *
  * Phase 2 (Q3 2025)
  */
 @Module({
@@ -29,4 +30,3 @@ import { ExpenseRepository } from './expense.repository';
   exports: [ExpenseService],
 })
 export class ExpenseModule {}
-

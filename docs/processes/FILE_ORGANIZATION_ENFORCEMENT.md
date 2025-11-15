@@ -20,11 +20,13 @@ KOMPASS enforces strict file organization rules to maintain a clean, professiona
 **Location**: `.husky/pre-commit`
 
 **Checks**:
+
 1. ✅ Root directory organization (no forbidden .md files)
 2. ✅ Forbidden file patterns (no backup files, temp files, etc.)
 3. ✅ Lint-staged (code quality)
 
 **What it blocks**:
+
 ```bash
 # ❌ BLOCKED - Documentation in root
 git add IMPLEMENTATION_SUMMARY.md
@@ -51,6 +53,7 @@ git commit -m "test"
 **Script**: `.github/scripts/check-root-directory.sh`
 
 **What it checks**:
+
 - All files in root directory
 - Validates against allowed list
 - Checks for forbidden patterns
@@ -101,12 +104,14 @@ API*.md                     → docs/api/
 **Only these files belong in project root**:
 
 ### Documentation (4 files)
+
 - ✅ `README.md` - Project overview and quick start
 - ✅ `CHANGELOG.md` - Version history and releases
 - ✅ `LICENSE` - License information
 - ✅ `CONTRIBUTING.md` - Contribution guidelines (optional)
 
 ### Configuration (Standard files)
+
 - ✅ `package.json` - Node.js dependencies
 - ✅ `pnpm-workspace.yaml` - Monorepo configuration
 - ✅ `turbo.json` - Turborepo configuration
@@ -249,7 +254,8 @@ git commit -m "test"
 git commit --no-verify
 ```
 
-**⚠️ WARNING**: 
+**⚠️ WARNING**:
+
 - You'll still fail GitHub Actions
 - Your PR will be blocked
 - Not recommended except for emergencies
@@ -293,6 +299,7 @@ Not possible - checks are required for merge.
 ### Q: Why are these rules so strict?
 
 **A**: To maintain a professional, organized codebase that:
+
 - Is easy to navigate
 - Looks professional to clients/stakeholders
 - Makes documentation discoverable
@@ -317,4 +324,3 @@ Not possible - checks are required for merge.
 **Bypass**: Not allowed (checks are required)
 
 **Questions?** See `.cursor/rules/file-organization.mdc` or ask tech lead
-

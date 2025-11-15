@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsOptional,
@@ -11,7 +12,6 @@ import {
   Matches,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 
 /**
  * Address DTO
@@ -43,7 +43,7 @@ class AddressDto {
 
 /**
  * DTO for creating a new Customer
- * 
+ *
  * Validation rules from DATA_MODEL_SPECIFICATION.md §2.1
  */
 export class CreateCustomerDto {
@@ -58,7 +58,8 @@ export class CreateCustomerDto {
     message: 'Company name must be 2-200 characters',
   })
   @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/, {
-    message: 'Company name must contain only letters, numbers, and basic punctuation',
+    message:
+      'Company name must contain only letters, numbers, and basic punctuation',
   })
   companyName: string;
 
@@ -184,4 +185,3 @@ export class CreateCustomerDto {
   @IsOptional()
   notes?: string;
 }
-

@@ -1,6 +1,7 @@
 # Search & Filters - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Search Input and Filter Components
 - **User Roles**: All (GF, PLAN, ADM, KALK, BUCH)
 - **Usage Context**: List views, data tables, finding records
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Search Input**: Prominent placement, clear search icon
 - **Filter Button**: Badge showing active filter count
 - **Active Filters**: Removable chips/badges
 - **Results**: Live updates as user types/filters
 
 ### Layout Structure
+
 - Search bar: Full-width or 300-400px
 - Filter button: Next to search, with count badge
 - Filter panel: Slide-in sheet or popover
 - Active filters: Horizontal chip list below search
 
 ### shadcn/ui Components
+
 - `Input` for search field
 - `Sheet` for filter panel
 - `Badge` for active filter chips
@@ -33,6 +37,7 @@ Create comprehensive search and filter components for KOMPASS, a German CRM appl
 **Global Search Bar:**
 
 **Search Input:**
+
 - Width: 400px (desktop), full-width (mobile)
 - Height: 40px
 - Border: 1px solid gray (#d1d5db)
@@ -45,6 +50,7 @@ Create comprehensive search and filter components for KOMPASS, a German CRM appl
 - Focus: Blue border (2px, #3b82f6), subtle glow
 
 **Search with Autocomplete:**
+
 - Dropdown appears below input as user types
 - Width: Matches input width
 - Max-height: 400px, scrollable
@@ -64,6 +70,7 @@ Create comprehensive search and filter components for KOMPASS, a German CRM appl
 - Footer: "Alle Ergebnisse anzeigen" link (opens full search page)
 
 **List Search Bar (Scoped):**
+
 - Width: 300px (desktop), full-width (mobile)
 - Height: 40px
 - Placeholder: "Kunden durchsuchen..."
@@ -74,6 +81,7 @@ Create comprehensive search and filter components for KOMPASS, a German CRM appl
 - Debounced: 300ms delay before search triggers
 
 **Filter Button:**
+
 - Position: Next to search input
 - Text: "Filter" + ChevronDown icon
 - Height: 40px
@@ -84,6 +92,7 @@ Create comprehensive search and filter components for KOMPASS, a German CRM appl
 **Filter Panel (Sheet/Drawer):**
 
 **Panel Structure:**
+
 - Slides in from right (desktop) or bottom (mobile)
 - Width: 400px (desktop), full-screen (mobile)
 - Background: White
@@ -138,6 +147,7 @@ Create comprehensive search and filter components for KOMPASS, a German CRM appl
      - ○ C (1-2 stars)
 
 **Active Filters Display:**
+
 - Position: Below search bar and filter button
 - Horizontal chip list
 - Each chip:
@@ -151,11 +161,13 @@ Create comprehensive search and filter components for KOMPASS, a German CRM appl
 - "Alle Filter entfernen" link at end (gray text)
 
 **Search Results Count:**
+
 - Position: Below active filters or above list
 - Text: "147 Kunden gefunden" (bold) or "Keine Ergebnisse"
 - Sorted by: Dropdown "Sortiert nach: Name ▾"
 
 **Advanced Search (Full Page):**
+
 - Triggered by "Erweiterte Suche" link
 - Full page layout with:
   - Large search input at top
@@ -166,6 +178,7 @@ Create comprehensive search and filter components for KOMPASS, a German CRM appl
   - Recent searches: List below search input
 
 **Saved Searches (Dropdown):**
+
 - Dropdown next to search: "Gespeicherte Suchen"
 - List of user's saved searches
 - Each item: Name + edit/delete icons
@@ -176,6 +189,7 @@ Create comprehensive search and filter components for KOMPASS, a German CRM appl
 - Clicking loads saved search criteria
 
 **Search Shortcuts (Command Palette):**
+
 - Trigger: Cmd+K (Mac) or Ctrl+K (Windows)
 - Modal overlay: Full-screen dark backdrop
 - Search box: Large, centered (600px width)
@@ -184,6 +198,7 @@ Create comprehensive search and filter components for KOMPASS, a German CRM appl
 - Keyboard navigation: Arrow keys, Enter to select
 
 **Mobile Search:**
+
 - Search icon in top bar
 - Clicking opens full-screen search overlay
 - Large search input at top
@@ -196,6 +211,7 @@ Design with instant feedback, clear visual indicators for active state, and smoo
 ## Interaction Patterns
 
 ### Search Flow
+
 1. User clicks search input
 2. Focus moves to input, keyboard appears
 3. User types query
@@ -205,6 +221,7 @@ Design with instant feedback, clear visual indicators for active state, and smoo
 7. Pressing Enter: Full search results page
 
 ### Filter Flow
+
 1. User clicks "Filter" button
 2. Filter panel slides in from right
 3. User selects filter criteria
@@ -215,6 +232,7 @@ Design with instant feedback, clear visual indicators for active state, and smoo
 8. Results update to match filters
 
 ### Clear Filter
+
 - Click "×" on filter chip: Removes that filter
 - Click "Alle Filter entfernen": Clears all
 - Click "Filter zurücksetzen" in panel: Clears all
@@ -222,12 +240,14 @@ Design with instant feedback, clear visual indicators for active state, and smoo
 ## German Labels & Content
 
 ### Search Placeholders
+
 - **Suchen...**: Search...
 - **Kunden durchsuchen...**: Search customers...
 - **Alles durchsuchen...**: Search everything...
 - **Suche oder Befehl eingeben...**: Enter search or command...
 
 ### Filter Labels
+
 - **Filter**: Filters
 - **Erweiterte Suche**: Advanced search
 - **Filter zurücksetzen**: Reset filters
@@ -236,6 +256,7 @@ Design with instant feedback, clear visual indicators for active state, and smoo
 - **Abbrechen**: Cancel
 
 ### Filter Types
+
 - **Status**: Status
 - **Datum**: Date
 - **Erstellt**: Created
@@ -246,12 +267,14 @@ Design with instant feedback, clear visual indicators for active state, and smoo
 - **Umsatz**: Revenue
 
 ### Results
+
 - **X Kunden gefunden**: X customers found
 - **Keine Ergebnisse**: No results
 - **Sortiert nach**: Sorted by
 - **Alle Ergebnisse anzeigen**: Show all results
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Search input: role="searchbox", aria-label="Suche"
 - Autocomplete: aria-autocomplete="list", aria-expanded
@@ -265,6 +288,7 @@ Design with instant feedback, clear visual indicators for active state, and smoo
   - Escape: Close autocomplete/filter panel
 
 ## Mobile Considerations
+
 - Full-screen search overlay on mobile
 - Larger touch targets (48px) for filter controls
 - Bottom sheet for filters (swipe down to close)
@@ -275,12 +299,14 @@ Design with instant feedback, clear visual indicators for active state, and smoo
 ## Example Data
 
 **Customer Search:**
+
 - Query: "Hofladen"
 - Results: "Hofladen Müller GmbH" (München), "Hofladen Schmidt KG" (Berlin)
 - Filters: Status: Aktiv, Bundesland: Bayern
 - Results: "42 Kunden gefunden"
 
 **Invoice Search:**
+
 - Query: "R-2024"
 - Results: All 2024 invoices
 - Filters: Status: Überfällig, Datum: Letzte 30 Tage
@@ -289,6 +315,7 @@ Design with instant feedback, clear visual indicators for active state, and smoo
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add input
 npx shadcn-ui@latest add sheet
@@ -299,6 +326,7 @@ npx shadcn-ui@latest add command
 ```
 
 ### Search Input
+
 ```typescript
 <div className="relative">
   <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -317,6 +345,7 @@ npx shadcn-ui@latest add command
 ```
 
 ### Filter Panel
+
 ```typescript
 <Sheet>
   <SheetTrigger asChild>
@@ -341,6 +370,7 @@ npx shadcn-ui@latest add command
 ```
 
 ### Component Dependencies
+
 - Design tokens (colors, spacing)
 - Icons from lucide-react (Search, Filter, X, ChevronDown)
 - Debounce utility for search
@@ -349,10 +379,10 @@ npx shadcn-ui@latest add command
 - Command palette for keyboard shortcuts
 
 ### State Management
+
 - Search query state
 - Filter criteria state
 - Active filters array
 - Search results from API
 - Autocomplete suggestions
 - Debounced search function
-

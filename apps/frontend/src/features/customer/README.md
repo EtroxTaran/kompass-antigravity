@@ -1,6 +1,7 @@
 # Customer Feature
 
 ## Overview
+
 Frontend feature for customer management with offline-first support.
 
 ## Components
@@ -27,6 +28,7 @@ Frontend feature for customer management with offline-first support.
 ## Offline Support
 
 All hooks support offline mode:
+
 1. Try local PouchDB first
 2. Fall back to API if online
 3. Queue changes when offline
@@ -46,7 +48,7 @@ function CustomersPage() {
 // Single customer
 function CustomerDetailPage({ id }) {
   const { data: customer, isLoading } = useCustomer(id);
-  
+
   if (isLoading) return <Skeleton />;
   return <div>{customer.companyName}</div>;
 }
@@ -54,13 +56,13 @@ function CustomerDetailPage({ id }) {
 // Create customer
 function CreateCustomerPage() {
   const createCustomer = useCreateCustomer();
-  
+
   const handleSubmit = (data) => {
     createCustomer.mutate(data, {
       onSuccess: () => navigate('/customers'),
     });
   };
-  
+
   return <CustomerForm onSubmit={handleSubmit} />;
 }
 ```
@@ -68,4 +70,3 @@ function CreateCustomerPage() {
 ## Testing
 
 See `__tests__/` directory for component tests.
-

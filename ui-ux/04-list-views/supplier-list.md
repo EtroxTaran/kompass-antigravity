@@ -1,6 +1,7 @@
 # Supplier List View - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Entity:** Supplier / Subcontractor Directory
 - **Users:** INN (primary), PLAN (project assignment), BUCH (invoice review), GF (approval)
 - **Purpose:** Browse, search, filter suppliers; manage supplier directory
@@ -13,6 +14,7 @@ Create a supplier directory list view for KOMPASS showing searchable supplier da
 **Page Title:** "Lieferanten & Subunternehmer"
 
 **Header Actions:**
+
 - Search: "Lieferanten suchen..." (full-width search bar)
 - **Primary Action:** "+ Neuer Lieferant" (button, INN/PLAN/GF only)
 - **Secondary Actions:**
@@ -84,27 +86,32 @@ Create a supplier directory list view for KOMPASS showing searchable supplier da
 ### Card Layout (each supplier)
 
 **Top Row:**
+
 - Icon: 🏢 (building icon)
 - Company name: 24px, bold, blue link
 - Rating: ⭐⭐⭐⭐⭐ + numeric score (e.g., "4.8")
 - If not rated: "(Noch nicht bewertet)" (gray)
 
 **Second Row:**
+
 - Type badge: "Subunternehmer" (blue pill badge)
 - Service categories: Comma-separated, max 3 shown + "..." if more
 - Tooltip on hover: Shows all service categories
 
 **Third Row:**
+
 - Location: City name with pin icon
 - Phone: Clickable tel: link
 - Email: Clickable mailto: link
 
 **Fourth Row (Status Line):**
+
 - Status badge: "✓ Aktiv" (green) | "🟡 Freigabe ausstehend" (amber) | "⚫ Inaktiv" (gray) | "🔴 Gesperrt" (red)
 - Active projects: "5 aktive Projekte" (blue)
 - Last activity: "Letzte Beauftragung: Vor 2 Wochen" or "Rahmenvertrag bis 12/2025"
 
 **Actions Row:**
+
 - [Details] button (secondary)
 - [Vertrag erstellen] button (secondary) - INN/PLAN only
 - [Projekt zuweisen] button (primary) - INN/PLAN only
@@ -126,6 +133,7 @@ Create a supplier directory list view for KOMPASS showing searchable supplier da
 - **Not rated:** "(Noch nicht bewertet)" (gray text)
 
 Hover: Shows rating breakdown:
+
 ```
 Qualität: ⭐⭐⭐⭐⭐ 4.9
 Zuverlässigkeit: ⭐⭐⭐⭐☆ 4.5
@@ -143,12 +151,14 @@ Letzte Bewertung: Vor 1 Woche
 ### Filter Categories
 
 **Status (Multi-select):**
+
 - ☑ Aktiv (24)
 - ☐ Freigabe ausstehend (2)
 - ☐ Inaktiv (3)
 - ☐ Gesperrt (0)
 
 **Lieferanten-Typ (Multi-select):**
+
 - ☐ Materiallieferant (8)
 - ☐ Dienstleister (12)
 - ☑ Subunternehmer (15)
@@ -156,6 +166,7 @@ Letzte Bewertung: Vor 1 Woche
 - ☐ Logistik (3)
 
 **Leistungskategorien (Multi-select, grouped):**
+
 - **Handwerk:**
   - ☐ Tischlerei (5)
   - ☐ Metallbau (3)
@@ -171,6 +182,7 @@ Letzte Bewertung: Vor 1 Woche
   - ☐ Transport (3)
 
 **Bewertung (Rating):**
+
 - ☐ 5 Sterne (6)
 - ☐ 4-5 Sterne (18)
 - ☐ 3-4 Sterne (8)
@@ -178,14 +190,17 @@ Letzte Bewertung: Vor 1 Woche
 - ☐ Noch nicht bewertet (11)
 
 **Standort (Location):**
+
 - Text input: "Stadt oder PLZ"
 - Checkbox: "☐ In meinem Arbeitsradius" (uses supplier working radius)
 
 **Aktive Projekte:**
+
 - Slider: 0 - 10+
 - Label: "Mindestens X aktive Projekte"
 
 **Account Manager:**
+
 - Select: INN user dropdown
 - Shows count per manager
 
@@ -202,6 +217,7 @@ Letzte Bewertung: Vor 1 Woche
 ### Search Fields
 
 Searches across:
+
 - Company name (primary)
 - Service categories
 - City/location
@@ -278,6 +294,7 @@ Searches across:
 ### Quick View (Hover - Desktop)
 
 Shows tooltip card with:
+
 - Full company name
 - All service categories
 - Full address
@@ -331,6 +348,7 @@ Shows tooltip card with:
 ```
 
 **Mobile Optimizations:**
+
 - Cards: Full-width, stacked
 - Swipe right: Quick assign to project
 - Swipe left: Quick actions menu
@@ -343,12 +361,13 @@ Shows tooltip card with:
 
 ### Table Columns
 
-| Firma | Typ | Kategorien | Standort | Bewertung | Aktive Projekte | Status | Aktionen |
-|-------|-----|------------|----------|-----------|-----------------|--------|----------|
-| Schreinerei Müller GmbH | Subunternehmer | Tischlerei, Möbel, Montage | München | ⭐⭐⭐⭐⭐ 4.8 | 5 | ✓ Aktiv | [...] |
-| Elektro Schmidt GmbH | Dienstleister | Elektrik, Beleuchtung | Augsburg | ⭐⭐⭐⭐☆ 4.2 | 2 | ✓ Aktiv | [...] |
+| Firma                   | Typ            | Kategorien                 | Standort | Bewertung      | Aktive Projekte | Status  | Aktionen |
+| ----------------------- | -------------- | -------------------------- | -------- | -------------- | --------------- | ------- | -------- |
+| Schreinerei Müller GmbH | Subunternehmer | Tischlerei, Möbel, Montage | München  | ⭐⭐⭐⭐⭐ 4.8 | 5               | ✓ Aktiv | [...]    |
+| Elektro Schmidt GmbH    | Dienstleister  | Elektrik, Beleuchtung      | Augsburg | ⭐⭐⭐⭐☆ 4.2  | 2               | ✓ Aktiv | [...]    |
 
 **Table Features:**
+
 - **Sortable columns:** Click header to sort
 - **Row selection:** Checkbox for bulk actions (Phase 2)
 - **Row click:** Navigate to detail page
@@ -395,6 +414,7 @@ Shows tooltip card with:
 ## Bulk Actions (Phase 2)
 
 **Select multiple suppliers:**
+
 - Checkbox on each card
 - **Actions:**
   - Export selected to CSV
@@ -434,4 +454,3 @@ npx shadcn-ui@latest add card badge button input select checkbox table
 ---
 
 **End of supplier-list.md**
-

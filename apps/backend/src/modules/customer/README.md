@@ -1,9 +1,11 @@
 # Customer Module
 
 ## Overview
+
 Handles all customer-related operations including CRUD, validation, RBAC, and duplicate detection.
 
 ## Structure
+
 ```
 customer/
 ├── customer.module.ts       # NestJS module definition (TODO: uncomment when implemented)
@@ -24,12 +26,12 @@ TODO: Implement:
 
 ## API Endpoints
 
-| Method | Endpoint | Description | RBAC |
-|--------|----------|-------------|------|
-| GET    | /api/v1/customers | List all customers | READ |
-| GET    | /api/v1/customers/:id | Get single customer | READ |
-| POST   | /api/v1/customers | Create customer | CREATE |
-| PUT    | /api/v1/customers/:id | Update customer | UPDATE |
+| Method | Endpoint              | Description          | RBAC   |
+| ------ | --------------------- | -------------------- | ------ |
+| GET    | /api/v1/customers     | List all customers   | READ   |
+| GET    | /api/v1/customers/:id | Get single customer  | READ   |
+| POST   | /api/v1/customers     | Create customer      | CREATE |
+| PUT    | /api/v1/customers/:id | Update customer      | UPDATE |
 | DELETE | /api/v1/customers/:id | Soft delete customer | DELETE |
 
 ## Validation Rules
@@ -54,11 +56,11 @@ From `DATA_MODEL_SPECIFICATION.md`:
 
 ### Field-Level Permissions
 
-| Field | ADM | INNEN | PLAN | BUCH | GF |
-|-------|-----|-------|------|------|-----|
-| companyName | R/W | R/W | R | R | R/W |
-| creditLimit | - | - | - | R/W | R/W |
-| profitMargin | - | - | - | R | R/W |
+| Field        | ADM | INNEN | PLAN | BUCH | GF  |
+| ------------ | --- | ----- | ---- | ---- | --- |
+| companyName  | R/W | R/W   | R    | R    | R/W |
+| creditLimit  | -   | -     | -    | R/W  | R/W |
+| profitMargin | -   | -     | -    | R    | R/W |
 
 (R = Read, W = Write, - = No access)
 
@@ -90,11 +92,13 @@ pnpm test:integration customer
 ## Current Status
 
 ### ✅ Implemented
+
 - DTOs with validation (CreateCustomerDto, UpdateCustomerDto, CustomerResponseDto)
 - Entity types (Customer interface in shared package)
 - Module structure (DTOs, entities, README)
 
 ### 📋 Planned (Not Yet Implemented)
+
 - CRUD operations (controller, service, repository)
 - RBAC enforcement (entity and field level)
 - Duplicate detection (fuzzy matching)
@@ -115,4 +119,3 @@ pnpm test:integration customer
 - [ ] Add E2E tests
 - [ ] Configure CouchDB views/indexes
 - [ ] Uncomment module imports in customer.module.ts
-

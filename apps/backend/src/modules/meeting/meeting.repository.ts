@@ -1,13 +1,14 @@
 /**
  * Meeting Repository
- * 
+ *
  * Data access layer for Meeting entities
  * Handles CouchDB operations for meetings
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
+import { Nano } from 'nano';
+
 import type { Meeting } from '@kompass/shared/types/entities/meeting';
-import type { Nano } from 'nano';
 
 /**
  * Meeting Repository Interface
@@ -17,7 +18,11 @@ export interface IMeetingRepository {
   findByCustomer(customerId: string): Promise<Meeting[]>;
   findByTour(tourId: string): Promise<Meeting[]>;
   findByUser(userId: string, filters?: MeetingFilters): Promise<Meeting[]>;
-  findByDateRange(startDate: Date, endDate: Date, userId?: string): Promise<Meeting[]>;
+  findByDateRange(
+    startDate: Date,
+    endDate: Date,
+    userId?: string
+  ): Promise<Meeting[]>;
   create(meeting: Omit<Meeting, '_rev'>): Promise<Meeting>;
   update(meeting: Meeting): Promise<Meeting>;
   delete(id: string): Promise<void>;
@@ -70,7 +75,10 @@ export class MeetingRepository implements IMeetingRepository {
       });
       return result.docs as Meeting[];
     } catch (error) {
-      this.logger.error(`Error finding meetings for customer ${customerId}:`, error);
+      this.logger.error(
+        `Error finding meetings for customer ${customerId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -92,7 +100,10 @@ export class MeetingRepository implements IMeetingRepository {
     }
   }
 
-  async findByUser(userId: string, filters?: MeetingFilters): Promise<Meeting[]> {
+  async findByUser(
+    userId: string,
+    filters?: MeetingFilters
+  ): Promise<Meeting[]> {
     try {
       const selector: any = {
         type: 'meeting',
@@ -128,7 +139,11 @@ export class MeetingRepository implements IMeetingRepository {
     }
   }
 
-  async findByDateRange(startDate: Date, endDate: Date, userId?: string): Promise<Meeting[]> {
+  async findByDateRange(
+    startDate: Date,
+    endDate: Date,
+    userId?: string
+  ): Promise<Meeting[]> {
     try {
       const selector: any = {
         type: 'meeting',
@@ -194,4 +209,3 @@ export class MeetingRepository implements IMeetingRepository {
     }
   }
 }
-

@@ -1,6 +1,6 @@
 /**
  * E2E Test: Update Contact Decision Authority
- * 
+ *
  * Tests RBAC restrictions for updating contact decision-making roles
  * Validates that only PLAN and GF users can update decision authority
  */
@@ -8,7 +8,9 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Contact Decision Authority - RBAC', () => {
-  test('ADM user should NOT be able to update decision authority', async ({ page }) => {
+  test('ADM user should NOT be able to update decision authority', async ({
+    page,
+  }) => {
     // Login as ADM user
     await page.goto('/login');
     await page.fill('[name="email"]', 'adm@example.com');
@@ -20,14 +22,18 @@ test.describe('Contact Decision Authority - RBAC', () => {
     await expect(page.locator('h1')).toContainText('Thomas Schmidt');
 
     // Verify "Bearbeiten" button for decision authority is NOT visible
-    const editButton = page.locator('button:has-text("Entscheidungsbefugnis bearbeiten")');
+    const editButton = page.locator(
+      'button:has-text("Entscheidungsbefugnis bearbeiten")'
+    );
     await expect(editButton).not.toBeVisible();
 
     // Verify RBAC notice is shown
     await expect(page.locator('text=Nur ADM+ Nutzer')).toBeVisible();
   });
 
-  test('PLAN user should be able to update decision authority', async ({ page }) => {
+  test('PLAN user should be able to update decision authority', async ({
+    page,
+  }) => {
     // Login as PLAN user
     await page.goto('/login');
     await page.fill('[name="email"]', 'plan@example.com');
@@ -68,7 +74,9 @@ test.describe('Contact Decision Authority - RBAC', () => {
     await expect(page.locator('text=€50.000')).toBeVisible();
   });
 
-  test('GF user should be able to update decision authority', async ({ page }) => {
+  test('GF user should be able to update decision authority', async ({
+    page,
+  }) => {
     // Login as GF user
     await page.goto('/login');
     await page.fill('[name="email"]', 'gf@example.com');
@@ -95,7 +103,9 @@ test.describe('Contact Decision Authority - RBAC', () => {
     await expect(page.locator('text=Entscheidungsträger')).toBeVisible();
   });
 
-  test('should validate approval limit when canApproveOrders is enabled', async ({ page }) => {
+  test('should validate approval limit when canApproveOrders is enabled', async ({
+    page,
+  }) => {
     // Login as PLAN user
     await page.goto('/login');
     await page.fill('[name="email"]', 'plan@example.com');
@@ -112,7 +122,9 @@ test.describe('Contact Decision Authority - RBAC', () => {
     await page.click('button:has-text("Speichern")');
 
     // Verify validation error
-    await expect(page.locator('text=Genehmigungslimit ist erforderlich')).toBeVisible();
+    await expect(
+      page.locator('text=Genehmigungslimit ist erforderlich')
+    ).toBeVisible();
 
     // Fix by adding approval limit
     await page.fill('[name="approvalLimitEur"]', '25000');
@@ -122,4 +134,3 @@ test.describe('Contact Decision Authority - RBAC', () => {
     await expect(page.locator('.toast-success')).toContainText('erfolgreich');
   });
 });
-

@@ -19,6 +19,7 @@ This document summarizes the implementation of calendar views and resource manag
 **File:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md`
 
 ✅ **CalendarEvent Interface (Section 17):**
+
 - Unified interface for tasks, projects, opportunities, and milestones
 - Event types: USER_TASK, PROJECT_TASK, PROJECT_DEADLINE, OPPORTUNITY_CLOSE, etc.
 - Color coding standards for event types and priorities
@@ -26,6 +27,7 @@ This document summarizes the implementation of calendar views and resource manag
 - Event generation functions from source entities
 
 **Key Features:**
+
 - Dynamic event aggregation from multiple sources
 - Priority-based color overrides (urgent/critical)
 - Deep linking to source entities
@@ -38,12 +40,14 @@ This document summarizes the implementation of calendar views and resource manag
 **File:** `docs/specifications/reviews/API_SPECIFICATION.md` (Section 10)
 
 ✅ **Calendar Event Endpoints:**
+
 - `GET /api/v1/calendar/events` - Get calendar events with filters
 - `GET /api/v1/calendar/my-events` - Personal calendar view
 - `GET /api/v1/calendar/team-events` - Team calendar (GF/PLAN only)
 - `GET /api/v1/calendar/export/ics` - One-time ICS export
 
 **Business Rules:**
+
 - Maximum date range: 90 days per request
 - Maximum 1000 events per response
 - RBAC-filtered events
@@ -83,6 +87,7 @@ This document summarizes the implementation of calendar views and resource manag
 **Location:** `apps/backend/src/modules/calendar/`
 
 **Files Created:**
+
 - `calendar.module.ts` - NestJS module configuration
 - `calendar.controller.ts` - REST API endpoints
 - `calendar.service.ts` - Event aggregation logic
@@ -91,6 +96,7 @@ This document summarizes the implementation of calendar views and resource manag
 - `dto/calendar-query.dto.ts` - Query parameters DTO
 
 **Key Features:**
+
 - Event aggregation from UserTask, ProjectTask, Project, Opportunity
 - Date range validation (max 90 days)
 - Event density limits (max 1000 events)
@@ -99,6 +105,7 @@ This document summarizes the implementation of calendar views and resource manag
 - Caching support (5-minute TTL)
 
 **TODO Comments:**
+
 - Integration with task/project repositories (when available)
 - Auth guards (JwtAuthGuard, RbacGuard)
 - RBAC decorators (RequirePermission, CurrentUser)
@@ -113,11 +120,13 @@ This document summarizes the implementation of calendar views and resource manag
 **File:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` (Section 2)
 
 **New Fields Added:**
+
 - `workingHours: WorkingHoursSchedule` - Custom working hours per day
 - `availability: UserAvailability` - Current availability status
 - `officePresence: OfficePresenceSchedule` - In-office days schedule
 
 **Supporting Interfaces:**
+
 - `WorkingHoursSchedule` - Weekly schedule with vacation days
 - `DayWorkingHours` - Per-day configuration (start/end time, breaks)
 - `UserAvailability` - Status (available/busy/away/vacation/sick/offline)
@@ -125,6 +134,7 @@ This document summarizes the implementation of calendar views and resource manag
 - `DateRange` - Vacation periods
 
 **Validation Rules:**
+
 - Time format validation (HH:mm)
 - EndTime > StartTime
 - Break duration <= working hours
@@ -140,6 +150,7 @@ This document summarizes the implementation of calendar views and resource manag
 **Purpose:** Manage secure calendar subscription feeds (WebCal) for real-time calendar sync
 
 **Key Features:**
+
 - Secure 256-bit token generation (non-guessable)
 - WebCal (webcal://) and HTTPS URL generation
 - Subscription scopes: personal, team, custom
@@ -149,6 +160,7 @@ This document summarizes the implementation of calendar views and resource manag
 - SHA-256 token hashing for security
 
 **Business Rules:**
+
 - Max 5 active subscriptions per user
 - Team scope requires GF or PLAN role
 - Rate limiting per token
@@ -156,6 +168,7 @@ This document summarizes the implementation of calendar views and resource manag
 - Instant revocation support
 
 **API Endpoints:**
+
 - POST /api/v1/calendar/subscriptions - Create subscription
 - GET /api/v1/calendar/subscriptions - List subscriptions
 - PUT /api/v1/calendar/subscriptions/:id - Update subscription
@@ -171,6 +184,7 @@ This document summarizes the implementation of calendar views and resource manag
 **File:** `docs/specifications/reviews/NFR_SPECIFICATION.md`
 
 **Calendar-Specific Performance Targets:**
+
 - Event aggregation (30 days): ≤ 500ms
 - Event aggregation (90 days): ≤ 1.5s
 - ICS export (100 events): ≤ 1s
@@ -179,12 +193,14 @@ This document summarizes the implementation of calendar views and resource manag
 - Resource availability calculation: ≤ 800ms
 
 **Scalability:**
+
 - Max 200,000 calendar events supported
 - Max 1000 events per response
 - Max 90 days per calendar query
 - 5-minute cache TTL for event aggregation
 
 **Security:**
+
 - RBAC-filtered events
 - Secure subscription tokens (256-bit entropy)
 - Rate limiting on subscription feeds
@@ -198,6 +214,7 @@ This document summarizes the implementation of calendar views and resource manag
 **File:** `docs/specifications/reviews/TEST_STRATEGY_DOCUMENT.md` (Section 9)
 
 **Unit Tests (70%):**
+
 - Calendar event aggregation from multiple sources
 - ICS export generation (RFC 5545 compliance)
 - Working hours calculation
@@ -206,6 +223,7 @@ This document summarizes the implementation of calendar views and resource manag
 - Date range validation
 
 **Integration Tests (20%):**
+
 - Calendar API endpoints
 - Event aggregation with real data
 - ICS export with authentication
@@ -213,6 +231,7 @@ This document summarizes the implementation of calendar views and resource manag
 - Rate limiting enforcement
 
 **E2E Tests (10%):**
+
 - Complete calendar workflow (view, filter, export)
 - Calendar view switching (month/week/day/agenda)
 - Event filtering and search
@@ -220,6 +239,7 @@ This document summarizes the implementation of calendar views and resource manag
 - Subscription management
 
 **Performance Tests:**
+
 - Event aggregation under load (10, 100, 500, 1000 events)
 - ICS export performance
 - Concurrent calendar requests
@@ -231,6 +251,7 @@ This document summarizes the implementation of calendar views and resource manag
 ### Phase 1 Remaining
 
 #### Documentation
+
 - [ ] CalendarSubscription entity specification
 - [ ] Working hours & availability API endpoints
 - [ ] Working hours form UI specification
@@ -241,12 +262,14 @@ This document summarizes the implementation of calendar views and resource manag
 - [ ] Product vision update (Produktvision Projektmanagement)
 
 #### Backend Implementation
+
 - [ ] Availability module (working hours & capacity planning services)
 - [ ] Calendar subscription service (secure tokens + ICS feeds)
 - [ ] WebCal URL generation
 - [ ] Real-time sync subscriptions
 
 #### Frontend Implementation
+
 - [ ] Working hours form
 - [ ] Resource availability views
 - [ ] Capacity planning dashboard with heat maps
@@ -254,12 +277,14 @@ This document summarizes the implementation of calendar views and resource manag
 - [ ] WebCal URL generation UI
 
 #### Testing
+
 - [ ] Unit tests for calendar services
 - [ ] Integration tests for calendar APIs
 - [ ] E2E tests for calendar workflows
 - [ ] Playwright tests for offline scenarios
 
 #### Documentation Updates
+
 - [ ] RBAC_PERMISSION_MATRIX.md (calendar & availability permissions)
 - [ ] NFR_SPECIFICATION.md (calendar performance requirements)
 - [ ] TEST_STRATEGY_DOCUMENT.md (calendar test scenarios)
@@ -271,12 +296,14 @@ This document summarizes the implementation of calendar views and resource manag
 ### Technology Stack
 
 **Backend:**
+
 - NestJS for API layer
 - `ics` library for ICS file generation
 - CouchDB Mango queries for event aggregation
 - RFC 5545 (iCalendar) compliance
 
 **Frontend:**
+
 - React with TypeScript
 - react-big-calendar for calendar views
 - shadcn/ui for UI components
@@ -286,12 +313,14 @@ This document summarizes the implementation of calendar views and resource manag
 ### Design Patterns
 
 **Backend:**
+
 - Service layer aggregates events from multiple sources
 - Repository pattern for data access
 - DTO validation with class-validator
 - RBAC filtering at service layer
 
 **Frontend:**
+
 - Mobile-first responsive design
 - Component composition (shadcn/ui)
 - Custom hooks for calendar logic
@@ -302,12 +331,14 @@ This document summarizes the implementation of calendar views and resource manag
 ## Performance Considerations
 
 ### Backend
+
 - **Caching:** 5-minute TTL for event aggregation
 - **Query Optimization:** Parallel queries to multiple collections
 - **Date Range Limits:** Max 90 days to prevent performance issues
 - **Event Density:** Max 1000 events per response
 
 ### Frontend
+
 - **Lazy Loading:** Route-level code splitting
 - **Virtualization:** For agenda view with >100 events
 - **Debouncing:** Filter changes (300ms)
@@ -318,16 +349,19 @@ This document summarizes the implementation of calendar views and resource manag
 ## Security & Compliance
 
 ### RBAC Integration
+
 - **ADM:** Own UserTasks + assigned ProjectTasks only
 - **PLAN/GF:** All team events
 - **BUCH/KALK:** Relevant financial events (read-only)
 
 ### Data Privacy
+
 - Events filtered by entity permissions
 - No sensitive data in ICS exports
 - Audit trail for availability changes
 
 ### GoBD Compliance
+
 - ICS export follows RFC 5545
 - UTF-8 encoding
 - Immutable event references
@@ -336,12 +370,12 @@ This document summarizes the implementation of calendar views and resource manag
 
 ## API Endpoints Summary
 
-| Endpoint | Method | Description | RBAC |
-|----------|--------|-------------|------|
-| `/api/v1/calendar/events` | GET | Get calendar events with filters | All roles (filtered) |
-| `/api/v1/calendar/my-events` | GET | Get current user's events | All roles |
-| `/api/v1/calendar/team-events` | GET | Get team-wide events | GF, PLAN only |
-| `/api/v1/calendar/export/ics` | GET | Export calendar to ICS file | All roles |
+| Endpoint                       | Method | Description                      | RBAC                 |
+| ------------------------------ | ------ | -------------------------------- | -------------------- |
+| `/api/v1/calendar/events`      | GET    | Get calendar events with filters | All roles (filtered) |
+| `/api/v1/calendar/my-events`   | GET    | Get current user's events        | All roles            |
+| `/api/v1/calendar/team-events` | GET    | Get team-wide events             | GF, PLAN only        |
+| `/api/v1/calendar/export/ics`  | GET    | Export calendar to ICS file      | All roles            |
 
 ---
 
@@ -379,18 +413,21 @@ kompass/
 ## Next Steps
 
 ### Immediate (This Sprint)
+
 1. Complete CalendarSubscription entity specification
 2. Add working hours API endpoints to API_SPECIFICATION.md
 3. Create UI specifications for Phase 1 dashboards
 4. Integrate calendar module with existing task/project modules
 
 ### Short-Term (Next Sprint)
+
 1. Implement availability module backend
 2. Implement subscription service with secure tokens
 3. Create working hours form UI
 4. Add RBAC permissions for calendar features
 
 ### Long-Term (Phase 2+)
+
 1. Real-time calendar subscriptions (WebCal)
 2. Calendar push notifications
 3. Team capacity heat maps
@@ -402,12 +439,14 @@ kompass/
 ## Known Issues & Limitations
 
 ### MVP Phase
+
 1. **Repository Integration:** Calendar service has TODO comments for task/project repository integration
 2. **Auth Guards:** Controller endpoints need actual auth guard implementation
 3. **Event Sources:** Currently returns empty arrays until repositories are connected
 4. **Team Statistics:** Team calendar endpoint needs team member aggregation logic
 
 ### Phase 1
+
 1. **Working Hours:** Validation logic needs backend implementation
 2. **Availability Auto-Reset:** Requires background job/cron implementation
 3. **Office Location:** Needs integration with Location entity
@@ -417,6 +456,7 @@ kompass/
 ## Testing Strategy
 
 ### Unit Tests (70%)
+
 - Calendar service event aggregation
 - ICS generator formatting
 - Date range validation
@@ -424,12 +464,14 @@ kompass/
 - Event color assignment
 
 ### Integration Tests (20%)
+
 - Calendar API endpoints
 - Event aggregation from multiple sources
 - ICS export with real data
 - RBAC permission checks
 
 ### E2E Tests (10%)
+
 - Complete calendar workflow (view, filter, export)
 - Mobile calendar views
 - Export and import ICS file
@@ -450,9 +492,9 @@ kompass/
 
 ## Version History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-01-28 | System | Initial summary: MVP complete, Phase 1 in progress |
+| Version | Date       | Author | Changes                                            |
+| ------- | ---------- | ------ | -------------------------------------------------- |
+| 1.0     | 2025-01-28 | System | Initial summary: MVP complete, Phase 1 in progress |
 
 ---
 
@@ -462,4 +504,3 @@ kompass/
 ---
 
 **END OF SUMMARY**
-

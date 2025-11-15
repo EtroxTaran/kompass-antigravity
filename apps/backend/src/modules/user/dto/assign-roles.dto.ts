@@ -1,10 +1,17 @@
-import { IsArray, IsEnum, ArrayMinSize, IsString, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsEnum,
+  ArrayMinSize,
+  IsString,
+  IsOptional,
+} from 'class-validator';
+
 import { UserRole } from '@kompass/shared/constants/rbac.constants';
 
 /**
  * DTO for assigning multiple roles to a user
- * 
+ *
  * @see docs/specifications/reviews/API_SPECIFICATION.md#user-role-management-endpoints
  */
 export class AssignRolesDto {
@@ -37,4 +44,3 @@ export class AssignRolesDto {
   @IsOptional()
   reason?: string;
 }
-

@@ -1,18 +1,27 @@
 /**
  * LocationList Component
- * 
+ *
  * Displays list of locations with filtering
  * Uses shadcn/ui components: Select, Button, Skeleton
  */
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Plus } from 'lucide-react';
-import { LocationCard } from './LocationCard';
-import { LocationType } from '@kompass/shared/types/enums';
+import { useState } from 'react';
+
 import type { Location } from '@kompass/shared/types/entities/location';
+import { LocationType } from '@kompass/shared/types/enums';
+
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
+
+import { LocationCard } from './LocationCard';
 
 interface LocationListProps {
   locations: Location[];
@@ -39,7 +48,9 @@ export function LocationList({
   canCreate = true,
 }: LocationListProps) {
   const [filterType, setFilterType] = useState<LocationType | 'all'>('all');
-  const [filterActive, setFilterActive] = useState<'all' | 'active' | 'inactive'>('all');
+  const [filterActive, setFilterActive] = useState<
+    'all' | 'active' | 'inactive'
+  >('all');
 
   // Apply filters
   const filteredLocations = locations.filter((location) => {
@@ -61,22 +72,36 @@ export function LocationList({
       <div className="flex flex-col sm:flex-row justify-between gap-4">
         <div className="flex gap-2">
           {/* Location Type Filter */}
-          <Select value={filterType} onValueChange={(value) => setFilterType(value as LocationType | 'all')}>
+          <Select
+            value={filterType}
+            onValueChange={(value) =>
+              setFilterType(value as LocationType | 'all')
+            }
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Standorttyp" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Alle Typen</SelectItem>
-              <SelectItem value={LocationType.HEADQUARTER}>Hauptsitz</SelectItem>
+              <SelectItem value={LocationType.HEADQUARTER}>
+                Hauptsitz
+              </SelectItem>
               <SelectItem value={LocationType.BRANCH}>Filiale</SelectItem>
               <SelectItem value={LocationType.WAREHOUSE}>Lager</SelectItem>
-              <SelectItem value={LocationType.PROJECT_SITE}>Projektstandort</SelectItem>
+              <SelectItem value={LocationType.PROJECT_SITE}>
+                Projektstandort
+              </SelectItem>
               <SelectItem value={LocationType.OTHER}>Sonstige</SelectItem>
             </SelectContent>
           </Select>
 
           {/* Active Status Filter */}
-          <Select value={filterActive} onValueChange={(value) => setFilterActive(value as 'all' | 'active' | 'inactive')}>
+          <Select
+            value={filterActive}
+            onValueChange={(value) =>
+              setFilterActive(value as 'all' | 'active' | 'inactive')
+            }
+          >
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
@@ -141,4 +166,3 @@ export function LocationList({
     </div>
   );
 }
-

@@ -1,16 +1,16 @@
 /**
  * ML Forecasting Service (Stub)
- * 
+ *
  * Machine Learning Predictive Analytics
- * 
+ *
  * Phase 2.3: ML Implementation
  * - Opportunity win probability prediction
  * - Cash flow forecasting
  * - Customer churn prediction
  * - Revenue forecasting
- * 
+ *
  * Feature Flag: AI_ML_ENABLED
- * 
+ *
  * TODO: Implement in Phase 2.3
  * - Train ML models on historical data
  * - Implement prediction pipeline
@@ -19,6 +19,7 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
+
 import { FEATURE_FLAGS } from '@kompass/shared/constants/feature-flags';
 
 /**
@@ -88,14 +89,14 @@ export class ForecastingService {
 
   /**
    * Predict opportunity win probability
-   * 
+   *
    * TODO Phase 2.3:
    * - Extract features from opportunity data
    * - Load trained ML model
    * - Generate prediction with confidence score
    * - Identify key factors influencing prediction
    * - Provide actionable recommendations
-   * 
+   *
    * Model features:
    * - Customer rating, historical win rate
    * - Opportunity value, days in pipeline
@@ -107,21 +108,25 @@ export class ForecastingService {
   ): Promise<OpportunityPrediction> {
     this.ensureEnabled();
 
-    this.logger.log(`[STUB] Predicting win probability for opportunity: ${input.opportunityId}`);
+    this.logger.log(
+      `[STUB] Predicting win probability for opportunity: ${input.opportunityId}`
+    );
     // TODO: Implement in Phase 2.3
-    throw new Error('ML opportunity prediction not yet implemented. Coming in Phase 2.3');
+    throw new Error(
+      'ML opportunity prediction not yet implemented. Coming in Phase 2.3'
+    );
   }
 
   /**
    * Forecast cash flow
-   * 
+   *
    * TODO Phase 2.3:
    * - Analyze historical cash flow patterns
    * - Factor in open invoices and payment terms
    * - Include probability-weighted opportunities
    * - Consider seasonal trends
    * - Generate day-by-day forecast
-   * 
+   *
    * Model inputs:
    * - Historical invoices and payments
    * - Open opportunities with win probability
@@ -137,21 +142,21 @@ export class ForecastingService {
       `[STUB] Forecasting cash flow from ${input.startDate} to ${input.endDate}`
     );
     // TODO: Implement in Phase 2.3
-    throw new Error('ML cash flow forecasting not yet implemented. Coming in Phase 2.3');
+    throw new Error(
+      'ML cash flow forecasting not yet implemented. Coming in Phase 2.3'
+    );
   }
 
   /**
    * Predict customer churn risk
-   * 
+   *
    * TODO Phase 2.3:
    * - Analyze customer engagement patterns
    * - Identify declining activity indicators
    * - Calculate churn probability
    * - Suggest retention actions
    */
-  async predictChurnRisk(
-    customerId: string
-  ): Promise<{
+  async predictChurnRisk(customerId: string): Promise<{
     churnProbability: number;
     riskLevel: 'low' | 'medium' | 'high';
     factors: string[];
@@ -161,7 +166,9 @@ export class ForecastingService {
 
     this.logger.log(`[STUB] Predicting churn risk for customer: ${customerId}`);
     // TODO: Implement in Phase 2.3
-    throw new Error('ML churn prediction not yet implemented. Coming in Phase 2.3');
+    throw new Error(
+      'ML churn prediction not yet implemented. Coming in Phase 2.3'
+    );
   }
 
   /**
@@ -169,8 +176,9 @@ export class ForecastingService {
    */
   private ensureEnabled(): void {
     if (!FEATURE_FLAGS.AI_ML_ENABLED) {
-      throw new Error('ML feature is not enabled. Set AI_ML_ENABLED=true in environment');
+      throw new Error(
+        'ML feature is not enabled. Set AI_ML_ENABLED=true in environment'
+      );
     }
   }
 }
-

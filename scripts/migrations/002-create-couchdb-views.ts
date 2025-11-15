@@ -1,11 +1,11 @@
 /**
  * Migration Script: Create CouchDB Design Documents and Views
- * 
+ *
  * Creates indexes and views for efficient querying:
  * - Location queries (by_customer, by_customer_and_active)
  * - Contact queries (by_customer, by_decision_role)
  * - Customer queries (by_owner, by_rating)
- * 
+ *
  * Usage:
  *   node 002-create-couchdb-views.ts
  */
@@ -18,7 +18,9 @@ const COUCHDB_USER = process.env.COUCHDB_ADMIN_USER || 'admin';
 const COUCHDB_PASSWORD = process.env.COUCHDB_ADMIN_PASSWORD || 'changeme';
 const DATABASE = process.env.COUCHDB_DATABASE || 'kompass';
 
-const nano = Nano.default(`http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@${COUCHDB_URL.replace('http://', '')}`);
+const nano = Nano.default(
+  `http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@${COUCHDB_URL.replace('http://', '')}`
+);
 const db = nano.use(DATABASE);
 
 /**
@@ -241,5 +243,9 @@ if (require.main === module) {
   });
 }
 
-export { createLocationViews, createContactViews, createCustomerViews, createIndexes };
-
+export {
+  createLocationViews,
+  createContactViews,
+  createCustomerViews,
+  createIndexes,
+};

@@ -1,12 +1,18 @@
 /**
  * useLocationMutations Hook
- * 
+ *
  * React Query mutations for Location CRUD operations
  * Includes optimistic updates and error handling
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { locationApi, type CreateLocationRequest, type UpdateLocationRequest } from '../services/location-api';
+
+import {
+  locationApi,
+  type CreateLocationRequest,
+  type UpdateLocationRequest,
+} from '../services/location-api';
+
 import { useToast } from '@/hooks/use-toast';
 
 /**
@@ -20,11 +26,12 @@ export function useLocationMutations(customerId: string) {
    * Create location mutation
    */
   const createLocation = useMutation({
-    mutationFn: (data: CreateLocationRequest) => locationApi.createLocation(customerId, data),
+    mutationFn: (data: CreateLocationRequest) =>
+      locationApi.createLocation(customerId, data),
     onSuccess: () => {
       // Invalidate locations query to refetch
       queryClient.invalidateQueries({ queryKey: ['locations', customerId] });
-      
+
       toast({
         title: 'Erfolg',
         description: 'Standort erfolgreich erstellt',
@@ -33,7 +40,9 @@ export function useLocationMutations(customerId: string) {
     onError: (error: any) => {
       toast({
         title: 'Fehler',
-        description: error.response?.data?.detail || 'Standort konnte nicht erstellt werden',
+        description:
+          error.response?.data?.detail ||
+          'Standort konnte nicht erstellt werden',
         variant: 'destructive',
       });
     },
@@ -43,14 +52,25 @@ export function useLocationMutations(customerId: string) {
    * Update location mutation
    */
   const updateLocation = useMutation({
-    mutationFn: ({ locationId, data }: { locationId: string; data: UpdateLocationRequest }) =>
-      locationApi.updateLocation(customerId, locationId, data),
+    mutationFn: ({
+      locationId,
+      data,
+    }: {
+      locationId: string;
+      data: UpdateLocationRequest;
+    }) => locationApi.updateLocation(customerId, locationId, data),
     onMutate: async ({ locationId, data }) => {
       // Cancel outgoing queries
-      await queryClient.cancelQueries({ queryKey: ['location', customerId, locationId] });
+      await queryClient.cancelQueries({
+        queryKey: ['location', customerId, locationId],
+      });
 
       // Get previous value
-      const previousLocation = queryClient.getQueryData(['location', customerId, locationId]);
+      const previousLocation = queryClient.getQueryData([
+        'location',
+        customerId,
+        locationId,
+      ]);
 
       // Optimistic update
       if (previousLocation) {
@@ -73,13 +93,15 @@ export function useLocationMutations(customerId: string) {
 
       toast({
         title: 'Fehler',
-        description: error.response?.data?.detail || 'Standort konnte nicht aktualisiert werden',
+        description:
+          error.response?.data?.detail ||
+          'Standort konnte nicht aktualisiert werden',
         variant: 'destructive',
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['locations', customerId] });
-      
+
       toast({
         title: 'Erfolg',
         description: 'Standort erfolgreich aktualisiert',
@@ -91,10 +113,11 @@ export function useLocationMutations(customerId: string) {
    * Delete location mutation
    */
   const deleteLocation = useMutation({
-    mutationFn: (locationId: string) => locationApi.deleteLocation(customerId, locationId),
+    mutationFn: (locationId: string) =>
+      locationApi.deleteLocation(customerId, locationId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['locations', customerId] });
-      
+
       toast({
         title: 'Erfolg',
         description: 'Standort erfolgreich gelöscht',
@@ -103,7 +126,9 @@ export function useLocationMutations(customerId: string) {
     onError: (error: any) => {
       toast({
         title: 'Fehler',
-        description: error.response?.data?.detail || 'Standort konnte nicht gelöscht werden',
+        description:
+          error.response?.data?.detail ||
+          'Standort konnte nicht gelöscht werden',
         variant: 'destructive',
       });
     },
@@ -115,4 +140,3 @@ export function useLocationMutations(customerId: string) {
     deleteLocation,
   };
 }
-

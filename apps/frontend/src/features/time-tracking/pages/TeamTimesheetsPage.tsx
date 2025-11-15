@@ -1,5 +1,7 @@
-import { useState } from 'react';
 import { Users, Download, Filter } from 'lucide-react';
+import { useState } from 'react';
+
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,7 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -15,24 +18,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+
 import { TimeEntryList } from '../components/TimeEntryList';
 import { useTeamTimesheets } from '../hooks/useTimeTracking';
 
 /**
  * Team Timesheets Page
- * 
+ *
  * Manager page for viewing and approving team time entries.
- * 
+ *
  * Features:
  * - View all team member time entries
  * - Filter by project, status, date range
  * - Bulk approve time entries
  * - Export team timesheets
- * 
+ *
  * @see Phase 1.3 of Time Tracking Implementation Plan
- * 
+ *
  * Permissions: PLAN and GF roles only
  */
 export function TeamTimesheetsPage() {
@@ -40,10 +42,10 @@ export function TeamTimesheetsPage() {
   const [projectId, setProjectId] = useState<string>('');
   const [status, setStatus] = useState<string>('');
   const [startDate, setStartDate] = useState<string>(
-    getStartOfWeek().toISOString().split('T')[0],
+    getStartOfWeek().toISOString().split('T')[0]
   );
   const [endDate, setEndDate] = useState<string>(
-    getEndOfWeek().toISOString().split('T')[0],
+    getEndOfWeek().toISOString().split('T')[0]
   );
 
   // Fetch team timesheets
@@ -59,29 +61,32 @@ export function TeamTimesheetsPage() {
    */
   const totalHours = entries.reduce(
     (sum, entry) => sum + entry.durationMinutes / 60,
-    0,
+    0
   );
   const totalCost = entries.reduce(
     (sum, entry) => sum + (entry.totalCostEur || 0),
-    0,
+    0
   );
   const pendingCount = entries.filter((e) => e.status === 'completed').length;
   const approvedCount = entries.filter((e) => e.status === 'approved').length;
 
   // Calculate by team member
-  const byUser = entries.reduce((acc, entry) => {
-    const userId = entry.userId;
-    if (!acc[userId]) {
-      acc[userId] = {
-        userName: entry.userName || userId,
-        hours: 0,
-        cost: 0,
-      };
-    }
-    acc[userId].hours += entry.durationMinutes / 60;
-    acc[userId].cost += entry.totalCostEur || 0;
-    return acc;
-  }, {} as Record<string, { userName: string; hours: number; cost: number }>);
+  const byUser = entries.reduce(
+    (acc, entry) => {
+      const userId = entry.userId;
+      if (!acc[userId]) {
+        acc[userId] = {
+          userName: entry.userName || userId,
+          hours: 0,
+          cost: 0,
+        };
+      }
+      acc[userId].hours += entry.durationMinutes / 60;
+      acc[userId].cost += entry.totalCostEur || 0;
+      return acc;
+    },
+    {} as Record<string, { userName: string; hours: number; cost: number }>
+  );
 
   /**
    * Get start of week (Monday)
@@ -182,10 +187,7 @@ export function TeamTimesheetsPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {Object.entries(byUser).map(([userId, data]) => (
-                <div
-                  key={userId}
-                  className="p-4 bg-muted rounded-lg space-y-1"
-                >
+                <div key={userId} className="p-4 bg-muted rounded-lg space-y-1">
                   <p className="font-medium">{data.userName}</p>
                   <p className="text-2xl font-bold">{data.hours.toFixed(1)}h</p>
                   <p className="text-sm text-muted-foreground">
@@ -293,4 +295,3 @@ export function TeamTimesheetsPage() {
     </div>
   );
 }
-

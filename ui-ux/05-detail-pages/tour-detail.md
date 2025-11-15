@@ -1,6 +1,7 @@
 # Tour Detail & Execution View - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Detail View with Live Execution Mode
 - **User Roles**: ADM (execute own), INNEN/GF (monitor all)
 - **Usage Context**: Execute planned tour, track progress, log visits, handle deviations
@@ -9,18 +10,21 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Map-centric view**: Live GPS tracking with route overlay
 - **Stop checklist**: Current/next stops prominently displayed
 - **Quick actions**: Check-in, add note, skip stop, add unplanned stop
 - **Progress indicator**: Visual tour completion status
 
 ### Layout Structure
+
 - Split view: Map (left) + Stop details (right) on desktop
 - Full-screen map with bottom sheet on mobile
 - Floating progress indicator
 - Emergency actions accessible
 
 ### shadcn/ui Components
+
 - Sheet, Card, Button, Progress, Badge
 - Dialog for check-in/out
 - Toast for confirmations
@@ -32,6 +36,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 **Desktop Layout (1440px) - Execution Mode:**
 
 **Header Bar:**
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │ ← München Nord Tour                    [Pause] [Route] [Beenden]│
@@ -40,6 +45,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 ```
 
 **Split View Layout:**
+
 ```
 ┌───────────────────────────┬─────────────────────────────────────┐
 │                           │ Aktueller Stopp (2/4)               │
@@ -66,6 +72,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 ```
 
 **Check-In Dialog (600px × 500px):**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Check-In: Bio-Markt Schmidt            [×] │
@@ -91,6 +98,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 ```
 
 **Mobile View (375px) - Full Screen Map:**
+
 ```
 ┌─────────────────────────────┐
 │ [←] Tour          [⋮ Menu]  │
@@ -110,6 +118,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 ```
 
 **Mobile Bottom Sheet (Pulled Up):**
+
 ```
 ┌─────────────────────────────┐
 │ ═══════════════════         │ (Drag handle)
@@ -133,6 +142,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 ```
 
 **Progress Overview (Floating Widget):**
+
 ```
 ┌─────────────────────┐
 │ Tour-Fortschritt    │
@@ -142,6 +152,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 ```
 
 **Quick Actions Menu:**
+
 ```
 ┌─────────────────────────────┐
 │ Schnellaktionen             │
@@ -156,6 +167,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 ```
 
 **Tour Summary (After Completion):**
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Tour abgeschlossen! ✓                       │
@@ -182,6 +194,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 ```
 
 ## Interaction Patterns
+
 - **Check-in**: Automatic when arriving (GPS), manual override
 - **Photo capture**: Direct camera access, auto-tagged to stop
 - **Skip stop**: Requires reason selection
@@ -189,6 +202,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 - **Offline mode**: Cache map tiles and tour data
 
 ## German Labels & Content
+
 - **Check-In vor Ort**: Check-in on location
 - **Stopp überspringen**: Skip stop
 - **Route neu berechnen**: Recalculate route
@@ -198,6 +212,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 - **Tour pausieren**: Pause tour
 
 ## GPS & Location Features
+
 - **Auto check-in**: Within 50m radius of stop
 - **Breadcrumb trail**: Track actual route taken
 - **Speed monitoring**: Detect driving vs stopped
@@ -205,6 +220,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 - **Offline maps**: Download tour region before start
 
 ## Accessibility Requirements
+
 - Voice guidance for navigation
 - High contrast mode for driving
 - Large touch targets for vehicle use
@@ -212,6 +228,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 - One-handed operation design
 
 ## Mobile Considerations
+
 - **Car mount mode**: Simplified UI, larger buttons
 - **Voice commands**: "Next stop", "Check in", "Add note"
 - **Background tracking**: Continue when app minimized
@@ -219,12 +236,14 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 - **Haptic feedback**: Vibrate on arrival
 
 ## Safety Features
+
 - **Do not disturb**: While driving > 10 km/h
 - **Voice notes**: Record while driving
 - **Emergency button**: Direct call to office
 - **Rest reminders**: After 2 hours driving
 
 ## Implementation Notes
+
 ```bash
 # Map integration requirements
 - Offline map tiles (MapBox/OpenStreetMap)
@@ -245,6 +264,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 ```
 
 ## State Management
+
 - Tour execution state (not started/active/paused/completed)
 - Current stop index and status
 - GPS tracking data (positions, timestamps)
@@ -252,6 +272,7 @@ Create a comprehensive tour execution view for KOMPASS that enables real-time to
 - Offline queue for sync
 
 ## Analytics Events
+
 - tour_started / tour_completed
 - stop_checkin / stop_skipped
 - photo_captured / note_added

@@ -1,14 +1,14 @@
 /**
  * Rich Text Editor Type Definitions
- * 
+ *
  * Type-safe interfaces for TipTap rich text editor components
  * Used across Activity Protocols, Project Descriptions, Customer/Contact Notes
- * 
+ *
  * @see docs/guides/RICH_TEXT_EDITOR_IMPLEMENTATION.md
  * @see docs/architecture/decisions/ADR-019-rich-text-editor-selection.md
  */
 
-import { Editor } from '@tiptap/react';
+import type { Editor } from '@tiptap/react';
 
 /**
  * Editor extension types
@@ -41,7 +41,7 @@ export type RichTextEditorExtension =
 
 /**
  * Editor configuration for specific use cases
- * 
+ *
  * @example
  * // Basic toolbar (Customer notes)
  * const basicConfig: RichTextEditorConfig = {
@@ -49,7 +49,7 @@ export type RichTextEditorExtension =
  *   maxLength: 1000,
  *   extensions: ['bold', 'italic', 'bulletList', 'orderedList', 'link']
  * };
- * 
+ *
  * @example
  * // Advanced toolbar (Project descriptions)
  * const advancedConfig: RichTextEditorConfig = {
@@ -162,7 +162,7 @@ export interface EditorContent {
 
 /**
  * Main rich text editor component props
- * 
+ *
  * @example
  * // Basic usage in form
  * <FormField
@@ -302,7 +302,10 @@ export interface EditorUtils {
   /**
    * Validate content length
    */
-  validateLength: (editor: Editor, maxLength: number) => {
+  validateLength: (
+    editor: Editor,
+    maxLength: number
+  ) => {
     isValid: boolean;
     current: number;
     max: number;
@@ -405,7 +408,8 @@ export const EDITOR_VALIDATION_RULES = {
   opportunityDescription: {
     minLength: 10,
     maxLength: 5000,
-    placeholder: 'Details zur Opportunity, Kundenanforderungen, nächste Schritte...',
+    placeholder:
+      'Details zur Opportunity, Kundenanforderungen, nächste Schritte...',
     toolbarLevel: 'standard' as const,
   },
 
@@ -435,7 +439,8 @@ export const EDITOR_VALIDATION_RULES = {
   invoiceRemarks: {
     minLength: 0,
     maxLength: 2000,
-    placeholder: 'Zahlungsbedingungen, Lieferbedingungen, rechtliche Hinweise...',
+    placeholder:
+      'Zahlungsbedingungen, Lieferbedingungen, rechtliche Hinweise...',
     toolbarLevel: 'basic' as const,
   },
 
@@ -445,7 +450,8 @@ export const EDITOR_VALIDATION_RULES = {
   locationDescription: {
     minLength: 0,
     maxLength: 2000,
-    placeholder: 'Besonderheiten des Standorts, Anfahrtsbeschreibung, Zugangsinformationen...',
+    placeholder:
+      'Besonderheiten des Standorts, Anfahrtsbeschreibung, Zugangsinformationen...',
     toolbarLevel: 'basic' as const,
   },
 } as const;
@@ -532,4 +538,3 @@ export interface ChangeLogEntry {
    */
   approvedBy?: string;
 }
-

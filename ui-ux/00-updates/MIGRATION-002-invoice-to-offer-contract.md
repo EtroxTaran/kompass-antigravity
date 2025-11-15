@@ -16,16 +16,19 @@ This migration removes invoice-related UI components and replaces them with Offe
 ## Components to DELETE
 
 ### 1. Invoice Form
+
 - **File:** `ui-ux/03-entity-forms/invoice-form.md`
 - **Status:** ❌ DELETED
 - **Reason:** KOMPASS does not create invoices
 
 ### 2. Invoice Detail Page
+
 - **File:** `ui-ux/05-detail-pages/invoice-detail.md`
 - **Status:** ❌ DELETED
 - **Reason:** KOMPASS does not manage invoices
 
 ### 3. Invoice List View
+
 - **File:** `ui-ux/04-list-views/invoice-list.md`
 - **Status:** ❌ DELETED
 - **Reason:** KOMPASS does not list invoices
@@ -35,6 +38,7 @@ This migration removes invoice-related UI components and replaces them with Offe
 ## Components to CREATE
 
 ### 1. Offer Form
+
 - **File:** `ui-ux/03-entity-forms/offer-form.md`
 - **Status:** ✅ CREATED
 - **Purpose:** Create and manage sales offers (Angebote)
@@ -44,6 +48,7 @@ This migration removes invoice-related UI components and replaces them with Offe
   - Convert to Contract action
 
 ### 2. Offer Detail Page
+
 - **File:** `ui-ux/05-detail-pages/offer-detail.md`
 - **Status:** ✅ CREATED
 - **Purpose:** View offer details with PDF viewer
@@ -53,6 +58,7 @@ This migration removes invoice-related UI components and replaces them with Offe
   - Convert to Contract button
 
 ### 3. Offer List View
+
 - **File:** `ui-ux/04-list-views/offer-list.md`
 - **Status:** ✅ CREATED
 - **Purpose:** Browse all offers with filtering
@@ -62,6 +68,7 @@ This migration removes invoice-related UI components and replaces them with Offe
   - Conversion rate tracking
 
 ### 4. Contract Form
+
 - **File:** `ui-ux/03-entity-forms/contract-form.md`
 - **Status:** ✅ CREATED
 - **Purpose:** Create and manage contracts (Auftragsbestätigungen)
@@ -71,6 +78,7 @@ This migration removes invoice-related UI components and replaces them with Offe
   - Project linking
 
 ### 5. Contract Detail Page
+
 - **File:** `ui-ux/05-detail-pages/contract-detail.md`
 - **Status:** ✅ CREATED
 - **Purpose:** View contract with GoBD compliance
@@ -81,6 +89,7 @@ This migration removes invoice-related UI components and replaces them with Offe
   - Activity timeline
 
 ### 6. Contract List View
+
 - **File:** `ui-ux/04-list-views/contract-list.md`
 - **Status:** ✅ CREATED
 - **Purpose:** Browse all contracts with GoBD indicators
@@ -94,6 +103,7 @@ This migration removes invoice-related UI components and replaces them with Offe
 ## Dashboard Updates
 
 ### BUCH Dashboard
+
 - **File:** `ui-ux/06-dashboards/buch-dashboard.md`
 - **Changes:**
   - ❌ Remove: Invoice KPIs, overdue invoices, invoice list
@@ -102,6 +112,7 @@ This migration removes invoice-related UI components and replaces them with Offe
 - **Status:** ✅ UPDATED
 
 ### GF Dashboard
+
 - **File:** `ui-ux/06-dashboards/gf-dashboard.md`
 - **Changes:**
   - ❌ Remove: Invoice revenue tracking, overdue invoices
@@ -114,6 +125,7 @@ This migration removes invoice-related UI components and replaces them with Offe
 ## Project Detail Page Updates
 
 ### Project Detail
+
 - **File:** `ui-ux/05-detail-pages/project-detail.md`
 - **Changes:**
   - ❌ Remove: "Rechnung erstellen" quick action
@@ -128,6 +140,7 @@ This migration removes invoice-related UI components and replaces them with Offe
 ### Main Navigation
 
 **Old Structure:**
+
 ```
 - Dashboard
 - Kunden
@@ -137,6 +150,7 @@ This migration removes invoice-related UI components and replaces them with Offe
 ```
 
 **New Structure:**
+
 ```
 - Dashboard
 - Kunden
@@ -150,10 +164,12 @@ This migration removes invoice-related UI components and replaces them with Offe
 ### Customer Detail Page
 
 **Tabs:**
+
 - **Old:** Overview, Kontakte, Standorte, Opportunities, Projekte, Rechnungen
 - **New:** Overview, Kontakte, Standorte, Opportunities, Angebote, Verträge, Projekte
 
 **Changes:**
+
 - ❌ Remove: "Rechnungen" tab
 - ✅ Add: "Angebote" tab (list of offers)
 - ✅ Add: "Verträge" tab (list of contracts)
@@ -165,17 +181,19 @@ This migration removes invoice-related UI components and replaces them with Offe
 ### Global Quick Actions (FAB/Sidebar)
 
 **Old Actions:**
-- + Neuer Kunde
-- + Neue Opportunity
-- + Neues Projekt
-- + Neue Rechnung  ← REMOVE
+
+- - Neuer Kunde
+- - Neue Opportunity
+- - Neues Projekt
+- - Neue Rechnung ← REMOVE
 
 **New Actions:**
-- + Neuer Kunde
-- + Neue Opportunity
-- + Neues Angebot   ← NEW
-- + Neuer Vertrag   ← NEW
-- + Neues Projekt
+
+- - Neuer Kunde
+- - Neue Opportunity
+- - Neues Angebot ← NEW
+- - Neuer Vertrag ← NEW
+- - Neues Projekt
 
 ---
 
@@ -184,18 +202,21 @@ This migration removes invoice-related UI components and replaces them with Offe
 ### Status Colors
 
 **Removed (Invoice):**
+
 - ❌ Draft: Gray
 - ❌ Sent: Blue
 - ❌ Paid: Green
 - ❌ Overdue: Red
 
 **Added (Offer):**
+
 - ✅ Draft: Yellow (#FFC107)
 - ✅ Sent: Blue (#2196F3)
 - ✅ Accepted: Green (#4CAF50)
 - ✅ Rejected: Red (#F44336)
 
 **Added (Contract):**
+
 - ✅ Draft: Yellow (#FFC107)
 - ✅ Signed: Green (#4CAF50) + Lock icon
 - ✅ InProgress: Blue (#2196F3)
@@ -215,6 +236,7 @@ This migration removes invoice-related UI components and replaces them with Offe
 6. **Margin Indicator:** Percentage badge
 
 **Icon Library:** Use Lucide React icons
+
 - `FileText` - Offer/Contract
 - `Lock` - GoBD protection
 - `ExternalLink` - Lexware link
@@ -229,20 +251,20 @@ This migration removes invoice-related UI components and replaces them with Offe
 
 **Global Find/Replace:**
 
-| Old Label | New Label |
-|-----------|-----------|
-| Rechnung | Angebot (or Vertrag, context-dependent) |
-| Rechnungsnummer | Angebotsnummer / Vertragsnummer |
-| Rechnungsdatum | Angebotsdatum / Vertragsdatum |
-| Rechnungsbetrag | Angebotssumme / Auftragswert |
-| Rechnung erstellen | Angebot erstellen |
-| Rechnung anzeigen | Vertrag anzeigen |
-| Fälligkeitsdatum | Gültig bis (for Offers) |
-| Bezahlt | Angenommen (for Offers) |
-| Überfällig | Abgelehnt (for Offers) |
-| Zahlungsstatus | Vertragsstatus |
-| Offene Rechnungen | Aktive Verträge |
-| Rechnungsübersicht | Vertragsübersicht |
+| Old Label          | New Label                               |
+| ------------------ | --------------------------------------- |
+| Rechnung           | Angebot (or Vertrag, context-dependent) |
+| Rechnungsnummer    | Angebotsnummer / Vertragsnummer         |
+| Rechnungsdatum     | Angebotsdatum / Vertragsdatum           |
+| Rechnungsbetrag    | Angebotssumme / Auftragswert            |
+| Rechnung erstellen | Angebot erstellen                       |
+| Rechnung anzeigen  | Vertrag anzeigen                        |
+| Fälligkeitsdatum   | Gültig bis (for Offers)                 |
+| Bezahlt            | Angenommen (for Offers)                 |
+| Überfällig         | Abgelehnt (for Offers)                  |
+| Zahlungsstatus     | Vertragsstatus                          |
+| Offene Rechnungen  | Aktive Verträge                         |
+| Rechnungsübersicht | Vertragsübersicht                       |
 
 **Specific Contexts:**
 
@@ -258,6 +280,7 @@ This migration removes invoice-related UI components and replaces them with Offe
 ### Invoice Form → Offer Form
 
 **Key Differences:**
+
 1. ❌ Remove: Line items table, tax calculations, payment terms
 2. ✅ Add: PDF upload area (drag & drop)
 3. ✅ Add: Status workflow (Draft/Sent/Accepted/Rejected)
@@ -267,6 +290,7 @@ This migration removes invoice-related UI components and replaces them with Offe
 ### Invoice Detail → Offer Detail
 
 **Key Differences:**
+
 1. ❌ Remove: Payment tracking, dunning (Mahnwesen)
 2. ✅ Add: PDF viewer (embedded)
 3. ✅ Add: Status management buttons
@@ -276,6 +300,7 @@ This migration removes invoice-related UI components and replaces them with Offe
 ### Invoice List → Contract List
 
 **Key Differences:**
+
 1. ❌ Remove: Payment status column, overdue indicators
 2. ✅ Add: GoBD lock icon (first column)
 3. ✅ Add: Project link column
@@ -290,17 +315,18 @@ This migration removes invoice-related UI components and replaces them with Offe
 
 **Update ARIA labels:**
 
-| Old | New |
-|-----|-----|
+| Old                             | New                            |
+| ------------------------------- | ------------------------------ |
 | aria-label="Rechnung erstellen" | aria-label="Angebot erstellen" |
-| aria-label="Rechnungsliste" | aria-label="Vertragsliste" |
-| aria-label="Rechnungsstatus" | aria-label="Vertragsstatus" |
-| aria-label="Bezahlt" | aria-label="Angenommen" |
-| aria-label="Überfällig" | aria-label="Abgelehnt" |
+| aria-label="Rechnungsliste"     | aria-label="Vertragsliste"     |
+| aria-label="Rechnungsstatus"    | aria-label="Vertragsstatus"    |
+| aria-label="Bezahlt"            | aria-label="Angenommen"        |
+| aria-label="Überfällig"         | aria-label="Abgelehnt"         |
 
 ### Screen Reader Announcements
 
 **Update announcements:**
+
 - "Rechnung erfolgreich erstellt" → "Angebot erfolgreich erstellt"
 - "Rechnung als bezahlt markiert" → "Angebot als angenommen markiert"
 - "Rechnung gelöscht" → "Angebot gelöscht"
@@ -310,11 +336,13 @@ This migration removes invoice-related UI components and replaces them with Offe
 ## Mobile Responsive Changes
 
 ### Offer/Contract Forms
+
 - **Mobile:** Single column layout (same as invoice forms)
 - **PDF Upload:** Full-width drag & drop area (min 200px height)
 - **Actions:** Sticky bottom bar with primary actions
 
 ### Offer/Contract Lists
+
 - **Mobile:** Card view instead of table
 - **Cards:** Show offer/contract number, customer, date, amount, status badge
 - **Actions:** Bottom-right of each card
@@ -326,11 +354,13 @@ This migration removes invoice-related UI components and replaces them with Offe
 ### Status Transitions
 
 **Offer Status:**
+
 1. Draft → Sent: Smooth badge color transition (yellow → blue)
 2. Sent → Accepted: Confetti animation + success message
 3. Sent → Rejected: Fade to gray with reason modal
 
 **Contract Status:**
+
 1. Draft → Signed: Lock icon animates in + green highlight
 2. Signed → InProgress: Blue progress indicator appears
 3. InProgress → Completed: Checkmark animation + completion banner
@@ -338,6 +368,7 @@ This migration removes invoice-related UI components and replaces them with Offe
 ### GoBD Lock Animation
 
 **When contract is signed:**
+
 1. Lock icon fades in (300ms)
 2. Row background tints green (#f0fdf4)
 3. Toast notification: "Vertrag GoBD-konform finalisiert"
@@ -349,6 +380,7 @@ This migration removes invoice-related UI components and replaces them with Offe
 After migration, verify in Figma:
 
 ### Components
+
 - [ ] All invoice components deleted
 - [ ] All offer components created (3 total)
 - [ ] All contract components created (3 total)
@@ -356,23 +388,27 @@ After migration, verify in Figma:
 - [ ] Project detail updated (quick actions)
 
 ### Navigation
+
 - [ ] "Rechnungen" menu item removed
 - [ ] "Angebote" menu item added
 - [ ] "Verträge" menu item added
 - [ ] "Lexware" external link added
 
 ### Labels
+
 - [ ] All "Rechnung" labels replaced with "Angebot" or "Vertrag"
 - [ ] German labels correct and consistent
 - [ ] ARIA labels updated
 
 ### Colors
+
 - [ ] Offer status badges: Yellow/Blue/Green/Red
 - [ ] Contract status badges: Yellow/Green/Blue/Gray
 - [ ] GoBD lock icon: Green
 - [ ] Margin indicators: Green/Yellow/Red
 
 ### Icons
+
 - [ ] Offer icon: Document with pen
 - [ ] Contract icon: Document with checkmark
 - [ ] GoBD lock icon: Lock
@@ -380,12 +416,14 @@ After migration, verify in Figma:
 - [ ] All icons from Lucide React
 
 ### Responsiveness
+
 - [ ] Mobile: Forms single column
 - [ ] Mobile: Lists switch to card view
 - [ ] Mobile: Actions in sticky bottom bar
 - [ ] Touch targets: 44px minimum
 
 ### Accessibility
+
 - [ ] ARIA labels updated
 - [ ] Screen reader announcements updated
 - [ ] Keyboard navigation works
@@ -396,23 +434,27 @@ After migration, verify in Figma:
 ## Rollout Plan
 
 ### Phase 1: Preparation (Week 1)
+
 - Review this migration document with UX team
 - Delete invoice components from Figma
 - Create new Offer/Contract components skeleton
 
 ### Phase 2: Implementation (Weeks 2-3)
+
 - Implement Offer components (form, detail, list)
 - Implement Contract components (form, detail, list)
 - Update dashboards (BUCH, GF)
 - Update navigation
 
 ### Phase 3: Review & QA (Week 4)
+
 - Internal review with Product/UX team
 - Accessibility audit
 - Mobile responsive testing
 - German label verification
 
 ### Phase 4: Handoff (Week 5)
+
 - Export Figma components for developers
 - Create Figma Make prompts (already created)
 - Developer handoff meeting
@@ -425,11 +467,13 @@ After migration, verify in Figma:
 ### Implementation Order
 
 **Backend First:**
+
 1. Create Offer/Contract entities in data model
 2. Create Offer/Contract API endpoints
 3. Add PDF upload/storage functionality
 
 **Frontend:**
+
 1. Create Offer form, detail, list views
 2. Create Contract form, detail, list views
 3. Update dashboards to remove invoice KPIs
@@ -437,6 +481,7 @@ After migration, verify in Figma:
 5. Add Lexware external link (Phase 2+)
 
 **Testing:**
+
 1. E2E tests for Offer workflow (create → send → accept → convert to contract)
 2. E2E tests for Contract workflow (create → sign → link to project)
 3. PDF upload/download tests
@@ -463,6 +508,7 @@ A: Contracts are GoBD-relevant after signing (immutable). Offers are not (can be
 ## Success Criteria
 
 Migration is successful when:
+
 - [ ] All invoice components removed from Figma
 - [ ] All offer/contract components created and approved
 - [ ] No references to "Rechnung" in UI (except for context about Lexware)
@@ -481,4 +527,3 @@ Migration is successful when:
 ---
 
 **END OF MIGRATION DOCUMENT**
-

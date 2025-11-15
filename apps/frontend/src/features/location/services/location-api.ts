@@ -1,13 +1,14 @@
 /**
  * Location API Client
- * 
+ *
  * Handles HTTP requests to Location endpoints
  * Base URL: /api/v1/customers/{customerId}/locations
  */
 
 import axios from 'axios';
+
 import type { Location } from '@kompass/shared/types/entities/location';
-import { LocationType } from '@kompass/shared/types/enums';
+import type { LocationType } from '@kompass/shared/types/enums';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
@@ -63,8 +64,10 @@ export const locationApi = {
     }
   ): Promise<LocationResponse[]> {
     const params = new URLSearchParams();
-    if (filters?.locationType) params.append('locationType', filters.locationType);
-    if (filters?.isActive !== undefined) params.append('isActive', filters.isActive.toString());
+    if (filters?.locationType)
+      params.append('locationType', filters.locationType);
+    if (filters?.isActive !== undefined)
+      params.append('isActive', filters.isActive.toString());
     if (filters?.sort) params.append('sort', filters.sort);
     if (filters?.order) params.append('order', filters.order);
 
@@ -77,7 +80,10 @@ export const locationApi = {
   /**
    * Get a single location
    */
-  async getLocation(customerId: string, locationId: string): Promise<LocationResponse> {
+  async getLocation(
+    customerId: string,
+    locationId: string
+  ): Promise<LocationResponse> {
     const response = await axios.get<LocationResponse>(
       `${API_BASE_URL}/api/v1/customers/${customerId}/locations/${locationId}`
     );
@@ -117,7 +123,8 @@ export const locationApi = {
    * Delete a location
    */
   async deleteLocation(customerId: string, locationId: string): Promise<void> {
-    await axios.delete(`${API_BASE_URL}/api/v1/customers/${customerId}/locations/${locationId}`);
+    await axios.delete(
+      `${API_BASE_URL}/api/v1/customers/${customerId}/locations/${locationId}`
+    );
   },
 };
-

@@ -1,5 +1,21 @@
-import { useState } from 'react';
 import { Check, X, Clock, Calendar } from 'lucide-react';
+import { useState } from 'react';
+
+import type {
+  TimeEntryResponseDto,
+  TimeEntryStatus,
+} from '@kompass/shared/types/entities/time-entry';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -8,25 +24,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useToast } from '@/hooks/use-toast';
-import type { TimeEntryResponseDto, TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
+
 import { timeTrackingApi } from '../services/time-tracking-api';
+
+import { useToast } from '@/hooks/use-toast';
 
 /**
  * Time Entry List Component
- * 
+ *
  * Displays list of time entries with filtering, bulk actions, and approval.
- * 
+ *
  * @see Phase 1.3 of Time Tracking Implementation Plan
  */
 interface TimeEntryListProps {
@@ -80,7 +87,7 @@ export function TimeEntryList({
    * Get status badge variant
    */
   function getStatusVariant(
-    status: TimeEntryStatus,
+    status: TimeEntryStatus
   ): 'default' | 'secondary' | 'outline' | 'destructive' {
     switch (status) {
       case 'in_progress':
@@ -228,11 +235,7 @@ export function TimeEntryList({
             {selectedIds.size} von {entries.length} ausgewählt
           </span>
           {selectedIds.size > 0 && (
-            <Button
-              size="sm"
-              onClick={handleBulkApprove}
-              disabled={loading}
-            >
+            <Button size="sm" onClick={handleBulkApprove} disabled={loading}>
               <Check className="mr-2 h-4 w-4" />
               Alle genehmigen
             </Button>
@@ -254,7 +257,9 @@ export function TimeEntryList({
             <TableHead className="text-right">Dauer</TableHead>
             <TableHead className="text-right">Kosten</TableHead>
             <TableHead>Status</TableHead>
-            {showApprovalActions && <TableHead className="text-right">Aktionen</TableHead>}
+            {showApprovalActions && (
+              <TableHead className="text-right">Aktionen</TableHead>
+            )}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -330,7 +335,9 @@ export function TimeEntryList({
 
                 {/* Status */}
                 <TableCell>
-                  <Badge variant={getStatusVariant(entry.status as TimeEntryStatus)}>
+                  <Badge
+                    variant={getStatusVariant(entry.status as TimeEntryStatus)}
+                  >
                     {getStatusLabel(entry.status as TimeEntryStatus)}
                   </Badge>
                 </TableCell>
@@ -368,4 +375,3 @@ export function TimeEntryList({
     </div>
   );
 }
-

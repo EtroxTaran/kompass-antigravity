@@ -1,6 +1,7 @@
 # PLAN Dashboard (Planer) - Figma Make Prompt
 
 ## Context & Purpose
+
 - **User Role**: PLAN (Planer / Planning)
 - **Business Value**: Project management, resource allocation, scheduling
 - **Access**: ALL projects (full CRUD), ALL customers (read-only for project context)
@@ -12,6 +13,7 @@
 Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines, resource allocation, capacity planning, and upcoming milestones with German labels.
 
 **Header:**
+
 - "Projektplanung" (28px, bold)
 - View toggle: "Kalender" | "Liste" | "Gantt"
 - Date range: "Diese Woche" | "Dieser Monat" | "Quartal"
@@ -19,36 +21,32 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
 - **AI Toggle:** Switch "KI-Features" (top-right, default OFF until Phase 3)
 
 **KPI Cards (Top Row - 6 cards):**
+
 1. **Aktive Projekte**
    - Value: "18" (36px, blue)
    - On schedule: "14 (78%)" (green)
    - Delayed: "4 (22%)" (red)
    - **[Phase 3]** AI Prediction: "🔮 2 weitere Risiko-Projekte" (purple pulse)
-   
 2. **Kapazität (diese Woche)**
    - Team: "5 Mitarbeiter"
    - Verfügbar: "120 Std" (blue)
    - Gebucht: "96 Std (80%)" (amber)
    - **[Phase 3]** AI Optimierung: "💡 +15% durch Umverteilung" (purple)
-   
 3. **Meilensteine (diese Woche)**
    - Anstehend: "8" (blue)
    - Überfällig: "2" (red)
    - Abgeschlossen: "15 diese Woche" (green)
    - **[Phase 3]** AI Warnung: "⚠️ 3 gefährdet für nächste Woche"
-   
 4. **Budget-Status**
    - Im Rahmen: "14 Projekte" (green)
    - Warnung: "3" (amber)
    - Überzogen: "1" (red)
    - **[Phase 3]** AI Forecast: "📈 €12.500 Einsparung möglich"
-   
 5. **Tour-Effizienz (NEU)**
    - Aktive Touren: "3 heute"
    - Zeitersparnis: "-2.5 Std" (green)
    - Kunden besucht: "12/15 (80%)"
    - **[Phase 3]** AI Route: "🗺️ Optimiert für Verkehr"
-   
 6. **Team-Performance (NEU)**
    - Produktivität: "94%" (green)
    - Überstunden: "12 Std" (amber)
@@ -56,6 +54,7 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
    - **[Phase 3]** AI Score: "🏆 Top 20% Branche"
 
 **Section: Projektübersicht (Enhanced Gantt or Calendar View)**
+
 - **Gantt Chart (Main View):**
   - Y-axis: Project names
   - **[Phase 3]** Y-axis enhancement: AI risk indicators - only if toggle ON
@@ -84,6 +83,7 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
     - Optimal scheduling suggestions
 
 **Section: KI-gestützte Projektanalyse [Phase 3] (NEW)**
+
 - **Visibility:** Hidden by default. Requires AI toggle ON + 50+ completed projects
 - **Data Requirement:** 50+ projects with full cost/timeline tracking
 - **See:** [AI Data Requirements](../../docs/specifications/AI_DATA_REQUIREMENTS.md)
@@ -119,6 +119,7 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
   - Key factors affecting timeline
 
 **Section: Ressourcenplanung (AI-Enhanced)**
+
 - **Team-Auslastung (Horizontal Bar Chart):**
   - Team members (Y-axis) with skill tags
   - Hours (X-axis)
@@ -130,7 +131,6 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
     - ⚠️ Skills mismatch warning
     - 🔄 Suggested reallocation
     - 🚗 Tour time included
-  
 - **Kapazitätsvorhersage (Line Chart - next 4 weeks):**
   - X-axis: Weeks
   - Y-axis: Hours
@@ -151,6 +151,7 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
     - Multi-stop optimization
 
 **Section: Projekt-Prioritäten (Enhanced Table with AI)**
+
 - Columns: Projekt, Kunde, Status, Fortschritt, **[Phase 3]** AI-Score, Fälligkeit, Team, Budget-Status, Aktionen
 - Rows: All active projects
 - Sorting: Due date (default), priority, customer
@@ -161,7 +162,7 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
 - **[Phase 3]** Progress enhancement: Predicted vs actual overlay - only if toggle ON
 - **[Phase 3] AI-Score Column (NEW):** (only shown if toggle ON)
   - "95" (green) - On track
-  - "72" (amber) - Needs attention  
+  - "72" (amber) - Needs attention
   - "45" (red) - High risk
   - Tooltip: Risk factors breakdown
 - Actions: "Details", "Zeitplan bearbeiten", "Team zuweisen"
@@ -172,6 +173,7 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
   - Travel time indicator for field projects
 
 **Section: Anstehende Meilensteine (Enhanced Timeline)**
+
 - Next 14 days
 - Each milestone: Date, project, name, owner
 - **[Phase 3]** Enhancement: AI confidence score - only if toggle ON
@@ -186,6 +188,7 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
   - Weather impact for outdoor: Cloud icons
 
 **Section: Team-Verfügbarkeit (Enhanced Grid)**
+
 - Team member cards with live status
 - Each card: Avatar, name, role, skills, location
 - This week: "32/40 Std gebucht (80%)"
@@ -200,6 +203,7 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
 - **[Phase 3]** Action: "Route optimieren" - only if toggle ON
 
 **Section: Kritische Pfade & Verzögerungen**
+
 - List of projects with delays
 - Impact analysis: Which milestones are affected
 - Recommended actions (manual analysis)
@@ -213,6 +217,7 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
 - **[Phase 3]** Auto-generated recovery plans - only if toggle ON
 
 **Quick Actions (Sidebar or FAB):**
+
 - "+ Neues Projekt"
 - "+ Meilenstein hinzufügen"
 - "Team zuweisen"
@@ -223,6 +228,7 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
 - "💬 Team-Chat" (integrated comms)
 
 **Mobile-First PWA Enhancements:**
+
 - **Bottom Navigation (5 tabs):**
   - "Projekte" (folder icon) - Project list
   - "Gantt" (chart icon) - Timeline view
@@ -277,34 +283,39 @@ Create a PLAN (Planer) dashboard for KOMPASS showing active projects, timelines,
 ## Design Requirements
 
 ### Visual Hierarchy
+
 1. Gantt chart: Large, clear timeline
 2. KPI cards: Quick metrics
 3. Team utilization: Prominent bars
 4. Alerts: Critical delays highlighted
 
 ### shadcn/ui Components
+
 ```bash
 npx shadcn-ui@latest add card badge button calendar table
 # Gantt: Use react-gantt-chart or custom with shadcn
 ```
 
 ### Charts
+
 - Gantt chart: Project timelines
 - Horizontal bar chart: Team utilization
 - Line chart: Capacity forecast
 
 ### Interaction
+
 - Gantt: Drag to adjust dates (if editable)
 - Hover milestone: Show details
 - Click project: Navigate to detail
 - Filters: Status, team member, date range
 
 ### Accessibility
+
 - Gantt has table alternative
 - Color + patterns for status
 - Keyboard navigation
 
 ### Example Data
+
 - Project: "P-2024-B023, REWE München, In Arbeit, 65%, 28.02.25, 5 Mitarbeiter, Im Budget"
 - Team: "Anna Weber, Planung, 32/40 Std (80%)"
-

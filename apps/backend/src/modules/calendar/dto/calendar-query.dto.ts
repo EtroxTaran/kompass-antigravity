@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsISO8601, IsOptional, IsArray, IsString, IsEnum } from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+  IsISO8601,
+  IsOptional,
+  IsArray,
+  IsString,
+  IsEnum,
+} from 'class-validator';
+
 import { CalendarEventType, CalendarPriority } from './calendar-event.dto';
 
 export class CalendarQueryDto {
@@ -68,5 +75,3 @@ export class CalendarQueryDto {
   @Type(() => String)
   priority?: CalendarPriority[];
 }
-
-

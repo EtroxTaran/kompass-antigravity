@@ -1,6 +1,7 @@
 # Customer Form - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Entity Creation/Edit Form
 - **User Roles**: GF, INNEN (full), ADM (create own), PLAN (read-only), KALK (read-only), BUCH (read-only)
 - **Usage Context**: Create new customer or edit existing customer data
@@ -9,13 +10,15 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Form Title**: "Neuer Kunde" or "Kunde bearbeiten" - prominent header
 - **Section Groups**: Grouped fields (Grunddaten, Adresse, Kontakt, Geschäftsdaten)
-- **Required Fields**: Red asterisk (*) indicator
+- **Required Fields**: Red asterisk (\*) indicator
 - **Primary Action**: "Speichern" button (blue, prominent)
 - **Secondary Action**: "Abbrechen" button (gray, outlined)
 
 ### Layout Structure
+
 - Dialog/Modal: 800px width (desktop), full-screen (mobile)
 - Form layout: 2-column grid (desktop), single column (mobile)
 - Field spacing: 16px vertical gap
@@ -23,6 +26,7 @@
 - Button group: Right-aligned, 12px gap
 
 ### shadcn/ui Components
+
 - `Dialog` or `Sheet` for form container
 - `Form`, `FormField`, `FormLabel`, `FormControl`, `FormMessage`
 - `Input`, `Textarea`, `Select`, `Checkbox`
@@ -34,6 +38,7 @@
 Create a comprehensive customer form for KOMPASS, a German CRM application. Design a form for creating and editing customer data with validation, field grouping, and German labels based on the DATA_MODEL_SPECIFICATION.md.
 
 **Form Container:**
+
 - Modal dialog: 800px width, centered on desktop
 - Header:
   - Title: "Neuer Kunde" (create) or "Kunde bearbeiten" (edit) - 24px, bold
@@ -48,7 +53,7 @@ Label: "Grunddaten" - 18px, semibold, #1f2937
 **Fields (2-column layout on desktop):**
 
 1. **Firmenname** (Required):
-   - Label: "Firmenname *" - red asterisk
+   - Label: "Firmenname \*" - red asterisk
    - Input: Text, full width (spans 2 columns)
    - Placeholder: "z.B. Hofladen Müller GmbH"
    - Validation: 2-200 characters, pattern: `/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/`
@@ -92,20 +97,20 @@ Label: "Rechnungsadresse" - 18px, semibold
 **Fields:**
 
 1. **Straße** (Required):
-   - Label: "Straße und Hausnummer *"
+   - Label: "Straße und Hausnummer \*"
    - Input: Text, full width (spans 2 columns)
    - Placeholder: "z.B. Hauptstraße 15"
    - Validation: 2-100 characters
 
 2. **PLZ** (Required):
-   - Label: "Postleitzahl *"
+   - Label: "Postleitzahl \*"
    - Input: Text, left column (25% width)
    - Placeholder: "80331"
    - Validation: 5 digits, German postal code
    - Error: "PLZ muss 5-stellig sein"
 
 3. **Stadt** (Required):
-   - Label: "Stadt *"
+   - Label: "Stadt \*"
    - Input: Text, right column (75% width)
    - Placeholder: "München"
    - Validation: 2-100 characters
@@ -210,7 +215,7 @@ Label: "Tour-Planung" - 18px, semibold
 3. **Bevorzugte Besuchszeit** (Optional):
    - Label: "Bevorzugte Besuchszeit"
    - Select dropdown, left column
-   - Options: 
+   - Options:
      - "Vormittags (8-12 Uhr)" (value: 'morning')
      - "Nachmittags (12-18 Uhr)" (value: 'afternoon')
      - "Flexibel" (value: 'flexible', default)
@@ -218,6 +223,7 @@ Label: "Tour-Planung" - 18px, semibold
    - Help text: "Kundenwunsch für Besuchszeiten"
 
 **Business Logic:**
+
 - If `lastVisitDate` and `visitFrequencyDays` are set:
   - Calculate next recommended visit date
   - Display info badge: "Nächster Besuch empfohlen: 27.02.2025" (example)
@@ -231,7 +237,7 @@ Label: "Inhaber & Datenschutz" - 18px, semibold
 **Fields:**
 
 1. **Inhaber** (Required for ADM):
-   - Label: "Verantwortlicher Mitarbeiter *"
+   - Label: "Verantwortlicher Mitarbeiter \*"
    - Select dropdown (searchable), left column
    - Options: List of ADM users
    - Current user pre-selected for ADM role
@@ -248,6 +254,7 @@ Label: "Inhaber & Datenschutz" - 18px, semibold
    - Help text: "Einwilligungen gemäß DSGVO Artikel 6(1)(a)"
 
 **Form Footer (Sticky):**
+
 - Background: White with top border shadow
 - Padding: 16px 24px
 - Button group (right-aligned):
@@ -256,16 +263,19 @@ Label: "Inhaber & Datenschutz" - 18px, semibold
   - Gap: 12px between buttons
 
 **Loading State:**
+
 - "Speichern" button shows spinner + "Wird gespeichert..."
 - Form fields disabled during save
 - Overlay with spinner on entire form (alternative)
 
 **Success State:**
+
 - Toast notification: "Kunde wurde erfolgreich angelegt" (green)
 - Dialog closes automatically
 - Or: Shows success message in dialog with "Kunde anzeigen" button
 
 **Error State:**
+
 - Field-level errors: Red underline, error message below field
 - Form-level error: Red alert banner at top
 - Examples:
@@ -274,17 +284,20 @@ Label: "Inhaber & Datenschutz" - 18px, semibold
   - "Fehler beim Speichern: Bitte überprüfen Sie Ihre Internetverbindung"
 
 **Validation Behavior:**
+
 - Real-time validation: On blur (after field loses focus)
 - On submit: Validate all fields before submitting
 - Scroll to first error if validation fails
 - Focus on first error field
 
 **RBAC Visibility:**
+
 - ADM users: "Inhaber" field pre-filled with own user ID, disabled
 - GF/PLAN users: "Inhaber" field enabled, can select any ADM user
 - Read-only fields: Display as text (not editable inputs)
 
 **Mobile Layout:**
+
 - Full-screen dialog
 - Single column layout
 - Larger inputs (48px height)
@@ -297,9 +310,10 @@ Design with clear visual hierarchy, adequate whitespace, and German labels throu
 ## Interaction Patterns
 
 ### Form Flow
+
 1. User clicks "Neuer Kunde" button
 2. Dialog opens with empty form
-3. User fills required fields (marked with *)
+3. User fills required fields (marked with \*)
 4. Real-time validation on field blur
 5. User clicks "Speichern"
 6. Form validation runs
@@ -307,6 +321,7 @@ Design with clear visual hierarchy, adequate whitespace, and German labels throu
 8. If invalid: Error messages show, scroll to first error
 
 ### Field Interactions
+
 - Click input: Focus, blue border
 - Type text: Placeholder disappears
 - Leave field (blur): Validation runs if field touched
@@ -316,11 +331,13 @@ Design with clear visual hierarchy, adequate whitespace, and German labels throu
 ## German Labels & Content
 
 ### Form Titles
+
 - **Neuer Kunde**: New customer
 - **Kunde bearbeiten**: Edit customer
 - **Kundendaten erfassen**: Enter customer data
 
 ### Section Titles
+
 - **Grunddaten**: Basic information
 - **Rechnungsadresse**: Billing address
 - **Kontaktdaten**: Contact information
@@ -330,17 +347,20 @@ Design with clear visual hierarchy, adequate whitespace, and German labels throu
 ### Field Labels (See detailed fields above)
 
 ### Validation Messages
+
 - **Pflichtfeld**: Required field
 - **Ungültiges Format**: Invalid format
 - **Zu kurz**: Too short
 - **Zu lang**: Too long
 
 ### Buttons
+
 - **Speichern**: Save
 - **Abbrechen**: Cancel
 - **Kunde anzeigen**: View customer
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Form: role="form", aria-label="Kundenformular"
 - Required fields: aria-required="true"
@@ -352,6 +372,7 @@ Design with clear visual hierarchy, adequate whitespace, and German labels throu
 - Color not sole indicator (icons + text)
 
 ## Mobile Considerations
+
 - Full-screen form on mobile
 - Single column layout
 - Larger touch targets (48px)
@@ -363,6 +384,7 @@ Design with clear visual hierarchy, adequate whitespace, and German labels throu
 ## Example Data
 
 **New Customer (Create):**
+
 - Firmenname: "Hofladen Müller GmbH"
 - Umsatzsteuer-ID: "DE123456789"
 - Kundentyp: "Direktvermarkter"
@@ -380,6 +402,7 @@ Design with clear visual hierarchy, adequate whitespace, and German labels throu
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add form
 npx shadcn-ui@latest add input
@@ -393,6 +416,7 @@ npx shadcn-ui@latest add tooltip   # For rich text editor toolbar
 ```
 
 ### TipTap Rich Text Editor Installation
+
 ```bash
 # Core TipTap packages for basic toolbar (internal notes)
 pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-placeholder
@@ -400,6 +424,7 @@ pnpm add @tiptap/extension-link @tiptap/extension-underline
 ```
 
 ### Form Usage (react-hook-form + zod)
+
 ```typescript
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -416,6 +441,7 @@ function onSubmit(data: CustomerFormData) {
 ```
 
 ### Component Dependencies
+
 - Design tokens (colors, spacing)
 - Icons from lucide-react (Mail, Phone, Globe)
 - Form validation schema from @kompass/shared
@@ -423,9 +449,9 @@ function onSubmit(data: CustomerFormData) {
 - RBAC context for field visibility
 
 ### State Management
+
 - Form state: react-hook-form
 - Validation state: zod schema
 - Save loading state: Boolean
 - Customer data: From API or props
 - Current user: For RBAC checks
-

@@ -1,13 +1,14 @@
 /**
  * Expense Repository
- * 
+ *
  * Data access layer for Expense entities
  * Handles CouchDB operations for expenses
  */
 
 import { Injectable, Inject, Logger } from '@nestjs/common';
+import { Nano } from 'nano';
+
 import type { Expense } from '@kompass/shared/types/entities/expense';
-import type { Nano } from 'nano';
 
 /**
  * Expense Repository Interface
@@ -19,7 +20,11 @@ export interface IExpenseRepository {
   findByMeeting(meetingId: string): Promise<Expense[]>;
   findByProject(projectId: string): Promise<Expense[]>;
   findByStatus(status: Expense['status'], userId?: string): Promise<Expense[]>;
-  findByDateRange(startDate: Date, endDate: Date, userId?: string): Promise<Expense[]>;
+  findByDateRange(
+    startDate: Date,
+    endDate: Date,
+    userId?: string
+  ): Promise<Expense[]>;
   create(expense: Omit<Expense, '_rev'>): Promise<Expense>;
   update(expense: Expense): Promise<Expense>;
   delete(id: string): Promise<void>;
@@ -75,7 +80,9 @@ export class ExpenseRepository implements IExpenseRepository {
   /**
    * Type guard for CouchDB errors
    */
-  private isCouchDBError(error: unknown): error is { statusCode: number; message?: string } {
+  private isCouchDBError(
+    error: unknown
+  ): error is { statusCode: number; message?: string } {
     return (
       typeof error === 'object' &&
       error !== null &&
@@ -84,7 +91,10 @@ export class ExpenseRepository implements IExpenseRepository {
     );
   }
 
-  async findByUser(userId: string, filters?: ExpenseFilters): Promise<Expense[]> {
+  async findByUser(
+    userId: string,
+    filters?: ExpenseFilters
+  ): Promise<Expense[]> {
     try {
       const selector: CouchDBMangoSelector = {
         type: 'expense',
@@ -114,10 +124,12 @@ export class ExpenseRepository implements IExpenseRepository {
       if (filters?.startDate || filters?.endDate) {
         selector.expenseDate = {};
         if (filters.startDate) {
-          (selector.expenseDate as Record<string, unknown>).$gte = filters.startDate.toISOString();
+          (selector.expenseDate as Record<string, unknown>).$gte =
+            filters.startDate.toISOString();
         }
         if (filters.endDate) {
-          (selector.expenseDate as Record<string, unknown>).$lte = filters.endDate.toISOString();
+          (selector.expenseDate as Record<string, unknown>).$lte =
+            filters.endDate.toISOString();
         }
       }
 
@@ -163,7 +175,10 @@ export class ExpenseRepository implements IExpenseRepository {
       });
       return result.docs as Expense[];
     } catch (error) {
-      this.logger.error(`Error finding expenses for meeting ${meetingId}:`, error);
+      this.logger.error(
+        `Error finding expenses for meeting ${meetingId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -180,12 +195,18 @@ export class ExpenseRepository implements IExpenseRepository {
       });
       return result.docs as Expense[];
     } catch (error) {
-      this.logger.error(`Error finding expenses for project ${projectId}:`, error);
+      this.logger.error(
+        `Error finding expenses for project ${projectId}:`,
+        error
+      );
       throw error;
     }
   }
 
-  async findByStatus(status: Expense['status'], userId?: string): Promise<Expense[]> {
+  async findByStatus(
+    status: Expense['status'],
+    userId?: string
+  ): Promise<Expense[]> {
     try {
       const selector: CouchDBMangoSelector = {
         type: 'expense',
@@ -209,7 +230,11 @@ export class ExpenseRepository implements IExpenseRepository {
     }
   }
 
-  async findByDateRange(startDate: Date, endDate: Date, userId?: string): Promise<Expense[]> {
+  async findByDateRange(
+    startDate: Date,
+    endDate: Date,
+    userId?: string
+  ): Promise<Expense[]> {
     try {
       const selector: CouchDBMangoSelector = {
         type: 'expense',
@@ -275,4 +300,3 @@ export class ExpenseRepository implements IExpenseRepository {
     }
   }
 }
-

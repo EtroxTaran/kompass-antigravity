@@ -1,16 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
-import {
+
+import type {
   Project,
-  CostTrackingStatus,
   ProfitabilityReport,
 } from '@kompass/shared/types/entities/project';
+import { CostTrackingStatus } from '@kompass/shared/types/entities/project';
 
 /**
  * Budget Alert Service
- * 
+ *
  * Handles budget threshold monitoring and notifications.
  * Alerts are triggered at 80%, 100%, and 110% budget usage.
- * 
+ *
  * @see Phase 3.3 of Time Tracking Implementation Plan
  */
 @Injectable()
@@ -22,14 +23,16 @@ export class BudgetAlertService {
    */
   async checkAndAlert(
     project: Project,
-    profitability: ProfitabilityReport,
+    profitability: ProfitabilityReport
   ): Promise<void> {
     const percentUsed = this.calculateBudgetUsagePercent(
       profitability.actualTotalCostEur,
-      project.budgetedTotalCostEur,
+      project.budgetedTotalCostEur
     );
 
-    this.logger.log(`Project ${project._id} budget usage: ${percentUsed.toFixed(1)}%`);
+    this.logger.log(
+      `Project ${project._id} budget usage: ${percentUsed.toFixed(1)}%`
+    );
 
     // Determine alert level and trigger appropriate notifications
     if (percentUsed >= 110) {
@@ -43,13 +46,13 @@ export class BudgetAlertService {
 
   /**
    * Alert: Over budget (> 110%)
-   * 
+   *
    * Critical alert - notify project manager and GF immediately
    */
   private async alertOverBudget(
     project: Project,
     profitability: ProfitabilityReport,
-    percentUsed: number,
+    percentUsed: number
   ): Promise<void> {
     const message = `CRITICAL: Project "${project.projectName}" is OVER BUDGET by €${Math.abs(profitability.costVarianceEur).toFixed(2)} (${percentUsed.toFixed(1)}% of budget used)`;
 
@@ -94,13 +97,13 @@ export class BudgetAlertService {
 
   /**
    * Alert: Critical (100-110%)
-   * 
+   *
    * High priority - notify project manager and GF
    */
   private async alertCritical(
     project: Project,
     profitability: ProfitabilityReport,
-    percentUsed: number,
+    percentUsed: number
   ): Promise<void> {
     const message = `CRITICAL: Project "${project.projectName}" is at ${percentUsed.toFixed(1)}% of budget. Immediate action required.`;
 
@@ -136,13 +139,13 @@ export class BudgetAlertService {
 
   /**
    * Alert: Warning (80-100%)
-   * 
+   *
    * Warning - notify project manager only
    */
   private async alertWarning(
     project: Project,
     profitability: ProfitabilityReport,
-    percentUsed: number,
+    percentUsed: number
   ): Promise<void> {
     const message = `WARNING: Project "${project.projectName}" has used ${percentUsed.toFixed(1)}% of budget. Monitor closely.`;
 
@@ -173,7 +176,7 @@ export class BudgetAlertService {
    */
   private calculateBudgetUsagePercent(
     actualCost: number,
-    budgetedCost: number,
+    budgetedCost: number
   ): number {
     if (budgetedCost === 0) return 0;
     return (actualCost / budgetedCost) * 100;
@@ -185,7 +188,7 @@ export class BudgetAlertService {
   private buildOverBudgetEmailBody(
     project: Project,
     profitability: ProfitabilityReport,
-    percentUsed: number,
+    percentUsed: number
   ): string {
     return `
 🚨 CRITICAL BUDGET ALERT
@@ -227,7 +230,7 @@ This is an automated alert from the KOMPASS project management system.
   private buildCriticalEmailBody(
     project: Project,
     profitability: ProfitabilityReport,
-    percentUsed: number,
+    percentUsed: number
   ): string {
     return `
 ⚠️ CRITICAL BUDGET ALERT
@@ -257,7 +260,7 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
   private buildWarningEmailBody(
     project: Project,
     profitability: ProfitabilityReport,
-    percentUsed: number,
+    percentUsed: number
   ): string {
     return `
 ⚠️ BUDGET WARNING
@@ -275,7 +278,7 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
 
   /**
    * Send email notification
-   * 
+   *
    * TODO: Implement actual email sending (e.g., using nodemailer, SendGrid, AWS SES)
    */
   private async sendEmail(params: {
@@ -292,7 +295,7 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
 
   /**
    * Create in-app notification
-   * 
+   *
    * TODO: Implement notification service
    */
   private async createNotification(notification: {
@@ -305,14 +308,16 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
     actionUrl: string;
   }): Promise<void> {
     // Placeholder implementation
-    this.logger.log(`[NOTIFICATION] User: ${notification.userId}, Title: ${notification.title}`);
+    this.logger.log(
+      `[NOTIFICATION] User: ${notification.userId}, Title: ${notification.title}`
+    );
     // TODO: Implement notification creation
     // await this.notificationService.create(notification);
   }
 
   /**
    * Log audit event
-   * 
+   *
    * TODO: Implement audit logging
    */
   private async logAuditEvent(event: {
@@ -323,14 +328,16 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
     variance: number;
   }): Promise<void> {
     // Placeholder implementation
-    this.logger.log(`[AUDIT] ${event.type}: Project ${event.projectId}, ${event.budgetUsagePercent.toFixed(1)}%`);
+    this.logger.log(
+      `[AUDIT] ${event.type}: Project ${event.projectId}, ${event.budgetUsagePercent.toFixed(1)}%`
+    );
     // TODO: Implement audit logging
     // await this.auditService.log(event);
   }
 
   /**
    * Get project manager email
-   * 
+   *
    * TODO: Implement user service lookup
    */
   private async getProjectManagerEmail(userId: string): Promise<string> {
@@ -343,7 +350,7 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
 
   /**
    * Get GF (Geschäftsführer) emails
-   * 
+   *
    * TODO: Implement user service lookup for GF role
    */
   private async getGFEmails(): Promise<string[]> {
@@ -354,4 +361,3 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
     return ['gf@example.com'];
   }
 }
-

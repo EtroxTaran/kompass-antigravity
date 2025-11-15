@@ -10,6 +10,7 @@
 ### ✅ Phase 1: Docker Infrastructure
 
 **Files Created**:
+
 - `apps/backend/Dockerfile` - Multi-stage production Dockerfile with security hardening
 - `apps/backend/.dockerignore` - Docker build exclusions
 - `apps/frontend/Dockerfile` - Multi-stage nginx-based Dockerfile
@@ -20,6 +21,7 @@
 - `docker-compose.production.yml` - Production environment overrides
 
 **Features**:
+
 - Multi-stage builds for minimal image sizes
 - Non-root user for security
 - Health check endpoints
@@ -30,6 +32,7 @@
 ### ✅ Phase 2: Documentation Automation
 
 **Files Created**:
+
 - `.github/scripts/check-docs-update.sh` - Automated documentation validation
 - `.github/workflows/documentation.yml` - Documentation CI/CD workflow
 - `.markdownlint.json` - Markdown linting configuration
@@ -38,6 +41,7 @@
 - `scripts/generate-changelog.sh` - Changelog automation
 
 **Features**:
+
 - Detects code changes requiring documentation updates
 - Validates documentation links
 - Enforces API specification sync
@@ -47,11 +51,13 @@
 ### ✅ Phase 3: Deployment Workflows
 
 **Files Created**:
+
 - `.github/workflows/deploy-staging.yml` - Staging deployment automation
 - `.github/workflows/deploy-production.yml` - Production deployment automation
 - `.github/workflows/pr-checks.yml` - Comprehensive quality gate checks
 
 **Features**:
+
 - Automatic deployment to staging on `develop` merge
 - Automatic deployment to production on `main` merge
 - Docker image building and pushing to ghcr.io
@@ -63,13 +69,16 @@
 ### ✅ Phase 4: Quality Gates Enhancement
 
 **Files Created**:
+
 - `commitlint.config.js` - Enforce Linear issue ID format
 
 **Files Updated**:
+
 - `package.json` - Added `generate:api-docs` and `changelog:generate` scripts
 - `.husky/pre-push` - Enhanced with documentation, Linear ID, and branch name validation
 
 **Features**:
+
 - Conventional commits with Linear issue IDs enforced
 - Branch naming validation
 - Documentation update prompts
@@ -78,12 +87,14 @@
 ### ✅ Phase 5: Deployment Scripts
 
 **Files Created**:
+
 - `scripts/deploy-staging.sh` - Staging deployment script
 - `scripts/deploy-production.sh` - Production deployment script
 - `scripts/health-check.sh` - Comprehensive health validation
 - `scripts/rollback.sh` - Automated rollback script
 
 **Features**:
+
 - Automated deployment with health checks
 - Backup before deployment
 - Rollback on failure
@@ -93,6 +104,7 @@
 ### ✅ Phase 6: Deployment Documentation
 
 **Files Created**:
+
 - `docs/deployment/DEPLOYMENT_GUIDE.md` - Complete deployment guide
 - `docs/deployment/GITHUB_SECRETS.md` - GitHub secrets reference
 - `docs/deployment/ROLLBACK_PROCEDURES.md` - Rollback procedures
@@ -122,6 +134,7 @@ Go to your repository Settings → Secrets and variables → Actions
 **Create these secrets** (see `docs/deployment/GITHUB_SECRETS.md` for details):
 
 #### Staging Secrets
+
 ```
 STAGING_HOST=<your-staging-server-ip>
 STAGING_USER=deploy
@@ -142,6 +155,7 @@ STAGING_ALLOWED_ORIGINS=https://staging.kompass.de
 ```
 
 #### Production Secrets
+
 ```
 PRODUCTION_HOST=<your-production-server-ip>
 PRODUCTION_USER=deploy
@@ -166,11 +180,13 @@ PRODUCTION_HOSTNAME=kompass.de
 ```
 
 #### Shared Secrets
+
 ```
 SNYK_TOKEN=<your-snyk-token>
 ```
 
 **Generate secrets with**:
+
 ```bash
 # SSH key pair
 ssh-keygen -t ed25519 -C "github-actions-deploy" -f deploy_key
@@ -269,10 +285,12 @@ Same rules as `main`
 Go to Settings → Environments
 
 #### Create `staging` environment:
+
 - No protection rules needed (auto-deploy)
 - Add URL: `https://staging.kompass.de`
 
 #### Create `production` environment:
+
 - Optional: Add required reviewers for extra safety
 - Add URL: `https://kompass.de`
 
@@ -323,7 +341,7 @@ Implement validation logic..."
 
 # Pre-commit hooks run:
 # ✅ Linting
-# ✅ Formatting  
+# ✅ Formatting
 # ✅ Type checking
 # ✅ Commit message validation
 ```
@@ -420,6 +438,7 @@ Every PR must pass:
 ## Files Created Summary
 
 **Docker Infrastructure** (8 files):
+
 1. `apps/backend/Dockerfile`
 2. `apps/backend/.dockerignore`
 3. `apps/frontend/Dockerfile`
@@ -429,39 +448,17 @@ Every PR must pass:
 7. `docker-compose.staging.yml`
 8. `docker-compose.production.yml`
 
-**Configuration** (3 files):
-9. `commitlint.config.js`
-10. `.env.staging.example`
-11. `.env.production.example`
+**Configuration** (3 files): 9. `commitlint.config.js` 10. `.env.staging.example` 11. `.env.production.example`
 
-**GitHub Workflows** (4 files):
-12. `.github/workflows/deploy-staging.yml`
-13. `.github/workflows/deploy-production.yml`
-14. `.github/workflows/documentation.yml`
-15. `.github/workflows/pr-checks.yml`
+**GitHub Workflows** (4 files): 12. `.github/workflows/deploy-staging.yml` 13. `.github/workflows/deploy-production.yml` 14. `.github/workflows/documentation.yml` 15. `.github/workflows/pr-checks.yml`
 
-**Scripts** (7 files):
-16. `.github/scripts/check-docs-update.sh`
-17. `scripts/generate-api-docs.ts`
-18. `scripts/generate-changelog.sh`
-19. `scripts/deploy-staging.sh`
-20. `scripts/deploy-production.sh`
-21. `scripts/health-check.sh`
-22. `scripts/rollback.sh`
+**Scripts** (7 files): 16. `.github/scripts/check-docs-update.sh` 17. `scripts/generate-api-docs.ts` 18. `scripts/generate-changelog.sh` 19. `scripts/deploy-staging.sh` 20. `scripts/deploy-production.sh` 21. `scripts/health-check.sh` 22. `scripts/rollback.sh`
 
-**Documentation** (4 files):
-23. `docs/deployment/DEPLOYMENT_GUIDE.md`
-24. `docs/deployment/GITHUB_SECRETS.md`
-25. `docs/deployment/ROLLBACK_PROCEDURES.md`
-26. `docs/processes/DEVELOPMENT_WORKFLOW.md`
+**Documentation** (4 files): 23. `docs/deployment/DEPLOYMENT_GUIDE.md` 24. `docs/deployment/GITHUB_SECRETS.md` 25. `docs/deployment/ROLLBACK_PROCEDURES.md` 26. `docs/processes/DEVELOPMENT_WORKFLOW.md`
 
-**Markdown Configuration** (2 files):
-27. `.markdownlint.json`
-28. `.github/markdown-link-check.json`
+**Markdown Configuration** (2 files): 27. `.markdownlint.json` 28. `.github/markdown-link-check.json`
 
-**Updated Files** (2 files):
-29. `package.json` - Added scripts for API docs and changelog
-30. `.husky/pre-push` - Enhanced with validation checks
+**Updated Files** (2 files): 29. `package.json` - Added scripts for API docs and changelog 30. `.husky/pre-push` - Enhanced with validation checks
 
 **Total**: 30 new/updated files
 
@@ -472,6 +469,7 @@ Every PR must pass:
 ### Immediate Actions (Before First Deploy)
 
 1. **Install Dependencies**
+
    ```bash
    pnpm install
    ```
@@ -490,13 +488,14 @@ Every PR must pass:
    - Add required status checks
 
 5. **Test Locally**
+
    ```bash
    # Test Docker setup
    docker-compose up -d
-   
+
    # Test health checks
    bash scripts/health-check.sh staging
-   
+
    # Test commit hooks
    git commit -m "test(KOM-999): test commit hooks"
    ```
@@ -543,35 +542,42 @@ After setup, verify everything works:
 You now have:
 
 ✅ **Complete CI/CD Pipeline**
+
 - From commit to production deployment
 - Automated quality gates
 - Automated testing
 
 ✅ **Documentation Automation**
+
 - Automatic documentation validation
 - API docs generation
 - Changelog generation
 
 ✅ **Dual-Environment Deployment**
+
 - Staging (auto-deploy from develop)
 - Production (auto-deploy from main)
 
 ✅ **Quality Assurance**
+
 - 13 automated checks per PR
 - Test coverage enforcement
 - Security scanning
 
 ✅ **Git Workflow Integration**
+
 - Linear issue tracking
 - Conventional commits
 - Branch protection
 
 ✅ **Safety Features**
+
 - Automatic rollback on failure
 - Comprehensive health checks
 - Database backups
 
 ✅ **Developer Experience**
+
 - Clear workflow documentation
 - Helpful error messages
 - Fast feedback loops
@@ -601,22 +607,26 @@ You now have:
 ### Regular Tasks
 
 **Weekly**:
+
 - [ ] Review GitHub Actions logs
 - [ ] Check staging deployment health
 - [ ] Review pending PRs
 
 **Monthly**:
+
 - [ ] Review test coverage reports
 - [ ] Check for dependency updates
 - [ ] Review security scan results
 
 **Quarterly**:
+
 - [ ] Rotate secrets and credentials
 - [ ] Review and update documentation
 - [ ] Review deployment metrics
 - [ ] Update dependencies (major versions)
 
 **Annually**:
+
 - [ ] Review entire CI/CD pipeline
 - [ ] Update deployment procedures
 - [ ] Review branch protection rules
@@ -629,6 +639,7 @@ You now have:
 Your complete workflow automation is now in place! 🎉
 
 You have a production-ready CI/CD pipeline that:
+
 - Enforces code quality
 - Maintains documentation
 - Automates deployments
@@ -643,6 +654,7 @@ Follow the developer workflow in `docs/processes/DEVELOPMENT_WORKFLOW.md` and re
 **Questions or Issues?**
 
 Create a Linear issue with:
+
 - Tag: `ci-cd` or `deployment`
 - Priority: Based on urgency
 - Description: Include logs, error messages, and what you tried
@@ -650,4 +662,3 @@ Create a Linear issue with:
 **Emergency Production Issues?**
 
 Follow rollback procedures in `docs/deployment/ROLLBACK_PROCEDURES.md`
-

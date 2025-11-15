@@ -12,9 +12,9 @@ Complete API reference and usage guides.
 
 ## Documents
 
-| Document | Description | Last Updated |
-|----------|-------------|--------------|
-| [API Updates](./updates/API_UPDATES.md) | API changes and version history | 2025-01-27 |
+| Document                                | Description                     | Last Updated |
+| --------------------------------------- | ------------------------------- | ------------ |
+| [API Updates](./updates/API_UPDATES.md) | API changes and version history | 2025-01-27   |
 
 ---
 
@@ -29,4 +29,3 @@ Complete API reference and usage guides.
 **Last Updated**: 2025-01-27  
 **Owner**: Backend Team  
 **Status**: Active
-

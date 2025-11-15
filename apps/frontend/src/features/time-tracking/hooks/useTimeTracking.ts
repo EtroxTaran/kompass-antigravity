@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+
 import type { TimeEntryResponseDto } from '@kompass/shared/types/entities/time-entry';
+
 import { timeTrackingApi } from '../services/time-tracking-api';
 
 /**
@@ -15,15 +17,15 @@ interface TimeTrackingFilters {
 
 /**
  * useTimeTracking Hook
- * 
+ *
  * Custom hook for fetching and managing time entries with filtering.
- * 
+ *
  * Features:
  * - Fetch time entries with filters
  * - Loading state management
  * - Error handling
  * - Refresh capability
- * 
+ *
  * @see Phase 1.3 of Time Tracking Implementation Plan
  */
 export function useTimeTracking(filters?: TimeTrackingFilters) {
@@ -42,7 +44,9 @@ export function useTimeTracking(filters?: TimeTrackingFilters) {
       const data = await timeTrackingApi.getAll(filters);
       setEntries(data);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch time entries'));
+      setError(
+        err instanceof Error ? err : new Error('Failed to fetch time entries')
+      );
       setEntries([]);
     } finally {
       setLoading(false);
@@ -79,7 +83,7 @@ export function useTimeTracking(filters?: TimeTrackingFilters) {
 
 /**
  * useMyTimesheets Hook
- * 
+ *
  * Specialized hook for fetching current user's timesheets.
  */
 export function useMyTimesheets(filters?: {
@@ -101,7 +105,9 @@ export function useMyTimesheets(filters?: {
       const data = await timeTrackingApi.getMyTimesheets(filters);
       setEntries(data);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch timesheets'));
+      setError(
+        err instanceof Error ? err : new Error('Failed to fetch timesheets')
+      );
       setEntries([]);
     } finally {
       setLoading(false);
@@ -126,7 +132,7 @@ export function useMyTimesheets(filters?: {
 
 /**
  * useTeamTimesheets Hook
- * 
+ *
  * Specialized hook for fetching team timesheets (for managers).
  */
 export function useTeamTimesheets(filters?: TimeTrackingFilters) {
@@ -145,7 +151,11 @@ export function useTeamTimesheets(filters?: TimeTrackingFilters) {
       const data = await timeTrackingApi.getTeamTimesheets(filters);
       setEntries(data);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch team timesheets'));
+      setError(
+        err instanceof Error
+          ? err
+          : new Error('Failed to fetch team timesheets')
+      );
       setEntries([]);
     } finally {
       setLoading(false);
@@ -172,4 +182,3 @@ export function useTeamTimesheets(filters?: TimeTrackingFilters) {
     refetch,
   };
 }
-

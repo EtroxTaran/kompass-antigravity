@@ -7,7 +7,6 @@ import {
   Body,
   Param,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -18,7 +17,7 @@ import {
   ApiQuery,
   ApiBody,
 } from '@nestjs/swagger';
-import { ProjectCostService } from '../services/project-cost.service';
+
 import {
   CreateProjectCostDto,
   UpdateProjectCostDto,
@@ -27,7 +26,9 @@ import {
   ProjectCostType,
   MaterialCostSummary,
 } from '@kompass/shared/types/entities/project-cost';
-import { ProjectCostFilters } from '../repositories/project-cost.repository.interface';
+
+import type { ProjectCostFilters } from '../repositories/project-cost.repository.interface';
+import { ProjectCostService } from '../services/project-cost.service';
 
 // Placeholder decorators - replace with actual implementations
 const JwtAuthGuard = () => UseGuards();
@@ -37,9 +38,9 @@ const CurrentUser = () => () => {};
 
 /**
  * Project Cost Controller
- * 
+ *
  * Handles HTTP endpoints for project cost tracking functionality.
- * 
+ *
  * @see Phase 1 of Time Tracking Implementation Plan
  */
 @Controller('api/v1/project-costs')
@@ -65,7 +66,7 @@ export class ProjectCostController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async create(
     @Body() dto: CreateProjectCostDto,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<ProjectCostResponseDto> {
     return this.projectCostService.create(dto, user.id);
   }
@@ -94,7 +95,7 @@ export class ProjectCostController {
     @Query('supplierName') supplierName?: string,
     @Query('startDate') startDate?: Date,
     @Query('endDate') endDate?: Date,
-    @CurrentUser() user?: any,
+    @CurrentUser() user?: any
   ): Promise<ProjectCostResponseDto[]> {
     const filters: ProjectCostFilters = {
       projectId,
@@ -122,7 +123,7 @@ export class ProjectCostController {
   @ApiResponse({ status: 404, description: 'Project cost not found' })
   async findOne(
     @Param('id') id: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<ProjectCostResponseDto> {
     return this.projectCostService.findById(id, user.id);
   }
@@ -145,7 +146,7 @@ export class ProjectCostController {
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateProjectCostDto,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<ProjectCostResponseDto> {
     return this.projectCostService.update(id, dto, user.id);
   }
@@ -160,7 +161,10 @@ export class ProjectCostController {
   @ApiResponse({ status: 204, description: 'Project cost deleted' })
   @ApiResponse({ status: 404, description: 'Project cost not found' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
-  async delete(@Param('id') id: string, @CurrentUser() user: any): Promise<void> {
+  async delete(
+    @Param('id') id: string,
+    @CurrentUser() user: any
+  ): Promise<void> {
     await this.projectCostService.delete(id, user.id);
   }
 
@@ -179,7 +183,7 @@ export class ProjectCostController {
   @ApiResponse({ status: 400, description: 'Cannot approve this cost' })
   async approve(
     @Param('id') id: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<ProjectCostResponseDto> {
     return this.projectCostService.approve(id, user.id);
   }
@@ -199,7 +203,7 @@ export class ProjectCostController {
   @ApiResponse({ status: 400, description: 'Cannot mark as paid' })
   async markAsPaid(
     @Param('id') id: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<ProjectCostResponseDto> {
     return this.projectCostService.markAsPaid(id, user.id);
   }
@@ -215,7 +219,9 @@ export class ProjectCostController {
     description: 'Pending payment costs',
     type: [ProjectCostResponseDto],
   })
-  async getPendingPayments(@CurrentUser() user: any): Promise<ProjectCostResponseDto[]> {
+  async getPendingPayments(
+    @CurrentUser() user: any
+  ): Promise<ProjectCostResponseDto[]> {
     return this.projectCostService.getPendingPayments(user.id);
   }
 
@@ -233,7 +239,7 @@ export class ProjectCostController {
   })
   async getBySupplier(
     @Param('supplierName') supplierName: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<ProjectCostResponseDto[]> {
     return this.projectCostService.getBySupplier(supplierName, user.id);
   }
@@ -241,7 +247,7 @@ export class ProjectCostController {
 
 /**
  * Project Cost Queries Controller
- * 
+ *
  * Handles project-specific cost queries (nested under projects)
  */
 @Controller('api/v1/projects/:projectId/costs')
@@ -265,7 +271,7 @@ export class ProjectCostQueriesController {
   })
   async getProjectCosts(
     @Param('projectId') projectId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<ProjectCostResponseDto[]> {
     return this.projectCostService.findByProject(projectId, user.id);
   }
@@ -284,9 +290,8 @@ export class ProjectCostQueriesController {
   })
   async getCostSummary(
     @Param('projectId') projectId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: any
   ): Promise<MaterialCostSummary> {
     return this.projectCostService.calculateProjectMaterialCosts(projectId);
   }
 }
-

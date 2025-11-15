@@ -1,13 +1,27 @@
 /**
  * DTO for updating Contact Decision Authority
- * 
+ *
  * RESTRICTED: Only PLAN and GF roles can use this endpoint
  * Based on API_SPECIFICATION.md Section 5.2
  */
 
-import { IsEnum, IsBoolean, IsOptional, IsNumber, IsString, IsArray, Min, Max } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { DecisionMakingRole, FunctionalRole, type AuthorityLevel } from '@kompass/shared/types/enums';
+import {
+  IsEnum,
+  IsBoolean,
+  IsOptional,
+  IsNumber,
+  IsString,
+  IsArray,
+  Min,
+  Max,
+} from 'class-validator';
+
+import {
+  DecisionMakingRole,
+  FunctionalRole,
+  type AuthorityLevel,
+} from '@kompass/shared/types/enums';
 
 /**
  * Update Decision Authority DTO
@@ -37,7 +51,8 @@ export class UpdateDecisionAuthorityDto {
   canApproveOrders: boolean;
 
   @ApiProperty({
-    description: 'Maximum order value they can approve (EUR). Required if canApproveOrders=true.',
+    description:
+      'Maximum order value they can approve (EUR). Required if canApproveOrders=true.',
     example: 50000,
     required: false,
     minimum: 0,
@@ -53,7 +68,10 @@ export class UpdateDecisionAuthorityDto {
     description: 'Functional roles',
     type: [String],
     enum: FunctionalRole,
-    example: [FunctionalRole.PURCHASING_MANAGER, FunctionalRole.OPERATIONS_MANAGER],
+    example: [
+      FunctionalRole.PURCHASING_MANAGER,
+      FunctionalRole.OPERATIONS_MANAGER,
+    ],
   })
   @IsArray()
   @IsEnum(FunctionalRole, { each: true })
@@ -68,4 +86,3 @@ export class UpdateDecisionAuthorityDto {
   @IsString({ each: true })
   departmentInfluence: string[];
 }
-

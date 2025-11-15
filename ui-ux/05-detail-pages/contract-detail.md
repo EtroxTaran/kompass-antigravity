@@ -17,6 +17,7 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
 ## PAGE LAYOUT
 
 ### Header Section
+
 - **Breadcrumb:** Kunden > [Customer Name] > Verträge > [Contract Number]
 - **Title:** Contract Number (e.g., "AB-2025-00045")
 - **Status Badge:** Large badge showing current status
@@ -27,6 +28,7 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
 - **GoBD Indicator:** Lock icon if Signed or later (🔒 GoBD-geschützt)
 
 ### Quick Actions (Top Right)
+
 - **Edit** button (if status = Draft only)
 - **Download PDF** button (if PDF exists)
 - **Mark as Signed** button (if Draft + has PDF)
@@ -43,23 +45,25 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
 **Card Title:** "Vertragsinformationen"
 
 **GoBD Banner (if Signed or later):**
+
 - Style: Green info banner
 - Icon: Lock icon
 - Text: "🔒 Dieser Vertrag ist GoBD-konform finalisiert und unveränderlich seit [Date]"
 
-| Field | Value |
-|-------|-------|
-| Vertragsnummer | AB-2025-00045 |
-| Kunde | [Customer Name] (link to customer detail) |
-| Vertragsdatum | 28.01.2025 |
-| Leistungsbeginn | 05.02.2025 |
-| Leistungsende | 30.06.2025 (146 Tage) |
-| Status | Badge: Unterzeichnet (green) |
-| Erstellt am | 28.01.2025, 10:30 Uhr |
-| Erstellt von | Maria Schmidt (link to user) |
-| Zuletzt bearbeitet | 28.01.2025, 14:15 Uhr |
+| Field              | Value                                     |
+| ------------------ | ----------------------------------------- |
+| Vertragsnummer     | AB-2025-00045                             |
+| Kunde              | [Customer Name] (link to customer detail) |
+| Vertragsdatum      | 28.01.2025                                |
+| Leistungsbeginn    | 05.02.2025                                |
+| Leistungsende      | 30.06.2025 (146 Tage)                     |
+| Status             | Badge: Unterzeichnet (green)              |
+| Erstellt am        | 28.01.2025, 10:30 Uhr                     |
+| Erstellt von       | Maria Schmidt (link to user)              |
+| Zuletzt bearbeitet | 28.01.2025, 14:15 Uhr                     |
 
 **Layout:**
+
 - 2-column grid on desktop
 - Single column on mobile
 - Labels bold, values regular weight
@@ -70,13 +74,14 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
 
 **Card Title:** "Finanzdaten"
 
-| Field | Value |
-|-------|-------|
+| Field                 | Value                                |
+| --------------------- | ------------------------------------ |
 | Auftragswert (Gesamt) | **125.000,00 €** (large, bold, 28px) |
-| Nettobetrag | 105.042,02 € |
-| MwSt. (19%) | 19.957,98 € |
+| Nettobetrag           | 105.042,02 €                         |
+| MwSt. (19%)           | 19.957,98 €                          |
 
 **Project Budget Indicator (if project linked):**
+
 - **Budget vs. Actual:**
   - Budget: 125.000,00 € (from contract)
   - Actual Kosten: 87.450,00 € (from timetracking)
@@ -91,6 +96,7 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
   - Margin indicator: Green if >20%, Yellow if 10-20%, Red if <10%
 
 **Layout:**
+
 - Total amount prominently displayed (28px font, bold)
 - Net and tax in smaller font (16px)
 - Budget tracking section below (if project exists)
@@ -100,6 +106,7 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
 **Card Title:** "Vertragsdokument (PDF)"
 
 **If PDF uploaded:**
+
 - **PDF Viewer:** Embedded PDF viewer (iframe or pdf.js)
   - Height: 700px
   - Controls: Zoom, page navigation, download, print
@@ -116,6 +123,7 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
   - "Ersetzen" button (secondary, Draft only)
 
 **If NO PDF:**
+
 - Message: "Kein Dokument hochgeladen"
 - **Action Button:** "PDF hochladen" (primary button)
 - **Warning:** "⚠️ PDF erforderlich vor Unterzeichnung"
@@ -125,12 +133,14 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
 **Card Title:** "Verknüpfungen"
 
 **Linked Offer (if exists):**
+
 - Icon: Document icon
 - Label: "Ursprüngliches Angebot"
 - Value: "A-2025-00123" (link to offer detail)
 - Info: "Angenommen am 25.01.2025"
 
 **Linked Project (if exists):**
+
 - Icon: Folder icon
 - Label: "Zugeordnetes Projekt"
 - Value: "P-2025-M001 - Regalsystem München" (link to project detail)
@@ -138,11 +148,13 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
 - Budget: "Budget: €125.000, Verbraucht: €87.450 (70%)"
 
 **Create Project Button (if Signed, no project yet):**
+
 - Button: "Projekt aus Vertrag erstellen"
 - Style: Primary button
 - Action: Navigate to project creation with pre-filled contract data
 
 **Layout:**
+
 - Each entity as clickable card
 - Icon + text + arrow right
 - Hover: Blue background
@@ -161,6 +173,7 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
 **Card Title:** "Aktivitätsprotokoll (GoBD-Audit-Trail)"
 
 **Timeline display:**
+
 - Created: "28.01.2025, 10:30 - Vertrag erstellt von Maria Schmidt"
 - PDF uploaded: "28.01.2025, 10:35 - PDF hochgeladen (3,2 MB)"
 - Status changed: "28.01.2025, 14:15 - Status geändert: Draft → Signed von Maria Schmidt"
@@ -170,6 +183,7 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
   - "12.03.2025, 11:20 - Vertragswert geändert: €125.000 → €130.000 (Grund: Zusatzleistung, Genehmigt von GF Herr Schmidt)"
 
 **Layout:**
+
 - Vertical timeline with dates on left
 - Icons for each action type
 - Chronological order (newest at top)
@@ -180,11 +194,13 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
 ## STATE-SPECIFIC UI
 
 ### Draft Status
+
 - Show: Edit, Mark as Signed, Delete buttons
 - Allow: All fields editable, PDF upload/replacement
 - Message: "Entwurf - Kann bearbeitet werden"
 
 ### Signed Status
+
 - Show: Start Project button (if no project)
 - Hide: Edit, Delete buttons
 - Fields: All locked (read-only)
@@ -192,11 +208,13 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
 - Message: "Unterzeichnet - GoBD-geschützt, unveränderlich"
 
 ### InProgress Status
+
 - Show: Mark Complete button
 - Allow: Status change only
 - Message: "In Bearbeitung - Projekt läuft"
 
 ### Completed Status
+
 - Show: Nothing (fully read-only)
 - Message: "Abgeschlossen - Archiviert"
 
@@ -268,6 +286,7 @@ Create a **detail page for Contract (Auftragsbestätigung)** in KOMPASS. This pa
 ## QUALITY CHECKLIST
 
 After implementing, verify:
+
 - [ ] Status badges display correctly with colors
 - [ ] PDF viewer works (or shows download link)
 - [ ] GoBD immutability banner shows for Signed+ contracts
@@ -293,4 +312,3 @@ After implementing, verify:
 ---
 
 END OF PROMPT
-

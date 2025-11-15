@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+
 import { MeetingController } from './meeting.controller';
-import { MeetingService } from './meeting.service';
 import { MeetingRepository } from './meeting.repository';
+import { MeetingService } from './meeting.service';
 
 /**
  * Meeting Module
- * 
+ *
  * Provides meeting scheduling and management functionality:
  * - CRUD operations for meetings
  * - GPS check-in functionality
@@ -13,7 +14,7 @@ import { MeetingRepository } from './meeting.repository';
  * - Meeting outcome tracking
  * - RBAC enforcement
  * - Offline sync support
- * 
+ *
  * Phase 2 (Q3 2025)
  */
 @Module({
@@ -29,4 +30,3 @@ import { MeetingRepository } from './meeting.repository';
   exports: [MeetingService],
 })
 export class MeetingModule {}
-

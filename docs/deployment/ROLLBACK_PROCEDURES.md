@@ -22,6 +22,7 @@ This document describes procedures for rolling back deployments when issues are 
 Rollback immediately if you encounter:
 
 ### Critical Issues ❌
+
 - Application crashes or won't start
 - Database corruption or data loss
 - Security vulnerabilities introduced
@@ -29,6 +30,7 @@ Rollback immediately if you encounter:
 - Critical API endpoints returning 500 errors
 
 ### High Priority Issues ⚠️
+
 - Major features completely broken
 - Authentication/authorization failures
 - Data inconsistency issues
@@ -36,6 +38,7 @@ Rollback immediately if you encounter:
 - Memory leaks or resource exhaustion
 
 ### Monitor Before Rolling Back ℹ️
+
 - Minor UI issues
 - Non-critical feature bugs
 - Performance degradation <20%
@@ -236,6 +239,7 @@ docker stats --no-stream
 ### 1. Document the Issue
 
 Create incident report:
+
 - What went wrong?
 - When was it detected?
 - What was the impact?
@@ -267,23 +271,25 @@ Create incident report:
 
 ## Rollback Decision Matrix
 
-| Severity | Impact | Response Time | Action |
-|----------|--------|---------------|--------|
-| Critical | All users affected | Immediate | Rollback immediately, investigate later |
-| High | Major features broken | <15 minutes | Rollback if no quick fix available |
-| Medium | Some users affected | <1 hour | Attempt fix first, rollback if needed |
-| Low | Minor issues | <24 hours | Fix forward, no rollback needed |
+| Severity | Impact                | Response Time | Action                                  |
+| -------- | --------------------- | ------------- | --------------------------------------- |
+| Critical | All users affected    | Immediate     | Rollback immediately, investigate later |
+| High     | Major features broken | <15 minutes   | Rollback if no quick fix available      |
+| Medium   | Some users affected   | <1 hour       | Attempt fix first, rollback if needed   |
+| Low      | Minor issues          | <24 hours     | Fix forward, no rollback needed         |
 
 ---
 
 ## Emergency Contacts
 
 ### During Business Hours
+
 - DevOps Team: devops@kompass.de
 - Tech Lead: tech-lead@kompass.de
 - Product Owner: product@kompass.de
 
 ### After Hours
+
 - On-Call Engineer: +49-XXX-XXX-XXXX
 - Emergency Escalation: emergency@kompass.de
 
@@ -294,8 +300,8 @@ Create incident report:
 Track all production rollbacks:
 
 | Date | Environment | Reason | Rolled Back By | Duration | Resolution |
-|------|-------------|--------|----------------|----------|------------|
-| - | - | - | - | - | - |
+| ---- | ----------- | ------ | -------------- | -------- | ---------- |
+| -    | -           | -      | -              | -        | -          |
 
 ---
 
@@ -312,4 +318,3 @@ Track all production rollbacks:
 **Next Review**: Q2 2025
 
 **Emergency Hotline**: Available 24/7 for critical production issues
-

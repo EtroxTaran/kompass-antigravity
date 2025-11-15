@@ -1,6 +1,7 @@
 # Skeleton Loaders - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Loading State Component
 - **User Roles**: All users (performance enhancement)
 - **Usage Context**: Display while data loads to prevent layout shift
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Match content structure**: Skeleton mimics actual content layout
 - **Subtle animation**: Gentle shimmer effect
 - **Consistent timing**: Standardized animation duration
 - **Smooth transitions**: Fade to real content
 
 ### Component Variants
+
 - List item skeletons
 - Card skeletons
 - Table row skeletons
@@ -22,6 +25,7 @@
 - Form field skeletons
 
 ### shadcn/ui Components
+
 - Skeleton component base
 - Animation utilities
 - Layout matching
@@ -42,13 +46,14 @@ Animation Pattern:
 ```
 
 **CSS Properties:**
+
 ```css
 .skeleton {
   background: linear-gradient(
     90deg,
-    #F3F4F6 0%,      /* gray-100 */
-    #E5E7EB 50%,     /* gray-200 */
-    #F3F4F6 100%     /* gray-100 */
+    #f3f4f6 0%,
+    /* gray-100 */ #e5e7eb 50%,
+    /* gray-200 */ #f3f4f6 100% /* gray-100 */
   );
   background-size: 200px 100%;
   animation: shimmer 1.5s ease-in-out infinite;
@@ -56,8 +61,12 @@ Animation Pattern:
 }
 
 @keyframes shimmer {
-  0% { background-position: -200px 0; }
-  100% { background-position: calc(200px + 100%) 0; }
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
 }
 ```
 
@@ -73,6 +82,7 @@ Animation Pattern:
 ```
 
 **Specifications:**
+
 - Container: Full width, 80px height
 - Avatar: 48×48px circle skeleton
 - Title: 180px × 20px, 16px from avatar
@@ -225,6 +235,7 @@ const desktopSkeletons = Math.ceil(window.innerHeight / 100);
 ## Do's and Don'ts
 
 ### ✅ DO's
+
 - Match skeleton to content structure
 - Use consistent animation timing
 - Provide proper ARIA labels
@@ -232,6 +243,7 @@ const desktopSkeletons = Math.ceil(window.innerHeight / 100);
 - Implement minimum display time
 
 ### ❌ DON'T's
+
 - Don't use generic skeletons
 - Don't skip skeletons for slow connections
 - Don't animate too fast or slow
@@ -239,6 +251,7 @@ const desktopSkeletons = Math.ceil(window.innerHeight / 100);
 - Don't forget mobile optimization
 
 ## German Labels
+
 - **Lade Inhalte...**: Loading content...
 - **Daten werden geladen**: Data is loading
 - **Noch einen Moment...**: Just a moment...
@@ -252,8 +265,8 @@ export function CustomerListSkeleton({ count = 5 }: { count?: number }) {
     <div role="status" aria-live="polite">
       <span className="sr-only">Kundenliste wird geladen</span>
       {Array(count).fill(null).map((_, index) => (
-        <div 
-          key={index} 
+        <div
+          key={index}
           className="skeleton-item"
           style={{ animationDelay: `${index * 50}ms` }}
         >
@@ -274,6 +287,7 @@ export function CustomerListSkeleton({ count = 5 }: { count?: number }) {
 - Cache skeleton layouts
 
 ## Analytics Events
+
 - skeleton_shown (component_type, duration)
 - skeleton_to_content_transition
 - loading_performance (time_to_content)

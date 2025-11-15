@@ -68,4 +68,3 @@ See `docs/DOCUMENTATION_SOLUTIONS.md` for details.
 ---
 
 **Rule**: If creating a new `.md` file in `docs/` root, ask: "Should this be in a subfolder?" The answer is almost always YES.
-

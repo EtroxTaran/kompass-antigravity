@@ -1,6 +1,7 @@
 # Cards - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Card Container Component
 - **User Roles**: All (GF, PLAN, ADM, KALK, BUCH)
 - **Usage Context**: Content grouping, dashboards, list items, detail sections
@@ -9,12 +10,14 @@
 ## Design Requirements
 
 ### Visual Hierarchy
+
 - **Header**: Title, optional description, optional actions
 - **Content**: Main card body with flexible layout
 - **Footer**: Optional actions, meta information, status
 - **Visual separation**: Subtle borders and shadows for elevation
 
 ### Layout Structure
+
 - Border: 1px solid light gray (#e5e7eb)
 - Border-radius: 8px
 - Padding: 24px (16px on mobile)
@@ -23,6 +26,7 @@
 - Spacing between cards: 16px
 
 ### shadcn/ui Components
+
 - `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`
 - Composable structure for flexibility
 
@@ -31,6 +35,7 @@
 Create a versatile card component system for KOMPASS, a German CRM application. Design card layouts for dashboards, lists, detail sections, and special use cases with German content.
 
 **Basic Card (Standard):**
+
 - Container: White background, 1px solid border (#e5e7eb), 8px border-radius
 - Shadow: Subtle (0px 1px 3px rgba(0,0,0,0.05))
 - Padding: 24px
@@ -39,6 +44,7 @@ Create a versatile card component system for KOMPASS, a German CRM application. 
 
 **Card with Header:**
 Structure:
+
 1. **Header** (border-bottom 1px solid #f3f4f6, padding-bottom 16px):
    - Title: 18px, semibold, #1f2937, "Kundendaten"
    - Optional description: 14px, regular, #6b7280, "Grundlegende Informationen"
@@ -51,6 +57,7 @@ Structure:
    - Example: "Zuletzt aktualisiert: 15.11.2024" + "Bearbeiten" button
 
 **KPI Card (Dashboard):**
+
 - Compact card (200px × 120px minimum)
 - Content layout:
   - Icon: Top-left (40px, blue circle background, white icon)
@@ -60,6 +67,7 @@ Structure:
 - Background gradient option: Subtle gradient from white to light blue
 
 **Customer Card (List Item):**
+
 - Horizontal layout (full width)
 - Left section:
   - Avatar/Logo: 48px circle, company initials or logo
@@ -73,6 +81,7 @@ Structure:
   - Action menu: Three-dot icon button
 
 **Project Card (Portfolio View):**
+
 - Vertical card (300px wide)
 - Header:
   - Project number: "P-2024-B023" (bold, 14px)
@@ -88,6 +97,7 @@ Structure:
   - Team size: "5 Mitarbeiter" with user icon
 
 **Opportunity Card (Pipeline Kanban):**
+
 - Vertical card (280px wide, draggable appearance)
 - Header:
   - Company name: "Biomarkt Heidelberg" (bold)
@@ -102,6 +112,7 @@ Structure:
 - Drag handle: Six-dot icon at top
 
 **Activity Card (Timeline):**
+
 - Horizontal card with left accent bar (4px, blue)
 - Content:
   - Activity icon: Phone/Email/Meeting (24px circle)
@@ -111,6 +122,7 @@ Structure:
   - User avatar + name: "M. Schmidt"
 
 **Stats Card (Multi-value):**
+
 - Card with 3-4 stats in grid layout
 - Each stat:
   - Label: "Gesamt-Umsatz" (12px, gray, uppercase)
@@ -119,6 +131,7 @@ Structure:
 - Dividers: 1px solid #f3f4f6 between stats
 
 **Warning/Info Card:**
+
 - Yellow background (#fef3c7) or blue background (#dbeafe)
 - Alert icon at left (24px)
 - Content:
@@ -127,6 +140,7 @@ Structure:
   - Action button: "Mahnung senden" (amber or blue)
 
 **Collapsible Card:**
+
 - Card with expandable content
 - Header with chevron icon (right-aligned)
 - Clicking header toggles content visibility
@@ -134,12 +148,14 @@ Structure:
 - Example: "Erweiterte Filteroptionen" (collapsed by default)
 
 **Card Hover State:**
+
 - On desktop: Subtle lift (shadow increases to 0px 4px 12px rgba(0,0,0,0.1))
 - Border color slightly darkens
 - Cursor: pointer (if clickable)
 - Transition: 200ms ease
 
 **Card Skeleton (Loading):**
+
 - Same dimensions as actual card
 - Shimmer animation through card areas
 - Header: Title bar, description bar
@@ -147,6 +163,7 @@ Structure:
 - Footer: 2 small bars
 
 **Card Action Patterns:**
+
 - **Whole card clickable**: Subtle border highlight on hover, navigate to detail on click
 - **Header actions**: Edit, Delete, More menu (icon buttons, top-right)
 - **Footer actions**: Primary button (e.g., "Details anzeigen") or button group
@@ -156,17 +173,20 @@ Design in light mode with clean aesthetic. Ensure responsive behavior: cards sta
 ## Interaction Patterns
 
 ### Card Interactions
+
 - **Hover**: Elevation increases, border subtly highlighted (desktop only)
 - **Click**: Navigate to detail view or expand content
 - **Focus**: Keyboard focus shows blue outline
 - **Drag**: Opportunity cards are draggable in Kanban view
 
 ### Action Button Interactions
+
 - Header actions: Edit, Delete, More menu
 - Footer actions: Primary CTA or button group
 - Action buttons independent of card click (stop propagation)
 
 ### States
+
 - **Default**: Standard appearance, neutral
 - **Hover**: Elevated (desktop), shows interaction affordance
 - **Selected**: Blue border (multi-select scenarios)
@@ -177,6 +197,7 @@ Design in light mode with clean aesthetic. Ensure responsive behavior: cards sta
 ## German Labels & Content
 
 ### Card Titles
+
 - **Kundendaten**: Customer data
 - **Projektdetails**: Project details
 - **Aktivitäten**: Activities
@@ -186,12 +207,14 @@ Design in light mode with clean aesthetic. Ensure responsive behavior: cards sta
 - **Überfällige Rechnungen**: Overdue invoices
 
 ### Card Actions
+
 - **Bearbeiten**: Edit
 - **Löschen**: Delete
 - **Details anzeigen**: Show details
 - **Weitere Aktionen**: More actions
 
 ### Status Badges
+
 - **Aktiv**: Active
 - **Inaktiv**: Inactive
 - **In Bearbeitung**: In progress
@@ -199,12 +222,14 @@ Design in light mode with clean aesthetic. Ensure responsive behavior: cards sta
 - **Überfällig**: Overdue
 
 ### Meta Information
+
 - **Zuletzt aktualisiert**: Last updated
 - **Erstellt am**: Created on
 - **Vor X Tagen**: X days ago
 - **X Mitarbeiter**: X employees
 
 ## Accessibility Requirements
+
 - WCAG 2.1 AA compliance
 - Semantic HTML: `<article>` for card containers
 - Headings: Proper hierarchy (h2, h3) for card titles
@@ -215,6 +240,7 @@ Design in light mode with clean aesthetic. Ensure responsive behavior: cards sta
 - Touch targets: 44px minimum for buttons/actions
 
 ## Mobile Considerations
+
 - Cards stack vertically on mobile
 - Reduced padding: 16px (vs 24px on desktop)
 - Full-width cards on mobile
@@ -225,6 +251,7 @@ Design in light mode with clean aesthetic. Ensure responsive behavior: cards sta
 ## Example Data
 
 **Customer Card:**
+
 - Company: "Hofladen Müller GmbH"
 - VAT: "DE123456789"
 - Location: "München"
@@ -232,6 +259,7 @@ Design in light mode with clean aesthetic. Ensure responsive behavior: cards sta
 - Status: "Aktiv" (green badge)
 
 **Project Card:**
+
 - Number: "P-2024-B023"
 - Customer: "REWE München Süd"
 - Dates: "15.10.2024 - 15.12.2024"
@@ -240,11 +268,13 @@ Design in light mode with clean aesthetic. Ensure responsive behavior: cards sta
 - Manager: "M. Schmidt"
 
 **KPI Card:**
+
 - Label: "Neue Kunden"
 - Value: "127"
 - Trend: "+12% vs. Vormonat" (green)
 
 **Activity Card:**
+
 - Type: "Telefonat"
 - Title: "Telefonat mit Hr. Müller"
 - Description: "Besprechung der neuen Produktlinie für Q1 2025"
@@ -254,11 +284,13 @@ Design in light mode with clean aesthetic. Ensure responsive behavior: cards sta
 ## Implementation Notes
 
 ### shadcn/ui Installation
+
 ```bash
 npx shadcn-ui@latest add card
 ```
 
 ### Basic Card Usage
+
 ```typescript
 <Card>
   <CardHeader>
@@ -275,6 +307,7 @@ npx shadcn-ui@latest add card
 ```
 
 ### KPI Card
+
 ```typescript
 <Card className="p-6">
   <div className="flex items-start justify-between">
@@ -293,6 +326,7 @@ npx shadcn-ui@latest add card
 ```
 
 ### Component Dependencies
+
 - Design tokens (colors, spacing, shadows)
 - Icons from lucide-react
 - Badge component for status indicators
@@ -300,8 +334,8 @@ npx shadcn-ui@latest add card
 - Avatar component for users
 
 ### State Management
+
 - Card selection state (for multi-select)
 - Expanded/collapsed state (for collapsible cards)
 - Loading state (for skeleton display)
 - Hover state (CSS only, no state management needed)
-

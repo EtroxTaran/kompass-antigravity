@@ -15,11 +15,13 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 ## Form Variants
 
 ### 1. UserTask Form (Personal Todos)
+
 - **Use Case:** Sales follow-ups, personal reminders, administrative tasks
 - **Access:** All users
 - **Context:** Can be linked to Customer/Opportunity/Project
 
 ### 2. ProjectTask Form (Project Work Items)
+
 - **Use Case:** Project execution tasks, deliverables, milestones
 - **Access:** GF, PLAN, INNEN/KALK
 - **Context:** Always bound to a project
@@ -185,6 +187,7 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 ## Field Specifications
 
 ### Title Field
+
 - **Type:** Text input
 - **Required:** Yes
 - **Validation:** 5-200 characters, letters, numbers, basic punctuation
@@ -197,10 +200,11 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
   - "Title contains invalid characters"
 
 ### Description Field
+
 - **Type:** Rich text editor (Phase 1: Textarea, Phase 2: WYSIWYG)
 - **Required:** No
 - **Validation:** Max 2000 characters
-- **Features:** 
+- **Features:**
   - Bold, italic, underline (Phase 2)
   - Bullet lists, numbered lists (Phase 2)
   - Links (Phase 2)
@@ -210,12 +214,14 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 ### Status Field
 
 #### UserTask Status Options
+
 - **Open** (default) - Task not started
 - **In Progress** - Currently working on it
 - **Completed** - Task finished
 - **Cancelled** - Task no longer needed
 
 #### ProjectTask Status Options
+
 - **Todo** (default) - Not started
 - **In Progress** - Currently working
 - **Review** - Ready for review
@@ -225,18 +231,21 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 ### Priority Field
 
 #### UserTask Priority Options
+
 - **Low** - Can wait
 - **Medium** (default) - Standard priority
 - **High** - Important, time-sensitive
 - **Urgent** - Needs immediate attention
 
 #### ProjectTask Priority Options
+
 - **Low** - Can wait
 - **Medium** (default) - Standard priority
 - **High** - Important
 - **Critical** - Blocking project progress
 
 ### Due Date Field
+
 - **Type:** Date picker
 - **Required:** No
 - **Validation:** Cannot be in past (on creation)
@@ -250,15 +259,17 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 ### Assigned To Field
 
 #### UserTask Assignment
+
 - **Type:** User selector dropdown
 - **Required:** No (defaults to current user)
-- **Options:** 
+- **Options:**
   - "Me (You)" (default)
   - Other users (if user has `ASSIGN_TO_OTHERS` permission - GF/PLAN only)
 - **Validation:** Selected user must exist
 - **Helper Text:** "Only GF and PLAN can assign to others"
 
 #### ProjectTask Assignment
+
 - **Type:** User selector dropdown
 - **Required:** Yes
 - **Options:** Users with `Project.READ` permission on parent project
@@ -272,6 +283,7 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
   - "Selected user does not have access to this project"
 
 ### Phase Field (ProjectTask Only)
+
 - **Type:** Dropdown
 - **Required:** No
 - **Options:**
@@ -282,12 +294,14 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 - **Helper Text:** "Helps organize tasks by project stage"
 
 ### Milestone Field (ProjectTask Only)
+
 - **Type:** Dropdown
 - **Required:** No
 - **Options:** Project milestones (loaded from parent project)
 - **Helper Text:** "Link to project milestone"
 
 ### Blocking Reason Field (ProjectTask Only)
+
 - **Type:** Textarea
 - **Required:** Yes (if status = "Blocked")
 - **Validation:** 10-500 characters when required
@@ -298,6 +312,7 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
   - "Blocking reason must be at least 10 characters"
 
 ### Related Customer/Opportunity/Project (UserTask Only)
+
 - **Type:** Autocomplete search
 - **Required:** No
 - **Features:**
@@ -312,10 +327,12 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 ## Form Actions
 
 ### Primary Actions
+
 - **Create Task** - Submit form (disabled until valid)
 - **Update Task** - Save changes (edit mode)
 
 ### Secondary Actions
+
 - **Cancel** - Close form without saving (confirmation if changes made)
 - **Save as Draft** - Save incomplete task (Phase 2)
 - **Delete Task** - Remove task (edit mode, confirmation required)
@@ -325,11 +342,13 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 ## Validation Behavior
 
 ### Real-Time Validation
+
 - **On Blur:** Validate field when user leaves it
 - **On Submit:** Validate all fields before submission
 - **Instant Feedback:** Show error message below field
 
 ### Error Display
+
 ```
 ┌──────────────────────────────────────┐
 │ Title *                              │
@@ -341,6 +360,7 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 ```
 
 ### Success Indicator
+
 - **Green checkmark:** Show next to valid fields (optional)
 - **Submit Button:** Enable when all required fields valid
 
@@ -384,6 +404,7 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 ```
 
 ### Mobile Optimizations
+
 - **Full Screen Mode:** Form takes full viewport
 - **Sticky Header:** Save button always visible
 - **Collapsible Sections:** Advanced options collapsed by default
@@ -395,6 +416,7 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 ## Accessibility
 
 ### Keyboard Navigation
+
 - **Tab:** Move between fields
 - **Shift+Tab:** Move backwards
 - **Enter:** Submit form (when focus on submit button)
@@ -402,12 +424,14 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 - **Ctrl/Cmd + S:** Quick save
 
 ### Screen Reader
+
 - **Form Labels:** All fields have associated labels
 - **Required Fields:** Announced as "required"
 - **Error Messages:** Read immediately when validation fails
 - **Success:** "Task created successfully" announcement
 
 ### Focus Management
+
 - **Auto-Focus:** Title field on form open
 - **Trap Focus:** Within modal (cannot tab outside)
 - **Focus Return:** Return to trigger element on close
@@ -417,6 +441,7 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 ## Form State Management
 
 ### Initial State (Create Mode)
+
 ```typescript
 {
   title: '',
@@ -438,6 +463,7 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 ```
 
 ### Edit Mode
+
 - **Load Existing Data:** Populate all fields with current values
 - **Show Last Modified:** Display "Last modified by [User] on [Date]"
 - **Version Tracking:** Show version number
@@ -466,18 +492,21 @@ interface TaskFormProps {
 ## API Integration
 
 ### Create Task
+
 ```typescript
-POST /api/v1/users/{userId}/tasks (UserTask)
-POST /api/v1/projects/{projectId}/tasks (ProjectTask)
+POST / api / v1 / users / { userId } / tasks(UserTask);
+POST / api / v1 / projects / { projectId } / tasks(ProjectTask);
 ```
 
 ### Update Task
+
 ```typescript
-PUT /api/v1/users/{userId}/tasks/{taskId}
-PUT /api/v1/projects/{projectId}/tasks/{taskId}
+PUT / api / v1 / users / { userId } / tasks / { taskId };
+PUT / api / v1 / projects / { projectId } / tasks / { taskId };
 ```
 
 ### Success/Error Handling
+
 - **Success:** Show toast notification, close modal, refresh task list
 - **Validation Error (400):** Display field-specific errors
 - **Permission Error (403):** Show permission denied message
@@ -504,5 +533,3 @@ PUT /api/v1/projects/{projectId}/tasks/{taskId}
 ---
 
 **End of task-form.md**
-
-
