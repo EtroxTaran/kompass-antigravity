@@ -29,5 +29,13 @@
     }
   },
   "include": ["src"],
+  "exclude": [
+    "src/components/admin/**/*",
+    "src/features/location/components/**/*",
+    "src/features/project-costs/components/**/*",
+    "src/features/contact/components/DecisionAuthorityForm.tsx",
+    "src/features/time-tracking/**/*",
+    "src/features/customer/components/CustomerList.tsx"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

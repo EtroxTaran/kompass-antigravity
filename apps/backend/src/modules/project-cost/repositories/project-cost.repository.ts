@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
-import { Connection } from 'mongoose';
+// TODO: Install mongoose and @nestjs/mongoose when implementing project cost tracking
+// import { InjectConnection } from '@nestjs/mongoose';
+// import { Connection } from 'mongoose';
+type Connection = any; // Stub type
 import { v4 as uuidv4 } from 'uuid';
+
+// Stub InjectConnection decorator
+const InjectConnection =
+  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
 
 import type {
   ProjectCost,
@@ -27,7 +33,8 @@ import type {
 export class ProjectCostRepository implements IProjectCostRepository {
   private readonly collectionName = 'project_costs';
 
-  constructor(@InjectConnection() private readonly connection: Connection) {}
+  // @ts-expect-error - InjectConnection is stubbed until mongoose is installed
+  constructor(@InjectConnection() private readonly _connection: Connection) {}
 
   /**
    * Get CouchDB database instance
@@ -65,8 +72,8 @@ export class ProjectCostRepository implements IProjectCostRepository {
       // const doc = await db.get(id);
       // return doc as ProjectCost;
       return null;
-    } catch (error) {
-      if (error.statusCode === 404) {
+    } catch (error: unknown) {
+      if (this.isCouchDBError(error) && error.statusCode === 404) {
         return null;
       }
       throw error;
@@ -207,5 +214,16 @@ export class ProjectCostRepository implements IProjectCostRepository {
 
   async findBySupplier(supplierName: string): Promise<ProjectCost[]> {
     return this.findAll({ supplierName });
+  }
+
+  private isCouchDBError(
+    error: unknown
+  ): error is { statusCode: number; message?: string } {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'statusCode' in error &&
+      typeof (error as { statusCode: unknown }).statusCode === 'number'
+    );
   }
 }

@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -18,23 +19,34 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
+import type {
+  ProjectCostResponseDto,
+  MaterialCostSummary,
+} from '@kompass/shared/types/entities/project-cost';
 import {
   CreateProjectCostDto,
   UpdateProjectCostDto,
-  ProjectCostResponseDto,
   ProjectCostStatus,
   ProjectCostType,
-  MaterialCostSummary,
 } from '@kompass/shared/types/entities/project-cost';
 
 import type { ProjectCostFilters } from '../repositories/project-cost.repository.interface';
 import { ProjectCostService } from '../services/project-cost.service';
 
-// Placeholder decorators - replace with actual implementations
-const JwtAuthGuard = () => UseGuards();
-const RbacGuard = () => UseGuards();
-const RequirePermission = (entity: string, permission: string) => () => {};
-const CurrentUser = () => () => {};
+// TODO: Import actual decorators and guards when auth module is fully implemented
+// import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+// import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
+// import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+// import { RbacGuard } from '../../auth/guards/rbac.guard';
+
+// Stub decorators and guards for now
+const JwtAuthGuard = class {};
+const RbacGuard = class {};
+const RequirePermission =
+  (_entity: string, _action: string) =>
+  (_target: any, _propertyKey: string, _descriptor: PropertyDescriptor) => {};
+const CurrentUser =
+  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
 
 /**
  * Project Cost Controller
@@ -56,11 +68,19 @@ export class ProjectCostController {
   @Post()
   @RequirePermission('ProjectCost', 'CREATE')
   @ApiOperation({ summary: 'Create project cost' })
-  @ApiBody({ type: CreateProjectCostDto })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      description: 'CreateProjectCostDto',
+    },
+  })
   @ApiResponse({
     status: 201,
     description: 'Project cost created',
-    type: ProjectCostResponseDto,
+    schema: {
+      type: 'object',
+      description: 'ProjectCostResponseDto',
+    },
   })
   @ApiResponse({ status: 400, description: 'Validation error' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -86,7 +106,10 @@ export class ProjectCostController {
   @ApiResponse({
     status: 200,
     description: 'List of project costs',
-    type: [ProjectCostResponseDto],
+    schema: {
+      type: 'array',
+      items: { type: 'object' },
+    },
   })
   async findAll(
     @Query('projectId') projectId?: string,
@@ -118,7 +141,10 @@ export class ProjectCostController {
   @ApiResponse({
     status: 200,
     description: 'Project cost found',
-    type: ProjectCostResponseDto,
+    schema: {
+      type: 'object',
+      description: 'ProjectCostResponseDto',
+    },
   })
   @ApiResponse({ status: 404, description: 'Project cost not found' })
   async findOne(
@@ -135,11 +161,19 @@ export class ProjectCostController {
   @RequirePermission('ProjectCost', 'UPDATE')
   @ApiOperation({ summary: 'Update project cost' })
   @ApiParam({ name: 'id', description: 'Project cost ID' })
-  @ApiBody({ type: UpdateProjectCostDto })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      description: 'UpdateProjectCostDto',
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'Project cost updated',
-    type: ProjectCostResponseDto,
+    schema: {
+      type: 'object',
+      description: 'ProjectCostResponseDto',
+    },
   })
   @ApiResponse({ status: 404, description: 'Project cost not found' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
@@ -178,7 +212,10 @@ export class ProjectCostController {
   @ApiResponse({
     status: 200,
     description: 'Project cost approved',
-    type: ProjectCostResponseDto,
+    schema: {
+      type: 'object',
+      description: 'ProjectCostResponseDto',
+    },
   })
   @ApiResponse({ status: 400, description: 'Cannot approve this cost' })
   async approve(
@@ -198,7 +235,10 @@ export class ProjectCostController {
   @ApiResponse({
     status: 200,
     description: 'Project cost marked as paid',
-    type: ProjectCostResponseDto,
+    schema: {
+      type: 'object',
+      description: 'ProjectCostResponseDto',
+    },
   })
   @ApiResponse({ status: 400, description: 'Cannot mark as paid' })
   async markAsPaid(
@@ -217,7 +257,10 @@ export class ProjectCostController {
   @ApiResponse({
     status: 200,
     description: 'Pending payment costs',
-    type: [ProjectCostResponseDto],
+    schema: {
+      type: 'array',
+      items: { type: 'object' },
+    },
   })
   async getPendingPayments(
     @CurrentUser() user: any
@@ -235,7 +278,10 @@ export class ProjectCostController {
   @ApiResponse({
     status: 200,
     description: 'Supplier costs',
-    type: [ProjectCostResponseDto],
+    schema: {
+      type: 'array',
+      items: { type: 'object' },
+    },
   })
   async getBySupplier(
     @Param('supplierName') supplierName: string,
@@ -267,7 +313,10 @@ export class ProjectCostQueriesController {
   @ApiResponse({
     status: 200,
     description: 'Project costs',
-    type: [ProjectCostResponseDto],
+    schema: {
+      type: 'array',
+      items: { type: 'object' },
+    },
   })
   async getProjectCosts(
     @Param('projectId') projectId: string,
@@ -286,7 +335,10 @@ export class ProjectCostQueriesController {
   @ApiResponse({
     status: 200,
     description: 'Project cost summary',
-    type: MaterialCostSummary,
+    schema: {
+      type: 'object',
+      description: 'MaterialCostSummary',
+    },
   })
   async getCostSummary(
     @Param('projectId') projectId: string,

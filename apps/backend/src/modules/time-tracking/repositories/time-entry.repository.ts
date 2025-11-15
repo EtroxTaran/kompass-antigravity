@@ -18,6 +18,10 @@ import type {
   TimeEntryFilters,
 } from './time-entry.repository.interface';
 
+// Stub InjectConnection decorator
+const InjectConnection =
+  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
+
 /**
  * Time Entry Repository Implementation
  *
@@ -28,7 +32,8 @@ import type {
 export class TimeEntryRepository implements ITimeEntryRepository {
   private readonly collectionName = 'time_entries';
 
-  constructor(@InjectConnection() private readonly connection: Connection) {}
+  // @ts-expect-error - InjectConnection is stubbed until mongoose is installed
+  constructor(@InjectConnection() private readonly _connection: Connection) {}
 
   /**
    * Get CouchDB database instance

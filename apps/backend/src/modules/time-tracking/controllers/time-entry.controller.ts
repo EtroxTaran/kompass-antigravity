@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -18,10 +19,10 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
+import type { TimeEntryResponseDto } from '@kompass/shared/types/entities/time-entry';
 import {
   CreateTimeEntryDto,
   UpdateTimeEntryDto,
-  TimeEntryResponseDto,
   TimeEntryStatus,
   LaborCostSummary,
 } from '@kompass/shared/types/entities/time-entry';
@@ -29,11 +30,20 @@ import {
 import type { TimeEntryFilters } from '../repositories/time-entry.repository.interface';
 import { TimeEntryService } from '../services/time-entry.service';
 
-// Placeholder decorators - replace with actual implementations
-const JwtAuthGuard = () => UseGuards();
-const RbacGuard = () => UseGuards();
-const RequirePermission = (entity: string, permission: string) => () => {};
-const CurrentUser = () => () => {};
+// TODO: Import actual decorators and guards when auth module is fully implemented
+// import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+// import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
+// import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+// import { RbacGuard } from '../../auth/guards/rbac.guard';
+
+// Stub decorators and guards for now
+const JwtAuthGuard = class {};
+const RbacGuard = class {};
+const RequirePermission =
+  (_entity: string, _action: string) =>
+  (_target: any, _propertyKey: string, _descriptor: PropertyDescriptor) => {};
+const CurrentUser =
+  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
 
 /**
  * Time Entry Controller
@@ -55,11 +65,19 @@ export class TimeEntryController {
   @Post()
   @RequirePermission('TimeEntry', 'CREATE')
   @ApiOperation({ summary: 'Create time entry or start timer' })
-  @ApiBody({ type: CreateTimeEntryDto })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      description: 'CreateTimeEntryDto',
+    },
+  })
   @ApiResponse({
     status: 201,
     description: 'Time entry created',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   @ApiResponse({ status: 400, description: 'Validation error' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -84,7 +102,10 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'List of time entries',
-    type: [TimeEntryResponseDto],
+    schema: {
+      type: 'array',
+      items: { type: 'object' },
+    },
   })
   async findAll(
     @Query('projectId') projectId?: string,
@@ -114,7 +135,10 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Time entry found',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   @ApiResponse({ status: 404, description: 'Time entry not found' })
   async findOne(
@@ -131,11 +155,19 @@ export class TimeEntryController {
   @RequirePermission('TimeEntry', 'UPDATE')
   @ApiOperation({ summary: 'Update time entry' })
   @ApiParam({ name: 'id', description: 'Time entry ID' })
-  @ApiBody({ type: UpdateTimeEntryDto })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      description: 'UpdateTimeEntryDto',
+    },
+  })
   @ApiResponse({
     status: 200,
     description: 'Time entry updated',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   @ApiResponse({ status: 404, description: 'Time entry not found' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
@@ -174,7 +206,10 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Timer stopped',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   @ApiResponse({ status: 400, description: 'Timer not running' })
   async stopTimer(
@@ -194,7 +229,10 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Timer paused',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   async pauseTimer(
     @Param('id') id: string,
@@ -209,11 +247,19 @@ export class TimeEntryController {
   @Post('resume')
   @RequirePermission('TimeEntry', 'CREATE')
   @ApiOperation({ summary: 'Resume timer (creates new entry)' })
-  @ApiBody({ type: CreateTimeEntryDto })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      description: 'CreateTimeEntryDto',
+    },
+  })
   @ApiResponse({
     status: 201,
     description: 'Timer resumed',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   async resumeTimer(
     @Body() dto: CreateTimeEntryDto,
@@ -232,7 +278,10 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Time entry approved',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   @ApiResponse({ status: 400, description: 'Cannot approve this entry' })
   async approve(
@@ -261,7 +310,10 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Time entry rejected',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   async reject(
     @Param('id') id: string,
@@ -316,7 +368,10 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Active timer found',
-    type: TimeEntryResponseDto,
+    schema: {
+      type: 'object',
+      description: 'TimeEntryResponseDto',
+    },
   })
   @ApiResponse({ status: 204, description: 'No active timer' })
   async getActiveTimer(
@@ -336,7 +391,10 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'User timesheets',
-    type: [TimeEntryResponseDto],
+    schema: {
+      type: 'array',
+      items: { type: 'object' },
+    },
   })
   async getMyTimesheets(
     @Query('startDate') startDate?: Date,
@@ -364,7 +422,10 @@ export class TimeEntryController {
   @ApiResponse({
     status: 200,
     description: 'Team timesheets',
-    type: [TimeEntryResponseDto],
+    schema: {
+      type: 'array',
+      items: { type: 'object' },
+    },
   })
   async getTeamTimesheets(
     @Query('projectId') projectId?: string,

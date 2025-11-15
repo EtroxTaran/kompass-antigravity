@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 

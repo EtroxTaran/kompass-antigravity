@@ -40,8 +40,8 @@ export class LocationRepository implements ILocationRepository {
       }
 
       return location;
-    } catch (error) {
-      if (error.statusCode === 404) {
+    } catch (error: unknown) {
+      if (this.isCouchDBError(error) && error.statusCode === 404) {
         return null;
       }
       this.logger.error(`Error finding location ${id}:`, error);
@@ -90,8 +90,8 @@ export class LocationRepository implements ILocationRepository {
         limit: 1,
       });
 
-      return result.docs.length > 0 ? result.docs[0] : null;
-    } catch (error) {
+      return result.docs.length > 0 ? (result.docs[0] as Location) : null;
+    } catch (error: unknown) {
       this.logger.error(
         `Error finding location by name for customer ${customerId}:`,
         error
@@ -118,8 +118,8 @@ export class LocationRepository implements ILocationRepository {
         limit: locationIds.length,
       });
 
-      return result.docs;
-    } catch (error) {
+      return result.docs as Location[];
+    } catch (error: unknown) {
       this.logger.error(`Error finding active locations:`, error);
       throw error;
     }
@@ -130,7 +130,7 @@ export class LocationRepository implements ILocationRepository {
    */
   async create(location: Omit<Location, '_rev'>): Promise<Location> {
     try {
-      const response = await this.db.insert(location);
+      const response = await this.db.insert(location as Location);
 
       if (!response.ok) {
         throw new Error('Failed to create location');
@@ -139,11 +139,22 @@ export class LocationRepository implements ILocationRepository {
       return {
         ...location,
         _rev: response.rev,
-      };
-    } catch (error) {
+      } as Location;
+    } catch (error: unknown) {
       this.logger.error(`Error creating location:`, error);
       throw error;
     }
+  }
+
+  private isCouchDBError(
+    error: unknown
+  ): error is { statusCode: number; message?: string } {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'statusCode' in error &&
+      typeof (error as { statusCode: unknown }).statusCode === 'number'
+    );
   }
 
   /**
