@@ -9,7 +9,6 @@ import type {
   ProjectCostStatus,
 } from '@kompass/shared';
 
-import { useToast } from '@/hooks/use-toast';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,6 +23,8 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 
 import { projectCostApi } from '../services/project-cost-api';
+
+import { useToast } from '@/hooks/use-toast';
 
 /**
  * Project Cost Form Component
