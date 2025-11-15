@@ -11,8 +11,8 @@ All rule files use the `.mdc` (Markdown Cursor) format with YAML frontmatter:
 ```yaml
 ---
 description: Clear, concise description of what the rule covers
-globs: ["**/*.ts", "**/*.tsx"]  # Array format - files this rule applies to
-alwaysApply: true  # Whether rule should always be active
+globs: ['**/*.ts', '**/*.tsx'] # Array format - files this rule applies to
+alwaysApply: true # Whether rule should always be active
 ---
 ```
 
@@ -25,41 +25,51 @@ alwaysApply: true  # Whether rule should always be active
 ## Rule Files Overview
 
 ### Core Architecture & Structure
+
 - **project-structure.mdc** - Monorepo structure, domain-driven organization, file naming
 - **architecture.mdc** - Layered architecture (Controller → Service → Repository), dependency injection
 - **typescript-standards.mdc** - Strict TypeScript, type safety, immutability, code quality
 
 ### Domain & Data
+
 - **domain-model.mdc** - Entity structure, validation rules, GoBD compliance, RBAC checks
 - **offline-first.mdc** - CouchDB/PouchDB patterns, sync queues, conflict resolution, storage quotas
 
 ### UI & Frontend
+
 - **ui-components.mdc** - shadcn/ui and RadixUI ONLY, accessibility (WCAG 2.1 AA), mobile-first
 - **ui-ux-documentation-sync.mdc** - CRITICAL: Dual updates (documentation + Figma prompts) for UI/UX changes
 - **reusable-components.mdc** - Code extraction patterns, shared utilities, anti-patterns
 
 ### Testing & Quality
+
 - **testing-strategy.mdc** - 70/20/10 test pyramid, coverage requirements (80% overall, 90% services)
 - **code-review.mdc** - Review checklist, security focus areas, review best practices
 
 ### Security & Compliance
+
 - **security-compliance.mdc** - RBAC guards, DSGVO compliance, GoBD immutability, audit trails
 - **security-best-practices.mdc** - Rate limiting, CSRF protection, XSS prevention, input sanitization, CouchDB security
 
 ### API & Integration
+
 - **api-design.mdc** - RESTful conventions, OpenAPI documentation, error responses (RFC 7807)
 - **linear-integration.mdc** - Linear issue tracking, commit messages, branch naming, PR requirements
 
 ### Development Workflow
+
 - **git-workflow.mdc** - Conventional commits, branch naming, PR standards, pre-commit hooks
 - **error-handling.mdc** - Structured error responses, secure logging, correlation IDs
 - **dependency-management.mdc** - Vulnerability scanning, dependency updates, license checks
+- **graphiti-memory.mdc** - Graphiti MCP memory usage - when and how to store architectural decisions, infrastructure changes, routing updates, refactors, and bug fixes
 
 ### Performance
+
 - **performance.mdc** - Lazy loading, memoization, virtual scrolling, bundle optimization
 
 ### Security Rules (CodeGuard)
-- **23 codeguard-*.mdc files** - Security rules from CodeGuard (DO NOT MODIFY)
+
+- **23 codeguard-\*.mdc files** - Security rules from CodeGuard (DO NOT MODIFY)
   - Cryptographic algorithms and certificates
   - Input validation and injection defense
   - Authentication, authorization, and session management
@@ -79,6 +89,7 @@ alwaysApply: true  # Whether rule should always be active
 ### Automatic Application
 
 Cursor AI automatically:
+
 - ✅ Applies rules based on file patterns (`globs`)
 - ✅ Keeps foundational rules active (`alwaysApply: true`)
 - ✅ Suggests corrections based on rule patterns
@@ -109,6 +120,7 @@ If you need to manually regenerate `.cursorrules`:
 ```
 
 This script:
+
 - Reads all `.mdc` files from `.cursor/rules/`
 - Concatenates them into `.cursorrules`
 - Adds section headers for organization
@@ -117,6 +129,7 @@ This script:
 ## Rule Categories
 
 ### Security (Critical)
+
 - Input validation and sanitization
 - Rate limiting and CSRF protection
 - XSS and NoSQL injection prevention
@@ -126,11 +139,13 @@ This script:
 - CouchDB security configuration
 
 ### Compliance
+
 - DSGVO: Consent management, data retention, anonymization
 - GoBD: Immutability after finalization, change logs, tamper detection
 - RBAC: Permission checks on all endpoints, field-level filtering
 
 ### Code Quality
+
 - TypeScript strict mode (no 'any')
 - Function length ≤ 50 lines
 - Cyclomatic complexity ≤ 10
@@ -138,6 +153,7 @@ This script:
 - Comprehensive testing
 
 ### Architecture
+
 - Layered architecture enforcement
 - Dependency injection with interfaces
 - Repository pattern for data access
@@ -154,14 +170,15 @@ These rules are automatically loaded by Cursor AI. When coding, Cursor will:
 
 ## Rule Statistics
 
-- **Total Rule Files**: 41 (18 project rules + 23 codeguard security rules)
+- **Total Rule Files**: 42 (19 project rules + 23 codeguard security rules)
 - **Code Examples**: 229+ ✅ CORRECT / ❌ WRONG examples
-- **Coverage**: All major areas covered (architecture, security, testing, API design, UI/UX sync, etc.)
+- **Coverage**: All major areas covered (architecture, security, testing, API design, UI/UX sync, memory management, etc.)
 - **Status**: ✅ Production-ready, fully audited
 
 ## Audit Information
 
 See [RULE_AUDIT.md](./RULE_AUDIT.md) for:
+
 - Complete audit report
 - Verification checklist
 - Best practices verification
@@ -173,6 +190,7 @@ See [RULE_AUDIT.md](./RULE_AUDIT.md) for:
 ## Codeguard Rules
 
 ⚠️ **IMPORTANT**: The 23 `codeguard-*.mdc` files are security rules from CodeGuard and **MUST NOT be modified**. These rules:
+
 - Have `version` field in YAML frontmatter
 - Are automatically applied by Cursor AI
 - Cover critical security patterns (crypto, injection, auth, etc.)
