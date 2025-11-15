@@ -633,10 +633,10 @@ See `packages/shared/src/constants/feature-flags.ts` for implementation details.
 
 ## Related Documentation
 
-- [API Specification](../specifications/API_SPECIFICATION.md)
-- [Test Strategy](../specifications/TEST_STRATEGY_DOCUMENT.md)
+- [API Specification](../specifications/api-specification.md)
+- [Test Strategy](../specifications/test-strategy.md)
 - [Deployment Guide](../deployment/DEPLOYMENT_GUIDE.md)
-- [RBAC Permission Matrix](../specifications/RBAC_PERMISSION_MATRIX.md)
+- [RBAC Permission Matrix](../specifications/rbac-permissions.md)
 
 ---
 

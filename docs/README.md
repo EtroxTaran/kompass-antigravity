@@ -40,7 +40,7 @@
   - **✨ 2025 Extensions** – RAG System (LlamaIndex, Weaviate), Neo4j Knowledge Graph, BI Layer (Grafana/Metabase)
   - **Evolution Path** – Clear migration from MVP to full intelligence
   - **ADR-001 to ADR-018** – All architectural decisions documented
-- **[AI Extensions Implementation Guide](./architecture/ai-extensions/AI-Extensions%20Architektur%20&%20Implementierungs-Guide.md)** – ✨ NEW: Step-by-Step Setup for RAG, n8n, Neo4j, ML-Models, BI-Dashboards (with Docker Compose, code templates, troubleshooting)
+- **[AI Extensions Implementation Guide](./architecture/ai-extensions/AI_Automation_Extensions_Implementation_Guide.md)** – ✨ NEW: Step-by-Step Setup for RAG, n8n, Neo4j, ML-Models, BI-Dashboards (with Docker Compose, code templates, troubleshooting)
 - **[Architecture Evolution Guide](./architecture/evolution/ARCHITECTURE_EVOLUTION_GUIDE.md)** – Step-by-Step Migration from MVP to Phase 2/3 (with code examples)
 - **[Technology Roadmap](./product-vision/TECHNOLOGY_ROADMAP.md)** – Detailed Timeline, Tech Stack Evolution, Budget
 - **[CI/CD Quality Gates](./processes/ci-cd-pipeline.md)** – GitHub Actions matrix, performance & security gates, Docker artifact publishing
@@ -49,7 +49,7 @@
 
 - **[Test Strategy](./specifications/test-strategy.md)** – 70/20/10 Pyramid, 50+ E2E Scenarios, Offline Tests, Browser Matrix
 - **[NFR Specification](./specifications/nfr-specification.md)** – Performance (P50/P95/P99), Offline Quota (50MB iOS), Availability (>95%)
-- **[Conflict Resolution](./specifications/conflict-resolution-specification.md)** – Hybrid Strategy (70% auto, 25% nutzergeführt, 5% eskaliert)
+- **[Conflict Resolution](../../ui-ux/08-specialized/conflict-resolution.md)** – Hybrid Strategy (70% auto, 25% nutzergeführt, 5% eskaliert)
 
 ### 🔐 For Security/Compliance
 
@@ -94,7 +94,7 @@ docs/
 │   ├── decisions/                     # Architecture Decision Records
 │   ├── diagrams/                      # Architecture diagrams and visuals
 │   ├── ai-extensions/
-│   │   └── AI-Extensions Architektur & Implementierungs-Guide.md  # ✨ AI Implementation Guide
+│   │   └── AI_Automation_Extensions_Implementation_Guide.md  # ✨ AI Implementation Guide
 │   │
 │   └── evolution/
 │       └── ARCHITECTURE_EVOLUTION_GUIDE.md # Step-by-step feature evolution

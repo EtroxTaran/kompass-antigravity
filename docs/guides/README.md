@@ -13,9 +13,9 @@ This directory contains comprehensive guides for getting started with KOMPASS de
 ### New Team Members Start Here
 
 1. **[Getting Started](./getting-started.md)** - Quick setup and first steps
-2. **[Development Guide](./development.md)** - Development environment setup and workflows
-3. **[Usage Guide](./usage-guide.md)** - How to use KOMPASS features
-4. **[Coding Standards](./coding-standards.md)** - Code quality and style guidelines
+2. **[Development Guide](./DEVELOPMENT.md)** - Development environment setup and workflows
+3. **[Usage Guide](./USAGE_GUIDE.md)** - How to use KOMPASS features
+4. **[Coding Standards](./CODING_STANDARDS.md)** - Code quality and style guidelines
 
 ---
 
@@ -26,20 +26,20 @@ This directory contains comprehensive guides for getting started with KOMPASS de
 | Guide                                         | Description                               | Audience                     | Last Updated |
 | --------------------------------------------- | ----------------------------------------- | ---------------------------- | ------------ |
 | **[Getting Started](./getting-started.md)**   | Quick project setup and first steps       | New developers, stakeholders | 2025-01-28   |
-| **[Development Guide](./development.md)**     | Complete development environment setup    | Developers                   | 2025-01-28   |
-| **[Coding Standards](./coding-standards.md)** | Code quality standards and best practices | All developers               | 2025-01-28   |
+| **[Development Guide](./DEVELOPMENT.md)**     | Complete development environment setup    | Developers                   | 2025-01-28   |
+| **[Coding Standards](./CODING_STANDARDS.md)** | Code quality standards and best practices | All developers               | 2025-01-28   |
 
 ### User Guides
 
 | Guide                               | Description                    | Audience          | Last Updated |
 | ----------------------------------- | ------------------------------ | ----------------- | ------------ |
-| **[Usage Guide](./usage-guide.md)** | How to use KOMPASS application | End users, admins | 2025-01-28   |
+| **[Usage Guide](./USAGE_GUIDE.md)** | How to use KOMPASS application | End users, admins | 2025-01-28   |
 
 ### Specialized Implementation Guides
 
 | Guide                                                                       | Description                              | Audience            | Last Updated |
 | --------------------------------------------------------------------------- | ---------------------------------------- | ------------------- | ------------ |
-| **[Rich Text Editor Implementation](./rich-text-editor-implementation.md)** | Rich text editor setup and configuration | Frontend developers | 2025-01-28   |
+| **[Rich Text Editor Implementation](./RICH_TEXT_EDITOR_IMPLEMENTATION.md)** | Rich text editor setup and configuration | Frontend developers | 2025-01-28   |
 
 ---
 
@@ -176,15 +176,15 @@ This directory contains comprehensive guides for getting started with KOMPASS de
 
 ### For New Developers
 
-- [Getting Started](./getting-started.md) → [Development Guide](./development.md) → [Coding Standards](./coding-standards.md)
+- [Getting Started](./getting-started.md) → [Development Guide](./DEVELOPMENT.md) → [Coding Standards](./CODING_STANDARDS.md)
 
 ### For New Users
 
-- [Getting Started](./getting-started.md) → [Usage Guide](./usage-guide.md)
+- [Getting Started](./getting-started.md) → [Usage Guide](./USAGE_GUIDE.md)
 
 ### For Feature Implementation
 
-- [Development Guide](./development.md) → [Implementation Guides](../implementation/README.md) → [Architecture](../architecture/README.md)
+- [Development Guide](./DEVELOPMENT.md) → [Implementation Guides](../implementation/README.md) → [Architecture](../architecture/README.md)
 
 ---
 

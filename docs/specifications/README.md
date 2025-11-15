@@ -19,7 +19,7 @@ This directory contains all technical specifications and requirements for the KO
 ### Performance & Quality
 
 - **[Non-Functional Requirements](./nfr-specification.md)** - Performance, scalability, availability
-- **[Conflict Resolution](./conflict-resolution-specification.md)** - Offline sync conflict handling
+- **[Conflict Resolution](../../ui-ux/08-specialized/conflict-resolution.md)** - Offline sync conflict handling
 
 ### Integration & Data Flow
 

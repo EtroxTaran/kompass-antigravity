@@ -7,7 +7,7 @@
 **Cross-References:**
 
 - `docs/architecture/system-architecture.md` – Complete Technical Architecture Specification
-- `docs/architecture/ai-extensions/AI-Extensions Architektur & Implementierungs-Guide.md` – ✨ NEW: AI/RAG/n8n Implementation Guide
+- `docs/architecture/ai-extensions/AI_Automation_Extensions_Implementation_Guide.md` – ✨ NEW: AI/RAG/n8n Implementation Guide
 - `docs/product-vision/Produktvision für Projekt KOMPASS (Nordstern-Direktive).md` – Product Vision (incl. Pillar 4: 2025 Intelligence)
 - `docs/product-vision/Produktvision KI & Automation-Features.md` – ✨ NEW: AI & Automation Vision
 - `docs/product-vision/Gesamtkonzept_Integriertes_CRM_und_PM_Tool_final.md` – Phase 2/3 Strategic Outlook
@@ -106,7 +106,7 @@ MVP ohne Observability = Blindflug im Produktiv-Betrieb. Daher parallel implemen
 
 **Cross-References:**
 
-- `docs/architecture/ai-extensions/AI-Extensions Architektur & Implementierungs-Guide.md` – Complete Implementation Guide
+- `docs/architecture/ai-extensions/AI_Automation_Extensions_Implementation_Guide.md` – Complete Implementation Guide
 - `docs/product-vision/Produktvision KI & Automation-Features.md` – AI & Automation Vision
 - Architecture Doc → "Erweiterte Architektur 2025: AI, Automation & Intelligence Layer"
 
@@ -387,7 +387,7 @@ MVP ohne Observability = Blindflug im Produktiv-Betrieb. Daher parallel implemen
 
 **Cross-References:**
 
-- `docs/architectur/AI-Extensions Architektur & Implementierungs-Guide.md` – Neo4j, BI Layer Implementation
+- `docs/architecture/ai-extensions/AI_Automation_Extensions_Implementation_Guide.md` – Neo4j, BI Layer Implementation
 - Architecture Doc → "Erweiterte Architektur 2025: Neo4j Knowledge Graph, BI & Analytics Layer"
 
 ---
@@ -504,7 +504,7 @@ MVP ohne Observability = Blindflug im Produktiv-Betrieb. Daher parallel implemen
 **Siehe:**
 
 - Architecture Doc → "Erweiterte Architektur 2025: Neo4j Knowledge Graph, BI Layer, CQRS Analytics"
-- `docs/architectur/AI-Extensions Architektur & Implementierungs-Guide.md` – Implementation Details
+- `docs/architecture/ai-extensions/AI_Automation_Extensions_Implementation_Guide.md` – Implementation Details
 
 ---
 
@@ -798,7 +798,7 @@ MVP ohne Observability = Blindflug im Produktiv-Betrieb. Daher parallel implemen
 **See Also:**
 
 - `docs/architecture/system-architecture.md` – Complete Technical Architecture (incl. 2025 AI Extensions)
-- `docs/architecture/ai-extensions/AI-Extensions Architektur & Implementierungs-Guide.md` – ✨ NEW: Step-by-Step Implementation Guide for RAG, n8n, Neo4j, ML, BI
+- `docs/architecture/ai-extensions/AI_Automation_Extensions_Implementation_Guide.md` – ✨ NEW: Step-by-Step Implementation Guide for RAG, n8n, Neo4j, ML, BI
 - `docs/architecture/evolution/ARCHITECTURE_EVOLUTION_GUIDE.md` – Migration Path from MVP to Full Vision
 - `docs/product-vision/Produktvision für Projekt KOMPASS (Nordstern-Direktive).md` – North Star Product Vision (incl. Pillar 4: 2025 Intelligence)
 - `docs/product-vision/Produktvision KI & Automation-Features.md` – ✨ NEW: AI & Automation Extensions Product Vision

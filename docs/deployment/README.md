@@ -330,8 +330,8 @@ After deployment, monitor:
 ### Core Documentation
 
 - [Architecture](../architecture/)
-- [API Specification](../specifications/API_SPECIFICATION.md)
-- [RBAC Permissions](../specifications/RBAC_PERMISSION_MATRIX.md)
+- [API Specification](../specifications/api-specification.md)
+- [RBAC Permissions](../specifications/rbac-permissions.md)
 
 ### Process Documentation
 

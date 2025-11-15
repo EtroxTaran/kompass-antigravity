@@ -40,7 +40,7 @@ KOMPASS follows a **unified architectural approach** that provides clear guidanc
 
 - **[AI Extensions](./ai-extensions/)** - AI/ML architecture specifications for Phase 2+
 - **[Evolution Guide](./evolution/)** - Step-by-step evolution from MVP to advanced features
-- **[Diagrams](./diagrams/)** - Visual architecture representations
+- **[Diagrams](./diagrams/)** - Visual architecture representations (to be created)
 
 ---
 

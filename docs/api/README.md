@@ -20,7 +20,7 @@ Complete API reference and usage guides.
 
 ## Related Documentation
 
-- [API Specification](../specifications/API_SPECIFICATION.md) - Complete API specification
+- [API Specification](../specifications/api-specification.md) - Complete API specification
 - [Architecture Documentation](../architecture/) - System architecture
 - [Main Documentation Index](../README.md) - Complete documentation navigation
 
