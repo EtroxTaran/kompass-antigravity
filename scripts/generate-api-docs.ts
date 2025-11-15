@@ -6,33 +6,8 @@
  * Usage: pnpm run generate:api-docs
  */
 
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-
-interface OpenAPIEndpoint {
-  path: string;
-  method: string;
-  summary: string;
-  description?: string;
-  tags: string[];
-  parameters?: any[];
-  requestBody?: any;
-  responses: Record<string, any>;
-  security?: any[];
-}
-
-interface OpenAPISpec {
-  openapi: string;
-  info: any;
-  servers: any[];
-  paths: Record<string, Record<string, OpenAPIEndpoint>>;
-  components: {
-    schemas: Record<string, any>;
-    securitySchemes: Record<string, any>;
-  };
-  tags: any[];
-}
 
 const DOCS_API_DIR = path.join(process.cwd(), 'docs', 'api');
 const DOCS_API_REFERENCE_DIR = path.join(DOCS_API_DIR, 'reference');
@@ -217,7 +192,7 @@ All errors follow the RFC 7807 Problem Details format:
 
 ## Related Documentation
 
-- [API Specification](../../specifications/API_SPECIFICATION.md) - Technical specification
+- [API Specification](../../specifications/api-specification.md) - Technical specification
 - [Authentication Guide](./authentication.md) - Authentication details
 - [API Updates](../updates/API_UPDATES.md) - Version changelog
 
@@ -266,7 +241,7 @@ The JWT token contains:
 
 ## RBAC Permissions
 
-See [RBAC Permission Matrix](../../specifications/RBAC_PERMISSION_MATRIX.md) for complete permission matrix.
+See [RBAC Permission Matrix](../../specifications/rbac-permissions.md) for complete permission matrix.
 
 ## Error Responses
 
@@ -292,7 +267,7 @@ See [RBAC Permission Matrix](../../specifications/RBAC_PERMISSION_MATRIX.md) for
 
 ## Related Documentation
 
-- [RBAC Permission Matrix](../../specifications/RBAC_PERMISSION_MATRIX.md)
+- [RBAC Permission Matrix](../../specifications/rbac-permissions.md)
 - [API Endpoints](./endpoints.md)
 
 ---
