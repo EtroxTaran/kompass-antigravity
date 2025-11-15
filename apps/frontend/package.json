@@ -12,7 +12,7 @@
     "test": "vitest",
     "test:unit": "vitest run --passWithNoTests",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage",
+    "test:coverage": "vitest run --coverage --passWithNoTests",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
