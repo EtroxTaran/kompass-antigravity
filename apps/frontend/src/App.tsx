@@ -1,6 +1,7 @@
+import * as React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-function App() {
+function App(): React.ReactElement {
   return (
     <div className="min-h-screen bg-background">
       <Routes>

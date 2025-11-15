@@ -22,7 +22,11 @@
     "generate:api-docs": "ts-node scripts/generate-api-docs.ts",
     "changelog:generate": "bash scripts/generate-changelog.sh",
     "prepare": "husky install",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "precommit:build": "pnpm --filter @kompass/shared build",
+    "precommit:check": "pnpm precommit:build && pnpm type-check && pnpm lint && pnpm format:check && pnpm precommit:branch",
+    "precommit:branch": "bash -c 'BRANCH_NAME=$(git branch --show-current); if [[ \"$BRANCH_NAME\" == \"main\" || \"$BRANCH_NAME\" == \"master\" ]]; then echo \"✅ Skipping branch name validation for protected branch: $BRANCH_NAME\"; exit 0; fi; if [[ ! \"$BRANCH_NAME\" =~ ^(feature|bugfix|hotfix|refactor|docs|test|chore)/KOM-[0-9]+-[a-z0-9-]+$ ]]; then echo \"❌ Branch name does not follow required format: $BRANCH_NAME\"; echo \"Required: <type>/KOM-###-short-description\"; exit 1; fi; echo \"✅ Branch name follows required format\"'",
+    "precommit:commit": "commitlint --edit"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",

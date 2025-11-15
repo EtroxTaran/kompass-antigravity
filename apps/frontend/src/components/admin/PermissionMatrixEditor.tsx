@@ -273,7 +273,8 @@ export function PermissionMatrixEditor(): JSX.Element {
               placeholder="z.B. Neue Rolle hinzugefügt, Berechtigungen für PLAN-Rolle angepasst..."
               value={changeReason}
               onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
-                setChangeReason(event.currentTarget.value);
+                const value = event.currentTarget.value;
+                setChangeReason(value);
               }}
               rows={3}
             />

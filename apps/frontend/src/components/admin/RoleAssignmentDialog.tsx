@@ -90,7 +90,7 @@ export function RoleAssignmentDialog({
   open,
   onClose,
   onSuccess: _onSuccess, // TODO: Implement success callback
-}: RoleAssignmentDialogProps) {
+}: RoleAssignmentDialogProps): React.ReactElement {
   const [selectedRoles, setSelectedRoles] = useState<UserRole[]>(
     user?.roles || []
   );
@@ -100,7 +100,7 @@ export function RoleAssignmentDialog({
   const [reason, setReason] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleRoleToggle = (role: UserRole, checked: boolean) => {
+  const handleRoleToggle = (role: UserRole, checked: boolean): void => {
     // TODO: Implement role selection logic
     if (checked) {
       setSelectedRoles((prev) => [...prev, role]);
@@ -113,7 +113,7 @@ export function RoleAssignmentDialog({
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     // TODO: Implement API call to assign roles
     // TODO: Validate that primaryRole is in selectedRoles
     // TODO: Show loading state
@@ -182,7 +182,9 @@ export function RoleAssignmentDialog({
 
               <RadioGroup
                 value={primaryRole || ''}
-                onValueChange={(value) => setPrimaryRole(value as UserRole)}
+                onValueChange={(value: string) => {
+                  setPrimaryRole(value as UserRole);
+                }}
               >
                 {selectedRoles.map((role) => {
                   const roleOption = ROLE_OPTIONS.find((r) => r.value === role);
@@ -209,7 +211,9 @@ export function RoleAssignmentDialog({
               id="reason"
               placeholder="z.B. Beförderung zum Teamleiter, Aufgabenwechsel..."
               value={reason}
-              onChange={(e) => setReason(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                setReason(e.target.value);
+              }}
               rows={3}
             />
           </div>
@@ -220,7 +224,9 @@ export function RoleAssignmentDialog({
               Abbrechen
             </Button>
             <Button
-              onClick={handleSubmit}
+              onClick={() => {
+                void handleSubmit();
+              }}
               disabled={isLoading || selectedRoles.length === 0 || !primaryRole}
             >
               {isLoading ? 'Wird gespeichert...' : 'Rollen zuweisen'}
