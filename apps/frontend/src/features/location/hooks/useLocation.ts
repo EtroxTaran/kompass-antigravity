@@ -6,12 +6,17 @@
 
 import { useQuery } from '@tanstack/react-query';
 
+import type { Location } from '@kompass/shared';
+
 import { locationApi } from '../services/location-api';
 
 /**
  * Fetch a single location by ID
  */
-export function useLocation(customerId: string, locationId: string) {
+export function useLocation(
+  customerId: string,
+  locationId: string
+): ReturnType<typeof useQuery<Location>> {
   return useQuery({
     queryKey: ['location', customerId, locationId],
     queryFn: () => locationApi.getLocation(customerId, locationId),

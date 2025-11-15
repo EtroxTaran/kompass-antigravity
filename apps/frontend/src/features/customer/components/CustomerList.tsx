@@ -61,7 +61,7 @@ export function CustomerList(): JSX.Element {
           type="search"
           placeholder="Search customers..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value as string)}
           className="max-w-md"
           aria-label="Search customers"
         />

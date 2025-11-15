@@ -6,6 +6,7 @@
  */
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -42,7 +43,7 @@ const locationFormSchema = z.object({
     .min(2, 'Standortname muss mindestens 2 Zeichen lang sein')
     .max(100, 'Standortname darf maximal 100 Zeichen lang sein')
     .regex(
-      /^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/,
+      /^[a-zA-ZäöüÄÖÜß0-9\s.\-&()]+$/,
       'Nur Buchstaben, Zahlen und Standardzeichen erlaubt'
     ),
   locationType: z.nativeEnum(LocationType),
@@ -80,7 +81,7 @@ export function LocationForm({
   onSubmit,
   onCancel,
   isLoading = false,
-}: LocationFormProps) {
+}: LocationFormProps): React.ReactElement {
   const form = useForm<LocationFormValues>({
     resolver: zodResolver(locationFormSchema),
     defaultValues: location
@@ -108,7 +109,12 @@ export function LocationForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit((values) => {
+          void Promise.resolve(onSubmit(values));
+        })}
+        className="space-y-6"
+      >
         {/* Location Name */}
         <FormField
           control={form.control}

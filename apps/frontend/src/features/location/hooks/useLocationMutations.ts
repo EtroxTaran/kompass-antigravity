@@ -9,18 +9,22 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { useToast } from '@/hooks/use-toast';
+
 import {
   locationApi,
   type CreateLocationRequest,
   type UpdateLocationRequest,
 } from '../services/location-api';
 
-import { useToast } from '@/hooks/use-toast';
-
 /**
  * Location mutations hook
  */
-export function useLocationMutations(customerId: string) {
+export function useLocationMutations(customerId: string): {
+  createLocation: ReturnType<typeof useMutation>;
+  updateLocation: ReturnType<typeof useMutation>;
+  deleteLocation: ReturnType<typeof useMutation>;
+} {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 

@@ -6,6 +6,7 @@
  */
 
 import { MapPin, Edit, Trash2, CheckCircle, XCircle } from 'lucide-react';
+import * as React from 'react';
 
 import type { Location } from '@kompass/shared';
 import { formatAddress, LocationType } from '@kompass/shared';
@@ -57,7 +58,7 @@ export function LocationCard({
   onDelete,
   canEdit = true,
   canDelete = false,
-}: LocationCardProps) {
+}: LocationCardProps): React.ReactElement {
   return (
     <Card>
       <CardHeader>

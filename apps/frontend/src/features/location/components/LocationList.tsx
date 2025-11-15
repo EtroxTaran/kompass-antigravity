@@ -6,6 +6,7 @@
  */
 
 import { Plus } from 'lucide-react';
+import * as React from 'react';
 import { useState } from 'react';
 
 import type { Location } from '@kompass/shared';
@@ -46,7 +47,7 @@ export function LocationList({
   canEdit = true,
   canDelete = false,
   canCreate = true,
-}: LocationListProps) {
+}: LocationListProps): React.ReactElement {
   const [filterType, setFilterType] = useState<LocationType | 'all'>('all');
   const [filterActive, setFilterActive] = useState<
     'all' | 'active' | 'inactive'
