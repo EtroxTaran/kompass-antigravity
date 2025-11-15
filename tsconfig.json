@@ -1,55 +1,11 @@
 {
-  "compilerOptions": {
-    /* Language and Environment */
-    "target": "ES2022",
-    "lib": ["ES2022"],
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-
-    /* Modules */
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "baseUrl": ".",
-    "paths": {
-      "@kompass/shared": ["packages/shared/src"],
-      "@kompass/shared/*": ["packages/shared/src/*"],
-      "@/*": ["apps/frontend/src/*"]
-    },
-
-    /* Type Checking */
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-
-    /* Emit */
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "removeComments": true,
-    "importHelpers": true,
-    "downlevelIteration": true,
-
-    /* Interop Constraints */
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-
-    /* Completeness */
-    "skipDefaultLibCheck": true
-  },
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {},
+  "references": [
+    { "path": "./packages/shared" },
+    { "path": "./apps/backend" },
+    { "path": "./apps/frontend" }
+  ],
+  "files": [],
   "exclude": ["node_modules", "dist", "build", ".turbo", "coverage", "templates"]
 }

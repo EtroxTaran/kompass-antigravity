@@ -1,5 +1,8 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
+  "references": [
+    { "path": "../../packages/shared" }
+  ],
   "compilerOptions": {
     "target": "ES2022",
     "useDefineForClassFields": true,
@@ -29,5 +32,8 @@
     }
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [
+    { "path": "../../packages/shared" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }
