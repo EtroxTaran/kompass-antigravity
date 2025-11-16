@@ -60,6 +60,9 @@ services:
       - KC_LOG_LEVEL=info
     command:
       - start-dev
+    # Override ports from base docker-compose.yml - remove host port mapping
+    # Keycloak is internal-only, accessed via http://keycloak:8080 by backend
+    ports: []
     depends_on:
       postgres:
         condition: service_healthy
