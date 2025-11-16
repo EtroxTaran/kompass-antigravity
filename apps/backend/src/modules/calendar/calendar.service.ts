@@ -1,11 +1,12 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 
-import type { CalendarEventDto } from './dto/calendar-event.dto';
 import {
   CalendarEventType,
   CalendarEntityType,
   CalendarPriority,
 } from './dto/calendar-event.dto';
+
+import type { CalendarEventDto } from './dto/calendar-event.dto';
 import type { CalendarQueryDto } from './dto/calendar-query.dto';
 
 @Injectable()

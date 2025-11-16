@@ -26,17 +26,20 @@ import {
   Logger,
 } from '@nestjs/common';
 
-import type { Customer } from '@kompass/shared/types/entities/customer';
-import type { Location } from '@kompass/shared/types/entities/location';
 import {
   createLocation,
   validateLocation,
 } from '@kompass/shared/types/entities/location';
 
+import { ILocationRepository } from './location.repository.interface';
+
 import type { CreateLocationDto } from './dto/create-location.dto';
 import type { LocationResponseDto } from './dto/location-response.dto';
 import type { UpdateLocationDto } from './dto/update-location.dto';
-import { ILocationRepository } from './location.repository.interface';
+import type { Customer } from '@kompass/shared/types/entities/customer';
+import type { Location } from '@kompass/shared/types/entities/location';
+
+
 
 /**
  * Placeholder User type - should be imported from auth module

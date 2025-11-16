@@ -5,6 +5,8 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 
+import { IRoleRepository } from './role.repository.interface';
+
 import type {
   UserRole,
   EntityType,
@@ -16,7 +18,6 @@ import type {
 } from '@kompass/shared/types/entities/role';
 import type { User } from '@kompass/shared/types/entities/user';
 
-import { IRoleRepository } from './role.repository.interface';
 
 /**
  * Role Management Service

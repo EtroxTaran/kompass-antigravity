@@ -11,15 +11,17 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import type { TestingModule } from '@nestjs/testing';
 
-import type { Location } from '@kompass/shared/types/entities/location';
+
 import { LocationType } from '@kompass/shared/types/enums';
+
+import { LocationService } from '../location.service';
 
 import type { CreateLocationDto } from '../dto/create-location.dto';
 import type { UpdateLocationDto } from '../dto/update-location.dto';
 import type { ILocationRepository } from '../location.repository.interface';
-import { LocationService } from '../location.service';
+import type { Location } from '@kompass/shared/types/entities/location';
+import type { TestingModule } from '@nestjs/testing';
 
 describe('LocationService', () => {
   let service: LocationService;

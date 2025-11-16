@@ -103,7 +103,7 @@ export class ForecastingService {
    * - Contact engagement level
    * - Industry vertical, season
    */
-  async predictOpportunityScore(
+  predictOpportunityScore(
     input: OpportunityPredictionInput
   ): Promise<OpportunityPrediction> {
     this.ensureEnabled();
@@ -133,13 +133,13 @@ export class ForecastingService {
    * - Payment terms and customer payment behavior
    * - Seasonal patterns
    */
-  async forecastCashFlow(
+  forecastCashFlow(
     input: CashFlowForecastInput
   ): Promise<CashFlowForecast> {
     this.ensureEnabled();
 
     this.logger.log(
-      `[STUB] Forecasting cash flow from ${input.startDate} to ${input.endDate}`
+      `[STUB] Forecasting cash flow from ${input.startDate.toISOString()} to ${input.endDate.toISOString()}`
     );
     // TODO: Implement in Phase 2.3
     throw new Error(
@@ -156,7 +156,7 @@ export class ForecastingService {
    * - Calculate churn probability
    * - Suggest retention actions
    */
-  async predictChurnRisk(customerId: string): Promise<{
+  predictChurnRisk(customerId: string): Promise<{
     churnProbability: number;
     riskLevel: 'low' | 'medium' | 'high';
     factors: string[];

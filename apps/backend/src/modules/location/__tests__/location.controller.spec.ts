@@ -4,16 +4,17 @@
  * Tests HTTP request handling for Location endpoints
  */
 
-import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
 
 import { LocationType } from '@kompass/shared/types/enums';
 
+import { LocationController } from '../location.controller';
+import { LocationService } from '../location.service';
+
 import type { CreateLocationDto } from '../dto/create-location.dto';
 import type { LocationResponseDto } from '../dto/location-response.dto';
 import type { UpdateLocationDto } from '../dto/update-location.dto';
-import { LocationController } from '../location.controller';
-import { LocationService } from '../location.service';
+import type { TestingModule } from '@nestjs/testing';
 
 describe('LocationController', () => {
   let controller: LocationController;

@@ -1,15 +1,16 @@
-import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+
+import { hasAnyRolePermission } from '@kompass/shared/constants/rbac.constants';
+
+import { PERMISSION_KEY } from '../decorators/require-permission.decorator';
 
 import type {
   EntityType,
   Permission,
 } from '@kompass/shared/constants/rbac.constants';
-import { hasAnyRolePermission } from '@kompass/shared/constants/rbac.constants';
 import type { User } from '@kompass/shared/types/entities/user';
-
-import { PERMISSION_KEY } from '../decorators/require-permission.decorator';
+import type { CanActivate, ExecutionContext } from '@nestjs/common';
 
 /**
  * RBAC Guard

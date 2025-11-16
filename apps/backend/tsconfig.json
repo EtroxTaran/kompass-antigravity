@@ -30,8 +30,8 @@
     }
   },
   "watchOptions": {
-    "watchFile": "usePolling",
-    "watchDirectory": "usePolling",
+    "watchFile": "fixedpollinginterval",
+    "watchDirectory": "fixedpollinginterval",
     "fallbackPolling": "dynamicPriority"
   },
   "include": ["src/**/*"],

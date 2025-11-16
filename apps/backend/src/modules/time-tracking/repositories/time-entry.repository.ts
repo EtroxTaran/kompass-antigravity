@@ -5,18 +5,18 @@ import { Injectable } from '@nestjs/common';
 type Connection = any; // Stub type
 import { v4 as uuidv4 } from 'uuid';
 
-import type {
-  TimeEntry,
-  LaborCostSummary,
-  UserLaborCost,
-  MonthlyLaborCost,
-} from '@kompass/shared/types/entities/time-entry';
 import { TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
 
 import type {
   ITimeEntryRepository,
   TimeEntryFilters,
 } from './time-entry.repository.interface';
+import type {
+  TimeEntry,
+  LaborCostSummary,
+  UserLaborCost,
+  MonthlyLaborCost,
+} from '@kompass/shared/types/entities/time-entry';
 
 // Stub InjectConnection decorator
 const InjectConnection =

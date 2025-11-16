@@ -7,6 +7,11 @@ import {
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
+import { TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
+
+import { ITimeEntryRepository } from '../repositories/time-entry.repository.interface';
+
+import type { TimeEntryFilters } from '../repositories/time-entry.repository.interface';
 import type {
   TimeEntry,
   CreateTimeEntryDto,
@@ -14,10 +19,6 @@ import type {
   TimeEntryResponseDto,
   LaborCostSummary,
 } from '@kompass/shared/types/entities/time-entry';
-import { TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
-
-import type { TimeEntryFilters } from '../repositories/time-entry.repository.interface';
-import { ITimeEntryRepository } from '../repositories/time-entry.repository.interface';
 
 /**
  * Time Entry Service

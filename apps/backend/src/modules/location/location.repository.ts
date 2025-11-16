@@ -6,11 +6,12 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-import type { DocumentScope } from 'nano';
-
-import type { Location } from '@kompass/shared/types/entities/location';
 
 import type { ILocationRepository } from './location.repository.interface';
+import type { Location } from '@kompass/shared/types/entities/location';
+import type { DocumentScope } from 'nano';
+
+
 
 @Injectable()
 export class LocationRepository implements ILocationRepository {
