@@ -27,12 +27,12 @@
       "@/*": ["src/*"],
       "@kompass/shared": ["../../packages/shared/src"],
       "@kompass/shared/*": ["../../packages/shared/src/*"]
-    },
-    "watchOptions": {
-      "watchFile": "usePolling",
-      "watchDirectory": "usePolling",
-      "fallbackPolling": "dynamicPriority"
     }
+  },
+  "watchOptions": {
+    "watchFile": "usePolling",
+    "watchDirectory": "usePolling",
+    "fallbackPolling": "dynamicPriority"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
