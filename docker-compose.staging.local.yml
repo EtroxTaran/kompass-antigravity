@@ -1,0 +1,140 @@
+# KOMPASS Docker Compose - Local Staging Testing
+# This file allows you to run staging configuration locally for debugging
+# It overrides staging-specific settings to work without external dependencies
+#
+# Usage:
+#   docker-compose -f docker-compose.yml -f docker-compose.staging.yml -f docker-compose.staging.local.yml up
+
+services:
+  # Override network to use local bridge network instead of external proxynet
+  couchdb:
+    networks:
+      - kompass-network
+    ports:
+      - '5984:5984'
+    # Use local volumes instead of host paths
+    volumes:
+      - couchdb-staging-data:/opt/couchdb/data
+      - couchdb-staging-config:/opt/couchdb/etc/local.d
+
+  meilisearch:
+    networks:
+      - kompass-network
+    ports:
+      - '7700:7700'
+    volumes:
+      - meilisearch-staging-data:/meili_data
+
+  keycloak:
+    networks:
+      - kompass-network
+    ports:
+      - '8080:8080'
+    volumes:
+      - keycloak-staging-data:/opt/keycloak/data
+
+  neo4j:
+    networks:
+      - kompass-network
+    ports:
+      - '7475:7474'  # Changed to avoid conflict with dev environment
+      - '7688:7687'  # Changed to avoid conflict with dev environment
+    volumes:
+      - neo4j-staging-data:/data
+      - neo4j-staging-logs:/logs
+
+  n8n:
+    networks:
+      - kompass-network
+    ports:
+      - '5678:5678'
+    volumes:
+      - n8n-staging-data:/home/node/.n8n
+
+  backend:
+    # Override image specification from staging.yml - use local build
+    image: kompass-backend-staging-local:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      target: production
+    # Option: Pull from registry instead (comment build above, uncomment below)
+    # image: ghcr.io/etroxtaran/kompass/backend:staging
+    networks:
+      - kompass-network
+    ports:
+      - '3001:3000'
+    # Override environment for local testing
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=http://couchdb:5984
+      - COUCHDB_USER=${STAGING_COUCHDB_USER:-admin}
+      - COUCHDB_PASSWORD=${STAGING_COUCHDB_PASSWORD:-stagingpassword}
+      - COUCHDB_DATABASE=${STAGING_COUCHDB_DATABASE:-kompass_staging}
+      - MEILISEARCH_URL=http://meilisearch:7700
+      - MEILISEARCH_MASTER_KEY=${STAGING_MEILI_MASTER_KEY:-stagingmasterkey}
+      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=kompass-staging
+      - KEYCLOAK_CLIENT_ID=kompass-api-staging
+      - KEYCLOAK_CLIENT_SECRET=${STAGING_KEYCLOAK_CLIENT_SECRET:-staging-client-secret}
+      - JWT_SECRET=${STAGING_JWT_SECRET:-staging-jwt-secret-min-32-chars-long-for-local-testing}
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
+      - LOG_LEVEL=debug
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=${STAGING_NEO4J_PASSWORD:-stagingpassword}
+      - WHISPER_API_URL=${STAGING_WHISPER_API_URL:-http://whisper:9000}
+      - N8N_WEBHOOK_URL=http://n8n:5678
+      - AI_N8N_ENABLED=${STAGING_AI_N8N_ENABLED:-false}
+      - AI_RAG_ENABLED=${STAGING_AI_RAG_ENABLED:-false}
+      - AI_ML_ENABLED=${STAGING_AI_ML_ENABLED:-false}
+    # Remove Traefik labels (not needed for local testing)
+    labels: []
+
+  frontend:
+    # Override image specification from staging.yml - use local build
+    image: kompass-frontend-staging-local:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      target: production
+      args:
+        - VITE_API_URL=http://localhost:3001
+    # Option: Pull from registry instead (comment build above, uncomment below)
+    # image: ghcr.io/etroxtaran/kompass/frontend:staging
+    networks:
+      - kompass-network
+    ports:
+      - '3000:8080'
+    environment:
+      - VITE_API_URL=http://localhost:3001
+      - VITE_AI_N8N_ENABLED=${STAGING_AI_N8N_ENABLED:-false}
+      - VITE_AI_RAG_ENABLED=${STAGING_AI_RAG_ENABLED:-false}
+      - VITE_AI_ML_ENABLED=${STAGING_AI_ML_ENABLED:-false}
+    # Remove Traefik labels (not needed for local testing)
+    labels: []
+
+networks:
+  kompass-network:
+    driver: bridge
+  # Remove proxynet requirement
+  proxynet:
+    external: false
+
+volumes:
+  couchdb-staging-data:
+    driver: local
+  couchdb-staging-config:
+    driver: local
+  meilisearch-staging-data:
+    driver: local
+  keycloak-staging-data:
+    driver: local
+  neo4j-staging-data:
+    driver: local
+  neo4j-staging-logs:
+    driver: local
+  n8n-staging-data:
+    driver: local
+

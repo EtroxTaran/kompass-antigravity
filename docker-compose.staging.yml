@@ -88,6 +88,9 @@ services:
     # Note: If webhooks need external access, add Traefik labels with Host(`n8n.kompass.etrox.de`)
 
   backend:
+    # Override build section from base docker-compose.yml - staging uses pre-built images
+    # Using empty object to remove build context requirement
+    build: {}
     image: ghcr.io/${GITHUB_REPOSITORY}/backend:${IMAGE_TAG:-staging}
     environment:
       - NODE_ENV=production
@@ -134,6 +137,9 @@ services:
       - 'traefik.http.services.backend.loadbalancer.server.port=3000'
 
   frontend:
+    # Override build section from base docker-compose.yml - staging uses pre-built images
+    # Using empty object to remove build context requirement
+    build: {}
     image: ghcr.io/${GITHUB_REPOSITORY}/frontend:${IMAGE_TAG:-staging}
     environment:
       - VITE_API_URL=${STAGING_API_URL:-https://api.kompass.etrox.de}
