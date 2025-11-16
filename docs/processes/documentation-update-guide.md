@@ -13,6 +13,7 @@ This guide helps developers understand when documentation updates are required a
 ### API Changes Requiring Documentation
 
 **BREAKING Changes (Always Required):**
+
 - ✅ Removed endpoints
 - ✅ Removed request/response fields
 - ✅ Changed endpoint URLs/paths
@@ -20,12 +21,14 @@ This guide helps developers understand when documentation updates are required a
 - ✅ Changed HTTP status codes for existing endpoints
 
 **NEW Features (Always Required):**
+
 - ✅ New endpoints
 - ✅ New request/response fields
 - ✅ New query parameters
 - ✅ New authentication/authorization options
 
 **INTERNAL Changes (Not Required):**
+
 - ❌ Bug fixes in existing logic
 - ❌ Refactoring (code reorganization)
 - ❌ Validation improvements (same API contract)
@@ -35,6 +38,7 @@ This guide helps developers understand when documentation updates are required a
 - ❌ Performance optimizations (same behavior)
 
 **MINOR Changes (Optional):**
+
 - ⚠️ Error message improvements (may want to document new error codes)
 - ⚠️ Response time improvements (may want to update performance docs)
 
@@ -45,6 +49,7 @@ This guide helps developers understand when documentation updates are required a
 ### Step 1: Identify What Changed
 
 The CI check will automatically detect:
+
 - New endpoints (new `@Get()`, `@Post()`, etc. decorators)
 - Changed routes (modified `@Controller()` or method decorators)
 - DTO changes (added/removed properties)
@@ -58,7 +63,7 @@ The CI check will automatically detect:
 
 Add entry in format:
 
-```markdown
+````markdown
 ## New Endpoints (YYYY-MM-DD)
 
 ### Feature Name
@@ -80,9 +85,11 @@ Response 201:
   "field": "value"
 }
 ```
+````
 
 **Permissions**: `Resource.ACTION` (roles that can use this)
-```
+
+````
 
 #### For Specification Changes
 
@@ -125,7 +132,7 @@ Add `[skip-docs]` or `[no-docs]` to your commit message:
 git commit -m "fix(KOM-123): fix validation bug [skip-docs]
 
 This is an internal bug fix that doesn't change the API contract."
-```
+````
 
 **Important:** You must explain why in your PR description.
 
@@ -146,6 +153,7 @@ The best option is to update the documentation, even for minor changes. This kee
 ### Example 1: New Endpoint (Requires Docs)
 
 **Change:**
+
 ```typescript
 @Post('locations')
 async createLocation(@Body() dto: CreateLocationDto) {
@@ -154,6 +162,7 @@ async createLocation(@Body() dto: CreateLocationDto) {
 ```
 
 **Required Documentation:**
+
 - Add to `docs/api/updates/API_UPDATES.md`
 - Include request/response examples
 - Document permissions
@@ -161,21 +170,28 @@ async createLocation(@Body() dto: CreateLocationDto) {
 ### Example 2: Bug Fix (No Docs Needed)
 
 **Change:**
+
 ```typescript
 // Before: Bug in validation
-if (value < 0) { throw error; }
+if (value < 0) {
+  throw error;
+}
 
 // After: Fixed validation
-if (value <= 0) { throw error; }
+if (value <= 0) {
+  throw error;
+}
 ```
 
 **Action:**
+
 - Add `[skip-docs]` to commit message
 - Or just update docs anyway (recommended)
 
 ### Example 3: DTO Property Added (Requires Docs)
 
 **Change:**
+
 ```typescript
 // Before
 export class CreateCustomerDto {
@@ -190,6 +206,7 @@ export class CreateCustomerDto {
 ```
 
 **Required Documentation:**
+
 - Update `docs/api/updates/API_UPDATES.md`
 - Document new optional field
 - Update request examples
@@ -197,6 +214,7 @@ export class CreateCustomerDto {
 ### Example 4: Refactoring (No Docs Needed)
 
 **Change:**
+
 ```typescript
 // Before: Inline logic
 async create(dto: CreateDto) {
@@ -211,6 +229,7 @@ async create(dto: CreateDto) {
 ```
 
 **Action:**
+
 - No documentation needed (internal refactoring)
 - Add `[skip-docs]` if CI complains
 
@@ -251,6 +270,7 @@ The CI check uses semantic analysis to detect:
 ### What the Check Ignores
 
 The check ignores:
+
 - Method body changes (logic only)
 - Comments and documentation strings
 - Type-only changes (TypeScript types)
@@ -303,6 +323,7 @@ If you made API changes but CI didn't detect them:
 ### 1. Document Early
 
 Update documentation as you code, not after:
+
 - Easier to remember what changed
 - Prevents forgetting to document
 - Keeps PRs complete
@@ -310,6 +331,7 @@ Update documentation as you code, not after:
 ### 2. Be Specific
 
 When documenting:
+
 - Include complete request/response examples
 - Document all possible status codes
 - Explain error scenarios
@@ -339,19 +361,18 @@ When documenting:
 
 ## Quick Reference
 
-| Change Type | Docs Required? | Skip Allowed? |
-|------------|----------------|---------------|
-| New endpoint | ✅ Yes | ❌ No |
-| Removed endpoint | ✅ Yes (BREAKING) | ❌ No |
-| New DTO field | ✅ Yes | ❌ No |
-| Removed DTO field | ✅ Yes (BREAKING) | ❌ No |
-| Bug fix | ❌ No | ✅ Yes |
-| Refactoring | ❌ No | ✅ Yes |
-| Validation improvement | ❌ No | ✅ Yes |
-| Type improvement | ❌ No | ✅ Yes |
+| Change Type            | Docs Required?    | Skip Allowed? |
+| ---------------------- | ----------------- | ------------- |
+| New endpoint           | ✅ Yes            | ❌ No         |
+| Removed endpoint       | ✅ Yes (BREAKING) | ❌ No         |
+| New DTO field          | ✅ Yes            | ❌ No         |
+| Removed DTO field      | ✅ Yes (BREAKING) | ❌ No         |
+| Bug fix                | ❌ No             | ✅ Yes        |
+| Refactoring            | ❌ No             | ✅ Yes        |
+| Validation improvement | ❌ No             | ✅ Yes        |
+| Type improvement       | ❌ No             | ✅ Yes        |
 
 ---
 
 **Last Updated:** 2025-01-28  
 **Next Review:** 2025-02-28
-

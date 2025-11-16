@@ -27,6 +27,7 @@ Brief description of changes. References [KOM-XXX](https://linear.app/kompass/is
 - [ ] N/A - No documentation needed (explain why below)
 
 **Documentation Notes:**
+
 <!-- If you skipped documentation, explain why here. See docs/processes/documentation-update-guide.md for guidance. -->
 
 ## Screenshots (if applicable)
@@ -36,6 +37,7 @@ Brief description of changes. References [KOM-XXX](https://linear.app/kompass/is
 ## Related Issues
 
 Closes KOM-XXX
+
 <!-- Link to related Linear issues -->
 
 ## Checklist
@@ -51,4 +53,3 @@ Closes KOM-XXX
 ## Additional Notes
 
 <!-- Any additional information for reviewers -->
-
