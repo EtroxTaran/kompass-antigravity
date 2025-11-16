@@ -95,7 +95,7 @@ export class ProjectCostController {
     @Body() dto: CreateProjectCostDto,
     @CurrentUser() user: User
   ): Promise<ProjectCostResponseDto> {
-    return this.projectCostService.create(dto, user.id);
+    return this.projectCostService.create(dto, user._id);
   }
 
   /**
@@ -138,7 +138,7 @@ export class ProjectCostController {
       startDate,
       endDate,
     };
-    return this.projectCostService.findAll(filters, user.id);
+    return this.projectCostService.findAll(filters, user._id);
   }
 
   /**
@@ -161,7 +161,7 @@ export class ProjectCostController {
     @Param('id') id: string,
     @CurrentUser() user: User
   ): Promise<ProjectCostResponseDto> {
-    return this.projectCostService.findById(id, user.id);
+    return this.projectCostService.findById(id, user._id);
   }
 
   /**
@@ -192,7 +192,7 @@ export class ProjectCostController {
     @Body() dto: UpdateProjectCostDto,
     @CurrentUser() user: User
   ): Promise<ProjectCostResponseDto> {
-    return this.projectCostService.update(id, dto, user.id);
+    return this.projectCostService.update(id, dto, user._id);
   }
 
   /**
@@ -209,7 +209,7 @@ export class ProjectCostController {
     @Param('id') id: string,
     @CurrentUser() user: User
   ): Promise<void> {
-    await this.projectCostService.delete(id, user.id);
+    await this.projectCostService.delete(id, user._id);
   }
 
   /**
@@ -232,7 +232,7 @@ export class ProjectCostController {
     @Param('id') id: string,
     @CurrentUser() user: User
   ): Promise<ProjectCostResponseDto> {
-    return this.projectCostService.approve(id, user.id);
+    return this.projectCostService.approve(id, user._id);
   }
 
   /**
@@ -255,7 +255,7 @@ export class ProjectCostController {
     @Param('id') id: string,
     @CurrentUser() user: User
   ): Promise<ProjectCostResponseDto> {
-    return this.projectCostService.markAsPaid(id, user.id);
+    return this.projectCostService.markAsPaid(id, user._id);
   }
 
   /**
@@ -275,7 +275,7 @@ export class ProjectCostController {
   async getPendingPayments(
     @CurrentUser() user: User
   ): Promise<ProjectCostResponseDto[]> {
-    return this.projectCostService.getPendingPayments(user.id);
+    return this.projectCostService.getPendingPayments(user._id);
   }
 
   /**
@@ -297,7 +297,7 @@ export class ProjectCostController {
     @Param('supplierName') supplierName: string,
     @CurrentUser() user: User
   ): Promise<ProjectCostResponseDto[]> {
-    return this.projectCostService.getBySupplier(supplierName, user.id);
+    return this.projectCostService.getBySupplier(supplierName, user._id);
   }
 }
 
@@ -332,7 +332,7 @@ export class ProjectCostQueriesController {
     @Param('projectId') projectId: string,
     @CurrentUser() user: User
   ): Promise<ProjectCostResponseDto[]> {
-    return this.projectCostService.findByProject(projectId, user.id);
+    return this.projectCostService.findByProject(projectId, user._id);
   }
 
   /**

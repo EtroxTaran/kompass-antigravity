@@ -315,8 +315,8 @@ export class CalendarService {
         ? this.getPriorityColor(task.priority) || '#3B82F6'
         : '#3B82F6',
       icon: 'CheckSquare',
-      startDate: task.dueDate,
-      endDate: task.dueDate,
+      startDate: new Date(task.dueDate),
+      endDate: new Date(task.dueDate),
       allDay: true,
       entityId: task._id,
       entityType: CalendarEntityType.USER_TASK,
