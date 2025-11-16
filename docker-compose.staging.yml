@@ -58,6 +58,7 @@ services:
       - KC_HOSTNAME_STRICT=false
       - KC_HOSTNAME_STRICT_HTTPS=false
       - KC_LOG_LEVEL=info
+      - KC_HEALTH_ENABLED=true
     command:
       - start-dev
     # Override ports from base docker-compose.yml - remove host port mapping
@@ -68,6 +69,14 @@ services:
         condition: service_healthy
     networks:
       - proxynet
+    healthcheck:
+      # Simple TCP connection test - check if port 8080 is listening
+      # This works without requiring curl/wget/pgrep
+      test: ['CMD-SHELL', 'timeout 1 bash -c "</dev/tcp/localhost/8080" 2>/dev/null || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s  # Keycloak takes longer to start with PostgreSQL and schema initialization
     restart: always
     # Internal service - accessed via http://keycloak:8080 by backend
     # No Traefik labels - not exposed publicly
