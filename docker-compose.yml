@@ -58,6 +58,8 @@ services:
       - KC_HOSTNAME_STRICT_HTTPS=false
     command:
       - start-dev
+    ports:
+      - '8080:8080'
     # No host port bindings; accessible from other services via 'keycloak:8080' on internal network
     volumes:
       - keycloak-data:/opt/keycloak/data
@@ -75,8 +77,8 @@ services:
   backend:
     build:
       context: .
-      dockerfile: apps/backend/Dockerfile
-      target: production
+      dockerfile: Dockerfile.backend
+      target: builder  # Use builder stage for dev (includes build tools)
     container_name: kompass-backend
     environment:
       - NODE_ENV=development
@@ -109,6 +111,9 @@ services:
     volumes:
       - ./apps/backend/src:/app/apps/backend/src
       - ./packages/shared/src:/app/packages/shared/src
+    # For dev: run with pnpm dev (watches for changes)
+    # The dist files are built in the image, but we override with dev mode
+    command: ["sh", "-c", "pnpm --filter @kompass/backend dev"]
     depends_on:
       couchdb:
         condition: service_healthy
@@ -144,7 +149,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: apps/frontend/Dockerfile
+      dockerfile: Dockerfile.frontend
       target: production
       args:
         - VITE_API_URL=http://localhost:3001

@@ -26,18 +26,43 @@ services:
     restart: always
     # Internal service - no Traefik labels, no ports exposed
 
+  postgres:
+    image: postgres:16-alpine
+    container_name: kompass-postgres
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=${STAGING_POSTGRES_USER:-keycloak}
+      - POSTGRES_PASSWORD=${STAGING_POSTGRES_PASSWORD:-changeme}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - /opt/kompass/staging/data/postgres:/var/lib/postgresql/data
+    networks:
+      - proxynet
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${STAGING_POSTGRES_USER:-keycloak}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Internal service - no Traefik labels, no ports exposed
+
   keycloak:
     environment:
       - KEYCLOAK_ADMIN=${STAGING_KEYCLOAK_ADMIN:-admin}
       - KEYCLOAK_ADMIN_PASSWORD=${STAGING_KEYCLOAK_ADMIN_PASSWORD:-stagingpassword}
-      - KC_DB=dev-file
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak
+      - KC_DB_USERNAME=${STAGING_POSTGRES_USER:-keycloak}
+      - KC_DB_PASSWORD=${STAGING_POSTGRES_PASSWORD:-changeme}
       - KC_HTTP_ENABLED=true
       - KC_HOSTNAME_STRICT=false
       - KC_HOSTNAME_STRICT_HTTPS=false
+      - KC_LOG_LEVEL=info
     command:
       - start-dev
-    volumes:
-      - /opt/kompass/staging/data/keycloak:/opt/keycloak/data
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - proxynet
     restart: always
