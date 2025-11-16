@@ -11,8 +11,6 @@ import type { ILocationRepository } from './location.repository.interface';
 import type { Location } from '@kompass/shared/types/entities/location';
 import type { DocumentScope } from 'nano';
 
-
-
 @Injectable()
 export class LocationRepository implements ILocationRepository {
   private readonly logger = new Logger(LocationRepository.name);

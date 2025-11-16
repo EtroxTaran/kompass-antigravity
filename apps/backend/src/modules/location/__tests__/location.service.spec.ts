@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 
-
 import { LocationType } from '@kompass/shared/types/enums';
 
 import { LocationService } from '../location.service';

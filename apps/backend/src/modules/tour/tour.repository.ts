@@ -14,6 +14,8 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { ServerScope as Nano } from 'nano';
 
+import { TourStatus } from '@kompass/shared/types/entities/tour';
+
 import type { Tour } from '@kompass/shared/types/entities/tour';
 
 /**
@@ -49,6 +51,26 @@ export interface TourFilters {
 }
 
 /**
+ * CouchDB Mango Query Selector
+ */
+interface MangoSelector {
+  type: string;
+  ownerId?: string;
+  status?: Tour['status'];
+  region?: string;
+  startDate?:
+    | string
+    | {
+        $gte?: string;
+      };
+  endDate?:
+    | string
+    | {
+        $lte?: string;
+      };
+}
+
+/**
  * Tour Repository Implementation
  */
 @Injectable()
@@ -67,8 +89,13 @@ export class TourRepository implements ITourRepository {
         return null;
       }
       return doc;
-    } catch (error: any) {
-      if (error.statusCode === 404) {
+    } catch (error: unknown) {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'statusCode' in error &&
+        (error as { statusCode: number }).statusCode === 404
+      ) {
         return null;
       }
       this.logger.error(`Error finding tour ${id}:`, error);
@@ -81,7 +108,7 @@ export class TourRepository implements ITourRepository {
    */
   async findByUser(userId: string, filters?: TourFilters): Promise<Tour[]> {
     try {
-      const selector: any = {
+      const selector: MangoSelector = {
         type: 'tour',
         ownerId: userId,
       };
@@ -91,13 +118,13 @@ export class TourRepository implements ITourRepository {
       }
 
       if (filters?.startDate || filters?.endDate) {
-        selector.startDate = {};
         if (filters.startDate) {
-          selector.startDate.$gte = filters.startDate.toISOString();
+          selector.startDate = {
+            $gte: filters.startDate.toISOString(),
+          };
         }
         if (filters.endDate) {
           selector.endDate = {
-            ...selector.endDate,
             $lte: filters.endDate.toISOString(),
           };
         }
@@ -129,7 +156,7 @@ export class TourRepository implements ITourRepository {
     userId?: string
   ): Promise<Tour[]> {
     try {
-      const selector: any = {
+      const selector: MangoSelector = {
         type: 'tour',
         startDate: {
           $gte: startDate.toISOString(),
@@ -161,7 +188,7 @@ export class TourRepository implements ITourRepository {
    */
   async findByStatus(status: Tour['status'], userId?: string): Promise<Tour[]> {
     try {
-      const selector: any = {
+      const selector: MangoSelector = {
         type: 'tour',
         status,
       };
@@ -258,7 +285,9 @@ export class TourRepository implements ITourRepository {
 
       // Filter by status: only planned or active tours
       return tours.filter(
-        (tour) => tour.status === 'planned' || tour.status === 'active'
+        (tour) =>
+          tour.status === TourStatus.PLANNED ||
+          tour.status === TourStatus.ACTIVE
       );
     } catch (error) {
       this.logger.error(`Error finding tour suggestions:`, error);

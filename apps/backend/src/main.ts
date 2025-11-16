@@ -4,12 +4,14 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS
   app.enableCors({
-    origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173'],
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || [
+      'http://localhost:5173',
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -21,7 +23,7 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
-    }),
+    })
   );
 
   // Swagger/OpenAPI documentation
@@ -37,9 +39,14 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   await app.listen(port);
 
+  // eslint-disable-next-line no-console
   console.log(`🚀 KOMPASS Backend API is running on: http://localhost:${port}`);
+  // eslint-disable-next-line no-console
   console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
 }
 
-bootstrap();
-
+bootstrap().catch((error) => {
+  // eslint-disable-next-line no-console
+  console.error('Failed to start application:', error);
+  process.exit(1);
+});

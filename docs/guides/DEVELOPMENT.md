@@ -155,6 +155,56 @@ pnpm lint
 pnpm lint:ci
 ```
 
+### Quality Gates
+
+KOMPASS uses a **three-layer defense strategy** to ensure code quality:
+
+1. **Pre-Commit Hook** (fast feedback on every commit)
+   - File organization checks
+   - lint-staged (auto-fixes staged files)
+   - Format check (read-only)
+   - Type-check
+   - Branch naming
+
+2. **Pre-Push Hook** (full codebase, CI parity)
+   - Full lint (no --fix, matches CI)
+   - Format check (read-only, matches CI)
+   - Type-check (matches CI)
+   - Unit tests with coverage thresholds
+   - Security audit
+
+3. **CI/CD Pipeline** (final gate)
+   - All pre-push checks
+   - Integration/E2E tests
+   - Build verification
+   - Documentation guard
+
+**Coverage Thresholds:**
+
+- Global: 80% branches, functions, lines, statements
+- Backend services: 90% branches, functions, lines, statements
+- Frontend components: 80% branches, functions, lines, statements
+
+**If quality checks fail:**
+
+- ESLint: Run `pnpm --filter @kompass/backend lint:fix` or fix manually
+- Format: Run `pnpm format` to auto-fix
+- Type-check: Fix TypeScript errors
+- Coverage: Add tests to meet thresholds
+- Security: Run `pnpm audit --fix` or update vulnerable packages
+
+**Run all quality checks locally:**
+
+```bash
+# Run all checks in CI order
+./scripts/quality-check.sh
+
+# Validate hooks match CI
+./scripts/validate-pre-commit.sh
+```
+
+See `.cursor/rules/quality-gates.mdc` for complete documentation.
+
 ### Generate New Entity
 
 ```bash
@@ -419,11 +469,33 @@ pnpm build
 
 ### Issue: "Tests failing in CI but passing locally"
 
-- Check Node.js version matches (20+)
-- Check environment variables
-- Check test data isolation
-- Check for race conditions
-- Check for hardcoded paths
+**This should never happen!** If it does:
+
+1. **Run quality check script:**
+
+   ```bash
+   ./scripts/quality-check.sh
+   ```
+
+   This runs the EXACT same checks as CI.
+
+2. **Validate hooks match CI:**
+
+   ```bash
+   ./scripts/validate-pre-commit.sh
+   ```
+
+3. **Common causes:**
+   - Node.js version mismatch (use 20+)
+   - Environment variables missing
+   - Test data isolation issues
+   - Race conditions
+   - Hardcoded paths
+   - Coverage thresholds not met locally (check coverage report)
+
+4. **If hooks are bypassed:**
+   - Never use `--no-verify` unless absolutely necessary
+   - CI will still catch issues, but it's better to fix locally first
 
 ## Tips & Best Practices
 
@@ -571,9 +643,16 @@ pnpm test:e2e              # E2E tests
 pnpm test:watch            # Watch mode
 
 # Code Quality
-pnpm lint                  # Run ESLint
+pnpm lint                  # Run ESLint (no --fix, matches CI)
 pnpm format                # Format with Prettier
+pnpm format:check          # Check formatting (read-only, matches CI)
 pnpm type-check            # TypeScript check
+
+# Run all quality checks (matches CI exactly)
+./scripts/quality-check.sh
+
+# Validate hooks match CI requirements
+./scripts/validate-pre-commit.sh
 
 # Database
 docker-compose up -d       # Start services

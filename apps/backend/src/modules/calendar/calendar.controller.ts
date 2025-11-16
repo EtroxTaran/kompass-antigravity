@@ -97,7 +97,15 @@ export class CalendarController {
   async getCalendarEvents(
     @Query() query: CalendarQueryDto
     // @CurrentUser() user: any, // TODO: Uncomment when auth is available
-  ): Promise<{ events: CalendarEventDto[]; meta: any }> {
+  ): Promise<{
+    events: CalendarEventDto[];
+    meta: {
+      startDate: string;
+      endDate: string;
+      totalEvents: number;
+      eventsByType: Record<string, number>;
+    };
+  }> {
     // TODO: Get user from CurrentUser decorator
     const userId = 'temp-user-id';
     const userRole = 'GF';
@@ -134,7 +142,15 @@ export class CalendarController {
   async getMyCalendarEvents(
     @Query() query: CalendarQueryDto
     // @CurrentUser() user: any,
-  ): Promise<{ events: CalendarEventDto[]; meta: any }> {
+  ): Promise<{
+    events: CalendarEventDto[];
+    meta: {
+      startDate: string;
+      endDate: string;
+      totalEvents: number;
+      eventsByType: Record<string, number>;
+    };
+  }> {
     const userId = 'temp-user-id';
     const userRole = 'ADM';
 
@@ -172,7 +188,16 @@ export class CalendarController {
   async getTeamCalendarEvents(
     @Query() query: CalendarQueryDto
     // @CurrentUser() user: any,
-  ): Promise<any> {
+  ): Promise<{
+    events: CalendarEventDto[];
+    teamMembers: unknown[];
+    meta: {
+      startDate: string;
+      endDate: string;
+      totalEvents: number;
+      totalTeamMembers: number;
+    };
+  }> {
     const userId = 'temp-user-id';
     const userRole = 'GF';
 

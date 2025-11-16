@@ -38,6 +38,23 @@ export interface MeetingFilters {
 }
 
 /**
+ * CouchDB Mango Query Selector for Meetings
+ */
+interface MeetingMangoSelector {
+  type: string;
+  createdBy?: string;
+  meetingType?: Meeting['meetingType'];
+  customerId?: string;
+  tourId?: string;
+  scheduledAt?:
+    | string
+    | {
+        $gte?: string;
+        $lte?: string;
+      };
+}
+
+/**
  * Meeting Repository Implementation
  */
 @Injectable()
@@ -115,7 +132,7 @@ export class MeetingRepository implements IMeetingRepository {
     filters?: MeetingFilters
   ): Promise<Meeting[]> {
     try {
-      const selector: any = {
+      const selector: MeetingMangoSelector = {
         type: 'meeting',
         createdBy: userId,
       };
@@ -151,7 +168,7 @@ export class MeetingRepository implements IMeetingRepository {
     userId?: string
   ): Promise<Meeting[]> {
     try {
-      const selector: any = {
+      const selector: MeetingMangoSelector = {
         type: 'meeting',
         scheduledAt: {
           $gte: startDate.toISOString(),

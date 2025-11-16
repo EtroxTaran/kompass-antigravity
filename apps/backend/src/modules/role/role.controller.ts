@@ -6,7 +6,6 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 
-import { UserRole } from '@kompass/shared/constants/rbac.constants';
 import { User } from '@kompass/shared/types/entities/user';
 
 // TODO: Import actual decorators and guards when auth module is fully implemented
@@ -17,10 +16,15 @@ import { User } from '@kompass/shared/types/entities/user';
 
 // Stub decorators and guards for now
 const CurrentUser =
-  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
+  () =>
+  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
 const RequirePermission =
   (_entity: string, _action: string) =>
-  (_target: any, _propertyKey: string, _descriptor: PropertyDescriptor) => {};
+  (
+    _target: unknown,
+    _propertyKey: string,
+    _descriptor: PropertyDescriptor
+  ): void => {};
 const JwtAuthGuard = class {};
 const RbacGuard = class {};
 
@@ -63,7 +67,7 @@ export class RoleController {
   @ApiOperation({ summary: 'List all roles' })
   @ApiResponse({ status: 200, description: 'Roles list' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
-  async listRoles(@CurrentUser() user: User): Promise<Role[]> {
+  listRoles(@CurrentUser() _user: User): Promise<Role[]> {
     // TODO: Implement role listing
     throw new Error('Not implemented');
   }
@@ -79,9 +83,9 @@ export class RoleController {
   @ApiOperation({ summary: 'Get role details' })
   @ApiResponse({ status: 200, description: 'Role details' })
   @ApiResponse({ status: 404, description: 'Role not found' })
-  async getRoleDetails(
-    @Param('roleId') roleId: string,
-    @CurrentUser() user: User
+  getRoleDetails(
+    @Param('roleId') _roleId: string,
+    @CurrentUser() _user: User
   ): Promise<Role> {
     // TODO: Implement role details retrieval
     throw new Error('Not implemented');
@@ -98,9 +102,9 @@ export class RoleController {
   @ApiOperation({ summary: 'Get role permissions' })
   @ApiResponse({ status: 200, description: 'Role permissions' })
   @ApiResponse({ status: 404, description: 'Role not found' })
-  async getRolePermissions(
-    @Param('roleId') roleId: string,
-    @CurrentUser() user: User
+  getRolePermissions(
+    @Param('roleId') _roleId: string,
+    @CurrentUser() _user: User
   ): Promise<Record<EntityType, Partial<Record<Permission, boolean>>>> {
     // TODO: Implement permission matrix retrieval
     throw new Error('Not implemented');
@@ -120,11 +124,11 @@ export class RoleController {
   @ApiResponse({ status: 200, description: 'Permissions updated' })
   @ApiResponse({ status: 403, description: 'Forbidden - GF only' })
   @ApiResponse({ status: 404, description: 'Role not found' })
-  async updateRolePermissions(
-    @Param('roleId') roleId: string,
+  updateRolePermissions(
+    @Param('roleId') _roleId: string,
     @Body()
-    permissions: Record<EntityType, Partial<Record<Permission, boolean>>>,
-    @CurrentUser() user: User
+    _permissions: Record<EntityType, Partial<Record<Permission, boolean>>>,
+    @CurrentUser() _user: User
   ): Promise<Role> {
     // TODO: Verify user is GF
     // TODO: Create new permission matrix version

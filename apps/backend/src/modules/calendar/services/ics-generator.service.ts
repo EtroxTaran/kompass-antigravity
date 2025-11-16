@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 import type { CalendarEventDto } from '../dto/calendar-event.dto';
 
 // Stub types for now
-type EventAttributes = any;
+type EventAttributes = unknown;
 
 @Injectable()
 export class IcsGeneratorService {

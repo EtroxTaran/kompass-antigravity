@@ -31,4 +31,5 @@ export const PERMISSION_KEY = 'required_permission';
 export const RequirePermission = (
   entity: EntityType | string,
   action: Permission | string
-) => SetMetadata(PERMISSION_KEY, { entity, action });
+): ReturnType<typeof SetMetadata> =>
+  SetMetadata(PERMISSION_KEY, { entity, action });

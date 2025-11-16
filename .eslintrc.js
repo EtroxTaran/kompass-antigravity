@@ -224,6 +224,11 @@ module.exports = {
     },
     {
       files: ['apps/backend/**/*.ts'],
+      excludedFiles: [
+        '**/__tests__/**/*.ts',
+        '**/*.spec.ts',
+        'tests/**/*.ts',
+      ],
       rules: {
         // Temporarily downgrade some rules to warnings (pre-existing issues)
         '@typescript-eslint/require-await': 'warn', // Many async methods without await (stub implementations)

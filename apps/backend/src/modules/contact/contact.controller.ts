@@ -40,10 +40,15 @@ interface User {
 }
 
 const CurrentUser =
-  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
+  () =>
+  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
 const RequirePermission =
   (_entity: string, _action: string) =>
-  (_target: any, _propertyKey: string, _descriptor: PropertyDescriptor) => {};
+  (
+    _target: unknown,
+    _propertyKey: string,
+    _descriptor: PropertyDescriptor
+  ): void => {};
 const JwtAuthGuard = class {};
 const RbacGuard = class {};
 

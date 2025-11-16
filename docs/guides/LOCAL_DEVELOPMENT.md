@@ -5,6 +5,7 @@ This guide explains how to set up and use the local development environment with
 ## Overview
 
 The local development environment provides:
+
 - **Hot reload** for backend (NestJS watch mode)
 - **Hot Module Replacement (HMR)** for frontend (Vite dev server)
 - **Complete infrastructure** (PostgreSQL, CouchDB, MeiliSearch, Keycloak, Neo4j, n8n)
@@ -19,6 +20,7 @@ bash scripts/dev.sh up
 ```
 
 This will:
+
 - Build development images (first time only)
 - Start all infrastructure services
 - Start backend with hot reload
@@ -39,11 +41,13 @@ Once started, access services at:
 ### 3. Verify Hot Reload
 
 **Backend Hot Reload:**
+
 1. Edit a file in `apps/backend/src/`
 2. Watch the backend logs: `bash scripts/dev.sh logs backend`
 3. You should see the application restart automatically (< 5 seconds)
 
 **Frontend HMR:**
+
 1. Edit a React component in `apps/frontend/src/`
 2. Open http://localhost:5173 in your browser
 3. Changes should appear immediately without page refresh
@@ -53,6 +57,7 @@ Once started, access services at:
 ### Recommended Workflow
 
 1. **Start Environment**
+
    ```bash
    bash scripts/dev.sh up
    ```
@@ -69,6 +74,7 @@ Once started, access services at:
    - Run unit tests if needed
 
 4. **Commit and Push**
+
    ```bash
    git add .
    git commit -m "feat(KOM-XXX): description"
@@ -81,11 +87,13 @@ Once started, access services at:
 ### Viewing Logs
 
 **All Services:**
+
 ```bash
 bash scripts/dev.sh logs
 ```
 
 **Specific Service:**
+
 ```bash
 bash scripts/dev.sh logs backend
 bash scripts/dev.sh logs frontend
@@ -93,6 +101,7 @@ bash scripts/dev.sh logs couchdb
 ```
 
 **Follow Logs (Real-time):**
+
 ```bash
 docker-compose logs -f backend
 ```
@@ -108,11 +117,13 @@ This shows the status of all containers and their health.
 ### Restarting Services
 
 **Restart All:**
+
 ```bash
 bash scripts/dev.sh restart
 ```
 
 **Restart Specific Service:**
+
 ```bash
 docker-compose restart backend
 docker-compose restart frontend
@@ -132,7 +143,7 @@ bash scripts/dev.sh down
 - **Trigger**: Any change to `.ts` files in `apps/backend/src/`
 - **Behavior**: Application restarts automatically
 - **Time**: Usually < 5 seconds
-- **Configuration**: 
+- **Configuration**:
   - File watching uses polling (`CHOKIDAR_USEPOLLING=true`)
   - TypeScript watch options configured in `apps/backend/tsconfig.json`
 
@@ -140,7 +151,7 @@ bash scripts/dev.sh down
 
 - **Mode**: Vite dev server with HMR
 - **Trigger**: Any change to files in `apps/frontend/src/`
-- **Behavior**: 
+- **Behavior**:
   - React components: Fast Refresh (state preserved)
   - CSS: Instant update
   - Other files: Module replacement
@@ -152,6 +163,7 @@ bash scripts/dev.sh down
 ### Shared Package
 
 Changes to `packages/shared/src/` are reflected in both backend and frontend:
+
 - Backend: Restarts when shared code changes
 - Frontend: HMR updates when shared code changes
 
@@ -162,18 +174,22 @@ Changes to `packages/shared/src/` are reflected in both backend and frontend:
 **Problem**: Changes to files are not triggering hot reload.
 
 **Solutions**:
+
 1. Verify polling is enabled:
+
    ```bash
    docker-compose exec backend env | grep CHOKIDAR
    # Should show: CHOKIDAR_USEPOLLING=true
    ```
 
 2. Check file permissions:
+
    ```bash
    ls -la apps/backend/src/
    ```
 
 3. Restart the service:
+
    ```bash
    docker-compose restart backend
    ```
@@ -188,17 +204,21 @@ Changes to `packages/shared/src/` are reflected in both backend and frontend:
 **Problem**: Backend container keeps restarting or shows unhealthy.
 
 **Solutions**:
+
 1. Check backend logs:
+
    ```bash
    bash scripts/dev.sh logs backend
    ```
 
 2. Verify dependencies are installed:
+
    ```bash
    docker-compose exec backend pnpm list
    ```
 
 3. Check if port 3000 is available:
+
    ```bash
    lsof -i :3000
    ```
@@ -214,17 +234,21 @@ Changes to `packages/shared/src/` are reflected in both backend and frontend:
 **Problem**: Frontend shows connection errors or doesn't load.
 
 **Solutions**:
+
 1. Check frontend logs:
+
    ```bash
    bash scripts/dev.sh logs frontend
    ```
 
 2. Verify Vite dev server is running:
+
    ```bash
    curl http://localhost:5173
    ```
 
 3. Check if port 5173 is available:
+
    ```bash
    lsof -i :5173
    ```
@@ -239,7 +263,9 @@ Changes to `packages/shared/src/` are reflected in both backend and frontend:
 **Problem**: Module not found errors or dependency issues.
 
 **Solutions**:
+
 1. Rebuild containers (reinstalls dependencies):
+
    ```bash
    docker-compose build --no-cache backend frontend
    docker-compose up -d
@@ -258,18 +284,22 @@ Changes to `packages/shared/src/` are reflected in both backend and frontend:
 **Problem**: Backend can't connect to CouchDB, PostgreSQL, etc.
 
 **Solutions**:
+
 1. Check if infrastructure services are running:
+
    ```bash
    bash scripts/dev.sh ps
    ```
 
 2. Verify service health:
+
    ```bash
    docker-compose ps
    # All services should show "healthy" or "Up"
    ```
 
 3. Check service logs:
+
    ```bash
    bash scripts/dev.sh logs couchdb
    bash scripts/dev.sh logs postgres
@@ -285,7 +315,9 @@ Changes to `packages/shared/src/` are reflected in both backend and frontend:
 **Problem**: Port already in use errors.
 
 **Solutions**:
+
 1. Find what's using the port:
+
    ```bash
    lsof -i :3000  # Backend
    lsof -i :5173  # Frontend
@@ -309,6 +341,7 @@ Changes to `packages/shared/src/` are reflected in both backend and frontend:
 **Problem**: File changes take a long time to be detected.
 
 **Solutions**:
+
 1. This is expected with polling mode (trade-off for Docker compatibility)
 2. Polling interval is set to 1 second (see `vite.config.ts`)
 3. For faster detection, you can reduce the interval (may increase CPU usage)
@@ -318,12 +351,15 @@ Changes to `packages/shared/src/` are reflected in both backend and frontend:
 **Problem**: Permission denied errors when accessing files.
 
 **Solutions**:
+
 1. Check file ownership:
+
    ```bash
    ls -la apps/backend/src/
    ```
 
 2. Fix ownership if needed:
+
    ```bash
    sudo chown -R $USER:$USER apps/
    ```
@@ -365,12 +401,14 @@ docker volume rm kompass_neo4j-data
 ### Running Commands in Containers
 
 **Backend:**
+
 ```bash
 docker-compose exec backend pnpm --filter @kompass/backend test
 docker-compose exec backend pnpm --filter @kompass/backend lint
 ```
 
 **Frontend:**
+
 ```bash
 docker-compose exec frontend pnpm --filter @kompass/frontend test
 docker-compose exec frontend pnpm --filter @kompass/frontend lint
@@ -379,11 +417,13 @@ docker-compose exec frontend pnpm --filter @kompass/frontend lint
 ### Accessing Container Shells
 
 **Backend:**
+
 ```bash
 docker-compose exec backend sh
 ```
 
 **Frontend:**
+
 ```bash
 docker-compose exec frontend sh
 ```
@@ -391,12 +431,14 @@ docker-compose exec frontend sh
 ### Rebuilding Images
 
 **Rebuild All:**
+
 ```bash
 docker-compose build --no-cache
 docker-compose up -d
 ```
 
 **Rebuild Specific Service:**
+
 ```bash
 docker-compose build --no-cache backend
 docker-compose up -d backend
@@ -420,11 +462,13 @@ JWT_SECRET=my-jwt-secret-min-32-chars-long
 ### Volume Mounts
 
 **Source Code** (bind mounts for immediate changes):
+
 - `./apps/backend/src` → `/app/apps/backend/src`
 - `./apps/frontend/src` → `/app/apps/frontend/src`
 - `./packages/shared/src` → `/app/packages/shared/src`
 
 **node_modules** (named volumes to avoid conflicts):
+
 - `backend-node-modules` → `/app/apps/backend/node_modules`
 - `frontend-node-modules` → `/app/apps/frontend/node_modules`
 - `shared-node-modules` → `/app/packages/shared/node_modules`
@@ -438,6 +482,7 @@ JWT_SECRET=my-jwt-secret-min-32-chars-long
 ### Network
 
 All services run on the `kompass-network` Docker network, allowing them to communicate using service names:
+
 - Backend → CouchDB: `http://couchdb:5984`
 - Backend → MeiliSearch: `http://meilisearch:7700`
 - Frontend → Backend: `http://localhost:3000` (via host port mapping)
@@ -473,4 +518,3 @@ If you encounter issues not covered in this guide:
 3. Check Docker status: `docker-compose ps`
 4. Verify environment: `docker info`
 5. Create an issue in Linear with details
-

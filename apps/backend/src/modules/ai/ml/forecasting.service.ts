@@ -133,9 +133,7 @@ export class ForecastingService {
    * - Payment terms and customer payment behavior
    * - Seasonal patterns
    */
-  forecastCashFlow(
-    input: CashFlowForecastInput
-  ): Promise<CashFlowForecast> {
+  forecastCashFlow(input: CashFlowForecastInput): Promise<CashFlowForecast> {
     this.ensureEnabled();
 
     this.logger.log(

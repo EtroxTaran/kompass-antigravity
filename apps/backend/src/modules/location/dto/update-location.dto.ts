@@ -35,7 +35,7 @@ export class UpdateLocationDto {
   @IsOptional()
   @IsString()
   @Length(2, 100)
-  @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/, {
+  @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s.\-&()]+$/, {
     message:
       'Location name can only contain letters, numbers, and basic punctuation',
   })

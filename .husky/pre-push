@@ -78,7 +78,6 @@ fi
 # ============================================================================
 echo ""
 echo "3️⃣  Checking documentation updates..."
-echo "3️⃣  Checking documentation updates..."
 
 # Skip documentation diff check on first push (no upstream)
 if ! git rev-parse --abbrev-ref @{u} >/dev/null 2>&1; then
@@ -127,7 +126,23 @@ fi
 echo "   ✅ Lint passed"
 
 echo ""
-echo "5️⃣  Running type-check..."
+echo "5️⃣  Running Prettier format check (read-only, matches CI)..."
+
+pnpm format:check
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "   ❌ Format check failed. Push aborted."
+  echo "   Run 'pnpm format' to auto-fix formatting issues."
+  echo "   Or skip with: git push --no-verify"
+  echo ""
+  exit 1
+fi
+
+echo "   ✅ Format check passed"
+
+echo ""
+echo "6️⃣  Running type-check..."
 
 pnpm type-check
 
@@ -142,24 +157,55 @@ fi
 echo "   ✅ Type-check passed"
 
 echo ""
-echo "6️⃣  Running tests (backend & frontend)..."
+echo "7️⃣  Running unit tests with coverage thresholds (matches CI)..."
 
-# Run backend tests (fast/unit-style) and frontend tests, mirroring CI focus.
-pnpm --filter @kompass/backend test -- --passWithNoTests
+# Build shared package first (required for type-check and tests)
+echo "   Building shared package..."
+pnpm --filter @kompass/shared build
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "   ❌ Shared package build failed. Push aborted."
+  exit 1
+fi
+
+# Run backend tests with coverage (enforces thresholds from jest.config.js)
+echo "   Running backend tests with coverage..."
+pnpm --filter @kompass/backend test:cov
 BACKEND_STATUS=$?
 
-pnpm --filter @kompass/frontend test -- --passWithNoTests
+# Run frontend tests with coverage (enforces thresholds)
+echo "   Running frontend tests with coverage..."
+pnpm --filter @kompass/frontend test:coverage
 FRONTEND_STATUS=$?
 
 if [ $BACKEND_STATUS -ne 0 ] || [ $FRONTEND_STATUS -ne 0 ]; then
   echo ""
-  echo "   ❌ Tests failed. Push aborted."
-  echo "   Fix failing tests or skip with: git push --no-verify"
+  echo "   ❌ Tests failed or coverage thresholds not met. Push aborted."
+  echo "   Fix failing tests or improve coverage to meet thresholds."
+  echo "   Coverage requirements: 80% global, 90% for services."
+  echo "   Or skip with: git push --no-verify"
   echo ""
   exit 1
 fi
 
-echo "   ✅ Tests passed (backend & frontend)"
+echo "   ✅ Tests passed with coverage thresholds met"
+
+echo ""
+echo "8️⃣  Running security audit (matches CI)..."
+
+pnpm audit --audit-level=high
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "   ❌ Security audit found high or critical vulnerabilities. Push aborted."
+  echo "   Run 'pnpm audit --fix' to attempt automatic fixes."
+  echo "   Or skip with: git push --no-verify"
+  echo ""
+  exit 1
+fi
+
+echo "   ✅ Security audit passed"
 
 # ============================================================================
 
@@ -175,8 +221,10 @@ echo "   ✅ Branch name valid"
 echo "   ✅ Commit messages valid"
 echo "   ℹ️  Documentation check completed (non-blocking)"
 echo "   ✅ Lint passed"
+echo "   ✅ Format check passed"
 echo "   ✅ Type-check passed"
-echo "   ✅ Tests passed (backend & frontend)"
+echo "   ✅ Tests passed with coverage thresholds"
+echo "   ✅ Security audit passed"
 echo ""
 echo "   Pushing to $BRANCH_NAME..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
