@@ -83,6 +83,9 @@ importers:
 
   apps/backend:
     dependencies:
+      '@kompass/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@nestjs/common':
         specifier: ^10.2.10
         version: 10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.1.14)(rxjs@7.8.2)
