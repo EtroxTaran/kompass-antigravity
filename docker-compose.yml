@@ -45,6 +45,27 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # PostgreSQL - Database for Keycloak
+  postgres:
+    image: postgres:16-alpine
+    container_name: kompass-postgres
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=${POSTGRES_USER:-keycloak}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-devpassword}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - kompass-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-keycloak}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
   # Keycloak - Authentication & SSO
   keycloak:
     image: quay.io/keycloak/keycloak:23.0
@@ -52,17 +73,23 @@ services:
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-devpassword}
-      - KC_DB=dev-file
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak
+      - KC_DB_USERNAME=${POSTGRES_USER:-keycloak}
+      - KC_DB_PASSWORD=${POSTGRES_PASSWORD:-devpassword}
       - KC_HTTP_ENABLED=true
       - KC_HOSTNAME_STRICT=false
       - KC_HOSTNAME_STRICT_HTTPS=false
+      - KC_LOG_LEVEL=info
     command:
       - start-dev
     ports:
       - '8080:8080'
-    # No host port bindings; accessible from other services via 'keycloak:8080' on internal network
     volumes:
       - keycloak-data:/opt/keycloak/data
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - kompass-network
     healthcheck:
@@ -70,7 +97,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 60s
+      start_period: 90s  # Keycloak takes longer to start with PostgreSQL
     restart: unless-stopped
 
   # Backend - NestJS API
