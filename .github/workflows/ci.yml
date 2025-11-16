@@ -275,16 +275,20 @@ jobs:
         env:
           GITHUB_BASE_REF: ${{ github.base_ref || github.ref_name }}
 
+      - name: Install lychee
+        run: |
+          set -euo pipefail
+          LYCHEE_VERSION="0.16.1"
+          curl -sSfL "https://github.com/lycheeverse/lychee/releases/download/lychee-v${LYCHEE_VERSION}/lychee-x86_64-unknown-linux-gnu.tar.gz" -o lychee.tar.gz
+          tar -xzf lychee.tar.gz
+          mkdir -p "$HOME/.local/bin"
+          mv lychee "$HOME/.local/bin/lychee"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
       - name: Validate markdown links (Lychee)
-        # Use a stable v1 release to avoid current v2 shell/arg parsing issues
-        uses: lycheeverse/lychee-action@v1.7.0
-        with:
-          # Check all markdown files in the repo (README + docs, etc.)
-          args: >
-            --config .github/lychee.toml
-            './**/*.md'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          lychee --config .github/lychee.toml './**/*.md'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
