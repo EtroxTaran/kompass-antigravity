@@ -27,6 +27,11 @@
       "@/*": ["src/*"],
       "@kompass/shared": ["../../packages/shared/src"],
       "@kompass/shared/*": ["../../packages/shared/src/*"]
+    },
+    "watchOptions": {
+      "watchFile": "usePolling",
+      "watchDirectory": "usePolling",
+      "fallbackPolling": "dynamicPriority"
     }
   },
   "include": ["src/**/*"],

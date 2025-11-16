@@ -21,6 +21,39 @@ ARG VITE_API_URL=https://api.kompass.etrox.de
 ENV VITE_API_URL=${VITE_API_URL}
 RUN pnpm --filter @kompass/frontend build
 
+FROM node:20-alpine AS development
+
+RUN apk add --no-cache curl
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/frontend/package.json ./apps/frontend/
+COPY packages/shared/package.json ./packages/shared/
+
+# Install pnpm and all dependencies (including dev dependencies)
+RUN npm install -g pnpm@8.15.0
+RUN pnpm install --frozen-lockfile
+
+# Copy source code (will be overridden by volume mounts in docker-compose)
+COPY apps/frontend ./apps/frontend
+COPY packages/shared ./packages/shared
+COPY tsconfig.json tsconfig.base.json ./
+
+# Build shared package (needed for frontend)
+RUN pnpm --filter @kompass/shared build
+
+# Set development API URL (can be overridden by docker-compose)
+ARG VITE_API_URL=http://localhost:3000
+ENV VITE_API_URL=${VITE_API_URL}
+ENV NODE_ENV=development
+
+EXPOSE 5173
+
+# Default command (will be overridden by docker-compose)
+CMD ["pnpm", "--filter", "@kompass/frontend", "dev"]
+
 FROM nginx:1.25-alpine AS production
 
 RUN apk add --no-cache dumb-init

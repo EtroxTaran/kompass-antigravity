@@ -59,6 +59,18 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    host: '0.0.0.0', // Allow access from Docker network
+    watch: {
+      // Use polling for file watching in Docker (especially on Windows/WSL)
+      usePolling: true,
+      interval: 1000, // Poll every 1 second
+    },
+    hmr: {
+      // Configure HMR for Docker network
+      host: 'localhost',
+      port: 5173,
+      protocol: 'ws',
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:3000',
