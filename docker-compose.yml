@@ -213,35 +213,6 @@ services:
       start_period: 60s
     restart: unless-stopped
 
-  # Whisper - OpenAI Whisper API for transcription
-  whisper:
-    image: onerahmet/openai-whisper-asr-webservice:latest-gpu
-    container_name: kompass-whisper
-    environment:
-      - ASR_MODEL=${WHISPER_MODEL:-base}
-      - ASR_ENGINE=openai_whisper
-    ports:
-      - '8001:9000' # API port
-    volumes:
-      - whisper-models:/root/.cache/whisper
-    networks:
-      - kompass-network
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:9000/health']
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
-    restart: unless-stopped
-    # Note: For GPU support, uncomment deploy section and ensure GPU access
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
-
   # n8n - Workflow automation
   n8n:
     image: n8nio/n8n:latest
