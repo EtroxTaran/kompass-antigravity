@@ -63,15 +63,20 @@ services:
     restart: always
     # Internal service - no Traefik labels, no ports exposed
 
-  whisper:
-    environment:
-      - ASR_MODEL=${STAGING_WHISPER_MODEL:-base}
-    volumes:
-      - /opt/kompass/staging/data/whisper:/root/.cache/whisper
-    networks:
-      - proxynet
-    restart: always
-    # Internal service - no Traefik labels, no ports exposed
+  # whisper:
+  #   # Staging uses an external Whisper API (e.g. OpenAI) instead of a local container.
+  #   # The backend connects via WHISPER_API_URL provided by STAGING_WHISPER_API_URL.
+  #   # If you want to self-host Whisper in staging in the future, replace this with
+  #   # an ARM64-compatible image or run Whisper on a dedicated x86_64+GPU host and
+  #   # point WHISPER_API_URL to that internal endpoint.
+  #   environment:
+  #     - ASR_MODEL=${STAGING_WHISPER_MODEL:-base}
+  #   volumes:
+  #     - /opt/kompass/staging/data/whisper:/root/.cache/whisper
+  #   networks:
+  #     - proxynet
+  #   restart: always
+  #   # Internal service - no Traefik labels, no ports exposed
 
   n8n:
     environment:

@@ -198,6 +198,10 @@ STAGING_KEYCLOAK_ADMIN=admin
 STAGING_KEYCLOAK_ADMIN_PASSWORD=<secure-password>
 STAGING_KEYCLOAK_CLIENT_SECRET=<client-secret>
 
+# Whisper / AI Transcription (external API)
+STAGING_WHISPER_API_URL=https://api.openai.com/v1/audio/transcriptions
+STAGING_OPENAI_API_KEY=<openai-api-key>
+
 # Security
 STAGING_JWT_SECRET=<min-32-char-random-string>
 STAGING_ALLOWED_ORIGINS=https://staging.kompass.de
@@ -244,6 +248,10 @@ PRODUCTION_KEYCLOAK_ADMIN=admin
 PRODUCTION_KEYCLOAK_ADMIN_PASSWORD=<secure-password>
 PRODUCTION_KEYCLOAK_CLIENT_SECRET=<client-secret>
 PRODUCTION_HOSTNAME=kompass.de
+
+# Whisper / AI Transcription (external API)
+PRODUCTION_WHISPER_API_URL=https://api.openai.com/v1/audio/transcriptions
+PRODUCTION_OPENAI_API_KEY=<openai-api-key>
 
 # PostgreSQL for Keycloak (Production)
 PRODUCTION_POSTGRES_HOST=<postgres-host>
@@ -489,6 +497,7 @@ bash scripts/health-check.sh <environment>
 - Keycloak: `http://localhost:8080/health`
 - Neo4j: `http://localhost:7474` (HTTP interface)
 - n8n: `http://localhost:5678/health` (if enabled)
+- Whisper (external API): `https://api.openai.com/v1/audio/transcriptions` (via backend)
 
 ### View Logs
 
