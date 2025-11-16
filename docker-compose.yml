@@ -1,5 +1,3 @@
-version: '3.8'
-
 # KOMPASS Docker Compose - Development Environment
 # For staging/production, use docker-compose.staging.yml or docker-compose.production.yml
 
