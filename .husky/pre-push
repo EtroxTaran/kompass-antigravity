@@ -80,27 +80,32 @@ echo ""
 echo "3️⃣  Checking documentation updates..."
 echo "3️⃣  Checking documentation updates..."
 
-# Get changed files
-CHANGED_FILES=$(git diff --name-only @{u}.. 2>/dev/null)
+# Skip documentation diff check on first push (no upstream)
+if ! git rev-parse --abbrev-ref @{u} >/dev/null 2>&1; then
+  echo "   ℹ️  No upstream found for this branch yet - skipping documentation update check on first push"
+else
+  # Get changed files compared to upstream
+  CHANGED_FILES=$(git diff --name-only @{u}.. 2>/dev/null)
 
-if [ -n "$CHANGED_FILES" ]; then
-  # Check if API changes were made
-  if echo "$CHANGED_FILES" | grep -qE "apps/backend/src/.*\.(controller|dto|guard|module)\.ts$"; then
-    # Check if docs were updated
-    if ! echo "$CHANGED_FILES" | grep -qE "^docs/(api/|specifications/API)"; then
-      echo "   ⚠️  INFO: API changes detected but no documentation updates found"
-      echo "   Consider updating (non-blocking):"
-      echo "     - docs/api/reference/"
-      echo "     - docs/specifications/API_SPECIFICATION.md"
-      echo "   (Push will continue regardless)"
+  if [ -n "$CHANGED_FILES" ]; then
+    # Check if API changes were made
+    if echo "$CHANGED_FILES" | grep -qE "apps/backend/src/.*\.(controller|dto|guard|module)\.ts$"; then
+      # Check if docs were updated
+      if ! echo "$CHANGED_FILES" | grep -qE "^docs/(api/|specifications/API)"; then
+        echo "   ⚠️  INFO: API changes detected but no documentation updates found"
+        echo "   Consider updating (non-blocking):"
+        echo "     - docs/api/reference/"
+        echo "     - docs/specifications/API_SPECIFICATION.md"
+        echo "   (Push will continue regardless)"
+      else
+        echo "   ✅ Documentation updated with API changes"
+      fi
     else
-      echo "   ✅ Documentation updated with API changes"
+      echo "   ✅ No API changes requiring documentation"
     fi
   else
-    echo "   ✅ No API changes requiring documentation"
+    echo "   ℹ️  No file changes to check"
   fi
-else
-  echo "   ℹ️  No file changes to check"
 fi
 
 # ============================================================================
@@ -137,11 +142,16 @@ fi
 echo "   ✅ Type-check passed"
 
 echo ""
-echo "6️⃣  Running tests..."
+echo "6️⃣  Running tests (backend & frontend)..."
 
-pnpm test
+# Run backend tests (fast/unit-style) and frontend tests, mirroring CI focus.
+pnpm --filter @kompass/backend test -- --passWithNoTests
+BACKEND_STATUS=$?
 
-if [ $? -ne 0 ]; then
+pnpm --filter @kompass/frontend test -- --passWithNoTests
+FRONTEND_STATUS=$?
+
+if [ $BACKEND_STATUS -ne 0 ] || [ $FRONTEND_STATUS -ne 0 ]; then
   echo ""
   echo "   ❌ Tests failed. Push aborted."
   echo "   Fix failing tests or skip with: git push --no-verify"
@@ -149,7 +159,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "   ✅ Tests passed"
+echo "   ✅ Tests passed (backend & frontend)"
 
 # ============================================================================
 
@@ -166,7 +176,7 @@ echo "   ✅ Commit messages valid"
 echo "   ℹ️  Documentation check completed (non-blocking)"
 echo "   ✅ Lint passed"
 echo "   ✅ Type-check passed"
-echo "   ✅ Tests passed"
+echo "   ✅ Tests passed (backend & frontend)"
 echo ""
 echo "   Pushing to $BRANCH_NAME..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
