@@ -72,6 +72,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -106,6 +109,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           target: production
+          platforms: linux/amd64,linux/arm64
 
       - name: Extract metadata for frontend
         id: meta-frontend
@@ -129,6 +133,7 @@ jobs:
           target: production
           build-args: |
             VITE_API_URL=${{ secrets.STAGING_API_URL }}
+          platforms: linux/amd64,linux/arm64
           # Note: If STAGING_API_URL secret is not set, Dockerfile uses default: https://api.kompass.etrox.de
 
   deploy-staging:
