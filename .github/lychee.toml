@@ -1,0 +1,13 @@
+[exclude]
+# Skip email address checks; they’re often informational and not critical for CI.
+email = true
+
+# Add domains here if they are known to be flaky or intentionally unreachable in CI.
+# domains = ["example.com"]
+
+[request]
+# Reasonable timeout for external sites in seconds
+timeout = 10
+user_agent = "Mozilla/5.0 (compatible; Lychee/1.0; +https://github.com/lycheeverse/lychee)"
+
+

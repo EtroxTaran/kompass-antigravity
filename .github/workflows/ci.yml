@@ -275,14 +275,16 @@ jobs:
         env:
           GITHUB_BASE_REF: ${{ github.base_ref || github.ref_name }}
 
-      - name: Validate markdown links
-        uses: gaurav-nelson/github-action-markdown-link-check@v1
+      - name: Validate markdown links (Lychee)
+        uses: lycheeverse/lychee-action@v1.7.0
         with:
-          use-quiet-mode: 'yes'
-          use-verbose-mode: 'no'
-          config-file: '.github/markdown-link-check.json'
-          folder-path: 'docs'
-          file-path: 'README.md'
+          # Check all docs markdown files plus the root README
+          args: >
+            --config .github/lychee.toml
+            README.md
+            docs/**/*.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
