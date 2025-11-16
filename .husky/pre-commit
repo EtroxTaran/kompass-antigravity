@@ -140,42 +140,10 @@ fi
 echo "   ✅ Lint-staged checks passed"
 
 # ============================================================================
-# 6. Run type-check (catches TypeScript errors)
+# 6. Check branch naming (same as CI)
 # ============================================================================
 echo ""
-echo "6️⃣  Running type-check..."
-
-pnpm type-check
-
-if [ $? -ne 0 ]; then
-    echo ""
-    echo "❌ Type-check failed"
-    exit 1
-fi
-
-echo "   ✅ Type-check passed"
-
-# ============================================================================
-# 7. Run format check (catches Prettier issues)
-# ============================================================================
-echo ""
-echo "7️⃣  Running format check..."
-
-pnpm format:check
-
-if [ $? -ne 0 ]; then
-    echo ""
-    echo "❌ Format check failed - run 'pnpm format' to fix"
-    exit 1
-fi
-
-echo "   ✅ Format check passed"
-
-# ============================================================================
-# 8. Check branch naming (same as CI)
-# ============================================================================
-echo ""
-echo "8️⃣  Checking branch naming..."
+echo "6️⃣  Checking branch naming..."
 
 BRANCH_NAME=$(git branch --show-current)
 

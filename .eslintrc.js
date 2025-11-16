@@ -53,6 +53,9 @@ module.exports = {
     '@typescript-eslint/await-thenable': 'error',
 
     // Import
+    // Import order:
+    // 1) Node/builtin  2) external  3) monorepo aliases (@kompass/**)
+    // 4) frontend aliases (@/**)  5) parent (../)  6) sibling (./)  7) index
     'import/order': [
       'error',
       {
@@ -63,6 +66,8 @@ module.exports = {
           'parent',
           'sibling',
           'index',
+          'object',
+          'type',
         ],
         'newlines-between': 'always',
         alphabetize: {
@@ -72,21 +77,16 @@ module.exports = {
         pathGroups: [
           {
             pattern: '@kompass/**',
-            group: 'external',
-            position: 'after',
-          },
-          {
-            pattern: '@/components/**',
             group: 'internal',
             position: 'after',
           },
           {
-            pattern: '../ui/**',
-            group: 'parent',
+            pattern: '@/**',
+            group: 'internal',
             position: 'after',
           },
         ],
-        pathGroupsExcludedImportTypes: ['builtin'],
+        pathGroupsExcludedImportTypes: ['builtin', 'type'],
       },
     ],
     'import/no-cycle': 'error',
@@ -168,7 +168,6 @@ module.exports = {
         '@typescript-eslint/no-unsafe-member-access': 'off',
         '@typescript-eslint/no-unsafe-return': 'off',
         '@typescript-eslint/no-unsafe-argument': 'off',
-        '@typescript-eslint/require-await': 'off',
         '@typescript-eslint/no-unused-vars': [
           'warn',
           {
@@ -176,6 +175,22 @@ module.exports = {
             varsIgnorePattern: '^_',
           },
         ],
+      },
+    },
+    {
+      files: [
+        'apps/backend/src/**/__tests__/**/*.{ts,tsx}',
+        'apps/backend/src/**/*.spec.{ts,tsx}',
+      ],
+      rules: {
+        // Relax unsafe/any rules in backend tests to reduce noise,
+        // but keep @typescript-eslint/require-await enabled via the backend override.
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
       },
     },
     {

@@ -43,35 +43,41 @@ fi
 echo ""
 echo "2️⃣  Checking commit messages for Linear issue IDs..."
 
-# Get commits that would be pushed
-COMMITS=$(git log @{u}.. --format=%s 2>/dev/null)
-
-if [ -z "$COMMITS" ]; then
-  echo "   ℹ️  No new commits to push"
+# Detect first push (no upstream yet) to avoid failing on @{u}
+if ! git rev-parse --abbrev-ref @{u} >/dev/null 2>&1; then
+  echo "   ℹ️  No upstream found for this branch yet - skipping commit message check on first push"
 else
-  # Check if all commits have Linear issue ID (KOM-###)
-  INVALID_COMMITS=$(echo "$COMMITS" | grep -vE "^(feat|fix|docs|style|refactor|perf|test|chore|ci|revert)\(KOM-[0-9]+\):" || true)
-  
-  if [ -n "$INVALID_COMMITS" ]; then
-    echo "   ❌ Some commits missing Linear issue ID:"
-    echo "$INVALID_COMMITS" | head -5
-    echo ""
-    echo "   Required format: <type>(KOM-###): <subject>"
-    echo "   Example: feat(KOM-123): add customer validation"
-    echo ""
-    echo "   Fix with:"
-    echo "     git commit --amend  # to fix last commit"
-    echo "     git rebase -i       # to fix older commits"
-    echo ""
-    exit 1
+  # Get commits that would be pushed
+  COMMITS=$(git log @{u}.. --format=%s 2>/dev/null)
+
+  if [ -z "$COMMITS" ]; then
+    echo "   ℹ️  No new commits to push"
+  else
+    # Check if all commits have Linear issue ID (KOM-###)
+    INVALID_COMMITS=$(echo "$COMMITS" | grep -vE "^(feat|fix|docs|style|refactor|perf|test|chore|ci|revert)\(KOM-[0-9]+\):" || true)
+    
+    if [ -n "$INVALID_COMMITS" ]; then
+      echo "   ❌ Some commits missing Linear issue ID:"
+      echo "$INVALID_COMMITS" | head -5
+      echo ""
+      echo "   Required format: <type>(KOM-###): <subject>"
+      echo "   Example: feat(KOM-123): add customer validation"
+      echo ""
+      echo "   Fix with:"
+      echo "     git commit --amend  # to fix last commit"
+      echo "     git rebase -i       # to fix older commits"
+      echo ""
+      exit 1
+    fi
+    echo "   ✅ All commits have Linear issue IDs"
   fi
-  echo "   ✅ All commits have Linear issue IDs"
 fi
 
 # ============================================================================
 # 3. Check if documentation needs updating (non-blocking warning only)
 # ============================================================================
 echo ""
+echo "3️⃣  Checking documentation updates..."
 echo "3️⃣  Checking documentation updates..."
 
 # Get changed files
@@ -98,28 +104,52 @@ else
 fi
 
 # ============================================================================
-# 4. Run unit tests
+# 4. Run lint, type-check, and tests (same as CI)
 # ============================================================================
 echo ""
-echo "4️⃣  Running unit tests..."
+echo "4️⃣  Running lint (full monorepo)..."
 
-if [ "${RUN_PRE_PUSH_TESTS:-0}" = "1" ]; then
-  # Run fast backend unit tests only (not integration or E2E)
-  pnpm --filter @kompass/backend test:unit -- --passWithNoTests
+pnpm lint
 
-  if [ $? -ne 0 ]; then
-    echo "   ❌ Unit tests failed. Push aborted."
-    echo ""
-    echo "   Fix the failing tests or skip with: git push --no-verify"
-    echo "   (Not recommended - all tests should pass)"
-    echo ""
-    exit 1
-  fi
-
-  echo "   ✅ Unit tests passed"
-else
-  echo "   ⚠️ Skipping unit tests (set RUN_PRE_PUSH_TESTS=1 to enable)"
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "   ❌ Lint failed. Push aborted."
+  echo "   Fix lint errors or skip with: git push --no-verify"
+  echo ""
+  exit 1
 fi
+
+echo "   ✅ Lint passed"
+
+echo ""
+echo "5️⃣  Running type-check..."
+
+pnpm type-check
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "   ❌ Type-check failed. Push aborted."
+  echo "   Fix type errors or skip with: git push --no-verify"
+  echo ""
+  exit 1
+fi
+
+echo "   ✅ Type-check passed"
+
+echo ""
+echo "6️⃣  Running tests..."
+
+pnpm test
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "   ❌ Tests failed. Push aborted."
+  echo "   Fix failing tests or skip with: git push --no-verify"
+  echo ""
+  exit 1
+fi
+
+echo "   ✅ Tests passed"
 
 # ============================================================================
 
@@ -134,7 +164,9 @@ echo ""
 echo "   ✅ Branch name valid"
 echo "   ✅ Commit messages valid"
 echo "   ℹ️  Documentation check completed (non-blocking)"
-echo "   ✅ Unit tests passed"
+echo "   ✅ Lint passed"
+echo "   ✅ Type-check passed"
+echo "   ✅ Tests passed"
 echo ""
 echo "   Pushing to $BRANCH_NAME..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
