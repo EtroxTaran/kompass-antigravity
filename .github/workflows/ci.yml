@@ -276,13 +276,13 @@ jobs:
           GITHUB_BASE_REF: ${{ github.base_ref || github.ref_name }}
 
       - name: Validate markdown links (Lychee)
-        uses: lycheeverse/lychee-action@v2.0.2
+        # Use a stable v1 release to avoid current v2 shell/arg parsing issues
+        uses: lycheeverse/lychee-action@v1.7.0
         with:
-          # Check all docs markdown files plus the root README
+          # Check all markdown files in the repo (README + docs, etc.)
           args: >
             --config .github/lychee.toml
-            README.md
-            docs/**/*.md
+            './**/*.md'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
