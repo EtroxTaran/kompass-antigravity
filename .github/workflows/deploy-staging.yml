@@ -195,13 +195,13 @@ jobs:
             REGISTRY="${REGISTRY:-ghcr.io}"
 
             # Pull latest images (with SHA tag for traceability)
-            sudo docker pull ${REGISTRY}/${IMAGE_NAME}/backend:staging || true
-            sudo docker pull ${REGISTRY}/${IMAGE_NAME}/backend:staging-${GIT_SHA} || true
-            sudo docker pull ${REGISTRY}/${IMAGE_NAME}/frontend:staging || true
-            sudo docker pull ${REGISTRY}/${IMAGE_NAME}/frontend:staging-${GIT_SHA} || true
+            docker pull ${REGISTRY}/${IMAGE_NAME}/backend:staging || true
+            docker pull ${REGISTRY}/${IMAGE_NAME}/backend:staging-${GIT_SHA} || true
+            docker pull ${REGISTRY}/${IMAGE_NAME}/frontend:staging || true
+            docker pull ${REGISTRY}/${IMAGE_NAME}/frontend:staging-${GIT_SHA} || true
 
             # Backup current deployment
-            sudo docker-compose -f docker-compose.yml -f docker-compose.staging.yml ps > deployment-backup-$(date +%Y%m%d-%H%M%S).txt
+            docker-compose -f docker-compose.yml -f docker-compose.staging.yml ps > deployment-backup-$(date +%Y%m%d-%H%M%S).txt
 
             # Deploy with docker-compose
             export GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
@@ -209,15 +209,15 @@ jobs:
             # Use SHA-tagged images (staging-<sha>) that were just pulled
             # Feature flags are injected via docker-compose.staging.yml environment variables
             # Environment variables from .env.staging are loaded above
-            sudo docker-compose -f docker-compose.yml -f docker-compose.staging.yml pull
-            sudo docker-compose -f docker-compose.yml -f docker-compose.staging.yml up -d --remove-orphans
+            docker-compose -f docker-compose.yml -f docker-compose.staging.yml pull
+            docker-compose -f docker-compose.yml -f docker-compose.staging.yml up -d --remove-orphans
 
             # Wait for services to be healthy
             echo "Waiting for services to be healthy..."
             sleep 30
 
             # Check health
-            sudo docker-compose -f docker-compose.yml -f docker-compose.staging.yml ps
+            docker-compose -f docker-compose.yml -f docker-compose.staging.yml ps
 
       - name: Run smoke tests
         uses: appleboy/ssh-action@v1.0.0
