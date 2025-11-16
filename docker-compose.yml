@@ -60,8 +60,7 @@ services:
       - KC_HOSTNAME_STRICT_HTTPS=false
     command:
       - start-dev
-    ports:
-      - '8080:8080'
+    # No host port bindings; accessible from other services via 'keycloak:8080' on internal network
     volumes:
       - keycloak-data:/opt/keycloak/data
     networks:
