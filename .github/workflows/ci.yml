@@ -285,10 +285,23 @@ jobs:
           mv lychee "$HOME/.local/bin/lychee"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-      - name: Validate markdown links (Lychee)
+      - name: Validate internal markdown links (Lychee offline, blocking)
         run: |
           set -euo pipefail
-          lychee --config .github/lychee.toml './**/*.md'
+          # Offline mode: only checks local/relative links and anchors.
+          # This is the blocking check for things we control inside the repo.
+          lychee --config .github/lychee.toml --offline './**/*.md'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check external markdown links (Lychee, non-blocking)
+        run: |
+          set -euo pipefail
+          # Full external check is best-effort and must not fail CI.
+          # If this command fails, we log a warning but keep the job green.
+          if ! lychee --config .github/lychee.toml './**/*.md'; then
+            echo "⚠️ External link check failed (non-blocking). See details above."
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

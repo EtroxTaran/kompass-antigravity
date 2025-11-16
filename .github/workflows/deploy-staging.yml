@@ -143,6 +143,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Sync docker-compose files to staging server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_DEPLOY_KEY }}
+          source: "docker-compose.yml,docker-compose.staging.yml"
+          target: "/opt/kompass/staging"
+
       - name: Get Git SHA
         id: git-sha-deploy
         run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
@@ -160,7 +169,15 @@ jobs:
           key: ${{ secrets.STAGING_DEPLOY_KEY }}
           envs: GIT_SHA,GITHUB_REPOSITORY,REGISTRY,IMAGE_NAME
           script: |
+            set -euo pipefail
+
             cd /opt/kompass/staging
+
+            # Ensure docker-compose files are present (synced from CI via SCP step)
+            if [ ! -f docker-compose.yml ] || [ ! -f docker-compose.staging.yml ]; then
+              echo "❌ docker-compose.yml or docker-compose.staging.yml is missing in /opt/kompass/staging"
+              exit 1
+            fi
 
             # Load environment variables from .env.staging file
             if [ -f .env.staging ]; then

@@ -328,10 +328,11 @@ Go to Settings → Environments
 4. Docker images are built and tagged with `staging` and `staging-<sha>`
 5. Images are pushed to GitHub Container Registry (ghcr.io)
 6. SSH deployment to Hetzner staging server
-7. `docker-compose pull && docker-compose up -d` executed on server
-8. Health checks are performed
-9. Smoke tests are run
-10. Changelog is updated and committed to `main`
+7. GitHub Actions syncs `docker-compose.yml` and `docker-compose.staging.yml` to `/opt/kompass/staging`
+8. On the server, `docker-compose -f docker-compose.yml -f docker-compose.staging.yml pull` and `up -d --remove-orphans` are executed
+9. Health checks are performed
+10. Smoke tests are run
+11. Changelog is updated and committed to `main`
 
 **Timeline**: ~10-15 minutes
 
