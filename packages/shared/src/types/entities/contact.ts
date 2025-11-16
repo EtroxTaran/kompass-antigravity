@@ -20,8 +20,9 @@
  * - CO-003: Customer should have at least one decision maker or key influencer (warning)
  */
 
-import type { BaseEntity } from '../base.entity';
 import { DecisionMakingRole } from '../enums';
+
+import type { BaseEntity } from '../base.entity';
 import type {
   FunctionalRole,
   AuthorityLevel,
