@@ -261,9 +261,7 @@ export class MeetingService {
     if (dto.outcome !== undefined) {
       // Map string outcome to MeetingOutcome enum if it matches
       const outcomeValue = dto.outcome.toLowerCase();
-      if (
-        (Object.values(MeetingOutcome) as string[]).includes(outcomeValue)
-      ) {
+      if ((Object.values(MeetingOutcome) as string[]).includes(outcomeValue)) {
         updateData.outcome = outcomeValue as MeetingOutcome;
       } else {
         // If outcome is a long text, store in notes instead

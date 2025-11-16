@@ -128,7 +128,7 @@ export class ProjectCostRepository implements IProjectCostRepository {
     // const result = await db.find({ selector, limit: 1000 });
     // return result.docs as ProjectCost[];
 
-    return [];
+    return Promise.resolve([]);
   }
 
   async findByProject(projectId: string): Promise<ProjectCost[]> {

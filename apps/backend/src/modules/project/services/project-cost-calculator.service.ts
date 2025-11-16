@@ -293,6 +293,6 @@ export class ProjectCostCalculatorService {
     //   }
     // }
 
-    return { updated, errors };
+    return Promise.resolve({ updated, errors });
   }
 }

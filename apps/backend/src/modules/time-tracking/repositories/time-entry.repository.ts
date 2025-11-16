@@ -75,7 +75,7 @@ export class TimeEntryRepository implements ITimeEntryRepository {
       return Promise.resolve(null);
     } catch (error: unknown) {
       if (this.isCouchDBError(error) && error.statusCode === 404) {
-        return null;
+        return Promise.resolve(null);
       }
       throw error;
     }
@@ -127,7 +127,7 @@ export class TimeEntryRepository implements ITimeEntryRepository {
     // const result = await db.find({ selector, limit: 1000 });
     // return result.docs as TimeEntry[];
 
-    return [];
+    return Promise.resolve([]);
   }
 
   async findByProject(projectId: string): Promise<TimeEntry[]> {

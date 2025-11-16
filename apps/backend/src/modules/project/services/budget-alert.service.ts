@@ -346,6 +346,7 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
     );
     // TODO: Implement audit logging
     // await this.auditService.log(event);
+    return Promise.resolve();
   }
 
   /**

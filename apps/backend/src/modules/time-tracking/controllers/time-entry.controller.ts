@@ -23,7 +23,6 @@ import {
   CreateTimeEntryDto,
   UpdateTimeEntryDto,
   TimeEntryStatus,
-  LaborCostSummary,
 } from '@kompass/shared/types/entities/time-entry';
 import { User } from '@kompass/shared/types/entities/user';
 
@@ -92,7 +91,7 @@ export class TimeEntryController {
     @Body() dto: CreateTimeEntryDto,
     @CurrentUser() user: User
   ): Promise<TimeEntryResponseDto> {
-    return this.timeEntryService.create(dto, user.id);
+    return this.timeEntryService.create(dto, user._id);
   }
 
   /**
@@ -131,8 +130,8 @@ export class TimeEntryController {
     };
     return this.timeEntryService.findAll(
       filters,
-      user?.id ?? '',
-      user?.role ?? 'ADM'
+      user?._id ?? '',
+      user?.primaryRole ?? 'ADM'
     );
   }
 
@@ -156,7 +155,7 @@ export class TimeEntryController {
     @Param('id') id: string,
     @CurrentUser() user: User
   ): Promise<TimeEntryResponseDto> {
-    return this.timeEntryService.findById(id, user.id);
+    return this.timeEntryService.findById(id, user._id);
   }
 
   /**
@@ -187,7 +186,7 @@ export class TimeEntryController {
     @Body() dto: UpdateTimeEntryDto,
     @CurrentUser() user: User
   ): Promise<TimeEntryResponseDto> {
-    return this.timeEntryService.update(id, dto, user.id);
+    return this.timeEntryService.update(id, dto, user._id);
   }
 
   /**
@@ -204,7 +203,7 @@ export class TimeEntryController {
     @Param('id') id: string,
     @CurrentUser() user: User
   ): Promise<void> {
-    await this.timeEntryService.delete(id, user.id);
+    await this.timeEntryService.delete(id, user._id);
   }
 
   /**
@@ -227,7 +226,7 @@ export class TimeEntryController {
     @Param('id') id: string,
     @CurrentUser() user: User
   ): Promise<TimeEntryResponseDto> {
-    return this.timeEntryService.stopTimer(id, user.id);
+    return this.timeEntryService.stopTimer(id, user._id);
   }
 
   /**
@@ -249,7 +248,7 @@ export class TimeEntryController {
     @Param('id') id: string,
     @CurrentUser() user: User
   ): Promise<TimeEntryResponseDto> {
-    return this.timeEntryService.pauseTimer(id, user.id);
+    return this.timeEntryService.pauseTimer(id, user._id);
   }
 
   /**
@@ -276,7 +275,7 @@ export class TimeEntryController {
     @Body() dto: CreateTimeEntryDto,
     @CurrentUser() user: User
   ): Promise<TimeEntryResponseDto> {
-    return this.timeEntryService.create(dto, user.id);
+    return this.timeEntryService.create(dto, user._id);
   }
 
   /**
@@ -299,7 +298,7 @@ export class TimeEntryController {
     @Param('id') id: string,
     @CurrentUser() user: User
   ): Promise<TimeEntryResponseDto> {
-    return this.timeEntryService.approve(id, user.id);
+    return this.timeEntryService.approve(id, user._id);
   }
 
   /**
@@ -331,7 +330,7 @@ export class TimeEntryController {
     @Body('reason') reason: string,
     @CurrentUser() user: User
   ): Promise<TimeEntryResponseDto> {
-    return this.timeEntryService.reject(id, reason, user.id);
+    return this.timeEntryService.reject(id, reason, user._id);
   }
 
   /**
@@ -367,7 +366,7 @@ export class TimeEntryController {
     @Body('entryIds') entryIds: string[],
     @CurrentUser() user: User
   ): Promise<{ approvedCount: number }> {
-    return this.timeEntryService.bulkApprove(entryIds, user.id);
+    return this.timeEntryService.bulkApprove(entryIds, user._id);
   }
 
   /**
@@ -388,7 +387,7 @@ export class TimeEntryController {
   async getActiveTimer(
     @CurrentUser() user: User
   ): Promise<TimeEntryResponseDto | null> {
-    return this.timeEntryService.getActiveTimer(user.id);
+    return this.timeEntryService.getActiveTimer(user._id);
   }
 
   /**
@@ -416,11 +415,11 @@ export class TimeEntryController {
       throw new Error('User is required');
     }
     const filters: TimeEntryFilters = {
-      userId: user.id,
+      userId: user._id,
       startDate,
       endDate,
     };
-    return this.timeEntryService.findAll(filters, user.id, user.role);
+    return this.timeEntryService.findAll(filters, user._id, user.primaryRole);
   }
 
   /**
@@ -458,6 +457,6 @@ export class TimeEntryController {
       startDate,
       endDate,
     };
-    return this.timeEntryService.findAll(filters, user.id, user.role);
+    return this.timeEntryService.findAll(filters, user._id, user.primaryRole);
   }
 }
