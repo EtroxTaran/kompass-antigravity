@@ -10,8 +10,9 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import type { RouteWaypoint } from '@kompass/shared/types/entities/tour';
 import { TourStatus } from '@kompass/shared/types/entities/tour';
+
+import type { RouteWaypoint } from '@kompass/shared/types/entities/tour';
 
 /**
  * Create Tour DTO

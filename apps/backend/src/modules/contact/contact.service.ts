@@ -28,7 +28,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import type { ContactPerson } from '@kompass/shared/types/entities/contact';
 import {
   getContactDisplayName,
   validateContact,
@@ -37,6 +36,7 @@ import { DecisionMakingRole } from '@kompass/shared/types/enums';
 
 import type { DecisionAuthorityResponseDto } from './dto/decision-authority-response.dto';
 import type { UpdateDecisionAuthorityDto } from './dto/update-decision-authority.dto';
+import type { ContactPerson } from '@kompass/shared/types/entities/contact';
 
 /**
  * Placeholder User type

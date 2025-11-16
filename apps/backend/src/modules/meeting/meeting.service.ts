@@ -26,24 +26,26 @@ import {
   Logger,
 } from '@nestjs/common';
 
-import type { Location } from '@kompass/shared/types/entities/location';
-import type {
-  Meeting,
-  MeetingOutcome,
-} from '@kompass/shared/types/entities/meeting';
 import {
   validateMeeting,
   createMeeting,
   MeetingOutcome as MeetingOutcomeEnum,
 } from '@kompass/shared/types/entities/meeting';
-import type { Tour } from '@kompass/shared/types/entities/tour';
+
+
+import { MeetingStatus } from './dto/create-meeting.dto';
+import { IMeetingRepository } from './meeting.repository';
 
 import type { CreateMeetingDto } from './dto/create-meeting.dto';
-import { MeetingStatus } from './dto/create-meeting.dto';
 import type { MeetingResponseDto } from './dto/meeting-response.dto';
 import type { UpdateMeetingDto, CheckInDto } from './dto/update-meeting.dto';
-import { IMeetingRepository } from './meeting.repository';
 import type { MeetingFilters } from './meeting.repository';
+import type { Location } from '@kompass/shared/types/entities/location';
+import type {
+  Meeting,
+  MeetingOutcome,
+} from '@kompass/shared/types/entities/meeting';
+import type { Tour } from '@kompass/shared/types/entities/tour';
 
 /**
  * Placeholder User type

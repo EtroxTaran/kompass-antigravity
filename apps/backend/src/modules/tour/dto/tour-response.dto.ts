@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-import type { RouteWaypoint } from '@kompass/shared/types/entities/tour';
 import { TourStatus } from '@kompass/shared/types/entities/tour';
+
+import type { RouteWaypoint } from '@kompass/shared/types/entities/tour';
 
 /**
  * Tour Response DTO

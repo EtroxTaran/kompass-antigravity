@@ -10,17 +10,18 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
-import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
 
-import type { ContactPerson } from '@kompass/shared/types/entities/contact';
 import {
   DecisionMakingRole,
   FunctionalRole,
 } from '@kompass/shared/types/enums';
 
 import { ContactService } from '../contact.service';
+
 import type { UpdateDecisionAuthorityDto } from '../dto/update-decision-authority.dto';
+import type { ContactPerson } from '@kompass/shared/types/entities/contact';
+import type { TestingModule } from '@nestjs/testing';
 
 describe('ContactService', () => {
   let service: ContactService;

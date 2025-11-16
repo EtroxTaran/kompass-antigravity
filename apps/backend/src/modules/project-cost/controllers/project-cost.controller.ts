@@ -19,10 +19,6 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-import type {
-  ProjectCostResponseDto,
-  MaterialCostSummary,
-} from '@kompass/shared/types/entities/project-cost';
 import {
   CreateProjectCostDto,
   UpdateProjectCostDto,
@@ -30,8 +26,13 @@ import {
   ProjectCostType,
 } from '@kompass/shared/types/entities/project-cost';
 
-import type { ProjectCostFilters } from '../repositories/project-cost.repository.interface';
 import { ProjectCostService } from '../services/project-cost.service';
+
+import type { ProjectCostFilters } from '../repositories/project-cost.repository.interface';
+import type {
+  ProjectCostResponseDto,
+  MaterialCostSummary,
+} from '@kompass/shared/types/entities/project-cost';
 
 // TODO: Import actual decorators and guards when auth module is fully implemented
 // import { CurrentUser } from '../../auth/decorators/current-user.decorator';

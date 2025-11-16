@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
+import type { IRoleRepository } from './role.repository.interface';
 import type {
   Role,
   PermissionMatrix,
 } from '@kompass/shared/types/entities/role';
 
-import type { IRoleRepository } from './role.repository.interface';
 // TODO: Import CouchDB nano client when available
 // import { Nano } from 'nano';
 

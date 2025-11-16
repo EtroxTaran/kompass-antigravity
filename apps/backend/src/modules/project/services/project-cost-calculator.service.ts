@@ -1,13 +1,14 @@
 import { Injectable, Inject } from '@nestjs/common';
 
-import type {
-  Project,
-  ProfitabilityReport,
-} from '@kompass/shared/types/entities/project';
 import {
   CostTrackingStatus,
   calculateCostTrackingStatus,
   calculateProfitMargin,
+} from '@kompass/shared/types/entities/project';
+
+import type {
+  Project,
+  ProfitabilityReport,
 } from '@kompass/shared/types/entities/project';
 import type { MaterialCostSummary } from '@kompass/shared/types/entities/project-cost';
 import type { LaborCostSummary } from '@kompass/shared/types/entities/time-entry';

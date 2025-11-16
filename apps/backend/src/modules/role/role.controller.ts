@@ -6,12 +6,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 
-import type {
-  EntityType,
-  Permission,
-} from '@kompass/shared/constants/rbac.constants';
 import { UserRole } from '@kompass/shared/constants/rbac.constants';
-import type { Role } from '@kompass/shared/types/entities/role';
 import { User } from '@kompass/shared/types/entities/user';
 
 // TODO: Import actual decorators and guards when auth module is fully implemented
@@ -30,6 +25,12 @@ const JwtAuthGuard = class {};
 const RbacGuard = class {};
 
 import { RoleService } from './role.service';
+
+import type {
+  EntityType,
+  Permission,
+} from '@kompass/shared/constants/rbac.constants';
+import type { Role } from '@kompass/shared/types/entities/role';
 
 /**
  * Role Configuration Controller

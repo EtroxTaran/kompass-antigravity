@@ -68,7 +68,7 @@ export class N8nService {
    * - opportunity_won: Generate invoice, update external CRM
    * - invoice_overdue: Send reminder email, notify account manager
    */
-  async triggerWorkflow(trigger: WorkflowTrigger): Promise<string> {
+  triggerWorkflow(trigger: WorkflowTrigger): Promise<string> {
     this.ensureEnabled();
 
     this.logger.log(
@@ -88,7 +88,7 @@ export class N8nService {
    * - Return execution details
    * - Include error information if failed
    */
-  async getWorkflowStatus(executionId: string): Promise<WorkflowStatus> {
+  getWorkflowStatus(executionId: string): Promise<WorkflowStatus> {
     this.ensureEnabled();
 
     this.logger.log(`[STUB] Getting workflow status: ${executionId}`);
@@ -105,14 +105,14 @@ export class N8nService {
    * - Query n8n API for workflow list
    * - Return workflow metadata
    */
-  async listWorkflows(): Promise<
+  listWorkflows(): Promise<
     Array<{ id: string; name: string; active: boolean }>
   > {
     this.ensureEnabled();
 
     this.logger.log('[STUB] Listing available workflows');
     // TODO: Implement in Phase 2.2
-    return [];
+    return Promise.resolve([]);
   }
 
   /**

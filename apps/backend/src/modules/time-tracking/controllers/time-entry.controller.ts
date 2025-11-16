@@ -19,7 +19,6 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-import type { TimeEntryResponseDto } from '@kompass/shared/types/entities/time-entry';
 import {
   CreateTimeEntryDto,
   UpdateTimeEntryDto,
@@ -27,8 +26,10 @@ import {
   LaborCostSummary,
 } from '@kompass/shared/types/entities/time-entry';
 
-import type { TimeEntryFilters } from '../repositories/time-entry.repository.interface';
 import { TimeEntryService } from '../services/time-entry.service';
+
+import type { TimeEntryFilters } from '../repositories/time-entry.repository.interface';
+import type { TimeEntryResponseDto } from '@kompass/shared/types/entities/time-entry';
 
 // TODO: Import actual decorators and guards when auth module is fully implemented
 // import { CurrentUser } from '../../auth/decorators/current-user.decorator';

@@ -1,10 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 
+import { CostTrackingStatus } from '@kompass/shared/types/entities/project';
+
 import type {
   Project,
   ProfitabilityReport,
 } from '@kompass/shared/types/entities/project';
-import { CostTrackingStatus } from '@kompass/shared/types/entities/project';
 
 /**
  * Budget Alert Service

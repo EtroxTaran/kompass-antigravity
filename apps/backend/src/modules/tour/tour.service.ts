@@ -28,7 +28,6 @@ import {
   Logger,
 } from '@nestjs/common';
 
-import type { Tour } from '@kompass/shared/types/entities/tour';
 import {
   validateTour,
   isValidTourStatusTransition,
@@ -36,14 +35,16 @@ import {
   TourStatus,
 } from '@kompass/shared/types/entities/tour';
 
+import { ITourRepository } from './tour.repository';
+
 import type { CreateTourDto } from './dto/create-tour.dto';
 import type {
   TourResponseDto,
   TourCostSummaryDto,
 } from './dto/tour-response.dto';
 import type { UpdateTourDto } from './dto/update-tour.dto';
-import { ITourRepository } from './tour.repository';
 import type { TourFilters } from './tour.repository';
+import type { Tour } from '@kompass/shared/types/entities/tour';
 
 /**
  * Placeholder User type

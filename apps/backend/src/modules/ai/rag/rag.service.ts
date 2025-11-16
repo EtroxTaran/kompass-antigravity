@@ -69,7 +69,7 @@ export class RagService {
    * - Store in Weaviate vector database
    * - Update document index
    */
-  async indexDocument(document: DocumentToIndex): Promise<void> {
+  indexDocument(document: DocumentToIndex): Promise<void> {
     this.ensureEnabled();
 
     this.logger.log(`[STUB] Indexing document: ${document.id}`);
@@ -86,7 +86,7 @@ export class RagService {
    * - Rank results by relevance
    * - Return top K results
    */
-  async search(
+  search(
     query: string,
     _options?: {
       entityType?: string;
@@ -110,7 +110,7 @@ export class RagService {
    * - Generate answer using LLM
    * - Return answer with source citations
    */
-  async semanticQuery(
+  semanticQuery(
     query: string,
     _context?: {
       customerId?: string;
@@ -133,11 +133,12 @@ export class RagService {
    * - Remove document vectors from Weaviate
    * - Update index
    */
-  async deleteDocument(documentId: string): Promise<void> {
+  deleteDocument(documentId: string): Promise<void> {
     this.ensureEnabled();
 
     this.logger.log(`[STUB] Deleting document: ${documentId}`);
     // TODO: Implement in Phase 2.1
+    return Promise.resolve();
   }
 
   /**
