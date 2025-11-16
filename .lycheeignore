@@ -25,6 +25,7 @@ ui-ux/08-specialized/conflict-resolution.md
 
 # Persona placeholder documents that are referenced but not yet present
 docs/personas/Persona_*.md
+file://*
 
 # External docs that often 403/404 from CI but are valid for users
 https://platform.openai.com/docs/guides/speech-to-text
@@ -32,6 +33,7 @@ https://developer.lexware.de/*
 https://www.pwc.de/*
 https://www.evarlinkstudios.com/*
 https://www.qmarketing.de/*
+https://www.vdi.de/*
 
 # Placeholder GitHub links that don’t exist yet
 https://github.com/your-org/kompass/*
