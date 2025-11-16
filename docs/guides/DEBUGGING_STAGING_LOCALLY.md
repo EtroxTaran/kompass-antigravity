@@ -5,22 +5,26 @@ This guide explains how to run the staging environment locally to debug deployme
 ## Quick Start
 
 1. **Create environment file:**
+
    ```bash
    cp .env.staging.local.example .env.staging.local
    # Edit .env.staging.local with your values
    ```
 
 2. **Build and start services:**
+
    ```bash
    bash scripts/run-staging-local.sh build up
    ```
 
 3. **View logs:**
+
    ```bash
    bash scripts/run-staging-local.sh logs
    ```
 
 4. **Run health checks:**
+
    ```bash
    bash scripts/run-staging-local.sh health
    ```
@@ -39,6 +43,7 @@ The local staging setup uses three docker-compose files:
 3. **`docker-compose.staging.local.yml`** - Local testing overrides
 
 The local override file:
+
 - Uses a local bridge network instead of external `proxynet`
 - Exposes ports directly (no Traefik required)
 - Uses local Docker volumes instead of host bind mounts
@@ -55,6 +60,7 @@ bash scripts/run-staging-local.sh build up
 ```
 
 This will:
+
 1. Build the shared package
 2. Build backend and frontend Docker images
 3. Start all services
@@ -119,11 +125,13 @@ Once started, services are available at:
 ### Services Won't Start
 
 1. **Check Docker is running:**
+
    ```bash
    docker ps
    ```
 
 2. **Validate configuration:**
+
    ```bash
    docker-compose -f docker-compose.yml -f docker-compose.staging.yml -f docker-compose.staging.local.yml config
    ```
@@ -137,11 +145,13 @@ Once started, services are available at:
 ### Backend Won't Connect to Database
 
 1. **Check CouchDB is running:**
+
    ```bash
    curl http://localhost:5984/_up
    ```
 
 2. **Check backend logs:**
+
    ```bash
    docker-compose -f docker-compose.yml -f docker-compose.staging.yml -f docker-compose.staging.local.yml logs backend
    ```
@@ -154,6 +164,7 @@ Once started, services are available at:
 ### Frontend Can't Connect to Backend
 
 1. **Check backend is running:**
+
    ```bash
    curl http://localhost:3001/health
    ```
@@ -170,11 +181,13 @@ Once started, services are available at:
 ### Images Won't Pull from GHCR
 
 1. **Login to GHCR:**
+
    ```bash
    docker login ghcr.io
    ```
 
 2. **Or set credentials:**
+
    ```bash
    export GHCR_USERNAME=EtroxTaran
    export GHCR_TOKEN=your_token_here
@@ -189,34 +202,38 @@ Once started, services are available at:
 
 The local staging environment differs from production staging in these ways:
 
-| Feature | Production Staging | Local Staging |
-|---------|-------------------|---------------|
-| Network | External `proxynet` (Traefik) | Local bridge network |
-| Ports | Via Traefik (HTTPS) | Direct port mapping |
-| Volumes | Host bind mounts | Docker named volumes |
-| Images | Pulled from GHCR | Built locally or pulled |
-| Environment | `.env.staging` on server | `.env.staging.local` locally |
+| Feature     | Production Staging            | Local Staging                |
+| ----------- | ----------------------------- | ---------------------------- |
+| Network     | External `proxynet` (Traefik) | Local bridge network         |
+| Ports       | Via Traefik (HTTPS)           | Direct port mapping          |
+| Volumes     | Host bind mounts              | Docker named volumes         |
+| Images      | Pulled from GHCR              | Built locally or pulled      |
+| Environment | `.env.staging` on server      | `.env.staging.local` locally |
 
 ## Troubleshooting Deployment Issues
 
 When debugging staging deployment failures:
 
 1. **Run locally first:**
+
    ```bash
    bash scripts/run-staging-local.sh build up
    ```
 
 2. **Check if services start:**
+
    ```bash
    bash scripts/run-staging-local.sh ps
    ```
 
 3. **Review logs for errors:**
+
    ```bash
    bash scripts/run-staging-local.sh logs
    ```
 
 4. **Run health checks:**
+
    ```bash
    bash scripts/run-staging-local.sh health
    ```
@@ -242,5 +259,3 @@ If local staging works but production staging fails:
 - [Deployment Guide](../deployment/)
 - [Development Setup](./DEVELOPMENT.md)
 - [Docker Compose Configuration](../../docker-compose.yml)
-
-
