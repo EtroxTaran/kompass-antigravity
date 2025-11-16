@@ -189,14 +189,19 @@ jobs:
               echo "⚠️  Warning: .env.staging file not found. Some environment variables may be missing."
             fi
 
+            # Normalize image name to lowercase to avoid Docker reference errors,
+            # even if .env.staging overrides IMAGE_NAME with mixed-case.
+            IMAGE_NAME="$(printf '%s\n' "${IMAGE_NAME:-${GITHUB_REPOSITORY}}" | tr '[:upper:]' '[:lower:]')"
+            REGISTRY="${REGISTRY:-ghcr.io}"
+
             # Pull latest images (with SHA tag for traceability)
-            docker pull ${REGISTRY}/${IMAGE_NAME}/backend:staging || true
-            docker pull ${REGISTRY}/${IMAGE_NAME}/backend:staging-${GIT_SHA} || true
-            docker pull ${REGISTRY}/${IMAGE_NAME}/frontend:staging || true
-            docker pull ${REGISTRY}/${IMAGE_NAME}/frontend:staging-${GIT_SHA} || true
+            sudo docker pull ${REGISTRY}/${IMAGE_NAME}/backend:staging || true
+            sudo docker pull ${REGISTRY}/${IMAGE_NAME}/backend:staging-${GIT_SHA} || true
+            sudo docker pull ${REGISTRY}/${IMAGE_NAME}/frontend:staging || true
+            sudo docker pull ${REGISTRY}/${IMAGE_NAME}/frontend:staging-${GIT_SHA} || true
 
             # Backup current deployment
-            docker-compose -f docker-compose.yml -f docker-compose.staging.yml ps > deployment-backup-$(date +%Y%m%d-%H%M%S).txt
+            sudo docker-compose -f docker-compose.yml -f docker-compose.staging.yml ps > deployment-backup-$(date +%Y%m%d-%H%M%S).txt
 
             # Deploy with docker-compose
             export GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
@@ -204,15 +209,15 @@ jobs:
             # Use SHA-tagged images (staging-<sha>) that were just pulled
             # Feature flags are injected via docker-compose.staging.yml environment variables
             # Environment variables from .env.staging are loaded above
-            docker-compose -f docker-compose.yml -f docker-compose.staging.yml pull
-            docker-compose -f docker-compose.yml -f docker-compose.staging.yml up -d --remove-orphans
+            sudo docker-compose -f docker-compose.yml -f docker-compose.staging.yml pull
+            sudo docker-compose -f docker-compose.yml -f docker-compose.staging.yml up -d --remove-orphans
 
             # Wait for services to be healthy
             echo "Waiting for services to be healthy..."
             sleep 30
 
             # Check health
-            docker-compose -f docker-compose.yml -f docker-compose.staging.yml ps
+            sudo docker-compose -f docker-compose.yml -f docker-compose.staging.yml ps
 
       - name: Run smoke tests
         uses: appleboy/ssh-action@v1.0.0
