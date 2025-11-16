@@ -7,7 +7,11 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  # NOTE: Docker/OCI image references must be lowercase. GitHub's `github.repository`
+  # can contain uppercase characters (e.g. `EtroxTaran/kompass`), which breaks
+  # `docker pull/push` with "invalid reference format". We hardcode the lowercase
+  # variant here to avoid that issue.
+  IMAGE_NAME: etroxtaran/kompass
 
 jobs:
   quality-gates:
