@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 // TODO: Install mongoose and @nestjs/mongoose when implementing time tracking
 // import { InjectConnection } from '@nestjs/mongoose';
 // import { Connection } from 'mongoose';
-type Connection = any; // Stub type
+// Stub Connection type (will be replaced with mongoose Connection when implemented)
+type Connection = unknown;
 import { v4 as uuidv4 } from 'uuid';
 
 import { TimeEntryStatus } from '@kompass/shared/types/entities/time-entry';
@@ -20,7 +21,8 @@ import type {
 
 // Stub InjectConnection decorator
 const InjectConnection =
-  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
+  () =>
+  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
 
 /**
  * Time Entry Repository Implementation
@@ -40,13 +42,13 @@ export class TimeEntryRepository implements ITimeEntryRepository {
    *
    * Note: This is a placeholder. Actual implementation will use CouchDB/Nano client
    */
-  private getDb() {
+  private getDb(): never {
     // TODO: Replace with actual CouchDB/Nano client
     // return this.nano.db.use('kompass');
     throw new Error('CouchDB client not yet implemented');
   }
 
-  async create(timeEntry: TimeEntry): Promise<TimeEntry> {
+  create(timeEntry: TimeEntry): Promise<TimeEntry> {
     const newEntry: TimeEntry = {
       ...timeEntry,
       _id: timeEntry._id || `time-entry-${uuidv4()}`,
@@ -61,16 +63,16 @@ export class TimeEntryRepository implements ITimeEntryRepository {
     // const result = await db.insert(newEntry);
     // return { ...newEntry, _rev: result.rev };
 
-    return newEntry;
+    return Promise.resolve(newEntry);
   }
 
-  async findById(id: string): Promise<TimeEntry | null> {
+  findById(_id: string): Promise<TimeEntry | null> {
     try {
       // TODO: Implement CouchDB get
       // const db = this.getDb();
       // const doc = await db.get(id);
       // return doc as TimeEntry;
-      return null;
+      return Promise.resolve(null);
     } catch (error: unknown) {
       if (this.isCouchDBError(error) && error.statusCode === 404) {
         return null;
@@ -79,7 +81,7 @@ export class TimeEntryRepository implements ITimeEntryRepository {
     }
   }
 
-  async update(timeEntry: TimeEntry): Promise<TimeEntry> {
+  update(timeEntry: TimeEntry): Promise<TimeEntry> {
     const updated: TimeEntry = {
       ...timeEntry,
       modifiedAt: new Date(),
@@ -91,17 +93,17 @@ export class TimeEntryRepository implements ITimeEntryRepository {
     // const result = await db.insert(updated);
     // return { ...updated, _rev: result.rev };
 
-    return updated;
+    return Promise.resolve(updated);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(_id: string): Promise<void> {
     // TODO: Implement CouchDB delete
     // const db = this.getDb();
     // const doc = await db.get(id);
     // await db.destroy(id, doc._rev);
   }
 
-  async findAll(filters?: TimeEntryFilters): Promise<TimeEntry[]> {
+  findAll(_filters?: TimeEntryFilters): Promise<TimeEntry[]> {
     // TODO: Implement CouchDB query with filters
     // const db = this.getDb();
     // const selector: any = { type: 'time_entry' };
@@ -136,7 +138,7 @@ export class TimeEntryRepository implements ITimeEntryRepository {
     return this.findAll({ userId });
   }
 
-  async findActiveByUser(userId: string): Promise<TimeEntry | null> {
+  findActiveByUser(_userId: string): Promise<TimeEntry | null> {
     // TODO: Implement CouchDB query for active timer
     // const db = this.getDb();
     // const result = await db.find({
@@ -151,7 +153,7 @@ export class TimeEntryRepository implements ITimeEntryRepository {
 
     // return result.docs.length > 0 ? (result.docs[0] as TimeEntry) : null;
 
-    return null;
+    return Promise.resolve(null);
   }
 
   async findByStatus(status: TimeEntryStatus): Promise<TimeEntry[]> {

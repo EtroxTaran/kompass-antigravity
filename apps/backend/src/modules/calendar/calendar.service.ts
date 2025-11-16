@@ -34,7 +34,8 @@ export class CalendarService {
     const events: CalendarEventDto[] = [];
 
     // Determine which event types to fetch
-    const typesToFetch = query.types || Object.values(CalendarEventType);
+    const typesToFetch =
+      query.types || (Object.values(CalendarEventType) as CalendarEventType[]);
 
     // Aggregate events from different sources
     if (this.shouldFetchType(typesToFetch, CalendarEventType.USER_TASK)) {
@@ -118,7 +119,16 @@ export class CalendarService {
     query: CalendarQueryDto,
     userId: string,
     userRole: string
-  ): Promise<{ events: CalendarEventDto[]; teamMembers: any[]; meta: any }> {
+  ): Promise<{
+    events: CalendarEventDto[];
+    teamMembers: unknown[];
+    meta: {
+      startDate: string;
+      endDate: string;
+      totalEvents: number;
+      totalTeamMembers: number;
+    };
+  }> {
     if (userRole !== 'GF' && userRole !== 'PLAN') {
       throw new BadRequestException(
         'Team calendar is only available for GF and PLAN roles'
@@ -128,7 +138,7 @@ export class CalendarService {
     const events = await this.getCalendarEvents(query, userId, userRole);
 
     // TODO: Aggregate team member statistics
-    const teamMembers: any[] = [];
+    const teamMembers: unknown[] = [];
 
     const meta = {
       startDate: query.startDate,
@@ -216,7 +226,7 @@ export class CalendarService {
    * Get UserTask events
    * TODO: Implement when UserTask repository is available
    */
-  private async getUserTaskEvents(
+  private getUserTaskEvents(
     _query: CalendarQueryDto,
     _userId: string,
     _userRole: string
@@ -225,72 +235,97 @@ export class CalendarService {
     // TODO: Query UserTask repository
     // const tasks = await this.userTaskRepo.findByDateRange(query.startDate, query.endDate);
     // return tasks.map(task => this.userTaskToCalendarEvent(task));
-    return [];
+    return Promise.resolve([]);
   }
 
   /**
    * Get ProjectTask events
    * TODO: Implement when ProjectTask repository is available
    */
-  private async getProjectTaskEvents(
+  private getProjectTaskEvents(
     _query: CalendarQueryDto,
     _userId: string,
     _userRole: string
   ): Promise<CalendarEventDto[]> {
     this.logger.debug('Fetching ProjectTask events');
     // TODO: Query ProjectTask repository
-    return [];
+    return Promise.resolve([]);
   }
 
   /**
    * Get Project events (start dates, deadlines, milestones)
    * TODO: Implement when Project repository is available
    */
-  private async getProjectEvents(
+  private getProjectEvents(
     _query: CalendarQueryDto,
     _userId: string,
     _userRole: string
   ): Promise<CalendarEventDto[]> {
     this.logger.debug('Fetching Project events');
     // TODO: Query Project repository
-    return [];
+    return Promise.resolve([]);
   }
 
   /**
    * Get Opportunity events (expected close dates)
    * TODO: Implement when Opportunity repository is available
    */
-  private async getOpportunityEvents(
+  private getOpportunityEvents(
     _query: CalendarQueryDto,
     _userId: string,
     _userRole: string
   ): Promise<CalendarEventDto[]> {
     this.logger.debug('Fetching Opportunity events');
     // TODO: Query Opportunity repository
-    return [];
+    return Promise.resolve([]);
   }
 
   /**
    * Convert UserTask to CalendarEvent
    * TODO: Implement when UserTask entity is available
    */
-  private _userTaskToCalendarEvent(_task: any): CalendarEventDto {
+  private _userTaskToCalendarEvent(_task: unknown): CalendarEventDto {
+    // Type guard for task object
+    if (
+      !_task ||
+      typeof _task !== 'object' ||
+      !('_id' in _task) ||
+      !('title' in _task) ||
+      !('dueDate' in _task)
+    ) {
+      throw new BadRequestException('Invalid task object');
+    }
+
+    const task = _task as {
+      _id: string;
+      title: string;
+      description?: string;
+      priority?: string;
+      dueDate: string;
+      status?: string;
+      assignedTo?: string;
+    };
+
     return {
-      id: _task._id,
+      id: task._id,
       type: CalendarEventType.USER_TASK,
-      title: _task.title,
-      description: _task.description,
-      color: this.getPriorityColor(_task.priority) || '#3B82F6',
+      title: task.title,
+      description: task.description || '',
+      color: task.priority
+        ? this.getPriorityColor(task.priority) || '#3B82F6'
+        : '#3B82F6',
       icon: 'CheckSquare',
-      startDate: _task.dueDate,
-      endDate: _task.dueDate,
+      startDate: task.dueDate,
+      endDate: task.dueDate,
       allDay: true,
-      entityId: _task._id,
+      entityId: task._id,
       entityType: CalendarEntityType.USER_TASK,
-      status: _task.status,
-      priority: this.mapPriority(_task.priority),
-      assignedTo: [_task.assignedTo],
-      url: `/tasks/${_task._id}`,
+      status: task.status || 'pending',
+      priority: task.priority
+        ? this.mapPriority(task.priority)
+        : CalendarPriority.MEDIUM,
+      assignedTo: task.assignedTo ? [task.assignedTo] : [],
+      url: `/tasks/${task._id}`,
     };
   }
 

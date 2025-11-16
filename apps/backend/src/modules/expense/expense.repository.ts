@@ -134,7 +134,7 @@ export class ExpenseRepository implements IExpenseRepository {
       }
 
       const result = await this.nano.use('kompass').find({
-        selector: selector as any, // CouchDBMangoSelector compatible with MangoSelector
+        selector,
         sort: [{ expenseDate: 'desc' }],
         limit: 1000,
       });
@@ -218,7 +218,7 @@ export class ExpenseRepository implements IExpenseRepository {
       }
 
       const result = await this.nano.use('kompass').find({
-        selector: selector as any, // CouchDBMangoSelector compatible with MangoSelector
+        selector,
         sort: [{ expenseDate: 'desc' }],
         limit: 1000,
       });
@@ -249,7 +249,7 @@ export class ExpenseRepository implements IExpenseRepository {
       }
 
       const result = await this.nano.use('kompass').find({
-        selector: selector as any, // CouchDBMangoSelector compatible with MangoSelector
+        selector,
         sort: [{ expenseDate: 'asc' }],
         limit: 1000,
       });

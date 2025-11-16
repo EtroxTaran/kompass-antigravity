@@ -141,7 +141,7 @@ export class ProjectCostService {
   /**
    * Delete a project cost
    */
-  async delete(costId: string, currentUserId: string): Promise<void> {
+  async delete(costId: string, _currentUserId: string): Promise<void> {
     const cost = await this.repository.findById(costId);
 
     if (!cost) {
@@ -163,7 +163,7 @@ export class ProjectCostService {
    */
   async findById(
     costId: string,
-    currentUserId: string
+    _currentUserId: string
   ): Promise<ProjectCostResponseDto> {
     const cost = await this.repository.findById(costId);
 
@@ -181,7 +181,7 @@ export class ProjectCostService {
    */
   async findAll(
     filters: ProjectCostFilters,
-    currentUserId: string
+    _currentUserId: string
   ): Promise<ProjectCostResponseDto[]> {
     // TODO: Apply RBAC filters based on user role
 
@@ -194,7 +194,7 @@ export class ProjectCostService {
    */
   async findByProject(
     projectId: string,
-    currentUserId: string
+    _currentUserId: string
   ): Promise<ProjectCostResponseDto[]> {
     // TODO: Check if user has access to project
 
@@ -282,7 +282,7 @@ export class ProjectCostService {
    * Get costs pending payment
    */
   async getPendingPayments(
-    currentUserId: string
+    _currentUserId: string
   ): Promise<ProjectCostResponseDto[]> {
     // TODO: Check RBAC permissions (BUCH role)
 
@@ -295,7 +295,7 @@ export class ProjectCostService {
    */
   async getBySupplier(
     supplierName: string,
-    currentUserId: string
+    _currentUserId: string
   ): Promise<ProjectCostResponseDto[]> {
     // TODO: Check RBAC permissions
 

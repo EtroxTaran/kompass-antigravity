@@ -58,7 +58,7 @@ interface User {
  * Expense Service Interface (placeholder)
  */
 interface IExpenseService {
-  findByTour(tourId: string): Promise<any[]>;
+  findByTour(tourId: string): Promise<unknown[]>;
   calculateTotalCost(tourId: string): Promise<number>;
 }
 
@@ -66,7 +66,7 @@ interface IExpenseService {
  * Mileage Service Interface (placeholder)
  */
 interface IMileageService {
-  findByTour(tourId: string): Promise<any[]>;
+  findByTour(tourId: string): Promise<unknown[]>;
   calculateTotalDistance(tourId: string): Promise<number>;
   calculateTotalCost(tourId: string): Promise<number>;
 }
@@ -75,7 +75,7 @@ interface IMileageService {
  * Meeting Service Interface (placeholder)
  */
 interface IMeetingService {
-  findByTour(tourId: string): Promise<any[]>;
+  findByTour(tourId: string): Promise<unknown[]>;
   areAllMeetingsCompleted(tourId: string): Promise<boolean>;
 }
 
@@ -83,7 +83,7 @@ interface IMeetingService {
  * Audit Service Interface (placeholder)
  */
 interface IAuditService {
-  log(entry: any): Promise<void>;
+  log(entry: unknown): Promise<void>;
 }
 
 /**
@@ -429,12 +429,27 @@ export class TourService {
     const expenses = await this.expenseService.findByTour(id);
     const _mileageLogs = await this.mileageService.findByTour(id);
 
+    // Type guard for expense objects
+    const isExpense = (
+      e: unknown
+    ): e is { category: string; amount: number } => {
+      return (
+        typeof e === 'object' &&
+        e !== null &&
+        'category' in e &&
+        'amount' in e &&
+        typeof (e as { category: unknown }).category === 'string' &&
+        typeof (e as { amount: unknown }).amount === 'number'
+      );
+    };
+
     // Calculate costs
     const mileageCost = await this.mileageService.calculateTotalCost(id);
-    const otherExpenses = expenses
+    const validExpenses = expenses.filter(isExpense);
+    const otherExpenses = validExpenses
       .filter((e) => e.category !== 'mileage')
       .reduce((sum, e) => sum + e.amount, 0);
-    const hotelCosts = expenses
+    const hotelCosts = validExpenses
       .filter((e) => e.category === 'hotel')
       .reduce((sum, e) => sum + e.amount, 0);
 
@@ -444,7 +459,7 @@ export class TourService {
       hotel: hotelCosts,
     };
 
-    expenses.forEach((expense) => {
+    validExpenses.forEach((expense) => {
       if (expense.category !== 'mileage' && expense.category !== 'hotel') {
         breakdown[expense.category] =
           (breakdown[expense.category] || 0) + expense.amount;

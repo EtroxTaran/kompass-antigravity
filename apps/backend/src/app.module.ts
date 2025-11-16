@@ -42,4 +42,3 @@ import { UserModule } from './modules/user/user.module';
   providers: [],
 })
 export class AppModule {}
-

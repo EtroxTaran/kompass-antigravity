@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 // TODO: Install mongoose and @nestjs/mongoose when implementing project cost tracking
 // import { InjectConnection } from '@nestjs/mongoose';
 // import { Connection } from 'mongoose';
-type Connection = any; // Stub type
+// Stub Connection type (will be replaced with mongoose Connection when implemented)
+type Connection = unknown;
 import { v4 as uuidv4 } from 'uuid';
 
 // Stub InjectConnection decorator
 const InjectConnection =
-  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
+  () =>
+  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
 
 import { ProjectCostStatus } from '@kompass/shared/types/entities/project-cost';
 
@@ -41,13 +43,13 @@ export class ProjectCostRepository implements IProjectCostRepository {
    *
    * Note: This is a placeholder. Actual implementation will use CouchDB/Nano client
    */
-  private getDb() {
+  private getDb(): never {
     // TODO: Replace with actual CouchDB/Nano client
     // return this.nano.db.use('kompass');
     throw new Error('CouchDB client not yet implemented');
   }
 
-  async create(projectCost: ProjectCost): Promise<ProjectCost> {
+  create(projectCost: ProjectCost): Promise<ProjectCost> {
     const newCost: ProjectCost = {
       ...projectCost,
       _id: projectCost._id || `project-cost-${uuidv4()}`,
@@ -62,25 +64,25 @@ export class ProjectCostRepository implements IProjectCostRepository {
     // const result = await db.insert(newCost);
     // return { ...newCost, _rev: result.rev };
 
-    return newCost;
+    return Promise.resolve(newCost);
   }
 
-  async findById(id: string): Promise<ProjectCost | null> {
+  findById(_id: string): Promise<ProjectCost | null> {
     try {
       // TODO: Implement CouchDB get
       // const db = this.getDb();
       // const doc = await db.get(id);
       // return doc as ProjectCost;
-      return null;
+      return Promise.resolve(null);
     } catch (error: unknown) {
       if (this.isCouchDBError(error) && error.statusCode === 404) {
-        return null;
+        return Promise.resolve(null);
       }
       throw error;
     }
   }
 
-  async update(projectCost: ProjectCost): Promise<ProjectCost> {
+  update(projectCost: ProjectCost): Promise<ProjectCost> {
     const updated: ProjectCost = {
       ...projectCost,
       modifiedAt: new Date(),
@@ -92,17 +94,17 @@ export class ProjectCostRepository implements IProjectCostRepository {
     // const result = await db.insert(updated);
     // return { ...updated, _rev: result.rev };
 
-    return updated;
+    return Promise.resolve(updated);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(_id: string): Promise<void> {
     // TODO: Implement CouchDB delete
     // const db = this.getDb();
     // const doc = await db.get(id);
     // await db.destroy(id, doc._rev);
   }
 
-  async findAll(filters?: ProjectCostFilters): Promise<ProjectCost[]> {
+  findAll(_filters?: ProjectCostFilters): Promise<ProjectCost[]> {
     // TODO: Implement CouchDB query with filters
     // const db = this.getDb();
     // const selector: any = { type: 'project_cost' };

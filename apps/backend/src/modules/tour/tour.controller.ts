@@ -46,6 +46,8 @@ import { TourResponseDto, TourCostSummaryDto } from './dto/tour-response.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
 import { TourService } from './tour.service';
 
+import type { TourFilters } from './tour.repository';
+
 /**
  * Placeholder guards and decorators
  */
@@ -55,10 +57,15 @@ interface User {
 }
 
 const CurrentUser =
-  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
+  () =>
+  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
 const RequirePermission =
   (_entity: string, _action: string) =>
-  (_target: any, _propertyKey: string, _descriptor: PropertyDescriptor) => {};
+  (
+    _target: unknown,
+    _propertyKey: string,
+    _descriptor: PropertyDescriptor
+  ): void => {};
 const JwtAuthGuard = class {};
 const RbacGuard = class {};
 
@@ -118,7 +125,7 @@ export class TourController {
     @Query('region') region?: string,
     @CurrentUser() user?: User
   ): Promise<TourResponseDto[]> {
-    const filters: any = {};
+    const filters: TourFilters = {};
     if (status) filters.status = status;
     if (startDate) filters.startDate = new Date(startDate);
     if (endDate) filters.endDate = new Date(endDate);

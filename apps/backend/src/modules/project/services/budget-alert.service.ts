@@ -1,7 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { CostTrackingStatus } from '@kompass/shared/types/entities/project';
-
 import type {
   Project,
   ProfitabilityReport,
@@ -21,6 +19,17 @@ export class BudgetAlertService {
 
   /**
    * Check budget status and trigger alerts if needed
+   */
+  checkBudgetAlerts(projectId: string): Promise<void> {
+    // TODO: Get project and profitability from repositories
+    // For now, this is a stub that will be implemented when repositories are available
+    this.logger.log(`Checking budget alerts for project ${projectId}`);
+    return Promise.resolve();
+  }
+
+  /**
+   * Check budget status and trigger alerts if needed (legacy method)
+   * @deprecated Use checkBudgetAlerts(projectId) instead
    */
   async checkAndAlert(
     project: Project,
@@ -282,16 +291,18 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
    *
    * TODO: Implement actual email sending (e.g., using nodemailer, SendGrid, AWS SES)
    */
-  private async sendEmail(params: {
+  private sendEmail(params: {
     to: string | string[];
     subject: string;
     body: string;
     priority: 'high' | 'normal';
   }): Promise<void> {
     // Placeholder implementation
-    this.logger.log(`[EMAIL] To: ${params.to}, Subject: ${params.subject}`);
+    const toStr = Array.isArray(params.to) ? params.to.join(', ') : params.to;
+    this.logger.log(`[EMAIL] To: ${toStr}, Subject: ${params.subject}`);
     // TODO: Implement actual email sending
     // await this.emailService.send(params);
+    return Promise.resolve();
   }
 
   /**
@@ -299,7 +310,7 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
    *
    * TODO: Implement notification service
    */
-  private async createNotification(notification: {
+  private createNotification(notification: {
     userId: string;
     type: string;
     severity: 'warning' | 'critical';
@@ -314,6 +325,7 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
     );
     // TODO: Implement notification creation
     // await this.notificationService.create(notification);
+    return Promise.resolve();
   }
 
   /**
@@ -321,7 +333,7 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
    *
    * TODO: Implement audit logging
    */
-  private async logAuditEvent(event: {
+  private logAuditEvent(event: {
     type: string;
     level: string;
     projectId: string;
@@ -341,12 +353,12 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
    *
    * TODO: Implement user service lookup
    */
-  private async getProjectManagerEmail(userId: string): Promise<string> {
+  private getProjectManagerEmail(_userId: string): Promise<string> {
     // Placeholder implementation
     // TODO: Implement user lookup
     // const user = await this.userService.findById(userId);
     // return user.email;
-    return 'project.manager@example.com';
+    return Promise.resolve('project.manager@example.com');
   }
 
   /**
@@ -354,11 +366,11 @@ View details: ${process.env.APP_URL}/projects/${project._id}/profitability
    *
    * TODO: Implement user service lookup for GF role
    */
-  private async getGFEmails(): Promise<string[]> {
+  private getGFEmails(): Promise<string[]> {
     // Placeholder implementation
     // TODO: Implement user lookup for GF role
     // const gfUsers = await this.userService.findByRole(UserRole.GF);
     // return gfUsers.map(u => u.email);
-    return ['gf@example.com'];
+    return Promise.resolve(['gf@example.com']);
   }
 }

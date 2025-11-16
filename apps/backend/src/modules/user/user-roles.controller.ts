@@ -26,7 +26,8 @@ import { RbacGuard } from '../auth/guards/rbac.guard';
 
 // Stub decorator and guard for now
 const CurrentUser =
-  () => (_target: any, _propertyKey: string, _parameterIndex: number) => {};
+  () =>
+  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
 const JwtAuthGuard = class {};
 
 import { AssignRolesDto } from './dto/assign-roles.dto';
@@ -65,7 +66,7 @@ export class UserRolesController {
   @ApiParam({ name: 'userId', description: 'User ID' })
   @ApiResponse({ status: 200, description: 'User roles retrieved' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async getUserRoles(
+  getUserRoles(
     @Param('userId') _userId: string,
     @CurrentUser() _user: User
   ): Promise<{ roles: UserRole[]; primaryRole: UserRole }> {
@@ -90,7 +91,7 @@ export class UserRolesController {
   @ApiResponse({ status: 400, description: 'Invalid role assignment' })
   @ApiResponse({ status: 403, description: 'Forbidden - GF or ADMIN only' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async assignRoles(
+  assignRoles(
     @Param('userId') _userId: string,
     @Body() _dto: AssignRolesDto,
     @CurrentUser() _user: User
@@ -126,7 +127,7 @@ export class UserRolesController {
     status: 404,
     description: 'User not found or role not assigned',
   })
-  async revokeRole(
+  revokeRole(
     @Param('userId') _userId: string,
     @Param('roleId') _roleId: UserRole,
     @CurrentUser() _user: User
@@ -159,7 +160,7 @@ export class UserRolesController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden - GF or ADMIN only' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async updatePrimaryRole(
+  updatePrimaryRole(
     @Param('userId') _userId: string,
     @Body() _dto: UpdatePrimaryRoleDto,
     @CurrentUser() _user: User

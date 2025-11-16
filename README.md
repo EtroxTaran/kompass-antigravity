@@ -248,18 +248,45 @@ pnpm lint
 # Format
 pnpm format
 
-# Type check
-pnpm type-check
+# Run all quality checks (matches CI exactly)
+./scripts/quality-check.sh
 
-# Generate API docs
-pnpm generate:api-docs
-
-# Generate changelog
-pnpm changelog:generate
-
-# All checks
-pnpm lint && pnpm type-check && pnpm test:unit
+# Validate hooks match CI requirements
+./scripts/validate-pre-commit.sh
 ```
+
+### Quality Gates
+
+KOMPASS enforces strict quality gates that run both locally (via git hooks) and in CI/CD. **Local hooks run the EXACT same checks as CI**, ensuring code that passes locally will pass in CI.
+
+**Pre-Commit Checks:**
+
+- File organization validation
+- lint-staged (ESLint --fix + Prettier on staged files)
+- Prettier format:check (read-only)
+- TypeScript type-check
+- Branch naming validation
+
+**Pre-Push Checks:**
+
+- Full codebase lint (no --fix, matches CI)
+- Prettier format:check (read-only, matches CI)
+- TypeScript type-check (matches CI)
+- Unit tests with coverage thresholds (80% global, 90% services)
+- Security audit (high/critical vulnerabilities)
+
+**CI/CD Checks:**
+
+- All pre-push checks
+- Integration tests
+- E2E tests
+- Build verification
+- Documentation guard
+- Performance tests
+
+See `.cursor/rules/quality-gates.mdc` for complete documentation.
+
+````
 
 ### Local Docker Environment
 
@@ -275,7 +302,7 @@ docker-compose down
 
 # Check health
 bash scripts/health-check.sh
-```
+````
 
 ## CI/CD & Deployment
 

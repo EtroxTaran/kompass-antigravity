@@ -12,7 +12,7 @@ import {
   Length,
 } from 'class-validator';
 
-import { MeetingType, MeetingStatus } from './create-meeting.dto';
+import { MeetingType } from './create-meeting.dto';
 
 /**
  * Update Meeting DTO

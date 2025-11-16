@@ -2,8 +2,8 @@ import path from 'path';
 
 // eslint-disable-next-line import/default
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import { defineConfig } from 'vitest/config';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -93,5 +93,38 @@ export default defineConfig({
       },
     },
     chunkSizeWarningLimit: 500,
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/test/',
+        '**/*.d.ts',
+        '**/*.config.*',
+        '**/mockData',
+        '**/*.spec.{ts,tsx}',
+        '**/*.test.{ts,tsx}',
+      ],
+      thresholds: {
+        // Global coverage thresholds (matches backend jest.config.js)
+        global: {
+          branches: 80,
+          functions: 80,
+          lines: 80,
+          statements: 80,
+        },
+        // Component coverage thresholds
+        './src/features/**/components/**/*.{ts,tsx}': {
+          branches: 80,
+          functions: 80,
+          lines: 80,
+          statements: 80,
+        },
+      },
+    },
   },
 });

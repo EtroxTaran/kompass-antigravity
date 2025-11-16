@@ -59,10 +59,15 @@ interface User {
 }
 
 const CurrentUser =
-  () => (target: any, propertyKey: string, parameterIndex: number) => {};
+  () =>
+  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
 const RequirePermission =
-  (entity: string, action: string) =>
-  (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {};
+  (_entity: string, _action: string) =>
+  (
+    _target: unknown,
+    _propertyKey: string,
+    _descriptor: PropertyDescriptor
+  ): void => {};
 const JwtAuthGuard = class {};
 const RbacGuard = class {};
 
@@ -118,7 +123,12 @@ export class MeetingController {
     @Query('tourId') tourId?: string,
     @CurrentUser() user?: User
   ): Promise<MeetingResponseDto[]> {
-    const filters: any = {};
+    const filters: {
+      status?: MeetingStatus;
+      meetingType?: MeetingType;
+      customerId?: string;
+      tourId?: string;
+    } = {};
     if (status) filters.status = status;
     if (meetingType) filters.meetingType = meetingType;
     if (customerId) filters.customerId = customerId;
@@ -370,12 +380,15 @@ export class MeetingController {
   async getTourSuggestions(
     @Param('meetingId') meetingId: string,
     @CurrentUser() user?: User
-  ): Promise<any[]> {
-    const meeting = await this.meetingService.findById(meetingId, user!);
+  ): Promise<unknown[]> {
+    if (!user) {
+      throw new Error('User is required');
+    }
+    const meeting = await this.meetingService.findById(meetingId, user);
     return this.meetingService.getTourSuggestions(
       meeting.scheduledAt,
       meeting.locationId,
-      user!
+      user
     );
   }
 }

@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  Inject,
-  NotFoundException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 
 import { IRoleRepository } from './role.repository.interface';
 
@@ -17,7 +12,6 @@ import type {
   PermissionMatrix,
 } from '@kompass/shared/types/entities/role';
 import type { User } from '@kompass/shared/types/entities/user';
-
 
 /**
  * Role Management Service
@@ -47,7 +41,7 @@ export class RoleService {
    *
    * TODO: Implement role listing from CouchDB
    */
-  async listRoles(activeOnly: boolean = false): Promise<Role[]> {
+  listRoles(_activeOnly: boolean = false): Promise<Role[]> {
     // TODO: Query CouchDB for role documents
     // TODO: Filter by active status if requested
     // TODO: Sort by priority (highest first)
@@ -63,7 +57,7 @@ export class RoleService {
    *
    * TODO: Implement role retrieval from CouchDB
    */
-  async getRoleById(roleId: string): Promise<Role> {
+  getRoleById(_roleId: string): Promise<Role> {
     // TODO: Query CouchDB for role document by _id='role-{roleId}'
     // TODO: Throw NotFoundException if not found
     throw new Error('Not implemented');
@@ -80,8 +74,8 @@ export class RoleService {
    * TODO: Implement runtime permission matrix retrieval
    * TODO: Add fallback to static PERMISSION_MATRIX from rbac.constants.ts
    */
-  async getRolePermissions(
-    roleId: string
+  getRolePermissions(
+    _roleId: string
   ): Promise<Record<EntityType, Partial<Record<Permission, boolean>>>> {
     // TODO: Get active permission matrix from CouchDB
     // TODO: Extract permissions for the specified roleId
@@ -106,11 +100,11 @@ export class RoleService {
    * TODO: Update role configuration
    * TODO: Add audit logging
    */
-  async updateRolePermissions(
-    roleId: string,
-    permissions: Record<EntityType, Partial<Record<Permission, boolean>>>,
-    changedBy: User,
-    reason: string
+  updateRolePermissions(
+    _roleId: string,
+    _permissions: Record<EntityType, Partial<Record<Permission, boolean>>>,
+    _changedBy: User,
+    _reason: string
   ): Promise<Role> {
     // TODO: Verify changedBy has GF role
     // TODO: Get current active permission matrix
@@ -129,7 +123,7 @@ export class RoleService {
    * TODO: Implement active permission matrix retrieval
    * TODO: Add caching layer for performance
    */
-  async getActivePermissionMatrix(): Promise<PermissionMatrix | null> {
+  getActivePermissionMatrix(): Promise<PermissionMatrix | null> {
     // TODO: Query CouchDB for permission_matrix document with active=true
     // TODO: Return null if no active matrix (triggers fallback to static)
     // TODO: Consider caching with TTL for performance
@@ -149,13 +143,13 @@ export class RoleService {
    * TODO: Deactivate previous version
    * TODO: Add changelog entry
    */
-  async createPermissionMatrixVersion(
-    matrix: Record<
+  createPermissionMatrixVersion(
+    _matrix: Record<
       UserRole,
       Record<EntityType, Partial<Record<Permission, boolean>>>
     >,
-    changedBy: User,
-    reason: string
+    _changedBy: User,
+    _reason: string
   ): Promise<PermissionMatrix> {
     // TODO: Get current active version and increment version number
     // TODO: Deactivate previous version (set active=false)
@@ -178,9 +172,9 @@ export class RoleService {
    * TODO: Implement version activation
    * TODO: Add GF-only authorization
    */
-  async activatePermissionMatrixVersion(
-    version: number,
-    activatedBy: User
+  activatePermissionMatrixVersion(
+    _version: number,
+    _activatedBy: User
   ): Promise<PermissionMatrix> {
     // TODO: Verify activatedBy has GF role
     // TODO: Get permission matrix by version

@@ -29,9 +29,8 @@ import {
 import {
   validateMeeting,
   createMeeting,
-  MeetingOutcome as MeetingOutcomeEnum,
+  MeetingOutcome,
 } from '@kompass/shared/types/entities/meeting';
-
 
 import { MeetingStatus } from './dto/create-meeting.dto';
 import { IMeetingRepository } from './meeting.repository';
@@ -41,10 +40,7 @@ import type { MeetingResponseDto } from './dto/meeting-response.dto';
 import type { UpdateMeetingDto, CheckInDto } from './dto/update-meeting.dto';
 import type { MeetingFilters } from './meeting.repository';
 import type { Location } from '@kompass/shared/types/entities/location';
-import type {
-  Meeting,
-  MeetingOutcome,
-} from '@kompass/shared/types/entities/meeting';
+import type { Meeting } from '@kompass/shared/types/entities/meeting';
 import type { Tour } from '@kompass/shared/types/entities/tour';
 
 /**
@@ -266,9 +262,7 @@ export class MeetingService {
       // Map string outcome to MeetingOutcome enum if it matches
       const outcomeValue = dto.outcome.toLowerCase();
       if (
-        Object.values(MeetingOutcomeEnum).includes(
-          outcomeValue as MeetingOutcome
-        )
+        (Object.values(MeetingOutcome) as string[]).includes(outcomeValue)
       ) {
         updateData.outcome = outcomeValue as MeetingOutcome;
       } else {
@@ -466,7 +460,7 @@ export class MeetingService {
     const outcomeLower = outcome?.toLowerCase();
     if (
       outcomeLower &&
-      Object.values(MeetingOutcomeEnum).includes(outcomeLower as MeetingOutcome)
+      (Object.values(MeetingOutcome) as string[]).includes(outcomeLower)
     ) {
       outcomeEnum = outcomeLower as MeetingOutcome;
     }
@@ -558,7 +552,7 @@ export class MeetingService {
   /**
    * Get meetings for tour
    */
-  async findByTour(tourId: string, user: User): Promise<MeetingResponseDto[]> {
+  async findByTour(tourId: string, _user: User): Promise<MeetingResponseDto[]> {
     const meetings = await this.meetingRepository.findByTour(tourId);
     return meetings.map((meeting) => this.mapToResponseDto(meeting));
   }
@@ -570,7 +564,9 @@ export class MeetingService {
   async areAllMeetingsCompleted(tourId: string): Promise<boolean> {
     const meetings = await this.meetingRepository.findByTour(tourId);
     return meetings.every(
-      (meeting) => meeting.attended === true || meeting.outcome === 'cancelled'
+      (meeting) =>
+        meeting.attended === true ||
+        meeting.outcome === MeetingOutcome.CANCELLED
     );
   }
 
@@ -636,7 +632,7 @@ export class MeetingService {
     if (meeting.attended === true) {
       return MeetingStatus.COMPLETED;
     }
-    if (meeting.outcome === MeetingOutcomeEnum.CANCELLED) {
+    if (meeting.outcome === MeetingOutcome.CANCELLED) {
       return MeetingStatus.CANCELLED;
     }
     if (

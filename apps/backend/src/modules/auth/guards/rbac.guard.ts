@@ -33,7 +33,7 @@ export class RbacGuard implements CanActivate {
     // private readonly roleService: RoleService,
   ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     // Get required permission from decorator
     const requiredPermission = this.reflector.getAllAndOverride<{
       entity: EntityType;
@@ -45,7 +45,7 @@ export class RbacGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<{ user?: User }>();
     const user: User | undefined = request.user;
 
     // User must be authenticated

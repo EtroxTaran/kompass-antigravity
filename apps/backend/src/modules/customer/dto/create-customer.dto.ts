@@ -57,7 +57,7 @@ export class CreateCustomerDto {
   @Length(2, 200, {
     message: 'Company name must be 2-200 characters',
   })
-  @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/, {
+  @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s.\-&()]+$/, {
     message:
       'Company name must contain only letters, numbers, and basic punctuation',
   })
@@ -88,7 +88,7 @@ export class CreateCustomerDto {
     example: '+49-89-1234567',
     required: false,
   })
-  @Matches(/^[\+]?[0-9\s\-()]+$/, {
+  @Matches(/^[+]?[0-9\s\-()]+$/, {
     message: 'Invalid phone number format',
   })
   @Length(7, 20)

@@ -39,8 +39,6 @@ import type { UpdateLocationDto } from './dto/update-location.dto';
 import type { Customer } from '@kompass/shared/types/entities/customer';
 import type { Location } from '@kompass/shared/types/entities/location';
 
-
-
 /**
  * Placeholder User type - should be imported from auth module
  */
