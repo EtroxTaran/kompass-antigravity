@@ -308,6 +308,8 @@ volumes:
     driver: local
   meilisearch-data:
     driver: local
+  postgres-data:
+    driver: local
   keycloak-data:
     driver: local
   neo4j-data:
