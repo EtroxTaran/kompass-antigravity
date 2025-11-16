@@ -20,7 +20,6 @@
  */
 
 import type { BaseEntity } from '../base.entity';
-
 import type { GPSCoordinates } from './tour';
 
 /**
