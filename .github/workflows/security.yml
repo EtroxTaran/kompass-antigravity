@@ -20,8 +20,10 @@ jobs:
   dependency-review:
     name: Dependency Review
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    continue-on-error: true # Allow to fail if GitHub Advanced Security is not enabled
+    # Only run on pull requests *and* when GitHub Advanced Security is enabled
+    if: >
+      github.event_name == 'pull_request' &&
+      github.event.repository.security_and_analysis.advanced_security.status == 'enabled'
 
     permissions:
       actions: read

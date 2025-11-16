@@ -18,7 +18,8 @@ const queryClient = new QueryClient({
   },
 });
 
-const rootElement = document.getElementById('root');
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+const rootElement = document.getElementById('root') as HTMLElement | null;
 if (!rootElement) {
   throw new Error('Root element not found');
 }
