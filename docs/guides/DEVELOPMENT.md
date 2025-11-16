@@ -145,8 +145,14 @@ cd apps/frontend && pnpm dev   # Frontend only
 # Watch tests
 pnpm test:watch
 
-# Type check
+# Type check (all workspaces, builds shared first via Turbo)
 pnpm type-check
+
+# Lint with ESLint (allow warnings locally)
+pnpm lint
+
+# Lint with ESLint in CI mode (no warnings allowed)
+pnpm lint:ci
 ```
 
 ### Generate New Entity
