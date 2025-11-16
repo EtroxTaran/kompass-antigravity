@@ -20,6 +20,7 @@ exclude = [
   "^https://www\\.pwc\\.de/",
   "^https://www\\.evarlinkstudios\\.com/",
   "^https://www\\.qmarketing\\.de/",
+  "^https://www\\.fido-buerosysteme\\.de/",
 
   # Placeholder GitHub links that don’t exist yet
   "^https://github\\.com/your-org/kompass/",
