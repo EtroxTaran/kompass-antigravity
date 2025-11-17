@@ -188,9 +188,11 @@ describe('RoleGuard', () => {
     );
 
     // Audit logging happens before redirect, so wait a bit
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    const logUnauthorizedAccess = auditService.logUnauthorizedAccess;
     await waitFor(
       () => {
-        expect(auditService.logUnauthorizedAccess).toHaveBeenCalled();
+        expect(logUnauthorizedAccess).toHaveBeenCalled();
       },
       { timeout: 1000 }
     );
@@ -233,9 +235,11 @@ describe('RoleGuard', () => {
       </TestWrapper>
     );
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    const logUnauthorizedAccess = auditService.logUnauthorizedAccess;
     await waitFor(
       () => {
-        expect(auditService.logUnauthorizedAccess).toHaveBeenCalledWith(
+        expect(logUnauthorizedAccess).toHaveBeenCalledWith(
           expect.objectContaining({
             userId: 'user-123',
             route: '/test',
