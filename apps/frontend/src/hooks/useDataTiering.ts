@@ -8,14 +8,17 @@
  */
 
 import { useMemo, useCallback } from 'react';
-import type { BaseEntity } from '@kompass/shared';
-import { useAuth } from './useAuth';
+
 import {
   DataTieringService,
   type DataTier,
   type TierClassification,
   TIER_LIMITS,
 } from '../services/DataTieringService';
+
+import { useAuth } from './useAuth';
+
+import type { BaseEntity } from '@kompass/shared';
 
 /**
  * Tier classification options
