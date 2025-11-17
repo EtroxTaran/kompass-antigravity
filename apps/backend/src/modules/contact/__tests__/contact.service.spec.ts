@@ -16,6 +16,7 @@ import {
   DecisionMakingRole,
   FunctionalRole,
 } from '@kompass/shared/types/enums';
+import type { User } from '@kompass/shared/types/entities/user';
 
 import { ContactService } from '../contact.service';
 
@@ -28,19 +29,52 @@ describe('ContactService', () => {
   let repository: jest.Mocked<any>;
   let auditService: jest.Mocked<any>;
 
-  const mockADMUser = {
-    id: 'user-adm-001',
-    role: 'ADM' as const,
+  const mockADMUser: User = {
+    _id: 'user-adm-001',
+    _rev: '1-abc',
+    type: 'user',
+    email: 'adm@example.com',
+    displayName: 'Test ADM User',
+    roles: ['ADM'],
+    primaryRole: 'ADM',
+    active: true,
+    createdBy: 'system',
+    createdAt: new Date(),
+    modifiedBy: 'system',
+    modifiedAt: new Date(),
+    version: 1,
   };
 
-  const mockPLANUser = {
-    id: 'user-plan-001',
-    role: 'PLAN' as const,
+  const mockPLANUser: User = {
+    _id: 'user-plan-001',
+    _rev: '1-def',
+    type: 'user',
+    email: 'plan@example.com',
+    displayName: 'Test PLAN User',
+    roles: ['PLAN'],
+    primaryRole: 'PLAN',
+    active: true,
+    createdBy: 'system',
+    createdAt: new Date(),
+    modifiedBy: 'system',
+    modifiedAt: new Date(),
+    version: 1,
   };
 
-  const mockGFUser = {
-    id: 'user-gf-001',
-    role: 'GF' as const,
+  const mockGFUser: User = {
+    _id: 'user-gf-001',
+    _rev: '1-ghi',
+    type: 'user',
+    email: 'gf@example.com',
+    displayName: 'Test GF User',
+    roles: ['GF'],
+    primaryRole: 'GF',
+    active: true,
+    createdBy: 'system',
+    createdAt: new Date(),
+    modifiedBy: 'system',
+    modifiedAt: new Date(),
+    version: 1,
   };
 
   const mockContact: ContactPerson = {

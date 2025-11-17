@@ -1,4 +1,5 @@
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 
@@ -10,6 +11,7 @@ import type { TestingModule } from '@nestjs/testing';
 describe('Auth Integration Tests', () => {
   let app: INestApplication | undefined;
   let configService: ConfigService;
+  let jwtService: JwtService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({

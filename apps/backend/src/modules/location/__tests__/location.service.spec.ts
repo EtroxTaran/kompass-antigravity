@@ -13,6 +13,7 @@ import {
 import { Test } from '@nestjs/testing';
 
 import { LocationType } from '@kompass/shared/types/enums';
+import type { User } from '@kompass/shared/types/entities/user';
 
 import { LocationService } from '../location.service';
 
@@ -27,14 +28,36 @@ describe('LocationService', () => {
   let repository: jest.Mocked<ILocationRepository>;
   let customerService: jest.Mocked<any>;
 
-  const mockUser = {
-    id: 'user-adm-001',
-    role: 'ADM' as const,
+  const mockUser: User = {
+    _id: 'user-adm-001',
+    _rev: '1-abc',
+    type: 'user',
+    email: 'adm@example.com',
+    displayName: 'Test ADM User',
+    roles: ['ADM'],
+    primaryRole: 'ADM',
+    active: true,
+    createdBy: 'system',
+    createdAt: new Date(),
+    modifiedBy: 'system',
+    modifiedAt: new Date(),
+    version: 1,
   };
 
-  const mockGFUser = {
-    id: 'user-gf-001',
-    role: 'GF' as const,
+  const mockGFUser: User = {
+    _id: 'user-gf-001',
+    _rev: '1-def',
+    type: 'user',
+    email: 'gf@example.com',
+    displayName: 'Test GF User',
+    roles: ['GF'],
+    primaryRole: 'GF',
+    active: true,
+    createdBy: 'system',
+    createdAt: new Date(),
+    modifiedBy: 'system',
+    modifiedAt: new Date(),
+    version: 1,
   };
 
   const mockCustomer = {

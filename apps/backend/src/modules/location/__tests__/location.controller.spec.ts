@@ -7,6 +7,7 @@
 import { Test } from '@nestjs/testing';
 
 import { LocationType } from '@kompass/shared/types/enums';
+import type { User } from '@kompass/shared/types/entities/user';
 
 import { LocationController } from '../location.controller';
 import { LocationService } from '../location.service';
@@ -20,9 +21,20 @@ describe('LocationController', () => {
   let controller: LocationController;
   let service: jest.Mocked<LocationService>;
 
-  const mockUser = {
-    id: 'user-adm-001',
-    role: 'ADM' as const,
+  const mockUser: User = {
+    _id: 'user-adm-001',
+    _rev: '1-abc',
+    type: 'user',
+    email: 'adm@example.com',
+    displayName: 'Test ADM User',
+    roles: ['ADM'],
+    primaryRole: 'ADM',
+    active: true,
+    createdBy: 'system',
+    createdAt: new Date(),
+    modifiedBy: 'system',
+    modifiedAt: new Date(),
+    version: 1,
   };
 
   const mockLocationResponse: LocationResponseDto = {
