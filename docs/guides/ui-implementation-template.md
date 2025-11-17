@@ -90,4 +90,3 @@ List any deviations from the reference repository (with justification):
 - UI/UX Documentation: `ui-ux/[category]/[component-name].md`
 - GitHub UI Reference: `docs/design-system/github-ui-reference.md`
 - Implementation Checklist: `docs/guides/ui-implementation-checklist.md`
-

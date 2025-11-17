@@ -31,9 +31,15 @@
 - `Button` with loading state variant
 - `Spinner` icon from lucide-react
 
-## Figma Make Prompt
+## Loading State Specifications (from Reference Repository)
 
-Create a comprehensive set of loading states for KOMPASS, a German CRM application. Design skeleton screens and loading indicators that provide clear feedback during data operations.
+**Reference Source:**
+
+- `EtroxTaran/Kompassuimusterbibliothek/src/components/CustomerListSkeleton.tsx`
+- `EtroxTaran/Kompassuimusterbibliothek/src/components/LoadingStateDemo.tsx`
+- `EtroxTaran/Kompassuimusterbibliothek/src/components/FullScreenLoader.tsx`
+
+The loading system uses shadcn/ui `Skeleton` components for content placeholders and spinner components for inline loading states.
 
 **Skeleton Screens (Primary Pattern):**
 Design skeleton placeholders for common content types:

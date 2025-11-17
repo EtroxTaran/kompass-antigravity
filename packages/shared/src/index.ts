@@ -49,3 +49,17 @@ export {
   isValidEntityId,
   isValidGoBDNumber,
 } from './utils/id-generator';
+export {
+  type PaginationOptions,
+  type SortOptions,
+  calculatePaginationMetadata,
+  normalizePaginationOptions,
+  validateSortField,
+  normalizeSortOptions,
+} from './utils/pagination.utils';
+
+// DTOs
+export type {
+  PaginationMetadata,
+  PaginatedResponse,
+} from './types/dtos/paginated-response.dto';

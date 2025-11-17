@@ -32,7 +32,7 @@ interface AuthContextType {
   /** Error message if authentication failed */
   error: string | null;
   /** Login function */
-  login: (redirectUri?: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
   /** Logout function */
   logout: (redirectUri?: string) => Promise<void>;
   /** Get access token */
@@ -132,19 +132,31 @@ export function AuthProvider({
 
   /**
    * Login function
+   *
+   * @param username - User email or username
+   * @param password - User password
    */
-  const login = useCallback(async (redirectUri?: string): Promise<void> => {
-    try {
-      setError(null);
-      await keycloakLogin(redirectUri);
-      // After login, Keycloak will redirect back to the app
-      // The useEffect will handle loading user info
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed';
-      setError(errorMessage);
-      throw err;
-    }
-  }, []);
+  const login = useCallback(
+    async (username: string, password: string): Promise<void> => {
+      try {
+        setError(null);
+        setIsLoading(true);
+        await keycloakLogin(username, password);
+        // Load user info after successful login
+        await loadUserInfo();
+        // Setup automatic token refresh
+        setupTokenRefresh();
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Anmeldung fehlgeschlagen';
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [loadUserInfo]
+  );
 
   /**
    * Logout function

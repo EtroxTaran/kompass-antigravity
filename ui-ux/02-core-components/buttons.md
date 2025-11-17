@@ -31,19 +31,20 @@
 - `ButtonGroup` for related actions
 - Icon integration from lucide-react
 
-## Figma Make Prompt
+## Button Specifications (from Reference Repository)
 
-Create a comprehensive button component library for KOMPASS, a German CRM application. Design all button variants, sizes, states, and compositions with German labels.
+**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/ButtonVariants.tsx`, `ButtonSizes.tsx`
 
 **Primary Button (Default):**
 
-- Background: Blue (#3b82f6)
-- Text: White, 14px, medium weight
-- Height: 40px (48px on mobile)
-- Padding: 24px horizontal, 10px vertical
-- Border-radius: 6px
+- Background: `bg-primary` (OKLCH: `oklch(0.6487 0.1538 150.3071)`)
+- Text: `text-primary-foreground` (white)
+- Font: 14px, medium weight
+- Height: 40px (`h-10`)
+- Padding: Horizontal padding handled by shadcn/ui Button component
+- Border-radius: Uses `--radius` token (0.5rem)
 - Example text: "Kunde anlegen", "Speichern", "Weiter"
-- Shadow: Subtle (0px 1px 2px rgba(0,0,0,0.05))
+- Shadow: Uses `--shadow-sm` token
 
 **States:**
 
@@ -95,21 +96,44 @@ Create a comprehensive button component library for KOMPASS, a German CRM applic
 - Active: Even darker red (#b91c1c)
 - Disabled: Faded red background
 
-**Size Variants:**
+**Size Variants (from Reference Repository):**
 
-1. **Large (lg)**: Height 48px, padding 32px horizontal, font 16px
+1. **Large (lg)**:
+   - Height: 48px (`h-12`)
+   - Icon size: 20px (`h-5 w-5`)
    - Use for: Primary CTAs, mobile primary actions
-2. **Default**: Height 40px, padding 24px horizontal, font 14px
+   - Example: `<Button size="lg">Speichern</Button>`
+
+2. **Default**:
+   - Height: 40px (`h-10`)
+   - Icon size: 16px (`h-4 w-4`)
    - Use for: Most buttons
-3. **Small (sm)**: Height 32px, padding 16px horizontal, font 12px
+   - Example: `<Button>Speichern</Button>`
+
+3. **Small (sm)**:
+   - Height: 32px (`h-8`)
+   - Icon size: 12px (`h-3 w-3`)
    - Use for: Secondary actions, table actions, compact layouts
+   - Example: `<Button size="sm">Speichern</Button>`
+
+**Reference:** `EtroxTaran/Kompassuimusterbibliothek/src/components/ButtonSizes.tsx`
 
 **Icon + Text Button:**
 
-- Icon (20px) positioned to left of text
-- 8px gap between icon and text
-- Example: Save icon + "Speichern", Plus icon + "Neu anlegen"
-- Icon color matches text color
+- Icon positioned to left of text
+- Gap: `mr-2` (8px) for default size, `mr-1.5` (6px) for small
+- Icon sizes:
+  - Small: `h-3 w-3` (12px)
+  - Default: `h-4 w-4` (16px)
+  - Large: `h-5 w-5` (20px)
+- Example:
+  ```tsx
+  <Button>
+    <Save className="h-4 w-4 mr-2" />
+    Speichern
+  </Button>
+  ```
+- Icon color matches text color automatically
 
 **Icon-Only Button:**
 
@@ -305,31 +329,54 @@ Design in light mode with professional aesthetic. Ensure all buttons have minimu
 npx shadcn-ui@latest add button
 ```
 
-### Button Variants
+### Button Variants (from Reference Repository)
+
+**Reference:** `EtroxTaran/Kompassuimusterbibliothek/src/components/ButtonVariants.tsx`
 
 ```typescript
-// Primary
+// Primary (Default)
 <Button>Speichern</Button>
+<Button>Kunde anlegen</Button>
+<Button>Weiter</Button>
 
-// Secondary
+// Secondary (Outlined)
 <Button variant="outline">Abbrechen</Button>
+<Button variant="outline">Zurück</Button>
+<Button variant="outline">Filter anwenden</Button>
+
+// Tertiary (Ghost)
+<Button variant="ghost">Details anzeigen</Button>
+<Button variant="ghost">Mehr erfahren</Button>
+<Button variant="ghost">Bearbeiten</Button>
+
+// Secondary (with background)
+<Button variant="secondary">Entwurf speichern</Button>
+<Button variant="secondary">Vorschau</Button>
 
 // Destructive
 <Button variant="destructive">Löschen</Button>
+<Button variant="destructive">Stornieren</Button>
 
-// Ghost
-<Button variant="ghost">Details anzeigen</Button>
+// Link
+<Button variant="link">Passwort vergessen?</Button>
+<Button variant="link">Zur Anmeldung</Button>
 
-// With Icon
+// With Icon (Default size)
 <Button>
-  <Save className="mr-2 h-4 w-4" />
+  <Save className="h-4 w-4 mr-2" />
   Speichern
 </Button>
 
-// Loading
-<Button disabled>
-  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-  Wird gespeichert...
+// With Icon (Large size)
+<Button size="lg">
+  <Plus className="h-5 w-5 mr-2" />
+  Neu anlegen
+</Button>
+
+// With Icon (Small size)
+<Button size="sm">
+  <Save className="h-3 w-3 mr-1.5" />
+  Mit Symbol
 </Button>
 
 // Icon Only

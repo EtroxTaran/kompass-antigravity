@@ -4,16 +4,15 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 // Authentication module (must be imported first)
 import { AuthModule } from './modules/auth/auth.module';
+// Database module (provides NANO CouchDB client)
 // Feature modules
 import { CalendarModule } from './modules/calendar/calendar.module';
 import { CustomerModule } from './modules/customer/customer.module';
+import { DatabaseModule } from './modules/database/database.module';
 // import { ExpenseModule } from './modules/expense/expense.module'; // TODO: Enable when NANO provider is configured
 import { LocationModule } from './modules/location/location.module';
 // import { MeetingModule } from './modules/meeting/meeting.module'; // TODO: Enable when NANO provider is configured
-import { ProjectCostModule } from './modules/project-cost/project-cost.module';
 import { RoleModule } from './modules/role/role.module';
-import { TimeTrackingModule } from './modules/time-tracking/time-tracking.module';
-import { TourModule } from './modules/tour/tour.module';
 import { UserModule } from './modules/user/user.module';
 
 /**
@@ -28,6 +27,9 @@ import { UserModule } from './modules/user/user.module';
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
     }),
+
+    // Database module (provides NANO CouchDB client - Global)
+    DatabaseModule,
 
     // Authentication module (must be imported before feature modules)
     AuthModule,

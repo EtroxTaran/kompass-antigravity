@@ -1,19 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import { Button } from '../components/ui/button';
+import { LoginForm } from '../components/auth/LoginForm';
 import { useAuth } from '../hooks/useAuth';
 
 /**
  * Login Page
  *
- * Displays login interface and handles Keycloak authentication flow.
+ * Displays embedded login form and handles Keycloak authentication flow.
  * After successful login, redirects user to the originally requested page or dashboard.
  */
 export function LoginPage(): React.ReactElement {
-  const { isAuthenticated, isLoading, error, login } = useAuth();
+  const { isAuthenticated, isLoading, error, login, refreshUserInfo } =
+    useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // Redirect to dashboard if already authenticated
   useEffect(() => {
@@ -21,37 +23,47 @@ export function LoginPage(): React.ReactElement {
       // Get the page user was trying to access, or default to dashboard
       const from =
         (location.state as { from?: { pathname: string } })?.from?.pathname ||
-        '/';
+        '/dashboard';
       navigate(from, { replace: true });
     }
   }, [isAuthenticated, isLoading, navigate, location]);
 
   /**
-   * Handle login button click
+   * Handle login form submission
    */
-  const handleLogin = async (): Promise<void> => {
+  const handleLogin = async (data: {
+    email: string;
+    password: string;
+    rememberMe?: boolean;
+  }): Promise<void> => {
     try {
-      // Get the page user was trying to access
-      const from = (location.state as { from?: { pathname: string } })?.from
-        ?.pathname;
-      const redirectUri = from ? `${window.location.origin}${from}` : undefined;
+      setIsLoggingIn(true);
+      await login(data.email, data.password);
 
-      await login(redirectUri);
-      // After login, Keycloak will redirect back to the app
-      // The useEffect will handle navigation
+      // Refresh user info after successful login
+      await refreshUserInfo();
+
+      // Get the page user was trying to access, or default to dashboard
+      const from =
+        (location.state as { from?: { pathname: string } })?.from?.pathname ||
+        '/dashboard';
+      navigate(from, { replace: true });
     } catch (err) {
       console.error('Login failed:', err);
       // Error is already set in auth context
+      throw err; // Re-throw to let LoginForm handle it
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
-  // Show loading state
+  // Show loading state during initial auth check
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Laden...</p>
         </div>
       </div>
     );
@@ -59,36 +71,19 @@ export function LoginPage(): React.ReactElement {
 
   // Show login form
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <div className="max-w-md w-full space-y-8 p-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">KOMPASS</h1>
-          <p className="text-gray-600">CRM & Projektmanagement</p>
+          <h1 className="text-3xl font-bold mb-2">KOMPASS</h1>
+          <p className="text-muted-foreground">CRM & Projektmanagement</p>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-            <p className="text-sm">{error}</p>
-          </div>
-        )}
-
-        <div className="space-y-4">
-          <p className="text-center text-gray-600">
-            Bitte melden Sie sich an, um fortzufahren.
-          </p>
-
-          <Button
-            onClick={handleLogin}
-            className="w-full"
-            size="lg"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Anmelden...' : 'Anmelden'}
-          </Button>
-        </div>
-
-        <div className="text-center text-sm text-gray-500">
-          <p>Sie werden zu Keycloak weitergeleitet, um sich anzumelden.</p>
+        <div className="bg-card rounded-lg shadow-md p-8 border">
+          <LoginForm
+            onSubmit={handleLogin}
+            isLoading={isLoggingIn}
+            error={error}
+          />
         </div>
       </div>
     </div>

@@ -26,23 +26,23 @@ function fixPaths() {
 
   function walkDir(dir) {
     const files = fs.readdirSync(dir);
-    
+
     for (const file of files) {
       const filePath = path.join(dir, file);
       const stat = fs.statSync(filePath);
-      
+
       if (stat.isDirectory()) {
         walkDir(filePath);
       } else if (file.endsWith('.js')) {
         let content = fs.readFileSync(filePath, 'utf8');
         const originalContent = content;
-        
+
         // Replace paths pointing to packages/shared/src with packages/shared/dist
         content = content.replace(
           /packages\/shared\/src\//g,
           'packages/shared/dist/'
         );
-        
+
         if (content !== originalContent) {
           fs.writeFileSync(filePath, content, 'utf8');
         }
@@ -82,4 +82,3 @@ process.on('SIGINT', () => {
   nest.kill();
   process.exit(0);
 });
-

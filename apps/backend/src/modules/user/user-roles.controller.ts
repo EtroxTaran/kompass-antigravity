@@ -1,21 +1,25 @@
 import {
-  Controller,
-  Get,
-  Put,
-  Delete,
-  Param,
   Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiTags,
   ApiBearerAuth,
   ApiOperation,
-  ApiResponse,
   ApiParam,
+  ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 
-import { UserRole } from '@kompass/shared/constants/rbac.constants';
+import {
+  EntityType,
+  Permission,
+  UserRole,
+} from '@kompass/shared/constants/rbac.constants';
 import { User } from '@kompass/shared/types/entities/user';
 
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -25,6 +29,8 @@ import { RbacGuard } from '../auth/guards/rbac.guard';
 
 import { AssignRolesDto } from './dto/assign-roles.dto';
 import { UpdatePrimaryRoleDto } from './dto/update-primary-role.dto';
+import { UserResponseDto } from './dto/user-response.dto';
+import { UserService } from './user.service';
 
 /**
  * User Roles Management Controller
@@ -32,10 +38,7 @@ import { UpdatePrimaryRoleDto } from './dto/update-primary-role.dto';
  * Handles user role assignment, primary role updates, and role revocation.
  * Only GF and ADMIN roles can manage user roles.
  *
- * TODO: Implement user roles service
- * TODO: Add validation that primaryRole is in roles array
- * TODO: Add audit logging for role changes
- * TODO: Add notification system for role changes
+ * Uses nested routes: /api/v1/users/:userId/roles
  *
  * @see docs/specifications/reviews/API_SPECIFICATION.md#user-role-management-endpoints
  */
@@ -44,125 +47,125 @@ import { UpdatePrimaryRoleDto } from './dto/update-primary-role.dto';
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class UserRolesController {
-  // TODO: Inject UserRolesService when created
-  // constructor(private readonly userRolesService: UserRolesService) {}
+  constructor(private readonly userService: UserService) {}
 
   /**
    * GET /api/v1/users/:userId/roles
    * Retrieve current roles for a user
-   *
-   * TODO: Implement role retrieval
    */
   @Get()
-  @RequirePermission('User', 'READ')
+  @RequirePermission(EntityType.User, Permission.READ)
   @ApiOperation({ summary: 'Get user roles' })
   @ApiParam({ name: 'userId', description: 'User ID' })
-  @ApiResponse({ status: 200, description: 'User roles retrieved' })
+  @ApiResponse({
+    status: 200,
+    description: 'User roles retrieved',
+    schema: {
+      type: 'object',
+      properties: {
+        roles: {
+          type: 'array',
+          items: { enum: Object.values(UserRole) },
+        },
+        primaryRole: { enum: Object.values(UserRole) },
+      },
+    },
+  })
   @ApiResponse({ status: 404, description: 'User not found' })
-  getUserRoles(
-    @Param('userId') _userId: string,
-    @CurrentUser() _user: User
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - insufficient permissions',
+  })
+  async getUserRoles(
+    @Param('userId') userId: string,
+    @CurrentUser() user: User
   ): Promise<{ roles: UserRole[]; primaryRole: UserRole }> {
-    // TODO: Implement user roles retrieval
-    // TODO: Verify requesting user has permission (GF/ADMIN or self)
-    throw new Error('Not implemented');
+    const userEntity = await this.userService.findById(userId, user);
+    return {
+      roles: userEntity.roles,
+      primaryRole: userEntity.primaryRole,
+    };
   }
 
   /**
    * PUT /api/v1/users/:userId/roles
    * Assign multiple roles to a user and set primary role
-   *
-   * TODO: Implement role assignment with validation
-   * TODO: Verify primaryRole is in roles array
-   * TODO: Add audit logging
    */
   @Put()
-  @RequirePermission('User', 'UPDATE')
+  @RequirePermission(EntityType.User, Permission.UPDATE)
   @ApiOperation({ summary: 'Assign roles to user' })
   @ApiParam({ name: 'userId', description: 'User ID' })
-  @ApiResponse({ status: 200, description: 'Roles assigned successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Roles assigned successfully',
+    type: UserResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Invalid role assignment' })
   @ApiResponse({ status: 403, description: 'Forbidden - GF or ADMIN only' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  assignRoles(
-    @Param('userId') _userId: string,
-    @Body() _dto: AssignRolesDto,
-    @CurrentUser() _user: User
-  ): Promise<User> {
-    // TODO: Verify requesting user is GF or ADMIN
-    // TODO: Validate primaryRole is in roles array
-    // TODO: Assign roles to user
-    // TODO: Log role change in user.roleChangeHistory
-    // TODO: Send notification to user about role change
-    throw new Error('Not implemented');
+  async assignRoles(
+    @Param('userId') userId: string,
+    @Body() dto: AssignRolesDto,
+    @CurrentUser() user: User
+  ): Promise<UserResponseDto> {
+    return this.userService.assignRoles(userId, dto, user);
   }
 
   /**
    * DELETE /api/v1/users/:userId/roles/:roleId
    * Revoke a specific role from a user
-   *
-   * TODO: Implement role revocation
-   * TODO: Prevent removing last role
-   * TODO: Auto-update primaryRole if removed
    */
   @Delete(':roleId')
-  @RequirePermission('User', 'UPDATE')
+  @RequirePermission(EntityType.User, Permission.UPDATE)
   @ApiOperation({ summary: 'Revoke role from user' })
   @ApiParam({ name: 'userId', description: 'User ID' })
   @ApiParam({ name: 'roleId', description: 'Role to revoke', enum: UserRole })
-  @ApiResponse({ status: 200, description: 'Role revoked successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Role revoked successfully',
+    type: UserResponseDto,
+  })
   @ApiResponse({
     status: 400,
-    description: 'Cannot remove last role or primary role',
+    description: 'Cannot remove last role',
   })
   @ApiResponse({ status: 403, description: 'Forbidden - GF or ADMIN only' })
   @ApiResponse({
     status: 404,
     description: 'User not found or role not assigned',
   })
-  revokeRole(
-    @Param('userId') _userId: string,
-    @Param('roleId') _roleId: UserRole,
-    @CurrentUser() _user: User
-  ): Promise<User> {
-    // TODO: Verify requesting user is GF or ADMIN
-    // TODO: Verify user has the role to revoke
-    // TODO: Prevent removing last role (user must have at least one)
-    // TODO: If removing primaryRole, auto-set new primary from remaining roles
-    // TODO: Remove role from user.roles array
-    // TODO: Log role change in user.roleChangeHistory
-    // TODO: Send notification to user about role revocation
-    throw new Error('Not implemented');
+  async revokeRole(
+    @Param('userId') userId: string,
+    @Param('roleId') roleId: UserRole,
+    @CurrentUser() user: User
+  ): Promise<UserResponseDto> {
+    return this.userService.revokeRole(userId, roleId, user);
   }
 
   /**
    * PUT /api/v1/users/:userId/primary-role
    * Update user's primary role
-   *
-   * TODO: Implement primary role update
-   * TODO: Validate new primary role is in user.roles array
    */
   @Put('../primary-role')
-  @RequirePermission('User', 'UPDATE')
+  @RequirePermission(EntityType.User, Permission.UPDATE)
   @ApiOperation({ summary: 'Update user primary role' })
   @ApiParam({ name: 'userId', description: 'User ID' })
-  @ApiResponse({ status: 200, description: 'Primary role updated' })
+  @ApiResponse({
+    status: 200,
+    description: 'Primary role updated',
+    type: UserResponseDto,
+  })
   @ApiResponse({
     status: 400,
     description: 'Primary role not in assigned roles',
   })
   @ApiResponse({ status: 403, description: 'Forbidden - GF or ADMIN only' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  updatePrimaryRole(
-    @Param('userId') _userId: string,
-    @Body() _dto: UpdatePrimaryRoleDto,
-    @CurrentUser() _user: User
-  ): Promise<User> {
-    // TODO: Verify requesting user is GF or ADMIN
-    // TODO: Verify new primary role is in user.roles array
-    // TODO: Update user.primaryRole
-    // TODO: Log role change in user.roleChangeHistory
-    // TODO: Send notification to user about primary role change
-    throw new Error('Not implemented');
+  async updatePrimaryRole(
+    @Param('userId') userId: string,
+    @Body() dto: UpdatePrimaryRoleDto,
+    @CurrentUser() user: User
+  ): Promise<UserResponseDto> {
+    return this.userService.updatePrimaryRole(userId, dto, user);
   }
 }

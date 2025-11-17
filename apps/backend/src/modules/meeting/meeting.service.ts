@@ -206,11 +206,11 @@ export class MeetingService {
     // Log audit trail
     if (this.auditService) {
       await this.auditService.log({
-      entityType: 'Meeting',
-      entityId: created._id,
-      action: 'CREATE',
-      userId: user._id,
-      timestamp: new Date(),
+        entityType: 'Meeting',
+        entityId: created._id,
+        action: 'CREATE',
+        userId: user._id,
+        timestamp: new Date(),
       });
     }
 
@@ -295,12 +295,12 @@ export class MeetingService {
     // Log audit trail
     if (this.auditService) {
       await this.auditService.log({
-      entityType: 'Meeting',
-      entityId: saved._id,
-      action: 'UPDATE',
-      changes: Object.keys(dto),
-      userId: user._id,
-      timestamp: new Date(),
+        entityType: 'Meeting',
+        entityId: saved._id,
+        action: 'UPDATE',
+        changes: Object.keys(dto),
+        userId: user._id,
+        timestamp: new Date(),
       });
     }
 
@@ -337,11 +337,11 @@ export class MeetingService {
     // Log audit trail
     if (this.auditService) {
       await this.auditService.log({
-      entityType: 'Meeting',
-      entityId: id,
-      action: 'DELETE',
-      userId: user._id,
-      timestamp: new Date(),
+        entityType: 'Meeting',
+        entityId: id,
+        action: 'DELETE',
+        userId: user._id,
+        timestamp: new Date(),
       });
     }
 
@@ -373,7 +373,9 @@ export class MeetingService {
 
     // Get location GPS coordinates
     if (!this.locationService) {
-      throw new BadRequestException('LocationService not available. Location module not fully implemented yet.');
+      throw new BadRequestException(
+        'LocationService not available. Location module not fully implemented yet.'
+      );
     }
     const location = await this.locationService.findById(meeting.locationId);
     if (!location || !location.gpsCoordinates) {
@@ -414,16 +416,16 @@ export class MeetingService {
     // Log audit trail
     if (this.auditService) {
       await this.auditService.log({
-      entityType: 'Meeting',
-      entityId: saved._id,
-      action: 'CHECK_IN',
-      userId: user._id,
-      gpsCoordinates: {
-        latitude: checkInDto.latitude,
-        longitude: checkInDto.longitude,
-      },
-      distanceFromLocation: distance,
-      timestamp: new Date(),
+        entityType: 'Meeting',
+        entityId: saved._id,
+        action: 'CHECK_IN',
+        userId: user._id,
+        gpsCoordinates: {
+          latitude: checkInDto.latitude,
+          longitude: checkInDto.longitude,
+        },
+        distanceFromLocation: distance,
+        timestamp: new Date(),
       });
     }
 
@@ -485,11 +487,11 @@ export class MeetingService {
     // Log audit trail
     if (this.auditService) {
       await this.auditService.log({
-      entityType: 'Meeting',
-      entityId: saved._id,
-      action: 'UPDATE_OUTCOME',
-      userId: user._id,
-      timestamp: new Date(),
+        entityType: 'Meeting',
+        entityId: saved._id,
+        action: 'UPDATE_OUTCOME',
+        userId: user._id,
+        timestamp: new Date(),
       });
     }
 
@@ -530,12 +532,12 @@ export class MeetingService {
     // Log audit trail
     if (this.auditService) {
       await this.auditService.log({
-      entityType: 'Meeting',
-      entityId: saved._id,
-      action: 'LINK_TOUR',
-      tourId,
-      userId: user._id,
-      timestamp: new Date(),
+        entityType: 'Meeting',
+        entityId: saved._id,
+        action: 'LINK_TOUR',
+        tourId,
+        userId: user._id,
+        timestamp: new Date(),
       });
     }
 
@@ -553,7 +555,9 @@ export class MeetingService {
     user: User
   ): Promise<Tour[]> {
     if (!this.tourService) {
-      throw new BadRequestException('TourService not available. Tour module not fully implemented yet.');
+      throw new BadRequestException(
+        'TourService not available. Tour module not fully implemented yet.'
+      );
     }
     return this.tourService.suggestToursForMeeting(
       meetingDate,

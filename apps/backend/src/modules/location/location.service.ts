@@ -76,7 +76,9 @@ export class LocationService {
   ): Promise<LocationResponseDto> {
     // Check if user can access parent customer
     if (!this.customerService) {
-      throw new BadRequestException('CustomerService not available. Customer module not implemented yet.');
+      throw new BadRequestException(
+        'CustomerService not available. Customer module not implemented yet.'
+      );
     }
     const customer = await this.customerService.findById(customerId, user);
     if (!customer) {
@@ -170,7 +172,9 @@ export class LocationService {
   ): Promise<LocationResponseDto[]> {
     // Verify customer access
     if (!this.customerService) {
-      throw new BadRequestException('CustomerService not available. Customer module not implemented yet.');
+      throw new BadRequestException(
+        'CustomerService not available. Customer module not implemented yet.'
+      );
     }
     const customer = await this.customerService.findById(customerId, user);
     if (!customer) {
@@ -193,7 +197,9 @@ export class LocationService {
   ): Promise<LocationResponseDto> {
     // Verify customer access
     if (!this.customerService) {
-      throw new BadRequestException('CustomerService not available. Customer module not implemented yet.');
+      throw new BadRequestException(
+        'CustomerService not available. Customer module not implemented yet.'
+      );
     }
     await this.customerService.findById(customerId, user);
 
@@ -226,7 +232,9 @@ export class LocationService {
   ): Promise<LocationResponseDto> {
     // Check customer access
     if (!this.customerService) {
-      throw new BadRequestException('CustomerService not available. Customer module not implemented yet.');
+      throw new BadRequestException(
+        'CustomerService not available. Customer module not implemented yet.'
+      );
     }
     const customer = await this.customerService.findById(customerId, user);
     if (!customer) {
@@ -318,7 +326,9 @@ export class LocationService {
 
     // Check customer access
     if (!this.customerService) {
-      throw new BadRequestException('CustomerService not available. Customer module not implemented yet.');
+      throw new BadRequestException(
+        'CustomerService not available. Customer module not implemented yet.'
+      );
     }
     await this.customerService.findById(customerId, user);
 

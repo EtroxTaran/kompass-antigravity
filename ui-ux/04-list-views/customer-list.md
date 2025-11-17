@@ -10,6 +10,7 @@
 ## Reference Source
 
 **GitHub UI Reference Repository:** `EtroxTaran/Kompassuimusterbibliothek`
+
 - **Reference File:** `src/components/CustomerListDemo.tsx`
 - **Implementation:** `apps/frontend/src/pages/CustomerListPage.tsx`
 

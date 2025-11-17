@@ -32,9 +32,17 @@
 - `Toast` for transient notifications
 - `Badge` for permission indicators
 
-## Figma Make Prompt
+## Error & Empty State Specifications (from Reference Repository)
 
-Create comprehensive error and empty state designs for KOMPASS, a German CRM application. Design clear, helpful, and actionable feedback for various failure and empty scenarios.
+**Reference Source:**
+
+- `EtroxTaran/Kompassuimusterbibliothek/src/components/EmptyCustomerList.tsx`
+- `EtroxTaran/Kompassuimusterbibliothek/src/components/EmptySearchResults.tsx`
+- `EtroxTaran/Kompassuimusterbibliothek/src/components/NetworkErrorState.tsx`
+- `EtroxTaran/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx` (empty state patterns)
+- `EtroxTaran/Kompassuimusterbibliothek/src/components/FormInputsDemo.tsx` (error states)
+
+The error and empty state system uses shadcn/ui `Alert`, `Card`, and `Button` components with clear messaging and actionable recovery options.
 
 **Error States:**
 

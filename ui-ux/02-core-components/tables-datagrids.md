@@ -33,9 +33,11 @@
 - `Badge` for status indicators
 - `Pagination` for page controls
 
-## Figma Make Prompt
+## Table Specifications (from Reference Repository)
 
-Create comprehensive data table and grid components for KOMPASS, a German CRM application. Design tables for customers, projects, invoices, and opportunities with sorting, filtering, selection, and German labels.
+**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx`
+
+The table system uses shadcn/ui `Table` components with sorting, filtering, pagination, and multi-select capabilities.
 
 **Standard Data Table:**
 
@@ -53,14 +55,16 @@ Create comprehensive data table and grid components for KOMPASS, a German CRM ap
 - Sticky position: Remains visible when scrolling
 - Example columns: "Firmenname", "Standort", "Status", "Erstellt am", "Aktionen"
 
-**Data Rows:**
+**Data Rows (from Reference Repository):**
 
-- Height: 56px (default density)
-- Padding: 12px horizontal per cell
-- Font: 14px, regular, #1f2937
-- Border-bottom: 1px solid #f3f4f6
-- Zebra striping: Even rows #ffffff, odd rows #f9fafb (optional)
-- Hover: Light blue background (#f0f9ff), shows action buttons
+- Height: 56px (default density) - confirmed in reference
+- Padding: Handled by `TableCell` component
+- Font: 14px, regular weight
+- Text color: `text-foreground`
+- Border-bottom: Uses `border-border` token
+- Selected row: `bg-accent/30` background
+- Hover: Shows action buttons (ghost buttons with icons)
+- Row structure: Uses `TableRow` component from shadcn/ui
 
 **Column Types:**
 
