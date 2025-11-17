@@ -97,6 +97,53 @@ Integration for GitHub repositories and their metadata, including file contents,
 **Prioritization:**
 Use GitHub MCP tool for external repository operations. For local repository, use standard Git commands or Cursor's built-in Git features.
 
+**CRITICAL: Verification Before Creating PRs**
+
+**NEVER create a pull request via GitHub MCP without running ALL verification checks first.**
+
+Before creating ANY pull request (even via GitHub MCP), you MUST:
+
+1. **Run Full Verification**
+   ```bash
+   ./scripts/verify-code.sh
+   # OR
+   pnpm format:check && pnpm lint && pnpm type-check && pnpm test:unit
+   ```
+
+2. **Show Verification Results**
+   - Show actual command outputs
+   - Verify all checks passed
+   - Fix any failures before creating PR
+
+3. **Include Verification in PR Description**
+   - Add verification summary to PR body
+   - Show what checks were run and their results
+
+**✅ CORRECT: Creating PR via GitHub MCP**
+```bash
+# Step 1: Run verification
+$ ./scripts/verify-code.sh
+✅ ALL VERIFICATION CHECKS PASSED
+
+# Step 2: Show results
+Verification:
+- ✅ Format check passed
+- ✅ Lint check passed
+- ✅ Type check passed
+- ✅ Unit tests passed
+
+# Step 3: Create PR with verification summary
+# PR description includes verification results
+```
+
+**❌ WRONG: Creating PR Without Verification**
+```bash
+# ❌ Creating PR via GitHub MCP without running checks
+# No verification, no checks, just creating PR
+```
+
+See `.cursor/rules/ai-code-verification.mdc` for complete verification requirements.
+
 ```typescript
 // ✅ CORRECT: Use GitHub MCP for external repository access
 // User asks: "Get the latest version of a library from GitHub"

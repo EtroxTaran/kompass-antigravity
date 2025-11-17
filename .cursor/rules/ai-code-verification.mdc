@@ -1,0 +1,479 @@
+---
+description: AI code verification requirements - ALWAYS run verification checks before suggesting commits, show tool outputs, fix issues before commits
+globs: []
+alwaysApply: true
+---
+
+# AI Code Verification Workflow
+
+## CRITICAL RULE: Never Suggest Commits Without Verification
+
+**NEVER suggest committing code without first running ALL verification checks and showing the actual results.**
+
+## Mandatory Pre-Commit Verification
+
+### Before Suggesting ANY Commit
+
+You MUST run these checks in order and show the actual command outputs:
+
+1. **Format Check**: `pnpm format:check`
+2. **Lint Check**: `pnpm lint`
+3. **Type Check**: `pnpm type-check`
+4. **Unit Tests**: `pnpm test:unit`
+
+### Verification Script
+
+Use the verification script for comprehensive checks:
+
+```bash
+# Run all checks at once
+./scripts/verify-code.sh
+
+# Or run checks individually to see specific outputs
+pnpm format:check
+pnpm lint
+pnpm type-check
+pnpm test:unit
+```
+
+## Required Workflow
+
+### Step 1: Read Configuration Files First
+
+Before writing code, read the actual tool configurations:
+
+- `.prettierrc.js` - Prettier formatting rules
+- `.eslintrc.js` - ESLint linting rules
+- `tsconfig.json` - TypeScript configuration
+- `package.json` - Available scripts and dependencies
+
+**NEVER guess formatting or linting rules. Always read the actual configs.**
+
+### Step 2: Write Code Following Configs
+
+Write code that matches:
+- Prettier formatting rules from `.prettierrc.js`
+- ESLint rules from `.eslintrc.js`
+- TypeScript strict mode requirements
+- Project structure and naming conventions
+
+### Step 3: Run Verification Checks
+
+After writing code, ALWAYS run verification:
+
+```bash
+# 1. Format check (read-only)
+pnpm format:check
+
+# 2. Auto-fix formatting if needed
+pnpm format
+
+# 3. Lint check
+pnpm lint
+
+# 4. Type check
+pnpm type-check
+
+# 5. Unit tests
+pnpm test:unit
+```
+
+### Step 4: Show Actual Outputs
+
+**NEVER just say "checks passed". ALWAYS show the actual command output:**
+
+```bash
+# ✅ CORRECT: Show actual output
+$ pnpm format:check
+Checking formatting...
+All files are properly formatted.
+
+$ pnpm lint
+Running ESLint...
+✔ No linting errors found
+
+$ pnpm type-check
+Type checking...
+✔ Type check passed
+
+$ pnpm test:unit
+Running unit tests...
+✔ All tests passed (45/45)
+```
+
+### Step 5: Fix Issues Before Suggesting Commits
+
+If any check fails:
+
+1. **Show the error output** to the user
+2. **Fix the issues** based on the actual error messages
+3. **Re-run the checks** to verify fixes
+4. **Only then** suggest committing
+
+**NEVER suggest commits when checks fail.**
+
+## Verification Checklist
+
+Before suggesting ANY commit, verify:
+
+- [ ] **Format Check**: `pnpm format:check` passes (or `pnpm format` run to fix)
+- [ ] **Lint Check**: `pnpm lint` passes with no errors
+- [ ] **Type Check**: `pnpm type-check` passes with no errors
+- [ ] **Unit Tests**: `pnpm test:unit` passes (all tests green)
+- [ ] **Actual Outputs**: Command outputs shown to user (not just "passed")
+- [ ] **Issues Fixed**: All errors resolved before commit suggestion
+
+## Error Handling
+
+### When Checks Fail
+
+1. **Show the full error output** (don't truncate)
+2. **Explain what the error means**
+3. **Fix the issue** using the error message as guidance
+4. **Re-run the check** to verify the fix
+5. **Show the success output** after fixing
+
+### Example: Format Check Failed
+
+```bash
+# ❌ WRONG: Just say it failed
+"Format check failed. Please run pnpm format."
+
+# ✅ CORRECT: Show output and fix
+$ pnpm format:check
+Checking formatting...
+✗ apps/backend/src/modules/customer/customer.service.ts
+  Code style issues found
+
+# Fix the formatting
+$ pnpm format
+Formatted 1 file
+
+# Verify fix
+$ pnpm format:check
+Checking formatting...
+✔ All files are properly formatted.
+```
+
+### Example: Lint Check Failed
+
+```bash
+# ❌ WRONG: Just say it failed
+"Lint check failed. Please fix linting errors."
+
+# ✅ CORRECT: Show output and fix
+$ pnpm lint
+apps/backend/src/modules/customer/customer.service.ts
+  15:5  error  'any' type is not allowed  @typescript-eslint/no-explicit-any
+  23:10 error  Missing return type        @typescript-eslint/explicit-function-return-type
+
+# Fix the issues
+# ... make code changes ...
+
+# Verify fix
+$ pnpm lint
+✔ No linting errors found
+```
+
+## Fast Mode (Optional)
+
+For quick checks during development, you can skip tests:
+
+```bash
+# Fast verification (skip tests)
+pnpm format:check && pnpm lint && pnpm type-check
+
+# Full verification (includes tests)
+./scripts/verify-code.sh
+```
+
+**Note**: Always run full verification (including tests) before suggesting commits.
+
+## Integration with Pre-Commit Hooks
+
+The pre-commit hook (`.husky/pre-commit`) runs:
+- Format check (`pnpm format:check`)
+- Lint-staged (auto-fixes formatting and linting)
+- Type check (`pnpm type-check`)
+- **No tests** (tests run in pre-push hook)
+
+The pre-push hook (`.husky/pre-push`) runs:
+- Full lint check
+- Format check
+- Type check
+- **Unit tests with coverage** (blocking)
+- Security audit
+
+**Your verification should match what pre-push runs** (the stricter check).
+
+## Commit Message Requirements
+
+When suggesting commits, include verification results:
+
+```bash
+# ✅ CORRECT: Include verification in commit message
+feat(KOM-123): add customer duplicate detection
+
+Verification:
+- ✅ Format check passed
+- ✅ Lint check passed (0 errors)
+- ✅ Type check passed
+- ✅ Unit tests passed (45/45)
+
+# ❌ WRONG: No verification mentioned
+feat(KOM-123): add customer duplicate detection
+```
+
+## Examples
+
+### ✅ CORRECT: Full Verification Workflow
+
+```bash
+# 1. Write code
+# ... code changes ...
+
+# 2. Run format check
+$ pnpm format:check
+Checking formatting...
+✗ apps/backend/src/modules/customer/customer.service.ts needs formatting
+
+# 3. Fix formatting
+$ pnpm format
+Formatted 1 file
+
+# 4. Verify format
+$ pnpm format:check
+✔ All files are properly formatted
+
+# 5. Run lint
+$ pnpm lint
+✔ No linting errors found
+
+# 6. Run type check
+$ pnpm type-check
+✔ Type check passed
+
+# 7. Run tests
+$ pnpm test:unit
+✔ All tests passed (45/45)
+
+# 8. Now suggest commit
+git commit -m "feat(KOM-123): add customer duplicate detection"
+```
+
+### ❌ WRONG: Skipping Verification
+
+```bash
+# ❌ WRONG: Suggesting commit without running checks
+git commit -m "feat(KOM-123): add customer duplicate detection"
+# (No verification shown)
+```
+
+### ❌ WRONG: Vague Verification
+
+```bash
+# ❌ WRONG: Just saying "checks passed" without showing output
+"All checks passed. Ready to commit."
+# (No actual command outputs shown)
+```
+
+## Special Cases
+
+### When Tests Are Slow
+
+If tests take a long time, use non-blocking execution:
+
+**Option 1: Background Process with Output Capture**
+```bash
+# Run tests in background and capture output
+pnpm test:unit > /tmp/test-output.log 2>&1 &
+TEST_PID=$!
+
+# Continue with other checks
+pnpm format:check
+pnpm lint
+pnpm type-check
+
+# Wait for tests to complete and check results
+wait $TEST_PID
+TEST_EXIT_CODE=$?
+
+if [ $TEST_EXIT_CODE -eq 0 ]; then
+  echo "✅ Tests passed"
+  cat /tmp/test-output.log
+else
+  echo "❌ Tests failed"
+  cat /tmp/test-output.log
+  exit 1
+fi
+```
+
+**Option 2: Timeout with Background Execution**
+```bash
+# Run tests with timeout in background
+timeout 300 pnpm test:unit > /tmp/test-output.log 2>&1 &
+TEST_PID=$!
+
+# Show progress
+echo "Running tests in background (PID: $TEST_PID)"
+echo "Check progress: tail -f /tmp/test-output.log"
+
+# Wait for completion
+wait $TEST_PID
+TEST_EXIT_CODE=$?
+
+# Show results
+cat /tmp/test-output.log
+exit $TEST_EXIT_CODE
+```
+
+**Option 3: Inform User and Continue**
+```bash
+# Run format, lint, type-check first (fast)
+pnpm format:check
+pnpm lint
+pnpm type-check
+
+# Inform user tests are running
+echo "⚠️  Running tests in background..."
+echo "Tests may take a few minutes. Check status with: tail -f /tmp/test-output.log"
+
+# Run tests in background
+pnpm test:unit > /tmp/test-output.log 2>&1 &
+TEST_PID=$!
+
+# Wait for tests (with timeout)
+wait $TEST_PID || echo "Tests still running in background (PID: $TEST_PID)"
+```
+
+**Best Practice:**
+- Always capture test output to a file (`> /tmp/test-output.log 2>&1`)
+- Use background execution (`&`) to avoid blocking
+- Use `wait $PID` to wait for completion
+- Check exit code after waiting
+- Show output to user after completion
+- Use timeout for very long-running tests
+
+### When Checks Are Disabled
+
+If user explicitly asks to skip checks:
+1. **Warn** that skipping checks may cause pre-commit hook to fail
+2. **Suggest** running checks manually before pushing
+3. **Document** what checks were skipped in commit message
+
+### When Only Documentation Changed
+
+For documentation-only changes:
+- Format check still required
+- Lint check still required (markdown linting)
+- Type check can be skipped (no TypeScript changes)
+- Tests can be skipped (no code changes)
+
+## GitHub MCP Pull Request Requirements
+
+### CRITICAL: Verification Before Creating PRs
+
+**NEVER create a pull request (even via GitHub MCP) without running ALL verification checks first.**
+
+### Required Workflow for PR Creation
+
+Before creating ANY pull request (local or via GitHub MCP):
+
+1. **Run Full Verification**
+   ```bash
+   # Run all checks
+   ./scripts/verify-code.sh
+   
+   # OR run individually
+   pnpm format:check
+   pnpm lint
+   pnpm type-check
+   pnpm test:unit
+   ```
+
+2. **Show Verification Results**
+   - Show actual command outputs
+   - Verify all checks passed
+   - Fix any failures before creating PR
+
+3. **Only Then Create PR**
+   - Create PR only after ALL checks pass
+   - Include verification results in PR description
+   - Reference Linear issue in PR
+
+### ✅ CORRECT: PR Creation with Verification
+
+```bash
+# 1. Run verification
+$ ./scripts/verify-code.sh
+✅ ALL VERIFICATION CHECKS PASSED
+
+# 2. Show verification summary
+Verification Results:
+- ✅ Format check passed
+- ✅ Lint check passed (0 errors)
+- ✅ Type check passed
+- ✅ Unit tests passed (45/45)
+
+# 3. Now create PR (via GitHub MCP or local)
+# PR description includes:
+# "All verification checks passed before creating this PR"
+```
+
+### ❌ WRONG: Creating PR Without Verification
+
+```bash
+# ❌ WRONG: Creating PR without running checks
+# Using GitHub MCP to create PR without verification
+# (No checks run, no verification shown)
+```
+
+### GitHub MCP Integration
+
+When using GitHub MCP to create pull requests:
+
+1. **ALWAYS run verification first** (local checks)
+2. **Show verification results** to user
+3. **Only create PR if all checks pass**
+4. **Include verification summary in PR description**
+
+```typescript
+// ✅ CORRECT: GitHub MCP PR creation workflow
+// Step 1: Run local verification
+const verificationResult = await runVerificationChecks();
+if (!verificationResult.passed) {
+  throw new Error('Verification checks failed. Fix issues before creating PR.');
+}
+
+// Step 2: Show results
+console.log('Verification Results:', verificationResult);
+
+// Step 3: Create PR with verification summary
+await githubMCP.createPullRequest({
+  title: 'feat(KOM-123): add customer duplicate detection',
+  body: `
+## Description
+Implements customer duplicate detection.
+
+## Verification
+- ✅ Format check passed
+- ✅ Lint check passed (0 errors)
+- ✅ Type check passed
+- ✅ Unit tests passed (45/45)
+
+## Related Issues
+Closes KOM-123
+  `,
+});
+```
+
+## References
+
+- Verification Script: `scripts/verify-code.sh`
+- Pre-Commit Hook: `.husky/pre-commit`
+- Pre-Push Hook: `.husky/pre-push`
+- Git Workflow: `.cursor/rules/git-workflow.mdc`
+- Code Review: `.cursor/rules/code-review.mdc`
+- GitHub MCP Usage: `.cursor/rules/mcp-tool-usage-ui-integration.mdc`
+- Prettier Config: `.prettierrc.js`
+- ESLint Config: `.eslintrc.js`
