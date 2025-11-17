@@ -11,10 +11,10 @@ import { useMemo, useCallback } from 'react';
 
 import {
   DataTieringService,
+  type DataTier,
   type TierClassification,
   TIER_LIMITS,
-
-  DataTier} from '../services/DataTieringService';
+} from '../services/DataTieringService';
 
 import { useAuth } from './useAuth';
 
