@@ -15,14 +15,14 @@ import * as Nano from 'nano';
 import {
   DecisionMakingRole,
   FunctionalRole,
-} from '@kompass/shared/types/enums';
+} from '../../packages/shared/src/types';
 import * as fs from 'fs';
 
 // CouchDB configuration
-const COUCHDB_URL = process.env.COUCHDB_URL || 'http://localhost:5984';
-const COUCHDB_USER = process.env.COUCHDB_ADMIN_USER || 'admin';
-const COUCHDB_PASSWORD = process.env.COUCHDB_ADMIN_PASSWORD || 'changeme';
-const DATABASE = process.env.COUCHDB_DATABASE || 'kompass';
+const COUCHDB_URL = process.env['COUCHDB_URL'] || 'http://localhost:5984';
+const COUCHDB_USER = process.env['COUCHDB_ADMIN_USER'] || 'admin';
+const COUCHDB_PASSWORD = process.env['COUCHDB_ADMIN_PASSWORD'] || 'changeme';
+const DATABASE = process.env['COUCHDB_DATABASE'] || 'kompass';
 
 const nano = Nano.default(
   `http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@${COUCHDB_URL.replace('http://', '')}`
@@ -193,15 +193,15 @@ async function migrateContacts(
           // Update metadata
           modifiedBy: 'system-migration',
           modifiedAt: new Date(),
-          version: (contact.version || 0) + 1,
+          version: (contact['version'] || 0) + 1,
         };
 
         // Add to report
         result.report.push({
           contactId: contact._id,
           contactName:
-            `${contact.firstName || ''} ${contact.lastName || ''}`.trim(),
-          position: contact.position || 'N/A',
+            `${contact['firstName'] || ''} ${contact['lastName'] || ''}`.trim(),
+          position: contact['position'] || 'N/A',
           suggestedRole: inferred.role,
           suggestedAuthority: inferred.authorityLevel,
         });
@@ -218,8 +218,10 @@ async function migrateContacts(
 
         result.updated++;
       } catch (error) {
-        console.error(`❌ Error migrating ${contact._id}:`, error.message);
-        result.errors.push({ id: contact._id, error: error.message });
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        console.error(`❌ Error migrating ${contact._id}:`, errorMessage);
+        result.errors.push({ id: contact._id, error: errorMessage });
       }
     }
 

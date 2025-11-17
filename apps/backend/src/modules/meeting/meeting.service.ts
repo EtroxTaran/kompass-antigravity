@@ -43,13 +43,7 @@ import type { Location } from '@kompass/shared/types/entities/location';
 import type { Meeting } from '@kompass/shared/types/entities/meeting';
 import type { Tour } from '@kompass/shared/types/entities/tour';
 
-/**
- * Placeholder User type
- */
-interface User {
-  id: string;
-  role: 'GF' | 'PLAN' | 'ADM' | 'KALK' | 'BUCH';
-}
+import type { User } from '@kompass/shared/types/entities/user';
 
 /**
  * Location Service Interface (placeholder)
@@ -123,9 +117,9 @@ export class MeetingService {
   ): Promise<MeetingResponseDto[]> {
     let meetings: Meeting[];
 
-    if (user.role === 'ADM') {
+    if (user.primaryRole === 'ADM') {
       // ADM: Only own meetings
-      meetings = await this.meetingRepository.findByUser(user.id, filters);
+      meetings = await this.meetingRepository.findByUser(user._id, filters);
     } else {
       // PLAN/GF: All meetings (no user filter)
       meetings = await this.meetingRepository.findByUser('', filters);
@@ -145,7 +139,7 @@ export class MeetingService {
     }
 
     // RBAC check: ADM can only see own meetings
-    if (user.role === 'ADM' && meeting.createdBy !== user.id) {
+    if (user.primaryRole === 'ADM' && meeting.createdBy !== user._id) {
       throw new ForbiddenException('You can only view your own meetings');
     }
 
@@ -200,7 +194,7 @@ export class MeetingService {
         followUpDate: dto.followUpDate,
         attended: false,
       },
-      user.id
+      user._id
     );
 
     // Save to database
@@ -211,11 +205,11 @@ export class MeetingService {
       entityType: 'Meeting',
       entityId: created._id,
       action: 'CREATE',
-      userId: user.id,
+      userId: user._id,
       timestamp: new Date(),
     });
 
-    this.logger.log(`Meeting created: ${created._id} by user ${user.id}`);
+    this.logger.log(`Meeting created: ${created._id} by user ${user._id}`);
 
     return this.mapToResponseDto(created);
   }
@@ -235,7 +229,7 @@ export class MeetingService {
     }
 
     // RBAC check: ADM can only update own meetings
-    if (user.role === 'ADM' && meeting.createdBy !== user.id) {
+    if (user.primaryRole === 'ADM' && meeting.createdBy !== user._id) {
       throw new ForbiddenException('You can only update your own meetings');
     }
 
@@ -276,7 +270,7 @@ export class MeetingService {
     // Update meeting
     const updated: Meeting = {
       ...updateData,
-      modifiedBy: user.id,
+      modifiedBy: user._id,
       modifiedAt: new Date(),
       version: meeting.version + 1,
     } as Meeting;
@@ -299,11 +293,11 @@ export class MeetingService {
       entityId: saved._id,
       action: 'UPDATE',
       changes: Object.keys(dto),
-      userId: user.id,
+      userId: user._id,
       timestamp: new Date(),
     });
 
-    this.logger.log(`Meeting updated: ${saved._id} by user ${user.id}`);
+    this.logger.log(`Meeting updated: ${saved._id} by user ${user._id}`);
 
     return this.mapToResponseDto(saved);
   }
@@ -319,7 +313,7 @@ export class MeetingService {
     }
 
     // RBAC check: ADM can only delete own meetings
-    if (user.role === 'ADM' && meeting.createdBy !== user.id) {
+    if (user.primaryRole === 'ADM' && meeting.createdBy !== user._id) {
       throw new ForbiddenException('You can only delete your own meetings');
     }
 
@@ -338,11 +332,11 @@ export class MeetingService {
       entityType: 'Meeting',
       entityId: id,
       action: 'DELETE',
-      userId: user.id,
+      userId: user._id,
       timestamp: new Date(),
     });
 
-    this.logger.log(`Meeting deleted: ${id} by user ${user.id}`);
+    this.logger.log(`Meeting deleted: ${id} by user ${user._id}`);
   }
 
   /**
@@ -362,7 +356,7 @@ export class MeetingService {
     }
 
     // RBAC check: Only ADM can check in for own meetings
-    if (user.role !== 'ADM' || meeting.createdBy !== user.id) {
+    if (user.primaryRole !== 'ADM' || meeting.createdBy !== user._id) {
       throw new ForbiddenException(
         'Only ADM can check in for their own meetings'
       );
@@ -398,7 +392,7 @@ export class MeetingService {
         longitude: checkInDto.longitude,
       },
       attended: true,
-      modifiedBy: user.id,
+      modifiedBy: user._id,
       modifiedAt: new Date(),
       version: meeting.version + 1,
     };
@@ -410,7 +404,7 @@ export class MeetingService {
       entityType: 'Meeting',
       entityId: saved._id,
       action: 'CHECK_IN',
-      userId: user.id,
+      userId: user._id,
       gpsCoordinates: {
         latitude: checkInDto.latitude,
         longitude: checkInDto.longitude,
@@ -420,7 +414,7 @@ export class MeetingService {
     });
 
     this.logger.log(
-      `Meeting check-in: ${saved._id} by user ${user.id} at distance ${Math.round(distance)}m`
+      `Meeting check-in: ${saved._id} by user ${user._id} at distance ${Math.round(distance)}m`
     );
 
     return this.mapToResponseDto(saved);
@@ -442,7 +436,7 @@ export class MeetingService {
     }
 
     // RBAC check: ADM can only update own meetings
-    if (user.role === 'ADM' && meeting.createdBy !== user.id) {
+    if (user.primaryRole === 'ADM' && meeting.createdBy !== user._id) {
       throw new ForbiddenException('You can only update your own meetings');
     }
 
@@ -467,7 +461,7 @@ export class MeetingService {
       ...meeting,
       outcome: outcomeEnum,
       notes: notes || meeting.notes || (outcomeEnum ? undefined : outcome), // Store text outcome in notes if not enum
-      modifiedBy: user.id,
+      modifiedBy: user._id,
       modifiedAt: new Date(),
       version: meeting.version + 1,
     };
@@ -479,7 +473,7 @@ export class MeetingService {
       entityType: 'Meeting',
       entityId: saved._id,
       action: 'UPDATE_OUTCOME',
-      userId: user.id,
+      userId: user._id,
       timestamp: new Date(),
     });
 
@@ -501,7 +495,7 @@ export class MeetingService {
     }
 
     // RBAC check: ADM can only link own meetings
-    if (user.role === 'ADM' && meeting.createdBy !== user.id) {
+    if (user.primaryRole === 'ADM' && meeting.createdBy !== user._id) {
       throw new ForbiddenException(
         'You can only link your own meetings to tours'
       );
@@ -510,7 +504,7 @@ export class MeetingService {
     const updated: Meeting = {
       ...meeting,
       tourId,
-      modifiedBy: user.id,
+      modifiedBy: user._id,
       modifiedAt: new Date(),
       version: meeting.version + 1,
     };
@@ -523,7 +517,7 @@ export class MeetingService {
       entityId: saved._id,
       action: 'LINK_TOUR',
       tourId,
-      userId: user.id,
+      userId: user._id,
       timestamp: new Date(),
     });
 
@@ -543,7 +537,7 @@ export class MeetingService {
     return this.tourService.suggestToursForMeeting(
       meetingDate,
       locationId,
-      user.id
+      user._id
     );
   }
 

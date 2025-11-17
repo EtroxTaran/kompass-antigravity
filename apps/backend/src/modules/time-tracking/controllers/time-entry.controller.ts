@@ -8,6 +8,7 @@ import {
   Param,
   Query,
   UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -31,25 +32,10 @@ import { TimeEntryService } from '../services/time-entry.service';
 import type { TimeEntryFilters } from '../repositories/time-entry.repository.interface';
 import type { TimeEntryResponseDto } from '@kompass/shared/types/entities/time-entry';
 
-// TODO: Import actual decorators and guards when auth module is fully implemented
-// import { CurrentUser } from '../../auth/decorators/current-user.decorator';
-// import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
-// import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-// import { RbacGuard } from '../../auth/guards/rbac.guard';
-
-// Stub decorators and guards for now
-const JwtAuthGuard = class {};
-const RbacGuard = class {};
-const RequirePermission =
-  (_entity: string, _action: string) =>
-  (
-    _target: unknown,
-    _propertyKey: string,
-    _descriptor: PropertyDescriptor
-  ): void => {};
-const CurrentUser =
-  () =>
-  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { RbacGuard } from '../../auth/guards/rbac.guard';
 
 /**
  * Time Entry Controller
@@ -121,6 +107,9 @@ export class TimeEntryController {
     @Query('endDate') endDate?: Date,
     @CurrentUser() user?: User
   ): Promise<TimeEntryResponseDto[]> {
+    if (!user) {
+      throw new UnauthorizedException('User not authenticated');
+    }
     const filters: TimeEntryFilters = {
       projectId,
       userId,
@@ -128,11 +117,7 @@ export class TimeEntryController {
       startDate,
       endDate,
     };
-    return this.timeEntryService.findAll(
-      filters,
-      user?._id ?? '',
-      user?.primaryRole ?? 'ADM'
-    );
+    return this.timeEntryService.findAll(filters, user._id, user.primaryRole);
   }
 
   /**

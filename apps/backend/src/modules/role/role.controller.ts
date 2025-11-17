@@ -8,25 +8,10 @@ import {
 
 import { User } from '@kompass/shared/types/entities/user';
 
-// TODO: Import actual decorators and guards when auth module is fully implemented
-// import { CurrentUser } from '../auth/decorators/current-user.decorator';
-// import { RequirePermission } from '../auth/decorators/require-permission.decorator';
-// import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-// import { RbacGuard } from '../auth/guards/rbac.guard';
-
-// Stub decorators and guards for now
-const CurrentUser =
-  () =>
-  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
-const RequirePermission =
-  (_entity: string, _action: string) =>
-  (
-    _target: unknown,
-    _propertyKey: string,
-    _descriptor: PropertyDescriptor
-  ): void => {};
-const JwtAuthGuard = class {};
-const RbacGuard = class {};
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RbacGuard } from '../auth/guards/rbac.guard';
 
 import { RoleService } from './role.service';
 

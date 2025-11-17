@@ -12,13 +12,13 @@
  */
 
 import * as Nano from 'nano';
-import { CustomerType } from '@kompass/shared/types/enums';
+import { CustomerType } from '../../packages/shared/src/types';
 
 // CouchDB configuration
-const COUCHDB_URL = process.env.COUCHDB_URL || 'http://localhost:5984';
-const COUCHDB_USER = process.env.COUCHDB_ADMIN_USER || 'admin';
-const COUCHDB_PASSWORD = process.env.COUCHDB_ADMIN_PASSWORD || 'changeme';
-const DATABASE = process.env.COUCHDB_DATABASE || 'kompass';
+const COUCHDB_URL = process.env['COUCHDB_URL'] || 'http://localhost:5984';
+const COUCHDB_USER = process.env['COUCHDB_ADMIN_USER'] || 'admin';
+const COUCHDB_PASSWORD = process.env['COUCHDB_ADMIN_PASSWORD'] || 'changeme';
+const DATABASE = process.env['COUCHDB_DATABASE'] || 'kompass';
 
 const nano = Nano.default(
   `http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@${COUCHDB_URL.replace('http://', '')}`
@@ -69,11 +69,14 @@ async function migrateCustomers(
     result.total = customers.docs.length;
     console.log(`Found ${result.total} customer documents`);
 
-    for (const customer of customers.docs as OldCustomer[]) {
+    const customerDocs = customers.docs as OldCustomer[];
+    for (const customerDoc of customerDocs) {
+      const customerId = customerDoc._id || 'unknown';
       try {
+        const customer = customerDoc as OldCustomer;
         // Check if already migrated
         if ('billingAddress' in customer && !('address' in customer)) {
-          console.log(`⏭️  Skipping ${customer._id} (already migrated)`);
+          console.log(`⏭️  Skipping ${customerId} (already migrated)`);
           result.skipped++;
           continue;
         }
@@ -82,40 +85,42 @@ async function migrateCustomers(
         const updated: any = {
           ...customer,
           // Rename address → billingAddress
-          billingAddress: customer.address || {
+          billingAddress: customer['address'] || {
             street: '',
             zipCode: '',
             city: '',
             country: 'Deutschland',
           },
           // Add new fields
-          locations: customer.locations || [],
-          contactPersons: customer.contactPersons || [],
-          defaultDeliveryLocationId: customer.defaultDeliveryLocationId,
-          customerType: customer.customerType || CustomerType.ACTIVE,
+          locations: customer['locations'] || [],
+          contactPersons: customer['contactPersons'] || [],
+          defaultDeliveryLocationId: customer['defaultDeliveryLocationId'],
+          customerType: customer['customerType'] || CustomerType.ACTIVE,
           // Update metadata
           modifiedBy: 'system-migration',
           modifiedAt: new Date(),
-          version: (customer.version || 0) + 1,
+          version: (customer['version'] || 0) + 1,
         };
 
         // Remove old 'address' field
         delete updated.address;
 
         if (dryRun) {
-          console.log(`✓ Would migrate ${customer._id}`);
+          console.log(`✓ Would migrate ${customerId}`);
           console.log(`  - Rename: address → billingAddress`);
           console.log(`  - Add: locations=[], contactPersons=[]`);
         } else {
           // Execute migration
           await db.insert(updated);
-          console.log(`✅ Migrated ${customer._id}`);
+          console.log(`✅ Migrated ${customerId}`);
         }
 
         result.updated++;
       } catch (error) {
-        console.error(`❌ Error migrating ${customer._id}:`, error.message);
-        result.errors.push({ id: customer._id, error: error.message });
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        console.error(`❌ Error migrating ${customerId}:`, errorMessage);
+        result.errors.push({ id: customerId, error: errorMessage });
       }
     }
 

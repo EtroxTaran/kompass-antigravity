@@ -38,13 +38,7 @@ import type { DecisionAuthorityResponseDto } from './dto/decision-authority-resp
 import type { UpdateDecisionAuthorityDto } from './dto/update-decision-authority.dto';
 import type { ContactPerson } from '@kompass/shared/types/entities/contact';
 
-/**
- * Placeholder User type
- */
-interface User {
-  id: string;
-  role: 'GF' | 'PLAN' | 'ADM' | 'KALK' | 'BUCH';
-}
+import type { User } from '@kompass/shared/types/entities/user';
 
 /**
  * Contact Repository Interface (placeholder)
@@ -135,7 +129,7 @@ export class ContactService {
     user: User
   ): Promise<DecisionAuthorityResponseDto> {
     // CRITICAL: Check restricted permission
-    if (user.role !== 'PLAN' && user.role !== 'GF') {
+    if (user.primaryRole !== 'PLAN' && user.primaryRole !== 'GF') {
       throw new ForbiddenException(
         'Only ADM+ users (PLAN, GF) can update contact decision-making roles'
       );
@@ -164,7 +158,7 @@ export class ContactService {
       approvalLimitEur: dto.approvalLimitEur,
       functionalRoles: dto.functionalRoles,
       departmentInfluence: dto.departmentInfluence,
-      modifiedBy: user.id,
+      modifiedBy: user._id,
       modifiedAt: new Date(),
     };
 
@@ -197,7 +191,7 @@ export class ContactService {
         authorityLevel: dto.authorityLevel,
         approvalLimitEur: dto.approvalLimitEur,
       },
-      userId: user.id,
+      userId: user._id,
       timestamp: new Date(),
     });
 
@@ -208,7 +202,7 @@ export class ContactService {
       contactId,
       decisionMakingRole: dto.decisionMakingRole,
       authorityLevel: dto.authorityLevel,
-      userId: user.id,
+      userId: user._id,
     });
 
     return {

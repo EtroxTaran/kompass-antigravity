@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
+// Authentication module (must be imported first)
+import { AuthModule } from './modules/auth/auth.module';
+
 // Feature modules
 import { CalendarModule } from './modules/calendar/calendar.module';
 import { CustomerModule } from './modules/customer/customer.module';
@@ -25,6 +28,9 @@ import { UserModule } from './modules/user/user.module';
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
     }),
+
+    // Authentication module (must be imported before feature modules)
+    AuthModule,
 
     // Feature modules
     UserModule,

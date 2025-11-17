@@ -30,6 +30,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -50,26 +51,12 @@ import { MeetingResponseDto } from './dto/meeting-response.dto';
 import { UpdateMeetingDto, CheckInDto } from './dto/update-meeting.dto';
 import { MeetingService } from './meeting.service';
 
-/**
- * Placeholder guards and decorators
- */
-interface User {
-  id: string;
-  role: 'GF' | 'PLAN' | 'ADM' | 'KALK' | 'BUCH';
-}
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RbacGuard } from '../auth/guards/rbac.guard';
 
-const CurrentUser =
-  () =>
-  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
-const RequirePermission =
-  (_entity: string, _action: string) =>
-  (
-    _target: unknown,
-    _propertyKey: string,
-    _descriptor: PropertyDescriptor
-  ): void => {};
-const JwtAuthGuard = class {};
-const RbacGuard = class {};
+import type { User } from '@kompass/shared/types/entities/user';
 
 /**
  * Meeting Controller
@@ -123,6 +110,9 @@ export class MeetingController {
     @Query('tourId') tourId?: string,
     @CurrentUser() user?: User
   ): Promise<MeetingResponseDto[]> {
+    if (!user) {
+      throw new UnauthorizedException('User not authenticated');
+    }
     const filters: {
       status?: MeetingStatus;
       meetingType?: MeetingType;
@@ -159,9 +149,9 @@ export class MeetingController {
   })
   async create(
     @Body() dto: CreateMeetingDto,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<MeetingResponseDto> {
-    return this.meetingService.create(dto, user!);
+    return this.meetingService.create(dto, user);
   }
 
   /**
@@ -187,9 +177,9 @@ export class MeetingController {
   })
   async findOne(
     @Param('meetingId') meetingId: string,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<MeetingResponseDto> {
-    return this.meetingService.findById(meetingId, user!);
+    return this.meetingService.findById(meetingId, user);
   }
 
   /**
@@ -213,9 +203,9 @@ export class MeetingController {
   async update(
     @Param('meetingId') meetingId: string,
     @Body() dto: UpdateMeetingDto,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<MeetingResponseDto> {
-    return this.meetingService.update(meetingId, dto, user!);
+    return this.meetingService.update(meetingId, dto, user);
   }
 
   /**
@@ -238,9 +228,9 @@ export class MeetingController {
   })
   async delete(
     @Param('meetingId') meetingId: string,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<void> {
-    return this.meetingService.delete(meetingId, user!);
+    return this.meetingService.delete(meetingId, user);
   }
 
   /**
@@ -270,9 +260,9 @@ export class MeetingController {
   async checkIn(
     @Param('meetingId') meetingId: string,
     @Body() checkInDto: CheckInDto,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<MeetingResponseDto> {
-    return this.meetingService.checkIn(meetingId, checkInDto, user!);
+    return this.meetingService.checkIn(meetingId, checkInDto, user);
   }
 
   /**
@@ -316,9 +306,9 @@ export class MeetingController {
     @Param('meetingId') meetingId: string,
     @Body('outcome') outcome: string,
     @Body('notes') notes: string | undefined,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<MeetingResponseDto> {
-    return this.meetingService.updateOutcome(meetingId, outcome, notes, user!);
+    return this.meetingService.updateOutcome(meetingId, outcome, notes, user);
   }
 
   /**
@@ -353,9 +343,9 @@ export class MeetingController {
   async linkToTour(
     @Param('meetingId') meetingId: string,
     @Body('tourId') tourId: string,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<MeetingResponseDto> {
-    return this.meetingService.linkToTour(meetingId, tourId, user!);
+    return this.meetingService.linkToTour(meetingId, tourId, user);
   }
 
   /**
@@ -379,11 +369,8 @@ export class MeetingController {
   })
   async getTourSuggestions(
     @Param('meetingId') meetingId: string,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<unknown[]> {
-    if (!user) {
-      throw new Error('User is required');
-    }
     const meeting = await this.meetingService.findById(meetingId, user);
     return this.meetingService.getTourSuggestions(
       meeting.scheduledAt,

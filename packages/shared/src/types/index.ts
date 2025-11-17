@@ -6,5 +6,7 @@
 
 export * from './base.entity';
 export * from './common';
+export * from './database';
 export * from './entities';
 export * from './enums';
+export * from './migration';
