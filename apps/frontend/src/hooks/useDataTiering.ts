@@ -13,8 +13,8 @@ import {
   DataTieringService,
   type TierClassification,
   TIER_LIMITS,
-
-  DataTier} from '../services/DataTieringService';
+  DataTier,
+} from '../services/DataTieringService';
 
 import { useAuth } from './useAuth';
 
