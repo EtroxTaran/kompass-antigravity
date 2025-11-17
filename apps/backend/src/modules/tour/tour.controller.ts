@@ -41,6 +41,7 @@ import {
 } from '@nestjs/swagger';
 
 import { TourStatus } from '@kompass/shared/types/entities/tour';
+import { User } from '@kompass/shared/types/entities/user';
 
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { RequirePermission } from '../auth/decorators/require-permission.decorator';
@@ -52,9 +53,8 @@ import { TourResponseDto, TourCostSummaryDto } from './dto/tour-response.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
 import { TourService } from './tour.service';
 
-import type { User } from '@kompass/shared/types/entities/user';
-
 import type { TourFilters } from './tour.repository';
+
 
 /**
  * Tour Controller

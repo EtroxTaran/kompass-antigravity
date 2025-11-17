@@ -42,6 +42,13 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
+import { User } from '@kompass/shared/types/entities/user';
+
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RbacGuard } from '../auth/guards/rbac.guard';
+
 import {
   CreateMeetingDto,
   MeetingType,
@@ -51,12 +58,7 @@ import { MeetingResponseDto } from './dto/meeting-response.dto';
 import { UpdateMeetingDto, CheckInDto } from './dto/update-meeting.dto';
 import { MeetingService } from './meeting.service';
 
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { RequirePermission } from '../auth/decorators/require-permission.decorator';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RbacGuard } from '../auth/guards/rbac.guard';
 
-import type { User } from '@kompass/shared/types/entities/user';
 
 /**
  * Meeting Controller
@@ -124,7 +126,7 @@ export class MeetingController {
     if (customerId) filters.customerId = customerId;
     if (tourId) filters.tourId = tourId;
 
-    return this.meetingService.findAll(user!, filters);
+    return this.meetingService.findAll(user, filters);
   }
 
   /**

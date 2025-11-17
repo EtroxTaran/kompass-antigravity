@@ -1,9 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
+import { Test } from '@nestjs/testing';
 
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+
+import type { ExecutionContext} from '@nestjs/common';
+import type { TestingModule } from '@nestjs/testing';
 
 describe('JwtAuthGuard', () => {
   let guard: JwtAuthGuard;

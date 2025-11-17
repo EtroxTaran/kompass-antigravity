@@ -38,7 +38,6 @@ import type { LocationResponseDto } from './dto/location-response.dto';
 import type { UpdateLocationDto } from './dto/update-location.dto';
 import type { Customer } from '@kompass/shared/types/entities/customer';
 import type { Location } from '@kompass/shared/types/entities/location';
-
 import type { User } from '@kompass/shared/types/entities/user';
 
 /**

@@ -1,11 +1,13 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
 import { UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Test } from '@nestjs/testing';
 
-import { JwtStrategy } from '../strategies/jwt.strategy';
 import { UserRole } from '@kompass/shared/constants/rbac.constants';
 
+import { JwtStrategy } from '../strategies/jwt.strategy';
+
 import type { User } from '@kompass/shared/types/entities/user';
+import type { TestingModule } from '@nestjs/testing';
 
 describe('JwtStrategy', () => {
   let strategy: JwtStrategy;

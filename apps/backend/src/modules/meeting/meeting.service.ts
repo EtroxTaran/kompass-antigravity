@@ -42,7 +42,6 @@ import type { MeetingFilters } from './meeting.repository';
 import type { Location } from '@kompass/shared/types/entities/location';
 import type { Meeting } from '@kompass/shared/types/entities/meeting';
 import type { Tour } from '@kompass/shared/types/entities/tour';
-
 import type { User } from '@kompass/shared/types/entities/user';
 
 /**
