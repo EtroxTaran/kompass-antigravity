@@ -27,7 +27,9 @@ class AuditService {
 
   constructor() {
     this.apiBaseUrl =
-      import.meta.env['VITE_API_BASE_URL'] || 'http://localhost:3000';
+      typeof import.meta.env['VITE_API_BASE_URL'] === 'string'
+        ? import.meta.env['VITE_API_BASE_URL']
+        : 'http://localhost:3000';
   }
 
   /**
@@ -40,7 +42,7 @@ class AuditService {
     this.queue.push(entry);
 
     // Try to send immediately if online
-    if (navigator.onLine) {
+    if (typeof navigator !== 'undefined' && navigator.onLine) {
       await this.flushQueue();
     }
   }
@@ -49,7 +51,10 @@ class AuditService {
    * Flush queued audit logs to backend
    */
   async flushQueue(): Promise<void> {
-    if (this.queue.length === 0 || !navigator.onLine) {
+    if (
+      this.queue.length === 0 ||
+      (typeof navigator !== 'undefined' && !navigator.onLine)
+    ) {
       return;
     }
 
@@ -72,9 +77,11 @@ class AuditService {
    */
   initialize(): void {
     // Flush queue when coming back online
-    window.addEventListener('online', () => {
-      void this.flushQueue();
-    });
+    if (typeof window !== 'undefined') {
+      window.addEventListener('online', () => {
+        void this.flushQueue();
+      });
+    }
   }
 }
 

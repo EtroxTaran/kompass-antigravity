@@ -67,7 +67,7 @@ describe('RoleGuard', () => {
     vi.clearAllMocks();
   });
 
-  it('should show loading state while checking permissions', async () => {
+  it('should show loading state while checking permissions', () => {
     const mockKeycloak = {
       authenticated: false,
       token: null,

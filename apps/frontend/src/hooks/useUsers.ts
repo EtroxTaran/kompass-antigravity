@@ -46,7 +46,9 @@ export interface UseUsersOptions {
 /**
  * Hook to get all users (with pagination and sorting)
  */
-export function useUsers(options?: UseUsersOptions) {
+export function useUsers(
+  options?: UseUsersOptions
+): ReturnType<typeof useQuery<PaginatedResponse<User>, Error>> {
   return useQuery<PaginatedResponse<User>, Error>({
     queryKey: userKeys.list(options),
     queryFn: () =>
@@ -64,7 +66,9 @@ export function useUsers(options?: UseUsersOptions) {
 /**
  * Hook to get a single user by ID
  */
-export function useUser(id: string) {
+export function useUser(
+  id: string
+): ReturnType<typeof useQuery<User | null, Error>> {
   return useQuery({
     queryKey: userKeys.detail(id),
     queryFn: () => userService.getById(id),
@@ -76,7 +80,9 @@ export function useUser(id: string) {
 /**
  * Hook to get user roles
  */
-export function useUserRoles(id: string) {
+export function useUserRoles(
+  id: string
+): ReturnType<typeof useQuery<UserRole[], Error>> {
   return useQuery({
     queryKey: userKeys.roles(id),
     queryFn: () => userService.getRoles(id),
@@ -88,22 +94,24 @@ export function useUserRoles(id: string) {
 /**
  * Hook to create a new user
  */
-export function useCreateUser() {
+export function useCreateUser(): ReturnType<
+  typeof useMutation<User, Error, CreateUserRequest>
+> {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
     mutationFn: (data: CreateUserRequest) => userService.create(data),
-    onSuccess: (newUser: User) => {
+    onSuccess: (newUser: User): void => {
       // Invalidate users list to refetch
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: userKeys.lists() });
 
       toast({
         title: 'Benutzer erstellt',
         description: `Benutzer ${newUser.displayName} wurde erfolgreich erstellt.`,
       });
     },
-    onError: (error: Error) => {
+    onError: (error: Error): void => {
       toast({
         title: 'Fehler',
         description: `Fehler beim Erstellen des Benutzers: ${error.message}`,
@@ -116,26 +124,28 @@ export function useCreateUser() {
 /**
  * Hook to update a user
  */
-export function useUpdateUser() {
+export function useUpdateUser(): ReturnType<
+  typeof useMutation<User, Error, { id: string; data: UpdateUserRequest }>
+> {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateUserRequest }) =>
       userService.update(id, data),
-    onSuccess: (updatedUser: User) => {
+    onSuccess: (updatedUser: User): void => {
       // Invalidate user detail and list
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: userKeys.detail(updatedUser._id),
       });
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: userKeys.lists() });
 
       toast({
         title: 'Benutzer aktualisiert',
         description: `Benutzer ${updatedUser.displayName} wurde erfolgreich aktualisiert.`,
       });
     },
-    onError: (error: Error) => {
+    onError: (error: Error): void => {
       toast({
         title: 'Fehler',
         description: `Fehler beim Aktualisieren des Benutzers: ${error.message}`,
@@ -148,22 +158,24 @@ export function useUpdateUser() {
 /**
  * Hook to delete a user
  */
-export function useDeleteUser() {
+export function useDeleteUser(): ReturnType<
+  typeof useMutation<void, Error, string>
+> {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
     mutationFn: (id: string) => userService.delete(id),
-    onSuccess: () => {
+    onSuccess: (): void => {
       // Invalidate users list to refetch
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: userKeys.lists() });
 
       toast({
         title: 'Benutzer gelöscht',
         description: 'Benutzer wurde erfolgreich gelöscht.',
       });
     },
-    onError: (error: Error) => {
+    onError: (error: Error): void => {
       toast({
         title: 'Fehler',
         description: `Fehler beim Löschen des Benutzers: ${error.message}`,
@@ -176,29 +188,31 @@ export function useDeleteUser() {
 /**
  * Hook to assign roles to a user
  */
-export function useAssignRoles() {
+export function useAssignRoles(): ReturnType<
+  typeof useMutation<User, Error, { id: string; data: AssignRolesRequest }>
+> {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: AssignRolesRequest }) =>
       userService.assignRoles(id, data),
-    onSuccess: (updatedUser: User) => {
+    onSuccess: (updatedUser: User): void => {
       // Invalidate user detail, roles, and list
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: userKeys.detail(updatedUser._id),
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: userKeys.roles(updatedUser._id),
       });
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: userKeys.lists() });
 
       toast({
         title: 'Rollen zugewiesen',
         description: `Rollen für ${updatedUser.displayName} wurden erfolgreich zugewiesen.`,
       });
     },
-    onError: (error: Error) => {
+    onError: (error: Error): void => {
       toast({
         title: 'Fehler',
         description: `Fehler beim Zuweisen der Rollen: ${error.message}`,
@@ -211,29 +225,31 @@ export function useAssignRoles() {
 /**
  * Hook to revoke a role from a user
  */
-export function useRevokeRole() {
+export function useRevokeRole(): ReturnType<
+  typeof useMutation<User, Error, { id: string; roleId: UserRole }>
+> {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
     mutationFn: ({ id, roleId }: { id: string; roleId: UserRole }) =>
       userService.revokeRole(id, roleId),
-    onSuccess: (updatedUser: User) => {
+    onSuccess: (updatedUser: User): void => {
       // Invalidate user detail, roles, and list
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: userKeys.detail(updatedUser._id),
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: userKeys.roles(updatedUser._id),
       });
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: userKeys.lists() });
 
       toast({
         title: 'Rolle entfernt',
         description: `Rolle wurde erfolgreich von ${updatedUser.displayName} entfernt.`,
       });
     },
-    onError: (error: Error) => {
+    onError: (error: Error): void => {
       toast({
         title: 'Fehler',
         description: `Fehler beim Entfernen der Rolle: ${error.message}`,
@@ -246,7 +262,13 @@ export function useRevokeRole() {
 /**
  * Hook to update user's primary role
  */
-export function useUpdatePrimaryRole() {
+export function useUpdatePrimaryRole(): ReturnType<
+  typeof useMutation<
+    User,
+    Error,
+    { id: string; data: UpdatePrimaryRoleRequest }
+  >
+> {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -258,22 +280,22 @@ export function useUpdatePrimaryRole() {
       id: string;
       data: UpdatePrimaryRoleRequest;
     }) => userService.updatePrimaryRole(id, data),
-    onSuccess: (updatedUser: User) => {
+    onSuccess: (updatedUser: User): void => {
       // Invalidate user detail, roles, and list
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: userKeys.detail(updatedUser._id),
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: userKeys.roles(updatedUser._id),
       });
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: userKeys.lists() });
 
       toast({
         title: 'Hauptrolle aktualisiert',
         description: `Hauptrolle für ${updatedUser.displayName} wurde erfolgreich aktualisiert.`,
       });
     },
-    onError: (error: Error) => {
+    onError: (error: Error): void => {
       toast({
         title: 'Fehler',
         description: `Fehler beim Aktualisieren der Hauptrolle: ${error.message}`,
