@@ -1,206 +1,183 @@
 # Keycloak Setup Guide
 
-This guide explains how to set up and configure Keycloak for the KOMPASS application.
-
 ## Overview
 
-KOMPASS uses Keycloak for authentication and authorization. Keycloak provides:
-
-- User authentication (login/logout)
-- Role-based access control (RBAC)
-- Token management (JWT access and refresh tokens)
-- User management via Admin API
+KOMPASS uses Keycloak for authentication and authorization. This guide explains how to set up Keycloak for development.
 
 ## Prerequisites
 
-- Docker and Docker Compose installed
-- Keycloak service configured in `docker-compose.yml`
-- PostgreSQL database for Keycloak (configured in docker-compose.yml)
+- Keycloak running in Docker (via `docker-compose up`)
+- Keycloak accessible at `http://localhost:8080`
 
-## Initial Setup
+## Manual Setup (Recommended for Development)
 
-### 1. Start Keycloak
+### Step 1: Access Keycloak Admin Console
 
-Start the Keycloak service using Docker Compose:
+1. Navigate to http://localhost:8080/admin
+2. Login with:
+   - Username: `admin`
+   - Password: `devpassword` (or your `KEYCLOAK_ADMIN_PASSWORD`)
 
-```bash
-docker-compose up -d keycloak
-```
+### Step 2: Enable admin-cli Client (Required for Setup Script)
 
-Wait for Keycloak to be ready (usually takes 30-60 seconds).
+1. In the Admin Console, go to **Clients**
+2. Find and click on **admin-cli**
+3. Enable **Direct access grants**
+4. Click **Save**
 
-### 2. Run Setup Script
+### Step 3: Run Setup Script
 
-Run the Keycloak setup script to configure the realm, clients, roles, and create the default admin user:
+After enabling admin-cli, run the setup script:
 
 ```bash
 ./scripts/keycloak-setup.sh
 ```
 
-The script will:
+This will create:
 
-- Create the `kompass` realm
-- Create `kompass-api` client (confidential, for backend)
-- Create `kompass-frontend` client (public, with direct access grants enabled)
-- Create all required roles (ADM, INNEN, PLAN, KALK, BUCH, GF, ADMIN)
-- Create default admin user: `admin@kompass.de` / `Admin123!@#`
-- Assign ADMIN role to the admin user
+- `kompass` realm
+- `kompass-api` client (confidential, for backend)
+- `kompass-frontend` client (public, with direct access grants enabled)
+- Roles: ADM, INNEN, PLAN, KALK, BUCH, GF, ADMIN
+- Default admin user: `admin@kompass.de` / `Admin123!@#`
 
-### 3. Verify Setup
+### Step 4: Verify Setup
 
-Access the Keycloak Admin Console:
+1. Check that the `kompass` realm exists
+2. Verify `kompass-frontend` client has **Direct access grants** enabled
+3. Test login with default admin credentials
 
-- URL: http://localhost:8080
-- Username: `admin` (Keycloak admin, not application admin)
-- Password: Set via `KEYCLOAK_ADMIN_PASSWORD` environment variable (default: `devpassword`)
+## Automatic Setup (Alternative)
 
-Verify:
+If the setup script fails due to admin-cli authentication issues, you can set up Keycloak manually:
 
-- Realm `kompass` exists
-- Both clients are created
-- All roles are present
-- Admin user `admin@kompass.de` exists with ADMIN role
+### Create Realm
 
-## Configuration
+1. Go to **Realms** > **Create realm**
+2. Name: `kompass`
+3. Click **Create**
 
-### Environment Variables
+### Create Frontend Client
 
-Keycloak configuration is controlled via environment variables:
+1. Go to **Clients** > **Create client**
+2. Client ID: `kompass-frontend`
+3. Client authentication: **Off** (public client)
+4. Click **Next**
+5. Enable:
+   - **Standard flow**
+   - **Direct access grants** (required for embedded login)
+6. Valid redirect URIs: `http://localhost:5173/*`, `http://localhost:3000/*`
+7. Web origins: `*`
+8. Click **Save**
 
-**Backend:**
+### Create API Client
 
-- `KEYCLOAK_URL`: Keycloak server URL (default: `http://keycloak:8080`)
-- `KEYCLOAK_REALM`: Realm name (default: `kompass`)
-- `KEYCLOAK_CLIENT_ID`: Backend client ID (default: `kompass-api`)
-- `KEYCLOAK_ADMIN`: Keycloak admin username (default: `admin`)
-- `KEYCLOAK_ADMIN_PASSWORD`: Keycloak admin password (required)
+1. Go to **Clients** > **Create client**
+2. Client ID: `kompass-api`
+3. Client authentication: **On** (confidential client)
+4. Click **Next**
+5. Enable:
+   - **Standard flow**
+   - **Service accounts roles**
+6. Click **Save**
+7. Go to **Credentials** tab and note the **Secret** (needed for backend)
 
-**Frontend:**
+### Create Roles
 
-- `VITE_KEYCLOAK_URL`: Keycloak server URL (default: `http://localhost:8080`)
-- `VITE_KEYCLOAK_REALM`: Realm name (default: `kompass`)
-- `VITE_KEYCLOAK_CLIENT_ID`: Frontend client ID (default: `kompass-frontend`)
+1. Go to **Realm roles**
+2. Create the following roles:
+   - `ADM` - Account Manager
+   - `INNEN` - Inside Sales
+   - `PLAN` - Planning
+   - `KALK` - Calculation
+   - `BUCH` - Accounting
+   - `GF` - Geschäftsführer (CEO)
+   - `ADMIN` - System Administrator
 
-### Client Configuration
+### Create Admin User
 
-**Frontend Client (`kompass-frontend`):**
+1. Go to **Users** > **Create new user**
+2. Username: `admin@kompass.de`
+3. Email: `admin@kompass.de`
+4. First name: `Admin`
+5. Last name: `User`
+6. Email verified: **On**
+7. Click **Create**
+8. Go to **Credentials** tab
+9. Set password: `Admin123!@#`
+10. Temporary: **Off**
+11. Click **Set password**
+12. Go to **Role mapping** tab
+13. Assign role: `ADMIN`
 
-- Type: Public client
-- Direct Access Grants: Enabled (for embedded login forms)
-- Standard Flow: Enabled
-- Redirect URIs: `http://localhost:5173/*`, `http://localhost:3000/*`, `http://frontend:8080/*`
+## Environment Variables
 
-**Backend Client (`kompass-api`):**
+### Frontend (.env)
 
-- Type: Confidential client
-- Service Accounts: Enabled
-- Standard Flow: Enabled
+```env
+VITE_KEYCLOAK_URL=http://localhost:8080
+VITE_KEYCLOAK_REALM=kompass
+VITE_KEYCLOAK_CLIENT_ID=kompass-frontend
+VITE_API_URL=http://localhost:3000
+```
 
-## Default Admin User
+### Backend (.env)
 
-The setup script creates a default admin user:
+```env
+KEYCLOAK_URL=http://keycloak:8080
+KEYCLOAK_REALM=kompass
+KEYCLOAK_CLIENT_ID=kompass-api
+KEYCLOAK_CLIENT_SECRET=<secret-from-api-client>
+```
 
-- **Email:** `admin@kompass.de`
-- **Password:** `Admin123!@#` (configurable via `ADMIN_USER_PASSWORD`)
-- **Role:** ADMIN
+## Testing
 
-**⚠️ Important:** Change the password on first login in production!
+### Test Login
 
-## Roles
+1. Navigate to http://localhost:5173/login
+2. Login with:
+   - Email: `admin@kompass.de`
+   - Password: `Admin123!@#`
 
-The following roles are created automatically:
+### Test Registration
 
-- **ADM** (Außendienst): Field sales representatives
-- **INNEN** (Innendienst): Inside sales and quoting
-- **PLAN** (Planungsabteilung): Project planning and execution
-- **KALK** (Kalkulation): Cost calculation and time tracking
-- **BUCH** (Buchhaltung): Accounting and invoicing
-- **GF** (Geschäftsführer): Executive management
-- **ADMIN** (System Administrator): Full system access
-
-## Embedded Login
-
-KOMPASS uses **embedded login forms** instead of redirecting to Keycloak's login page. This provides:
-
-- Better user experience (users stay in the application)
-- Consistent UI/UX with the application design
-- More control over the login flow
-
-The frontend client has **Direct Access Grants** enabled to support this approach.
-
-## User Management
-
-Users can be managed via:
-
-1. **Application UI** (recommended): `/admin` page (GF and ADMIN roles only)
-2. **Keycloak Admin Console**: http://localhost:8080/admin
-3. **Keycloak Admin REST API**: Used by the backend `KeycloakAdminService`
-
-### Creating Users via Application
-
-1. Log in as admin user (`admin@kompass.de`)
-2. Navigate to `/admin`
-3. Click "Neuer Benutzer"
-4. Fill in user details and assign roles
-5. User is created in both Keycloak and CouchDB
-
-### Creating Users via Keycloak Admin Console
-
-1. Access http://localhost:8080/admin
-2. Select `kompass` realm
-3. Go to Users → Add user
-4. Fill in user details
-5. Go to Credentials tab to set password
-6. Go to Role mapping to assign roles
-
-**Note:** Users created directly in Keycloak will not be automatically synced to CouchDB. Use the application UI for proper synchronization.
+1. Navigate to http://localhost:5173/register
+2. Fill in registration form
+3. Submit and verify user is created
 
 ## Troubleshooting
 
-### Keycloak Not Starting
+### admin-cli Authentication Fails
 
-- Check Docker logs: `docker-compose logs keycloak`
-- Verify PostgreSQL is running: `docker-compose ps postgres`
-- Check environment variables are set correctly
+If the setup script fails with "unauthorized_client":
 
-### Cannot Login
+1. Enable admin-cli client for direct access grants (see Step 2 above)
+2. Run the setup script again
 
-- Verify Keycloak is accessible: `curl http://localhost:8080/health`
-- Check client configuration (Direct Access Grants enabled for frontend)
-- Verify user exists and is enabled in Keycloak
-- Check user roles are assigned correctly
+### Realm Not Found
 
-### Token Issues
+If you get "realm not found" errors:
 
-- Verify JWT token is valid: Check expiration time
-- Check token refresh is working: Tokens auto-refresh when expiring
-- Verify Keycloak URL is correct in frontend environment variables
+1. Verify the `kompass` realm exists in Keycloak
+2. Check that `KEYCLOAK_REALM=kompass` is set in environment variables
 
-### User Not Found in Application
+### Direct Access Grants Not Working
 
-- User must exist in both Keycloak and CouchDB
-- Use application UI to create users for proper synchronization
-- Check KeycloakAdminService logs for sync errors
+If login fails with "invalid_grant":
 
-## Security Considerations
+1. Verify `kompass-frontend` client has **Direct access grants** enabled
+2. Check that the client ID matches `VITE_KEYCLOAK_CLIENT_ID`
 
-### Development
+### Token Validation Fails
 
-- Keycloak is accessible on `localhost:8080`
-- Default passwords are used (not secure)
-- Direct Access Grants enabled (acceptable for development)
+If backend token validation fails:
 
-### Production
+1. Verify `KEYCLOAK_URL`, `KEYCLOAK_REALM`, and `KEYCLOAK_CLIENT_ID` are correct
+2. Check that the API client secret is set in backend environment variables
+3. Verify JWKS endpoint is accessible: `http://localhost:8080/realms/kompass/protocol/openid-connect/certs`
 
-- Keycloak should only be accessible via internal Docker network
-- Use strong passwords and change default admin password
-- Enable HTTPS/TLS for Keycloak
-- Consider disabling Direct Access Grants if security requirements demand it
-- Use Keycloak's password policies
-- Enable brute force protection (already configured in setup script)
+## References
 
-## Additional Resources
-
-- [Keycloak Documentation](https://www.keycloak.org/documentation)
-- [Keycloak Admin REST API](https://www.keycloak.org/docs-api/latest/rest-api/index.html)
-- [OIDC/OAuth2 Best Practices](https://www.keycloak.org/docs/latest/securing_apps/)
+- Keycloak Documentation: https://www.keycloak.org/docs/
+- Keycloak Admin REST API: https://www.keycloak.org/docs-api/latest/rest-api/
+- KOMPASS Architecture: `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md`

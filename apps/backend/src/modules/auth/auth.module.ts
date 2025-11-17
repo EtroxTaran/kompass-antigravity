@@ -3,7 +3,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
+import { UserModule } from '../user/user.module';
+
 import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RbacGuard } from './guards/rbac.guard';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -43,14 +46,18 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       },
       inject: [ConfigService],
     }),
+    // Import UserModule to access UserRepository and KeycloakAdminService
+    UserModule,
   ],
   controllers: [AuthController],
   providers: [
+    AuthService, // Authentication service (registration, etc.)
     JwtStrategy, // JWT validation strategy
     JwtAuthGuard, // JWT authentication guard
     RbacGuard, // Role-based access control guard
   ],
   exports: [
+    AuthService, // Export for use in other modules if needed
     JwtAuthGuard, // Export so other modules can use it
     RbacGuard, // Export so other modules can use it
     PassportModule, // Export PassportModule for decorators

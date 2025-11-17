@@ -115,8 +115,11 @@ services:
       - PORT=3000
       - CHOKIDAR_USEPOLLING=true  # Enable polling for file watching in Docker
       - DATABASE_URL=http://couchdb:5984
+      - COUCHDB_URL=http://couchdb:5984
       - COUCHDB_USER=admin
       - COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-devpassword}
+      - COUCHDB_ADMIN_USER=admin
+      - COUCHDB_ADMIN_PASSWORD=${COUCHDB_PASSWORD:-devpassword}
       - COUCHDB_DATABASE=kompass
       - MEILISEARCH_URL=http://meilisearch:7700
       - MEILISEARCH_MASTER_KEY=${MEILI_MASTER_KEY:-devmasterkey}
@@ -124,7 +127,7 @@ services:
       - KEYCLOAK_REALM=kompass
       - KEYCLOAK_CLIENT_ID=kompass-api
       - JWT_SECRET=${JWT_SECRET:-dev-jwt-secret-min-32-chars-long}
-      - ALLOWED_ORIGINS=http://localhost:3000,http://frontend:8080
+      - ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000,http://frontend:8080
       # Neo4j connection
       - NEO4J_URI=bolt://neo4j:7687
       - NEO4J_USER=neo4j
@@ -141,13 +144,18 @@ services:
       - '3000:3000'  # Expose on 3000 to match NestJS default
     volumes:
       - ./apps/backend/src:/app/apps/backend/src
+      - ./apps/backend/package.json:/app/apps/backend/package.json
       - ./apps/backend/scripts:/app/apps/backend/scripts
       - ./packages/shared/src:/app/packages/shared/src
+      - ./packages/shared/package.json:/app/packages/shared/package.json
+      - ./packages/shared/dist:/app/packages/shared/dist
       - backend-node-modules:/app/apps/backend/node_modules
       - shared-node-modules:/app/packages/shared/node_modules
     # Run in dev mode with watch for hot reload
     # Using dev:fixed which runs watch mode with automatic path fixing
-    command: ["pnpm", "--filter", "@kompass/backend", "dev:fixed"]
+    # Run script directly from backend directory
+    working_dir: /app/apps/backend
+    command: ["node", "scripts/watch-with-fix.js"]
     depends_on:
       couchdb:
         condition: service_healthy

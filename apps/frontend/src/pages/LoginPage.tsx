@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import { LoginForm } from '../components/auth/LoginForm';
 import { useAuth } from '../hooks/useAuth';
@@ -84,6 +84,18 @@ export function LoginPage(): React.ReactElement {
             isLoading={isLoggingIn}
             error={error}
           />
+          <div className="mt-6 text-center text-sm">
+            <span className="text-muted-foreground">
+              Noch kein Konto?{' '}
+              <Link
+                to="/register"
+                className="text-primary hover:underline font-medium"
+                aria-label="Zur Registrierung"
+              >
+                Registrieren
+              </Link>
+            </span>
+          </div>
         </div>
       </div>
     </div>

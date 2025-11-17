@@ -61,6 +61,7 @@ wait_for_keycloak() {
 get_admin_token() {
   echo -e "${YELLOW}🔑 Getting admin access token...${NC}"
   
+  # Try admin-cli client first
   local response=$(curl -s -X POST "${KEYCLOAK_URL}/realms/master/protocol/openid-connect/token" \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "username=${KEYCLOAK_ADMIN}" \
@@ -69,6 +70,37 @@ get_admin_token() {
     -d "client_id=admin-cli")
 
   local token=$(echo "$response" | grep -o '"access_token":"[^"]*' | cut -d'"' -f4)
+
+  # If admin-cli fails, try using kcadm.sh to get token
+  if [ -z "$token" ]; then
+    echo -e "${YELLOW}⚠️  admin-cli client authentication failed, trying kcadm.sh...${NC}"
+    
+    # Use kcadm.sh to get token (works in dev mode)
+    local kcadm_token=$(docker exec kompass-keycloak /opt/keycloak/bin/kcadm.sh config credentials \
+      --server http://localhost:8080 \
+      --realm master \
+      --user admin \
+      --password "${KEYCLOAK_ADMIN_PASSWORD}" \
+      --client admin-cli 2>&1 | grep -i "token" || echo "")
+    
+    if [ -n "$kcadm_token" ]; then
+      # kcadm.sh stores token in ~/.keycloak/kcadm.config, but we need it in script
+      # So let's try a different approach - use the admin REST API with service account
+      echo -e "${YELLOW}⚠️  kcadm.sh requires manual setup. Trying alternative method...${NC}"
+      
+      # Alternative: Use the backend's KeycloakAdminService or manual setup
+      echo -e "${RED}❌ Automatic Keycloak setup requires admin-cli client to be enabled${NC}"
+      echo -e "${YELLOW}💡 Please enable admin-cli client manually:${NC}"
+      echo "   1. Go to http://localhost:8080/admin"
+      echo "   2. Login with admin/${KEYCLOAK_ADMIN_PASSWORD}"
+      echo "   3. Go to Clients > admin-cli"
+      echo "   4. Enable 'Direct access grants'"
+      echo "   5. Save"
+      echo ""
+      echo -e "${YELLOW}   Or run this script again after enabling admin-cli${NC}"
+      return 1
+    fi
+  fi
 
   if [ -z "$token" ]; then
     echo -e "${RED}❌ Failed to get admin token${NC}"
@@ -95,6 +127,17 @@ realm_exists() {
 create_realm() {
   local token=$1
   echo -e "${YELLOW}📦 Creating realm: ${REALM_NAME}...${NC}"
+
+  # Check if realm already exists
+  local realm_check=$(curl -s -w "%{http_code}" -X GET "${KEYCLOAK_URL}/admin/realms/${REALM_NAME}" \
+    -H "Authorization: Bearer ${token}" \
+    -H "Content-Type: application/json")
+  
+  local check_code="${realm_check: -3}"
+  if [ "$check_code" = "200" ]; then
+    echo -e "${YELLOW}⚠️  Realm already exists, skipping creation${NC}"
+    return 0
+  fi
 
   local realm_config=$(cat <<EOF
 {
