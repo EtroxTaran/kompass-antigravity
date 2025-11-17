@@ -16,7 +16,7 @@ test.describe('User Management', () => {
   // Helper function to login as admin
   async function loginAsAdmin(page: any): Promise<void> {
     const adminEmail = process.env.KEYCLOAK_ADMIN_EMAIL || 'admin@kompass.de';
-    const adminPassword = process.env.KEYCLOAK_ADMIN_PASSWORD || 'admin123';
+    const adminPassword = process.env.KEYCLOAK_ADMIN_PASSWORD || 'Admin123!@#';
 
     await page.goto('/login');
     await page.fill('input[type="email"]', adminEmail);

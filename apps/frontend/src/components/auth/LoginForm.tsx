@@ -119,6 +119,7 @@ export function LoginForm({
                   autoComplete="email"
                   aria-required="true"
                   disabled={isLoading}
+                  data-testid="login-email"
                   {...field}
                 />
               </FormControl>
@@ -142,6 +143,7 @@ export function LoginForm({
                   autoComplete="current-password"
                   aria-required="true"
                   disabled={isLoading}
+                  data-testid="login-password"
                   {...field}
                 />
               </FormControl>
@@ -162,6 +164,7 @@ export function LoginForm({
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   disabled={isLoading}
+                  data-testid="login-remember-me"
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
@@ -183,6 +186,7 @@ export function LoginForm({
           size="lg"
           disabled={isLoading}
           aria-label={isLoading ? 'Anmeldung läuft...' : 'Anmelden'}
+          data-testid="login-submit"
         >
           {isLoading ? 'Anmeldung läuft...' : 'Anmelden'}
         </Button>
