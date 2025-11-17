@@ -10,6 +10,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { CustomerListPage } from './pages/CustomerListPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
 import { UnauthorizedPage } from './pages/UnauthorizedPage';
 import { UserListPage } from './pages/UserListPage';
 
@@ -27,6 +28,7 @@ function App(): React.ReactElement {
         <Routes>
           {/* Public routes */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
 
           {/* Protected routes with AppShell layout */}
           <Route

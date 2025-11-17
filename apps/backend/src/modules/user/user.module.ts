@@ -36,6 +36,17 @@ import { UserService } from './user.service';
       useValue: null, // Placeholder - will be implemented later
     },
   ],
-  exports: [UserService],
+  exports: [
+    UserService,
+    // Export providers so other modules can inject them
+    {
+      provide: 'IUserRepository',
+      useClass: UserRepository,
+    },
+    {
+      provide: 'IKeycloakAdminService',
+      useClass: KeycloakAdminService,
+    },
+  ],
 })
 export class UserModule {}

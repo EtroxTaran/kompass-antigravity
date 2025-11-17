@@ -1,11 +1,22 @@
 // Register tsconfig-paths to resolve path aliases at runtime
-import 'tsconfig-paths/register';
+// Override @kompass/shared paths to point to dist for runtime
+import * as path from 'path';
 
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { register } from 'tsconfig-paths';
 
 import { AppModule } from './app.module';
+
+register({
+  baseUrl: path.resolve(__dirname, '..'),
+  paths: {
+    '@/*': ['src/*'],
+    '@kompass/shared': ['../../packages/shared/dist'],
+    '@kompass/shared/*': ['../../packages/shared/dist/*'],
+  },
+});
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -14,10 +25,13 @@ async function bootstrap(): Promise<void> {
   app.enableCors({
     origin: process.env.ALLOWED_ORIGINS?.split(',') || [
       'http://localhost:5173',
+      'http://frontend:8080',
     ],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['X-Total-Count'],
+    maxAge: 86400, // 24 hours
   });
 
   // Global validation pipe

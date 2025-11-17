@@ -9,7 +9,7 @@
 
 import { Injectable, Logger, type OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios, { type AxiosInstance } from 'axios';
+import axios, { type AxiosError, type AxiosInstance } from 'axios';
 
 import type { UserRole } from '@kompass/shared/constants/rbac.constants';
 
@@ -231,7 +231,8 @@ export class KeycloakAdminService implements OnModuleInit {
       return keycloakUserId;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        if (error.response?.status === 409) {
+        const axiosError = error as AxiosError;
+        if (axiosError.response?.status === 409) {
           // User already exists - try to find and return existing user ID
           const existingUser = await this.findUserByEmail(email);
           if (existingUser) {
@@ -244,8 +245,8 @@ export class KeycloakAdminService implements OnModuleInit {
         }
         this.logger.error('Failed to create user in Keycloak:', {
           email,
-          status: error.response?.status,
-          data: error.response?.data,
+          status: axiosError.response?.status,
+          data: axiosError.response?.data,
         });
       }
       throw error;
@@ -311,10 +312,11 @@ export class KeycloakAdminService implements OnModuleInit {
       });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
         this.logger.error('Failed to update user in Keycloak:', {
           keycloakUserId,
-          status: error.response?.status,
-          data: error.response?.data,
+          status: axiosError.response?.status,
+          data: axiosError.response?.data,
         });
       }
       throw error;
@@ -362,11 +364,12 @@ export class KeycloakAdminService implements OnModuleInit {
       });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
         this.logger.error('Failed to assign roles in Keycloak:', {
           keycloakUserId,
           roles,
-          status: error.response?.status,
-          data: error.response?.data,
+          status: axiosError.response?.status,
+          data: axiosError.response?.data,
         });
       }
       throw error;
@@ -400,10 +403,11 @@ export class KeycloakAdminService implements OnModuleInit {
       });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
         this.logger.error('Failed to set password in Keycloak:', {
           keycloakUserId,
-          status: error.response?.status,
-          data: error.response?.data,
+          status: axiosError.response?.status,
+          data: axiosError.response?.data,
         });
       }
       throw error;
@@ -426,8 +430,9 @@ export class KeycloakAdminService implements OnModuleInit {
       });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
         // 404 is OK - user might already be deleted
-        if (error.response?.status === 404) {
+        if (axiosError.response?.status === 404) {
           this.logger.warn(
             'User not found in Keycloak (may already be deleted)',
             {
@@ -438,8 +443,8 @@ export class KeycloakAdminService implements OnModuleInit {
         }
         this.logger.error('Failed to delete user from Keycloak:', {
           keycloakUserId,
-          status: error.response?.status,
-          data: error.response?.data,
+          status: axiosError.response?.status,
+          data: axiosError.response?.data,
         });
       }
       throw error;

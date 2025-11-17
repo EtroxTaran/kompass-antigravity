@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
@@ -8,6 +9,30 @@ import { customerService } from '@/services/customer.service';
 import { CustomerListPage } from '../CustomerListPage';
 
 import type { Customer } from '@kompass/shared/types/entities/customer';
+
+/**
+ * Test wrapper with QueryClientProvider and routing
+ */
+function TestWrapper({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.ReactElement {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>{children}</BrowserRouter>
+    </QueryClientProvider>
+  );
+}
 
 // Mock the customer service
 vi.mock('@/services/customer.service', () => ({
@@ -103,9 +128,9 @@ describe('CustomerListPage', () => {
     );
 
     render(
-      <BrowserRouter>
+      <TestWrapper>
         <CustomerListPage />
-      </BrowserRouter>
+      </TestWrapper>
     );
 
     expect(screen.getByText('Kunden')).toBeInTheDocument();
@@ -120,9 +145,9 @@ describe('CustomerListPage', () => {
     vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
 
     render(
-      <BrowserRouter>
+      <TestWrapper>
         <CustomerListPage />
-      </BrowserRouter>
+      </TestWrapper>
     );
 
     await waitFor(() => {
@@ -138,9 +163,9 @@ describe('CustomerListPage', () => {
     vi.mocked(customerService).getAll.mockResolvedValue([]);
 
     render(
-      <BrowserRouter>
+      <TestWrapper>
         <CustomerListPage />
-      </BrowserRouter>
+      </TestWrapper>
     );
 
     await waitFor(() => {
@@ -157,9 +182,9 @@ describe('CustomerListPage', () => {
     );
 
     render(
-      <BrowserRouter>
+      <TestWrapper>
         <CustomerListPage />
-      </BrowserRouter>
+      </TestWrapper>
     );
 
     await waitFor(() => {
@@ -172,9 +197,9 @@ describe('CustomerListPage', () => {
     vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
 
     render(
-      <BrowserRouter>
+      <TestWrapper>
         <CustomerListPage />
-      </BrowserRouter>
+      </TestWrapper>
     );
 
     await waitFor(() => {
@@ -194,9 +219,9 @@ describe('CustomerListPage', () => {
     vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
 
     render(
-      <BrowserRouter>
+      <TestWrapper>
         <CustomerListPage />
-      </BrowserRouter>
+      </TestWrapper>
     );
 
     await waitFor(() => {
@@ -210,9 +235,9 @@ describe('CustomerListPage', () => {
     vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
 
     render(
-      <BrowserRouter>
+      <TestWrapper>
         <CustomerListPage />
-      </BrowserRouter>
+      </TestWrapper>
     );
 
     await waitFor(() => {
@@ -225,9 +250,9 @@ describe('CustomerListPage', () => {
     vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
 
     render(
-      <BrowserRouter>
+      <TestWrapper>
         <CustomerListPage />
-      </BrowserRouter>
+      </TestWrapper>
     );
 
     await waitFor(() => {
@@ -251,9 +276,9 @@ describe('CustomerListPage', () => {
     vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
 
     render(
-      <BrowserRouter>
+      <TestWrapper>
         <CustomerListPage />
-      </BrowserRouter>
+      </TestWrapper>
     );
 
     await waitFor(() => {
@@ -266,9 +291,9 @@ describe('CustomerListPage', () => {
     vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
 
     render(
-      <BrowserRouter>
+      <TestWrapper>
         <CustomerListPage />
-      </BrowserRouter>
+      </TestWrapper>
     );
 
     await waitFor(() => {
@@ -288,9 +313,9 @@ describe('CustomerListPage', () => {
     vi.mocked(customerService).getAll.mockResolvedValue(manyCustomers);
 
     render(
-      <BrowserRouter>
+      <TestWrapper>
         <CustomerListPage />
-      </BrowserRouter>
+      </TestWrapper>
     );
 
     await waitFor(() => {
@@ -303,9 +328,9 @@ describe('CustomerListPage', () => {
     vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
 
     render(
-      <BrowserRouter>
+      <TestWrapper>
         <CustomerListPage />
-      </BrowserRouter>
+      </TestWrapper>
     );
 
     await waitFor(() => {

@@ -37,10 +37,47 @@ function fixPaths() {
         let content = fs.readFileSync(filePath, 'utf8');
         const originalContent = content;
 
-        // Replace paths pointing to packages/shared/src with packages/shared/dist
+        // Replace relative paths pointing to packages/shared/src with dist paths
+        // Pattern: require("../../../../../../packages/shared/src/types/enums")
+        // Becomes: require("../../../../../../packages/shared/dist/types/enums/index")
         content = content.replace(
-          /packages\/shared\/src\//g,
-          'packages/shared/dist/'
+          /require\((["'])([^"']*packages\/shared\/src\/([^"']+))\1\)/g,
+          (match, quote, fullPath, pathAfterSrc) => {
+            // Replace src with dist
+            const distPath = fullPath.replace(
+              /packages\/shared\/src\//,
+              'packages/shared/dist/'
+            );
+            // For directory imports (no file extension), append /index.js
+            if (!pathAfterSrc.match(/\.(js|ts|json)$/)) {
+              return `require(${quote}${distPath}/index.js${quote})`;
+            }
+            // For file imports, just replace src with dist
+            return `require(${quote}${distPath}${quote})`;
+          }
+        );
+
+        // Also ensure directory imports in dist paths have /index
+        // Pattern: require("../../../../../../packages/shared/dist/types/enums")
+        // Becomes: require("../../../../../../packages/shared/dist/types/enums/index")
+        // Don't match paths that already end with /index
+        content = content.replace(
+          /require\((["'])([^"']*packages\/shared\/dist\/([^"']+))\1\)/g,
+          (match, quote, fullPath, pathAfterDist) => {
+            // Skip if already ends with /index
+            if (
+              pathAfterDist.endsWith('/index') ||
+              fullPath.endsWith('/index')
+            ) {
+              return match;
+            }
+            // For directory imports (no file extension), append /index.js
+            if (!pathAfterDist.match(/\.(js|ts|json)$/)) {
+              return `require(${quote}${fullPath}/index.js${quote})`;
+            }
+            // For file imports, keep as is
+            return match;
+          }
         );
 
         if (content !== originalContent) {
