@@ -1,10 +1,12 @@
-# KOMPASS UI/UX Design Prompts for Figma Make
+# KOMPASS UI/UX Documentation
 
-> **61 comprehensive Figma Make prompts** for designing the KOMPASS CRM & Project Management application
+> **UI/UX documentation** for the KOMPASS CRM & Project Management application, referencing the canonical GitHub UI reference repository
 
 ## 📋 Overview
 
-This directory contains **61 ready-to-use Figma Make prompts** organized into 8 categories, covering the complete UI/UX design system for KOMPASS. Each prompt follows best practices for Figma Make generation and is tailored to the German market (MVP language: German).
+This directory contains **UI/UX documentation** organized into 8 categories, covering the complete UI/UX design system for KOMPASS. All UI patterns must reference and mirror the canonical GitHub UI reference repository: `EtroxTaran/Kompassuimusterbibliothek`.
+
+**CRITICAL:** The GitHub UI reference repository is the **ONLY authoritative source** for UI patterns. Always check the reference repository before implementing any UI component.
 
 ### Key Features
 
@@ -22,8 +24,7 @@ This directory contains **61 ready-to-use Figma Make prompts** organized into 8 
 
 ```
 ui-ux/
-├── 00-updates/             # Migration prompts for updating existing designs
-│   ├── FIGMA-UPDATE-ALL-TEXTAREAS-TO-RICH-TEXT.md (⭐ USE THIS ONE!)
+├── 00-updates/             # Migration and update documentation
 │   └── MIGRATION-001-rich-text-editor-integration.md (reference)
 ├── 01-foundation/          # 5 prompts - Design system foundations
 ├── 02-core-components/     # 16 prompts - Reusable UI components (includes rich text editor)
@@ -36,57 +37,51 @@ ui-ux/
 └── README.md               # This file
 ```
 
-**Total: 61 Figma Make prompts**
+**Total: UI/UX documentation files organized by category**
 
 ---
 
 ## 🚀 Quick Start
 
-### 🔄 Updating Existing Designs (MIGRATION PROMPT)
+### 📚 Using GitHub UI Reference Repository
 
-**If you already have existing KOMPASS designs in Figma and need to update them:**
+**The canonical source for all UI patterns is:** `EtroxTaran/Kompassuimusterbibliothek`
 
-**⭐ USE THIS PROMPT:** `00-updates/FIGMA-UPDATE-ALL-TEXTAREAS-TO-RICH-TEXT.md`
+**Workflow for Implementing UI:**
 
-This is the **clearest, most complete prompt** that fixes ALL issues:
+1. **Check GitHub UI Reference Repository FIRST**
+   - Use GitHub MCP to fetch files from `EtroxTaran/Kompassuimusterbibliothek`
+   - Identify matching components/pages
+   - Read component source code, layout structures, styling conventions
 
-- ✅ Replaces **ALL 14 textarea fields** across 7 forms
-- ✅ **FIXES vertical scrollbar issue** (toolbar uses horizontal scroll only)
-- ✅ Proper button sizing (32px desktop, 44px mobile)
-- ✅ No button wrapping (single horizontal row)
-- ✅ Complete field-by-field instructions for Figma Make
+2. **Update Documentation**
+   - Update relevant markdown files in `ui-ux/` directory
+   - Document which reference files were used
+   - Include exact specifications from reference
 
-**Updates Made:**
+3. **Implement Code**
+   - Mirror/adapt patterns from reference repository
+   - Rebuild using our stack (React + shadcn/ui + Tailwind)
+   - Match reference patterns precisely
 
-- Activity Protocol: 2 fields (Beschreibung + Nächste Schritte) → Rich text
-- Customer: Adds Interne Notizen field → Rich text
-- Contact: Adds Interne Notizen field → Rich text
-- Location: Adds Standortbeschreibung field → Rich text
-- Opportunity: 3 fields (Beschreibung + Nächster Schritt + Grund für Verlust) → Rich text
-- Project: 3 fields (Projektbeschreibung + Externe Partner + Projektnotizen) → Rich text
-- Invoice: Bemerkungen → Rich text (GoBD immutable with lock)
+**CRITICAL RULES:**
 
-**How to Apply:**
+- **NO Figma MCP** - There is no Figma MCP involved
+- **NO external references** - Only the GitHub UI reference repository
+- **Complete reference** - If something seems missing, ask for clarification
+- **Mirror patterns** - Everything must mirror, extend, or adapt from reference repo
+- **No invention** - Do NOT invent new UI patterns unless explicitly requested
 
-1. Open your existing KOMPASS Figma file
-2. Navigate to the Forms page/section
-3. Copy the **ENTIRE PROMPT** from `FIGMA-UPDATE-ALL-TEXTAREAS-TO-RICH-TEXT.md`
-4. Paste into Figma Make (one big paste!)
-5. Figma Make will find and replace all textareas
-6. Review: NO vertical scrollbar, all fields updated
-
-**Alternative (detailed reference):** `00-updates/MIGRATION-001-rich-text-editor-integration.md` (first version, less clear for Figma Make)
+See `docs/design-system/github-ui-reference.md` for complete workflow documentation.
 
 ---
 
-### How to Use These Prompts with Figma Make (New Designs)
+### How to Use This Documentation
 
-1. **Open Figma** and create a new file or page
-2. **Access Figma Make**: Click "Make with AI" or use the prompt input
-3. **Copy a prompt** from the `.md` files in this directory
-4. **Paste and generate**: Figma Make will create the design
-5. **Iterate**: Refine the prompt or adjust the generated design
-6. **Apply theme**: Use `shadcn/ui` color tokens and design system
+1. **Check GitHub UI Reference** - Always fetch from `EtroxTaran/Kompassuimusterbibliothek` first
+2. **Review Documentation** - Check relevant `.md` files in this directory for specifications
+3. **Implement** - Build using shadcn/ui matching reference patterns
+4. **Document** - Update documentation with reference source and adaptations
 
 ### Best Practices
 
@@ -97,28 +92,27 @@ This is the **clearest, most complete prompt** that fixes ALL issues:
 - **Test Accessibility**: Verify WCAG 2.1 AA compliance
 - **Mobile Preview**: Always check mobile responsiveness
 
-### Prompt Template Structure
+### Documentation Structure
 
-Each prompt file contains:
+Each documentation file contains:
 
 ```markdown
-# Component Name - Figma Make Prompt
+# Component Name
 
 ## Context & Purpose
 
 - Component type, user roles, usage context
+- Reference source: Which file from EtroxTaran/Kompassuimusterbibliothek
 
-## Figma Make Prompt
-
-[Detailed, structured prompt for Figma Make]
-
-## Design Requirements
+## Design Specifications
 
 - Visual hierarchy, components, interactions
+- Exact specifications from reference repository
 
 ## Implementation Notes
 
 - shadcn/ui components, technical details
+- Adaptations made from reference
 ```
 
 ---
@@ -455,8 +449,8 @@ Architecture supports future localization:
 - **shadcn/ui**: https://ui.shadcn.com/
 - **shadcraft.com**: https://shadcraft.com/ (components, blocks, templates)
 - **RadixUI**: https://www.radix-ui.com/
-- **Figma Make**: https://www.figma.com/blog/8-ways-to-build-with-figma-make/
-- **Figma Best Practices**: https://www.figma.com/best-practices/
+- **GitHub UI Reference**: https://github.com/EtroxTaran/Kompassuimusterbibliothek
+- **GitHub UI Reference Documentation**: `../docs/design-system/github-ui-reference.md`
 - **WCAG 2.1**: https://www.w3.org/WAI/WCAG21/quickref/
 
 ---
@@ -489,13 +483,13 @@ Architecture supports future localization:
 8. **Specialized** (08-specialized): Advanced patterns
    - RBAC indicators → Conflict resolution → GoBD compliance
 
-### Iteration Strategy
+### Implementation Strategy
 
-1. **Generate**: Use Figma Make with prompt
-2. **Review**: Check design against requirements
-3. **Refine**: Adjust prompt or design
-4. **Validate**: WCAG, mobile, RBAC, GoBD
-5. **Implement**: Hand off to developers
+1. **Fetch Reference**: Use GitHub MCP to get patterns from `EtroxTaran/Kompassuimusterbibliothek`
+2. **Review**: Check reference patterns against requirements
+3. **Document**: Update documentation with reference source
+4. **Implement**: Build using shadcn/ui matching reference patterns
+5. **Validate**: WCAG, mobile, RBAC, GoBD compliance
 
 ---
 
@@ -532,9 +526,9 @@ Architecture supports future localization:
 
 - **Created**: November 2024
 - **Last Updated**: January 27, 2025
-- **Version**: 1.1.0
-- **Total Prompts**: 61
-- **Status**: ✅ Complete (includes rich text editor integration)
+- **Version**: 2.0.0
+- **UI Reference**: GitHub repository `EtroxTaran/Kompassuimusterbibliothek`
+- **Status**: ✅ Complete (migrated to GitHub UI reference repository)
 
 ---
 
@@ -543,7 +537,7 @@ Architecture supports future localization:
 ### Expected Outcomes
 
 - **Design Consistency**: All screens follow design system
-- **Figma Make Efficiency**: 60-80% time savings vs. manual design
+- **Reference-Based Development**: Consistent patterns from canonical source
 - **Accessibility**: 100% WCAG 2.1 AA compliance
 - **Developer Handoff**: Clear component specifications
 - **User Testing**: Designs ready for validation
@@ -551,4 +545,5 @@ Architecture supports future localization:
 ---
 
 **Built for KOMPASS** - Integrated CRM & Project Management Tool  
-**Powered by**: shadcn/ui, RadixUI, Tailwind CSS, Figma Make
+**UI Reference**: `EtroxTaran/Kompassuimusterbibliothek` (GitHub)  
+**Powered by**: shadcn/ui, RadixUI, Tailwind CSS

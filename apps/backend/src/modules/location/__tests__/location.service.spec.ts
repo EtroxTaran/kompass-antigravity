@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 
+import { UserRole } from '@kompass/shared/constants/rbac.constants';
 import { LocationType } from '@kompass/shared/types/enums';
 
 import { LocationService } from '../location.service';
@@ -20,6 +21,7 @@ import type { CreateLocationDto } from '../dto/create-location.dto';
 import type { UpdateLocationDto } from '../dto/update-location.dto';
 import type { ILocationRepository } from '../location.repository.interface';
 import type { Location } from '@kompass/shared/types/entities/location';
+import type { User } from '@kompass/shared/types/entities/user';
 import type { TestingModule } from '@nestjs/testing';
 
 describe('LocationService', () => {
@@ -27,14 +29,36 @@ describe('LocationService', () => {
   let repository: jest.Mocked<ILocationRepository>;
   let customerService: jest.Mocked<any>;
 
-  const mockUser = {
-    id: 'user-adm-001',
-    role: 'ADM' as const,
+  const mockUser: User = {
+    _id: 'user-adm-001',
+    _rev: '1-abc',
+    type: 'user',
+    email: 'adm@example.com',
+    displayName: 'Test ADM User',
+    roles: [UserRole.ADM],
+    primaryRole: UserRole.ADM,
+    active: true,
+    createdBy: 'system',
+    createdAt: new Date(),
+    modifiedBy: 'system',
+    modifiedAt: new Date(),
+    version: 1,
   };
 
-  const mockGFUser = {
-    id: 'user-gf-001',
-    role: 'GF' as const,
+  const mockGFUser: User = {
+    _id: 'user-gf-001',
+    _rev: '1-def',
+    type: 'user',
+    email: 'gf@example.com',
+    displayName: 'Test GF User',
+    roles: [UserRole.GF],
+    primaryRole: UserRole.GF,
+    active: true,
+    createdBy: 'system',
+    createdAt: new Date(),
+    modifiedBy: 'system',
+    modifiedAt: new Date(),
+    version: 1,
   };
 
   const mockCustomer = {

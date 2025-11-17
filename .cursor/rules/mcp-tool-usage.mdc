@@ -16,7 +16,7 @@ This document defines best practices for using Model Context Protocol (MCP) tool
 - **mcp-tool-usage-documentation.mdc** - Ref, Context7, Perplexity (documentation tools)
 - **mcp-tool-usage-code-analysis.mdc** - Semgrep (code analysis)
 - **mcp-tool-usage-automation.mdc** - Playwright, Firecrawl, n8n (automation tools)
-- **mcp-tool-usage-ui-integration.mdc** - ShadCN, Figma, GitHub, Linear, Graphiti (UI and integration tools)
+- **mcp-tool-usage-ui-integration.mdc** - ShadCN, GitHub UI Reference, GitHub, Linear, Graphiti (UI and integration tools)
 
 ## Tool Prioritization Hierarchy
 
@@ -61,7 +61,7 @@ When you need information, follow this decision tree:
    └─ NO → Continue
 
 7. Is this a UI/component question?
-   ├─ Design file referenced? → Use Figma, then ShadCN - see mcp-tool-usage-ui-integration.mdc
+   ├─ UI implementation needed? → Use GitHub UI Reference (fetch from EtroxTaran/Kompassuimusterbibliothek), then ShadCN - see mcp-tool-usage-ui-integration.mdc
    ├─ Component generation? → Use ShadCN - see mcp-tool-usage-ui-integration.mdc
    └─ NO → Check project rules
 
@@ -194,7 +194,7 @@ Always refer to specific rule files for detailed requirements.
 - **mcp-tool-usage-documentation.mdc** - Ref, Context7, Perplexity (documentation tools)
 - **mcp-tool-usage-code-analysis.mdc** - Semgrep (code analysis)
 - **mcp-tool-usage-automation.mdc** - Playwright, Firecrawl, n8n (automation tools)
-- **mcp-tool-usage-ui-integration.mdc** - ShadCN, Figma, GitHub, Linear, Graphiti (UI and integration tools)
+- **mcp-tool-usage-ui-integration.mdc** - ShadCN, GitHub UI Reference, GitHub, Linear, Graphiti (UI and integration tools)
 
 ### Related Project Rules
 

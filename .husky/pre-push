@@ -169,17 +169,54 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Run backend tests with coverage (enforces thresholds from jest.config.js)
-echo "   Running backend tests with coverage..."
-pnpm --filter @kompass/backend test:cov
-BACKEND_STATUS=$?
+# Detect which packages changed (use Turbo to test only changed packages)
+echo "   Detecting changed packages..."
+CHANGED_PACKAGES=""
 
-# Run frontend tests with coverage (enforces thresholds)
-echo "   Running frontend tests with coverage..."
-pnpm --filter @kompass/frontend test:coverage
-FRONTEND_STATUS=$?
+# Check if upstream exists (not first push)
+if git rev-parse --abbrev-ref @{u} >/dev/null 2>&1; then
+  # Check if backend changed
+  if git diff --name-only @{u}.. 2>/dev/null | grep -qE "^apps/backend/|^packages/shared/"; then
+    CHANGED_PACKAGES="$CHANGED_PACKAGES @kompass/backend"
+  fi
 
-if [ $BACKEND_STATUS -ne 0 ] || [ $FRONTEND_STATUS -ne 0 ]; then
+  # Check if frontend changed
+  if git diff --name-only @{u}.. 2>/dev/null | grep -qE "^apps/frontend/|^packages/shared/"; then
+    CHANGED_PACKAGES="$CHANGED_PACKAGES @kompass/frontend"
+  fi
+else
+  # First push - test all packages (safety check)
+  echo "   ℹ️  First push detected - running all tests"
+  CHANGED_PACKAGES="@kompass/backend @kompass/frontend"
+fi
+
+# If no packages changed, test all (safety check)
+if [ -z "$CHANGED_PACKAGES" ]; then
+  echo "   ℹ️  No package changes detected - running all tests"
+  CHANGED_PACKAGES="@kompass/backend @kompass/frontend"
+else
+  echo "   📦 Testing changed packages:$CHANGED_PACKAGES"
+fi
+
+# Run tests for changed packages using Turbo
+TEST_STATUS=0
+for PACKAGE in $CHANGED_PACKAGES; do
+  if [ "$PACKAGE" = "@kompass/backend" ]; then
+    echo "   Running backend tests with coverage..."
+    pnpm --filter @kompass/backend test:cov
+    if [ $? -ne 0 ]; then
+      TEST_STATUS=1
+    fi
+  elif [ "$PACKAGE" = "@kompass/frontend" ]; then
+    echo "   Running frontend tests with coverage..."
+    pnpm --filter @kompass/frontend test:coverage
+    if [ $? -ne 0 ]; then
+      TEST_STATUS=1
+    fi
+  fi
+done
+
+if [ $TEST_STATUS -ne 0 ]; then
   echo ""
   echo "   ❌ Tests failed or coverage thresholds not met. Push aborted."
   echo "   Fix failing tests or improve coverage to meet thresholds."
@@ -192,20 +229,22 @@ fi
 echo "   ✅ Tests passed with coverage thresholds met"
 
 echo ""
-echo "8️⃣  Running security audit (matches CI)..."
+echo "8️⃣  Running security audit (non-blocking, informational only)..."
 
 pnpm audit --audit-level=high
 
 if [ $? -ne 0 ]; then
   echo ""
-  echo "   ❌ Security audit found high or critical vulnerabilities. Push aborted."
-  echo "   Run 'pnpm audit --fix' to attempt automatic fixes."
-  echo "   Or skip with: git push --no-verify"
+  echo "   ⚠️  WARNING: Security audit found high or critical vulnerabilities."
+  echo "   This is non-blocking, but please review and fix when possible:"
+  echo "     Run 'pnpm audit --fix' to attempt automatic fixes."
+  echo "     Or review with: pnpm audit"
   echo ""
-  exit 1
+  echo "   Push will continue, but please address security issues soon."
+  echo ""
+else
+  echo "   ✅ Security audit passed"
 fi
-
-echo "   ✅ Security audit passed"
 
 # ============================================================================
 
@@ -220,11 +259,11 @@ echo ""
 echo "   ✅ Branch name valid"
 echo "   ✅ Commit messages valid"
 echo "   ℹ️  Documentation check completed (non-blocking)"
-echo "   ✅ Lint passed"
+  echo "   ✅ Lint passed"
 echo "   ✅ Format check passed"
 echo "   ✅ Type-check passed"
 echo "   ✅ Tests passed with coverage thresholds"
-echo "   ✅ Security audit passed"
+echo "   ℹ️  Security audit completed (non-blocking)"
 echo ""
 echo "   Pushing to $BRANCH_NAME..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

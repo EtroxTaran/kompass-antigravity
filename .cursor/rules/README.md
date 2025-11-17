@@ -38,7 +38,7 @@ alwaysApply: true # Whether rule should always be active
 ### UI & Frontend
 
 - **ui-components.mdc** - shadcn/ui and RadixUI ONLY, accessibility (WCAG 2.1 AA), mobile-first
-- **ui-ux-documentation-sync.mdc** - CRITICAL: Dual updates (documentation + Figma prompts) for UI/UX changes
+- **ui-ux-documentation-sync.mdc** - CRITICAL: GitHub UI reference repository checks and documentation updates for UI/UX changes
 - **reusable-components.mdc** - Code extraction patterns, shared utilities, anti-patterns
 
 ### Testing & Quality
@@ -66,7 +66,7 @@ alwaysApply: true # Whether rule should always be active
 - **mcp-tool-usage-documentation.mdc** - Ref, Context7, and Perplexity for API documentation lookup, version-specific docs, and web search
 - **mcp-tool-usage-code-analysis.mdc** - Semgrep for security scanning, bug detection, and code quality analysis
 - **mcp-tool-usage-automation.mdc** - Playwright, Firecrawl, and n8n for browser testing, web scraping, and workflow automation
-- **mcp-tool-usage-ui-integration.mdc** - ShadCN, Figma, GitHub, Linear, and Graphiti for component generation, design extraction, and project management
+- **mcp-tool-usage-ui-integration.mdc** - ShadCN, GitHub UI Reference, GitHub, Linear, and Graphiti for component generation, UI pattern reference, and project management
 
 ### Performance
 

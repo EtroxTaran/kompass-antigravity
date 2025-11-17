@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 
+import { UserRole } from '@kompass/shared/constants/rbac.constants';
 import {
   DecisionMakingRole,
   FunctionalRole,
@@ -21,6 +22,7 @@ import { ContactService } from '../contact.service';
 
 import type { UpdateDecisionAuthorityDto } from '../dto/update-decision-authority.dto';
 import type { ContactPerson } from '@kompass/shared/types/entities/contact';
+import type { User } from '@kompass/shared/types/entities/user';
 import type { TestingModule } from '@nestjs/testing';
 
 describe('ContactService', () => {
@@ -28,19 +30,52 @@ describe('ContactService', () => {
   let repository: jest.Mocked<any>;
   let auditService: jest.Mocked<any>;
 
-  const mockADMUser = {
-    id: 'user-adm-001',
-    role: 'ADM' as const,
+  const mockADMUser: User = {
+    _id: 'user-adm-001',
+    _rev: '1-abc',
+    type: 'user',
+    email: 'adm@example.com',
+    displayName: 'Test ADM User',
+    roles: [UserRole.ADM],
+    primaryRole: UserRole.ADM,
+    active: true,
+    createdBy: 'system',
+    createdAt: new Date(),
+    modifiedBy: 'system',
+    modifiedAt: new Date(),
+    version: 1,
   };
 
-  const mockPLANUser = {
-    id: 'user-plan-001',
-    role: 'PLAN' as const,
+  const mockPLANUser: User = {
+    _id: 'user-plan-001',
+    _rev: '1-def',
+    type: 'user',
+    email: 'plan@example.com',
+    displayName: 'Test PLAN User',
+    roles: [UserRole.PLAN],
+    primaryRole: UserRole.PLAN,
+    active: true,
+    createdBy: 'system',
+    createdAt: new Date(),
+    modifiedBy: 'system',
+    modifiedAt: new Date(),
+    version: 1,
   };
 
-  const mockGFUser = {
-    id: 'user-gf-001',
-    role: 'GF' as const,
+  const mockGFUser: User = {
+    _id: 'user-gf-001',
+    _rev: '1-ghi',
+    type: 'user',
+    email: 'gf@example.com',
+    displayName: 'Test GF User',
+    roles: [UserRole.GF],
+    primaryRole: UserRole.GF,
+    active: true,
+    createdBy: 'system',
+    createdAt: new Date(),
+    modifiedBy: 'system',
+    modifiedAt: new Date(),
+    version: 1,
   };
 
   const mockContact: ContactPerson = {
@@ -140,7 +175,21 @@ describe('ContactService', () => {
 
     it('should throw ForbiddenException if KALK tries to update decision roles', async () => {
       repository.findById.mockResolvedValue(mockContact);
-      const kalkUser = { id: 'user-kalk-001', role: 'KALK' as const };
+      const kalkUser: User = {
+        _id: 'user-kalk-001',
+        _rev: '1-jkl',
+        type: 'user',
+        email: 'kalk@example.com',
+        displayName: 'Test KALK User',
+        roles: [UserRole.KALK],
+        primaryRole: UserRole.KALK,
+        active: true,
+        createdBy: 'system',
+        createdAt: new Date(),
+        modifiedBy: 'system',
+        modifiedAt: new Date(),
+        version: 1,
+      };
 
       await expect(
         service.updateDecisionAuthority('contact-111', updateDto, kalkUser)

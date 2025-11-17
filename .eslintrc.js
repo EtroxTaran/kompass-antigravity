@@ -112,8 +112,10 @@ module.exports = {
       },
       alias: {
         map: [
+          ['@', './apps/frontend/src'],
           ['@/', './apps/frontend/src/'],
           ['@kompass/shared', './packages/shared/src'],
+          ['@kompass/shared/*', './packages/shared/src/*'],
         ],
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
       },
@@ -203,7 +205,7 @@ module.exports = {
     {
       files: ['apps/frontend/**/*.{ts,tsx}'],
       rules: {
-        'import/no-unresolved': 'off', // Disabled due to path alias resolution issues in ESLint
+        'import/no-unresolved': 'error', // Re-enabled after fixing path alias resolution
         // Temporarily downgrade unsafe any rules to warnings (pre-existing issues)
         '@typescript-eslint/no-unsafe-assignment': 'warn',
         '@typescript-eslint/no-unsafe-call': 'warn',

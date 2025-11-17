@@ -109,19 +109,26 @@ echo "   ✅ No temporary documentation files found"
 
 # ============================================================================
 # 4. Build shared package first (ensures dist files exist)
+# Only build if shared package changed
 # ============================================================================
 echo ""
-echo "4️⃣  Building shared package..."
+echo "4️⃣  Checking if shared package changed..."
 
-pnpm --filter @kompass/shared build
+# Check if shared package changed
+if git diff --cached --name-only | grep -q "packages/shared"; then
+    echo "   📦 Shared package changed - building..."
+    pnpm --filter @kompass/shared build
 
-if [ $? -ne 0 ]; then
-    echo ""
-    echo "❌ Shared package build failed"
-    exit 1
+    if [ $? -ne 0 ]; then
+        echo ""
+        echo "❌ Shared package build failed"
+        exit 1
+    fi
+
+    echo "   ✅ Shared package built successfully"
+else
+    echo "   ⏭️  Skipping shared package build (no changes)"
 fi
-
-echo "   ✅ Shared package built successfully"
 
 # ============================================================================
 # 5. Run lint-staged (linting, formatting)

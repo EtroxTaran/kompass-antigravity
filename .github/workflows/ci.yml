@@ -45,6 +45,8 @@ jobs:
 
       - name: Lint check
         run: pnpm lint
+        env:
+          ESLINT_MAX_WARNINGS: 150
 
       - name: Type check
         run: pnpm type-check
@@ -78,11 +80,11 @@ jobs:
       - name: Build shared package
         run: pnpm --filter @kompass/shared build
 
-      - name: Run backend unit tests
-        run: pnpm --filter @kompass/backend test:unit
+      - name: Run backend unit tests with coverage
+        run: pnpm --filter @kompass/backend test:cov
 
-      - name: Run frontend unit tests
-        run: pnpm --filter @kompass/frontend test:unit
+      - name: Run frontend unit tests with coverage
+        run: pnpm --filter @kompass/frontend test:coverage
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
@@ -130,6 +132,7 @@ jobs:
     name: Build Check
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: [quality, test]
 
     steps:
       - name: Checkout code
@@ -148,6 +151,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Build shared package first
+        run: pnpm --filter @kompass/shared build
 
       - name: Build all packages
         run: pnpm build

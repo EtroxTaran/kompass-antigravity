@@ -49,7 +49,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'pnpm --filter frontend dev',
+    command: 'pnpm --filter @kompass/frontend dev',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
   },
