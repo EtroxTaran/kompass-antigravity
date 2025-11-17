@@ -8,7 +8,7 @@
 **⚡ Verknüpfte Spezifikationen:**
 
 - **NFRs:** `docs/specifications/reviews/NFR_SPECIFICATION.md` – §5.3 DSGVO-Compliance-Framework, §5.4 GoBD-Compliance
-- **Datenmodell:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` – §24 Offer Entity (interfaces, validation rules, business rules, GoBD immutability), §25 Contract Entity (interfaces, validation rules, signing workflow, project conversion), GoBD-Immutabilität, Änderungsprotokollierung
+- **Datenmodell:** `docs/specifications/data-model.md` – §24 Offer Entity (interfaces, validation rules, business rules, GoBD immutability), §25 Contract Entity (interfaces, validation rules, signing workflow, project conversion), GoBD-Immutabilität, Änderungsprotokollierung
 - **API-Spezifikation:** `docs/specifications/reviews/API_SPECIFICATION.md` – §13 Offer Management Endpoints (CRUD, send, accept, reject, supersede, PDF generation), §14 Contract Management Endpoints (CRUD, sign, create-project, complete, terminate), complete Opportunity→Offer→Contract→Project workflow
 - **RBAC:** `docs/specifications/reviews/RBAC_PERMISSION_MATRIX.md` – Offer/Contract permissions (INNEN: full CRUD, GF: approve/correct, PLAN: project creation from contracts), Buchhaltung (Zugriff auf Finanzdaten), GF (lesend auf Margen)
 - **Integration:** Lexware-Integration Specification (optional, Phase 2+)
@@ -216,7 +216,7 @@ Unlike traditional systems that start with invoices, KOMPASS establishes a **sig
 
 **Umsetzung:**
 
-- Siehe DATA_MODEL_SPECIFICATION.md: Contract-Entity mit GoBD-Immutabilität
+- Siehe data-model.md: Contract-Entity mit GoBD-Immutabilität
 - Vertrag wird immutable wenn Projekt gestartet wird
 - Change-Log für alle Korrekturen (mit Begründung + GF-Approval)
 - PDF-Archivierung in MinIO/S3 mit Versionierung

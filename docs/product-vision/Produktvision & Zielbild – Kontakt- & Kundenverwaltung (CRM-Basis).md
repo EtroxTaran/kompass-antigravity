@@ -7,7 +7,7 @@ _Document Version: 2.0_
 **⚡ Verknüpfte Spezifikationen:**
 
 - **NFRs:** `docs/reviews/NFR_SPECIFICATION.md` – Performance (API P95 ≤1,5s), Offline-Speicher (ADM=31MB ✅), 20 Nutzer, 95% Verfügbarkeit
-- **Datenmodell:** `docs/reviews/DATA_MODEL_SPECIFICATION.md` – ERD, Customer/Contact/Location-Entities, Validierung, Deduplizierungs-Algorithmen
+- **Datenmodell:** `docs/specifications/data-model.md` – ERD, Customer/Contact/Location-Entities, Validierung, Deduplizierungs-Algorithmen
 - **RBAC:** `docs/reviews/RBAC_PERMISSION_MATRIX.md` – ADM sieht eigene Kunden (voll), fremde Kunden (Basis), keine Margen
 - **Journeys:** `docs/reviews/USER_JOURNEY_MAPS.md` – Journey 1 (Lead→Won), Journey 5 (Offline-Sync mit Konflikten)
 - **Konfliktauflösung:** `docs/reviews/CONFLICT_RESOLUTION_SPECIFICATION.md` – Hybrid-Auto-Resolution, Duplikat-Erkennung-UX

@@ -292,7 +292,7 @@ All setup criteria met:
 Located in `docs/`:
 
 - `docs/reviews/START_HERE.md` - Documentation index
-- `docs/reviews/DATA_MODEL_SPECIFICATION.md` - Complete entity definitions
+- `docs/specifications/data-model.md` - Complete entity definitions
 - `docs/reviews/TEST_STRATEGY_DOCUMENT.md` - Testing approach
 - `docs/reviews/API_SPECIFICATION.md` - API design
 - `docs/reviews/RBAC_PERMISSION_MATRIX.md` - Permissions
@@ -336,7 +336,7 @@ Located in `docs/`:
 
 ### Day 2: Generate First Entity
 
-1. Pick an entity from DATA_MODEL_SPECIFICATION.md
+1. Pick an entity from data-model.md
 2. Run `./scripts/generate-entity.sh <entity-name>`
 3. Customize generated code
 4. Write tests
@@ -469,7 +469,7 @@ rm -rf node_modules && pnpm install  # Fresh install
 Generate your first entity following this workflow:
 
 ```bash
-# 1. Choose entity from DATA_MODEL_SPECIFICATION.md
+# 1. Choose entity from data-model.md
 # Let's use "Opportunity" as example
 
 # 2. Generate scaffolding
@@ -477,7 +477,7 @@ Generate your first entity following this workflow:
 
 # 3. Customize entity fields
 # Edit: packages/shared/src/types/entities/opportunity.ts
-# Add fields per DATA_MODEL_SPECIFICATION.md §2.2
+# Add fields per data-model.md §2.2
 
 # 4. Add validation rules
 # Edit: apps/backend/src/modules/opportunity/dto/create-opportunity.dto.ts

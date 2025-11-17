@@ -7,7 +7,7 @@ _Document Version: 2.0_
 **⚡ Verknüpfte Spezifikationen:**
 
 - **NFR-Spezifikation:** `docs/reviews/NFR_SPECIFICATION.md` – Performance, Skalierung, Verfügbarkeit, Offline-Speicher, Monitoring
-- **Datenmodell:** `docs/reviews/DATA_MODEL_SPECIFICATION.md` – ERD, Entities, Validierung, ID-Strategien, GoBD, Deduplizierung
+- **Datenmodell:** `docs/specifications/data-model.md` – ERD, Entities, Validierung, ID-Strategien, GoBD, Deduplizierung
 - **RBAC-Matrix:** `docs/reviews/RBAC_PERMISSION_MATRIX.md` – Rollenberechtigungen (ADM/INNEN/PLAN/BUCH/GF), Feldebene-Zugriffsregeln
 - **Benutzerreisen:** `docs/reviews/USER_JOURNEY_MAPS.md` – 5 End-to-End-Journeys: Lead→Projekt, Projekt→Rechnung, Änderungsanfrage, GF-Review, Offline-Sync
 - **Konfliktauflösung:** `docs/reviews/CONFLICT_RESOLUTION_SPECIFICATION.md` – Hybrid-Strategie (70% auto, 25% nutzergeführt, 5% eskaliert), UX-Mockups, Training

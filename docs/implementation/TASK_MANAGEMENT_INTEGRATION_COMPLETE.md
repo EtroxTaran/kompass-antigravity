@@ -21,7 +21,7 @@ Successfully integrated comprehensive task management capabilities into KOMPASS,
 
 ### ✅ 1. Data Model Specification
 
-**File:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md`
+**File:** `docs/specifications/data-model.md`
 
 **Added:**
 
@@ -371,7 +371,7 @@ Successfully integrated comprehensive task management capabilities into KOMPASS,
 
 ### Specification Documents
 
-1. ✅ `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` - Added 2 entities, updated TOC, version 1.1 → 1.2
+1. ✅ `docs/specifications/data-model.md` - Added 2 entities, updated TOC
 2. ✅ `docs/specifications/reviews/RBAC_PERMISSION_MATRIX.md` - Added section 12, version 1.1 → 1.2
 3. ✅ `docs/specifications/reviews/API_SPECIFICATION.md` - Added section 9, version 1.1 → 1.2
 
@@ -743,7 +743,7 @@ Successfully integrated comprehensive task management capabilities into KOMPASS,
 
 ### Core Specifications
 
-- **Data Model:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` (Sections 14-16)
+- **Data Model:** `docs/specifications/data-model.md` (Sections 14-16)
 - **RBAC Permissions:** `docs/specifications/reviews/RBAC_PERMISSION_MATRIX.md` (Section 12)
 - **API Endpoints:** `docs/specifications/reviews/API_SPECIFICATION.md` (Section 9)
 

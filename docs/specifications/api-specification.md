@@ -3949,7 +3949,7 @@ export class CalendarQueryDto {
 
 - All colors meet WCAG AA contrast ratio (4.5:1)
 - Color + icon combination (not color alone)
-- Default colors defined in CalendarEvent interface (DATA_MODEL_SPECIFICATION.md Section 17)
+- Default colors defined in CalendarEvent interface (data-model.md Section 17)
 
 ---
 

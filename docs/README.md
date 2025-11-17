@@ -91,7 +91,9 @@ docs/
 │   │   # - ADR-001 to ADR-018 (Architectural Decisions)
 │   │   # - Phase-based implementation roadmap
 │   │
-│   ├── decisions/                     # Architecture Decision Records
+│   ├── decisions/                     # Architecture Decision Records (ADRs) & Documentation Decision Logs (DDLs)
+│   │   ├── adr-###-*.md              # Architecture Decision Records (major decisions)
+│   │   └── ddl/                      # Documentation Decision Logs (documentation evolution)
 │   ├── diagrams/                      # Architecture diagrams and visuals
 │   ├── ai-extensions/
 │   │   └── AI_Automation_Extensions_Implementation_Guide.md  # ✨ AI Implementation Guide
@@ -153,9 +155,6 @@ docs/
 │   ├── DEVELOPMENT_WORKFLOW.md        # Git workflow and code review
 │   └── FILE_ORGANIZATION_ENFORCEMENT.md # Structure validation
 │
-├── rules/                              # Legacy rules (see .cursor/rules/)
-│   ├── README.md                      # Rules index
-│   └── [Legacy documentation rules]
 │
 └── assets/                             # Documentation assets
     ├── README.md                      # Asset organization and standards
@@ -350,13 +349,22 @@ docs/
 
 ---
 
-## 🔄 Document Versioning
+## 🔄 Document Versioning & Evolution
 
-| Version | Date       | Changes                                                                                                                                                                                                 |
-| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.0** | 2025-01-11 | Initial comprehensive documentation after Gap Resolution                                                                                                                                                |
-| **2.0** | 2025-01-27 | ✨ **AI & Automation Extensions 2025** – Added Pillar 4 (RAG, n8n, Forecasting, BI), updated all personas, created AI Extensions Implementation Guide, expanded architecture with Intelligence Layer    |
-| **3.0** | 2025-01-28 | 📋 **Documentation Optimization** – Unified architecture into single source of truth, eliminated confusing v1/v2 versioning, reorganized specifications, enhanced navigation with comprehensive READMEs |
+**Git-Based Versioning:** All documentation uses Git for versioning. No version numbers in filenames. Use `git log`, `git diff`, and `git blame` to track changes.
+
+**Decision Tracking:**
+
+- **ADRs** (`docs/architecture/decisions/adr-###-*.md`): Major architectural/strategic decisions
+- **DDLs** (`docs/architecture/decisions/ddl/ddl-###-*.md`): Documentation evolution decisions
+
+**Recent Major Changes:**
+
+- **2025-01-28**: Documentation governance overhaul - Established DDL system, migrated rules to `.cursor/rules/`, removed outdated implementation reports, established retention policies
+- **2025-01-27**: ✨ AI & Automation Extensions 2025 – Added Pillar 4 (RAG, n8n, Forecasting, BI)
+- **2025-01-11**: Initial comprehensive documentation after Gap Resolution
+
+See [DDL-001: Documentation Governance Ruleset](./architecture/decisions/ddl/ddl-001-documentation-governance-ruleset.md) for complete governance rules.
 
 ---
 

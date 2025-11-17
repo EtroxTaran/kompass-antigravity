@@ -18,7 +18,6 @@ import {
 
 import { useAuth } from './useAuth';
 
-
 import type { BaseEntity } from '@kompass/shared';
 
 /**

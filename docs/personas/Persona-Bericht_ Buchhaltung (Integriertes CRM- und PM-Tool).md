@@ -15,7 +15,7 @@ _Last Updated: 2025-11-10_
   - **Konflikt-Resolution:** Buchhaltung sieht Projektstatus, aber ADM sieht keine Detail-Margen (nur Status)
 - **User Journeys:** Siehe USER_JOURNEY_MAPS.md
   - Journey 2: Projekt → Angebot/Vertrag → Abrechnung in Lexware (BUCH-Hauptrolle: Finanztracking, Budgetkontrolle, Zahlungsüberwachung)
-- **GoBD-Compliance:** Siehe DATA_MODEL_SPECIFICATION.md §7
+- **GoBD-Compliance:** Siehe data-model.md §7
   - Vertrags-Archivierung (immutable nach Unterzeichnung)
   - 10-Jahres-Aufbewahrung mit Dokumentation
   - DSGVO/GoBD-Konflikt gelöst: Pseudonymisierung nach Löschantrag

@@ -32,7 +32,6 @@ vi.mock('../../../services/audit.service', () => ({
   },
 }));
 
-
 /**
  * Test component for protected route
  */

@@ -21,7 +21,10 @@ describe('Auth Integration Tests', () => {
       await app.init();
     } catch (error) {
       // If initialization fails (e.g., Keycloak not available), skip tests
-      console.warn('App initialization failed, skipping integration tests:', error);
+      console.warn(
+        'App initialization failed, skipping integration tests:',
+        error
+      );
       app = undefined;
       return;
     }

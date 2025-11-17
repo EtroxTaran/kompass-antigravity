@@ -51,8 +51,6 @@ import { LocationResponseDto } from './dto/location-response.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { LocationService } from './location.service';
 
-
-
 const SORTABLE_LOCATION_FIELDS = [
   'locationName',
   'locationType',

@@ -7,7 +7,7 @@ _Document Version: 2.0_
 **⚡ Verknüpfte Spezifikationen:**
 
 - **NFRs:** `docs/reviews/NFR_SPECIFICATION.md` – Performance, Skalierung, Verfügbarkeit, Monitoring
-- **Datenmodell:** `docs/reviews/DATA_MODEL_SPECIFICATION.md` – Project/Task/Milestone-Entities, GoBD-Konformität, Änderungsverfolgung
+- **Datenmodell:** `docs/specifications/data-model.md` – Project/Task/Milestone-Entities, GoBD-Konformität, Änderungsverfolgung
 - **RBAC:** `docs/reviews/RBAC_PERMISSION_MATRIX.md` – Planning (zugewiesene Projekte voll, andere read-only), Innendienst (alle Projekte read)
 - **Journeys:** `docs/reviews/USER_JOURNEY_MAPS.md` – Journey 2 (Projekt→Rechnung), Journey 3 (Änderungsanfrage), Journey 4 (GF-Review)
 - **Tests:** `docs/reviews/TEST_STRATEGY_DOCUMENT.md` – E2E-PM-001 bis E2E-PM-010, Projekt-Workflows, Kapazitätsplanung
@@ -778,7 +778,7 @@ Das System unterstützt nun **zwei Task-Typen** für unterschiedliche Anwendungs
 
 **Phase 2+ Features (architektonisch vorbereitet, nicht MVP):** Aufgaben-Abhängigkeiten, Subtasks, Zeiterfassung, wiederkehrende Aufgaben, Gantt-Chart, Ressourcen-Auslastung.
 
-**Siehe vollständige Spezifikationen:** DATA_MODEL_SPECIFICATION.md (Entities), API_SPECIFICATION.md (Endpoints), RBAC_PERMISSION_MATRIX.md (Permissions), ui-ux/ (UI-Komponenten, Forms, Dashboards, Mobile).
+**Siehe vollständige Spezifikationen:** data-model.md (Entities), api-specification.md (Endpoints), rbac-permissions.md (Permissions), ui-ux/ (UI-Komponenten, Forms, Dashboards, Mobile).
 
 3.
 
