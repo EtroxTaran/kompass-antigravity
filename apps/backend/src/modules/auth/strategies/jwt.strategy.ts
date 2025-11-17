@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
 import { passportJwtSecret } from 'jwks-rsa';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { UserRole } from '@kompass/shared/constants/rbac.constants';
 
@@ -79,7 +79,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * @returns User object with roles array
    * @throws UnauthorizedException if token is invalid or user has no roles
    */
-  async validate(payload: KeycloakJwtPayload): Promise<User> {
+  validate(payload: KeycloakJwtPayload): User {
     // Extract user ID from subject claim
     const userId = payload.sub;
     if (!userId) {

@@ -5,8 +5,9 @@ import {
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
-import type {
-  ExecutionContext} from '@nestjs/common';
+import type { ExecutionContext } from '@nestjs/common';
+import type { Observable } from 'rxjs';
+
 
 /**
  * JWT Authentication Guard
@@ -47,7 +48,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     err: Error | null,
     user: TUser | false,
     info: Error | string | undefined,
-    context: ExecutionContext
+    _context: ExecutionContext
   ): TUser {
     // If there's an error or no user, throw UnauthorizedException
     if (err || !user) {
@@ -64,7 +65,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
    *
    * Can be used with @Public() decorator to bypass authentication.
    */
-  override canActivate(context: ExecutionContext) {
+  override canActivate(
+    context: ExecutionContext
+  ): boolean | Promise<boolean> | Observable<boolean> {
     // Check if route is marked as public
     const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
       context.getHandler(),

@@ -1,11 +1,12 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import '@testing-library/jest-dom/vitest';
 import React from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import '@testing-library/jest-dom/vitest';
 
 import { EntityType, Permission, UserRole } from '@kompass/shared';
 
 import { AuthProvider } from '../contexts/AuthContext';
+import * as authLib from '../lib/auth';
 
 import { useAuthGuard } from './useAuthGuard';
 
@@ -22,8 +23,6 @@ vi.mock('../lib/auth', () => ({
   refreshToken: vi.fn(),
   setupTokenRefresh: vi.fn(),
 }));
-
-import * as authLib from '../lib/auth';
 
 /**
  * Wrapper component for testing hooks

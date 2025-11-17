@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import {
   Permission,
   hasAnyRolePermission,
+  type EntityType,
   type UserRole,
-  EntityType,
 } from '@kompass/shared';
 
 import { useAuth } from './useAuth';

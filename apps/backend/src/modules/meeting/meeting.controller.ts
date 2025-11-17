@@ -58,8 +58,6 @@ import { MeetingResponseDto } from './dto/meeting-response.dto';
 import { UpdateMeetingDto, CheckInDto } from './dto/update-meeting.dto';
 import { MeetingService } from './meeting.service';
 
-
-
 /**
  * Meeting Controller
  */

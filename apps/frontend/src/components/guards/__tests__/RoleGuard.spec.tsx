@@ -1,14 +1,13 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { Routes, Route, MemoryRouter } from 'react-router-dom';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import '@testing-library/jest-dom/vitest';
 import React from 'react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import '@testing-library/jest-dom/vitest';
 
 import { EntityType, Permission, UserRole } from '@kompass/shared';
 
 import { AuthProvider } from '../../../contexts/AuthContext';
 import * as authLib from '../../../lib/auth';
-import { auditService } from '../../../services/audit.service';
 import { RoleGuard } from '../RoleGuard';
 
 import type { User } from '@kompass/shared';
@@ -26,9 +25,10 @@ vi.mock('../../../lib/auth', () => ({
 }));
 
 // Mock audit service
+const mockLogUnauthorizedAccess = vi.fn();
 vi.mock('../../../services/audit.service', () => ({
   auditService: {
-    logUnauthorizedAccess: vi.fn(),
+    logUnauthorizedAccess: mockLogUnauthorizedAccess,
   },
 }));
 
@@ -190,7 +190,7 @@ describe('RoleGuard', () => {
     // Audit logging happens before redirect, so wait a bit
     await waitFor(
       () => {
-        expect(auditService.logUnauthorizedAccess).toHaveBeenCalled();
+        expect(mockLogUnauthorizedAccess).toHaveBeenCalled();
       },
       { timeout: 1000 }
     );
@@ -235,7 +235,7 @@ describe('RoleGuard', () => {
 
     await waitFor(
       () => {
-        expect(auditService.logUnauthorizedAccess).toHaveBeenCalledWith(
+        expect(mockLogUnauthorizedAccess).toHaveBeenCalledWith(
           expect.objectContaining({
             userId: 'user-123',
             route: '/test',

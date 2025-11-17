@@ -26,6 +26,7 @@ import {
   Logger,
 } from '@nestjs/common';
 
+import { UserRole } from '@kompass/shared/constants/rbac.constants';
 import {
   createLocation,
   validateLocation,
@@ -78,7 +79,7 @@ export class LocationService {
     }
 
     // RBAC: ADM can only create locations for their own customers
-    if (user.primaryRole === 'ADM' && customer.owner !== user._id) {
+    if (user.primaryRole === UserRole.ADM && customer.owner !== user._id) {
       throw new ForbiddenException(
         'You can only create locations for your own customers'
       );
@@ -219,7 +220,7 @@ export class LocationService {
     }
 
     // RBAC: ADM can only update locations for their own customers
-    if (user.primaryRole === 'ADM' && customer.owner !== user._id) {
+    if (user.primaryRole === UserRole.ADM && customer.owner !== user._id) {
       throw new ForbiddenException(
         'You can only update locations for your own customers'
       );
@@ -292,7 +293,7 @@ export class LocationService {
     user: User
   ): Promise<void> {
     // RBAC: Only PLAN and GF can delete
-    if (user.primaryRole !== 'PLAN' && user.primaryRole !== 'GF') {
+    if (user.primaryRole !== UserRole.PLAN && user.primaryRole !== UserRole.GF) {
       throw new ForbiddenException(
         'Only PLAN and GF users can delete locations'
       );
