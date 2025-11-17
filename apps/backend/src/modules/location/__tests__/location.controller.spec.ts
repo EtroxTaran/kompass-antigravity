@@ -6,6 +6,7 @@
 
 import { Test } from '@nestjs/testing';
 
+import { UserRole } from '@kompass/shared/constants/rbac.constants';
 import { LocationType } from '@kompass/shared/types/enums';
 import type { User } from '@kompass/shared/types/entities/user';
 
@@ -27,8 +28,8 @@ describe('LocationController', () => {
     type: 'user',
     email: 'adm@example.com',
     displayName: 'Test ADM User',
-    roles: ['ADM'],
-    primaryRole: 'ADM',
+    roles: [UserRole.ADM],
+    primaryRole: UserRole.ADM,
     active: true,
     createdBy: 'system',
     createdAt: new Date(),

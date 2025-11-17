@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 
+import { UserRole } from '@kompass/shared/constants/rbac.constants';
 import {
   DecisionMakingRole,
   FunctionalRole,
@@ -35,8 +36,8 @@ describe('ContactService', () => {
     type: 'user',
     email: 'adm@example.com',
     displayName: 'Test ADM User',
-    roles: ['ADM'],
-    primaryRole: 'ADM',
+    roles: [UserRole.ADM],
+    primaryRole: UserRole.ADM,
     active: true,
     createdBy: 'system',
     createdAt: new Date(),
@@ -51,8 +52,8 @@ describe('ContactService', () => {
     type: 'user',
     email: 'plan@example.com',
     displayName: 'Test PLAN User',
-    roles: ['PLAN'],
-    primaryRole: 'PLAN',
+    roles: [UserRole.PLAN],
+    primaryRole: UserRole.PLAN,
     active: true,
     createdBy: 'system',
     createdAt: new Date(),
@@ -67,8 +68,8 @@ describe('ContactService', () => {
     type: 'user',
     email: 'gf@example.com',
     displayName: 'Test GF User',
-    roles: ['GF'],
-    primaryRole: 'GF',
+    roles: [UserRole.GF],
+    primaryRole: UserRole.GF,
     active: true,
     createdBy: 'system',
     createdAt: new Date(),
@@ -174,7 +175,21 @@ describe('ContactService', () => {
 
     it('should throw ForbiddenException if KALK tries to update decision roles', async () => {
       repository.findById.mockResolvedValue(mockContact);
-      const kalkUser = { id: 'user-kalk-001', role: 'KALK' as const };
+      const kalkUser: User = {
+        _id: 'user-kalk-001',
+        _rev: '1-jkl',
+        type: 'user',
+        email: 'kalk@example.com',
+        displayName: 'Test KALK User',
+        roles: [UserRole.KALK],
+        primaryRole: UserRole.KALK,
+        active: true,
+        createdBy: 'system',
+        createdAt: new Date(),
+        modifiedBy: 'system',
+        modifiedAt: new Date(),
+        version: 1,
+      };
 
       await expect(
         service.updateDecisionAuthority('contact-111', updateDto, kalkUser)

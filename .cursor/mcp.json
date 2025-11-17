@@ -3,6 +3,13 @@
     "graphiti-memory": {
       "transport": "sse",
       "url": "http://localhost:8000/sse"
+    },
+    "Figma": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-figma"],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
+      }
     }
   }
 }

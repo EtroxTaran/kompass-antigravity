@@ -48,12 +48,18 @@ function CustomDialog() { /* NEVER DO THIS */ }
 **What it's used for:**
 Design and component context tool that extracts layout, spacing, color tokens, and component structure from Figma or FigJam files.
 
+**KOMPASS Figma File:**
+- **Published URL:** https://relink-thick-71342514.figma.site/
+- **File Key:** [Extract from Figma file URL - see `docs/design-system/figma-integration.md`]
+- **Documentation:** `docs/design-system/figma-integration.md`
+
 **When to use:**
 - User says "from the design…" or references mockups
 - Translating design specs into code
 - Ensuring pixel-perfect spacing, component nesting, or consistent styling
 - Generating skeletons for UI based on design artifacts
 - Extracting color tokens, typography, or spacing systems from designs
+- Verifying design tokens match Figma specifications
 
 **When NOT to use:**
 - No Figma design file referenced
@@ -64,11 +70,18 @@ Design and component context tool that extracts layout, spacing, color tokens, a
 **Prioritization:**
 Always use Figma tool FIRST when design files are referenced, THEN use ShadCN to generate components matching the design.
 
+**Design Token Extraction:**
+1. Extract tokens from Figma file using node IDs (see `docs/design-system/figma-integration.md`)
+2. Map extracted tokens to Tailwind config
+3. Update CSS variables in `apps/frontend/src/styles/globals.css`
+4. Verify with shadcn/ui components
+
 ```typescript
 // ✅ CORRECT: Use Figma to extract design specs, then ShadCN for components
-// Step 1: Extract design from Figma file
-// Step 2: Generate ShadCN components matching design specs
-// Step 3: Apply extracted spacing, colors, typography
+// Step 1: Extract design tokens from Figma file {FILE_KEY}
+// Step 2: Extract component styles from Figma node {NODE_ID}
+// Step 3: Generate ShadCN components matching design specs
+// Step 4: Apply extracted spacing, colors, typography
 
 // ❌ WRONG: Generating components without checking design
 // Always extract Figma specs first when design files are available
