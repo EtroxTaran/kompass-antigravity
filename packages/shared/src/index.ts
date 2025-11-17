@@ -34,6 +34,10 @@ export {
   hasPermission,
   getPermissionsForRole,
   canAccessRecord,
+  hasAnyRolePermission,
+  hasAllRolesPermission,
+  getPermissionsForRoles,
+  canAccessRecordWithRoles,
 } from './constants/rbac.constants';
 
 // Utils

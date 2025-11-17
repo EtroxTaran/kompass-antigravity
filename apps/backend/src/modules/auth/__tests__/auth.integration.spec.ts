@@ -1,12 +1,15 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { Test } from '@nestjs/testing';
+import * as request from 'supertest';
+
+import { UserRole } from '@kompass/shared/constants/rbac.constants';
 
 import { AppModule } from '../../../app.module';
 import { AuthModule } from '../auth.module';
-import { UserRole } from '@kompass/shared/constants/rbac.constants';
+
+import type { INestApplication } from '@nestjs/common';
+import type { TestingModule } from '@nestjs/testing';
 
 describe('Auth Integration Tests', () => {
   let app: INestApplication;

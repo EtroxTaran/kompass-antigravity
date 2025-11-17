@@ -27,15 +27,14 @@ import {
 } from '@kompass/shared/types/entities/time-entry';
 import { User } from '@kompass/shared/types/entities/user';
 
-import { TimeEntryService } from '../services/time-entry.service';
-
-import type { TimeEntryFilters } from '../repositories/time-entry.repository.interface';
-import type { TimeEntryResponseDto } from '@kompass/shared/types/entities/time-entry';
-
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RbacGuard } from '../../auth/guards/rbac.guard';
+import { TimeEntryService } from '../services/time-entry.service';
+
+import type { TimeEntryFilters } from '../repositories/time-entry.repository.interface';
+import type { TimeEntryResponseDto } from '@kompass/shared/types/entities/time-entry';
 
 /**
  * Time Entry Controller

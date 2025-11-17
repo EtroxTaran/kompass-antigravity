@@ -27,16 +27,17 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-import { ContactService } from './contact.service';
-import { DecisionAuthorityResponseDto } from './dto/decision-authority-response.dto';
-import { UpdateDecisionAuthorityDto } from './dto/update-decision-authority.dto';
+import { User } from '@kompass/shared/types/entities/user';
 
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { RequirePermission } from '../auth/decorators/require-permission.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RbacGuard } from '../auth/guards/rbac.guard';
 
-import type { User } from '@kompass/shared/types/entities/user';
+import { ContactService } from './contact.service';
+import { DecisionAuthorityResponseDto } from './dto/decision-authority-response.dto';
+import { UpdateDecisionAuthorityDto } from './dto/update-decision-authority.dto';
+
 
 /**
  * Contact Controller

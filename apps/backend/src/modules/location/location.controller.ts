@@ -38,19 +38,20 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 
+import { User } from '@kompass/shared/types/entities/user';
 import { LocationType } from '@kompass/shared/types/enums';
-
-import { CreateLocationDto } from './dto/create-location.dto';
-import { LocationResponseDto } from './dto/location-response.dto';
-import { UpdateLocationDto } from './dto/update-location.dto';
-import { LocationService } from './location.service';
 
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { RequirePermission } from '../auth/decorators/require-permission.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RbacGuard } from '../auth/guards/rbac.guard';
 
-import type { User } from '@kompass/shared/types/entities/user';
+import { CreateLocationDto } from './dto/create-location.dto';
+import { LocationResponseDto } from './dto/location-response.dto';
+import { UpdateLocationDto } from './dto/update-location.dto';
+import { LocationService } from './location.service';
+
+
 
 const SORTABLE_LOCATION_FIELDS = [
   'locationName',
