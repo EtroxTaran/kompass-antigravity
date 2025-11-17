@@ -1,19 +1,20 @@
 ---
-description: CRITICAL - When making UI/UX changes, ALWAYS update both documentation AND create Figma migration prompts to keep designs synchronized
+description: CRITICAL - When making UI/UX changes, ALWAYS check GitHub UI reference repository AND update documentation to keep implementations synchronized
 globs: ["ui-ux/**/*.md", "docs/**/*.md", "**/*.tsx", "**/*.jsx", "**/components/**/*"]
 alwaysApply: true
 ---
 
-# UI/UX Documentation and Figma Synchronization
+# UI/UX Documentation and GitHub UI Reference Synchronization
 
-## CRITICAL RULE: Dual Update Requirement
+## CRITICAL RULE: GitHub UI Reference First
 
-**When ANY UI/UX change is made, you MUST do BOTH:**
+**When ANY UI/UX change is made, you MUST:**
 
-1. ✅ **Update the documentation** in `ui-ux/` directory
-2. ✅ **Create a Figma migration prompt** in `ui-ux/00-updates/`
+1. ✅ **Check GitHub UI reference repository** (`EtroxTaran/Kompassuimusterbibliothek`) for existing patterns
+2. ✅ **Update the documentation** in `ui-ux/` directory
+3. ✅ **Document which reference components/patterns were used**
 
-**NEVER update only one without the other. Figma designs must stay synchronized with documentation.**
+**NEVER implement UI without checking the GitHub UI reference repository first. The reference repository is the canonical source of truth.**
 
 ---
 
@@ -59,9 +60,29 @@ This rule is MANDATORY when:
 
 ---
 
-## Two-Step Process
+## Three-Step Process
 
-### Step 1: Update Documentation Files
+### Step 1: Check GitHub UI Reference Repository
+
+**ALWAYS check the reference repository FIRST using GitHub MCP:**
+
+1. **List directories** in `EtroxTaran/Kompassuimusterbibliothek` to understand structure
+2. **Identify matching components/pages** that correspond to what you need to implement
+3. **Read relevant files** to understand:
+   - Component structure and props
+   - Layout patterns
+   - Styling conventions (CSS, Tailwind, tokens)
+   - Naming conventions
+   - Interaction patterns
+   - Code conventions
+
+**If a required element seems missing:**
+- **STOP IMMEDIATELY**
+- **ASK the user** for clarification
+- **DO NOT** invent missing components or patterns
+- **DO NOT** attempt to guess the intended design
+
+### Step 2: Update Documentation Files
 
 Update the relevant markdown files in `ui-ux/`:
 
@@ -78,341 +99,164 @@ ui-ux/
 ```
 
 **Documentation MUST include:**
-- Exact component specifications (size, spacing, colors)
-- State variations (default, hover, active, disabled)
-- Accessibility requirements (ARIA labels, keyboard shortcuts)
-- Mobile considerations (touch targets, responsive behavior)
+- Exact component specifications (size, spacing, colors) from reference
+- State variations (default, hover, active, disabled) from reference
+- Accessibility requirements (ARIA labels, keyboard shortcuts) from reference
+- Mobile considerations (touch targets, responsive behavior) from reference
 - German labels and placeholder text
 - Max character limits and validation rules
+- **Reference source**: Which file/component from `EtroxTaran/Kompassuimusterbibliothek` was used
 
-### Step 2: Create Figma Migration Prompt
+### Step 3: Document Reference Usage
 
-Create a new migration prompt in `ui-ux/00-updates/`:
+**Document which reference components/patterns were used:**
 
-**Naming Convention:**
-```
-FIGMA-UPDATE-<FEATURE>-<DATE>.md
-or
-MIGRATION-<NUMBER>-<feature-name>.md
-```
-
-**Examples:**
-- `FIGMA-UPDATE-RICH-TEXT-EDITOR-2025-01-27.md`
-- `MIGRATION-002-new-dashboard-layout.md`
-- `FIGMA-UPDATE-BUTTON-VARIANTS-2025-02.md`
-
-**Migration Prompt MUST include:**
-
-1. **Clear Purpose Statement**
-   - What is being updated/changed
-   - Why the change is needed
-   - Which forms/components are affected
-
-2. **FIND and REPLACE Instructions**
-   - Exact specifications of what to look for
-   - Exact specifications of what to replace it with
-   - Field-by-field instructions for Figma Make
-
-3. **Before/After Specifications**
-   - OLD: Current design specifications
-   - NEW: Updated design specifications
-   - Exact measurements, colors, spacing
-
-4. **Complete Design Specifications**
-   - All variants and states
-   - Spacing and sizing
-   - Colors and typography
-   - Icons and labels
-   - Accessibility requirements
-
-5. **Affected Files List**
-   - List all form files affected
-   - List all component files affected
-   - Specify which sections within each file
-
-6. **Quality Checklist**
-   - Verification steps after applying the prompt
-   - Common issues to check for
-   - Testing requirements
+- List the specific files from the reference repository
+- Note any adaptations made to match our stack (React + shadcn/ui + Tailwind)
+- Document any deviations from the reference (with justification)
+- Include links to the reference repository files
 
 ---
 
-## Migration Prompt Template
+## Implementation Workflow
 
-Use this template for ALL Figma migration prompts:
+### When Making UI/UX Changes
 
-```markdown
-# Figma Make: <Feature Name> Update
+1. **Check GitHub UI Reference Repository**
+   - Use GitHub MCP to fetch files from `EtroxTaran/Kompassuimusterbibliothek`
+   - Identify matching components/pages
+   - Read component source code, layout structures, styling conventions
+   - Understand structure, props, patterns, naming, logic
 
-**Purpose:** <Brief description of what's being updated>
-**Action:** <What Figma Make should do>
-**Date:** YYYY-MM-DD
+2. **Update Documentation**
+   - Update all relevant markdown files in `ui-ux/`
+   - Include exact specifications from reference
+   - Document which reference files were used
+   - Update examples and screenshots
+   - Note any adaptations or deviations
 
----
+3. **Implement Code**
+   - Mirror/adapt patterns from reference repository
+   - Rebuild using our stack (React + shadcn/ui + Tailwind)
+   - Match reference patterns precisely
+   - Use ShadCN to generate components matching reference structure
 
-## 🎯 MASTER PROMPT FOR FIGMA MAKE
-
-**Copy everything below this line and paste into Figma Make:**
-
----
-
-<Clear, direct instructions for Figma Make to execute>
-
-## DESIGN SPECIFICATION: <Component/Feature Name>
-
-### <Section 1>
-- Exact specifications
-- Measurements
-- Colors
-- States
-
-### <Section 2>
-- Exact specifications
-...
+4. **Verify Compliance**
+   - Ensure implementation matches reference patterns
+   - Verify all specifications are complete
+   - Check for ambiguities
+   - Ensure documentation is comprehensive
 
 ---
 
-## FIND AND REPLACE: <Feature Name>
+## Examples of Changes Requiring Reference Check
 
-### <Form/Component 1>
+### Example 1: Adding Customer Form
 
-**FIND:**
-- Current design element
-- Exact specifications
-
-**REPLACE WITH:**
-- New design element
-- Exact specifications
-
----
-
-### <Form/Component 2>
-
-**FIND:**
-- Current design element
-
-**REPLACE WITH:**
-- New design element
-
----
-
-## <Additional Specifications>
-
-(Button icons, color palette, accessibility requirements, etc.)
-
----
-
-## QUALITY CHECKLIST
-
-After applying this prompt, verify:
-- [ ] <Verification step 1>
-- [ ] <Verification step 2>
-- [ ] <Verification step 3>
-
----
-
-**Total Files Updated:** <Number>
-**Forms/Components Affected:** <Number>
-**Special Features:** <Number>
-
----
-
-END OF PROMPT
-```
-
----
-
-## Examples of Changes Requiring Both Updates
-
-### Example 1: Adding Rich Text Editor
+**Reference Check:**
+- ✅ Fetched `src/components/CustomerForm.tsx` from `EtroxTaran/Kompassuimusterbibliothek`
+- ✅ Inspected form structure, field layout, validation patterns
+- ✅ Reviewed styling conventions and spacing
 
 **Documentation Update:**
-- ✅ Updated `ui-ux/03-entity-forms/activity-protocol-form.md`
 - ✅ Updated `ui-ux/03-entity-forms/customer-form.md`
-- ✅ Updated `ui-ux/02-core-components/rich-text-editor.md`
+- ✅ Documented reference source: `src/components/CustomerForm.tsx` from reference repo
+- ✅ Included exact specifications from reference
+- ✅ Noted adaptations for shadcn/ui components
 
-**Migration Prompt:**
-- ✅ Created `ui-ux/00-updates/FIGMA-UPDATE-ALL-TEXTAREAS-TO-RICH-TEXT.md`
-- ✅ Includes exact toolbar specifications
-- ✅ Includes all 14 affected fields
-- ✅ Includes fix for scrollbar issue
+**Implementation:**
+- ✅ Rebuilt using shadcn/ui Form, Input, Button components
+- ✅ Matched reference layout and spacing
+- ✅ Applied reference validation patterns
 
-### Example 2: Changing Button Variants
+### Example 2: Adding Dashboard Layout
 
-**Documentation Update:**
-- ✅ Updated `ui-ux/02-core-components/button.md`
-- ✅ Updated all forms using the new variant
-
-**Migration Prompt:**
-- ✅ Created `ui-ux/00-updates/FIGMA-UPDATE-BUTTON-VARIANTS-2025-02.md`
-- ✅ Includes before/after specifications
-- ✅ Lists all affected components
-
-### Example 3: Adding New Dashboard Section
+**Reference Check:**
+- ✅ Fetched `src/pages/Dashboard.tsx` from reference repository
+- ✅ Inspected layout structure, grid system, component placement
+- ✅ Reviewed responsive breakpoints
 
 **Documentation Update:**
 - ✅ Updated `ui-ux/06-dashboards/adm-dashboard.md`
-- ✅ Added new section specifications
+- ✅ Documented reference source: `src/pages/Dashboard.tsx` from reference repo
+- ✅ Included layout specifications from reference
 
-**Migration Prompt:**
-- ✅ Created `ui-ux/00-updates/MIGRATION-003-adm-dashboard-section.md`
-- ✅ Includes layout specifications
-- ✅ Includes component placement
+**Implementation:**
+- ✅ Rebuilt using shadcn/ui Card, Grid components
+- ✅ Matched reference grid system and spacing
+- ✅ Applied reference responsive patterns
 
 ---
 
 ## Common Mistakes to Avoid
 
-### ❌ WRONG: Updating Documentation Only
+### ❌ WRONG: Implementing Without Checking Reference
+
+```
+✗ Implemented customer form without checking reference repository
+✗ Created new UI patterns not present in reference
+✗ Implementation doesn't match reference patterns!
+```
+
+### ❌ WRONG: Inventing Missing Patterns
+
+```
+✗ Couldn't find component in reference repository
+✗ Invented new pattern without asking user
+✗ Should have asked for clarification first!
+```
+
+### ❌ WRONG: Not Documenting Reference Source
 
 ```
 ✗ Updated ui-ux/03-entity-forms/customer-form.md
-✗ Did NOT create Figma migration prompt
-✗ Figma designs now out of sync!
+✗ Did NOT document which reference file was used
+✗ Cannot verify implementation matches reference!
 ```
 
-### ❌ WRONG: Vague Migration Prompt
-
-```markdown
-# Update Customer Form
-
-Update the customer form to use rich text editor.
-
-(This is too vague! Figma Make won't know what to do.)
-```
-
-### ❌ WRONG: Incomplete Specifications
-
-```markdown
-**FIND:** Textarea
-**REPLACE WITH:** Rich text editor
-
-(Missing: toolbar buttons, sizing, spacing, variants, states)
-```
-
-### ✅ CORRECT: Complete Update
+### ✅ CORRECT: Complete Reference-Based Implementation
 
 ```
-✓ Updated ui-ux/03-entity-forms/customer-form.md with exact specifications
-✓ Created ui-ux/00-updates/FIGMA-UPDATE-CUSTOMER-FORM-2025-01.md
-✓ Migration prompt includes:
-  - Exact FIND and REPLACE instructions
-  - Complete design specifications
-  - All variants and states
-  - Quality checklist
+✓ Fetched CustomerForm.tsx from EtroxTaran/Kompassuimusterbibliothek
+✓ Inspected structure, props, patterns, styling
+✓ Updated ui-ux/03-entity-forms/customer-form.md
+✓ Documented reference source: src/components/CustomerForm.tsx
+✓ Rebuilt using shadcn/ui matching reference patterns
+✓ Implementation matches reference precisely
 ```
 
 ---
 
-## Update Workflow
+## Reference Repository Workflow
 
-### When Making UI/UX Changes
+### Using GitHub MCP for UI Reference
 
-1. **Identify Impact**
-   - Which forms/components are affected?
-   - Which documentation files need updates?
-   - How many Figma screens need updates?
-
-2. **Update Documentation First**
-   - Update all relevant markdown files in `ui-ux/`
-   - Include exact specifications
-   - Update examples and screenshots
-   - Update component installation notes
-
-3. **Create Migration Prompt**
-   - Create new file in `ui-ux/00-updates/`
-   - Follow the template
-   - Include complete FIND/REPLACE instructions
-   - Add quality checklist
-
-4. **Update README**
-   - Update `ui-ux/README.md` to reference new migration prompt
-   - Update prompt counts if needed
-   - Add migration prompt to directory structure
-
-5. **Test Instructions**
-   - Read migration prompt as if you're Figma Make
-   - Verify all specifications are complete
-   - Check for ambiguities
-   - Ensure checklist is comprehensive
-
----
-
-## Migration Prompt Best Practices
-
-### Clear, Direct Language
-
-Use imperative voice for Figma Make:
-
-✅ **CORRECT:**
+**Step 1: List Repository Structure**
 ```
-Replace all textarea components with rich text editor.
-Toolbar height: 48px (fixed).
-Button size: 32px × 32px.
+Use GitHub MCP to list directories in EtroxTaran/Kompassuimusterbibliothek
+Identify component directories, page directories, style directories
 ```
 
-❌ **WRONG:**
+**Step 2: Find Matching Components**
 ```
-We should probably update the textareas.
-The toolbar might be around 48px or so.
-Buttons are roughly 32px.
-```
-
-### Complete Specifications
-
-NEVER leave anything to interpretation:
-
-✅ **CORRECT:**
-```
-Background: #ffffff (white)
-Border: 1px solid #e5e7eb (gray-200)
-Border-radius: 8px (rounded-lg)
-Padding: 16px (all sides)
+Search for components matching your needs
+Read component files to understand structure
+Inspect layout files for page patterns
 ```
 
-❌ **WRONG:**
+**Step 3: Extract Patterns**
 ```
-White background
-Gray border
-Rounded corners
-Some padding
-```
-
-### Exact Measurements
-
-Always include units and exact values:
-
-✅ **CORRECT:**
-```
-Min-height: 200px
-Max-height: 500px
-Width: 100% (full container width)
-Gap between buttons: 4px
+Read component source code
+Understand props, structure, styling
+Note naming conventions
+Understand interaction patterns
 ```
 
-❌ **WRONG:**
+**Step 4: Document Reference**
 ```
-Tall enough for content
-Pretty wide
-Small gaps
-```
-
-### German Labels
-
-Include exact German text:
-
-✅ **CORRECT:**
-```
-Tooltip: "Fett (Ctrl+B)"
-Placeholder: "Geben Sie hier Ihre Notizen ein..."
-Label: "Interne Notizen"
-```
-
-❌ **WRONG:**
-```
-Tooltip: Bold shortcut
-Placeholder: Notes placeholder
-Label: Notes field
+Document which reference files were used
+Note any adaptations made
+Document deviations (with justification)
 ```
 
 ---
@@ -421,37 +265,31 @@ Label: Notes field
 
 Before committing UI/UX changes, verify:
 
+- [ ] **Reference Repository Checked**
+  - [ ] Used GitHub MCP to fetch from `EtroxTaran/Kompassuimusterbibliothek`
+  - [ ] Identified matching components/pages
+  - [ ] Read and understood reference patterns
+  - [ ] Asked user if reference element was missing (if applicable)
+
 - [ ] **Documentation Updated**
   - [ ] All affected markdown files updated
-  - [ ] Exact specifications included
+  - [ ] Reference source documented (which files from reference repo)
+  - [ ] Exact specifications included from reference
   - [ ] Examples updated
   - [ ] German labels included
+  - [ ] Adaptations and deviations documented
 
-- [ ] **Migration Prompt Created**
-  - [ ] File created in `ui-ux/00-updates/`
-  - [ ] Follows naming convention
-  - [ ] Includes complete FIND/REPLACE instructions
-  - [ ] Includes exact design specifications
-  - [ ] Includes quality checklist
+- [ ] **Implementation Complete**
+  - [ ] Code mirrors/adapts reference patterns
+  - [ ] Uses shadcn/ui components
+  - [ ] Matches reference structure and styling
+  - [ ] Follows project architecture rules
 
-- [ ] **README Updated**
-  - [ ] `ui-ux/README.md` updated
-  - [ ] New migration prompt listed
-  - [ ] Prompt counts updated
-
-- [ ] **Migration Prompt Quality**
-  - [ ] Clear purpose statement
-  - [ ] Complete specifications (no ambiguity)
-  - [ ] Exact measurements and values
-  - [ ] All variants and states covered
-  - [ ] German labels included
-  - [ ] Quality checklist included
-
-- [ ] **Testability**
-  - [ ] Instructions can be followed by Figma Make
-  - [ ] No missing information
-  - [ ] No contradictions
-  - [ ] Verification steps are clear
+- [ ] **Reference Compliance**
+  - [ ] Implementation matches reference patterns
+  - [ ] No new UI patterns invented (unless approved)
+  - [ ] All reference patterns properly adapted
+  - [ ] Documentation references source files
 
 ---
 
@@ -460,6 +298,7 @@ Before committing UI/UX changes, verify:
 This rule works together with:
 
 - **`.cursor/rules/ui-components.mdc`** - Use shadcn/ui components
+- **`.cursor/rules/mcp-tool-usage-ui-integration.mdc`** - GitHub UI reference repository workflow
 - **`.cursor/rules/documentation-organization.mdc`** - Documentation structure
 - **`.cursor/rules/file-organization.mdc`** - File naming and organization
 
@@ -467,8 +306,9 @@ This rule works together with:
 
 ## References
 
+- UI Reference Repository: `EtroxTaran/Kompassuimusterbibliothek`
+- GitHub UI Reference Documentation: `docs/design-system/github-ui-reference.md`
 - UI/UX Prompts Directory: `ui-ux/`
-- Migration Prompts: `ui-ux/00-updates/`
 - UI/UX README: `ui-ux/README.md`
 - UI Components Rule: `.cursor/rules/ui-components.mdc`
 - Documentation Rule: `.cursor/rules/documentation-organization.mdc`
@@ -479,13 +319,14 @@ This rule works together with:
 
 **ALWAYS remember when making UI/UX changes:**
 
-1. ✅ Update documentation in `ui-ux/` (exact specifications)
-2. ✅ Create migration prompt in `ui-ux/00-updates/` (complete instructions)
-3. ✅ Update `ui-ux/README.md` (reference new prompt)
-4. ✅ Follow template for migration prompts
-5. ✅ Include quality checklist
-6. ✅ Test instructions for clarity
+1. ✅ Check GitHub UI reference repository FIRST (`EtroxTaran/Kompassuimusterbibliothek`)
+2. ✅ Fetch and inspect reference patterns using GitHub MCP
+3. ✅ Update documentation in `ui-ux/` (exact specifications from reference)
+4. ✅ Document which reference files were used
+5. ✅ Implement code mirroring/adapting reference patterns
+6. ✅ Use shadcn/ui to generate components matching reference
+7. ✅ Ask user if reference element is missing (never invent)
 
-**NEVER commit UI/UX changes without BOTH documentation AND migration prompt.**
+**NEVER commit UI/UX changes without checking the GitHub UI reference repository first.**
 
-Figma designs must ALWAYS stay synchronized with documentation!
+The GitHub UI reference repository is the ONLY authoritative source for UI patterns!
