@@ -5,10 +5,12 @@
   "private": true,
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build",
+    "build": "nest build && node scripts/fix-shared-paths.js",
+    "postbuild": "node scripts/fix-shared-paths.js",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "dev": "nest start --watch",
+    "dev:fixed": "node scripts/watch-with-fix.js",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "sh -c 'eslint \"{src,apps,libs,test}/**/*.ts\" ${ESLINT_MAX_WARNINGS:+--max-warnings=$ESLINT_MAX_WARNINGS}'",

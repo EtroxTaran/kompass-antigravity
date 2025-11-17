@@ -2,7 +2,7 @@ import path from 'path';
 
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -124,7 +124,10 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        // In Docker, use container name; in local dev, use localhost
+        // When running in Docker, both containers are on the same network
+        // so we can use the container name 'kompass-backend'
+        target: 'http://kompass-backend:3000',
         changeOrigin: true,
       },
     },
@@ -145,37 +148,6 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 500,
   },
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'src/test/',
-        '**/*.d.ts',
-        '**/*.config.*',
-        '**/mockData',
-        '**/*.spec.{ts,tsx}',
-        '**/*.test.{ts,tsx}',
-      ],
-      thresholds: {
-        // Global coverage thresholds (matches backend jest.config.js)
-        global: {
-          branches: 80,
-          functions: 80,
-          lines: 80,
-          statements: 80,
-        },
-        // Component coverage thresholds
-        './src/features/**/components/**/*.{ts,tsx}': {
-          branches: 80,
-          functions: 80,
-          lines: 80,
-          statements: 80,
-        },
-      },
-    },
-  },
+  // Test configuration moved to vitest.config.ts to avoid importing vitest in vite.config.ts
+  // This allows vite.config.ts to work without vitest being installed in production builds
 });

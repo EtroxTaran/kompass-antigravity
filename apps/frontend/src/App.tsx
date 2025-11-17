@@ -7,6 +7,7 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { RoleGuard } from './components/guards/RoleGuard';
 import { AppShell } from './components/layout/AppShell';
 import { AuthProvider } from './contexts/AuthContext';
+import { CustomerListPage } from './pages/CustomerListPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { LoginPage } from './pages/LoginPage';
 import { UnauthorizedPage } from './pages/UnauthorizedPage';
@@ -55,12 +56,7 @@ function App(): React.ReactElement {
                   entityType={EntityType.Customer}
                   permission={Permission.READ}
                 >
-                  <div className="container mx-auto p-6">
-                    <h1 className="text-3xl font-bold">Kunden</h1>
-                    <p className="text-muted-foreground mt-2">
-                      Kundenverwaltung wird hier implementiert.
-                    </p>
-                  </div>
+                  <CustomerListPage />
                 </RoleGuard>
               }
             />

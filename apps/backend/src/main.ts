@@ -1,3 +1,6 @@
+// Register tsconfig-paths to resolve path aliases at runtime
+import 'tsconfig-paths/register';
+
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';

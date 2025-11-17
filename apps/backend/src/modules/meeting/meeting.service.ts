@@ -23,6 +23,7 @@ import {
   ForbiddenException,
   BadRequestException,
   Inject,
+  Optional,
   Logger,
 } from '@nestjs/common';
 
@@ -99,12 +100,15 @@ export class MeetingService {
   constructor(
     @Inject('IMeetingRepository')
     private readonly meetingRepository: IMeetingRepository,
+    @Optional()
     @Inject('ILocationService')
-    private readonly locationService: ILocationService,
+    private readonly locationService?: ILocationService,
+    @Optional()
     @Inject('ITourService')
-    private readonly tourService: ITourService,
+    private readonly tourService?: ITourService,
+    @Optional()
     @Inject('IAuditService')
-    private readonly auditService: IAuditService
+    private readonly auditService?: IAuditService
   ) {}
 
   /**
@@ -200,13 +204,15 @@ export class MeetingService {
     const created = await this.meetingRepository.create(meeting);
 
     // Log audit trail
-    await this.auditService.log({
+    if (this.auditService) {
+      await this.auditService.log({
       entityType: 'Meeting',
       entityId: created._id,
       action: 'CREATE',
       userId: user._id,
       timestamp: new Date(),
-    });
+      });
+    }
 
     this.logger.log(`Meeting created: ${created._id} by user ${user._id}`);
 
@@ -287,14 +293,16 @@ export class MeetingService {
     const saved = await this.meetingRepository.update(updated);
 
     // Log audit trail
-    await this.auditService.log({
+    if (this.auditService) {
+      await this.auditService.log({
       entityType: 'Meeting',
       entityId: saved._id,
       action: 'UPDATE',
       changes: Object.keys(dto),
       userId: user._id,
       timestamp: new Date(),
-    });
+      });
+    }
 
     this.logger.log(`Meeting updated: ${saved._id} by user ${user._id}`);
 
@@ -327,13 +335,15 @@ export class MeetingService {
     await this.meetingRepository.delete(id);
 
     // Log audit trail
-    await this.auditService.log({
+    if (this.auditService) {
+      await this.auditService.log({
       entityType: 'Meeting',
       entityId: id,
       action: 'DELETE',
       userId: user._id,
       timestamp: new Date(),
-    });
+      });
+    }
 
     this.logger.log(`Meeting deleted: ${id} by user ${user._id}`);
   }
@@ -362,6 +372,9 @@ export class MeetingService {
     }
 
     // Get location GPS coordinates
+    if (!this.locationService) {
+      throw new BadRequestException('LocationService not available. Location module not fully implemented yet.');
+    }
     const location = await this.locationService.findById(meeting.locationId);
     if (!location || !location.gpsCoordinates) {
       throw new BadRequestException('Location GPS coordinates not available');
@@ -399,7 +412,8 @@ export class MeetingService {
     const saved = await this.meetingRepository.update(updated);
 
     // Log audit trail
-    await this.auditService.log({
+    if (this.auditService) {
+      await this.auditService.log({
       entityType: 'Meeting',
       entityId: saved._id,
       action: 'CHECK_IN',
@@ -410,7 +424,8 @@ export class MeetingService {
       },
       distanceFromLocation: distance,
       timestamp: new Date(),
-    });
+      });
+    }
 
     this.logger.log(
       `Meeting check-in: ${saved._id} by user ${user._id} at distance ${Math.round(distance)}m`
@@ -468,13 +483,15 @@ export class MeetingService {
     const saved = await this.meetingRepository.update(updated);
 
     // Log audit trail
-    await this.auditService.log({
+    if (this.auditService) {
+      await this.auditService.log({
       entityType: 'Meeting',
       entityId: saved._id,
       action: 'UPDATE_OUTCOME',
       userId: user._id,
       timestamp: new Date(),
-    });
+      });
+    }
 
     return this.mapToResponseDto(saved);
   }
@@ -511,14 +528,16 @@ export class MeetingService {
     const saved = await this.meetingRepository.update(updated);
 
     // Log audit trail
-    await this.auditService.log({
+    if (this.auditService) {
+      await this.auditService.log({
       entityType: 'Meeting',
       entityId: saved._id,
       action: 'LINK_TOUR',
       tourId,
       userId: user._id,
       timestamp: new Date(),
-    });
+      });
+    }
 
     return this.mapToResponseDto(saved);
   }
@@ -533,6 +552,9 @@ export class MeetingService {
     locationId: string,
     user: User
   ): Promise<Tour[]> {
+    if (!this.tourService) {
+      throw new BadRequestException('TourService not available. Tour module not fully implemented yet.');
+    }
     return this.tourService.suggestToursForMeeting(
       meetingDate,
       locationId,

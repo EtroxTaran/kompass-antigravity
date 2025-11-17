@@ -23,6 +23,7 @@ import {
   ConflictException,
   BadRequestException,
   Inject,
+  Optional,
   Logger,
 } from '@nestjs/common';
 
@@ -58,8 +59,9 @@ export class LocationService {
   constructor(
     @Inject('ILocationRepository')
     private readonly locationRepository: ILocationRepository,
+    @Optional()
     @Inject('ICustomerService')
-    private readonly customerService: ICustomerService
+    private readonly customerService?: ICustomerService
   ) {}
 
   /**
@@ -73,6 +75,9 @@ export class LocationService {
     user: User
   ): Promise<LocationResponseDto> {
     // Check if user can access parent customer
+    if (!this.customerService) {
+      throw new BadRequestException('CustomerService not available. Customer module not implemented yet.');
+    }
     const customer = await this.customerService.findById(customerId, user);
     if (!customer) {
       throw new NotFoundException(`Customer ${customerId} not found`);
@@ -164,6 +169,9 @@ export class LocationService {
     user: User
   ): Promise<LocationResponseDto[]> {
     // Verify customer access
+    if (!this.customerService) {
+      throw new BadRequestException('CustomerService not available. Customer module not implemented yet.');
+    }
     const customer = await this.customerService.findById(customerId, user);
     if (!customer) {
       throw new NotFoundException(`Customer ${customerId} not found`);
@@ -184,6 +192,9 @@ export class LocationService {
     user: User
   ): Promise<LocationResponseDto> {
     // Verify customer access
+    if (!this.customerService) {
+      throw new BadRequestException('CustomerService not available. Customer module not implemented yet.');
+    }
     await this.customerService.findById(customerId, user);
 
     const location = await this.locationRepository.findById(locationId);
@@ -214,6 +225,9 @@ export class LocationService {
     user: User
   ): Promise<LocationResponseDto> {
     // Check customer access
+    if (!this.customerService) {
+      throw new BadRequestException('CustomerService not available. Customer module not implemented yet.');
+    }
     const customer = await this.customerService.findById(customerId, user);
     if (!customer) {
       throw new NotFoundException(`Customer ${customerId} not found`);
@@ -303,6 +317,9 @@ export class LocationService {
     }
 
     // Check customer access
+    if (!this.customerService) {
+      throw new BadRequestException('CustomerService not available. Customer module not implemented yet.');
+    }
     await this.customerService.findById(customerId, user);
 
     // Get existing location
