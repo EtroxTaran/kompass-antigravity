@@ -8,7 +8,6 @@ import { Test } from '@nestjs/testing';
 
 import { UserRole } from '@kompass/shared/constants/rbac.constants';
 import { LocationType } from '@kompass/shared/types/enums';
-import type { User } from '@kompass/shared/types/entities/user';
 
 import { LocationController } from '../location.controller';
 import { LocationService } from '../location.service';
@@ -16,6 +15,7 @@ import { LocationService } from '../location.service';
 import type { CreateLocationDto } from '../dto/create-location.dto';
 import type { LocationResponseDto } from '../dto/location-response.dto';
 import type { UpdateLocationDto } from '../dto/update-location.dto';
+import type { User } from '@kompass/shared/types/entities/user';
 import type { TestingModule } from '@nestjs/testing';
 
 describe('LocationController', () => {

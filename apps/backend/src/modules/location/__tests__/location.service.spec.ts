@@ -14,7 +14,6 @@ import { Test } from '@nestjs/testing';
 
 import { UserRole } from '@kompass/shared/constants/rbac.constants';
 import { LocationType } from '@kompass/shared/types/enums';
-import type { User } from '@kompass/shared/types/entities/user';
 
 import { LocationService } from '../location.service';
 
@@ -22,6 +21,7 @@ import type { CreateLocationDto } from '../dto/create-location.dto';
 import type { UpdateLocationDto } from '../dto/update-location.dto';
 import type { ILocationRepository } from '../location.repository.interface';
 import type { Location } from '@kompass/shared/types/entities/location';
+import type { User } from '@kompass/shared/types/entities/user';
 import type { TestingModule } from '@nestjs/testing';
 
 describe('LocationService', () => {

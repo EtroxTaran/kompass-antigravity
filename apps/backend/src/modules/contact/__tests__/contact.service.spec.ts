@@ -17,12 +17,12 @@ import {
   DecisionMakingRole,
   FunctionalRole,
 } from '@kompass/shared/types/enums';
-import type { User } from '@kompass/shared/types/entities/user';
 
 import { ContactService } from '../contact.service';
 
 import type { UpdateDecisionAuthorityDto } from '../dto/update-decision-authority.dto';
 import type { ContactPerson } from '@kompass/shared/types/entities/contact';
+import type { User } from '@kompass/shared/types/entities/user';
 import type { TestingModule } from '@nestjs/testing';
 
 describe('ContactService', () => {

@@ -10,8 +10,8 @@ import type { TestingModule } from '@nestjs/testing';
 
 describe('Auth Integration Tests', () => {
   let app: INestApplication | undefined;
-  let configService: ConfigService;
-  let jwtService: JwtService;
+  let _configService: ConfigService;
+  let _jwtService: JwtService;
 
   beforeAll(async () => {
     let moduleFixture: TestingModule | undefined;
@@ -43,8 +43,8 @@ describe('Auth Integration Tests', () => {
     }
 
     try {
-      jwtService = moduleFixture.get<JwtService>(JwtService);
-      configService = moduleFixture.get<ConfigService>(ConfigService);
+      _jwtService = moduleFixture.get<JwtService>(JwtService);
+      _configService = moduleFixture.get<ConfigService>(ConfigService);
     } catch (error) {
       // Failed to get services, skip tests
       app = undefined;
