@@ -62,6 +62,11 @@ export function Navigation(): React.ReactElement {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Handle logout with proper binding
+  const handleLogout = React.useCallback(() => {
+    void logout();
+  }, [logout]);
+
   /**
    * Filter routes by user permissions
    * Uses hasAnyRolePermission directly since we can't use hooks in filter
@@ -106,14 +111,14 @@ export function Navigation(): React.ReactElement {
   /**
    * Get user initials for avatar
    */
-  const getUserInitials = (): string => {
+  const getUserInitials = React.useCallback((): string => {
     if (!user?.displayName) return 'U';
     const parts = user.displayName.split(' ');
     if (parts.length >= 2 && parts[0] && parts[1]) {
       return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
     }
     return user.displayName.substring(0, 2).toUpperCase();
-  };
+  }, [user?.displayName]);
 
   /**
    * Navigation link component
@@ -147,7 +152,7 @@ export function Navigation(): React.ReactElement {
   /**
    * Desktop navigation
    */
-  const DesktopNav = (): React.ReactElement => (
+  const DesktopNav = React.useCallback((): React.ReactElement => (
     <nav className="hidden md:flex flex-col gap-2 w-64 min-h-screen bg-background border-r p-4">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold">KOMPASS</h2>
@@ -181,19 +186,19 @@ export function Navigation(): React.ReactElement {
         </div>
         <Button
           variant="outline"
-          onClick={() => void logout()}
+          onClick={handleLogout}
           className="w-full"
         >
           Abmelden
         </Button>
       </div>
     </nav>
-  );
+  ), [groupedRoutes, getUserInitials, user, handleLogout]);
 
   /**
    * Mobile navigation
    */
-  const MobileNav = (): React.ReactElement => (
+  const MobileNav = React.useCallback((): React.ReactElement => (
     <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="md:hidden">
@@ -241,7 +246,7 @@ export function Navigation(): React.ReactElement {
             variant="outline"
             onClick={() => {
               setMobileMenuOpen(false);
-              void logout();
+              handleLogout();
             }}
             className="w-full"
           >
@@ -250,7 +255,7 @@ export function Navigation(): React.ReactElement {
         </nav>
       </SheetContent>
     </Sheet>
-  );
+  ), [mobileMenuOpen, setMobileMenuOpen, groupedRoutes, getUserInitials, user, handleLogout]);
 
   return (
     <>

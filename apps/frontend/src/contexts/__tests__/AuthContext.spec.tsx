@@ -163,7 +163,7 @@ describe('AuthContext', () => {
 
       await waitFor(() => {
         expect(screen.getByTestId('error').textContent).toBe(
-          'Failed to initialize authentication'
+          'Failed to initialize Keycloak'
         );
       });
     });
