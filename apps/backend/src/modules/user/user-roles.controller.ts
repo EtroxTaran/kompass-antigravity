@@ -18,17 +18,10 @@ import {
 import { UserRole } from '@kompass/shared/constants/rbac.constants';
 import { User } from '@kompass/shared/types/entities/user';
 
-// TODO: Import CurrentUser and JwtAuthGuard when auth module is fully implemented
-// import { CurrentUser } from '../auth/decorators/current-user.decorator';
-// import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RbacGuard } from '../auth/guards/rbac.guard';
-
-// Stub decorator and guard for now
-const CurrentUser =
-  () =>
-  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
-const JwtAuthGuard = class {};
 
 import { AssignRolesDto } from './dto/assign-roles.dto';
 import { UpdatePrimaryRoleDto } from './dto/update-primary-role.dto';

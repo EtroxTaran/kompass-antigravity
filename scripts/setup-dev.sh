@@ -144,6 +144,23 @@ cd packages/shared && pnpm build && cd ../..
 echo -e "${GREEN}  ✓ Shared package built${NC}"
 echo ""
 
+# Initialize database (if CouchDB is available)
+echo -e "${YELLOW}Initializing database...${NC}"
+if command -v docker &> /dev/null && docker ps | grep -q kompass-couchdb; then
+    echo -e "${YELLOW}  CouchDB container detected, initializing database...${NC}"
+    if pnpm db:init 2>/dev/null; then
+        echo -e "${GREEN}  ✓ Database initialized${NC}"
+    else
+        echo -e "${YELLOW}  ⚠ Database initialization skipped (CouchDB may not be ready yet)${NC}"
+        echo -e "${YELLOW}  Run 'pnpm db:init' manually after starting services${NC}"
+    fi
+else
+    echo -e "${YELLOW}  ⚠ CouchDB not running, skipping database initialization${NC}"
+    echo -e "${YELLOW}  Start CouchDB with: docker-compose up -d couchdb${NC}"
+    echo -e "${YELLOW}  Then run: pnpm db:init${NC}"
+fi
+echo ""
+
 # Run type check
 echo -e "${YELLOW}Running type check...${NC}"
 pnpm type-check

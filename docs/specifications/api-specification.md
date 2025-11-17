@@ -17,20 +17,21 @@
 ## Table of Contents
 
 1. [API Design Principles](#1-api-design-principles)
-2. [Versioning Strategy](#2-versioning-strategy)
-3. [Error Response Format](#3-error-response-format-rfc-7807)
-4. [User Role Management Endpoints (NEW)](#4-user-role-management-endpoints-new)
-5. [Role Configuration Endpoints (NEW)](#5-role-configuration-endpoints-new)
-6. [Permission Matrix Endpoints (NEW)](#6-permission-matrix-endpoints-new)
-7. [Location Management Endpoints](#7-location-management-endpoints)
-8. [Contact Decision Authority Endpoints](#8-contact-decision-authority-endpoints)
-9. [Task Management Endpoints](#9-task-management-endpoints-new)
-10. [Calendar & Export Endpoints](#10-calendar--export-endpoints-new)
-11. [Time Tracking Endpoints](#11-time-tracking-endpoints-new-phase-1-mvp)
-12. [Project Cost Management Endpoints](#12-project-cost-management-endpoints-new-phase-1-mvp)
-13. [Request/Response DTOs](#13-requestresponse-dtos)
-14. [OpenAPI Documentation Patterns](#14-openapi-documentation-patterns)
-15. [Future Endpoints (Placeholders)](#15-future-endpoints-placeholders)
+2. [Authentication](#2-authentication)
+3. [Versioning Strategy](#3-versioning-strategy)
+4. [Error Response Format](#4-error-response-format-rfc-7807)
+5. [User Role Management Endpoints (NEW)](#5-user-role-management-endpoints-new)
+6. [Role Configuration Endpoints (NEW)](#6-role-configuration-endpoints-new)
+7. [Permission Matrix Endpoints (NEW)](#7-permission-matrix-endpoints-new)
+8. [Location Management Endpoints](#8-location-management-endpoints)
+9. [Contact Decision Authority Endpoints](#9-contact-decision-authority-endpoints)
+10. [Task Management Endpoints](#10-task-management-endpoints-new)
+11. [Calendar & Export Endpoints](#11-calendar--export-endpoints-new)
+12. [Time Tracking Endpoints](#12-time-tracking-endpoints-new-phase-1-mvp)
+13. [Project Cost Management Endpoints](#13-project-cost-management-endpoints-new-phase-1-mvp)
+14. [Request/Response DTOs](#14-requestresponse-dtos)
+15. [OpenAPI Documentation Patterns](#15-openapi-documentation-patterns)
+16. [Future Endpoints (Placeholders)](#16-future-endpoints-placeholders)
 
 ---
 
@@ -89,7 +90,156 @@ Use query parameters for filtering, sorting, and pagination:
 
 ---
 
-## 2. Versioning Strategy
+## 2. Authentication
+
+KOMPASS uses **Keycloak OIDC** for authentication. All API endpoints (except public health checks) require a valid JWT token issued by Keycloak.
+
+### Authentication Flow
+
+1. **User Login**: Frontend redirects user to Keycloak login page
+2. **Keycloak Authentication**: User authenticates with Keycloak
+3. **Token Issuance**: Keycloak issues JWT access token
+4. **API Requests**: Frontend includes token in `Authorization` header
+5. **Token Validation**: Backend validates token using Keycloak's public keys (JWKS)
+6. **Role Extraction**: Backend extracts user roles from token for RBAC
+
+### JWT Token Format
+
+JWT tokens are issued by Keycloak and contain the following claims:
+
+```json
+{
+  "sub": "user-uuid",
+  "email": "user@example.com",
+  "preferred_username": "username",
+  "realm_access": {
+    "roles": ["ADM", "PLAN"]
+  },
+  "resource_access": {
+    "kompass-api": {
+      "roles": ["ADM", "PLAN"]
+    }
+  },
+  "exp": 1234567890,
+  "iat": 1234567890,
+  "iss": "http://keycloak:8080/realms/kompass",
+  "aud": "kompass-api"
+}
+```
+
+### Authorization Header
+
+All authenticated requests must include the JWT token in the `Authorization` header:
+
+```http
+Authorization: Bearer {jwt_token}
+```
+
+**Example:**
+
+```http
+GET /api/v1/customers HTTP/1.1
+Host: api.kompass.de
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### Token Validation
+
+The backend validates JWT tokens using:
+
+1. **JWKS (JSON Web Key Set)**: Fetches public keys from Keycloak's well-known endpoint
+2. **Token Signature**: Verifies token signature using Keycloak's public key
+3. **Token Expiry**: Checks `exp` claim to ensure token is not expired
+4. **Issuer Validation**: Verifies `iss` claim matches Keycloak realm
+5. **Audience Validation**: Verifies `aud` claim matches configured client ID
+
+### Role Extraction
+
+User roles are extracted from the JWT token in the following priority:
+
+1. **Client-specific roles**: `resource_access.{client-id}.roles` (preferred)
+2. **Realm roles**: `realm_access.roles` (fallback)
+
+Roles are mapped to KOMPASS `UserRole` enum:
+
+- `ADM` → `UserRole.ADM`
+- `INNEN` → `UserRole.INNEN`
+- `PLAN` → `UserRole.PLAN`
+- `KALK` → `UserRole.KALK`
+- `BUCH` → `UserRole.BUCH`
+- `GF` → `UserRole.GF`
+- `ADMIN` → `UserRole.ADMIN`
+
+### Authentication Endpoints
+
+#### GET /auth/me
+
+Get current authenticated user information.
+
+**Request:**
+
+```http
+GET /auth/me HTTP/1.1
+Authorization: Bearer {jwt_token}
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "_id": "user-abc123",
+  "type": "user",
+  "email": "user@example.com",
+  "displayName": "John Doe",
+  "roles": ["ADM", "PLAN"],
+  "primaryRole": "ADM",
+  "active": true
+}
+```
+
+**Error Responses:**
+
+- `401 Unauthorized` - Invalid or missing token
+
+### Error Responses
+
+#### 401 Unauthorized
+
+Returned when:
+
+- No `Authorization` header is provided
+- Token is invalid or expired
+- Token signature verification fails
+- Token issuer or audience is invalid
+
+**Response:**
+
+```json
+{
+  "type": "https://api.kompass.de/errors/unauthorized",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Valid authentication token is required",
+  "instance": "/api/v1/customers"
+}
+```
+
+### Token Refresh
+
+Frontend automatically refreshes tokens before expiry (within 30 seconds). If token refresh fails, the user is redirected to the login page.
+
+### Public Endpoints
+
+The following endpoints do not require authentication:
+
+- Health check endpoints (if implemented)
+- Public documentation endpoints
+
+All other endpoints require a valid JWT token.
+
+---
+
+## 3. Versioning Strategy
 
 KOMPASS uses **dual versioning** to support both header-based and path-based API versions.
 
@@ -118,7 +268,7 @@ X-API-Version: 1
 
 ---
 
-## 3. Error Response Format (RFC 7807)
+## 4. Error Response Format (RFC 7807)
 
 KOMPASS follows **RFC 7807 Problem Details for HTTP APIs** for consistent error responses.
 
@@ -230,7 +380,7 @@ interface ProblemDetails {
 
 ---
 
-## 4. User Role Management Endpoints (NEW)
+## 5. User Role Management Endpoints (NEW)
 
 **Updated:** 2025-01-27  
 **Status:** Planned for implementation  
@@ -445,7 +595,7 @@ Changes the user's primary role. Users can change their own primary role if the 
 
 ---
 
-## 5. Role Configuration Endpoints (NEW)
+## 6. Role Configuration Endpoints (NEW)
 
 **Updated:** 2025-01-27  
 **Status:** Planned for implementation (Hybrid RBAC Phase 2)  
@@ -667,7 +817,7 @@ Updates the permission matrix for a role. Only ADMIN can modify role permissions
 
 ---
 
-## 6. Permission Matrix Endpoints (NEW)
+## 7. Permission Matrix Endpoints (NEW)
 
 **Updated:** 2025-01-27  
 **Status:** Planned for implementation (Hybrid RBAC Phase 2)  
@@ -925,7 +1075,7 @@ Activates a previous permission matrix version (rollback functionality).
 
 ---
 
-## 7. Location Management Endpoints
+## 8. Location Management Endpoints
 
 ### 7.1 Create Location
 
@@ -1971,7 +2121,7 @@ export class LocationController {
 
 ---
 
-## 9. Task Management Endpoints (NEW)
+## 10. Task Management Endpoints (NEW)
 
 **Updated:** 2025-01-28  
 **Status:** Planned for implementation (Phase 1 - MVP)
@@ -3313,7 +3463,7 @@ GET    /api/v1/projects/{projectId}/lexware-invoices  - List Lexware invoices fo
 
 ---
 
-## 10. Calendar & Export Endpoints (NEW)
+## 11. Calendar & Export Endpoints (NEW)
 
 **Added:** 2025-01-28  
 **Status:** Planned for MVP - Calendar Views & Export  
@@ -3825,7 +3975,7 @@ export class CalendarQueryDto {
 
 ---
 
-## 11. Time Tracking Endpoints (NEW - Phase 1 MVP)
+## 12. Time Tracking Endpoints (NEW - Phase 1 MVP)
 
 **Added:** 2025-01-28  
 **Purpose:** Time entry management for project work tracking with timer and manual entry support
@@ -4281,7 +4431,7 @@ Get all time entries pending approval (for managers).
 
 ---
 
-## 12. Project Cost Management Endpoints (NEW - Phase 1 MVP)
+## 13. Project Cost Management Endpoints (NEW - Phase 1 MVP)
 
 **Added:** 2025-01-28  
 **Purpose:** Non-labor project cost tracking (materials, contractors, services, equipment)

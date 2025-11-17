@@ -27,30 +27,17 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
+import { User } from '@kompass/shared/types/entities/user';
+
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RbacGuard } from '../auth/guards/rbac.guard';
+
 import { ContactService } from './contact.service';
 import { DecisionAuthorityResponseDto } from './dto/decision-authority-response.dto';
 import { UpdateDecisionAuthorityDto } from './dto/update-decision-authority.dto';
 
-/**
- * Placeholder guards and decorators
- */
-interface User {
-  id: string;
-  role: 'GF' | 'PLAN' | 'ADM' | 'KALK' | 'BUCH';
-}
-
-const CurrentUser =
-  () =>
-  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
-const RequirePermission =
-  (_entity: string, _action: string) =>
-  (
-    _target: unknown,
-    _propertyKey: string,
-    _descriptor: PropertyDescriptor
-  ): void => {};
-const JwtAuthGuard = class {};
-const RbacGuard = class {};
 
 /**
  * Contact Controller

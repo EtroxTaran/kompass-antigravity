@@ -8,6 +8,7 @@ import {
   Param,
   Query,
   UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -27,6 +28,10 @@ import {
 } from '@kompass/shared/types/entities/project-cost';
 import { User } from '@kompass/shared/types/entities/user';
 
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { RbacGuard } from '../../auth/guards/rbac.guard';
 import { ProjectCostService } from '../services/project-cost.service';
 
 import type { ProjectCostFilters } from '../repositories/project-cost.repository.interface';
@@ -34,26 +39,6 @@ import type {
   ProjectCostResponseDto,
   MaterialCostSummary,
 } from '@kompass/shared/types/entities/project-cost';
-
-// TODO: Import actual decorators and guards when auth module is fully implemented
-// import { CurrentUser } from '../../auth/decorators/current-user.decorator';
-// import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
-// import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-// import { RbacGuard } from '../../auth/guards/rbac.guard';
-
-// Stub decorators and guards for now
-const JwtAuthGuard = class {};
-const RbacGuard = class {};
-const RequirePermission =
-  (_entity: string, _action: string) =>
-  (
-    _target: unknown,
-    _propertyKey: string,
-    _descriptor: PropertyDescriptor
-  ): void => {};
-const CurrentUser =
-  () =>
-  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
 
 /**
  * Project Cost Controller
@@ -128,7 +113,7 @@ export class ProjectCostController {
     @CurrentUser() user?: User
   ): Promise<ProjectCostResponseDto[]> {
     if (!user) {
-      throw new Error('User is required');
+      throw new UnauthorizedException('User not authenticated');
     }
     const filters: ProjectCostFilters = {
       projectId,

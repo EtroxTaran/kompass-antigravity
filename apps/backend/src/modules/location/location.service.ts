@@ -38,14 +38,7 @@ import type { LocationResponseDto } from './dto/location-response.dto';
 import type { UpdateLocationDto } from './dto/update-location.dto';
 import type { Customer } from '@kompass/shared/types/entities/customer';
 import type { Location } from '@kompass/shared/types/entities/location';
-
-/**
- * Placeholder User type - should be imported from auth module
- */
-interface User {
-  id: string;
-  role: 'GF' | 'PLAN' | 'ADM' | 'KALK' | 'BUCH';
-}
+import type { User } from '@kompass/shared/types/entities/user';
 
 /**
  * Placeholder CustomerService - should be injected
@@ -85,7 +78,7 @@ export class LocationService {
     }
 
     // RBAC: ADM can only create locations for their own customers
-    if (user.role === 'ADM' && customer.owner !== user.id) {
+    if (user.primaryRole === 'ADM' && customer.owner !== user._id) {
       throw new ForbiddenException(
         'You can only create locations for your own customers'
       );
@@ -128,7 +121,7 @@ export class LocationService {
       parkingInstructions: dto.parkingInstructions,
     };
 
-    const location = createLocation(locationData, user.id);
+    const location = createLocation(locationData, user._id);
 
     // Validate location data
     const validationErrors = validateLocation(location);
@@ -154,7 +147,7 @@ export class LocationService {
     this.logger.log('Location created', {
       locationId: created._id,
       customerId,
-      userId: user.id,
+      userId: user._id,
     });
 
     return this.mapToResponseDto(created);
@@ -226,7 +219,7 @@ export class LocationService {
     }
 
     // RBAC: ADM can only update locations for their own customers
-    if (user.role === 'ADM' && customer.owner !== user.id) {
+    if (user.primaryRole === 'ADM' && customer.owner !== user._id) {
       throw new ForbiddenException(
         'You can only update locations for your own customers'
       );
@@ -272,7 +265,7 @@ export class LocationService {
     // Update
     const updates: Partial<Location> = {
       ...dto,
-      modifiedBy: user.id,
+      modifiedBy: user._id,
       modifiedAt: new Date(),
     };
 
@@ -281,7 +274,7 @@ export class LocationService {
     this.logger.log('Location updated', {
       locationId,
       customerId,
-      userId: user.id,
+      userId: user._id,
     });
 
     return this.mapToResponseDto(updated);
@@ -299,7 +292,7 @@ export class LocationService {
     user: User
   ): Promise<void> {
     // RBAC: Only PLAN and GF can delete
-    if (user.role !== 'PLAN' && user.role !== 'GF') {
+    if (user.primaryRole !== 'PLAN' && user.primaryRole !== 'GF') {
       throw new ForbiddenException(
         'Only PLAN and GF users can delete locations'
       );
@@ -334,7 +327,7 @@ export class LocationService {
     this.logger.log('Location deleted', {
       locationId,
       customerId,
-      userId: user.id,
+      userId: user._id,
     });
   }
 

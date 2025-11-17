@@ -45,14 +45,7 @@ import type {
 import type { UpdateTourDto } from './dto/update-tour.dto';
 import type { TourFilters } from './tour.repository';
 import type { Tour } from '@kompass/shared/types/entities/tour';
-
-/**
- * Placeholder User type
- */
-interface User {
-  id: string;
-  role: 'GF' | 'PLAN' | 'ADM' | 'KALK' | 'BUCH';
-}
+import type { User } from '@kompass/shared/types/entities/user';
 
 /**
  * Expense Service Interface (placeholder)
@@ -114,9 +107,9 @@ export class TourService {
   async findAll(user: User, filters?: TourFilters): Promise<TourResponseDto[]> {
     let tours: Tour[];
 
-    if (user.role === 'ADM') {
+    if (user.primaryRole === 'ADM') {
       // ADM: Only own tours
-      tours = await this.tourRepository.findByUser(user.id, filters);
+      tours = await this.tourRepository.findByUser(user._id, filters);
     } else {
       // PLAN/GF: All tours
       tours = await this.tourRepository.findByStatus(
@@ -152,7 +145,7 @@ export class TourService {
     }
 
     // RBAC check: ADM can only see own tours
-    if (user.role === 'ADM' && tour.ownerId !== user.id) {
+    if (user.primaryRole === 'ADM' && tour.ownerId !== user._id) {
       throw new ForbiddenException('You can only view your own tours');
     }
 
@@ -171,7 +164,7 @@ export class TourService {
       startDate: dto.startDate,
       endDate: dto.endDate,
       status: dto.status,
-      ownerId: user.id,
+      ownerId: user._id,
       purpose: dto.purpose,
       region: dto.region,
       estimatedDistance: dto.estimatedDistance,
@@ -195,7 +188,7 @@ export class TourService {
         startDate: dto.startDate,
         endDate: dto.endDate,
         status: dto.status,
-        ownerId: user.id,
+        ownerId: user._id,
         plannedRoute: dto.plannedRoute,
         estimatedDistance: dto.estimatedDistance,
         estimatedCosts: dto.estimatedCosts,
@@ -204,7 +197,7 @@ export class TourService {
         expenseIds: [],
         mileageLogIds: [],
       },
-      user.id
+      user._id
     );
 
     // Save to database
@@ -215,11 +208,11 @@ export class TourService {
       entityType: 'Tour',
       entityId: created._id,
       action: 'CREATE',
-      userId: user.id,
+      userId: user._id,
       timestamp: new Date(),
     });
 
-    this.logger.log(`Tour created: ${created._id} by user ${user.id}`);
+    this.logger.log(`Tour created: ${created._id} by user ${user._id}`);
 
     return this.mapToResponseDto(created);
   }
@@ -242,12 +235,12 @@ export class TourService {
     }
 
     // RBAC check: ADM can only update own tours
-    if (user.role === 'ADM' && tour.ownerId !== user.id) {
+    if (user.primaryRole === 'ADM' && tour.ownerId !== user._id) {
       throw new ForbiddenException('You can only update your own tours');
     }
 
     // Business Rule TR-004: Only owner or GF can modify
-    if (tour.ownerId !== user.id && user.role !== 'GF') {
+    if (tour.ownerId !== user._id && user.primaryRole !== 'GF') {
       throw new ForbiddenException(
         'Only tour owner or Geschäftsführer can modify tours'
       );
@@ -266,7 +259,7 @@ export class TourService {
     const updated: Tour = {
       ...tour,
       ...dto,
-      modifiedBy: user.id,
+      modifiedBy: user._id,
       modifiedAt: new Date(),
       version: tour.version + 1,
     };
@@ -289,11 +282,11 @@ export class TourService {
       entityId: saved._id,
       action: 'UPDATE',
       changes: Object.keys(dto),
-      userId: user.id,
+      userId: user._id,
       timestamp: new Date(),
     });
 
-    this.logger.log(`Tour updated: ${saved._id} by user ${user.id}`);
+    this.logger.log(`Tour updated: ${saved._id} by user ${user._id}`);
 
     return this.mapToResponseDto(saved);
   }
@@ -312,7 +305,7 @@ export class TourService {
     }
 
     // RBAC check: ADM can only delete own tours
-    if (user.role === 'ADM' && tour.ownerId !== user.id) {
+    if (user.primaryRole === 'ADM' && tour.ownerId !== user._id) {
       throw new ForbiddenException('You can only delete your own tours');
     }
 
@@ -336,11 +329,11 @@ export class TourService {
       entityType: 'Tour',
       entityId: id,
       action: 'DELETE',
-      userId: user.id,
+      userId: user._id,
       timestamp: new Date(),
     });
 
-    this.logger.log(`Tour deleted: ${id} by user ${user.id}`);
+    this.logger.log(`Tour deleted: ${id} by user ${user._id}`);
   }
 
   /**
@@ -360,7 +353,7 @@ export class TourService {
     }
 
     // RBAC check: ADM can only complete own tours
-    if (user.role === 'ADM' && tour.ownerId !== user.id) {
+    if (user.primaryRole === 'ADM' && tour.ownerId !== user._id) {
       throw new ForbiddenException('You can only complete your own tours');
     }
 
@@ -387,7 +380,7 @@ export class TourService {
       actualDistance,
       completedAt: new Date(),
       completionNotes,
-      modifiedBy: user.id,
+      modifiedBy: user._id,
       modifiedAt: new Date(),
       version: tour.version + 1,
     };
@@ -399,11 +392,11 @@ export class TourService {
       entityType: 'Tour',
       entityId: saved._id,
       action: 'COMPLETE',
-      userId: user.id,
+      userId: user._id,
       timestamp: new Date(),
     });
 
-    this.logger.log(`Tour completed: ${saved._id} by user ${user.id}`);
+    this.logger.log(`Tour completed: ${saved._id} by user ${user._id}`);
 
     return this.mapToResponseDto(saved);
   }
@@ -421,7 +414,7 @@ export class TourService {
     }
 
     // RBAC check: ADM can only see own tours
-    if (user.role === 'ADM' && tour.ownerId !== user.id) {
+    if (user.primaryRole === 'ADM' && tour.ownerId !== user._id) {
       throw new ForbiddenException('You can only view your own tours');
     }
 

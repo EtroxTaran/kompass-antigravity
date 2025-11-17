@@ -38,25 +38,20 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 
+import { User } from '@kompass/shared/types/entities/user';
 import { LocationType } from '@kompass/shared/types/enums';
+
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RbacGuard } from '../auth/guards/rbac.guard';
 
 import { CreateLocationDto } from './dto/create-location.dto';
 import { LocationResponseDto } from './dto/location-response.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { LocationService } from './location.service';
 
-// Placeholder guards - should be imported from guards directory
-// import { JwtAuthGuard, RbacGuard } from '@/guards';
-// import { RequirePermission } from '@/decorators';
-// import { CurrentUser } from '@/decorators';
 
-/**
- * Placeholder User type
- */
-interface User {
-  id: string;
-  role: 'GF' | 'PLAN' | 'ADM' | 'KALK' | 'BUCH';
-}
 
 const SORTABLE_LOCATION_FIELDS = [
   'locationName',
@@ -68,21 +63,6 @@ const isSortableLocationField = (
   value?: string
 ): value is SortableLocationField =>
   !!value && (SORTABLE_LOCATION_FIELDS as readonly string[]).includes(value);
-
-/**
- * Placeholder decorator - replace with actual implementation
- */
-const CurrentUser =
-  () => (_target: unknown, _propertyKey: string, _parameterIndex: number) => {};
-const RequirePermission =
-  (_entity: string, _action: string) =>
-  (
-    _target: unknown,
-    _propertyKey: string,
-    _descriptor: PropertyDescriptor
-  ) => {};
-const JwtAuthGuard = class {};
-const RbacGuard = class {};
 
 /**
  * Location Controller

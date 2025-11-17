@@ -13,10 +13,10 @@
 import * as Nano from 'nano';
 
 // CouchDB configuration
-const COUCHDB_URL = process.env.COUCHDB_URL || 'http://localhost:5984';
-const COUCHDB_USER = process.env.COUCHDB_ADMIN_USER || 'admin';
-const COUCHDB_PASSWORD = process.env.COUCHDB_ADMIN_PASSWORD || 'changeme';
-const DATABASE = process.env.COUCHDB_DATABASE || 'kompass';
+const COUCHDB_URL = process.env['COUCHDB_URL'] || 'http://localhost:5984';
+const COUCHDB_USER = process.env['COUCHDB_ADMIN_USER'] || 'admin';
+const COUCHDB_PASSWORD = process.env['COUCHDB_ADMIN_PASSWORD'] || 'changeme';
+const DATABASE = process.env['COUCHDB_DATABASE'] || 'kompass';
 
 const nano = Nano.default(
   `http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@${COUCHDB_URL.replace('http://', '')}`
@@ -60,7 +60,8 @@ async function createLocationViews() {
     await db.insert(locationDesignDoc);
     console.log('✅ Location views created');
   } catch (error) {
-    if (error.statusCode === 409) {
+    const couchError = error as { statusCode?: number };
+    if (couchError.statusCode === 409) {
       console.log('⏭️  Location views already exist');
     } else {
       throw error;
@@ -107,7 +108,8 @@ async function createContactViews() {
     await db.insert(contactDesignDoc);
     console.log('✅ Contact views created');
   } catch (error) {
-    if (error.statusCode === 409) {
+    const couchError = error as { statusCode?: number };
+    if (couchError.statusCode === 409) {
       console.log('⏭️  Contact views already exist');
     } else {
       throw error;
@@ -152,7 +154,8 @@ async function createCustomerViews() {
     await db.insert(customerDesignDoc);
     console.log('✅ Customer views created');
   } catch (error) {
-    if (error.statusCode === 409) {
+    const couchError = error as { statusCode?: number };
+    if (couchError.statusCode === 409) {
       console.log('⏭️  Customer views already exist');
     } else {
       throw error;
@@ -216,7 +219,9 @@ async function createIndexes() {
       });
       console.log(`✅ Index created: ${indexDef.name}`);
     } catch (error) {
-      console.error(`❌ Error creating index ${indexDef.name}:`, error.message);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.error(`❌ Error creating index ${indexDef.name}:`, errorMessage);
     }
   }
 }

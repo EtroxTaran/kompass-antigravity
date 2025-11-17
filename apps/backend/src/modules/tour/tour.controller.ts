@@ -28,6 +28,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -40,6 +41,12 @@ import {
 } from '@nestjs/swagger';
 
 import { TourStatus } from '@kompass/shared/types/entities/tour';
+import { User } from '@kompass/shared/types/entities/user';
+
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RbacGuard } from '../auth/guards/rbac.guard';
 
 import { CreateTourDto } from './dto/create-tour.dto';
 import { TourResponseDto, TourCostSummaryDto } from './dto/tour-response.dto';
@@ -47,27 +54,6 @@ import { UpdateTourDto } from './dto/update-tour.dto';
 import { TourService } from './tour.service';
 
 import type { TourFilters } from './tour.repository';
-
-/**
- * Placeholder guards and decorators
- */
-interface User {
-  id: string;
-  role: 'GF' | 'PLAN' | 'ADM' | 'KALK' | 'BUCH';
-}
-
-const CurrentUser =
-  () =>
-  (_target: unknown, _propertyKey: string, _parameterIndex: number): void => {};
-const RequirePermission =
-  (_entity: string, _action: string) =>
-  (
-    _target: unknown,
-    _propertyKey: string,
-    _descriptor: PropertyDescriptor
-  ): void => {};
-const JwtAuthGuard = class {};
-const RbacGuard = class {};
 
 /**
  * Tour Controller
@@ -125,13 +111,16 @@ export class TourController {
     @Query('region') region?: string,
     @CurrentUser() user?: User
   ): Promise<TourResponseDto[]> {
+    if (!user) {
+      throw new UnauthorizedException('User not authenticated');
+    }
     const filters: TourFilters = {};
     if (status) filters.status = status;
     if (startDate) filters.startDate = new Date(startDate);
     if (endDate) filters.endDate = new Date(endDate);
     if (region) filters.region = region;
 
-    return this.tourService.findAll(user!, filters);
+    return this.tourService.findAll(user, filters);
   }
 
   /**
@@ -155,9 +144,9 @@ export class TourController {
   })
   async create(
     @Body() dto: CreateTourDto,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<TourResponseDto> {
-    return this.tourService.create(dto, user!);
+    return this.tourService.create(dto, user);
   }
 
   /**
@@ -189,9 +178,9 @@ export class TourController {
   })
   async findOne(
     @Param('tourId') tourId: string,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<TourResponseDto> {
-    return this.tourService.findById(tourId, user!);
+    return this.tourService.findById(tourId, user);
   }
 
   /**
@@ -224,9 +213,9 @@ export class TourController {
   async update(
     @Param('tourId') tourId: string,
     @Body() dto: UpdateTourDto,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<TourResponseDto> {
-    return this.tourService.update(tourId, dto, user!);
+    return this.tourService.update(tourId, dto, user);
   }
 
   /**
@@ -258,9 +247,9 @@ export class TourController {
   })
   async delete(
     @Param('tourId') tourId: string,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<void> {
-    return this.tourService.delete(tourId, user!);
+    return this.tourService.delete(tourId, user);
   }
 
   /**
@@ -301,9 +290,9 @@ export class TourController {
   async complete(
     @Param('tourId') tourId: string,
     @Body('completionNotes') completionNotes: string,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<TourResponseDto> {
-    return this.tourService.complete(tourId, completionNotes || '', user!);
+    return this.tourService.complete(tourId, completionNotes || '', user);
   }
 
   /**
@@ -327,8 +316,8 @@ export class TourController {
   })
   async getCostSummary(
     @Param('tourId') tourId: string,
-    @CurrentUser() user?: User
+    @CurrentUser() user: User
   ): Promise<TourCostSummaryDto> {
-    return this.tourService.getCostSummary(tourId, user!);
+    return this.tourService.getCostSummary(tourId, user);
   }
 }
