@@ -54,8 +54,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { UserForm } from '@/components/user/UserForm';
-import { useUsers, useDeleteUser } from '@/hooks/useUsers';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useUsers, useDeleteUser } from '@/hooks/useUsers';
 import type { SortDirection } from '@/utils/table-utils';
 
 import type { UserRole } from '@kompass/shared/constants/rbac.constants';

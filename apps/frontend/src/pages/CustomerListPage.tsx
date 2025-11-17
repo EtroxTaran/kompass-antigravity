@@ -46,7 +46,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
 import { useCustomers } from '@/hooks/useCustomers';
 import { useDebounce } from '@/hooks/useDebounce';
 import type { SortDirection } from '@/utils/table-utils';
