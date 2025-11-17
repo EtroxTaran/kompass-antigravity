@@ -57,6 +57,7 @@
     "nano": "^10.1.2",
     "prettier": "^3.1.1",
     "shadcn": "^3.5.0",
+    "test-exclude": "^7.0.1",
     "ts-node": "^10.9.2",
     "tslib": "^2.6.2",
     "turbo": "^1.11.2",
@@ -67,7 +68,8 @@
       "js-yaml": "4.1.1",
       "esbuild": "0.25.0",
       "tmp": "0.2.4",
-      "glob": "^11.1.0"
+      "glob": "^11.1.0",
+      "test-exclude": "^7.0.1"
     }
   },
   "engines": {

@@ -9,6 +9,7 @@ overrides:
   esbuild: 0.25.0
   tmp: 0.2.4
   glob: ^11.1.0
+  test-exclude: ^7.0.1
 
 importers:
 
@@ -77,6 +78,9 @@ importers:
       shadcn:
         specifier: ^3.5.0
         version: 3.5.0(@types/node@20.19.25)(typescript@5.9.3)
+      test-exclude:
+        specifier: ^7.0.1
+        version: 7.0.1
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.19.25)(typescript@5.9.3)
@@ -332,7 +336,7 @@ importers:
         specifier: ^4.2.1
         version: 4.7.0(vite@5.4.21)
       '@vitest/coverage-v8':
-        specifier: ^1.0.4
+        specifier: ^1.6.1
         version: 1.6.1(vitest@1.6.1)
       '@vitest/ui':
         specifier: ^1.0.4
@@ -358,6 +362,9 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.18)
+      test-exclude:
+        specifier: ^7.0.1
+        version: 7.0.1
       vite:
         specifier: ^5.0.8
         version: 5.4.21(@types/node@20.19.25)
@@ -5033,7 +5040,7 @@ packages:
       picocolors: 1.1.1
       std-env: 3.10.0
       strip-literal: 2.1.1
-      test-exclude: 6.0.0
+      test-exclude: 7.0.1
       vitest: 1.6.1(@types/node@20.19.25)(@vitest/ui@1.6.1)(jsdom@23.2.0)
     transitivePeerDependencies:
       - supports-color
@@ -5707,7 +5714,7 @@ packages:
       '@istanbuljs/load-nyc-config': 1.1.0
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-instrument: 5.2.1
-      test-exclude: 6.0.0
+      test-exclude: 7.0.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -10154,6 +10161,13 @@ packages:
       brace-expansion: 2.0.2
     dev: true
 
+  /minimatch@9.0.5:
+    resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    dependencies:
+      brace-expansion: 2.0.2
+    dev: true
+
   /minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
     engines: {node: '>= 6'}
@@ -12621,13 +12635,13 @@ packages:
       source-map-support: 0.5.21
     dev: true
 
-  /test-exclude@6.0.0:
-    resolution: {integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==}
-    engines: {node: '>=8'}
+  /test-exclude@7.0.1:
+    resolution: {integrity: sha512-pFYqmTw68LXVjeWJMST4+borgQP2AyMNbg1BpZh9LbyhUeNkeaPF9gzfPGUAnSMV3qPYdWUwDIjjCLiSDOl7vg==}
+    engines: {node: '>=18'}
     dependencies:
       '@istanbuljs/schema': 0.1.3
       glob: 11.1.0
-      minimatch: 3.1.2
+      minimatch: 9.0.5
     dev: true
 
   /text-extensions@2.4.0:
