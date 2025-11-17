@@ -148,9 +148,11 @@ describe('CustomerListPage', () => {
   it('should render loading state initially', async () => {
     // Create a promise that we can control - delay resolution to ensure loading state
     let resolvePromise: (value: PaginatedResponse<Customer>) => void;
-    const loadingPromise = new Promise<PaginatedResponse<Customer>>((resolve) => {
-      resolvePromise = resolve;
-    });
+    const loadingPromise = new Promise<PaginatedResponse<Customer>>(
+      (resolve) => {
+        resolvePromise = resolve;
+      }
+    );
 
     vi.mocked(customerService).getAll.mockReturnValue(loadingPromise);
 
@@ -161,7 +163,7 @@ describe('CustomerListPage', () => {
     );
 
     expect(screen.getByText('Kunden')).toBeInTheDocument();
-    
+
     // React Query needs a moment to start the query and set isLoading to true
     // Wait for skeleton elements to appear
     await waitFor(
@@ -174,9 +176,7 @@ describe('CustomerListPage', () => {
         // But we might find them by their container or other attributes
         if (skeletons.length === 0) {
           // Try finding by the container div that wraps skeletons
-          const skeletonContainer = container.querySelector(
-            '.space-y-4.p-6'
-          );
+          const skeletonContainer = container.querySelector('.space-y-4.p-6');
           if (skeletonContainer) {
             const skeletonChildren = skeletonContainer.querySelectorAll('div');
             expect(skeletonChildren.length).toBeGreaterThanOrEqual(8);

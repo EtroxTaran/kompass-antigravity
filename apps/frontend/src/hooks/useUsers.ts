@@ -82,7 +82,9 @@ export function useUser(
  */
 export function useUserRoles(
   id: string
-): ReturnType<typeof useQuery<UserRole[], Error>> {
+): ReturnType<
+  typeof useQuery<{ roles: UserRole[]; primaryRole: UserRole }, Error>
+> {
   return useQuery({
     queryKey: userKeys.roles(id),
     queryFn: () => userService.getRoles(id),
