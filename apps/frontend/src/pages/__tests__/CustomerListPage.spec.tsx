@@ -1,7 +1,7 @@
-import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -9,6 +9,7 @@ import { customerService } from '@/services/customer.service';
 
 import { CustomerListPage } from '../CustomerListPage';
 
+import type { PaginatedResponse } from '@kompass/shared/types/dtos/paginated-response.dto';
 import type { Customer } from '@kompass/shared/types/entities/customer';
 
 /**
@@ -24,6 +25,8 @@ function TestWrapper({
       queries: {
         retry: false,
         refetchOnWindowFocus: false,
+        cacheTime: 0, // Disable cache for tests
+        staleTime: 0, // Always consider data stale
       },
     },
   });
@@ -118,32 +121,81 @@ const mockCustomers: Customer[] = [
   },
 ];
 
+/**
+ * Helper to create a paginated response from customer array
+ */
+function createPaginatedResponse(
+  customers: Customer[]
+): PaginatedResponse<Customer> {
+  return {
+    data: customers,
+    pagination: {
+      page: 1,
+      pageSize: 20,
+      total: customers.length,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPreviousPage: false,
+    },
+  };
+}
+
 describe('CustomerListPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should render loading state initially', () => {
-    vi.mocked(customerService).getAll.mockImplementation(
-      () => new Promise(() => {}) // Never resolves
-    );
+  it('should render loading state initially', async () => {
+    // Create a promise that we can control - delay resolution to ensure loading state
+    let resolvePromise: (value: PaginatedResponse<Customer>) => void;
+    const loadingPromise = new Promise<PaginatedResponse<Customer>>((resolve) => {
+      resolvePromise = resolve;
+    });
 
-    render(
+    vi.mocked(customerService).getAll.mockReturnValue(loadingPromise);
+
+    const { container } = render(
       <TestWrapper>
         <CustomerListPage />
       </TestWrapper>
     );
 
     expect(screen.getByText('Kunden')).toBeInTheDocument();
-    // Check for skeleton elements
-    const skeletons = document.querySelectorAll(
-      '[class*="skeleton"], [class*="Skeleton"]'
+    
+    // React Query needs a moment to start the query and set isLoading to true
+    // Wait for skeleton elements to appear
+    await waitFor(
+      () => {
+        // Check for skeleton elements by class name (Skeleton component uses specific classes)
+        const skeletons = container.querySelectorAll(
+          '[class*="animate-pulse"], [class*="bg-muted"], .skeleton'
+        );
+        // The component renders 8 skeleton elements when loading
+        // But we might find them by their container or other attributes
+        if (skeletons.length === 0) {
+          // Try finding by the container div that wraps skeletons
+          const skeletonContainer = container.querySelector(
+            '.space-y-4.p-6'
+          );
+          if (skeletonContainer) {
+            const skeletonChildren = skeletonContainer.querySelectorAll('div');
+            expect(skeletonChildren.length).toBeGreaterThanOrEqual(8);
+            return;
+          }
+        }
+        expect(skeletons.length).toBeGreaterThanOrEqual(8);
+      },
+      { timeout: 3000 }
     );
-    expect(skeletons.length).toBeGreaterThan(0);
+
+    // Clean up: resolve the promise to avoid hanging
+    resolvePromise!(createPaginatedResponse([]));
   });
 
   it('should render customer list when data is loaded', async () => {
-    vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
+    vi.mocked(customerService).getAll.mockResolvedValue(
+      createPaginatedResponse(mockCustomers)
+    );
 
     render(
       <TestWrapper>
@@ -195,7 +247,9 @@ describe('CustomerListPage', () => {
   });
 
   it('should navigate to customer detail when row is clicked', async () => {
-    vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
+    vi.mocked(customerService).getAll.mockResolvedValue(
+      createPaginatedResponse(mockCustomers)
+    );
 
     render(
       <TestWrapper>
@@ -217,7 +271,9 @@ describe('CustomerListPage', () => {
   });
 
   it('should display rating badges correctly', async () => {
-    vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
+    vi.mocked(customerService).getAll.mockResolvedValue(
+      createPaginatedResponse(mockCustomers)
+    );
 
     render(
       <TestWrapper>
@@ -233,7 +289,9 @@ describe('CustomerListPage', () => {
   });
 
   it('should display controls bar with search input', async () => {
-    vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
+    vi.mocked(customerService).getAll.mockResolvedValue(
+      createPaginatedResponse(mockCustomers)
+    );
 
     render(
       <TestWrapper>
@@ -248,7 +306,15 @@ describe('CustomerListPage', () => {
   });
 
   it('should filter customers by search term', async () => {
-    vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
+    // Mock service to return filtered results when search is provided
+    vi.mocked(customerService).getAll.mockImplementation(
+      async (filters?: { search?: string }) => {
+        if (filters?.search === 'Test') {
+          return createPaginatedResponse([mockCustomers[0]]); // Only Test GmbH
+        }
+        return createPaginatedResponse(mockCustomers);
+      }
+    );
 
     render(
       <TestWrapper>
@@ -263,18 +329,20 @@ describe('CustomerListPage', () => {
     const searchInput = screen.getByPlaceholderText(/Kunden durchsuchen/i);
     await userEvent.type(searchInput, 'Test');
 
-    // Wait for debounce
+    // Wait for debounce (300ms) + API call
     await waitFor(
       () => {
         expect(screen.getByText('Test GmbH')).toBeInTheDocument();
         expect(screen.queryByText('Example AG')).not.toBeInTheDocument();
       },
-      { timeout: 500 }
+      { timeout: 1000 }
     );
   });
 
   it('should show filter button', async () => {
-    vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
+    vi.mocked(customerService).getAll.mockResolvedValue(
+      createPaginatedResponse(mockCustomers)
+    );
 
     render(
       <TestWrapper>
@@ -289,7 +357,9 @@ describe('CustomerListPage', () => {
   });
 
   it('should show primary action button', async () => {
-    vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
+    vi.mocked(customerService).getAll.mockResolvedValue(
+      createPaginatedResponse(mockCustomers)
+    );
 
     render(
       <TestWrapper>
@@ -311,7 +381,19 @@ describe('CustomerListPage', () => {
       companyName: `Company ${i}`,
     }));
 
-    vi.mocked(customerService).getAll.mockResolvedValue(manyCustomers);
+    const paginatedResponse: PaginatedResponse<Customer> = {
+      data: manyCustomers.slice(0, 20), // First page (20 items)
+      pagination: {
+        page: 1,
+        pageSize: 20,
+        total: 25, // Total > pageSize triggers pagination
+        totalPages: 2,
+        hasNextPage: true,
+        hasPreviousPage: false,
+      },
+    };
+
+    vi.mocked(customerService).getAll.mockResolvedValue(paginatedResponse);
 
     render(
       <TestWrapper>
@@ -321,12 +403,16 @@ describe('CustomerListPage', () => {
 
     await waitFor(() => {
       // Should show pagination info
-      expect(screen.getByText(/Zeige/i)).toBeInTheDocument();
+      expect(screen.getByText('Company 0')).toBeInTheDocument();
+      // Check for pagination text "Zeige X-Y von Z Kunden"
+      expect(screen.getByText(/Zeige.*von.*Kunden/i)).toBeInTheDocument();
     });
   });
 
   it('should allow row selection with checkbox', async () => {
-    vi.mocked(customerService).getAll.mockResolvedValue(mockCustomers);
+    vi.mocked(customerService).getAll.mockResolvedValue(
+      createPaginatedResponse(mockCustomers)
+    );
 
     render(
       <TestWrapper>

@@ -50,7 +50,6 @@ import { useCustomers } from '@/hooks/useCustomers';
 import { useDebounce } from '@/hooks/useDebounce';
 
 import type { SortDirection } from '@/utils/table-utils';
-
 import type { Customer } from '@kompass/shared/types/entities/customer';
 
 /**

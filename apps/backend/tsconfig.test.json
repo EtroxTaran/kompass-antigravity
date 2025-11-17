@@ -3,11 +3,6 @@
   "compilerOptions": {
     "types": ["jest", "node"]
   },
-  "include": [
-    "src/**/*",
-    "src/**/*.spec.ts",
-    "src/**/__tests__/**"
-  ],
+  "include": ["src/**/*", "src/**/*.spec.ts", "src/**/__tests__/**"],
   "exclude": ["node_modules", "dist"]
 }
-
