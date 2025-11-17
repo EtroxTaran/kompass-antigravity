@@ -281,10 +281,13 @@ apps/backend/src/
 │   ├── guards/                        # RBAC, JWT authentication
 │   ├── interceptors/                  # Logging, transformation
 │   └── filters/                       # Global exception handling
-└── infrastructure/
-    ├── database/                      # CouchDB connection
-    ├── search/                        # MeiliSearch integration
-    └── auth/                          # Keycloak integration
+└── modules/
+    └── auth/                          # Keycloak OIDC integration
+        ├── strategies/                # JWT strategy for Keycloak
+        ├── guards/                    # JWT authentication guard
+        ├── decorators/                # @CurrentUser() decorator
+        ├── auth.controller.ts         # /auth/me endpoint
+        └── auth.module.ts             # Auth module configuration
 ```
 
 **Security Implementation:**
@@ -410,10 +413,33 @@ interface AuditLogEntry {
 
 **Authentication Flow:**
 
-1. User logs in via Keycloak (OIDC)
-2. Backend receives JWT token with roles
-3. Backend creates CouchDB user credentials with filtered access
-4. Frontend uses JWT for API calls, filtered credentials for sync
+1. User logs in via Keycloak (OIDC) - redirects to Keycloak login page
+2. Keycloak issues JWT token with user roles (ADM, INNEN, PLAN, BUCH, GF)
+3. Frontend stores token and includes in Authorization header for API calls
+4. Backend validates JWT token using JWKS (JSON Web Key Set) from Keycloak
+5. Backend extracts user roles from token for RBAC enforcement
+6. Token refresh handled automatically on frontend before expiration
+7. Logout invalidates session in Keycloak and clears local storage
+
+**JWT Token Structure:**
+
+- Contains user ID (`sub`), email, and roles in `resource_access.{client-id}.roles` or `realm_access.roles`
+- Validated using RS256 algorithm with Keycloak's public keys
+- Token expiration handled with automatic refresh (30 seconds before expiry)
+
+**Backend Authentication:**
+
+- `JwtStrategy` validates tokens using `jwks-rsa` library
+- `JwtAuthGuard` protects all endpoints (except public routes marked with `@Public()`)
+- `@CurrentUser()` decorator provides authenticated user in controllers
+- All controllers use `@UseGuards(JwtAuthGuard, RbacGuard)` for protection
+
+**Frontend Authentication:**
+
+- `keycloak-js` library handles OIDC flow
+- `AuthContext` provides authentication state and user information
+- `ProtectedRoute` component redirects unauthenticated users to login
+- API client automatically injects JWT token in requests and handles 401 errors
 
 ---
 
