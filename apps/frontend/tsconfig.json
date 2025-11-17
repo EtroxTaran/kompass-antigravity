@@ -26,8 +26,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@kompass/shared": ["../../packages/shared/src"]
+      "@kompass/shared": ["../../packages/shared/src"],
+      "@kompass/shared/*": ["../../packages/shared/src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/**/*.spec.tsx", "src/**/*.test.tsx", "src/**/__tests__/**"]
 }

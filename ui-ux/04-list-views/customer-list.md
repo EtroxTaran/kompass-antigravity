@@ -1,4 +1,4 @@
-# Customer List View - Figma Make Prompt
+# Customer List View
 
 ## Context & Purpose
 
@@ -6,6 +6,12 @@
 - **User Roles**: All (GF/PLAN see all, ADM see own only)
 - **Usage Context**: Main customer list page with search, filter, sort
 - **Business Value**: Central view for customer database browsing and management
+
+## Reference Source
+
+**GitHub UI Reference Repository:** `EtroxTaran/Kompassuimusterbibliothek`
+- **Reference File:** `src/components/CustomerListDemo.tsx`
+- **Implementation:** `apps/frontend/src/pages/CustomerListPage.tsx`
 
 ## Design Requirements
 
@@ -32,9 +38,11 @@
 - `Sheet` for filters
 - `Pagination`
 
-## Figma Make Prompt
+## Implementation Details
 
-Create a comprehensive customer list view for KOMPASS, a German CRM application. Design a data table with search, filtering, sorting, multi-select, and RBAC-based data access where ADM users see only their own customers while PLAN/GF see all customers.
+**Reference Implementation:** Based on `CustomerListDemo.tsx` from GitHub UI reference repository.
+
+This customer list view implements a comprehensive data table with search, filtering, sorting, and RBAC-based data access where ADM users see only their own customers while PLAN/GF see all customers.
 
 **Page Layout:**
 

@@ -18,6 +18,24 @@ The repository `EtroxTaran/Kompassuimusterbibliothek` is the **canonical and aut
 - **GitHub URL:** https://github.com/EtroxTaran/Kompassuimusterbibliothek
 - **Purpose:** Single source of truth for all UI design patterns
 
+## Repository Structure
+
+The reference repository contains:
+
+```
+Kompassuimusterbibliothek/
+├── README.md          # Repository documentation
+├── index.html         # Entry point
+├── package.json       # Dependencies and scripts
+├── vite.config.ts     # Vite configuration
+└── src/               # Source code directory
+    ├── components/    # UI components
+    ├── pages/         # Page layouts
+    └── ...            # Additional directories
+```
+
+**Note:** Use GitHub MCP tools or helper scripts (see below) to explore the full repository structure.
+
 ## Workflow for Implementing UI Components
 
 ### Step 1: Retrieve Task Context
@@ -223,15 +241,103 @@ When implementing UI from reference, document:
 3. **Adaptations**: Any changes made to match our stack (shadcn/ui, Tailwind)
 4. **Deviations**: Any deviations from reference (with justification)
 
+## Helper Scripts
+
+Use these helper scripts to work with the reference repository:
+
+### List Repository Structure
+
+```bash
+./scripts/list-ui-reference.sh [path]
+```
+
+Lists directory structure of the reference repository. Use optional path parameter to list specific subdirectories.
+
+**Examples:**
+```bash
+# List root directory
+./scripts/list-ui-reference.sh
+
+# List src directory
+./scripts/list-ui-reference.sh src
+
+# List components directory
+./scripts/list-ui-reference.sh src/components
+```
+
+### Search for Components
+
+```bash
+./scripts/search-ui-reference.sh <search-term>
+```
+
+Searches for files/components in the reference repository by name.
+
+**Examples:**
+```bash
+# Search for customer-related files
+./scripts/search-ui-reference.sh Customer
+
+# Search for form components
+./scripts/search-ui-reference.sh form
+```
+
+### Fetch Specific File
+
+```bash
+./scripts/fetch-ui-reference.sh <file-path> [--open]
+```
+
+Fetches specific file from the reference repository and saves to `/tmp/kompass-ui-reference/`. Use `--open` flag to open in your default editor.
+
+**Examples:**
+```bash
+# Fetch a component file
+./scripts/fetch-ui-reference.sh src/components/CustomerListDemo.tsx
+
+# Fetch and open in editor
+./scripts/fetch-ui-reference.sh src/pages/CustomerPage.tsx --open
+```
+
+**Note:** These scripts require GitHub CLI (`gh`) to be installed and authenticated. Alternatively, use GitHub MCP tools in Cursor.
+
 ## Quick Reference
 
 **Repository:** `EtroxTaran/Kompassuimusterbibliothek`  
 **GitHub URL:** https://github.com/EtroxTaran/Kompassuimusterbibliothek  
 **Tool:** GitHub MCP (always use this to fetch UI patterns)  
+**Helper Scripts:** `scripts/list-ui-reference.sh`, `scripts/search-ui-reference.sh`, `scripts/fetch-ui-reference.sh`  
 **Workflow:** Fetch → Inspect → Mirror/Adapt → Implement → Document
+
+## Example Implementation
+
+### Customer List Page
+
+A complete example implementation following the reference repository workflow:
+
+**Reference Source:**
+- `src/components/CustomerListDemo.tsx` from `EtroxTaran/Kompassuimusterbibliothek`
+
+**Implementation:**
+- `apps/frontend/src/pages/CustomerListPage.tsx` - Main page component
+- `apps/frontend/src/services/customer.service.ts` - API service
+- `apps/frontend/src/pages/__tests__/CustomerListPage.spec.tsx` - Tests
+
+**Documentation:**
+- `ui-ux/04-list-views/customer-list.md` - Updated with reference source
+
+**Patterns Applied:**
+- Table layout with search functionality
+- Loading states with Skeleton components
+- Error handling and empty states
+- Mobile-responsive design
+- RBAC filtering (ADM sees own customers)
 
 ## References
 
 - MCP Tool Usage: `.cursor/rules/mcp-tool-usage-ui-integration.mdc`
 - UI/UX Documentation Sync: `.cursor/rules/ui-ux-documentation-sync.mdc`
 - UI Components: `.cursor/rules/ui-components.mdc`
+- UI Implementation Checklist: `docs/guides/ui-implementation-checklist.md`
+- UI Implementation Template: `docs/guides/ui-implementation-template.md`
+- Helper Scripts: `scripts/README.md`

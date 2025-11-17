@@ -141,11 +141,13 @@ services:
       - '3000:3000'  # Expose on 3000 to match NestJS default
     volumes:
       - ./apps/backend/src:/app/apps/backend/src
+      - ./apps/backend/scripts:/app/apps/backend/scripts
       - ./packages/shared/src:/app/packages/shared/src
       - backend-node-modules:/app/apps/backend/node_modules
       - shared-node-modules:/app/packages/shared/node_modules
     # Run in dev mode with watch for hot reload
-    command: ["pnpm", "--filter", "@kompass/backend", "dev"]
+    # Using dev:fixed which runs watch mode with automatic path fixing
+    command: ["pnpm", "--filter", "@kompass/backend", "dev:fixed"]
     depends_on:
       couchdb:
         condition: service_healthy
