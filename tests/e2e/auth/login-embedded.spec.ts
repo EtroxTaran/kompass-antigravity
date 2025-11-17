@@ -65,7 +65,7 @@ test.describe('Embedded Login Flow', () => {
   test('should login successfully with valid credentials', async ({ page }) => {
     // Use default admin credentials from Keycloak setup
     const adminEmail = process.env.KEYCLOAK_ADMIN_EMAIL || 'admin@kompass.de';
-    const adminPassword = process.env.KEYCLOAK_ADMIN_PASSWORD || 'admin123';
+    const adminPassword = process.env.KEYCLOAK_ADMIN_PASSWORD || 'Admin123!@#';
 
     // Fill valid credentials
     await page.fill('input[type="email"]', adminEmail);
@@ -84,7 +84,7 @@ test.describe('Embedded Login Flow', () => {
     page,
   }) => {
     const adminEmail = process.env.KEYCLOAK_ADMIN_EMAIL || 'admin@kompass.de';
-    const adminPassword = process.env.KEYCLOAK_ADMIN_PASSWORD || 'admin123';
+    const adminPassword = process.env.KEYCLOAK_ADMIN_PASSWORD || 'Admin123!@#';
 
     // Fill credentials and check "remember me"
     await page.fill('input[type="email"]', adminEmail);
@@ -105,7 +105,7 @@ test.describe('Embedded Login Flow', () => {
   }) => {
     // First, login
     const adminEmail = process.env.KEYCLOAK_ADMIN_EMAIL || 'admin@kompass.de';
-    const adminPassword = process.env.KEYCLOAK_ADMIN_PASSWORD || 'admin123';
+    const adminPassword = process.env.KEYCLOAK_ADMIN_PASSWORD || 'Admin123!@#';
 
     await page.fill('input[type="email"]', adminEmail);
     await page.fill('input[type="password"]', adminPassword);
@@ -123,7 +123,7 @@ test.describe('Embedded Login Flow', () => {
 
   test('should show loading state during login', async ({ page }) => {
     const adminEmail = process.env.KEYCLOAK_ADMIN_EMAIL || 'admin@kompass.de';
-    const adminPassword = process.env.KEYCLOAK_ADMIN_PASSWORD || 'admin123';
+    const adminPassword = process.env.KEYCLOAK_ADMIN_PASSWORD || 'Admin123!@#';
 
     // Fill credentials
     await page.fill('input[type="email"]', adminEmail);

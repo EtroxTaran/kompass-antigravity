@@ -41,6 +41,8 @@ This will create:
 - Roles: ADM, INNEN, PLAN, KALK, BUCH, GF, ADMIN
 - Default admin user: `admin@kompass.de` / `Admin123!@#`
 
+**Note**: The setup script creates the admin user in Keycloak, but you may need to run the admin account creation script separately to ensure the user exists in both Keycloak and CouchDB.
+
 ### Step 4: Verify Setup
 
 1. Check that the `kompass` realm exists
@@ -144,6 +146,52 @@ KEYCLOAK_CLIENT_SECRET=<secret-from-api-client>
 1. Navigate to http://localhost:5173/register
 2. Fill in registration form
 3. Submit and verify user is created
+
+## Admin Account Management
+
+### Creating Admin Account
+
+After Keycloak setup, ensure the admin account exists in both Keycloak and CouchDB:
+
+```bash
+# Development
+./scripts/keycloak-create-admin.sh
+
+# Staging (requires environment variables)
+KEYCLOAK_ADMIN_PASSWORD=... ADMIN_USER_PASSWORD=... COUCHDB_ADMIN_PASSWORD=... \
+  ./scripts/keycloak-create-admin-staging.sh
+
+# Production (requires environment variables and confirmation)
+ENVIRONMENT=production \
+  KEYCLOAK_ADMIN_PASSWORD=... ADMIN_USER_PASSWORD=... COUCHDB_ADMIN_PASSWORD=... \
+  ./scripts/keycloak-create-admin-production.sh
+```
+
+### Default Admin Credentials
+
+- **Email**: `admin@kompass.de`
+- **Password**: `Admin123!@#` (development) or set via `ADMIN_USER_PASSWORD`
+- **Role**: `ADMIN`
+
+### Admin Account Script Features
+
+The admin account creation script (`keycloak-create-admin.sh`) is:
+
+- **Idempotent**: Safe to run multiple times
+- **Automatic**: Checks if user exists before creating
+- **Complete**: Creates user in both Keycloak and CouchDB
+- **Role Assignment**: Automatically assigns ADMIN role
+
+### Environment Variables
+
+For staging/production, set these environment variables:
+
+- `KEYCLOAK_URL` - Keycloak server URL
+- `KEYCLOAK_ADMIN_PASSWORD` - Keycloak admin password
+- `ADMIN_USER_PASSWORD` - Admin user password (must meet password requirements)
+- `COUCHDB_ADMIN_PASSWORD` - CouchDB admin password
+- `ADMIN_USER_EMAIL` - Admin user email (default: `admin@kompass.de`)
+- `ADMIN_USER_DISPLAY_NAME` - Admin user display name (default: `Admin User`)
 
 ## Troubleshooting
 

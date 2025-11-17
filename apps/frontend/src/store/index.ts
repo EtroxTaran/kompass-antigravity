@@ -1,8 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+// Dummy reducer to prevent warning - can be removed when actual reducers are added
+const dummyReducer = (state = {}) => state;
+
 export const store = configureStore({
   reducer: {
-    // Add reducers here as needed
+    app: dummyReducer,
   },
 });
 
