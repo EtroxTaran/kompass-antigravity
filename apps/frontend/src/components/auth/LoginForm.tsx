@@ -87,7 +87,9 @@ export function LoginForm({
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(handleFormSubmit)}
+        onSubmit={(e) => {
+          void form.handleSubmit(handleFormSubmit)(e);
+        }}
         className="space-y-4"
         aria-label="Anmeldeformular"
       >

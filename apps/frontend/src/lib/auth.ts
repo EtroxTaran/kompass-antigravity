@@ -13,9 +13,18 @@ import type { User } from '@kompass/shared';
  * Keycloak configuration
  */
 const keycloakConfig = {
-  url: import.meta.env['VITE_KEYCLOAK_URL'] || 'http://localhost:8080',
-  realm: import.meta.env['VITE_KEYCLOAK_REALM'] || 'kompass',
-  clientId: import.meta.env['VITE_KEYCLOAK_CLIENT_ID'] || 'kompass-frontend',
+  url:
+    typeof import.meta.env['VITE_KEYCLOAK_URL'] === 'string'
+      ? import.meta.env['VITE_KEYCLOAK_URL']
+      : 'http://localhost:8080',
+  realm:
+    typeof import.meta.env['VITE_KEYCLOAK_REALM'] === 'string'
+      ? import.meta.env['VITE_KEYCLOAK_REALM']
+      : 'kompass',
+  clientId:
+    typeof import.meta.env['VITE_KEYCLOAK_CLIENT_ID'] === 'string'
+      ? import.meta.env['VITE_KEYCLOAK_CLIENT_ID']
+      : 'kompass-frontend',
 };
 
 /**

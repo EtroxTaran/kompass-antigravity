@@ -106,7 +106,9 @@ export function RegisterForm({
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(handleFormSubmit)}
+        onSubmit={(e) => {
+          void form.handleSubmit(handleFormSubmit)(e);
+        }}
         noValidate // Disable HTML5 validation - react-hook-form handles validation
         className="space-y-4"
         aria-label="Registrierungsformular"

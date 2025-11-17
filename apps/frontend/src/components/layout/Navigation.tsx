@@ -8,7 +8,7 @@ import {
   Menu,
   type LucideIcon,
 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { hasAnyRolePermission } from '@kompass/shared';
@@ -63,7 +63,7 @@ export function Navigation(): React.ReactElement {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Handle logout with proper binding
-  const handleLogout = React.useCallback(() => {
+  const handleLogout = useCallback(() => {
     void logout();
   }, [logout]);
 
@@ -71,7 +71,7 @@ export function Navigation(): React.ReactElement {
    * Filter routes by user permissions
    * Uses hasAnyRolePermission directly since we can't use hooks in filter
    */
-  const visibleRoutes = React.useMemo(() => {
+  const visibleRoutes = useMemo(() => {
     if (!user || !user.roles || user.roles.length === 0) {
       // Only show dashboard if no roles
       return APP_ROUTES.filter((route) => route.path === '/dashboard');
@@ -111,7 +111,7 @@ export function Navigation(): React.ReactElement {
   /**
    * Get user initials for avatar
    */
-  const getUserInitials = React.useCallback((): string => {
+  const getUserInitials = useCallback((): string => {
     if (!user?.displayName) return 'U';
     const parts = user.displayName.split(' ');
     if (parts.length >= 2 && parts[0] && parts[1]) {
@@ -152,7 +152,7 @@ export function Navigation(): React.ReactElement {
   /**
    * Desktop navigation
    */
-  const DesktopNav = React.useCallback(
+  const DesktopNav = useCallback(
     (): React.ReactElement => (
       <nav className="hidden md:flex flex-col gap-2 w-64 min-h-screen bg-background border-r p-4">
         <div className="flex items-center justify-between mb-6">
@@ -197,7 +197,7 @@ export function Navigation(): React.ReactElement {
   /**
    * Mobile navigation
    */
-  const MobileNav = React.useCallback(
+  const MobileNav = useCallback(
     (): React.ReactElement => (
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetTrigger asChild>

@@ -3,15 +3,27 @@ import axios from 'axios';
 /**
  * API base URL
  */
-const API_BASE_URL = import.meta.env['VITE_API_URL'] || 'http://localhost:3000';
+const API_BASE_URL: string =
+  typeof import.meta.env['VITE_API_URL'] === 'string'
+    ? import.meta.env['VITE_API_URL']
+    : 'http://localhost:3000';
 
 /**
  * Keycloak configuration
  */
 const keycloakConfig = {
-  url: import.meta.env['VITE_KEYCLOAK_URL'] || 'http://localhost:8080',
-  realm: import.meta.env['VITE_KEYCLOAK_REALM'] || 'kompass',
-  clientId: import.meta.env['VITE_KEYCLOAK_CLIENT_ID'] || 'kompass-frontend',
+  url:
+    typeof import.meta.env['VITE_KEYCLOAK_URL'] === 'string'
+      ? import.meta.env['VITE_KEYCLOAK_URL']
+      : 'http://localhost:8080',
+  realm:
+    typeof import.meta.env['VITE_KEYCLOAK_REALM'] === 'string'
+      ? import.meta.env['VITE_KEYCLOAK_REALM']
+      : 'kompass',
+  clientId:
+    typeof import.meta.env['VITE_KEYCLOAK_CLIENT_ID'] === 'string'
+      ? import.meta.env['VITE_KEYCLOAK_CLIENT_ID']
+      : 'kompass-frontend',
 };
 
 /**
@@ -78,12 +90,18 @@ export async function loginWithPassword(
         throw new Error('Ungültige Anmeldedaten');
       }
       if (error.response?.status === 400) {
+        const errorData = error.response.data as
+          | { error_description?: string }
+          | undefined;
         const errorDescription =
-          error.response.data?.error_description || 'Anmeldung fehlgeschlagen';
+          errorData?.error_description || 'Anmeldung fehlgeschlagen';
         throw new Error(errorDescription);
       }
+      const errorData = error.response?.data as
+        | { error_description?: string }
+        | undefined;
       throw new Error(
-        error.response?.data?.error_description ||
+        errorData?.error_description ||
           'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.'
       );
     }
@@ -121,9 +139,11 @@ export async function refreshAccessToken(
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      const errorData = error.response?.data as
+        | { error_description?: string }
+        | undefined;
       throw new Error(
-        error.response?.data?.error_description ||
-          'Token-Aktualisierung fehlgeschlagen'
+        errorData?.error_description || 'Token-Aktualisierung fehlgeschlagen'
       );
     }
     throw new Error('Token-Aktualisierung fehlgeschlagen');

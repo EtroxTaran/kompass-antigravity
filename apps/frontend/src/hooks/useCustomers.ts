@@ -46,7 +46,9 @@ export interface UseCustomersOptions {
 /**
  * Hook to get all customers (with pagination and sorting)
  */
-export function useCustomers(options?: UseCustomersOptions) {
+export function useCustomers(
+  options?: UseCustomersOptions
+): ReturnType<typeof useQuery<PaginatedResponse<Customer>, Error>> {
   return useQuery<PaginatedResponse<Customer>, Error>({
     queryKey: customerKeys.list(options),
     queryFn: () =>

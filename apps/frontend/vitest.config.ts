@@ -32,6 +32,9 @@ export default defineConfig({
         '**/mockData',
         '**/__mocks__',
       ],
+      // Fix for test-exclude compatibility issue
+      all: true,
+      include: ['src/**/*.{ts,tsx}'],
     },
   },
   resolve: {

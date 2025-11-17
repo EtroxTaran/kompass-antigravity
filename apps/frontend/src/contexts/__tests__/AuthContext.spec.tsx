@@ -35,8 +35,8 @@ function TestComponent(): React.ReactElement {
       </div>
       <div data-testid="user">{user ? user.email : 'No User'}</div>
       <div data-testid="error">{error || 'No Error'}</div>
-      <button onClick={() => login()}>Login</button>
-      <button onClick={() => logout()}>Logout</button>
+      <button onClick={() => void login()}>Login</button>
+      <button onClick={() => void logout()}>Logout</button>
     </div>
   );
 }

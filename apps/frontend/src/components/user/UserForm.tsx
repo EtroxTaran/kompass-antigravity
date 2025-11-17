@@ -223,7 +223,12 @@ export function UserForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={(e) => {
+          void form.handleSubmit(onSubmit)(e);
+        }}
+        className="space-y-8"
+      >
         {/* Section 1: Grunddaten */}
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-foreground">Grunddaten</h2>

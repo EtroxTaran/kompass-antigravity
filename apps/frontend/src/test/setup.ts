@@ -6,7 +6,7 @@
  * - Sets up global mocks if needed
  */
 
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 
 // Mock window.matchMedia (used by Radix UI components)
@@ -27,18 +27,18 @@ Object.defineProperty(window, 'matchMedia', {
 // Mock IntersectionObserver (used by some components)
 global.IntersectionObserver = class IntersectionObserver {
   constructor() {}
-  disconnect() {}
-  observe() {}
-  takeRecords() {
+  disconnect(): void {}
+  observe(): void {}
+  takeRecords(): IntersectionObserverEntry[] {
     return [];
   }
-  unobserve() {}
+  unobserve(): void {}
 } as unknown as typeof IntersectionObserver;
 
 // Mock ResizeObserver (used by some components)
 global.ResizeObserver = class ResizeObserver {
   constructor() {}
-  disconnect() {}
-  observe() {}
-  unobserve() {}
+  disconnect(): void {}
+  observe(): void {}
+  unobserve(): void {}
 } as unknown as typeof ResizeObserver;
