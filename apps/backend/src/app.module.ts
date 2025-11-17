@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-
 // Authentication module (must be imported first)
 import { AuthModule } from './modules/auth/auth.module';
 
