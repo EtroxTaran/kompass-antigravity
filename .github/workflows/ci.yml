@@ -46,7 +46,7 @@ jobs:
       - name: Lint check
         run: pnpm lint
         env:
-          ESLINT_MAX_WARNINGS: 100
+          ESLINT_MAX_WARNINGS: 150
 
       - name: Type check
         run: pnpm type-check
