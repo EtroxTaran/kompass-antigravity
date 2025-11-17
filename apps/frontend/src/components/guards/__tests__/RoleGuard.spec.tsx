@@ -8,6 +8,7 @@ import { EntityType, Permission, UserRole } from '@kompass/shared';
 
 import { AuthProvider } from '../../../contexts/AuthContext';
 import * as authLib from '../../../lib/auth';
+import { auditService } from '../../../services/audit.service';
 import { RoleGuard } from '../RoleGuard';
 
 import type { User } from '@kompass/shared';
@@ -25,12 +26,12 @@ vi.mock('../../../lib/auth', () => ({
 }));
 
 // Mock audit service
-const mockLogUnauthorizedAccess = vi.fn();
 vi.mock('../../../services/audit.service', () => ({
   auditService: {
-    logUnauthorizedAccess: mockLogUnauthorizedAccess,
+    logUnauthorizedAccess: vi.fn(),
   },
 }));
+
 
 /**
  * Test component for protected route
@@ -190,7 +191,7 @@ describe('RoleGuard', () => {
     // Audit logging happens before redirect, so wait a bit
     await waitFor(
       () => {
-        expect(mockLogUnauthorizedAccess).toHaveBeenCalled();
+        expect(auditService.logUnauthorizedAccess).toHaveBeenCalled();
       },
       { timeout: 1000 }
     );
@@ -235,7 +236,7 @@ describe('RoleGuard', () => {
 
     await waitFor(
       () => {
-        expect(mockLogUnauthorizedAccess).toHaveBeenCalledWith(
+        expect(auditService.logUnauthorizedAccess).toHaveBeenCalledWith(
           expect.objectContaining({
             userId: 'user-123',
             route: '/test',

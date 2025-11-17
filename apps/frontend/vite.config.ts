@@ -30,10 +30,61 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Shell caching strategy: CacheFirst for HTML, CSS, JS assets
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        // Precache shell assets for offline access
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api/, /^\/_/, /^\/login/],
         runtimeCaching: [
+          // Shell assets: CacheFirst for fast offline loading
+          {
+            urlPattern: /\.(?:js|css|html|ico|png|svg|woff|woff2)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'kompass-shell-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          // Navigation routes: NetworkFirst with fallback to cache
+          {
+            urlPattern: /^\/(dashboard|customers|opportunities|projects|finance|admin|unauthorized)$/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'kompass-navigation-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24, // 24 hours
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+              networkTimeoutSeconds: 3, // Fallback to cache after 3s
+            },
+          },
+          // API calls: NetworkFirst, exclude from shell cache
           {
             urlPattern: /^https:\/\/api\.kompass\.local\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'kompass-api-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24, // 24 hours
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          // API calls (alternative pattern for localhost)
+          {
+            urlPattern: /^http:\/\/localhost:\d+\/api\/.*/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'kompass-api-cache',
