@@ -6,7 +6,7 @@
  * - Sets up global mocks if needed
  */
 
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 
 // Mock window.matchMedia (used by Radix UI components)
