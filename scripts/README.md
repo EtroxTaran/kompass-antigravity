@@ -11,11 +11,13 @@ These scripts help you work with the GitHub UI reference repository (`EtroxTaran
 Lists directory structure of the reference repository.
 
 **Usage:**
+
 ```bash
 ./scripts/list-ui-reference.sh [path]
 ```
 
 **Examples:**
+
 ```bash
 # List root directory
 ./scripts/list-ui-reference.sh
@@ -28,6 +30,7 @@ Lists directory structure of the reference repository.
 ```
 
 **Requirements:**
+
 - GitHub CLI (`gh`) installed and authenticated
 - Or use GitHub MCP tools in Cursor
 
@@ -36,11 +39,13 @@ Lists directory structure of the reference repository.
 Searches for files/components in the reference repository.
 
 **Usage:**
+
 ```bash
 ./scripts/search-ui-reference.sh <search-term>
 ```
 
 **Examples:**
+
 ```bash
 # Search for customer-related files
 ./scripts/search-ui-reference.sh Customer
@@ -53,6 +58,7 @@ Searches for files/components in the reference repository.
 ```
 
 **Requirements:**
+
 - GitHub CLI (`gh`) installed and authenticated
 - Or use GitHub MCP tools in Cursor
 
@@ -61,11 +67,13 @@ Searches for files/components in the reference repository.
 Fetches specific file from the reference repository.
 
 **Usage:**
+
 ```bash
 ./scripts/fetch-ui-reference.sh <file-path> [--open]
 ```
 
 **Examples:**
+
 ```bash
 # Fetch a component file
 ./scripts/fetch-ui-reference.sh src/components/CustomerForm.tsx
@@ -75,14 +83,15 @@ Fetches specific file from the reference repository.
 ```
 
 **Output:**
+
 - Files are saved to `/tmp/kompass-ui-reference/`
 - Use `--open` flag to open in your default editor
 
 **Requirements:**
+
 - GitHub CLI (`gh`) installed and authenticated
 - Or use GitHub MCP tools in Cursor
 
 ## Other Scripts
 
 See individual script files for documentation on other development scripts.
-

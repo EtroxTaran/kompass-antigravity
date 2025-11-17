@@ -45,7 +45,35 @@ Kompassuimusterbibliothek/
 3. Understand priority and dependencies
 4. Cross-check with project documentation
 
-### Step 2: Research via GitHub MCP
+### Step 2: Extract Styling Patterns (NEW)
+
+**When aligning documentation with reference repository, extract:**
+
+1. **Design Tokens** from `src/styles/globals.css`:
+   - Color system (OKLCH values)
+   - Typography (font families, sizes, weights)
+   - Spacing scale (base unit: 4px)
+   - Border radius values
+   - Shadow levels
+   - Sidebar colors
+
+2. **Component Patterns** from `src/components/*.tsx`:
+   - Sizes (heights, widths, padding)
+   - Variants (all style variations)
+   - Spacing (gap values, margins)
+   - Structure (component composition)
+   - States (hover, focus, active, disabled)
+   - Icons (sizes, positioning)
+
+3. **Layout Patterns** from component demos:
+   - Grid systems (columns, breakpoints)
+   - Container widths
+   - Spacing between sections
+   - Responsive breakpoints
+
+**See "Styling Guidelines Extraction Methodology" section below for detailed steps.**
+
+### Step 3: Research via GitHub MCP
 
 **ALWAYS use GitHub MCP to:**
 
@@ -254,6 +282,7 @@ Use these helper scripts to work with the reference repository:
 Lists directory structure of the reference repository. Use optional path parameter to list specific subdirectories.
 
 **Examples:**
+
 ```bash
 # List root directory
 ./scripts/list-ui-reference.sh
@@ -274,6 +303,7 @@ Lists directory structure of the reference repository. Use optional path paramet
 Searches for files/components in the reference repository by name.
 
 **Examples:**
+
 ```bash
 # Search for customer-related files
 ./scripts/search-ui-reference.sh Customer
@@ -291,6 +321,7 @@ Searches for files/components in the reference repository by name.
 Fetches specific file from the reference repository and saves to `/tmp/kompass-ui-reference/`. Use `--open` flag to open in your default editor.
 
 **Examples:**
+
 ```bash
 # Fetch a component file
 ./scripts/fetch-ui-reference.sh src/components/CustomerListDemo.tsx
@@ -316,28 +347,176 @@ Fetches specific file from the reference repository and saves to `/tmp/kompass-u
 A complete example implementation following the reference repository workflow:
 
 **Reference Source:**
+
 - `src/components/CustomerListDemo.tsx` from `EtroxTaran/Kompassuimusterbibliothek`
 
 **Implementation:**
+
 - `apps/frontend/src/pages/CustomerListPage.tsx` - Main page component
 - `apps/frontend/src/services/customer.service.ts` - API service
 - `apps/frontend/src/pages/__tests__/CustomerListPage.spec.tsx` - Tests
 
 **Documentation:**
+
 - `ui-ux/04-list-views/customer-list.md` - Updated with reference source
 
 **Patterns Applied:**
+
 - Table layout with search functionality
 - Loading states with Skeleton components
 - Error handling and empty states
 - Mobile-responsive design
 - RBAC filtering (ADM sees own customers)
 
+## Styling Guidelines Extraction Methodology
+
+### Step 1: Extract Design Tokens
+
+**Primary Source:** `src/styles/globals.css`
+
+Extract the following from `globals.css`:
+
+- **Color System**: OKLCH color values for all tokens (primary, secondary, accent, destructive, muted, background, foreground, border, card)
+- **Typography**: Font families (Plus Jakarta Sans, Source Serif 4, JetBrains Mono), font sizes, weights, line heights
+- **Spacing**: Base unit (4px/0.25rem), spacing scale values
+- **Border Radius**: All radius values (--radius, --radius-sm, --radius-md, --radius-lg, --radius-xl)
+- **Shadows**: All shadow levels (sm, md, lg, xl)
+- **Sidebar Colors**: Sidebar-specific color tokens
+
+**Example Extraction:**
+
+```bash
+# Fetch globals.css
+./scripts/fetch-ui-reference.sh src/styles/globals.css
+
+# Extract color values
+grep -E "^\s*--(primary|secondary|accent|destructive)" /tmp/kompass-ui-reference/globals.css
+
+# Extract typography
+grep -E "^\s*--font-|font-family:" /tmp/kompass-ui-reference/globals.css
+```
+
+### Step 2: Extract Component Patterns
+
+**Primary Sources:** `src/components/*.tsx`
+
+For each component type, extract:
+
+- **Sizes**: Height, width, padding values (e.g., Button: sm=32px, default=40px, lg=48px)
+- **Variants**: All variant styles (default, outline, ghost, secondary, destructive, link)
+- **Spacing**: Gap values between elements (gap-2, gap-4, gap-6)
+- **Structure**: Component composition (CardHeader, CardTitle, CardContent, etc.)
+- **States**: Hover, focus, active, disabled states
+- **Icons**: Icon sizes and positioning (h-3 w-3, h-4 w-4, h-5 w-5)
+
+**Component Files to Extract:**
+
+- `ButtonVariants.tsx` → Button variants and usage
+- `ButtonSizes.tsx` → Button size specifications
+- `FormInputsDemo.tsx` → Input patterns, validation states
+- `CardDemo.tsx` → Card structure and composition
+- `CustomerListDemo.tsx` → Table patterns, row heights, spacing
+- `DesktopSidebar.tsx` → Navigation structure, sidebar dimensions
+- `CustomerListSkeleton.tsx` → Loading state patterns
+- `EmptyCustomerList.tsx` → Empty state patterns
+- `EmptySearchResults.tsx` → Search empty state patterns
+
+**Example Extraction:**
+
+```bash
+# Fetch component files
+./scripts/fetch-ui-reference.sh src/components/ButtonVariants.tsx
+./scripts/fetch-ui-reference.sh src/components/FormInputsDemo.tsx
+
+# Extract patterns
+grep -E "className=|size=|variant=" /tmp/kompass-ui-reference/ButtonVariants.tsx
+grep -E "h-\d+|w-\d+|gap-|p-\d+" /tmp/kompass-ui-reference/FormInputsDemo.tsx
+```
+
+### Step 3: Extract Layout Patterns
+
+**Primary Sources:** Component demos and layout files
+
+Extract:
+
+- **Grid Systems**: Column counts, breakpoints, gutter widths
+- **Container Widths**: Max-widths, padding
+- **Spacing Between Sections**: space-y-4, space-y-6 patterns
+- **Responsive Breakpoints**: Mobile, tablet, desktop patterns
+
+**Example Extraction:**
+
+```bash
+# Extract grid patterns
+grep -E "grid-cols-|md:grid-cols-|lg:grid-cols-" /tmp/kompass-ui-reference/CustomerListDemo.tsx
+
+# Extract spacing patterns
+grep -E "space-y-|gap-" /tmp/kompass-ui-reference/CardDemo.tsx
+```
+
+### Step 4: Document Reference Sources
+
+**Always document which reference files were used:**
+
+```markdown
+**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/ButtonVariants.tsx`
+```
+
+**Include in documentation:**
+
+- Exact file path from reference repository
+- Specific patterns extracted
+- Any adaptations made for our stack (React + shadcn/ui + Tailwind)
+- Deviations from reference (with justification)
+
+### Step 5: Update Documentation Files
+
+**Update these files with extracted patterns:**
+
+1. **Foundation Docs** (`ui-ux/01-foundation/`):
+   - `design-tokens.md` → All color, typography, spacing, shadow values
+   - `grid-system.md` → Layout patterns, breakpoints
+   - `navigation-patterns.md` → Sidebar structure, navigation patterns
+   - `loading-states.md` → Skeleton patterns, loading indicators
+   - `error-empty-states.md` → Empty state patterns, error displays
+
+2. **Component Docs** (`ui-ux/02-core-components/`):
+   - `buttons.md` → Button sizes, variants, usage
+   - `form-inputs.md` → Input patterns, validation states
+   - `cards.md` → Card structure, composition
+   - `tables-datagrids.md` → Table patterns, row heights
+   - All other component docs with reference sources
+
+3. **Style Guide** (`docs/design-system/style-guide.md`):
+   - Quick reference for all design tokens
+   - Component specifications
+   - Common patterns
+   - Usage guidelines
+
+### Step 6: Verify Alignment
+
+**Cross-reference extracted values:**
+
+- Verify color values match between `globals.css` and component usage
+- Verify spacing values are consistent across components
+- Verify typography matches component text sizes
+- Ensure all documentation references source files
+
+**Verification Checklist:**
+
+- [ ] All color tokens extracted from `globals.css`
+- [ ] All component patterns extracted from component files
+- [ ] All documentation files updated with reference sources
+- [ ] Style guide created with complete extracted system
+- [ ] No hardcoded values in documentation (all reference source files)
+- [ ] All adaptations documented with justification
+
 ## References
 
 - MCP Tool Usage: `.cursor/rules/mcp-tool-usage-ui-integration.mdc`
 - UI/UX Documentation Sync: `.cursor/rules/ui-ux-documentation-sync.mdc`
 - UI Components: `.cursor/rules/ui-components.mdc`
+- Style Guide: `docs/design-system/style-guide.md`
 - UI Implementation Checklist: `docs/guides/ui-implementation-checklist.md`
 - UI Implementation Template: `docs/guides/ui-implementation-template.md`
 - Helper Scripts: `scripts/README.md`

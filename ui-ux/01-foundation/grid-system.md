@@ -29,9 +29,11 @@
 - Responsive container component
 - Flexbox for component-level layouts
 
-## Figma Make Prompt
+## Grid System Specifications (from Reference Repository)
 
-Create a responsive grid system for KOMPASS that supports desktop, tablet, and mobile layouts for a professional CRM application.
+**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx` and layout patterns
+
+The grid system uses Tailwind CSS utilities for responsive layouts.
 
 **Desktop Layout (1280px+):**
 Design a 12-column grid system with:
@@ -141,22 +143,56 @@ Ensure all examples follow German business use cases (customer lists, project ti
 
 ## Implementation Notes
 
-### Tailwind Grid Classes
+### Tailwind Grid Classes (from Reference Repository)
 
-```html
-<!-- Desktop: 12 columns -->
-<div class="grid grid-cols-12 gap-6">
-  <div class="col-span-3">Sidebar</div>
-  <div class="col-span-9">Main</div>
+**Reference:** `EtroxTaran/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx`
+
+```tsx
+// Responsive Grid: 1 col mobile, 2 tablet, 3 desktop
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <Card>Card 1</Card>
+  <Card>Card 2</Card>
+  <Card>Card 3</Card>
 </div>
 
-<!-- Responsive: 1 col mobile, 2 tablet, 3 desktop -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  <div>Card 1</div>
-  <div>Card 2</div>
-  <div>Card 3</div>
+// Card Spacing (from reference)
+<div className="space-y-6">
+  <Card>Card 1</Card>
+  <Card>Card 2</Card>
+</div>
+
+// Form Grid: 2 columns on desktop, 1 on mobile
+<div className="grid gap-6 md:grid-cols-2">
+  <div className="grid gap-2">
+    <Label>Field 1</Label>
+    <Input />
+  </div>
+  <div className="grid gap-2">
+    <Label>Field 2</Label>
+    <Input />
+  </div>
+</div>
+
+// Flex Layouts (from reference)
+<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+  {/* Left section */}
+  <div className="flex items-center gap-2 flex-1">
+    {/* Search, Filter, etc. */}
+  </div>
+  {/* Right section */}
+  <div className="flex items-center gap-2">
+    {/* Actions */}
+  </div>
 </div>
 ```
+
+**Spacing Patterns from Reference:**
+
+- Card spacing: `space-y-6` (24px) between cards
+- Form field spacing: `gap-2` (8px) between label and input, `gap-6` (24px) between fields
+- Button groups: `gap-2` (8px) between buttons
+- Control bar: `gap-4` (16px) between controls
+- Section spacing: `space-y-4` (16px) or `space-y-8` (32px) for major sections
 
 ### Container Component
 

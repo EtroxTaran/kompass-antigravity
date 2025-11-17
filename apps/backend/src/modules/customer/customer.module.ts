@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-// TODO: Implement CustomerController, CustomerService, CustomerRepository
-// import { CustomerController } from './customer.controller';
-// import { CustomerService } from './customer.service';
-// import { CustomerRepository } from './customer.repository';
+
+import { CustomerController } from './customer.controller';
+import { CustomerRepository } from './customer.repository';
+import { CustomerService } from './customer.service';
 
 /**
  * Customer Module
@@ -14,16 +14,29 @@ import { Module } from '@nestjs/common';
  * - Duplicate detection
  * - DSGVO compliance
  *
- * TODO: Implement CustomerController, CustomerService, CustomerRepository
- * Currently only DTOs and entities are defined.
+ * Dependencies:
+ * - DatabaseModule (Global) - Provides NANO CouchDB client
+ * - AuthModule - Provides JwtAuthGuard and RbacGuard
  */
 @Module({
-  // TODO: Uncomment when controllers/services/repositories are implemented
-  // controllers: [CustomerController],
-  // providers: [
-  //   CustomerService,
-  //   CustomerRepository,
-  // ],
-  // exports: [CustomerService],
+  controllers: [CustomerController],
+  providers: [
+    CustomerService,
+    CustomerRepository,
+    {
+      provide: 'ICustomerRepository',
+      useClass: CustomerRepository,
+    },
+    {
+      provide: 'IAuditService',
+      useValue: {
+        log: async () => {
+          // No-op audit service (placeholder until AuditService is implemented)
+          // This allows the service to work without throwing errors
+        },
+      },
+    },
+  ],
+  exports: [CustomerService],
 })
 export class CustomerModule {}

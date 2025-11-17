@@ -1,30 +1,41 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
+import { KeycloakAdminService } from './keycloak-admin.service';
 import { UserRolesController } from './user-roles.controller';
+import { UserController } from './user.controller';
+import { UserRepository } from './user.repository';
+import { UserService } from './user.service';
 
 /**
  * User Management Module
  *
  * Handles user profile management and role assignment.
  *
- * TODO: Create UserService for user CRUD operations
- * TODO: Create UserRolesService for role assignment logic
- * TODO: Create UserRepository for CouchDB operations
- * TODO: Add user profile endpoints
- * TODO: Add user search and filtering
- *
  * @see docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md#user-entity
  * @see docs/specifications/reviews/API_SPECIFICATION.md#user-role-management-endpoints
  */
 @Module({
-  controllers: [UserRolesController],
+  imports: [ConfigModule],
+  controllers: [UserController, UserRolesController],
   providers: [
-    // TODO: Add UserService
-    // TODO: Add UserRolesService
-    // TODO: Add UserRepository
+    UserService,
+    UserRepository,
+    KeycloakAdminService,
+    {
+      provide: 'IUserRepository',
+      useClass: UserRepository,
+    },
+    {
+      provide: 'IKeycloakAdminService',
+      useClass: KeycloakAdminService,
+    },
+    // TODO: Add AuditService when implemented
+    {
+      provide: 'IAuditService',
+      useValue: null, // Placeholder - will be implemented later
+    },
   ],
-  exports: [
-    // TODO: Export UserService when created
-  ],
+  exports: [UserService],
 })
 export class UserModule {}

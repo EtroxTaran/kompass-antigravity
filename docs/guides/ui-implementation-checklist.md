@@ -87,11 +87,13 @@ This checklist ensures all UI implementations follow the GitHub UI reference rep
 Use these scripts to work with the reference repository:
 
 - **List repository structure:**
+
   ```bash
   ./scripts/list-ui-reference.sh [path]
   ```
 
 - **Search for components:**
+
   ```bash
   ./scripts/search-ui-reference.sh <search-term>
   ```
@@ -107,4 +109,3 @@ Use these scripts to work with the reference repository:
 - UI Implementation Template: `docs/guides/ui-implementation-template.md`
 - UI Components Rule: `.cursor/rules/ui-components.mdc`
 - UI/UX Documentation Sync: `.cursor/rules/ui-ux-documentation-sync.mdc`
-

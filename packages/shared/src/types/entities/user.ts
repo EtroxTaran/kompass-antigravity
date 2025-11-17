@@ -67,6 +67,9 @@ export interface User extends BaseEntity {
   primaryRole: UserRole;
 
   // Authentication
+  /** Keycloak user ID (for synchronization) */
+  keycloakUserId?: string;
+
   /** Account active status */
   active: boolean;
 

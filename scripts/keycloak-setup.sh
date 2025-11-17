@@ -26,6 +26,12 @@ REALM_NAME="${KEYCLOAK_REALM:-kompass}"
 API_CLIENT_ID="${KEYCLOAK_CLIENT_ID:-kompass-api}"
 FRONTEND_CLIENT_ID="${KEYCLOAK_FRONTEND_CLIENT_ID:-kompass-frontend}"
 
+# Default admin user configuration
+ADMIN_USER_EMAIL="${ADMIN_USER_EMAIL:-admin@kompass.de}"
+ADMIN_USER_PASSWORD="${ADMIN_USER_PASSWORD:-Admin123!@#}"
+ADMIN_USER_FIRST_NAME="${ADMIN_USER_FIRST_NAME:-Admin}"
+ADMIN_USER_LAST_NAME="${ADMIN_USER_LAST_NAME:-User}"
+
 # Roles to create
 ROLES=("ADM" "INNEN" "PLAN" "KALK" "BUCH" "GF" "ADMIN")
 
@@ -158,6 +164,7 @@ create_client() {
   local client_id=$2
   local client_type=$3  # "confidential" or "public"
   local redirect_uris=$4
+  local enable_direct_grants=${5:-false}  # Enable direct access grants for embedded login
 
   echo -e "${YELLOW}📦 Creating client: ${client_id}...${NC}"
 
@@ -172,7 +179,7 @@ create_client() {
   "publicClient": ${([ "$client_type" = "public" ] && echo "true" || echo "false")},
   "standardFlowEnabled": true,
   "implicitFlowEnabled": false,
-  "directAccessGrantsEnabled": false,
+  "directAccessGrantsEnabled": ${([ "$enable_direct_grants" = "true" ] && echo "true" || echo "false")},
   "serviceAccountsEnabled": ${([ "$client_type" = "confidential" ] && echo "true" || echo "false")},
   "authorizationServicesEnabled": false,
   "fullScopeAllowed": true
@@ -191,12 +198,50 @@ EOF
     echo -e "${GREEN}✅ Client created successfully${NC}"
     return 0
   elif [ "$http_code" = "409" ]; then
-    echo -e "${YELLOW}⚠️  Client already exists, skipping creation${NC}"
+    echo -e "${YELLOW}⚠️  Client already exists, updating configuration...${NC}"
+    # Update existing client to enable direct grants
+    update_client_direct_grants "$token" "$client_id" "$enable_direct_grants"
     return 0
   else
     echo -e "${RED}❌ Failed to create client (HTTP $http_code)${NC}"
     echo "Response: ${response%???}"
     return 1
+  fi
+}
+
+# Function to update client to enable direct access grants
+update_client_direct_grants() {
+  local token=$1
+  local client_id=$2
+  local enable=$3
+
+  local client_uuid=$(get_client_uuid "$token" "$client_id")
+  if [ -z "$client_uuid" ]; then
+    echo -e "${RED}❌ Client ${client_id} not found${NC}"
+    return 1
+  fi
+
+  # Get current client configuration
+  local current_config=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM_NAME}/clients/${client_uuid}" \
+    -H "Authorization: Bearer ${token}" \
+    -H "Content-Type: application/json")
+
+  # Update directAccessGrantsEnabled
+  local updated_config=$(echo "$current_config" | sed "s/\"directAccessGrantsEnabled\":[^,}]*/\"directAccessGrantsEnabled\":${enable}/")
+
+  local response=$(curl -s -w "%{http_code}" -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM_NAME}/clients/${client_uuid}" \
+    -H "Authorization: Bearer ${token}" \
+    -H "Content-Type: application/json" \
+    -d "$updated_config")
+
+  local http_code="${response: -3}"
+  
+  if [ "$http_code" = "204" ] || [ "$http_code" = "200" ]; then
+    echo -e "${GREEN}✅ Client updated successfully${NC}"
+    return 0
+  else
+    echo -e "${YELLOW}⚠️  Failed to update client (HTTP $http_code), continuing...${NC}"
+    return 0
   fi
 }
 
@@ -286,6 +331,116 @@ EOF
   echo -e "${GREEN}✅ Client roles assigned${NC}"
 }
 
+# Function to check if user exists
+user_exists() {
+  local token=$1
+  local email=$2
+
+  local response=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM_NAME}/users?email=${email}" \
+    -H "Authorization: Bearer ${token}" \
+    -H "Content-Type: application/json")
+
+  local user_count=$(echo "$response" | grep -o '"id"' | wc -l)
+  [ "$user_count" -gt 0 ]
+}
+
+# Function to create user
+create_user() {
+  local token=$1
+  local email=$2
+  local password=$3
+  local first_name=$4
+  local last_name=$5
+  local enabled=${6:-true}
+
+  echo -e "${YELLOW}👤 Creating user: ${email}...${NC}"
+
+  local user_config=$(cat <<EOF
+{
+  "username": "${email}",
+  "email": "${email}",
+  "firstName": "${first_name}",
+  "lastName": "${last_name}",
+  "enabled": ${enabled},
+  "emailVerified": true,
+  "credentials": [
+    {
+      "type": "password",
+      "value": "${password}",
+      "temporary": false
+    }
+  ]
+}
+EOF
+)
+
+  local response=$(curl -s -w "%{http_code}" -X POST "${KEYCLOAK_URL}/admin/realms/${REALM_NAME}/users" \
+    -H "Authorization: Bearer ${token}" \
+    -H "Content-Type: application/json" \
+    -d "$user_config")
+
+  local http_code="${response: -3}"
+  
+  if [ "$http_code" = "201" ]; then
+    echo -e "${GREEN}✅ User created successfully${NC}"
+    return 0
+  elif [ "$http_code" = "409" ]; then
+    echo -e "${YELLOW}⚠️  User already exists, skipping creation${NC}"
+    return 0
+  else
+    echo -e "${RED}❌ Failed to create user (HTTP $http_code)${NC}"
+    echo "Response: ${response%???}"
+    return 1
+  fi
+}
+
+# Function to get user ID by email
+get_user_id() {
+  local token=$1
+  local email=$2
+
+  local response=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM_NAME}/users?email=${email}" \
+    -H "Authorization: Bearer ${token}" \
+    -H "Content-Type: application/json")
+
+  echo "$response" | grep -o '"id":"[^"]*' | head -1 | cut -d'"' -f4
+}
+
+# Function to assign role to user
+assign_role_to_user() {
+  local token=$1
+  local user_id=$2
+  local role_name=$3
+
+  echo -e "${YELLOW}🔗 Assigning role ${role_name} to user...${NC}"
+
+  # Get role representation
+  local role_response=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM_NAME}/roles/${role_name}" \
+    -H "Authorization: Bearer ${token}" \
+    -H "Content-Type: application/json")
+
+  if [ -z "$role_response" ] || echo "$role_response" | grep -q '"error"'; then
+    echo -e "${RED}❌ Role ${role_name} not found${NC}"
+    return 1
+  fi
+
+  # Assign role to user
+  local response=$(curl -s -w "%{http_code}" -X POST "${KEYCLOAK_URL}/admin/realms/${REALM_NAME}/users/${user_id}/role-mappings/realm" \
+    -H "Authorization: Bearer ${token}" \
+    -H "Content-Type: application/json" \
+    -d "[${role_response}]")
+
+  local http_code="${response: -3}"
+  
+  if [ "$http_code" = "204" ] || [ "$http_code" = "200" ]; then
+    echo -e "${GREEN}✅ Role ${role_name} assigned successfully${NC}"
+    return 0
+  else
+    echo -e "${YELLOW}⚠️  Failed to assign role (HTTP $http_code), may already be assigned${NC}"
+    return 0
+  fi
+}
+
 # Main execution
 main() {
   # Wait for Keycloak
@@ -301,9 +456,9 @@ main() {
   API_REDIRECT_URIS='["*"]'
   create_client "$ADMIN_TOKEN" "$API_CLIENT_ID" "confidential" "$API_REDIRECT_URIS" || exit 1
 
-  # Create Frontend client (public, for React app)
+  # Create Frontend client (public, for React app) with direct access grants enabled
   FRONTEND_REDIRECT_URIS='["http://localhost:5173/*", "http://localhost:3000/*", "http://frontend:8080/*"]'
-  create_client "$ADMIN_TOKEN" "$FRONTEND_CLIENT_ID" "public" "$FRONTEND_REDIRECT_URIS" || exit 1
+  create_client "$ADMIN_TOKEN" "$FRONTEND_CLIENT_ID" "public" "$FRONTEND_REDIRECT_URIS" "true" || exit 1
 
   # Create roles
   for role in "${ROLES[@]}"; do
@@ -316,17 +471,44 @@ main() {
     assign_realm_roles_to_client "$ADMIN_TOKEN" "$API_CLIENT_UUID" || exit 1
   fi
 
+  # Create default admin user
+  if ! user_exists "$ADMIN_TOKEN" "$ADMIN_USER_EMAIL"; then
+    create_user "$ADMIN_TOKEN" "$ADMIN_USER_EMAIL" "$ADMIN_USER_PASSWORD" "$ADMIN_USER_FIRST_NAME" "$ADMIN_USER_LAST_NAME" "true" || exit 1
+    
+    # Get admin user ID and assign ADMIN role
+    ADMIN_USER_ID=$(get_user_id "$ADMIN_TOKEN" "$ADMIN_USER_EMAIL")
+    if [ -n "$ADMIN_USER_ID" ]; then
+      assign_role_to_user "$ADMIN_TOKEN" "$ADMIN_USER_ID" "ADMIN" || exit 1
+      echo -e "${GREEN}✅ Admin user created and ADMIN role assigned${NC}"
+    else
+      echo -e "${YELLOW}⚠️  Could not find admin user ID, role assignment skipped${NC}"
+    fi
+  else
+    echo -e "${YELLOW}⚠️  Admin user already exists, skipping creation${NC}"
+    # Ensure ADMIN role is assigned
+    ADMIN_USER_ID=$(get_user_id "$ADMIN_TOKEN" "$ADMIN_USER_EMAIL")
+    if [ -n "$ADMIN_USER_ID" ]; then
+      assign_role_to_user "$ADMIN_TOKEN" "$ADMIN_USER_ID" "ADMIN" || true
+    fi
+  fi
+
   echo -e "${GREEN}✅ Keycloak setup completed successfully!${NC}"
   echo ""
   echo -e "${GREEN}📋 Summary:${NC}"
   echo "  - Realm: ${REALM_NAME}"
   echo "  - API Client: ${API_CLIENT_ID}"
-  echo "  - Frontend Client: ${FRONTEND_CLIENT_ID}"
+  echo "  - Frontend Client: ${FRONTEND_CLIENT_ID} (Direct Access Grants: Enabled)"
   echo "  - Roles: ${ROLES[*]}"
+  echo "  - Admin User: ${ADMIN_USER_EMAIL}"
+  echo ""
+  echo -e "${YELLOW}💡 Default Admin Credentials:${NC}"
+  echo "  Email: ${ADMIN_USER_EMAIL}"
+  echo "  Password: ${ADMIN_USER_PASSWORD}"
+  echo "  ⚠️  Please change the password on first login!"
   echo ""
   echo -e "${YELLOW}💡 Next steps:${NC}"
-  echo "  1. Create test users in Keycloak Admin Console: ${KEYCLOAK_URL}"
-  echo "  2. Assign roles to users"
+  echo "  1. Test login with admin credentials"
+  echo "  2. Create additional users via the application"
   echo "  3. Test authentication flow"
 }
 

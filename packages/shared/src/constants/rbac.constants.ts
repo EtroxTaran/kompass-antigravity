@@ -237,6 +237,12 @@ export const PERMISSION_MATRIX: Record<
 
   [UserRole.GF]: {
     // GF has full access to everything
+    [EntityType.User]: {
+      [Permission.CREATE]: true,
+      [Permission.READ]: true,
+      [Permission.UPDATE]: true,
+      [Permission.DELETE]: true,
+    },
     [EntityType.Customer]: {
       [Permission.CREATE]: true,
       [Permission.READ]: true,

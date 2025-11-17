@@ -32,46 +32,57 @@
 - `DropdownMenu` for user profile menu
 - `Badge` for notification counts and sync status
 
-## Figma Make Prompt
+## Navigation Specifications (from Reference Repository)
 
-Create a comprehensive navigation system for KOMPASS, a German CRM and project management application. Design for both desktop and mobile experiences with role-based menu items.
+**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/DesktopSidebar.tsx`
 
 **Desktop Navigation (Sidebar):**
-Design a left-aligned vertical sidebar (240px wide) with:
 
-- Company logo at top (48px height, with padding)
-- User profile section below logo showing avatar, name, role badge
-- Navigation menu items organized by section:
-  1. **Dashboard** (Icon: LayoutDashboard) - "Dashboard"
-  2. **Kunden** (Icon: Users) - "Customers" section with submenu:
-     - Kundenliste (Customer List)
-     - Standorte (Locations)
-     - Kontakte (Contacts)
-  3. **Vertrieb** (Icon: TrendingUp) - "Sales" section:
-     - Opportunities
-     - Angebote (Quotes)
-     - Pipeline
-  4. **Projekte** (Icon: Briefcase) - "Projects":
-     - Projektübersicht (Project Overview)
-     - Zeiterfassung (Time Tracking)
-  5. **Rechnungen** (Icon: FileText) - "Invoices":
-     - Rechnungen (Invoices)
-     - Zahlungen (Payments)
-  6. **Aktivitäten** (Icon: ClipboardList) - "Activities":
-     - Protokolle (Protocols)
-     - Aufgaben (Tasks)
-- Bottom section with:
-  - Offline-Sync status indicator (green dot + "Synchronisiert" or amber + "Offline - 3 ausstehend")
-  - Settings (Icon: Settings)
-  - Help (Icon: HelpCircle)
+The sidebar uses a fixed-width layout with role-based menu filtering:
 
-Each menu item has:
+- Width: 240px (`w-60`)
+- Height: Full screen (`h-screen`)
+- Background: `bg-card`
+- Border: `border-r border-border`
+- Layout: Flex column (`flex flex-col`)
 
-- Icon (20px) aligned left
-- Label text (14px, medium weight)
-- Hover state: light blue background (#e0f2fe)
-- Active state: blue background (#3b82f6) with white text
-- Badge for counts (e.g., "5" pending opportunities)
+**Structure:**
+
+1. **Logo Section** (Top):
+   - Height: 64px (`h-16`)
+   - Padding: 24px horizontal (`px-6`)
+   - Border-bottom: `border-b border-border`
+   - Logo: 32px square (`h-8 w-8`) with rounded corners, primary background
+   - Text: "KOMPASS" heading
+
+2. **User Profile Section**:
+   - Shows user avatar, name, role badge
+   - Role badges use color coding:
+     - GF: `bg-primary`
+     - ADM: `bg-chart-1`
+     - PLAN: `bg-chart-2`
+     - KALK: `bg-chart-3`
+     - BUCH: `bg-chart-4`
+
+3. **Navigation Menu Items**:
+   - Menu items with icons (lucide-react)
+   - Expandable submenus with chevron indicator
+   - Badge support for counts (e.g., "5" for opportunities)
+   - Role-based filtering (ADM sees limited items, GF sees all)
+   - Disabled state for restricted items
+
+4. **Bottom Section**:
+   - Offline sync status indicator
+   - Settings link
+   - Help link
+
+**Menu Item Structure:**
+
+- Icon: 20px (`h-5 w-5`)
+- Label: 14px, medium weight
+- Hover: Light background highlight
+- Active: Primary background with white text
+- Badge: Small badge component for counts
 
 **Top Bar (All Screens):**
 Design a horizontal bar (64px height) across the top with:

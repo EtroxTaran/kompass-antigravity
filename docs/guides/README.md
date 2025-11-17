@@ -37,11 +37,11 @@ This directory contains comprehensive guides for getting started with KOMPASS de
 
 ### Specialized Implementation Guides
 
-| Guide                                                                       | Description                              | Audience            | Last Updated |
-| --------------------------------------------------------------------------- | ---------------------------------------- | ------------------- | ------------ |
-| **[Rich Text Editor Implementation](./RICH_TEXT_EDITOR_IMPLEMENTATION.md)** | Rich text editor setup and configuration | Frontend developers | 2025-01-28   |
-| **[UI Implementation Checklist](./ui-implementation-checklist.md)**       | Step-by-step checklist for implementing UI from reference | Frontend developers | 2025-01-28   |
-| **[UI Implementation Template](./ui-implementation-template.md)**           | Template for documenting UI implementations | Frontend developers | 2025-01-28   |
+| Guide                                                                       | Description                                               | Audience            | Last Updated |
+| --------------------------------------------------------------------------- | --------------------------------------------------------- | ------------------- | ------------ |
+| **[Rich Text Editor Implementation](./RICH_TEXT_EDITOR_IMPLEMENTATION.md)** | Rich text editor setup and configuration                  | Frontend developers | 2025-01-28   |
+| **[UI Implementation Checklist](./ui-implementation-checklist.md)**         | Step-by-step checklist for implementing UI from reference | Frontend developers | 2025-01-28   |
+| **[UI Implementation Template](./ui-implementation-template.md)**           | Template for documenting UI implementations               | Frontend developers | 2025-01-28   |
 
 ---
 

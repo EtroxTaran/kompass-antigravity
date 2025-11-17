@@ -34,19 +34,21 @@
 - `FormDescription` for help text
 - `FormMessage` for validation errors
 
-## Figma Make Prompt
+## Input Specifications (from Reference Repository)
 
-Create a comprehensive library of form input components for KOMPASS, a German CRM application. Design all standard input types with validation states, accessibility features, and German labels.
+**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/FormInputsDemo.tsx`
 
 **Text Input (Standard):**
 
-- Container height: 40px
-- Border: 1px solid light gray (#e5e7eb), rounded corners (6px)
-- Padding: 12px horizontal, 10px vertical
-- Font: 14px, regular weight (#1f2937 text color)
-- Placeholder: Light gray (#9ca3af) text, example: "Firmenname eingeben"
-- Label above (14px, semibold, #374151): "Firmenname \*"
-- Required asterisk in red (#ef4444)
+- Container height: 40px (`h-10`)
+- Border: Uses `border-input` token (1px solid)
+- Border-radius: Uses `--radius` token (0.5rem)
+- Padding: Handled by shadcn/ui Input component (typically 12px horizontal)
+- Font: 14px, regular weight
+- Text color: `text-foreground`
+- Placeholder: `placeholder:text-muted-foreground`
+- Label: Uses `Label` component with `text-destructive` for required asterisk
+- Spacing: `gap-2` (8px) between label and input, `gap-6` (24px) between fields
 
 **States:**
 
@@ -59,11 +61,20 @@ Create a comprehensive library of form input components for KOMPASS, a German CR
 5. **Disabled**: Light gray background (#f9fafb), gray text, cursor not-allowed
 6. **Read-only**: White background, gray border, no focus state
 
-**Email Input:**
+**Email Input with Icon:**
 
-- Same as text input but with email icon (Mail, 20px) at left inside input
-- Padding-left: 40px to accommodate icon
-- Icon color: Gray (#6b7280)
+- Same as text input but with email icon at left inside input
+- Icon: `Mail` from lucide-react, size `h-5 w-5` (20px)
+- Icon position: `absolute left-3 top-1/2 -translate-y-1/2`
+- Icon color: `text-muted-foreground`
+- Input padding: `pl-10` (40px) to accommodate icon
+- Example:
+  ```tsx
+  <div className="relative">
+    <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+    <Input className="h-10 pl-10" type="email" placeholder="info@beispiel.de" />
+  </div>
+  ```
 - Validation: Email format check with error "Bitte geben Sie eine gültige E-Mail-Adresse ein"
 
 **Number Input:**
@@ -268,42 +279,106 @@ npx shadcn-ui@latest add label
 npx shadcn-ui@latest add form
 ```
 
-### Input Component Usage
+### Input Component Usage (from Reference Repository)
+
+**Reference:** `EtroxTaran/Kompassuimusterbibliothek/src/components/FormInputsDemo.tsx`
 
 ```typescript
-<div className="space-y-2">
-  <Label htmlFor="companyName">
+// Standard Text Input
+<div className="grid gap-2">
+  <Label htmlFor="company-name">
     Firmenname <span className="text-destructive">*</span>
   </Label>
   <Input
-    id="companyName"
+    id="company-name"
     placeholder="Firmenname eingeben"
+    className="h-10"
     required
     aria-required="true"
   />
-  <FormDescription>
+  <p className="text-sm text-muted-foreground">
     Der offizielle Name Ihres Unternehmens
-  </FormDescription>
+  </p>
+</div>
+
+// Input with Icon
+<div className="grid gap-2">
+  <Label htmlFor="email-icon">
+    E-Mail <span className="text-destructive">*</span>
+  </Label>
+  <div className="relative">
+    <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+    <Input
+      id="email-icon"
+      type="email"
+      placeholder="info@beispiel.de"
+      className="h-10 pl-10"
+    />
+  </div>
+</div>
+
+// Number Input with Suffix
+<div className="grid gap-2">
+  <Label htmlFor="credit-limit">Kreditlimit</Label>
+  <div className="relative">
+    <Input
+      id="credit-limit"
+      type="number"
+      placeholder="50000"
+      className="h-10 pr-10 text-right"
+    />
+    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+      €
+    </span>
+  </div>
+</div>
+
+// Textarea with Character Counter
+<div className="grid gap-2">
+  <Label htmlFor="notes">Notizen</Label>
+  <Textarea
+    id="notes"
+    placeholder="Zusätzliche Informationen eingeben..."
+    className="min-h-[120px] resize-y"
+    value={notes}
+    onChange={(e) => setNotes(e.target.value.slice(0, maxLength))}
+  />
+  <div className="flex justify-between text-sm text-muted-foreground">
+    <span>Optional</span>
+    <span>{notes.length} / {maxLength} Zeichen</span>
+  </div>
 </div>
 ```
 
-### Error State
+### Error State (from Reference Repository)
 
 ```typescript
-<div className="space-y-2">
-  <Label htmlFor="email">E-Mail</Label>
+<div className="grid gap-2">
+  <Label htmlFor="error-input" className="text-destructive">
+    E-Mail <span className="text-destructive">*</span>
+  </Label>
   <Input
-    id="email"
+    id="error-input"
     type="email"
-    className="border-destructive"
+    defaultValue="ungültig@"
+    className="h-10 border-destructive focus-visible:ring-destructive"
     aria-invalid="true"
-    aria-describedby="email-error"
   />
-  <FormMessage id="email-error">
+  <p className="text-sm text-destructive flex items-center gap-1">
+    <AlertCircle className="h-3 w-3" />
     Bitte geben Sie eine gültige E-Mail-Adresse ein
-  </FormMessage>
+  </p>
 </div>
 ```
+
+**Design Guidelines from Reference:**
+
+- Field height: 40px (`h-10`)
+- Spacing: `gap-2` (8px) between label and input, `gap-6` (24px) between fields
+- States: Default (gray border), Focus (blue ring 2px), Error (red border + text), Disabled (gray background)
+- Validation: Required fields use red asterisk (`text-destructive`), error messages with icon
+- Icons: Size `h-5 w-5` (20px), color `text-muted-foreground`, positioned with absolute positioning
+- Touch target: Minimum 44px height for mobile
 
 ### Component Dependencies
 

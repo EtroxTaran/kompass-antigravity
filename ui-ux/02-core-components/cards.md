@@ -30,15 +30,18 @@
 - `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`
 - Composable structure for flexibility
 
-## Figma Make Prompt
+## Card Specifications (from Reference Repository)
 
-Create a versatile card component system for KOMPASS, a German CRM application. Design card layouts for dashboards, lists, detail sections, and special use cases with German content.
+**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/CardDemo.tsx`
 
 **Basic Card (Standard):**
 
-- Container: White background, 1px solid border (#e5e7eb), 8px border-radius
-- Shadow: Subtle (0px 1px 3px rgba(0,0,0,0.05))
-- Padding: 24px
+- Container: Uses `Card` component from shadcn/ui
+- Background: `bg-card` token
+- Border: `border-border` token (1px solid)
+- Border-radius: Uses `--radius` token (0.5rem)
+- Shadow: Uses `--shadow-sm` token
+- Padding: Handled by `CardContent` component (typically 24px)
 - Width: Flexible (adapts to grid)
 - Content: Simple text or mixed content
 
@@ -289,9 +292,12 @@ Design in light mode with clean aesthetic. Ensure responsive behavior: cards sta
 npx shadcn-ui@latest add card
 ```
 
-### Basic Card Usage
+### Basic Card Usage (from Reference Repository)
+
+**Reference:** `EtroxTaran/Kompassuimusterbibliothek/src/components/CardDemo.tsx`
 
 ```typescript
+// Basic Card Structure
 <Card>
   <CardHeader>
     <CardTitle>Kundendaten</CardTitle>
@@ -304,7 +310,30 @@ npx shadcn-ui@latest add card
     <Button>Bearbeiten</Button>
   </CardFooter>
 </Card>
+
+// Card Demo Wrapper (from reference)
+<div className="space-y-6">
+  <Card>
+    <CardHeader>
+      <CardTitle>Button-Varianten</CardTitle>
+      <CardDescription>
+        Primär, Sekundär, Tertiär, Destruktiv, Link - alle grundlegenden Button-Typen
+      </CardDescription>
+    </CardHeader>
+    <CardContent>
+      {/* Component demo content */}
+    </CardContent>
+  </Card>
+</div>
 ```
+
+**Design Guidelines from Reference:**
+
+- Card spacing: `space-y-6` (24px) between cards
+- Card structure: `CardHeader` (with `CardTitle` and `CardDescription`), `CardContent`, optional `CardFooter`
+- Background: Uses `bg-card` token
+- Border: Uses `border-border` token
+- Shadow: Uses `--shadow-sm` token for standard elevation
 
 ### KPI Card
 

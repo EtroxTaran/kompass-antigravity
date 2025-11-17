@@ -11,6 +11,7 @@ import { CustomerListPage } from './pages/CustomerListPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { LoginPage } from './pages/LoginPage';
 import { UnauthorizedPage } from './pages/UnauthorizedPage';
+import { UserListPage } from './pages/UserListPage';
 
 /**
  * Main App Component
@@ -123,12 +124,7 @@ function App(): React.ReactElement {
                   entityType={EntityType.User}
                   permission={Permission.READ}
                 >
-                  <div className="container mx-auto p-6">
-                    <h1 className="text-3xl font-bold">Administration</h1>
-                    <p className="text-muted-foreground mt-2">
-                      Systemverwaltung wird hier implementiert.
-                    </p>
-                  </div>
+                  <UserListPage />
                 </RoleGuard>
               }
             />
