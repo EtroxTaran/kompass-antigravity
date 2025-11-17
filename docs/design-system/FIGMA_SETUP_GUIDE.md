@@ -41,27 +41,13 @@ $env:FIGMA_ACCESS_TOKEN = "your-token-here"
 [System.Environment]::SetEnvironmentVariable('FIGMA_ACCESS_TOKEN', 'your-token-here', 'User')
 ```
 
-### Step 2: Get Figma File Key (Required)
+### Step 2: Get Figma File Key (✅ COMPLETED)
 
-The published URL `https://relink-thick-71342514.figma.site/` is a public view, but we need the actual file key for API access.
+**File Key:** `wprWI8BZqyyJoLfqCol9OC`  
+**File Name:** `KOMPASS-UI-Muster-Bibliothek`  
+**Figma URL:** `https://www.figma.com/make/wprWI8BZqyyJoLfqCol9OC/KOMPASS-UI-Muster-Bibliothek`
 
-1. **Open the Figma file** in Figma (not the published site)
-2. **Copy the URL** from your browser
-   - Format: `https://www.figma.com/file/{FILE_KEY}/KOMPASS-Design-System`
-3. **Extract the FILE_KEY** (the long alphanumeric string)
-4. **Update the documentation:**
-
-Edit `docs/design-system/figma-integration.md` and replace:
-
-```markdown
-**Current File Key:** `[TO BE EXTRACTED - see manual steps below]`
-```
-
-With:
-
-```markdown
-**Current File Key:** `YOUR_ACTUAL_FILE_KEY_HERE`
-```
+The file key has been extracted from the Figma URL and documented in `docs/design-system/figma-integration.md`.
 
 ### Step 3: Find Design Token Node IDs (Optional but Recommended)
 

@@ -30,13 +30,13 @@ The Figma file key is extracted from the Figma file URL:
 
 **Published File URL:** `https://relink-thick-71342514.figma.site/`
 
-**To get the actual file key:**
+**Figma File URL:** `https://www.figma.com/make/wprWI8BZqyyJoLfqCol9OC/KOMPASS-UI-Muster-Bibliothek`
 
-1. Open the file in Figma
-2. Copy the URL from the browser (format: `https://www.figma.com/file/{FILE_KEY}/...`)
-3. Extract the `FILE_KEY` from the URL
+**File Key:** `wprWI8BZqyyJoLfqCol9OC`
 
-**Current File Key:** `[TO BE EXTRACTED - see manual steps below]`
+**File Name:** `KOMPASS-UI-Muster-Bibliothek`
+
+**Root Node ID:** `0-1` (from URL: `node-id=0-1`)
 
 ## MCP Configuration
 
