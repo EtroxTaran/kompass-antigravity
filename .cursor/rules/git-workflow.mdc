@@ -370,7 +370,181 @@ Main branch MUST have:
 - Require linear issue reference in PR
 - Restrict pushes (no direct commits)
 
+## AI Commit Workflow
+
+### CRITICAL: Verification Before Commits
+
+**AI assistants MUST run verification checks before suggesting ANY commit.**
+
+### Required Verification Steps
+
+Before suggesting a commit, AI MUST:
+
+1. **Read Configuration Files**
+   - Read `.prettierrc.js` for formatting rules
+   - Read `.eslintrc.js` for linting rules
+   - Read `tsconfig.json` for TypeScript settings
+   - Read `package.json` for available scripts
+
+2. **Run Verification Checks**
+   ```bash
+   # Option 1: Use verification script (recommended)
+   ./scripts/verify-code.sh
+   
+   # Option 2: Run checks individually
+   pnpm format:check    # Format check
+   pnpm lint            # Lint check
+   pnpm type-check      # Type check
+   pnpm test:unit       # Unit tests
+   ```
+
+3. **Show Actual Outputs**
+   - NEVER just say "checks passed"
+   - ALWAYS show the actual command output
+   - Include error messages if checks fail
+
+4. **Fix Issues Before Commits**
+   - If format check fails: run `pnpm format` and show output
+   - If lint check fails: fix linting errors and show output
+   - If type check fails: fix type errors and show output
+   - If tests fail: fix failing tests and show output
+   - Re-run checks after fixes to verify
+
+5. **Only Then Suggest Commit**
+   - Only suggest commit after ALL checks pass
+   - Include verification results in commit message suggestion
+
+### ✅ CORRECT: AI Commit Workflow
+
+```bash
+# 1. Write code
+# ... code changes made ...
+
+# 2. Run verification
+$ ./scripts/verify-code.sh
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔍 Running code verification checks...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔍 Format Check
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Checking formatting...
+✔ All files are properly formatted
+
+🔍 Lint Check
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Running ESLint...
+✔ No linting errors found
+
+🔍 Type Check
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Type checking...
+✔ Type check passed
+
+🔍 Unit Tests
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Running unit tests...
+✔ All tests passed (45/45)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ ALL VERIFICATION CHECKS PASSED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# 3. Now suggest commit
+git commit -m "feat(KOM-123): add customer duplicate detection
+
+Verification:
+- ✅ Format check passed
+- ✅ Lint check passed (0 errors)
+- ✅ Type check passed
+- ✅ Unit tests passed (45/45)"
+```
+
+### ❌ WRONG: Skipping Verification
+
+```bash
+# ❌ WRONG: Suggesting commit without verification
+git commit -m "feat(KOM-123): add customer duplicate detection"
+# (No verification shown)
+```
+
+### ❌ WRONG: Vague Verification
+
+```bash
+# ❌ WRONG: Just saying "checks passed" without showing output
+"All checks passed. Ready to commit."
+# (No actual command outputs shown)
+```
+
+### Verification Checklist
+
+Before suggesting ANY commit, verify:
+
+- [ ] **Format Check**: `pnpm format:check` passes (or `pnpm format` run to fix)
+- [ ] **Lint Check**: `pnpm lint` passes with no errors
+- [ ] **Type Check**: `pnpm type-check` passes with no errors
+- [ ] **Unit Tests**: `pnpm test:unit` passes (all tests green)
+- [ ] **Actual Outputs**: Command outputs shown to user (not just "passed")
+- [ ] **Issues Fixed**: All errors resolved before commit suggestion
+
+### Fast Mode (Development Only)
+
+For quick checks during development, you can skip tests:
+
+```bash
+# Fast verification (skip tests)
+./scripts/verify-code.sh --skip-tests
+
+# Or run checks individually
+pnpm format:check && pnpm lint && pnpm type-check
+```
+
+**Note**: Always run full verification (including tests) before suggesting commits.
+
+### Integration with Pre-Commit Hooks
+
+The pre-commit hook (`.husky/pre-commit`) runs:
+- Format check (`pnpm format:check`)
+- Lint-staged (auto-fixes formatting and linting)
+- Type check (`pnpm type-check`)
+- **No tests** (tests run in pre-push hook)
+
+The pre-push hook (`.husky/pre-push`) runs:
+- Full lint check
+- Format check
+- Type check
+- **Unit tests with coverage** (blocking)
+- Security audit
+
+**AI verification should match what pre-push runs** (the stricter check).
+
+### GitHub MCP Pull Request Requirements
+
+**CRITICAL: Even when using GitHub MCP to create pull requests, you MUST run all verification checks first.**
+
+Before creating ANY pull request (local or via GitHub MCP):
+
+1. **Run Full Verification**
+   ```bash
+   ./scripts/verify-code.sh
+   ```
+
+2. **Show Verification Results**
+   - Show actual command outputs
+   - Verify all checks passed
+   - Fix any failures before creating PR
+
+3. **Include Verification in PR Description**
+   - Add verification summary to PR body
+   - Show what checks were run and their results
+
+**NEVER create a PR via GitHub MCP without running verification checks first.**
+
+See `.cursor/rules/ai-code-verification.mdc` for complete GitHub MCP PR requirements.
+
 ## References
 
+- AI Code Verification: `.cursor/rules/ai-code-verification.mdc`
+- Verification Script: `scripts/verify-code.sh`
 - Linear Integration: `.cursor/rules/linear-integration.mdc`
 - Conventional Commits: https://www.conventionalcommits.org/

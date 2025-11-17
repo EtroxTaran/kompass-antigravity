@@ -174,10 +174,33 @@ fi
 echo "   ✅ Type-check passed"
 
 # ============================================================================
-# 8. Check branch naming (same as CI)
+# 8. Optional: Test warning (non-blocking)
 # ============================================================================
 echo ""
-echo "8️⃣  Checking branch naming..."
+echo "8️⃣  Running unit tests (non-blocking warning)..."
+echo "   ℹ️  Note: Tests are optional in pre-commit but required in pre-push"
+
+# Run tests but don't block commit if they fail
+if pnpm test:unit > /dev/null 2>&1; then
+    echo "   ✅ Unit tests passed"
+else
+    echo ""
+    echo "   ⚠️  WARNING: Unit tests failed or had errors"
+    echo "   This is a non-blocking warning. Commit will proceed."
+    echo ""
+    echo "   💡 Recommendation:"
+    echo "      - Fix failing tests before pushing"
+    echo "      - Pre-push hook will block if tests fail"
+    echo "      - Run 'pnpm test:unit' to see test output"
+    echo "      - Or use './scripts/verify-code.sh' for full verification"
+    echo ""
+fi
+
+# ============================================================================
+# 9. Check branch naming (same as CI)
+# ============================================================================
+echo ""
+echo "9️⃣  Checking branch naming..."
 
 BRANCH_NAME=$(git branch --show-current)
 
