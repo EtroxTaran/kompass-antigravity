@@ -132,6 +132,7 @@ jobs:
     name: Build Check
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: [quality, test]
 
     steps:
       - name: Checkout code
