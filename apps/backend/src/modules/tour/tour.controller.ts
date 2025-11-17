@@ -52,7 +52,6 @@ import { CreateTourDto } from './dto/create-tour.dto';
 import { TourResponseDto, TourCostSummaryDto } from './dto/tour-response.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
 import { TourService } from './tour.service';
-
 import type { TourFilters } from './tour.repository';
 
 /**

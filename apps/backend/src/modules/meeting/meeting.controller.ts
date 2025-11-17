@@ -51,8 +51,8 @@ import { RbacGuard } from '../auth/guards/rbac.guard';
 
 import {
   CreateMeetingDto,
-  MeetingType,
   MeetingStatus,
+  MeetingType,
 } from './dto/create-meeting.dto';
 import { MeetingResponseDto } from './dto/meeting-response.dto';
 import { UpdateMeetingDto, CheckInDto } from './dto/update-meeting.dto';
