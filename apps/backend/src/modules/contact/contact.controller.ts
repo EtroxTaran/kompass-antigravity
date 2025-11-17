@@ -38,7 +38,6 @@ import { ContactService } from './contact.service';
 import { DecisionAuthorityResponseDto } from './dto/decision-authority-response.dto';
 import { UpdateDecisionAuthorityDto } from './dto/update-decision-authority.dto';
 
-
 /**
  * Contact Controller
  */

@@ -28,15 +28,8 @@ This directory contains comprehensive implementation reports, migration guides, 
 
 #### 📅 Specialized Features
 
-- **[Calendar Implementation Summary](./CALENDAR_IMPLEMENTATION_SUMMARY.md)** - Calendar system implementation
-- **[Time Tracking Implementation Guide](./TIME_TRACKING_IMPLEMENTATION_GUIDE.md)** - Time tracking feature implementation
-- **[Time Tracking Implementation Complete](./TIME_TRACKING_IMPLEMENTATION_COMPLETE.md)** - Time tracking implementation report
-- **[TimeCard Integration Guide](./TIMECARD_INTEGRATION_GUIDE.md)** - TimeCard integration documentation
-- **[Task Management Integration](./TASK_MANAGEMENT_INTEGRATION_COMPLETE.md)** - Task management system
-
-#### 📋 Technical Documentation
-
-- **[Revised Implementation Roadmap](./REVISED_IMPLEMENTATION_ROADMAP.md)** - Updated implementation timeline
+- **[Calendar Implementation Summary](./CALENDAR_IMPLEMENTATION_SUMMARY.md)** - Calendar system implementation (2025-01-28)
+- **[Task Management Integration](./TASK_MANAGEMENT_INTEGRATION_COMPLETE.md)** - Task management system (2025-01-28)
 
 ---
 
@@ -201,10 +194,21 @@ Implementation reports must reference:
 - **Quarterly**: Update implementation timeline and roadmap
 - **Per Release**: Create comprehensive implementation summary
 
-### Archive Policy
+### Retention Policy
 
-- Implementation reports older than 12 months move to `./archive/`
-- Migration guides remain active until superseded
-- Setup documentation updated with each environment change
+**Implementation Reports:**
+
+- Retained for **6 months** from implementation date (see [DDL-002](../architecture/decisions/ddl/ddl-002-implementation-report-retention.md))
+- After 6 months: Extract key decisions to DDLs/ADRs, store context in Graphiti Memory, then delete
+- Exceptions: Reports documenting ongoing systems (keep until deprecated)
+
+**Migration Guides:**
+
+- Kept until superseded
+- Archive when no longer relevant
+
+**Setup Documentation:**
+
+- Keep current, update with each environment change
 
 Last updated: 2025-01-28

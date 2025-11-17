@@ -38,7 +38,10 @@ function App(): React.ReactElement {
             <Route
               path="/dashboard"
               element={
-                <RoleGuard entityType={EntityType.Customer} permission={Permission.READ}>
+                <RoleGuard
+                  entityType={EntityType.Customer}
+                  permission={Permission.READ}
+                >
                   <DashboardPage />
                 </RoleGuard>
               }
@@ -48,7 +51,10 @@ function App(): React.ReactElement {
             <Route
               path="/customers"
               element={
-                <RoleGuard entityType={EntityType.Customer} permission={Permission.READ}>
+                <RoleGuard
+                  entityType={EntityType.Customer}
+                  permission={Permission.READ}
+                >
                   <div className="container mx-auto p-6">
                     <h1 className="text-3xl font-bold">Kunden</h1>
                     <p className="text-muted-foreground mt-2">
@@ -63,7 +69,10 @@ function App(): React.ReactElement {
             <Route
               path="/opportunities"
               element={
-                <RoleGuard entityType={EntityType.Opportunity} permission={Permission.READ}>
+                <RoleGuard
+                  entityType={EntityType.Opportunity}
+                  permission={Permission.READ}
+                >
                   <div className="container mx-auto p-6">
                     <h1 className="text-3xl font-bold">Chancen</h1>
                     <p className="text-muted-foreground mt-2">
@@ -78,7 +87,10 @@ function App(): React.ReactElement {
             <Route
               path="/projects"
               element={
-                <RoleGuard entityType={EntityType.Project} permission={Permission.READ}>
+                <RoleGuard
+                  entityType={EntityType.Project}
+                  permission={Permission.READ}
+                >
                   <div className="container mx-auto p-6">
                     <h1 className="text-3xl font-bold">Projekte</h1>
                     <p className="text-muted-foreground mt-2">
@@ -93,7 +105,10 @@ function App(): React.ReactElement {
             <Route
               path="/finance"
               element={
-                <RoleGuard entityType={EntityType.Invoice} permission={Permission.READ}>
+                <RoleGuard
+                  entityType={EntityType.Invoice}
+                  permission={Permission.READ}
+                >
                   <div className="container mx-auto p-6">
                     <h1 className="text-3xl font-bold">Finanzen</h1>
                     <p className="text-muted-foreground mt-2">
@@ -108,7 +123,10 @@ function App(): React.ReactElement {
             <Route
               path="/admin"
               element={
-                <RoleGuard entityType={EntityType.User} permission={Permission.READ}>
+                <RoleGuard
+                  entityType={EntityType.User}
+                  permission={Permission.READ}
+                >
                   <div className="container mx-auto p-6">
                     <h1 className="text-3xl font-bold">Administration</h1>
                     <p className="text-muted-foreground mt-2">

@@ -6,7 +6,7 @@ _Status: Phase 2 (Q3 2025)_
 
 **⚡ Verknüpfte Spezifikationen:**
 
-- **Datenmodell:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` – Tour, Meeting, HotelStay, Expense, MileageLog Entitäten (Sektionen 17-21)
+- **Datenmodell:** `docs/specifications/data-model.md` – Tour, Meeting, HotelStay, Expense, MileageLog Entitäten (Sektionen 17-21)
 - **RBAC-Matrix:** `docs/specifications/reviews/RBAC_PERMISSION_MATRIX.md` – Tour Planning & Expense Management Permissions (Sektion 13)
 - **API-Spezifikation:** `docs/specifications/reviews/API_SPECIFICATION.md` – Tour Planning & Expense Management Endpoints
 - **Personas:** `docs/personas/Referenzpersona_ Außendienstmitarbeiter (Vertrieb Ladenbau-Projekte).md` – ADM Persona mit Tour Planning Workflows
@@ -639,6 +639,6 @@ Die **Tourenplanung & Spesenverwaltung** ist ein zentrales Modul für den Außen
 **Related Documents:**
 
 - Implementation Plan: `tour-planning.plan.md`
-- Data Model: `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` (Sektionen 17-21)
+- Data Model: `docs/specifications/data-model.md` (Sektionen 17-21)
 - RBAC: `docs/specifications/reviews/RBAC_PERMISSION_MATRIX.md` (Sektion 13)
 - API: `docs/specifications/reviews/API_SPECIFICATION.md` (Tour Planning & Expense Management)

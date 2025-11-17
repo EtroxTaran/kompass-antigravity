@@ -293,7 +293,10 @@ export class LocationService {
     user: User
   ): Promise<void> {
     // RBAC: Only PLAN and GF can delete
-    if (user.primaryRole !== UserRole.PLAN && user.primaryRole !== UserRole.GF) {
+    if (
+      user.primaryRole !== UserRole.PLAN &&
+      user.primaryRole !== UserRole.GF
+    ) {
       throw new ForbiddenException(
         'Only PLAN and GF users can delete locations'
       );

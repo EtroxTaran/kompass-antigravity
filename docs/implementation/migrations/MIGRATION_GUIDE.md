@@ -18,7 +18,7 @@ This guide provides step-by-step instructions for migrating existing KOMPASS ins
 ## Pre-Migration Checklist
 
 - [ ] **Backup database** (see step 1 below)
-- [ ] **Review documentation**: `docs/reviews/DATA_MODEL_SPECIFICATION.md`
+- [ ] **Review documentation**: `docs/specifications/data-model.md`
 - [ ] **Verify environment**: Node.js 18+, CouchDB running
 - [ ] **Inform users**: System will be read-only during migration
 - [ ] **Schedule downtime**: Estimate 30-60 minutes for full migration
@@ -329,7 +329,7 @@ pnpm test contact
 
 For migration issues or questions:
 
-- Check documentation: `docs/reviews/DATA_MODEL_SPECIFICATION.md`
+- Check documentation: `docs/specifications/data-model.md`
 - Review architecture: `docs/architectur/Projekt KOMPASS – Architekturdokumentation (Zielarchitektur).md`
 - Contact dev team: dev@kompass.de
 

@@ -169,6 +169,6 @@ All notable changes to this project will be documented in this file.
 ## References
 
 - Full documentation: `docs/README.md`
-- Data model: `docs/reviews/DATA_MODEL_SPECIFICATION.md`
+- Data model: `docs/specifications/data-model.md`
 - API specification: `docs/reviews/API_SPECIFICATION.md`
 - RBAC matrix: `docs/reviews/RBAC_PERMISSION_MATRIX.md`

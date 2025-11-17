@@ -6,7 +6,7 @@ _Last Updated: 2025-11-10_
 
 **⚡ Relevante Spezifikationen für ADM-Rolle:**
 
-- **Offline-Speicher:** 31 MB ✅ (unter iOS 50MB-Limit) – Siehe DATA_MODEL_SPECIFICATION.md §8.1
+- **Offline-Speicher:** 31 MB ✅ (unter iOS 50MB-Limit) – Siehe data-model.md §8.1
   - Eigene Kunden (150): 300 KB, Opportunities (20): 100 KB, Activities (100): 100 KB, Pinned Files (3×10MB): 30 MB
   - 3-Tier-Strategie: Essential (5MB) + Recent (10MB) + Pinned (35MB)
 - **RBAC-Berechtigungen:** Siehe RBAC_PERMISSION_MATRIX.md §4

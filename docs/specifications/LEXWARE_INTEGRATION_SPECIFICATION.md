@@ -414,7 +414,7 @@ GET /api/v1/projects/{projectId}/lexware-invoices
 - **Product Vision:** `docs/product-vision/Produktvision Finanz- und Compliance-Management.md`
 - **API Specification:** `docs/specifications/reviews/API_SPECIFICATION.md` - Section 8: Lexware Integration
 - **NFR Specification:** `docs/specifications/reviews/NFR_SPECIFICATION.md` - Performance requirements
-- **Data Model:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` - Offer/Contract entities
+- **Data Model:** `docs/specifications/data-model.md` - Offer/Contract entities
 
 ---
 

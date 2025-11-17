@@ -7,7 +7,7 @@ _Document Version: 2.0_
 **⚡ Verknüpfte Spezifikationen:**
 
 - **Nicht-funktionale Anforderungen:** `docs/reviews/NFR_SPECIFICATION.md` – Alle Qualitätsziele quantifiziert: Performance (API ≤1,5s P95, Dashboard ≤3s), Skalierung (20 Nutzer gleichzeitig, Infrastruktur 8,5 vCPU/15,5GB RAM), Verfügbarkeit (95% Uptime 8x5, RTO=4h), Offline-Speicher (pro Rolle berechnet, alle unter iOS-Limit), Browser-Support, Monitoring-SLIs, Lasttest-Szenarien. Basis: Salesforce/Dynamics-Benchmarks, CouchDB-Forschung, PWA-Best-Practices.
-- **Datenmodell:** `docs/reviews/DATA_MODEL_SPECIFICATION.md` – Vollständiges ERD, Entity-Definitionen, Validierungsregeln, ID-Strategien, GoBD-Konformität
+- **Datenmodell:** `docs/specifications/data-model.md` – Vollständiges ERD, Entity-Definitionen, Validierungsregeln, ID-Strategien, GoBD-Konformität
 - **Benutzerreisen:** `docs/reviews/USER_JOURNEY_MAPS.md` – 5 End-to-End-Journeys mit Swim-Lanes, Fehlerszenarien, Handoff-Punkten
 - **Konfliktauflösung:** `docs/reviews/CONFLICT_RESOLUTION_SPECIFICATION.md` – UX-Mockups, Trainingsprogramm, Auto-Resolution-Strategien
 - **Teststrategie:** `docs/reviews/TEST_STRATEGY_DOCUMENT.md` – 70/20/10-Pyramide, 50+ E2E-Szenarien, Offline-Tests, Mobile-Testing

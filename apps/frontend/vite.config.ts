@@ -53,7 +53,8 @@ export default defineConfig({
           },
           // Navigation routes: NetworkFirst with fallback to cache
           {
-            urlPattern: /^\/(dashboard|customers|opportunities|projects|finance|admin|unauthorized)$/,
+            urlPattern:
+              /^\/(dashboard|customers|opportunities|projects|finance|admin|unauthorized)$/,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'kompass-navigation-cache',

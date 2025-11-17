@@ -11,7 +11,6 @@ import { User } from '@kompass/shared/types/entities/user';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
-
 /**
  * Authentication Controller
  *

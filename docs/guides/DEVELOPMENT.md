@@ -711,7 +711,7 @@ See `docs/reviews/RBAC_PERMISSION_MATRIX.md` for complete matrix.
 
 ### Validation Rules
 
-From `docs/reviews/DATA_MODEL_SPECIFICATION.md`:
+From `docs/specifications/data-model.md`:
 
 ```typescript
 // Customer validation

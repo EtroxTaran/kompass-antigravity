@@ -16,7 +16,7 @@ This document summarizes the implementation of calendar views and resource manag
 
 ### 1. Data Model Specifications
 
-**File:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md`
+**File:** `docs/specifications/data-model.md`
 
 ✅ **CalendarEvent Interface (Section 17):**
 
@@ -117,7 +117,7 @@ This document summarizes the implementation of calendar views and resource manag
 ### 1. Resource Management - User Entity Extensions
 
 ✅ **Working Hours & Availability:**
-**File:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` (Section 2)
+**File:** `docs/specifications/data-model.md` (Section 2)
 
 **New Fields Added:**
 
@@ -145,7 +145,7 @@ This document summarizes the implementation of calendar views and resource manag
 ### 2. Calendar Subscription Entity
 
 ✅ **CalendarSubscription Entity:**
-**File:** `docs/specifications/reviews/DATA_MODEL_SPECIFICATION.md` (Section 18)
+**File:** `docs/specifications/data-model.md` (Section 18)
 
 **Purpose:** Manage secure calendar subscription feeds (WebCal) for real-time calendar sync
 
@@ -385,7 +385,7 @@ This document summarizes the implementation of calendar views and resource manag
 kompass/
 ├── docs/
 │   ├── specifications/reviews/
-│   │   ├── DATA_MODEL_SPECIFICATION.md (updated)
+│   │   ├── data-model.md (updated)
 │   │   └── API_SPECIFICATION.md (updated)
 │   └── implementation/
 │       └── CALENDAR_IMPLEMENTATION_SUMMARY.md (this file)

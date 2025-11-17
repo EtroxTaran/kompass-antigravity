@@ -1,13 +1,9 @@
-import {
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
 import type { ExecutionContext } from '@nestjs/common';
 import type { Observable } from 'rxjs';
-
 
 /**
  * JWT Authentication Guard

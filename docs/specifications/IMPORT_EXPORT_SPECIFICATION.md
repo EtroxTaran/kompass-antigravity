@@ -945,7 +945,7 @@ Export contact protocols to CSV/Excel/Word/JSON.
 ## References
 
 - **API Specification:** `docs/specifications/reviews/API_SPECIFICATION.md`
-- **Data Model:** `docs/reviews/DATA_MODEL_SPECIFICATION.md`
+- **Data Model:** `docs/specifications/data-model.md`
 - **UI/UX Documentation:** `ui-ux/08-specialized/data-export-import.md`
 - **Product Vision:** `docs/product-vision/Produktvision & Zielbild – Kontakt- & Kundenverwaltung (CRM-Basis).md`
 

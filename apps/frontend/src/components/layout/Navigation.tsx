@@ -152,84 +152,27 @@ export function Navigation(): React.ReactElement {
   /**
    * Desktop navigation
    */
-  const DesktopNav = React.useCallback((): React.ReactElement => (
-    <nav className="hidden md:flex flex-col gap-2 w-64 min-h-screen bg-background border-r p-4">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold">KOMPASS</h2>
-        <OfflineIndicator />
-      </div>
-
-      {groupedRoutes.map((group, groupIndex) => (
-        <div key={group.id}>
-          {groupIndex > 0 && <Separator className="my-4" />}
-          <div className="space-y-1">
-            {group.routes.map((route) => (
-              <NavLink key={route.path} route={route} />
-            ))}
-          </div>
+  const DesktopNav = React.useCallback(
+    (): React.ReactElement => (
+      <nav className="hidden md:flex flex-col gap-2 w-64 min-h-screen bg-background border-r p-4">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold">KOMPASS</h2>
+          <OfflineIndicator />
         </div>
-      ))}
 
-      <div className="mt-auto pt-4 border-t">
-        <div className="flex items-center gap-3 px-4 py-3 mb-2">
-          <Avatar>
-            <AvatarFallback>{getUserInitials()}</AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">
-              {user?.displayName || 'Benutzer'}
-            </p>
-            <p className="text-xs text-muted-foreground truncate">
-              {user?.email}
-            </p>
-          </div>
-        </div>
-        <Button
-          variant="outline"
-          onClick={handleLogout}
-          className="w-full"
-        >
-          Abmelden
-        </Button>
-      </div>
-    </nav>
-  ), [groupedRoutes, getUserInitials, user, handleLogout]);
-
-  /**
-   * Mobile navigation
-   */
-  const MobileNav = React.useCallback((): React.ReactElement => (
-    <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden">
-          <Menu className="h-6 w-6" />
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left" className="w-80">
-        <SheetHeader>
-          <SheetTitle className="flex items-center justify-between">
-            KOMPASS
-            <OfflineIndicator />
-          </SheetTitle>
-        </SheetHeader>
-        <nav className="flex flex-col gap-2 mt-6">
-          {groupedRoutes.map((group, groupIndex) => (
-            <div key={group.id}>
-              {groupIndex > 0 && <Separator className="my-4" />}
-              <div className="space-y-1">
-                {group.routes.map((route) => (
-                  <NavLink
-                    key={route.path}
-                    route={route}
-                    onClick={() => setMobileMenuOpen(false)}
-                  />
-                ))}
-              </div>
+        {groupedRoutes.map((group, groupIndex) => (
+          <div key={group.id}>
+            {groupIndex > 0 && <Separator className="my-4" />}
+            <div className="space-y-1">
+              {group.routes.map((route) => (
+                <NavLink key={route.path} route={route} />
+              ))}
             </div>
-          ))}
+          </div>
+        ))}
 
-          <Separator className="my-4" />
-          <div className="flex items-center gap-3 px-4 py-3">
+        <div className="mt-auto pt-4 border-t">
+          <div className="flex items-center gap-3 px-4 py-3 mb-2">
             <Avatar>
               <AvatarFallback>{getUserInitials()}</AvatarFallback>
             </Avatar>
@@ -242,20 +185,86 @@ export function Navigation(): React.ReactElement {
               </p>
             </div>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setMobileMenuOpen(false);
-              handleLogout();
-            }}
-            className="w-full"
-          >
+          <Button variant="outline" onClick={handleLogout} className="w-full">
             Abmelden
           </Button>
-        </nav>
-      </SheetContent>
-    </Sheet>
-  ), [mobileMenuOpen, setMobileMenuOpen, groupedRoutes, getUserInitials, user, handleLogout]);
+        </div>
+      </nav>
+    ),
+    [groupedRoutes, getUserInitials, user, handleLogout]
+  );
+
+  /**
+   * Mobile navigation
+   */
+  const MobileNav = React.useCallback(
+    (): React.ReactElement => (
+      <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon" className="md:hidden">
+            <Menu className="h-6 w-6" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-80">
+          <SheetHeader>
+            <SheetTitle className="flex items-center justify-between">
+              KOMPASS
+              <OfflineIndicator />
+            </SheetTitle>
+          </SheetHeader>
+          <nav className="flex flex-col gap-2 mt-6">
+            {groupedRoutes.map((group, groupIndex) => (
+              <div key={group.id}>
+                {groupIndex > 0 && <Separator className="my-4" />}
+                <div className="space-y-1">
+                  {group.routes.map((route) => (
+                    <NavLink
+                      key={route.path}
+                      route={route}
+                      onClick={() => setMobileMenuOpen(false)}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            <Separator className="my-4" />
+            <div className="flex items-center gap-3 px-4 py-3">
+              <Avatar>
+                <AvatarFallback>{getUserInitials()}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">
+                  {user?.displayName || 'Benutzer'}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {user?.email}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                handleLogout();
+              }}
+              className="w-full"
+            >
+              Abmelden
+            </Button>
+          </nav>
+        </SheetContent>
+      </Sheet>
+    ),
+    [
+      mobileMenuOpen,
+      setMobileMenuOpen,
+      groupedRoutes,
+      getUserInitials,
+      user,
+      handleLogout,
+    ]
+  );
 
   return (
     <>

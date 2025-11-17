@@ -55,7 +55,6 @@ import { TourService } from './tour.service';
 
 import type { TourFilters } from './tour.repository';
 
-
 /**
  * Tour Controller
  */

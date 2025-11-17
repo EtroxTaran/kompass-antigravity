@@ -129,7 +129,10 @@ export class ContactService {
     user: User
   ): Promise<DecisionAuthorityResponseDto> {
     // CRITICAL: Check restricted permission
-    if (user.primaryRole !== UserRole.PLAN && user.primaryRole !== UserRole.GF) {
+    if (
+      user.primaryRole !== UserRole.PLAN &&
+      user.primaryRole !== UserRole.GF
+    ) {
       throw new ForbiddenException(
         'Only ADM+ users (PLAN, GF) can update contact decision-making roles'
       );

@@ -133,6 +133,6 @@ After successful initialization:
 ## Related Documentation
 
 - [Architecture Documentation](../architectur/) - System architecture
-- [Data Model Specification](../specifications/reviews/DATA_MODEL_SPECIFICATION.md) - Entity definitions
+- [Data Model Specification](../specifications/data-model.md) - Entity definitions
 - [RBAC Permission Matrix](../reviews/RBAC_PERMISSION_MATRIX.md) - Role permissions
 - [Migration Guide](../implementation/migrations/MIGRATION_GUIDE.md) - Database migrations
