@@ -22,6 +22,7 @@ KOMPASS requires secure authentication for all users with role-based access cont
 ### Implementation Details
 
 **Backend (NestJS):**
+
 - Use `passport-jwt` with `jwks-rsa` for JWT token validation
 - Implement `JwtStrategy` to validate tokens using Keycloak's JWKS endpoint
 - Create `JwtAuthGuard` to protect all endpoints (with `@Public()` decorator for exceptions)
@@ -29,6 +30,7 @@ KOMPASS requires secure authentication for all users with role-based access cont
 - Map Keycloak roles to KOMPASS `UserRole` enum (ADM, INNEN, PLAN, BUCH, GF)
 
 **Frontend (React):**
+
 - Use `keycloak-js` library for OIDC client integration
 - Implement `AuthContext` for global authentication state management
 - Create `ProtectedRoute` component to guard routes
@@ -37,6 +39,7 @@ KOMPASS requires secure authentication for all users with role-based access cont
 - Handle 401 errors with automatic logout and redirect to login
 
 **Token Flow:**
+
 1. User initiates login → Redirect to Keycloak
 2. Keycloak authenticates → Issues JWT token
 3. Frontend stores token → Includes in API requests
@@ -164,11 +167,13 @@ KOMPASS requires secure authentication for all users with role-based access cont
 ### Configuration
 
 **Environment Variables:**
+
 - `KEYCLOAK_URL`: Keycloak server URL
 - `KEYCLOAK_REALM`: Realm name (default: `kompass`)
 - `KEYCLOAK_CLIENT_ID`: Client ID for backend/frontend
 
 **Keycloak Setup:**
+
 - Realm: `kompass`
 - Clients: `kompass-api` (backend), `kompass-frontend` (frontend)
 - Roles: ADM, INNEN, PLAN, BUCH, GF
@@ -177,15 +182,18 @@ KOMPASS requires secure authentication for all users with role-based access cont
 ## Testing
 
 ### Unit Tests
+
 - JWT strategy validation and role extraction
 - JWT guard public route handling
 - Auth context state management
 
 ### Integration Tests
+
 - `/auth/me` endpoint with valid/invalid tokens
 - Token validation with Keycloak JWKS
 
 ### E2E Tests
+
 - Complete login flow
 - Logout and session cleanup
 - Token refresh on expiration
@@ -228,6 +236,7 @@ KOMPASS requires secure authentication for all users with role-based access cont
 ### Migration Path
 
 If Keycloak needs to be replaced in the future:
+
 - OIDC standard ensures compatibility with other providers
 - JWT token structure is provider-agnostic
 - Only Keycloak-specific configuration needs updating

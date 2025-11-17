@@ -28,6 +28,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import { UserRole } from '@kompass/shared/constants/rbac.constants';
 import {
   getContactDisplayName,
   validateContact,
@@ -128,7 +129,7 @@ export class ContactService {
     user: User
   ): Promise<DecisionAuthorityResponseDto> {
     // CRITICAL: Check restricted permission
-    if (user.primaryRole !== 'PLAN' && user.primaryRole !== 'GF') {
+    if (user.primaryRole !== UserRole.PLAN && user.primaryRole !== UserRole.GF) {
       throw new ForbiddenException(
         'Only ADM+ users (PLAN, GF) can update contact decision-making roles'
       );

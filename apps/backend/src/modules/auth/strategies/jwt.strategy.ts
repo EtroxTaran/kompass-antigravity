@@ -79,7 +79,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * @returns User object with roles array
    * @throws UnauthorizedException if token is invalid or user has no roles
    */
-  async validate(payload: KeycloakJwtPayload): Promise<User> {
+  validate(payload: KeycloakJwtPayload): User {
     // Extract user ID from subject claim
     const userId = payload.sub;
     if (!userId) {

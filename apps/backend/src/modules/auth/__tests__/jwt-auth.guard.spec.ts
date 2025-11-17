@@ -1,11 +1,13 @@
 import { UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
-import { AuthGuard } from '@nestjs/passport';
+import { PassportModule } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { JwtStrategy } from '../strategies/jwt.strategy';
 
-import type { ExecutionContext} from '@nestjs/common';
+import type { ExecutionContext } from '@nestjs/common';
 import type { TestingModule } from '@nestjs/testing';
 
 describe('JwtAuthGuard', () => {
@@ -17,12 +19,29 @@ describe('JwtAuthGuard', () => {
       getAllAndOverride: jest.fn(),
     };
 
+    const mockConfigService = {
+      get: jest.fn((key: string, defaultValue?: string) => {
+        const config: Record<string, string> = {
+          KEYCLOAK_URL: 'http://keycloak:8080',
+          KEYCLOAK_REALM: 'kompass',
+          KEYCLOAK_CLIENT_ID: 'kompass-api',
+        };
+        return config[key] || defaultValue;
+      }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
+      imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
       providers: [
         JwtAuthGuard,
+        JwtStrategy, // Register strategy so Passport can find it
         {
           provide: Reflector,
           useValue: mockReflector,
+        },
+        {
+          provide: ConfigService,
+          useValue: mockConfigService,
         },
       ],
     }).compile();
@@ -41,14 +60,14 @@ describe('JwtAuthGuard', () => {
       expect(result).toBe(true);
     });
 
-    it('should delegate to Passport authentication if route is not public', () => {
+    it('should delegate to Passport authentication if route is not public', async () => {
       const context = createMockContext();
       reflector.getAllAndOverride.mockReturnValue(false); // isPublic = false
 
       // When route is not public, canActivate should call super.canActivate
-      // We can't easily test super calls, so we verify the method doesn't throw
-      // and that it would delegate to the parent AuthGuard
-      expect(() => guard.canActivate(context)).not.toThrow();
+      // This will attempt to authenticate, which will fail without a valid token
+      // but that's expected - we're just testing that it delegates correctly
+      await expect(guard.canActivate(context)).rejects.toThrow();
       // The actual authentication will be handled by Passport in integration tests
     });
   });

@@ -33,7 +33,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     // to fetch keys from Keycloak's well-known endpoint.
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
+      useFactory: (configService: ConfigService) => {
         // JWT module is required by Passport, but we use JWKS for validation
         // This is a placeholder configuration
         return {

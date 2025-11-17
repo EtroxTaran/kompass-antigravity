@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+
 // Authentication module (must be imported first)
 import { AuthModule } from './modules/auth/auth.module';
-
 // Feature modules
 import { CalendarModule } from './modules/calendar/calendar.module';
 import { CustomerModule } from './modules/customer/customer.module';

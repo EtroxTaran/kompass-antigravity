@@ -6,12 +6,10 @@ import { UserRole } from '@kompass/shared/constants/rbac.constants';
 
 import { JwtStrategy } from '../strategies/jwt.strategy';
 
-import type { User } from '@kompass/shared/types/entities/user';
 import type { TestingModule } from '@nestjs/testing';
 
 describe('JwtStrategy', () => {
   let strategy: JwtStrategy;
-  let configService: jest.Mocked<ConfigService>;
 
   beforeEach(async () => {
     const mockConfigService = {
@@ -36,11 +34,10 @@ describe('JwtStrategy', () => {
     }).compile();
 
     strategy = module.get<JwtStrategy>(JwtStrategy);
-    configService = module.get(ConfigService);
   });
 
   describe('validate', () => {
-    it('should return user object with roles from token', async () => {
+    it('should return user object with roles from token', () => {
       const payload = {
         sub: 'user-123',
         email: 'test@example.com',
@@ -54,7 +51,7 @@ describe('JwtStrategy', () => {
         aud: 'kompass-api',
       };
 
-      const user = await strategy.validate(payload);
+      const user = strategy.validate(payload);
 
       expect(user).toBeDefined();
       expect(user._id).toBe('user-user-123');
@@ -66,7 +63,7 @@ describe('JwtStrategy', () => {
       expect(user.active).toBe(true);
     });
 
-    it('should extract roles from resource_access if available', async () => {
+    it('should extract roles from resource_access if available', () => {
       const payload = {
         sub: 'user-123',
         email: 'test@example.com',
@@ -82,13 +79,13 @@ describe('JwtStrategy', () => {
         aud: 'kompass-api',
       };
 
-      const user = await strategy.validate(payload);
+      const user = strategy.validate(payload);
 
       expect(user.roles).toEqual([UserRole.GF, UserRole.BUCH]);
       expect(user.primaryRole).toBe(UserRole.GF);
     });
 
-    it('should throw UnauthorizedException if sub is missing', async () => {
+    it('should throw UnauthorizedException if sub is missing', () => {
       const payload = {
         email: 'test@example.com',
         realm_access: {
@@ -100,12 +97,12 @@ describe('JwtStrategy', () => {
         aud: 'kompass-api',
       };
 
-      await expect(strategy.validate(payload as any)).rejects.toThrow(
+      expect(() => strategy.validate(payload as any)).toThrow(
         UnauthorizedException
       );
     });
 
-    it('should throw UnauthorizedException if email is missing', async () => {
+    it('should throw UnauthorizedException if email is missing', () => {
       const payload = {
         sub: 'user-123',
         realm_access: {
@@ -117,12 +114,12 @@ describe('JwtStrategy', () => {
         aud: 'kompass-api',
       };
 
-      await expect(strategy.validate(payload as any)).rejects.toThrow(
+      expect(() => strategy.validate(payload as any)).toThrow(
         UnauthorizedException
       );
     });
 
-    it('should throw UnauthorizedException if user has no roles', async () => {
+    it('should throw UnauthorizedException if user has no roles', () => {
       const payload = {
         sub: 'user-123',
         email: 'test@example.com',
@@ -136,12 +133,12 @@ describe('JwtStrategy', () => {
         aud: 'kompass-api',
       };
 
-      await expect(strategy.validate(payload as any)).rejects.toThrow(
+      expect(() => strategy.validate(payload as any)).toThrow(
         UnauthorizedException
       );
     });
 
-    it('should map role names case-insensitively', async () => {
+    it('should map role names case-insensitively', () => {
       const payload = {
         sub: 'user-123',
         email: 'test@example.com',
@@ -155,12 +152,12 @@ describe('JwtStrategy', () => {
         aud: 'kompass-api',
       };
 
-      const user = await strategy.validate(payload);
+      const user = strategy.validate(payload);
 
       expect(user.roles).toEqual([UserRole.ADM, UserRole.PLAN]);
     });
 
-    it('should use preferred_username as displayName if available', async () => {
+    it('should use preferred_username as displayName if available', () => {
       const payload = {
         sub: 'user-123',
         email: 'test@example.com',
@@ -174,12 +171,12 @@ describe('JwtStrategy', () => {
         aud: 'kompass-api',
       };
 
-      const user = await strategy.validate(payload);
+      const user = strategy.validate(payload);
 
       expect(user.displayName).toBe('John Doe');
     });
 
-    it('should use email as displayName if preferred_username is not available', async () => {
+    it('should use email as displayName if preferred_username is not available', () => {
       const payload = {
         sub: 'user-123',
         email: 'test@example.com',
@@ -192,7 +189,7 @@ describe('JwtStrategy', () => {
         aud: 'kompass-api',
       };
 
-      const user = await strategy.validate(payload);
+      const user = strategy.validate(payload);
 
       expect(user.displayName).toBe('test@example.com');
     });

@@ -422,17 +422,20 @@ interface AuditLogEntry {
 7. Logout invalidates session in Keycloak and clears local storage
 
 **JWT Token Structure:**
+
 - Contains user ID (`sub`), email, and roles in `resource_access.{client-id}.roles` or `realm_access.roles`
 - Validated using RS256 algorithm with Keycloak's public keys
 - Token expiration handled with automatic refresh (30 seconds before expiry)
 
 **Backend Authentication:**
+
 - `JwtStrategy` validates tokens using `jwks-rsa` library
 - `JwtAuthGuard` protects all endpoints (except public routes marked with `@Public()`)
 - `@CurrentUser()` decorator provides authenticated user in controllers
 - All controllers use `@UseGuards(JwtAuthGuard, RbacGuard)` for protection
 
 **Frontend Authentication:**
+
 - `keycloak-js` library handles OIDC flow
 - `AuthContext` provides authentication state and user information
 - `ProtectedRoute` component redirects unauthenticated users to login
