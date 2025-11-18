@@ -356,7 +356,7 @@ export function CustomerListPage(): React.ReactElement {
 
       {/* Active Filters Bar */}
       {activeFilterCount > 0 && (
-        <div className="flex items-center gap-2 rounded-md bg-blue-50 p-3 text-sm">
+        <div className="flex items-center gap-2 rounded-md bg-accent/50 p-3 text-sm">
           <span className="text-muted-foreground">Aktive Filter:</span>
           {activeFilters.rating?.map((rating) => (
             <Badge key={rating} variant="secondary" className="gap-1">
@@ -508,7 +508,7 @@ export function CustomerListPage(): React.ReactElement {
                         <TableRow
                           key={customer._id}
                           className={`group cursor-pointer ${
-                            isSelected ? 'bg-blue-50' : ''
+                            isSelected ? 'bg-accent/50' : ''
                           }`}
                           onClick={() => handleCustomerClick(customer._id)}
                         >
