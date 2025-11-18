@@ -200,6 +200,7 @@ test.describe('Customer Management - CRUD Operations', () => {
       }
     );
 
+    expect(createResponse.ok()).toBeTruthy();
     const createdCustomer = await createResponse.json();
     createdCustomerIds.push(createdCustomer.id);
 
@@ -257,6 +258,7 @@ test.describe('Customer Management - CRUD Operations', () => {
       }
     );
 
+    expect(createResponse.ok()).toBeTruthy();
     const createdCustomer = await createResponse.json();
     createdCustomerIds.push(createdCustomer.id);
 
@@ -311,6 +313,7 @@ test.describe('Customer Management - CRUD Operations', () => {
       }
     );
 
+    expect(createResponse.ok()).toBeTruthy();
     const createdCustomer = await createResponse.json();
     createdCustomerIds.push(createdCustomer.id);
 
@@ -349,6 +352,7 @@ test.describe('Customer Management - CRUD Operations', () => {
       }
     );
 
+    expect(createResponse.ok()).toBeTruthy();
     const createdCustomer = await createResponse.json();
     createdCustomerIds.push(createdCustomer.id);
 
@@ -389,6 +393,7 @@ test.describe('Customer Management - CRUD Operations', () => {
       }
     );
 
+    expect(createResponse.ok()).toBeTruthy();
     const createdCustomer = await createResponse.json();
 
     // GF should delete the customer
@@ -438,6 +443,7 @@ test.describe('Customer Management - CRUD Operations', () => {
       }
     );
 
+    expect(createResponse.ok()).toBeTruthy();
     const createdCustomer = await createResponse.json();
     createdCustomerIds.push(createdCustomer.id);
 
@@ -477,6 +483,7 @@ test.describe('Customer Management - CRUD Operations', () => {
       }
     );
 
+    expect(createResponse1.ok()).toBeTruthy();
     const customer1 = await createResponse1.json();
     createdCustomerIds.push(customer1.id);
 

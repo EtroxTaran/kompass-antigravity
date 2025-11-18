@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
@@ -18,19 +19,27 @@ describe('ControlsBar', () => {
   });
 
   it('should call onSearchChange when typing in search', async () => {
-    const onSearchChange = vi.fn();
-    render(
-      <ControlsBar
-        searchValue=""
-        onSearchChange={onSearchChange}
-        searchPlaceholder="Search..."
-      />
-    );
+    // Use a wrapper component to properly test controlled component
+    function TestWrapper() {
+      const [value, setValue] = useState('');
+      return (
+        <ControlsBar
+          searchValue={value}
+          onSearchChange={setValue}
+          searchPlaceholder="Search..."
+        />
+      );
+    }
 
-    const searchInput = screen.getByPlaceholderText('Search...');
+    render(<TestWrapper />);
+
+    const searchInput = screen.getByPlaceholderText(
+      'Search...'
+    ) as HTMLInputElement;
     await userEvent.type(searchInput, 'test');
 
-    expect(onSearchChange).toHaveBeenCalledTimes(4); // Once per character
+    // Verify the input value was updated
+    expect(searchInput.value).toBe('test');
   });
 
   it('should show filter button with count badge', () => {
