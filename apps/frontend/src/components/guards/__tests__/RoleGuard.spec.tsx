@@ -188,7 +188,6 @@ describe('RoleGuard', () => {
     );
 
     // Audit logging happens before redirect, so wait a bit
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     const logUnauthorizedAccess = auditService.logUnauthorizedAccess;
     await waitFor(
       () => {
@@ -235,7 +234,6 @@ describe('RoleGuard', () => {
       </TestWrapper>
     );
 
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     const logUnauthorizedAccess = auditService.logUnauthorizedAccess;
     await waitFor(
       () => {

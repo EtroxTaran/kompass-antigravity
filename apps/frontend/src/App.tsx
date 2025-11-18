@@ -7,6 +7,7 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { RoleGuard } from './components/guards/RoleGuard';
 import { AppShell } from './components/layout/AppShell';
 import { AuthProvider } from './contexts/AuthContext';
+import { CustomerDetailPage } from './pages/CustomerDetailPage';
 import { CustomerListPage } from './pages/CustomerListPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { LoginPage } from './pages/LoginPage';
@@ -60,6 +61,19 @@ function App(): React.ReactElement {
                   permission={Permission.READ}
                 >
                   <CustomerListPage />
+                </RoleGuard>
+              }
+            />
+
+            {/* Customer Detail - ADM (own), INNEN (all), GF (all) */}
+            <Route
+              path="/customers/:id"
+              element={
+                <RoleGuard
+                  entityType={EntityType.Customer}
+                  permission={Permission.READ}
+                >
+                  <CustomerDetailPage />
                 </RoleGuard>
               }
             />

@@ -85,4 +85,15 @@ export const customerService = {
     const response = await apiClient.get<Customer>(`/api/v1/customers/${id}`);
     return response.data;
   },
+
+  /**
+   * Delete customer by ID
+   *
+   * @param id - Customer ID
+   * @returns Promise resolving when customer is deleted
+   * @throws Error if deletion fails or user doesn't have permission (403)
+   */
+  async delete(id: string): Promise<void> {
+    await apiClient.delete(`/api/v1/customers/${id}`);
+  },
 };
