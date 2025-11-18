@@ -305,15 +305,10 @@ describe('CustomerListPage', () => {
     });
   });
 
-  it('should filter customers by search term', async () => {
-    // Mock service to return filtered results when search is provided
-    vi.mocked(customerService).getAll.mockImplementation(
-      async (filters?: { search?: string }) => {
-        if (filters?.search === 'Test') {
-          return createPaginatedResponse([mockCustomers[0]]); // Only Test GmbH
-        }
-        return createPaginatedResponse(mockCustomers);
-      }
+  it('should filter customers by search term (client-side)', async () => {
+    // Mock service to return all customers (client-side filtering applied after fetch)
+    vi.mocked(customerService).getAll.mockResolvedValue(
+      createPaginatedResponse(mockCustomers)
     );
 
     render(
@@ -324,12 +319,13 @@ describe('CustomerListPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Test GmbH')).toBeInTheDocument();
+      expect(screen.getByText('Example AG')).toBeInTheDocument();
     });
 
     const searchInput = screen.getByPlaceholderText(/Kunden durchsuchen/i);
     await userEvent.type(searchInput, 'Test');
 
-    // Wait for debounce (300ms) + API call
+    // Wait for debounce (300ms) + client-side filtering
     await waitFor(
       () => {
         expect(screen.getByText('Test GmbH')).toBeInTheDocument();

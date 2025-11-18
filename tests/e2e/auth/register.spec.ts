@@ -42,7 +42,9 @@ test.describe('User Registration', () => {
     await page.click('button:has-text("Registrieren")');
 
     // Check for password length validation error
-    await expect(page.locator('text=/password.*12.*characters/i')).toBeVisible();
+    await expect(
+      page.locator('text=/password.*12.*characters/i')
+    ).toBeVisible();
   });
 
   test('should show validation error for weak password', async ({ page }) => {
@@ -59,7 +61,9 @@ test.describe('User Registration', () => {
     ).toBeVisible();
   });
 
-  test('should show validation error for short display name', async ({ page }) => {
+  test('should show validation error for short display name', async ({
+    page,
+  }) => {
     await page.fill('input[type="email"]', 'test@example.com');
     await page.fill('input[name="displayName"]', 'A');
     await page.fill('input[type="password"]', 'ValidPassword123!');
@@ -67,7 +71,9 @@ test.describe('User Registration', () => {
     await page.click('button:has-text("Registrieren")');
 
     // Check for display name length validation error
-    await expect(page.locator('text=/display.*name.*2.*characters/i')).toBeVisible();
+    await expect(
+      page.locator('text=/display.*name.*2.*characters/i')
+    ).toBeVisible();
   });
 
   test('should register new user successfully', async ({ page }) => {
@@ -96,7 +102,8 @@ test.describe('User Registration', () => {
 
   test('should show error for duplicate email', async ({ page }) => {
     // Use admin email (should already exist)
-    const existingEmail = process.env.KEYCLOAK_ADMIN_EMAIL || 'admin@kompass.de';
+    const existingEmail =
+      process.env.KEYCLOAK_ADMIN_EMAIL || 'admin@kompass.de';
 
     await page.fill('input[type="email"]', existingEmail);
     await page.fill('input[name="displayName"]', 'Test User');
@@ -131,7 +138,9 @@ test.describe('User Registration', () => {
 
   test('should navigate to login page from registration', async ({ page }) => {
     // Look for login link
-    const loginLink = page.locator('a:has-text("Anmelden"), a:has-text("Login")');
+    const loginLink = page.locator(
+      'a:has-text("Anmelden"), a:has-text("Login")'
+    );
 
     if (await loginLink.isVisible()) {
       await loginLink.click();
@@ -139,4 +148,3 @@ test.describe('User Registration', () => {
     }
   });
 });
-

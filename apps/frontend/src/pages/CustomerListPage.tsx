@@ -108,18 +108,13 @@ export function CustomerListPage(): React.ReactElement {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
 
-  // Build filters for API
+  // Build filters for API (exclude search - handled client-side for MVP)
   const apiFilters = useMemo(() => {
     const filters: {
-      search?: string;
       rating?: string;
       customerType?: string;
       vatNumber?: string;
     } = {};
-
-    if (debouncedSearch) {
-      filters.search = debouncedSearch;
-    }
 
     // Apply rating filter (use first selected rating for now)
     if (activeFilters.rating && activeFilters.rating.length > 0) {
@@ -127,7 +122,7 @@ export function CustomerListPage(): React.ReactElement {
     }
 
     return filters;
-  }, [debouncedSearch, activeFilters.rating]);
+  }, [activeFilters.rating]);
 
   // Fetch customers with server-side pagination and sorting
   const {
@@ -142,11 +137,62 @@ export function CustomerListPage(): React.ReactElement {
     sortOrder: sortDirection,
   });
 
-  const customers = paginatedResponse?.data || [];
+  // Client-side search filtering (MVP requirement)
+  const filteredCustomers = useMemo(() => {
+    const fetchedCustomers = paginatedResponse?.data || [];
+
+    // Filter by search term (client-side for MVP)
+    if (!debouncedSearch) {
+      return fetchedCustomers;
+    }
+
+    const searchLower = debouncedSearch.toLowerCase();
+    return fetchedCustomers.filter((customer) => {
+      const companyName = customer.companyName?.toLowerCase() || '';
+      const vatNumber = customer.vatNumber?.toLowerCase() || '';
+
+      return (
+        companyName.includes(searchLower) || vatNumber.includes(searchLower)
+      );
+    });
+  }, [paginatedResponse?.data, debouncedSearch]);
+
+  // Apply client-side pagination to filtered results (when search is active)
+  const customers = useMemo(() => {
+    if (!debouncedSearch) {
+      // No search: use server-side paginated results as-is
+      return filteredCustomers;
+    }
+
+    // Search active: apply client-side pagination to filtered results
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredCustomers.slice(startIndex, endIndex);
+  }, [filteredCustomers, debouncedSearch, page, pageSize]);
+
   const pagination = paginatedResponse?.pagination;
 
-  // Pagination info from server
+  // Pagination info (adjusted for client-side search)
   const paginationInfo = useMemo(() => {
+    if (debouncedSearch) {
+      // Client-side pagination for filtered results
+      const totalCustomers = filteredCustomers.length;
+      const totalPages = Math.ceil(totalCustomers / pageSize) || 1;
+      const startIndex = totalCustomers > 0 ? (page - 1) * pageSize + 1 : 0;
+      const endIndex = Math.min(page * pageSize, totalCustomers);
+      return {
+        total: totalCustomers,
+        page,
+        pageSize,
+        totalPages,
+        startIndex,
+        endIndex,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      };
+    }
+
+    // Server-side pagination (no search)
     if (!pagination) {
       return {
         total: 0,
@@ -173,7 +219,7 @@ export function CustomerListPage(): React.ReactElement {
       hasNextPage: pagination.hasNextPage,
       hasPreviousPage: pagination.hasPreviousPage,
     };
-  }, [pagination]);
+  }, [pagination, filteredCustomers, debouncedSearch, page, pageSize]);
 
   // Handle sort
   const handleSort = (column: string, direction: SortDirection): void => {
@@ -498,6 +544,14 @@ export function CustomerListPage(): React.ReactElement {
                       >
                         Telefon
                       </SortableTableHeader>
+                      <SortableTableHeader
+                        column="modifiedAt"
+                        currentSortColumn={sortColumn}
+                        currentSortDirection={sortDirection}
+                        onSort={handleSort}
+                      >
+                        Zuletzt geändert
+                      </SortableTableHeader>
                       <TableHead className="w-24">Aktionen</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -556,6 +610,17 @@ export function CustomerListPage(): React.ReactElement {
                             {customer.phone || (
                               <span className="text-muted-foreground">-</span>
                             )}
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {customer.modifiedAt
+                              ? new Intl.DateTimeFormat('de-DE', {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                }).format(new Date(customer.modifiedAt))
+                              : '-'}
                           </TableCell>
                           <TableCell
                             onClick={(e) => e.stopPropagation()}
