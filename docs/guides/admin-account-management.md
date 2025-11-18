@@ -14,6 +14,7 @@ KOMPASS requires an admin account to be created in both Keycloak (for authentica
 ```
 
 This creates:
+
 - Admin user in Keycloak: `admin@kompass.de` / `Admin123!@#`
 - Admin user in CouchDB with matching `keycloakUserId`
 - ADMIN role assigned in Keycloak
@@ -50,6 +51,7 @@ export COUCHDB_ADMIN_PASSWORD="your-couchdb-password"
 **Purpose**: Creates or updates admin account in development environment.
 
 **Features**:
+
 - Idempotent (safe to run multiple times)
 - Checks if user exists before creating
 - Creates user in both Keycloak and CouchDB
@@ -57,6 +59,7 @@ export COUCHDB_ADMIN_PASSWORD="your-couchdb-password"
 - Uses development defaults
 
 **Default Configuration**:
+
 - Keycloak URL: `http://localhost:8080`
 - Realm: `kompass`
 - Admin Email: `admin@kompass.de`
@@ -64,11 +67,13 @@ export COUCHDB_ADMIN_PASSWORD="your-couchdb-password"
 - CouchDB URL: `http://localhost:5984`
 
 **Usage**:
+
 ```bash
 ./scripts/keycloak-create-admin.sh
 ```
 
 **Environment Variables** (optional):
+
 - `KEYCLOAK_URL` - Override Keycloak URL
 - `KEYCLOAK_REALM` - Override realm name
 - `KEYCLOAK_ADMIN` - Override Keycloak admin username
@@ -85,22 +90,26 @@ export COUCHDB_ADMIN_PASSWORD="your-couchdb-password"
 **Purpose**: Creates or updates admin account in staging environment.
 
 **Features**:
+
 - Requires environment variables (no defaults for security)
 - Validates all required credentials
 - Uses staging Keycloak URL by default
 - Same idempotent behavior as development script
 
 **Required Environment Variables**:
+
 - `KEYCLOAK_ADMIN_PASSWORD` - Keycloak admin password
 - `ADMIN_USER_PASSWORD` - Admin user password
 - `COUCHDB_ADMIN_PASSWORD` - CouchDB admin password
 
 **Optional Environment Variables**:
+
 - `KEYCLOAK_URL` - Keycloak URL (default: `https://keycloak.staging.kompass.de`)
 - `ADMIN_USER_EMAIL` - Admin user email (default: `admin@kompass.de`)
 - `ADMIN_USER_DISPLAY_NAME` - Admin user display name (default: `Admin User`)
 
 **Usage**:
+
 ```bash
 KEYCLOAK_ADMIN_PASSWORD=... ADMIN_USER_PASSWORD=... COUCHDB_ADMIN_PASSWORD=... \
   ./scripts/keycloak-create-admin-staging.sh
@@ -111,6 +120,7 @@ KEYCLOAK_ADMIN_PASSWORD=... ADMIN_USER_PASSWORD=... COUCHDB_ADMIN_PASSWORD=... \
 **Purpose**: Creates or updates admin account in production environment.
 
 **Features**:
+
 - Requires environment variables (no defaults for security)
 - Requires `ENVIRONMENT=production` confirmation
 - Validates all required credentials
@@ -118,17 +128,20 @@ KEYCLOAK_ADMIN_PASSWORD=... ADMIN_USER_PASSWORD=... COUCHDB_ADMIN_PASSWORD=... \
 - Same idempotent behavior as development script
 
 **Required Environment Variables**:
+
 - `ENVIRONMENT=production` - Must be set to confirm production use
 - `KEYCLOAK_ADMIN_PASSWORD` - Keycloak admin password
 - `ADMIN_USER_PASSWORD` - Admin user password
 - `COUCHDB_ADMIN_PASSWORD` - CouchDB admin password
 
 **Optional Environment Variables**:
+
 - `KEYCLOAK_URL` - Keycloak URL (default: `https://keycloak.kompass.de`)
 - `ADMIN_USER_EMAIL` - Admin user email (default: `admin@kompass.de`)
 - `ADMIN_USER_DISPLAY_NAME` - Admin user display name (default: `Admin User`)
 
 **Usage**:
+
 ```bash
 ENVIRONMENT=production \
   KEYCLOAK_ADMIN_PASSWORD=... ADMIN_USER_PASSWORD=... COUCHDB_ADMIN_PASSWORD=... \
@@ -146,6 +159,7 @@ The admin user password must meet Keycloak's password policy requirements:
 - At least one special character (`@$!%*?&`)
 
 **Example valid passwords**:
+
 - `Admin123!@#`
 - `SecurePassword2024!`
 - `MyAdmin@2024`
@@ -193,6 +207,7 @@ curl -u admin:devpassword "http://localhost:5984/kompass/_find" \
 **Cause**: Keycloak admin credentials are incorrect or Keycloak is not ready.
 
 **Solution**:
+
 1. Verify Keycloak is running: `curl http://localhost:8080/health`
 2. Check `KEYCLOAK_ADMIN_PASSWORD` matches Keycloak configuration
 3. Wait for Keycloak to fully start (may take 30-60 seconds)
@@ -202,6 +217,7 @@ curl -u admin:devpassword "http://localhost:5984/kompass/_find" \
 **Cause**: User exists but role assignment is failing.
 
 **Solution**:
+
 1. Check if ADMIN role exists in Keycloak realm
 2. Verify user has correct permissions
 3. Run script again (idempotent, will retry role assignment)
@@ -211,6 +227,7 @@ curl -u admin:devpassword "http://localhost:5984/kompass/_find" \
 **Cause**: CouchDB credentials are incorrect or CouchDB is not accessible.
 
 **Solution**:
+
 1. Verify CouchDB is running: `curl http://localhost:5984/_up`
 2. Check `COUCHDB_ADMIN_PASSWORD` matches CouchDB configuration
 3. Verify CouchDB database `kompass` exists
@@ -220,6 +237,7 @@ curl -u admin:devpassword "http://localhost:5984/kompass/_find" \
 **Cause**: CouchDB creation step failed.
 
 **Solution**:
+
 1. Run script again (idempotent, will create CouchDB user if missing)
 2. Manually create user in CouchDB using the `keycloakUserId` from Keycloak
 
@@ -262,4 +280,3 @@ For staging/production, add the admin setup script to your deployment pipeline:
 
 - [Keycloak Setup Guide](./keycloak-setup.md) - Initial Keycloak configuration
 - [Authentication Architecture](../architecture/decisions/adr-021-keycloak-authentication.md) - Authentication design decisions
-
