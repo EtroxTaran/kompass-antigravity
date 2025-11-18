@@ -11,6 +11,7 @@ import {
   type CustomerFormValues,
 } from '@kompass/shared';
 
+import { DuplicateDetectionDialog } from '@/components/customer/DuplicateDetectionDialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -48,8 +49,6 @@ import {
 } from '@/hooks/useCustomerMutation';
 import { useDebouncedCompanyNameDuplicate } from '@/hooks/useDuplicateDetection';
 import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
-
-import { DuplicateDetectionDialog } from '@/components/customer/DuplicateDetectionDialog';
 
 import type { Customer } from '@kompass/shared/types/entities/customer';
 import type { DuplicateMatch } from '@/types/duplicate-detection.types';
