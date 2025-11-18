@@ -107,7 +107,7 @@ const mockCustomer: Customer = {
     city: 'München',
     country: 'Deutschland',
   },
-  locations: ['location-1'],
+  locations: ['location-1', 'location-2'],
   contactPersons: ['contact-1', 'contact-2'],
   customerType: CustomerType.ACTIVE,
   customerBusinessType: CustomerBusinessType.RETAIL,
@@ -282,9 +282,24 @@ describe('CustomerDetailPage', () => {
       expect(header).toBeInTheDocument();
     });
 
-    // Delete button should be visible for GF
-    const deleteButton = screen.getByRole('button', { name: /Löschen/i });
-    expect(deleteButton).toBeInTheDocument();
+    // Delete button is in dropdown menu - open it first
+    // MoreVertical button has no accessible name, so find it by getting all buttons
+    // and finding the one that's the dropdown trigger (last button in actions area)
+    const allButtons = screen.getAllByRole('button');
+    // Find the button that's the dropdown trigger - it's the last button in the actions area
+    // (after "Kunde bearbeiten" and "Neue Opportunity" buttons)
+    const moreButton =
+      allButtons.find((btn) => {
+        // Check if this button contains MoreVertical icon (has no text content)
+        return btn.textContent === '' && btn.querySelector('svg');
+      }) || allButtons[allButtons.length - 1]; // Fallback to last button
+    await userEvent.click(moreButton);
+
+    // Delete button should be visible in dropdown for GF
+    await waitFor(() => {
+      const deleteButton = screen.getByRole('menuitem', { name: /Löschen/i });
+      expect(deleteButton).toBeInTheDocument();
+    });
   });
 
   it('should disable edit button if user cannot update', async () => {
@@ -335,9 +350,9 @@ describe('CustomerDetailPage', () => {
       expect(header).toBeInTheDocument();
     });
 
-    // Edit button should be disabled (no UPDATE permission)
-    const editButton = screen.getByRole('button', { name: /Bearbeiten/i });
-    expect(editButton).toBeDisabled();
+    // Edit button should not be visible (component hides it when canUpdate is false, doesn't disable it)
+    const editButton = screen.queryByRole('button', { name: /Bearbeiten/i });
+    expect(editButton).not.toBeInTheDocument();
   });
 
   it('should hide financial fields for ADM role', async () => {
@@ -523,8 +538,27 @@ describe('CustomerDetailPage', () => {
       expect(header).toBeInTheDocument();
     });
 
-    const deleteButton = screen.getByRole('button', { name: /Löschen/i });
-    await userEvent.click(deleteButton);
+    // Delete button is in dropdown menu - open it first
+    // MoreVertical button has no accessible name, so find it by getting all buttons
+    // and finding the one that's the dropdown trigger (last button in actions area)
+    const allButtons = screen.getAllByRole('button');
+    // Find the button that's the dropdown trigger - it's the last button in the actions area
+    // (after "Kunde bearbeiten" and "Neue Opportunity" buttons)
+    const moreButton =
+      allButtons.find((btn) => {
+        // Check if this button contains MoreVertical icon (has no text content)
+        return btn.textContent === '' && btn.querySelector('svg');
+      }) || allButtons[allButtons.length - 1]; // Fallback to last button
+    await userEvent.click(moreButton);
+
+    // Wait for dropdown to open and find delete menu item
+    await waitFor(() => {
+      const deleteMenuItem = screen.getByRole('menuitem', { name: /Löschen/i });
+      expect(deleteMenuItem).toBeInTheDocument();
+    });
+
+    const deleteMenuItem = screen.getByRole('menuitem', { name: /Löschen/i });
+    await userEvent.click(deleteMenuItem);
 
     // Dialog should appear
     await waitFor(() => {
@@ -585,9 +619,27 @@ describe('CustomerDetailPage', () => {
       expect(header).toBeInTheDocument();
     });
 
-    // Click delete button
-    const deleteButton = screen.getByRole('button', { name: /Löschen/i });
-    await userEvent.click(deleteButton);
+    // Delete button is in dropdown menu - open it first
+    // MoreVertical button has no accessible name, so find it by getting all buttons
+    // and finding the one that's the dropdown trigger (last button in actions area)
+    const allButtons = screen.getAllByRole('button');
+    // Find the button that's the dropdown trigger - it's the last button in the actions area
+    // (after "Kunde bearbeiten" and "Neue Opportunity" buttons)
+    const moreButton =
+      allButtons.find((btn) => {
+        // Check if this button contains MoreVertical icon (has no text content)
+        return btn.textContent === '' && btn.querySelector('svg');
+      }) || allButtons[allButtons.length - 1]; // Fallback to last button
+    await userEvent.click(moreButton);
+
+    // Wait for dropdown to open and find delete menu item
+    await waitFor(() => {
+      const deleteMenuItem = screen.getByRole('menuitem', { name: /Löschen/i });
+      expect(deleteMenuItem).toBeInTheDocument();
+    });
+
+    const deleteMenuItem = screen.getByRole('menuitem', { name: /Löschen/i });
+    await userEvent.click(deleteMenuItem);
 
     // Wait for dialog
     await waitFor(() => {
@@ -608,10 +660,17 @@ describe('CustomerDetailPage', () => {
   });
 
   it('should navigate back to list when back button is clicked', async () => {
+    // Back button only appears in error states, so create an error state
+    const mockError = {
+      response: {
+        status: 404,
+      },
+    };
+
     mockUseCustomer.mockReturnValue({
-      data: mockCustomer,
+      data: undefined,
       isLoading: false,
-      error: null,
+      error: mockError,
       refetch: vi.fn(),
     });
     mockUseAuth.mockReturnValue({
@@ -643,12 +702,8 @@ describe('CustomerDetailPage', () => {
     );
 
     await waitFor(() => {
-      // Check for customer name in header (h1 element) - more specific
-      const header = screen.getByRole('heading', {
-        level: 1,
-        name: 'Test GmbH',
-      });
-      expect(header).toBeInTheDocument();
+      // Check for 404 error message
+      expect(screen.getByText('Kunde nicht gefunden')).toBeInTheDocument();
     });
 
     const backButton = screen.getByRole('button', {
@@ -709,10 +764,12 @@ describe('CustomerDetailPage', () => {
       },
     };
 
+    // For 403 error, component shows "Zugriff verweigert" when is403Error is true OR (customer exists but !canView)
+    // Set up: customer exists but user cannot view it (canView = false)
     mockUseCustomer.mockReturnValue({
-      data: undefined,
+      data: mockCustomer, // Customer exists
       isLoading: false,
-      error: mockError,
+      error: mockError, // But also has 403 error
       refetch: vi.fn(),
     });
     mockUseAuth.mockReturnValue({
@@ -729,8 +786,16 @@ describe('CustomerDetailPage', () => {
       refreshUserInfo: vi.fn(),
     });
 
-    // User cannot view this customer
-    mockHasAnyRolePermission.mockReturnValue(false);
+    // User cannot view this customer (canView = false)
+    // ADM can only view own customers, but this customer is owned by 'user-123' and current user is also 'user-123'
+    // So we need to make canView false by denying READ permission OR making owner different
+    mockHasAnyRolePermission.mockImplementation((roles, entity, permission) => {
+      // Deny READ permission so canView is false
+      if (entity === EntityType.Customer && permission === Permission.READ) {
+        return false;
+      }
+      return false;
+    });
 
     render(
       <TestWrapper>

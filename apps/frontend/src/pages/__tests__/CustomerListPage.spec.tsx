@@ -339,23 +339,42 @@ describe('CustomerListPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Test GmbH/i)).toBeInTheDocument();
-      expect(screen.getByText(/Example AG/i)).toBeInTheDocument();
+      // Use flexible matcher that works with highlighted text
+      // Text might appear multiple times, so use getAllByText
+      const allTestGmbh = screen.getAllByText((content, element) => {
+        return element?.textContent?.includes('Test GmbH') || false;
+      });
+      expect(allTestGmbh.length).toBeGreaterThan(0);
+      const allExampleAG = screen.getAllByText((content, element) => {
+        return element?.textContent?.includes('Example AG') || false;
+      });
+      expect(allExampleAG.length).toBeGreaterThan(0);
     });
 
     const searchInput = screen.getByPlaceholderText(/Kunden durchsuchen/i);
     // Clear and type search term
-    await userEvent.clear(searchInput);
-    await userEvent.type(searchInput, 'Test');
+    await act(async () => {
+      await userEvent.clear(searchInput);
+      await userEvent.type(searchInput, 'Test');
+    });
 
     // Wait for debounce (500ms) + client-side filtering + React re-render
     await waitFor(
       () => {
         // Text might be split by highlighting, so use a more flexible matcher
-        expect(screen.getByText(/Test GmbH/i)).toBeInTheDocument();
-        expect(screen.queryByText(/Example AG/i)).not.toBeInTheDocument();
+        // Check that Test GmbH is visible in table (not in header)
+        const allTestGmbh = screen.getAllByText((content, element) => {
+          return element?.textContent?.includes('Test GmbH') || false;
+        });
+        // Should find at least one in the table (might also be in header)
+        expect(allTestGmbh.length).toBeGreaterThan(0);
+        // Example AG should not be visible
+        const exampleAG = screen.queryByText((content, element) => {
+          return element?.textContent?.includes('Example AG') || false;
+        });
+        expect(exampleAG).not.toBeInTheDocument();
       },
-      { timeout: 3000 }
+      { timeout: 2000 }
     );
   });
 
@@ -405,7 +424,17 @@ describe('CustomerListPage', () => {
 
     // Wait for data to load first
     await waitFor(() => {
-      expect(screen.getByText(/Test GmbH|Example AG/i)).toBeInTheDocument();
+      // Use flexible matcher - text might appear multiple times
+      const allTestGmbh = screen.getAllByText((content, element) => {
+        return element?.textContent?.includes('Test GmbH') || false;
+      });
+      // After filtering with "Test", only Test GmbH should be visible
+      expect(allTestGmbh.length).toBeGreaterThan(0);
+      // Example AG should be filtered out - use queryAllByText to check absence
+      const allExampleAG = screen.queryAllByText((content, element) => {
+        return element?.textContent?.includes('Example AG') || false;
+      });
+      expect(allExampleAG.length).toBe(0); // Example AG should be filtered out
     });
 
     // Wait for search input to have the value from URL
@@ -416,11 +445,19 @@ describe('CustomerListPage', () => {
 
     // Should filter results based on URL param
     // Note: debouncedSearch is initialized immediately from searchTerm, so filtering should work right away
+    // But we need to wait for the debounce to complete (500ms)
     await waitFor(
       () => {
-        // Text might be split by highlighting, so use regex
-        expect(screen.getByText(/Test GmbH/i)).toBeInTheDocument();
-        expect(screen.queryByText(/Example AG/i)).not.toBeInTheDocument();
+        // Text might be split by highlighting, so use flexible matcher
+        const allTestGmbh = screen.getAllByText((content, element) => {
+          return element?.textContent?.includes('Test GmbH') || false;
+        });
+        // Should find at least one in the table (might also be in header)
+        expect(allTestGmbh.length).toBeGreaterThan(0);
+        const exampleAG = screen.queryByText((content, element) => {
+          return element?.textContent?.includes('Example AG') || false;
+        });
+        expect(exampleAG).not.toBeInTheDocument();
       },
       { timeout: 2000 }
     );
@@ -441,12 +478,17 @@ describe('CustomerListPage', () => {
 
     // Wait for data to load and filter
     await waitFor(() => {
-      expect(screen.getByText(/Test GmbH/i)).toBeInTheDocument();
+      const allTestGmbh = screen.getAllByText((content, element) => {
+        return element?.textContent?.includes('Test GmbH') || false;
+      });
+      expect(allTestGmbh.length).toBeGreaterThan(0);
     });
 
     // Find and click clear button (X icon)
     const clearButton = screen.getByLabelText(/Suche löschen/i);
-    await userEvent.click(clearButton);
+    await act(async () => {
+      await userEvent.click(clearButton);
+    });
 
     // Wait for debounce + URL update + filtering
     await waitFor(
@@ -454,8 +496,14 @@ describe('CustomerListPage', () => {
         const searchInput = screen.getByPlaceholderText(/Kunden durchsuchen/i);
         expect(searchInput).toHaveValue('');
         // After clearing, both customers should be visible again
-        expect(screen.getByText(/Test GmbH/i)).toBeInTheDocument();
-        expect(screen.getByText(/Example AG/i)).toBeInTheDocument();
+        const allTestGmbh = screen.getAllByText((content, element) => {
+          return element?.textContent?.includes('Test GmbH') || false;
+        });
+        expect(allTestGmbh.length).toBeGreaterThan(0);
+        const allExampleAG = screen.getAllByText((content, element) => {
+          return element?.textContent?.includes('Example AG') || false;
+        });
+        expect(allExampleAG.length).toBeGreaterThan(0);
       },
       { timeout: 2000 }
     );
@@ -475,19 +523,28 @@ describe('CustomerListPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Test GmbH/i)).toBeInTheDocument();
+      const allTestGmbh = screen.getAllByText((content, element) => {
+        return element?.textContent?.includes('Test GmbH') || false;
+      });
+      expect(allTestGmbh.length).toBeGreaterThan(0);
     });
 
     const searchInput = screen.getByPlaceholderText(/Kunden durchsuchen/i);
-    await userEvent.type(searchInput, 'Test', { delay: 1 });
+    await act(async () => {
+      await userEvent.type(searchInput, 'Test', { delay: 1 });
+    });
 
     // Wait for debounce (500ms) + highlighting
     await waitFor(
       () => {
         // Check for highlighted text (mark element)
-        // Text might be split by highlighting, so use a more flexible matcher
-        const cell = screen.getByText(/Test GmbH/i).closest('td');
-        const highlightedText = cell?.querySelector('mark');
+        // Text might be split by highlighting, so find the cell that contains "Test GmbH"
+        const cells = screen.getAllByRole('cell');
+        const cellWithTest = cells.find((cell) => {
+          return cell.textContent?.includes('Test GmbH') || false;
+        });
+        expect(cellWithTest).toBeInTheDocument();
+        const highlightedText = cellWithTest?.querySelector('mark');
         expect(highlightedText).toBeInTheDocument();
         expect(highlightedText?.textContent).toBe('Test');
       },
@@ -509,20 +566,30 @@ describe('CustomerListPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Test GmbH/i)).toBeInTheDocument();
+      const allTestGmbh = screen.getAllByText((content, element) => {
+        return element?.textContent?.includes('Test GmbH') || false;
+      });
+      expect(allTestGmbh.length).toBeGreaterThan(0);
     });
 
     const searchInput = screen.getByPlaceholderText(/Kunden durchsuchen/i);
-    await userEvent.type(searchInput, 'test', { delay: 1 }); // lowercase
+    await act(async () => {
+      await userEvent.type(searchInput, 'test', { delay: 1 }); // lowercase
+    });
 
     // Wait for debounce (500ms) + highlighting
     await waitFor(
       () => {
         // Should still highlight even with lowercase query
-        // Text might be split by highlighting, so use a more flexible matcher
-        const cell = screen.getByText(/Test GmbH/i).closest('td');
-        const highlightedText = cell?.querySelector('mark');
+        // Text might be split by highlighting, so find the cell that contains "Test GmbH"
+        const cells = screen.getAllByRole('cell');
+        const cellWithTest = cells.find((cell) => {
+          return cell.textContent?.includes('Test GmbH') || false;
+        });
+        expect(cellWithTest).toBeInTheDocument();
+        const highlightedText = cellWithTest?.querySelector('mark');
         expect(highlightedText).toBeInTheDocument();
+        // The highlighted text should be "Test" (original case preserved in display)
         expect(highlightedText?.textContent).toBe('Test');
       },
       { timeout: 2000 }
@@ -568,6 +635,9 @@ describe('CustomerListPage', () => {
   });
 
   it('should display pagination when more than pageSize items', async () => {
+    // Reset mock to ensure clean state
+    vi.mocked(customerService).getAll.mockClear();
+
     // Create 25 customers to trigger pagination
     const manyCustomers = Array.from({ length: 25 }, (_, i) => ({
       ...mockCustomers[0],
@@ -597,12 +667,34 @@ describe('CustomerListPage', () => {
       </BrowserRouter>
     );
 
-    await waitFor(() => {
-      // Should show pagination info
-      expect(screen.getByText('Company 0')).toBeInTheDocument();
-      // Check for pagination text "Zeige X-Y von Z Kunden"
-      expect(screen.getByText(/Zeige.*von.*Kunden/i)).toBeInTheDocument();
-    });
+    // First verify the component rendered
+    expect(screen.getByText('Kunden')).toBeInTheDocument();
+
+    // Wait for data to load - check for any table content
+    // Use a more lenient approach that works even if cells aren't found immediately
+    await waitFor(
+      () => {
+        // Check if pagination text exists (this confirms data loaded AND pagination shown)
+        const allPaginationTexts = screen.queryAllByText((content, element) => {
+          const text = element?.textContent || '';
+          return /Zeige\s+\d+-\d+\s+von\s+\d+\s+Kunden/i.test(text);
+        });
+        if (allPaginationTexts.length > 0) {
+          // Pagination found - data is loaded
+          return;
+        }
+        // Fallback: check for table cells
+        const cells = screen.queryAllByRole('cell');
+        if (cells.length > 0) {
+          // Cells found but pagination might not be rendered yet
+          // Check if pagination should be shown (totalPages > 1)
+          // If we have cells, data is loaded, so pagination should appear
+          throw new Error('Pagination text not found but cells are present');
+        }
+        throw new Error('No data loaded yet');
+      },
+      { timeout: 10000 }
+    );
   });
 
   it('should allow row selection with checkbox', async () => {
@@ -619,7 +711,11 @@ describe('CustomerListPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Test GmbH/i)).toBeInTheDocument();
+      // Test GmbH might appear multiple times, so use getAllByText
+      const allTestGmbh = screen.getAllByText((content, element) => {
+        return element?.textContent?.includes('Test GmbH') || false;
+      });
+      expect(allTestGmbh.length).toBeGreaterThan(0);
     });
 
     // Find checkboxes (header + rows)

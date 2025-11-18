@@ -395,14 +395,12 @@ export function CustomerListPage(): React.ReactElement {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Kunden</h1>
-          <p className="text-muted-foreground mt-2">
-            Verwalten Sie Ihre Kundenbeziehungen
+          <div className="text-muted-foreground mt-2 flex items-center gap-2">
+            <span>Verwalten Sie Ihre Kundenbeziehungen</span>
             {pagination && pagination.total > 0 && (
-              <Badge variant="secondary" className="ml-2">
-                {pagination.total}
-              </Badge>
+              <Badge variant="secondary">{pagination.total}</Badge>
             )}
-          </p>
+          </div>
         </div>
       </div>
 
