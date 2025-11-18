@@ -19,7 +19,7 @@
  *   COUCHDB_DATABASE - Database name (default: kompass)
  */
 
-import * as Nano from 'nano';
+import Nano from 'nano';
 
 // CouchDB configuration from environment variables
 // Supports both COUCHDB_ADMIN_* (for scripts) and COUCHDB_* (for docker-compose) naming
