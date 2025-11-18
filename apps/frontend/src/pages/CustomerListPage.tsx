@@ -8,8 +8,8 @@ import {
   Users,
   X,
 } from 'lucide-react';
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import {
   ControlsBar,
@@ -48,6 +48,7 @@ import {
 } from '@/components/ui/table';
 import { useCustomers } from '@/hooks/useCustomers';
 import { useDebounce } from '@/hooks/useDebounce';
+import { highlightMatch } from '@/utils/search.utils';
 
 import type { SortDirection } from '@/utils/table-utils';
 import type { Customer } from '@kompass/shared/types/entities/customer';
@@ -80,10 +81,45 @@ import type { Customer } from '@kompass/shared/types/entities/customer';
  */
 export function CustomerListPage(): React.ReactElement {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Search state
-  const [searchTerm, setSearchTerm] = useState('');
-  const debouncedSearch = useDebounce(searchTerm, 300);
+  // Search state - initialize from URL query param
+  const [searchTerm, setSearchTerm] = useState(() => {
+    return searchParams.get('search') || '';
+  });
+  const debouncedSearch = useDebounce(searchTerm, 500);
+
+  // Sync searchTerm with URL params on browser navigation (back/forward)
+  useEffect(() => {
+    const urlSearch = searchParams.get('search') || '';
+    if (urlSearch !== searchTerm) {
+      setSearchTerm(urlSearch);
+    }
+  }, [searchParams]);
+
+  // Update URL query param when debounced search changes
+  useEffect(() => {
+    const currentUrlSearch = searchParams.get('search') || '';
+    if (debouncedSearch && debouncedSearch !== currentUrlSearch) {
+      setSearchParams(
+        (prev) => {
+          const newParams = new URLSearchParams(prev);
+          newParams.set('search', debouncedSearch);
+          return newParams;
+        },
+        { replace: true }
+      );
+    } else if (!debouncedSearch && currentUrlSearch) {
+      setSearchParams(
+        (prev) => {
+          const newParams = new URLSearchParams(prev);
+          newParams.delete('search');
+          return newParams;
+        },
+        { replace: true }
+      );
+    }
+  }, [debouncedSearch, setSearchParams, searchParams]);
 
   // Filter state
   const [filterOpen, setFilterOpen] = useState(false);
@@ -108,18 +144,13 @@ export function CustomerListPage(): React.ReactElement {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
 
-  // Build filters for API
+  // Build filters for API (exclude search - handled client-side for MVP)
   const apiFilters = useMemo(() => {
     const filters: {
-      search?: string;
       rating?: string;
       customerType?: string;
       vatNumber?: string;
     } = {};
-
-    if (debouncedSearch) {
-      filters.search = debouncedSearch;
-    }
 
     // Apply rating filter (use first selected rating for now)
     if (activeFilters.rating && activeFilters.rating.length > 0) {
@@ -127,7 +158,7 @@ export function CustomerListPage(): React.ReactElement {
     }
 
     return filters;
-  }, [debouncedSearch, activeFilters.rating]);
+  }, [activeFilters.rating]);
 
   // Fetch customers with server-side pagination and sorting
   const {
@@ -142,11 +173,67 @@ export function CustomerListPage(): React.ReactElement {
     sortOrder: sortDirection,
   });
 
-  const customers = paginatedResponse?.data || [];
+  // Client-side search filtering (MVP requirement)
+  const filteredCustomers = useMemo(() => {
+    const fetchedCustomers = paginatedResponse?.data || [];
+
+    // Filter by search term (client-side for MVP)
+    if (!debouncedSearch) {
+      return fetchedCustomers;
+    }
+
+    // Trim search term to match highlighting behavior (search.utils.tsx trims query)
+    const searchLower = debouncedSearch.trim().toLowerCase();
+    if (!searchLower) {
+      return fetchedCustomers;
+    }
+
+    return fetchedCustomers.filter((customer) => {
+      const companyName = customer.companyName?.toLowerCase() || '';
+      const vatNumber = customer.vatNumber?.toLowerCase() || '';
+
+      return (
+        companyName.includes(searchLower) || vatNumber.includes(searchLower)
+      );
+    });
+  }, [paginatedResponse?.data, debouncedSearch]);
+
+  // Apply client-side pagination to filtered results (when search is active)
+  const customers = useMemo(() => {
+    if (!debouncedSearch) {
+      // No search: use server-side paginated results as-is
+      return filteredCustomers;
+    }
+
+    // Search active: apply client-side pagination to filtered results
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredCustomers.slice(startIndex, endIndex);
+  }, [filteredCustomers, debouncedSearch, page, pageSize]);
+
   const pagination = paginatedResponse?.pagination;
 
-  // Pagination info from server
+  // Pagination info (adjusted for client-side search)
   const paginationInfo = useMemo(() => {
+    if (debouncedSearch) {
+      // Client-side pagination for filtered results
+      const totalCustomers = filteredCustomers.length;
+      const totalPages = Math.ceil(totalCustomers / pageSize) || 1;
+      const startIndex = totalCustomers > 0 ? (page - 1) * pageSize + 1 : 0;
+      const endIndex = Math.min(page * pageSize, totalCustomers);
+      return {
+        total: totalCustomers,
+        page,
+        pageSize,
+        totalPages,
+        startIndex,
+        endIndex,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      };
+    }
+
+    // Server-side pagination (no search)
     if (!pagination) {
       return {
         total: 0,
@@ -173,7 +260,7 @@ export function CustomerListPage(): React.ReactElement {
       hasNextPage: pagination.hasNextPage,
       hasPreviousPage: pagination.hasPreviousPage,
     };
-  }, [pagination]);
+  }, [pagination, filteredCustomers, debouncedSearch, page, pageSize]);
 
   // Handle sort
   const handleSort = (column: string, direction: SortDirection): void => {
@@ -356,7 +443,7 @@ export function CustomerListPage(): React.ReactElement {
 
       {/* Active Filters Bar */}
       {activeFilterCount > 0 && (
-        <div className="flex items-center gap-2 rounded-md bg-blue-50 p-3 text-sm">
+        <div className="flex items-center gap-2 rounded-md bg-accent/50 p-3 text-sm">
           <span className="text-muted-foreground">Aktive Filter:</span>
           {activeFilters.rating?.map((rating) => (
             <Badge key={rating} variant="secondary" className="gap-1">
@@ -498,6 +585,14 @@ export function CustomerListPage(): React.ReactElement {
                       >
                         Telefon
                       </SortableTableHeader>
+                      <SortableTableHeader
+                        column="modifiedAt"
+                        currentSortColumn={sortColumn}
+                        currentSortDirection={sortDirection}
+                        onSort={handleSort}
+                      >
+                        Zuletzt geändert
+                      </SortableTableHeader>
                       <TableHead className="w-24">Aktionen</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -508,7 +603,7 @@ export function CustomerListPage(): React.ReactElement {
                         <TableRow
                           key={customer._id}
                           className={`group cursor-pointer ${
-                            isSelected ? 'bg-blue-50' : ''
+                            isSelected ? 'bg-accent/50' : ''
                           }`}
                           onClick={() => handleCustomerClick(customer._id)}
                         >
@@ -527,7 +622,12 @@ export function CustomerListPage(): React.ReactElement {
                           <TableCell className="font-medium">
                             <div className="flex items-center gap-2">
                               <Building2 className="h-4 w-4 text-muted-foreground" />
-                              {customer.companyName}
+                              {debouncedSearch?.trim()
+                                ? highlightMatch(
+                                    customer.companyName,
+                                    debouncedSearch.trim()
+                                  )
+                                : customer.companyName}
                             </div>
                           </TableCell>
                           <TableCell className="font-mono text-sm">
@@ -556,6 +656,17 @@ export function CustomerListPage(): React.ReactElement {
                             {customer.phone || (
                               <span className="text-muted-foreground">-</span>
                             )}
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {customer.modifiedAt
+                              ? new Intl.DateTimeFormat('de-DE', {
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                }).format(new Date(customer.modifiedAt))
+                              : '-'}
                           </TableCell>
                           <TableCell
                             onClick={(e) => e.stopPropagation()}

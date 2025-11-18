@@ -38,7 +38,7 @@ describe('ControlsBar', () => {
     ) as HTMLInputElement;
     await userEvent.type(searchInput, 'test');
 
-    // Verify the input value was updated
+    // Verify the input value was updated (proper controlled component test)
     expect(searchInput.value).toBe('test');
   });
 

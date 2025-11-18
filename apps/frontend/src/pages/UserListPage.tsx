@@ -319,7 +319,7 @@ export function UserListPage(): React.ReactElement {
 
       {/* Active Filters Bar */}
       {activeFilterCount > 0 && (
-        <div className="flex items-center gap-2 rounded-md bg-blue-50 p-3 text-sm">
+        <div className="flex items-center gap-2 rounded-md bg-accent/50 p-3 text-sm">
           <span className="text-muted-foreground">Aktive Filter:</span>
           {activeFilters.role?.map((role) => (
             <Badge key={role} variant="secondary" className="gap-1">

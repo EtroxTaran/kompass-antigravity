@@ -170,6 +170,7 @@ module.exports = {
         '@typescript-eslint/no-unsafe-member-access': 'off',
         '@typescript-eslint/no-unsafe-return': 'off',
         '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/unbound-method': 'off', // Disabled for test files (vitest/jest mocks)
         '@typescript-eslint/no-unused-vars': [
           'warn',
           {
