@@ -21,22 +21,28 @@ import type { Customer } from '@kompass/shared/types/entities/customer';
 /**
  * Test wrapper with QueryClientProvider
  * Router should be provided separately (BrowserRouter or MemoryRouter)
+ * Creates a fresh QueryClient for each test to ensure isolation
  */
 function TestWrapper({
   children,
 }: {
   children: React.ReactNode;
 }): React.ReactElement {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        refetchOnWindowFocus: false,
-        cacheTime: 0, // Disable cache for tests
-        staleTime: 0, // Always consider data stale
-      },
-    },
-  });
+  // Create a fresh QueryClient for each test to ensure complete isolation
+  const queryClient = React.useMemo(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+            refetchOnWindowFocus: false,
+            gcTime: 0, // Disable cache for tests (gcTime replaces cacheTime in React Query v5)
+            staleTime: 0, // Always consider data stale
+          },
+        },
+      }),
+    []
+  );
 
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
@@ -148,6 +154,10 @@ function createPaginatedResponse(
 describe('CustomerListPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset mock implementation to default empty response
+    vi.mocked(customerService).getAll.mockResolvedValue(
+      createPaginatedResponse([])
+    );
   });
 
   it('should render loading state initially', async () => {
@@ -635,9 +645,6 @@ describe('CustomerListPage', () => {
   });
 
   it('should display pagination when more than pageSize items', async () => {
-    // Reset mock to ensure clean state
-    vi.mocked(customerService).getAll.mockClear();
-
     // Create 25 customers to trigger pagination
     const manyCustomers = Array.from({ length: 25 }, (_, i) => ({
       ...mockCustomers[0],
@@ -657,6 +664,7 @@ describe('CustomerListPage', () => {
       },
     };
 
+    // Set up mock (beforeEach already cleared mocks, just override the default)
     vi.mocked(customerService).getAll.mockResolvedValue(paginatedResponse);
 
     render(
@@ -670,28 +678,26 @@ describe('CustomerListPage', () => {
     // First verify the component rendered
     expect(screen.getByText('Kunden')).toBeInTheDocument();
 
-    // Wait for data to load - check for any table content
-    // Use a more lenient approach that works even if cells aren't found immediately
+    // Wait for data to load - check for specific customer name from first page
+    // Use a more specific wait condition that also verifies the mock was called
     await waitFor(
       () => {
-        // Check if pagination text exists (this confirms data loaded AND pagination shown)
-        const allPaginationTexts = screen.queryAllByText((content, element) => {
-          const text = element?.textContent || '';
-          return /Zeige\s+\d+-\d+\s+von\s+\d+\s+Kunden/i.test(text);
-        });
-        if (allPaginationTexts.length > 0) {
-          // Pagination found - data is loaded
-          return;
-        }
-        // Fallback: check for table cells
-        const cells = screen.queryAllByRole('cell');
-        if (cells.length > 0) {
-          // Cells found but pagination might not be rendered yet
-          // Check if pagination should be shown (totalPages > 1)
-          // If we have cells, data is loaded, so pagination should appear
-          throw new Error('Pagination text not found but cells are present');
-        }
-        throw new Error('No data loaded yet');
+        expect(customerService.getAll).toHaveBeenCalled();
+        expect(screen.getByText('Company 0')).toBeInTheDocument();
+      },
+      { timeout: 10000 }
+    );
+
+    // Now wait for pagination text to appear
+    // Pagination is only rendered when totalPages > 1 (from server-side pagination)
+    // Since we have no search term, it uses server-side pagination
+    await waitFor(
+      () => {
+        // Look for the pagination text pattern
+        const paginationText = screen.getByText(
+          /Zeige\s+\d+-\d+\s+von\s+\d+\s+Kunden/i
+        );
+        expect(paginationText).toBeInTheDocument();
       },
       { timeout: 10000 }
     );
