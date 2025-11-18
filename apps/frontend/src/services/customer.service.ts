@@ -87,6 +87,34 @@ export const customerService = {
   },
 
   /**
+   * Create a new customer
+   *
+   * @param data - Customer data (CreateCustomerDto)
+   * @returns Promise resolving to created customer
+   * @throws Error if creation fails or validation errors (400, 409)
+   */
+  async create(data: CreateCustomerRequest): Promise<Customer> {
+    const response = await apiClient.post<Customer>('/api/v1/customers', data);
+    return response.data;
+  },
+
+  /**
+   * Update an existing customer
+   *
+   * @param id - Customer ID
+   * @param data - Customer data (UpdateCustomerDto)
+   * @returns Promise resolving to updated customer
+   * @throws Error if update fails or validation errors (400, 404, 409)
+   */
+  async update(id: string, data: UpdateCustomerRequest): Promise<Customer> {
+    const response = await apiClient.put<Customer>(
+      `/api/v1/customers/${id}`,
+      data
+    );
+    return response.data;
+  },
+
+  /**
    * Delete customer by ID
    *
    * @param id - Customer ID
@@ -97,3 +125,43 @@ export const customerService = {
     await apiClient.delete(`/api/v1/customers/${id}`);
   },
 };
+
+/**
+ * Create Customer DTO
+ *
+ * Matches CreateCustomerDto from backend
+ */
+export interface CreateCustomerRequest {
+  companyName: string;
+  vatNumber?: string;
+  billingAddress: {
+    street: string;
+    streetNumber?: string;
+    addressLine2?: string;
+    zipCode: string;
+    city: string;
+    state?: string;
+    country?: string;
+  };
+  phone?: string;
+  email?: string;
+  website?: string;
+  creditLimit?: number;
+  paymentTerms?: number;
+  rating?: 'A' | 'B' | 'C';
+  customerType: 'prospect' | 'active' | 'inactive' | 'archived';
+  industry?: string;
+  tags?: string[];
+  notes?: string;
+}
+
+/**
+ * Update Customer DTO
+ *
+ * Matches UpdateCustomerDto from backend
+ * All fields are optional (partial update)
+ */
+export interface UpdateCustomerRequest extends Partial<CreateCustomerRequest> {
+  _rev?: string;
+  _correctionReason?: string;
+}
