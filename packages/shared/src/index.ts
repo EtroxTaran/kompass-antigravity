@@ -63,3 +63,10 @@ export type {
   PaginationMetadata,
   PaginatedResponse,
 } from './types/dtos/paginated-response.dto';
+
+// Validation
+export {
+  customerFormSchema,
+  addressSchema,
+  type CustomerFormValues,
+} from './validation/customer.validation';

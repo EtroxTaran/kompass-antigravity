@@ -8,6 +8,7 @@ import { RoleGuard } from './components/guards/RoleGuard';
 import { AppShell } from './components/layout/AppShell';
 import { AuthProvider } from './contexts/AuthContext';
 import { CustomerDetailPage } from './pages/CustomerDetailPage';
+import { CustomerFormPage } from './pages/CustomerFormPage';
 import { CustomerListPage } from './pages/CustomerListPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { LoginPage } from './pages/LoginPage';
@@ -61,6 +62,32 @@ function App(): React.ReactElement {
                   permission={Permission.READ}
                 >
                   <CustomerListPage />
+                </RoleGuard>
+              }
+            />
+
+            {/* Customer Create - ADM (own), INNEN (all), GF (all) */}
+            <Route
+              path="/customers/new"
+              element={
+                <RoleGuard
+                  entityType={EntityType.Customer}
+                  permission={Permission.CREATE}
+                >
+                  <CustomerFormPage />
+                </RoleGuard>
+              }
+            />
+
+            {/* Customer Edit - ADM (own), INNEN (all), GF (all) */}
+            <Route
+              path="/customers/:id/edit"
+              element={
+                <RoleGuard
+                  entityType={EntityType.Customer}
+                  permission={Permission.UPDATE}
+                >
+                  <CustomerFormPage />
                 </RoleGuard>
               }
             />

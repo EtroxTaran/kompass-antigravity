@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React, { useState } from 'react';
 import { describe, it, expect, vi } from 'vitest';
 
 import { ControlsBar } from '../ControlsBar';
@@ -33,9 +33,7 @@ describe('ControlsBar', () => {
 
     render(<TestWrapper />);
 
-    const searchInput = screen.getByPlaceholderText(
-      'Search...'
-    ) as HTMLInputElement;
+    const searchInput = screen.getByPlaceholderText('Search...');
     await userEvent.type(searchInput, 'test');
 
     // Verify the input value was updated (proper controlled component test)
