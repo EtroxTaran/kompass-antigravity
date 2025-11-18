@@ -11,6 +11,7 @@ import {
   type CustomerFormValues,
 } from '@kompass/shared';
 
+import { DuplicateDetectionDialog } from '@/components/customer/DuplicateDetectionDialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,8 +47,11 @@ import {
   useCreateCustomer,
   useUpdateCustomer,
 } from '@/hooks/useCustomerMutation';
+import { useDebouncedCompanyNameDuplicate } from '@/hooks/useDuplicateDetection';
+import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
 
 import type { Customer } from '@kompass/shared/types/entities/customer';
+import type { DuplicateMatch } from '@/types/duplicate-detection.types';
 
 /**
  * Customer Type Labels (German)
@@ -112,6 +116,15 @@ export function CustomerForm({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
 
+  // Duplicate detection state
+  const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false);
+  const [detectedDuplicate, setDetectedDuplicate] = useState<
+    DuplicateMatch | Customer | null
+  >(null);
+  const [duplicateField, setDuplicateField] = useState<
+    'companyName' | 'vatNumber' | null
+  >(null);
+
   // Check if user can see financial fields (BUCH/GF only)
   const canSeeFinancialFields = useMemo(() => {
     if (!user) return false;
@@ -164,6 +177,15 @@ export function CustomerForm({
         },
   });
 
+  // Watch form fields for duplicate detection
+  const companyName = form.watch('companyName');
+  const vatNumber = form.watch('vatNumber');
+
+  // Duplicate detection hooks
+  const { duplicates: companyNameDuplicates } =
+    useDebouncedCompanyNameDuplicate(companyName, customer?._id, 500);
+  const { checkVatNumberDuplicate } = useDuplicateDetection(customer?._id);
+
   // Track form changes for unsaved changes detection
   // Use formState.isDirty which is more reliable than dirtyFields
   // Also subscribe to form changes to ensure we catch all updates
@@ -180,6 +202,43 @@ export function CustomerForm({
     });
     return () => subscription.unsubscribe();
   }, [form]);
+
+  // Check for company name duplicates (debounced)
+  useEffect(() => {
+    if (companyNameDuplicates.length > 0 && !duplicateDialogOpen) {
+      setDetectedDuplicate(companyNameDuplicates[0] ?? null);
+      setDuplicateField('companyName');
+      setDuplicateDialogOpen(true);
+    }
+  }, [companyNameDuplicates, duplicateDialogOpen]);
+
+  // Check for VAT number duplicates (immediate, no debounce)
+  useEffect(() => {
+    if (!vatNumber || vatNumber.trim().length === 0) {
+      return;
+    }
+
+    // Only check if dialog is not already open
+    if (duplicateDialogOpen) {
+      return;
+    }
+
+    // Use a timeout to prevent rapid-fire checks while user is typing
+    const timeoutId = setTimeout(() => {
+      void checkVatNumberDuplicate(vatNumber).then((duplicate) => {
+        // Double-check dialog is still closed (might have been opened by company name check)
+        if (duplicate && !duplicateDialogOpen) {
+          setDetectedDuplicate(duplicate);
+          setDuplicateField('vatNumber');
+          setDuplicateDialogOpen(true);
+        }
+      });
+    }, 300); // Small delay to batch rapid changes
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [vatNumber, checkVatNumberDuplicate, duplicateDialogOpen]);
 
   // Handle form submission
   const onSubmit = async (data: CustomerFormValues): Promise<void> => {
@@ -250,6 +309,26 @@ export function CustomerForm({
     setHasUnsavedChanges(false);
     form.reset();
     onCancel?.();
+  };
+
+  // Handle duplicate dialog actions
+  const handleDuplicateCancel = (): void => {
+    // Clear the field that triggered duplicate
+    if (duplicateField === 'companyName') {
+      form.setValue('companyName', '');
+    } else if (duplicateField === 'vatNumber') {
+      form.setValue('vatNumber', '');
+    }
+    setDuplicateDialogOpen(false);
+    setDetectedDuplicate(null);
+    setDuplicateField(null);
+  };
+
+  const handleDuplicateContinue = (): void => {
+    // Dismiss warning, allow form submission
+    setDuplicateDialogOpen(false);
+    // Note: We don't clear detectedDuplicate here so user can see it was dismissed
+    // The dialog will be reset when form is submitted or cancelled
   };
 
   const isLoading =
@@ -777,6 +856,17 @@ export function CustomerForm({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Duplicate Detection Dialog */}
+      {detectedDuplicate && (
+        <DuplicateDetectionDialog
+          open={duplicateDialogOpen}
+          onOpenChange={setDuplicateDialogOpen}
+          duplicate={detectedDuplicate}
+          onCancel={handleDuplicateCancel}
+          onContinue={handleDuplicateContinue}
+        />
+      )}
     </>
   );
 }

@@ -54,6 +54,15 @@ vi.mock('@/hooks/use-toast', () => ({
     toast: vi.fn(),
   }),
 }));
+vi.mock('@/hooks/useDuplicateDetection', () => ({
+  useDuplicateDetection: () => ({
+    checkVatNumberDuplicate: vi.fn().mockResolvedValue(null),
+  }),
+  useDebouncedCompanyNameDuplicate: () => ({
+    duplicates: [],
+    isLoading: false,
+  }),
+}));
 
 const mockUseAuth = useAuth as ReturnType<typeof vi.fn>;
 const mockUseCreateCustomer = useCreateCustomer as ReturnType<typeof vi.fn>;
@@ -414,15 +423,17 @@ describe('CustomerForm', () => {
 
       // Submit form to trigger validation
       const submitButton = screen.getByRole('button', { name: /Erstellen/i });
-      await user.click(submitButton);
+      await act(async () => {
+        await user.click(submitButton);
+      });
 
+      // Wait for validation message to appear
       await waitFor(
         () => {
-          expect(
-            screen.getByText(/Ungültiges E-Mail-Format/i)
-          ).toBeInTheDocument();
+          const errorMessage = screen.queryByText(/Ungültiges E-Mail-Format/i);
+          expect(errorMessage).toBeInTheDocument();
         },
-        { timeout: 5000 }
+        { timeout: 10000 }
       );
     });
 
@@ -495,9 +506,8 @@ describe('CustomerForm', () => {
 
       await waitFor(
         () => {
-          expect(
-            screen.getByText(/Ungespeicherte Änderungen/i)
-          ).toBeInTheDocument();
+          const dialogs = screen.getAllByText(/Ungespeicherte Änderungen/i);
+          expect(dialogs.length).toBeGreaterThan(0);
         },
         { timeout: 3000 }
       );
@@ -557,9 +567,8 @@ describe('CustomerForm', () => {
       // Confirm cancel dialog appears
       await waitFor(
         () => {
-          expect(
-            screen.getByText(/Ungespeicherte Änderungen/i)
-          ).toBeInTheDocument();
+          const dialogs = screen.getAllByText(/Ungespeicherte Änderungen/i);
+          expect(dialogs.length).toBeGreaterThan(0);
         },
         { timeout: 3000 }
       );

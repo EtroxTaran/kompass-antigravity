@@ -328,6 +328,104 @@ Design with clear visual hierarchy, adequate whitespace, and German labels throu
 - Error: Red border, error message appears below
 - Valid: Border returns to gray, error message clears
 
+### Duplicate Detection
+
+The customer form includes automatic duplicate detection for company names and VAT numbers to prevent data entry errors and maintain data quality.
+
+#### Company Name Duplicate Detection
+
+- **Trigger**: When user types in "Firmenname" field
+- **Timing**: Debounced check (500ms delay after user stops typing)
+- **Method**: Fuzzy matching using Levenshtein distance algorithm
+- **Threshold**: 80% similarity (0.8) to detect similar company names
+- **Normalization**: Company names are normalized (lowercase, trimmed, legal suffixes removed) before comparison
+- **Dialog**: `DuplicateDetectionDialog` component appears when duplicate detected
+
+**Example Scenarios:**
+
+- "Müller GmbH" vs "Mueller GmbH" → Detected (high similarity)
+- "Test Company" vs "Test Company GmbH" → Detected (after normalization)
+- "ABC Corp" vs "XYZ Corp" → Not detected (low similarity)
+
+**Dialog Content (Company Name):**
+
+- Title: "Potenzieller doppelter Firmenname"
+- Description: "Es wurde ein potenzieller doppelter Kunde mit ähnlichem Firmennamen gefunden. Bitte überprüfen Sie die Details, bevor Sie fortfahren."
+- Customer Card: Shows existing customer details (name, VAT, address, email, phone)
+- Similarity Badge: "Ähnlichkeit: 90%" (percentage based on fuzzy match score)
+- Actions:
+  - "Abbrechen" (Cancel): Clears the company name field and closes dialog
+  - "Trotzdem fortfahren" (Continue anyway): Closes dialog, allows form submission
+
+#### VAT Number Duplicate Detection
+
+- **Trigger**: When user types in "Umsatzsteuer-ID" field
+- **Timing**: Immediate check (300ms delay to batch rapid changes)
+- **Method**: Exact match (VAT numbers must be unique)
+- **Dialog**: Same `DuplicateDetectionDialog` component with VAT-specific messaging
+
+**Dialog Content (VAT Number):**
+
+- Title: "Umsatzsteuer-ID bereits vergeben"
+- Description: "Die Umsatzsteuer-ID "DE123456789" ist bereits für den Kunden "Müller GmbH" registriert. Eine Umsatzsteuer-ID muss eindeutig sein."
+- Customer Card: Shows existing customer details
+- Badge: "Exakter Treffer" (instead of similarity percentage)
+- Actions:
+  - "USt-ID korrigieren" (Correct VAT number): Clears the VAT number field and closes dialog
+  - "Trotzdem fortfahren" (Continue anyway): Closes dialog, allows form submission
+
+#### Edit Mode Behavior
+
+- **Exclusion**: When editing an existing customer, the current customer is automatically excluded from duplicate checks
+- **Use Case**: Allows users to save their own customer without triggering false duplicate warnings
+- **Implementation**: `excludeId` parameter passed to duplicate detection hooks
+
+#### Technical Implementation
+
+**Hooks:**
+
+- `useDuplicateDetection(customerId?)`: Main hook for duplicate checking
+  - `checkCompanyNameDuplicate(companyName)`: Returns `DuplicateMatch[]`
+  - `checkVatNumberDuplicate(vatNumber)`: Returns `Customer | null`
+- `useDebouncedCompanyNameDuplicate(companyName, customerId?, delay?)`: Specialized hook with built-in debouncing
+
+**Components:**
+
+- `DuplicateDetectionDialog`: Reusable dialog component for displaying duplicate warnings
+  - Props: `open`, `onOpenChange`, `duplicate`, `onCancel`, `onContinue`
+  - Handles both `DuplicateMatch` and `Customer` types
+
+**Utilities:**
+
+- `fuzzyMatchCompanyName(name1, name2)`: Calculates similarity score (0-1)
+- `isDuplicateCompanyName(name1, name2, threshold)`: Returns boolean for threshold check
+- Located in `packages/shared/src/utils/duplicate-detection.utils.ts`
+
+**API Methods:**
+
+- `customerService.checkDuplicateCompanyName(companyName, excludeId?)`: Fetches potential matches from backend
+- `customerService.checkDuplicateVatNumber(vatNumber, excludeId?)`: Checks for exact VAT match
+
+#### User Experience Flow
+
+1. **User types company name** → Debounce timer starts (500ms)
+2. **User continues typing** → Timer resets, no API call yet
+3. **User stops typing** → After 500ms, API call triggered
+4. **Backend returns candidates** → Frontend applies fuzzy matching
+5. **If similarity >= 0.8** → `DuplicateDetectionDialog` appears
+6. **User reviews duplicate** → Sees existing customer details
+7. **User chooses action**:
+   - **Cancel**: Field cleared, dialog closes, user can correct
+   - **Continue**: Dialog closes, form remains editable, user can submit
+
+#### Accessibility
+
+- Dialog uses `AlertDialog` from shadcn/ui (built on Radix UI)
+- Keyboard accessible: ESC closes dialog, Tab navigates buttons
+- Screen reader announces dialog title and description
+- Focus trap: Focus remains within dialog until closed
+- ARIA labels: Proper labels for all interactive elements
+
 ## German Labels & Content
 
 ### Form Titles
