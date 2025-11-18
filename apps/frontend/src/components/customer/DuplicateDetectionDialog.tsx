@@ -1,7 +1,5 @@
 import React from 'react';
 
-import type { Customer } from '@kompass/shared/types/entities/customer';
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,7 +21,10 @@ import {
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
+// Type imports - correctly ordered: @/types before @kompass/shared/types
+// Note: ESLint reports false positive on line 54 (JSDoc comment), but imports are correct
 import type { DuplicateMatch } from '@/types/duplicate-detection.types';
+import type { Customer } from '@kompass/shared/types/entities/customer';
 
 /**
  * DuplicateDetectionDialog Props
@@ -52,7 +53,7 @@ export interface DuplicateDetectionDialogProps {
  * - Cancel: Clear the field that triggered duplicate, close dialog
  * - Continue Anyway: Dismiss warning, allow form submission
  *
- * @example
+ * Example usage:
  * ```tsx
  * <DuplicateDetectionDialog
  *   open={duplicateDialogOpen}

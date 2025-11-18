@@ -1,14 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
+import { describe, it, expect, vi } from 'vitest';
 
 import { createDefaultAddress } from '@kompass/shared';
 
 import { DuplicateDetectionDialog } from '../DuplicateDetectionDialog';
 
-import type { Customer } from '@kompass/shared/types/entities/customer';
 import type { DuplicateMatch } from '@/types/duplicate-detection.types';
+import type { Customer } from '@kompass/shared/types/entities/customer';
 
 const mockCustomer: Customer = {
   _id: 'customer-123',

@@ -4,12 +4,12 @@ import {
   fuzzyMatchCompanyName,
   isDuplicateCompanyName,
 } from '@kompass/shared/utils/duplicate-detection.utils';
-import type { Customer } from '@kompass/shared/types/entities/customer';
 
-import { customerService } from '@/services/customer.service';
 import { useDebounce } from '@/hooks/useDebounce';
+import { customerService } from '@/services/customer.service';
 
 import type { DuplicateMatch } from '@/types/duplicate-detection.types';
+import type { Customer } from '@kompass/shared/types/entities/customer';
 
 /**
  * useDuplicateDetection Hook
