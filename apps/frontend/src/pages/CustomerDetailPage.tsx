@@ -187,7 +187,6 @@ export function CustomerDetailPage(): React.ReactElement {
     }).format(dateObj);
   };
 
-
   // Handle delete
   const handleDelete = async (): Promise<void> => {
     if (!id || !customer) return;
@@ -401,7 +400,13 @@ export function CustomerDetailPage(): React.ReactElement {
 
   // Get rating stars count
   const ratingStars =
-    customer.rating === 'A' ? 5 : customer.rating === 'B' ? 4 : customer.rating === 'C' ? 3 : 2;
+    customer.rating === 'A'
+      ? 5
+      : customer.rating === 'B'
+        ? 4
+        : customer.rating === 'C'
+          ? 3
+          : 2;
 
   // Check if user is owner
   const isOwner = user && customer.owner === user._id;
@@ -479,7 +484,10 @@ export function CustomerDetailPage(): React.ReactElement {
 
                 {/* Owner (if not owner and ADM) */}
                 {user?.roles.includes(UserRole.ADM) && !isOwner && (
-                  <Badge variant="secondary" className="flex items-center gap-1">
+                  <Badge
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
                     <Lock className="h-3 w-3" />
                     Nur-Lesen
                   </Badge>
@@ -733,7 +741,9 @@ export function CustomerDetailPage(): React.ReactElement {
                       </Button>
                     </>
                   ) : (
-                    <p className="text-muted-foreground">Keine Adresse hinterlegt</p>
+                    <p className="text-muted-foreground">
+                      Keine Adresse hinterlegt
+                    </p>
                   )}
                 </CardContent>
               </Card>
@@ -762,7 +772,10 @@ export function CustomerDetailPage(): React.ReactElement {
                     {customer.phone && (
                       <div className="flex items-center gap-2">
                         <Phone className="h-4 w-4 text-muted-foreground" />
-                        <a href={`tel:${customer.phone}`} className="hover:underline">
+                        <a
+                          href={`tel:${customer.phone}`}
+                          className="hover:underline"
+                        >
                           {customer.phone}
                         </a>
                       </div>
@@ -926,7 +939,10 @@ export function CustomerDetailPage(): React.ReactElement {
             {customer.locations && customer.locations.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {customer.locations.map((locationId, index) => (
-                  <Card key={locationId || index} className="hover:bg-accent transition-colors">
+                  <Card
+                    key={locationId || index}
+                    className="hover:bg-accent transition-colors"
+                  >
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-2">
@@ -976,7 +992,10 @@ export function CustomerDetailPage(): React.ReactElement {
             {customer.contactPersons && customer.contactPersons.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {customer.contactPersons.map((contactId, index) => (
-                  <Card key={contactId || index} className="hover:bg-accent transition-colors">
+                  <Card
+                    key={contactId || index}
+                    className="hover:bg-accent transition-colors"
+                  >
                     <CardHeader>
                       <CardTitle className="text-base">
                         Kontakt {index + 1}

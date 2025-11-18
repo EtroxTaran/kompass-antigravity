@@ -8,8 +8,8 @@ import {
   Users,
   X,
 } from 'lucide-react';
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import {
   ControlsBar,
@@ -48,6 +48,7 @@ import {
 } from '@/components/ui/table';
 import { useCustomers } from '@/hooks/useCustomers';
 import { useDebounce } from '@/hooks/useDebounce';
+import { highlightMatch } from '@/utils/search.utils';
 
 import type { SortDirection } from '@/utils/table-utils';
 import type { Customer } from '@kompass/shared/types/entities/customer';
@@ -80,10 +81,45 @@ import type { Customer } from '@kompass/shared/types/entities/customer';
  */
 export function CustomerListPage(): React.ReactElement {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Search state
-  const [searchTerm, setSearchTerm] = useState('');
-  const debouncedSearch = useDebounce(searchTerm, 300);
+  // Search state - initialize from URL query param
+  const [searchTerm, setSearchTerm] = useState(() => {
+    return searchParams.get('search') || '';
+  });
+  const debouncedSearch = useDebounce(searchTerm, 500);
+
+  // Sync searchTerm with URL params on browser navigation (back/forward)
+  useEffect(() => {
+    const urlSearch = searchParams.get('search') || '';
+    if (urlSearch !== searchTerm) {
+      setSearchTerm(urlSearch);
+    }
+  }, [searchParams]);
+
+  // Update URL query param when debounced search changes
+  useEffect(() => {
+    const currentUrlSearch = searchParams.get('search') || '';
+    if (debouncedSearch && debouncedSearch !== currentUrlSearch) {
+      setSearchParams(
+        (prev) => {
+          const newParams = new URLSearchParams(prev);
+          newParams.set('search', debouncedSearch);
+          return newParams;
+        },
+        { replace: true }
+      );
+    } else if (!debouncedSearch && currentUrlSearch) {
+      setSearchParams(
+        (prev) => {
+          const newParams = new URLSearchParams(prev);
+          newParams.delete('search');
+          return newParams;
+        },
+        { replace: true }
+      );
+    }
+  }, [debouncedSearch, setSearchParams, searchParams]);
 
   // Filter state
   const [filterOpen, setFilterOpen] = useState(false);
@@ -146,7 +182,12 @@ export function CustomerListPage(): React.ReactElement {
       return fetchedCustomers;
     }
 
-    const searchLower = debouncedSearch.toLowerCase();
+    // Trim search term to match highlighting behavior (search.utils.tsx trims query)
+    const searchLower = debouncedSearch.trim().toLowerCase();
+    if (!searchLower) {
+      return fetchedCustomers;
+    }
+
     return fetchedCustomers.filter((customer) => {
       const companyName = customer.companyName?.toLowerCase() || '';
       const vatNumber = customer.vatNumber?.toLowerCase() || '';
@@ -581,7 +622,12 @@ export function CustomerListPage(): React.ReactElement {
                           <TableCell className="font-medium">
                             <div className="flex items-center gap-2">
                               <Building2 className="h-4 w-4 text-muted-foreground" />
-                              {customer.companyName}
+                              {debouncedSearch?.trim()
+                                ? highlightMatch(
+                                    customer.companyName,
+                                    debouncedSearch.trim()
+                                  )
+                                : customer.companyName}
                             </div>
                           </TableCell>
                           <TableCell className="font-mono text-sm">
