@@ -57,6 +57,10 @@ export {
   validateSortField,
   normalizeSortOptions,
 } from './utils/pagination.utils';
+export {
+  fuzzyMatchCompanyName,
+  isDuplicateCompanyName,
+} from './utils/duplicate-detection.utils';
 
 // DTOs
 export type {

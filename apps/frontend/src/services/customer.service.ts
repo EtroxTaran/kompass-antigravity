@@ -124,6 +124,72 @@ export const customerService = {
   async delete(id: string): Promise<void> {
     await apiClient.delete(`/api/v1/customers/${id}`);
   },
+
+  /**
+   * Check for duplicate customers by company name (fuzzy matching)
+   *
+   * Uses search API to find potential matches, then applies fuzzy matching
+   * on the frontend with 0.8 similarity threshold.
+   *
+   * @param companyName - Company name to check
+   * @param excludeId - Optional customer ID to exclude from results (for edit mode)
+   * @returns Promise resolving to array of potential duplicate customers
+   */
+  async checkDuplicateCompanyName(
+    companyName: string,
+    excludeId?: string
+  ): Promise<Customer[]> {
+    if (!companyName || companyName.trim().length < 2) {
+      return [];
+    }
+
+    // Use search API to find potential matches
+    const response = await this.getAll(
+      { search: companyName },
+      1,
+      100 // Get up to 100 results for duplicate checking
+    );
+
+    // Filter out excluded customer if provided
+    let candidates = response.data;
+    if (excludeId) {
+      candidates = candidates.filter((c) => c._id !== excludeId);
+    }
+
+    return candidates;
+  },
+
+  /**
+   * Check for duplicate customer by VAT number (exact match)
+   *
+   * @param vatNumber - VAT number to check (format: DE123456789)
+   * @param excludeId - Optional customer ID to exclude from results (for edit mode)
+   * @returns Promise resolving to customer if duplicate found, null otherwise
+   */
+  async checkDuplicateVatNumber(
+    vatNumber: string,
+    excludeId?: string
+  ): Promise<Customer | null> {
+    if (!vatNumber || vatNumber.trim().length === 0) {
+      return null;
+    }
+
+    // Use vatNumber filter for exact match
+    const response = await this.getAll(
+      { vatNumber: vatNumber.trim() },
+      1,
+      10 // Should only return 0 or 1 result for exact VAT match
+    );
+
+    // Filter out excluded customer if provided
+    let matches = response.data;
+    if (excludeId) {
+      matches = matches.filter((c) => c._id !== excludeId);
+    }
+
+    // Return first match or null
+    return matches.length > 0 ? (matches[0] ?? null) : null;
+  },
 };
 
 /**
