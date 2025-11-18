@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
@@ -18,27 +19,27 @@ describe('ControlsBar', () => {
   });
 
   it('should call onSearchChange when typing in search', async () => {
-    const onSearchChange = vi.fn();
-    render(
-      <ControlsBar
-        searchValue=""
-        onSearchChange={onSearchChange}
-        searchPlaceholder="Search..."
-      />
-    );
+    // Use a wrapper component to properly test controlled component
+    function TestWrapper() {
+      const [value, setValue] = useState('');
+      return (
+        <ControlsBar
+          searchValue={value}
+          onSearchChange={setValue}
+          searchPlaceholder="Search..."
+        />
+      );
+    }
 
-    const searchInput = screen.getByPlaceholderText('Search...');
+    render(<TestWrapper />);
+
+    const searchInput = screen.getByPlaceholderText(
+      'Search...'
+    ) as HTMLInputElement;
     await userEvent.type(searchInput, 'test');
 
-    // Should be called multiple times (at least once per character)
-    // React event batching may cause duplicate calls per character
-    expect(onSearchChange).toHaveBeenCalled();
-    expect(onSearchChange.mock.calls.length).toBeGreaterThanOrEqual(4);
-    // Verify it was called with at least "t", "e", "s", "t" (each character)
-    const allCalls = onSearchChange.mock.calls.map((call) => call[0]);
-    expect(allCalls).toContain('t');
-    expect(allCalls).toContain('e');
-    expect(allCalls).toContain('s');
+    // Verify the input value was updated (proper controlled component test)
+    expect(searchInput.value).toBe('test');
   });
 
   it('should show filter button with count badge', () => {
