@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AppController } from './app.controller';
 // Authentication module (must be imported first)
@@ -10,8 +12,9 @@ import { CalendarModule } from './modules/calendar/calendar.module';
 import { CustomerModule } from './modules/customer/customer.module';
 import { DatabaseModule } from './modules/database/database.module';
 // import { ExpenseModule } from './modules/expense/expense.module'; // TODO: Enable when NANO provider is configured
-import { LocationModule } from './modules/location/location.module';
 // import { MeetingModule } from './modules/meeting/meeting.module'; // TODO: Enable when NANO provider is configured
+import { HealthModule } from './modules/health/health.module';
+import { LocationModule } from './modules/location/location.module';
 import { RoleModule } from './modules/role/role.module';
 import { UserModule } from './modules/user/user.module';
 
@@ -28,8 +31,19 @@ import { UserModule } from './modules/user/user.module';
       envFilePath: ['.env.local', '.env'],
     }),
 
+    // Rate limiting
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // 1 minute
+        limit: 100, // 100 requests per minute
+      },
+    ]),
+
     // Database module (provides NANO CouchDB client - Global)
     DatabaseModule,
+
+    // Health check module
+    HealthModule,
 
     // Authentication module (must be imported before feature modules)
     AuthModule,
@@ -47,6 +61,12 @@ import { UserModule } from './modules/user/user.module';
     RoleModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [
+    // Global rate limiting guard
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

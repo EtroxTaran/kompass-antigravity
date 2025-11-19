@@ -1,4 +1,5 @@
 import { BadRequestException, ConflictException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 
 import { UserRole } from '@kompass/shared/constants/rbac.constants';
@@ -30,6 +31,18 @@ describe('AuthController', () => {
   let authService: AuthService;
 
   beforeEach(async () => {
+    const mockConfigService = {
+      get: jest.fn((key: string, defaultValue?: string) => {
+        const config: Record<string, string> = {
+          KEYCLOAK_URL: 'http://keycloak:8080',
+          KEYCLOAK_REALM: 'kompass',
+          KEYCLOAK_CLIENT_ID: 'kompass-api',
+          KEYCLOAK_CLIENT_SECRET: 'secret',
+        };
+        return config[key] || defaultValue;
+      }),
+    } as any;
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
@@ -41,6 +54,10 @@ describe('AuthController', () => {
         {
           provide: 'IKeycloakAdminService',
           useValue: mockKeycloakAdminService,
+        },
+        {
+          provide: ConfigService,
+          useValue: mockConfigService,
         },
       ],
     }).compile();
@@ -127,9 +144,22 @@ describe('AuthController', () => {
     it('should throw BadRequestException if Keycloak service is unavailable', async () => {
       // Arrange
       mockUserRepository.findByEmail.mockResolvedValue(null);
+      const testMockConfigService = {
+        get: jest.fn((key: string, defaultValue?: string) => {
+          const config: Record<string, string> = {
+            KEYCLOAK_URL: 'http://keycloak:8080',
+            KEYCLOAK_REALM: 'kompass',
+            KEYCLOAK_CLIENT_ID: 'kompass-api',
+            KEYCLOAK_CLIENT_SECRET: 'secret',
+          };
+          return config[key] || defaultValue;
+        }),
+      } as any;
+
       const authServiceWithoutKeycloak = new AuthService(
         mockUserRepository as any,
-        null // No Keycloak service
+        null, // No Keycloak service
+        testMockConfigService
       );
       const controllerWithoutKeycloak = new AuthController(
         authServiceWithoutKeycloak
