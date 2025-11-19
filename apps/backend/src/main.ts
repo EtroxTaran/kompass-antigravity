@@ -5,9 +5,11 @@ import * as path from 'path';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import helmet from 'helmet';
 import { register } from 'tsconfig-paths';
 
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 register({
   baseUrl: path.resolve(__dirname, '..'),
@@ -20,6 +22,45 @@ register({
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
+
+  // Security headers (Helmet)
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'"],
+          imgSrc: ["'self'", 'data:', 'https:'],
+          fontSrc: ["'self'", 'data:'],
+          connectSrc: ["'self'"],
+          frameAncestors: ["'none'"],
+        },
+      },
+      crossOriginEmbedderPolicy: false, // Disable for API compatibility
+      xFrameOptions: { action: 'deny' },
+      xContentTypeOptions: true,
+      strictTransportSecurity: {
+        maxAge: 31536000, // 1 year
+        includeSubDomains: true,
+        preload: true,
+      },
+    })
+  );
+
+  // HTTPS enforcement in production
+  if (process.env.NODE_ENV === 'production') {
+    app.use((req: any, res: any, next: () => void) => {
+      if (req.header('x-forwarded-proto') !== 'https') {
+        res.redirect(`https://${req.header('host')}${req.url}`);
+      } else {
+        next();
+      }
+    });
+  }
+
+  // Global exception filter (RFC 7807)
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   // Enable CORS
   app.enableCors({
