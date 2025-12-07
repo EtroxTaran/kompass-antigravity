@@ -64,7 +64,27 @@ KOMPASS is an **integrated CRM and Project Management system** designed as an **
   - **n8n workflows** (default for orchestrations and retrieval-augmented flows) enabled via `AI_PROVIDER=n8n`.
   - **OpenAI** (managed SaaS) enabled via `AI_PROVIDER=openai` with API key/endpoint variables.
   - **Self-hosted LLM** (e.g., local Ollama/Inference server) enabled via `AI_PROVIDER=self_hosted` and provider-specific host flags.
-- **Fallback logic**: The proxy prefers the configured primary provider, falls back to OpenAI if n8n/self-hosted are unavailable, and finally queues the request for deferred processing when no provider is reachable; retries are idempotent via request ids.
+- **Data classification, routing, and policy enforcement**
+  - **Classification levels** (applied per-request by caller + validated by proxy policy engine):
+    - **Public**: marketing copy, generic FAQs, non-customer content.
+    - **Internal**: non-personal operational data, playbooks, product docs.
+    - **Customer**: identifiable customer/project data without special regulatory flags.
+    - **Sensitive/Regulated**: personal data subject to GDPR/DSGVO or contractually restricted data.
+  - **Allowed providers by classification**:
+    | Classification        | Allowed Providers                            | Consent Requirement               | Logging & Retention                               | Explicit Opt-Out Paths                                        |
+    | -------------------- | -------------------------------------------- | --------------------------------- | ------------------------------------------------ | ------------------------------------------------------------- |
+    | **Public**           | n8n, Self-Hosted, OpenAI                     | None                              | Standard request/response logs (30d)             | Tenant/org setting `ai.optOut.public=false` to disable class  |
+    | **Internal**         | n8n, Self-Hosted (default); OpenAI fallback* | None                              | Standard logs + prompt/result hashing (90d)      | Tenant flag `ai.optOut.internal=true` forces self-hosted only |
+    | **Customer**         | n8n, Self-Hosted; OpenAI fallback*           | Contractual consent (per-tenant)  | Full audit trail + content hashing (180d)        | Per-tenant `ai.providers.customer=openai_disabled`            |
+    | **Sensitive/Regulated** | Self-Hosted only (default); n8n if private-runner | Explicit customer consent + DPA   | Full audit, redaction proof, retention 365d+ per DPA | `AI_PROVIDER_OVERRIDE=forbid_openai`, policy flag `strictNoFallback=true` |
+  - **Consent handling**: Proxy enforces tenant-level consent flags; requests without required consent are rejected with `HTTP 412 Precondition Failed` and a machine-readable error code.
+  - **Logging**: All routes produce structured audit records (classification, provider, model, latency, billing tokens). Sensitive/Regulated requests additionally store redaction fingerprints and purpose-of-use codes.
+- **Fallback logic**
+  - **Default path**: Proxy uses configured primary (typically n8n/self-hosted). If unreachable or returns retriable failures, it may use OpenAI **only when classification allows fallback** (Public, Internal, Customer with opt-in, never Sensitive/Regulated when OpenAI is disabled).
+  - **Operational guardrails**: Fallback to OpenAI requires **explicit tenant opt-in** plus **security approval** recorded in configuration management (e.g., change ticket). Without both, requests are queued for deferred retry on the primary provider instead of using OpenAI.
+  - **Regulated contexts**: Set `AI_PROVIDER_OVERRIDE=forbid_openai` and `strictNoFallback=true` in proxy configuration (or per-tenant policy store) to hard-disable OpenAI use; health checks log violations and block rollout if these flags are missing in regulated tenants.
+  - **Disable per-request**: Callers can set `aiFallback=false` in request metadata to prevent OpenAI use even when tenant opt-in exists; proxy returns `503 Retry with primary` on failure instead of rerouting.
+  - **Audit & approvals**: Any OpenAI fallback emits a mandatory audit event containing approver id, ticket reference, classification, and reason for fallback; events feed compliance dashboards.
 - **Internal usage**: Backend services, jobs, and webhooks must call the AI Proxy; direct calls to OpenAI/n8n/self-hosted LLMs are prohibited to preserve observability and policy enforcement.
 
 ```
