@@ -40,6 +40,8 @@
   - **✨ 2025 Extensions** – RAG System (LlamaIndex, Weaviate), Neo4j Knowledge Graph, BI Layer (Grafana/Metabase)
   - **Evolution Path** – Clear migration from MVP to full intelligence
   - **ADR-001 to ADR-018** – All architectural decisions documented
+- **[Architecture Risk Register](./architecture/system-architecture.md#risk-register)** – Monitoring-Signale, Maßnahmen und Owner für Top-Risiken
+- **[Architecture Critical Review & Pre-Mortem](./architecture/architecture-docs-critical-review.md)** – Risikoanalyse, Gegenmaßnahmen und Feedback-Schleifen
 - **[AI Extensions Implementation Guide](./architecture/ai-extensions/AI_Automation_Extensions_Implementation_Guide.md)** – ✨ NEW: Step-by-Step Setup for RAG, n8n, Neo4j, ML-Models, BI-Dashboards (with Docker Compose, code templates, troubleshooting)
 - **[Architecture Evolution Guide](./architecture/evolution/ARCHITECTURE_EVOLUTION_GUIDE.md)** – Step-by-Step Migration from MVP to Phase 2/3 (with code examples)
 - **[Technology Roadmap](./product-vision/TECHNOLOGY_ROADMAP.md)** – Detailed Timeline, Tech Stack Evolution, Budget
@@ -90,7 +92,9 @@ docs/
 │   │   # - CQRS (CouchDB → PostgreSQL)
 │   │   # - ADR-001 to ADR-018 (Architectural Decisions)
 │   │   # - Phase-based implementation roadmap
+│   │   # - Risk Register (Monitoring-Signale, Owner, Maßnahmen)
 │   │
+│   ├── architecture-docs-critical-review.md # Risiko-/Review-Anhang & Pre-Mortem
 │   ├── decisions/                     # Architecture Decision Records (ADRs) & Documentation Decision Logs (DDLs)
 │   │   ├── adr-###-*.md              # Architecture Decision Records (major decisions)
 │   │   └── ddl/                      # Documentation Decision Logs (documentation evolution)

@@ -42,6 +42,16 @@ KOMPASS follows a **unified architectural approach** that provides clear guidanc
 - **[Evolution Guide](./evolution/)** - Step-by-step evolution from MVP to advanced features
 - **[Diagrams](./diagrams/)** - Visual architecture representations (to be created)
 
+#### Risiken & Reviews
+
+- **[Critical Review & Pre-Mortem](./architecture-docs-critical-review.md)** - Risiken, Gegenmaßnahmen und Review-Feedback für die Architekturdokumentation
+- **[Risk Register](./system-architecture.md#risk-register)** - Laufende Risikobewertung mit Monitoring-Signalen und Maßnahmen
+
+#### AI/Evolution Anhänge
+
+- **[AI Extensions Implementation Guide](./ai-extensions/AI_Automation_Extensions_Implementation_Guide.md)** - Umsetzungsschritte und Betriebsanforderungen für alle KI-Anteile
+- **[Architecture Evolution Guide](./evolution/ARCHITECTURE_EVOLUTION_GUIDE.md)** - Ausführliche Roadmap und Sequenzierung für den stufenweisen Ausbau
+
 ---
 
 ## Architecture Philosophy
