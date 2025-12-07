@@ -215,6 +215,23 @@ async function auditThenWrite(operation: Operation): Promise<Document> {
 }
 ```
 
+#### Key Lifecycle, Retention, and Reconciliation
+
+- **Key lifecycle (generation → rotation → storage)**
+  - **Generation**: Per-tenant signing keys are generated with `ed25519` inside a hardened Key Management Service (KMS) at onboarding; the public portion is stored in CouchDB for signature verification.
+  - **Rotation**: Keys rotate every **90 days** or on incident triggers (suspected compromise, tenant off-boarding). Rotation uses overlapping validity windows—new keys sign current writes while old keys remain valid for verification until all in-flight replays settle.
+  - **Storage**: Private keys never leave KMS; the application only receives short-lived signing tokens. Public keys are replicated to PouchDB for offline verification and pinned in the audit database to preserve historical verification context.
+- **Retention enforcement for audit data**
+  - Nightly **TTL sweeps** remove operational document backups older than **180 days** while leaving the immutable audit chain intact.
+  - **Legal hold flags** at tenant or document level pause deletions; retention jobs skip entries with `legalHold=true` and log skips for compliance review.
+  - **Attachment compaction** compresses or purges large binary deltas after **30 days** when not under legal hold; hashes and metadata remain to keep the chain verifiable.
+- **Reconciliation workflow: PouchDB replicas ↔ immutable audit log**
+  - **Step 1: Pre-sync verification** — PouchDB fetches the latest audit `previousHash` from CouchDB; if the local head differs, the client queues a reconciliation task instead of immediately pushing writes.
+  - **Step 2: Merge + conflict handling** — During bi-directional replication, operational docs resolve conflicts (auto/manual as above). Each resolved revision triggers a **shadow audit write** that records the winning revision id and hashes of losing branches.
+  - **Step 3: Integrity checks post-conflict** — After conflict resolution, clients recompute the audit chain from the last agreed checkpoint and compare against server-provided hash summaries. Any divergence marks the local replica as **"quarantined"**; replication switches to **read-only** until a full resync rebuilds the chain.
+  - **Step 4: Finalize + compact** — Once hashes align, the reconciliation task writes a **link entry** that binds the reconciled revision to its historical branches, then resumes normal replication with smaller batch sizes until the next checkpoint is reached.
+
+
 ### 3. Clean Architecture Implementation
 
 **Strict Layer Separation:**
