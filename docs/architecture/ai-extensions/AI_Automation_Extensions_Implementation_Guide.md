@@ -26,6 +26,13 @@
 
 Dieses Dokument bietet **detaillierte Implementation-Guides** für die AI & Automation-Extensions von KOMPASS. Es richtet sich an **Entwickler und DevOps-Engineers** die die neuen Features implementieren.
 
+### AI Proxy Interaktionsmodell (Kurzfassung)
+
+- **Single Entry Point**: Frontend kommuniziert ausschließlich mit dem AI Proxy; direkte Aufrufe an LLMs oder n8n-Webhooks sind nicht erlaubt.
+- **Strategie-basierte Provider-Wahl**: Der Proxy wählt den Provider pro Request über eine konfigurierbare Strategie (Policy/Feature-Flag), z. B. **N8n Webhook** für Workflow-Ausführung vs. **direkter LLM-Call** für reine Generierung. Provider-Swaps erfolgen transparent über Konfiguration ohne UI/Frontend-Änderungen.
+- **Klärungsrunden mit Correlation Tokens**: Offene Fragen werden als Clarification Prompts gestellt; ein **Correlation Token** (Request-ID) hängt an jeder Runde, sodass Antworten automatisch der laufenden Session zugeordnet werden.
+- **Beispiel-Flow**: *Request „Erstelle Angebotsnachfass-Plan“ → Proxy sendet Clarification („Bevorzugter Kanal?“) → User antwortet „Teams + E-Mail“ → Proxy liefert finalen Plan. Ein späterer Wechsel des Providers (LLM ↔ N8n-Workflow) passiert rein per Config.*
+
 ### Prerequisites
 
 **Technische Anforderungen**:
