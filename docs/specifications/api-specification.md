@@ -7361,6 +7361,76 @@ Polls BullMQ-backed long-running operations created by `/analyze-text` (and futu
 - Clients poll `GET /api/v1/ai/operations/{jobId}` every 2-5 seconds until `state === "completed"` or `state === "failed"`.
 - Failed jobs return `status: "error"` with `ai_provider_error` or `ai_operation_expired` codes; clients may re-run the request with a fresh correlation ID.
 
+### 23.8 Streaming Delivery (SSE/WebSocket)
+
+#### Message Envelope (applies to SSE `data:` payloads and WebSocket frames)
+
+```jsonc
+{
+  "status": "streaming" | "success" | "clarification_needed" | "error", // streaming is used for incremental tokens
+  "correlationId": "a1b2c3", // required in every frame
+  "conversationId": "conv-789", // present when conversation context exists
+  "chunk": { // optional; only present for streaming payloads
+    "content": "partial text", // streamed token buffer
+    "metadata": { "tokenCount": 32, "provider": "openai" }
+  },
+  "isFinal": false, // true only on the terminal frame
+  "usage": { // only on final frame when available
+    "promptTokens": 128,
+    "completionTokens": 256,
+    "totalTokens": 384,
+    "billingCurrency": "EUR"
+  },
+  "errors": [
+    { "code": "ai_provider_error", "message": "..." }
+  ] // present when status === "error"
+}
+```
+
+- `status: "streaming"` is emitted for incremental frames; the final frame reverts to `success`, `clarification_needed`, or `error` and **must** set `isFinal: true`.
+- Clarification prompts are only sent on the terminal frame (`status: "clarification_needed"`) and **never** mixed into partial chunks.
+
+#### Heartbeats and Timeouts
+
+- **Heartbeat cadence:** server sends an SSE comment (`:ping`) or WebSocket text frame `{ "type": "heartbeat" }` every 15 seconds when no tokens are produced.
+- **Client timeout:** clients abort the stream if no data **and** no heartbeat is received for 30 seconds, then apply retry/backoff rules.
+- **Server idle timeout:** server closes the stream after 2 minutes of inactivity or when upstream provider signals completion.
+
+#### Retry and Backoff
+
+- Idempotent retries reuse the same `X-Correlation-Id` if the prior attempt returned no `isFinal: true` frame; otherwise generate a new one.
+- Recommended backoff: exponential starting at 1s, capped at 30s, with a maximum of 3 reconnect attempts before surfacing an error to the user.
+- When reconnecting mid-stream, clients should:
+  - Reopen the SSE/WebSocket connection with the last received `correlationId`.
+  - Include `Last-Event-Id` (SSE) or a `resumeFromToken` hint when supported; otherwise restart the request and allow the proxy to replay from cached partials if available.
+
+#### Sample Flows
+
+**SSE client happy path:**
+
+1. Client POSTs `/api/v1/ai/analyze-text?stream=true` with `X-Correlation-Id`.
+2. Server responds `200` and begins SSE stream.
+3. Client receives multiple `status: "streaming"` frames with `chunk.content` and `isFinal: false`.
+4. Terminal frame returns `status: "success"`, `isFinal: true`, `usage`, and optional `conversationId`.
+
+**WebSocket with clarification:**
+
+1. Client opens `/ws/ai` with `X-Correlation-Id` and sends a message envelope identical to the HTTP body.
+2. Server streams `status: "streaming"` chunks.
+3. Final frame returns `status: "clarification_needed"`, `isFinal: true`, `clarification` payload (non-streamed), and `conversationId`.
+4. Client renders prompt and submits the user's reply via `POST /api/v1/ai/conversation/{conversationId}/message` (HTTP) or a WebSocket message; streaming resumes using the same conversation.
+
+**Failure and fallback to queued jobs:**
+
+1. If provider backpressure or payload size prohibits streaming, the proxy returns `202 Accepted` with `operationId` and closes the stream after an initial informative frame.
+2. Clients pivot to polling `GET /api/v1/ai/operations/{jobId}` (Section 23.7) until completion, then optionally request a streamed follow-up using the resulting `conversationId`.
+
+#### Interaction with Clarification States
+
+- Streaming is used only for model output; clarification prompts are delivered once on the terminal frame to avoid partial UX states.
+- When a clarification response is streamed, the subsequent user reply must reference the `conversationId`; the proxy may continue streaming the follow-up answer if `stream=true` is requested.
+- If a clarification turn times out (no user reply within client-defined SLA), clients should cancel the conversation and reissue the task, potentially falling back to queued processing when deterministic completion is required.
+
 ---
 
 ## Document History
