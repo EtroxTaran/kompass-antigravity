@@ -24,9 +24,10 @@ KOMPASS follows a **unified architectural approach** that provides clear guidanc
 
 ### Primary Reference
 
-| Document                                            | Purpose                          | Status                   | Use For                                                                 |
-| --------------------------------------------------- | -------------------------------- | ------------------------ | ----------------------------------------------------------------------- |
-| **[System Architecture](./system-architecture.md)** | Complete technical specification | ✅ **Primary Reference** | All development decisions, implementation guidance, and future planning |
+| Document                                                          | Purpose                          | Status                   | Use For                                                                 |
+| ----------------------------------------------------------------- | -------------------------------- | ------------------------ | ---------------------------------------------------------------------- |
+| **[System Architecture](./system-architecture.md)**               | Complete technical specification | ✅ **Primary Reference** | All development decisions, implementation guidance, and future planning |
+| **[Architecture Critical Review](./architecture-docs-critical-review.md)** | Gap analysis and open risks     | 🔎 In Review             | Identifying documentation gaps, open risks, and required updates       |
 
 ### Supporting Documentation
 
@@ -188,6 +189,8 @@ The architecture document describes a **unified system** with clear phase implem
 - **Monthly**: Implementation progress review against architecture
 - **Quarterly**: Architecture evolution assessment and planning
 - **Semi-annually**: Complete architecture review and optimization
+
+**Open Risks & Findings**: The latest [Architecture Critical Review](./architecture-docs-critical-review.md) lists unresolved risks and documentation gaps. Track remediation in the **Risk & Mitigation Register** section of the [System Architecture](./system-architecture.md) and update status during governance checkpoints.
 
 ### Change Management Process
 
