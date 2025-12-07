@@ -45,6 +45,26 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # Redis - Queue backend for BullMQ and AI operations
+  redis:
+    image: redis:7-alpine
+    container_name: kompass-redis
+    command: ['redis-server', '--save', '20', '1', '--loglevel', 'warning', '--appendonly', 'yes']
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    networks:
+      kompass-network:
+        aliases:
+          - redis
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   # PostgreSQL - Database for Keycloak
   postgres:
     image: postgres:16-alpine
@@ -134,6 +154,8 @@ services:
       - NEO4J_PASSWORD=${NEO4J_PASSWORD:-devpassword}
       # Whisper API
       - WHISPER_API_URL=http://whisper:9000
+      # BullMQ queue configuration
+      - BULLMQ_REDIS_URL=redis://redis:6379
       # n8n webhook URL
       - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL:-http://n8n:5678}
       # Feature flags (runtime, not build-time)
@@ -164,6 +186,8 @@ services:
       keycloak:
         condition: service_healthy
       neo4j:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - kompass-network
@@ -332,6 +356,8 @@ volumes:
   whisper-models:
     driver: local
   n8n-data:
+    driver: local
+  redis-data:
     driver: local
   # Named volumes for node_modules to avoid host/container conflicts
   backend-node-modules:
