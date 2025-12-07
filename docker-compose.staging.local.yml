@@ -89,6 +89,11 @@ services:
       - AI_N8N_ENABLED=${STAGING_AI_N8N_ENABLED:-false}
       - AI_RAG_ENABLED=${STAGING_AI_RAG_ENABLED:-false}
       - AI_ML_ENABLED=${STAGING_AI_ML_ENABLED:-false}
+      - AI_PROXY_URL=${STAGING_AI_PROXY_URL:-http://ai-proxy:8081/api/ai}
+      - AI_PROVIDER=${STAGING_AI_PROVIDER:-openai}
+      - AI_PROVIDER_API_KEY=${STAGING_AI_PROVIDER_API_KEY:-changeme}
+      - AI_PROVIDER_URL=${STAGING_AI_PROVIDER_URL:-https://api.openai.com/v1}
+      - AI_CORRELATION_HEADER=${STAGING_AI_CORRELATION_HEADER:-X-Correlation-Id}
     # Remove Traefik labels (not needed for local testing)
     labels: []
 
@@ -100,7 +105,7 @@ services:
       dockerfile: Dockerfile.frontend
       target: production
       args:
-        - VITE_API_URL=http://localhost:3001
+        - VITE_API_URL=http://localhost:3001/api
     # Option: Pull from registry instead (comment build above, uncomment below)
     # image: ghcr.io/etroxtaran/kompass/frontend:staging
     networks:
@@ -108,10 +113,22 @@ services:
     ports:
       - '3000:8080'
     environment:
-      - VITE_API_URL=http://localhost:3001
+      - VITE_API_URL=http://localhost:3001/api
       - VITE_AI_N8N_ENABLED=${STAGING_AI_N8N_ENABLED:-false}
       - VITE_AI_RAG_ENABLED=${STAGING_AI_RAG_ENABLED:-false}
       - VITE_AI_ML_ENABLED=${STAGING_AI_ML_ENABLED:-false}
+
+  ai-proxy:
+    networks:
+      - kompass-network
+    ports:
+      - '8082:8081'
+
+  gateway:
+    networks:
+      - kompass-network
+    ports:
+      - '3001:8080'
     # Remove Traefik labels (not needed for local testing)
     labels: []
 

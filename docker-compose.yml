@@ -140,6 +140,11 @@ services:
       - AI_N8N_ENABLED=${AI_N8N_ENABLED:-false}
       - AI_RAG_ENABLED=${AI_RAG_ENABLED:-false}
       - AI_ML_ENABLED=${AI_ML_ENABLED:-false}
+      - AI_PROXY_URL=${AI_PROXY_URL:-http://ai-proxy:8081/api/ai}
+      - AI_PROVIDER=${AI_PROVIDER:-openai}
+      - AI_PROVIDER_API_KEY=${AI_PROVIDER_API_KEY:-changeme}
+      - AI_PROVIDER_URL=${AI_PROVIDER_URL:-https://api.openai.com/v1}
+      - AI_CORRELATION_HEADER=${AI_CORRELATION_HEADER:-X-Correlation-Id}
     ports:
       - '3000:3000'  # Expose on 3000 to match NestJS default
     volumes:
@@ -187,6 +192,55 @@ services:
     cap_add:
       - NET_BIND_SERVICE
 
+  ai-proxy:
+    image: ghcr.io/${GITHUB_REPOSITORY}/ai-proxy:${IMAGE_TAG:-dev}
+    container_name: kompass-ai-proxy
+    environment:
+      - NODE_ENV=development
+      - PORT=8081
+      - AI_PROVIDER=${AI_PROVIDER:-openai}
+      - AI_PROVIDER_API_KEY=${AI_PROVIDER_API_KEY:-changeme}
+      - AI_PROVIDER_URL=${AI_PROVIDER_URL:-https://api.openai.com/v1}
+      - AI_CORRELATION_HEADER=${AI_CORRELATION_HEADER:-X-Correlation-Id}
+    ports:
+      - '8081:8081'
+    networks:
+      kompass-network:
+        aliases:
+          - ai-gateway
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8081/health']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  gateway:
+    image: nginx:1.25-alpine
+    container_name: kompass-gateway
+    ports:
+      - '3001:8080'
+    volumes:
+      - ./infra/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+      ai-proxy:
+        condition: service_healthy
+    networks:
+      - kompass-network
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:8080/api/ai/health']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
   # Frontend - React PWA with Vite dev server
   frontend:
     build:
@@ -194,11 +248,11 @@ services:
       dockerfile: Dockerfile.frontend
       target: development  # Use development stage for hot reload
       args:
-        - VITE_API_URL=http://localhost:3000
+        - VITE_API_URL=http://localhost:3001/api
     container_name: kompass-frontend
     environment:
       - NODE_ENV=development
-      - VITE_API_URL=http://localhost:3000
+      - VITE_API_URL=http://localhost:3001/api
       - CHOKIDAR_USEPOLLING=true  # Enable polling for file watching in Docker
     ports:
       - '5173:5173'  # Vite dev server port
