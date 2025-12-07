@@ -662,18 +662,17 @@ The architecture is designed for **non-breaking evolution**:
 
 ## Risk Mitigation
 
-### Technical Risks
+### Risk Register
 
-**Storage Complexity** → **Solved**: Automatic tiering, no manual management
-**Data Loss Risk** → **Solved**: Continuous sync, conflict resolution, audit trail
-**Performance** → **Solved**: Aggressive caching, optimized queries, monitoring
-**Complexity** → **Solved**: Phased approach, proven technologies, comprehensive docs
-
-### Operational Risks
-
-**Limited IT Resources** → **Solved**: Self-contained Docker deployment, automated monitoring
-**Vendor Dependencies** → **Solved**: Open-source stack, self-hosted components
-**Compliance** → **Solved**: Built-in audit trails, privacy controls, retention policies
+| Risk | Likelihood | Impact | Mitigation Steps | Detection & Monitoring Signals | Owner | Contingency Actions |
+| ---- | ---------- | ------ | ---------------- | ----------------------------- | ----- | ------------------- |
+| Storage complexity in offline tiering leads to unexpected quota failures | Medium | High | Enforce 3-tier storage policy with hard caps, throttle replication batches, and surface "Storage Nearly Full" UX prompts | PouchDB replication metrics, browser `storageEstimate` thresholds, frontend storage alerts | Mobile Lead | Pause attachment replication, force metadata-only sync, guide users to free space and reattempt sync after clearance |
+| Data loss during sync or conflict resolution | Low | Critical | Default to continuous bidirectional sync with conflict policies, audit-then-write chain, and deferred attachment download on conflicts | Replication error rates, audit chain gaps, conflict queue length in CouchDB metrics | Backend Lead | Switch to read-only mode for affected docs, trigger immediate resync from last good snapshot, and run audit reconciliation playbook |
+| Performance degradation under heavy queries/search | Medium | Medium | Aggressive caching (React Query), indexed queries, capped attachment batch sizes, and scoped search filters | API latency SLOs in Grafana, MeiliSearch query latency, PWA Web Vitals | Platform Lead | Enable feature flags to disable heavy widgets, scale read replicas/MeiliSearch nodes, and run cache warmup jobs |
+| Architecture complexity slowing delivery | Medium | Medium | Phased rollout (MVP→Automation→Analytics), ADR discipline, and feature flags to isolate change risk | ADR cadence adherence, feature flag coverage reports, milestone burn-down | Architecture Lead | De-scope non-critical epics, freeze new ADRs temporarily, and allocate spike budget to unblock decisions |
+| Limited IT resources for operations | Medium | Medium | Self-contained Docker deployment, infra-as-code scripts, and automated monitoring setup | CI pipeline results, infra drift alerts, on-call load reports | DevOps Lead | Engage managed support window, temporarily reduce release cadence, and prioritize reliability work in sprint planning |
+| Vendor dependencies or lock-in risk | Low | High | Prefer open-source/self-hosted components (Keycloak, MeiliSearch, CouchDB) with documented migration paths | Dependency SBOM changes, license scans, availability checks for third-party APIs | Security Lead | Execute migration playbook to alternate OSS component, enable read-only mode during cutover, and communicate downtime window |
+| Compliance gaps (GoBD/DSGVO) | Low | Critical | Immutable audit logs, consent-aware AI routing, retention policies, and purpose-of-use tagging | Audit log completeness dashboards, DPA/consent flag drift alerts, redaction policy checks | Compliance Officer | Invoke incident response for data handling violations, suspend AI fallback to public clouds, and run retroactive audit export for regulators |
 
 ---
 
