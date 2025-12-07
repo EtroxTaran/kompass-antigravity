@@ -3098,6 +3098,28 @@ export class RagQueryService {
 
 ### Rollout-Strategie
 
+#### Kapazitäts- & Deployment-Matrix (RAM/GPU ↔ Phase & Betriebsmodell)
+
+| Phase & erwartete Last | Deployment-Muster | RAM-Empfehlung | GPU-Einsatz | Kosten-/Performance-Trade-off | Minimal-Konfiguration für Pilot |
+| --- | --- | --- | --- | --- | --- |
+| **Phase 1: Alpha (≈ 20–40 RAG-Queries/Tag, 1–2 parallele Sessions)** | **Cloud-first, managed Vektordatenbank + Cloud-LLM (z. B. OpenAI/Azure)** | 32 GB (Backend + Weaviate SaaS-RAM nicht relevant) | **Keine GPU** (Inference bei Provider) | Schnell startklar, geringste CapEx; leicht höherer Preis pro Token | **Docker Compose lokal** mit Proxy + Backend + Frontend; Vektorsuche via Cloud-API; 1× Standard VM (8 vCPU/32 GB) |
+| **Phase 2: Beta (≈ 200–400 RAG-Queries/Tag, 5 parallele Sessions)** | **Hybrid**: Weaviate On-Prem/VM, LLM weiter Cloud; n8n/Neo4j On-Prem | 64 GB (Weaviate 16–24 GB, Neo4j 16 GB, Puffer 24 GB) | **Optionale 1× Prosumer-GPU (A10G/L4)** nur für Embeddings-Beschleunigung | Besseres P95-Latenz (−30–40%) durch lokale Embeddings; Cloud-LLM weiter Opex-basiert | **Pilot-Cluster**: 2× VMs (je 8–12 vCPU/32 GB) – Node A: Backend+n8n, Node B: Weaviate+Neo4j; optional 1× L4 (24 GB) in Node B |
+| **Phase 3: Production (≈ 1k–2k RAG-Queries/Tag, 15 parallele Sessions, Workflows minütlich)** | **On-Prem fokussiert** für Datenhoheit; Cloud-LLM als Fallback | 128 GB (Weaviate 32 GB, Neo4j 32 GB, n8n/Backend 32 GB, Reserve 32 GB) | **2× Datacenter-GPU (z. B. A100 40 GB oder H100 80 GB geteilt)** für vLLM/Embeddings | Höchste Performance, geringste Latenz; hohe CapEx (GPU) aber stabile Opex; Cloud-Fallback reduziert Risiko | **MVP-Prod**: 3× Bare Metal/VMs – Node A: Backend+n8n (32 GB), Node B: Weaviate+Neo4j (64 GB, NVMe), Node C: vLLM mit 1–2× A100; Cloud-LLM Feature-Flag als Notfall |
+
+**Kosten-/Performance-Narrative**
+
+- **Cloud-only (Alpha)**: ≈ 300–600 € / Monat (LLM Tokens + Managed Vector); Latenz abhängig vom Provider (200–800 ms/Query), ideal für schnelles Validieren.
+- **Hybrid (Beta)**: ≈ 800–1 500 € / Monat (VMs + Cloud-LLM); bessere Kontrolle über Embeddings-Kosten, P95 oft <400 ms durch lokale Vektorsuche, GPU optional spart ~30% Latenz.
+- **On-Prem GPU (Prod)**: Einmalig 12k–30k € (A10G/A100) plus Strom/Kühlung; laufende Cloud-Kosten nur als Fallback. P95 <150 ms möglich, vollständige Datenhoheit.
+
+**Minimaler Pilot (2 Wochen, ohne GPU)**
+
+1. **VM**: 8 vCPU, 32 GB RAM, NVMe; läuft Docker Compose mit Backend, Frontend, n8n (light), Prometheus/Grafana (Optional).
+2. **Vektorsuche**: Weaviate Cloud Free/Basic oder Pinecone Starter; Embeddings via Cloud-LLM.
+3. **LLM**: OpenAI gpt-4o-mini/claude-3-haiku; Kostenlimit via Usage-Quota.
+4. **Rollout**: Feature-Flags begrenzen auf 2 Pilot-User; Monitoring nur Request-Rate + Token-Kosten.
+5. **Exit-Kriterium**: P95 <2 s bei 40 Queries/Tag, <50 € Tokenkosten/Woche → dann Hybrid-VM aufbauen.
+
 #### Phased Rollout (Risk Mitigation)
 
 **Phase 1: Alpha (Woche 1-2, 2 User)**
