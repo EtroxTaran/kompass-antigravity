@@ -605,6 +605,12 @@ await transcriptionQueue.add('transcribe', { jobId, fileUrl });
 | Search Response  | ≤ 500ms               | MeiliSearch metrics |
 | Offline Sync     | ≤ 30s for 100 changes | Custom metrics      |
 
+### Sizing & Load Assumptions
+
+- **Sync spikes**: Design for **10x baseline replication bursts** (e.g., branch offices coming online Monday 8–10am) with up to **5k doc revisions per tenant per hour**. Batch replication is capped (metadata-first, attachments staggered) to keep P95 sync <45s during spikes.
+- **Conflict resolution**: Expect **3–5% of replicated docs to enter conflict** after offline workdays. Auto-resolution handles ~90%; plan for **500–1k manual conflict items/day** to be queued without blocking replication. CouchDB conflict queues are budgeted for **2× daily peak** to avoid backpressure.
+- **Projected concurrency**: Phase 1 supports **50–75 active users**; Phase 2 (automation + AI) targets **150–200 concurrent websocket/API sessions** with **2–3 concurrent syncs per user device**. Horizontal scale triggers when P95 API latency >1.5s or replication queue depth exceeds 2 minutes of work.
+
 ### Scaling Strategy
 
 **Current Capacity**: 20-50 concurrent users
@@ -616,6 +622,14 @@ await transcriptionQueue.add('transcribe', { jobId, fileUrl });
 - **Database**: CouchDB clustering (3-node cluster)
 - **Search**: MeiliSearch sharding or migration to Elasticsearch
 - **AI**: GPU server pool for parallel AI processing
+- **Vector + automation** (Phase 2+): Isolate Weaviate/vector DB and BullMQ/Redis tiers with dedicated nodes and network policies.
+
+### Capacity & Isolation Guidance (Phase 2+)
+
+- **Weaviate / Vector DB**: Run on **dedicated nodes with fast NVMe**; target **50–100 QPS** hybrid search with **<150ms P95**. Keep ingestion isolated from query replicas; enforce tenant namespaces and OPA policies. Plan for **2 replicas + 1 ingest** per 100k vectors; autoscale vector memory to keep **HNSW graph in-memory <70% RAM**.
+- **BullMQ / Redis**: Use **Redis Cluster or at least primary + replica**; dedicate **separate DB/namespace** for background jobs vs. cache/session data. Size for **20k enqueued jobs/hour** bursts from sync + AI tasks with **P95 dequeue <1s**. Enable **client-side backpressure** and **rate limits per tenant** to prevent noisy-neighbor effects.
+- **GPU inference**: Start with **1–2 A10/T4-class GPUs** for RAG and Whisper; budget **20–30 req/s streaming** with **P95 latency <3s**. Use **per-tenant concurrency guards** and **queue isolation** (BullMQ) so long-running transcriptions do not starve short chat completions. Keep **health checks + circuit breakers** in the AI proxy to reroute to CPU/n8n when GPU queue >30s.
+- **Vector DBs (Phase 2+)**: For additional embeddings stores (e.g., PGVector for analytics), isolate from primary search path; use **async ingestion** from BullMQ and **read replicas** for dashboards. Enforce **disk utilization <70%** and **write-ahead log on dedicated volume** to protect sync throughput.
 
 ---
 
