@@ -249,6 +249,35 @@ Controller → Service → Repository → Database
 - Record-level: Can user access THIS specific customer?
 - Field-level: Can user see margin/profit information?
 
+#### RBAC Rollout Playbooks
+
+**Migration Sequencing (zero-downtime):**
+
+1. **Schema + seed first**: Deploy database migrations that add role/permission tables and seed default roles without altering existing auth flows.
+2. **Dual-write phase**: Enable services to populate both legacy access flags and the new RBAC tables; keep reads on legacy to avoid behavior drift.
+3. **Read-cutover**: Flip feature flag so API reads use RBAC checks; retain dual-write for one release to support rollback.
+4. **Cleanup**: Remove legacy flags and disable dual-write once telemetry confirms stable access patterns for 7 days.
+
+**Pre/Post-Deploy Regression Suites (API + UI):**
+
+- **Pre-deploy smoke**: Token issuance/refresh, role claim propagation in ID token, health checks for RBAC guard endpoints.
+- **API regression (pre/post)**: CRUD for customers/projects/opportunities with each role, forbidden checks for cross-role access, field-level masking for margin/profit, audit-log emission on role change.
+- **UI regression (post)**: Navigation visibility per role, disabled actions for insufficient permissions, offline re-sync respecting RBAC scopes after reconnect.
+
+**Telemetry & Alerting Signals:**
+
+- **Auth error rates**: HTTP 401/403 rates per route and per role; alert if >2x baseline for 10 minutes post-rollout.
+- **Role-change audits**: Structured events for role grants/revocations with actor, subject, ticket id; alert on spikes or changes outside change window.
+- **Policy cache health**: Cache hit/miss ratios for RBAC policy evaluations; alert on sustained miss spikes (possible cache stampede) and evaluation latency >200ms p95.
+- **Token claim drift**: Compare Keycloak role claims vs. RBAC database assignments; emit discrepancy metrics and alert on >1% mismatch.
+
+**Rollback Procedures (API-aligned):**
+
+- **Soft rollback**: Toggle feature flag to revert API authorization to legacy checks while keeping RBAC dual-write; clear policy caches to avoid stale denies.
+- **Token alignment**: Force Keycloak realm cache invalidation so tokens drop new roles/claims; expire active sessions via global logout API to prevent inconsistent permissions.
+- **Data safety**: Preserve RBAC audit entries during rollback; block destructive migrations until post-mortem completes.
+- **Forward path**: After rollback, re-run pre-deploy smoke tests on legacy path, patch identified defects, and repeat migration from step 2 with narrowed blast radius (pilot tenants first).
+
 ---
 
 ## Phase-Based Evolution
