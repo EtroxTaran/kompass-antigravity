@@ -160,6 +160,11 @@ services:
       - AI_N8N_ENABLED=${PRODUCTION_AI_N8N_ENABLED:-false}
       - AI_RAG_ENABLED=${PRODUCTION_AI_RAG_ENABLED:-false}
       - AI_ML_ENABLED=${PRODUCTION_AI_ML_ENABLED:-false}
+      - AI_PROXY_URL=${PRODUCTION_AI_PROXY_URL:-http://ai-proxy:8081/api/ai}
+      - AI_PROVIDER=${PRODUCTION_AI_PROVIDER:-openai}
+      - AI_PROVIDER_API_KEY=${PRODUCTION_AI_PROVIDER_API_KEY:-changeme}
+      - AI_PROVIDER_URL=${PRODUCTION_AI_PROVIDER_URL:-https://api.openai.com/v1}
+      - AI_CORRELATION_HEADER=${PRODUCTION_AI_CORRELATION_HEADER:-X-Correlation-Id}
     restart: always
     deploy:
       resources:
@@ -197,6 +202,48 @@ services:
       options:
         max-size: '50m'
         max-file: '5'
+
+  ai-proxy:
+    image: ghcr.io/${GITHUB_REPOSITORY}/ai-proxy:${IMAGE_TAG:-latest}
+    environment:
+      - NODE_ENV=production
+      - PORT=8081
+      - AI_PROVIDER=${PRODUCTION_AI_PROVIDER:-openai}
+      - AI_PROVIDER_API_KEY=${PRODUCTION_AI_PROVIDER_API_KEY:-changeme}
+      - AI_PROVIDER_URL=${PRODUCTION_AI_PROVIDER_URL:-https://api.openai.com/v1}
+      - AI_CORRELATION_HEADER=${PRODUCTION_AI_CORRELATION_HEADER:-X-Correlation-Id}
+    restart: always
+    networks:
+      - kompass-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+  gateway:
+    image: nginx:1.25-alpine
+    ports:
+      - '3001:8080'
+    volumes:
+      - ./infra/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - ai-proxy
+    networks:
+      - kompass-network
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
 
   # Nginx Reverse Proxy (optional - for SSL termination)
   nginx-proxy:
