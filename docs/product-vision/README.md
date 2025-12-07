@@ -36,7 +36,9 @@ Detailed vision documents for core functional areas.
 | --------------------------------------------------------------------------------------------------------- | -------------------------------- | --------- | ------------ |
 | **[CRM Vision](<./Produktvision%20&%20Zielbild%20–%20Kontakt-%20&%20Kundenverwaltung%20(CRM-Basis).md>)** | Customer relationship management | ✅ Active | 2025-01-27   |
 | **[Project Management Vision](./Produktvision%20Projektmanagement%20&%20-durchführung.md)**               | Project execution & planning     | ✅ Active | 2025-01-27   |
-| **[Finance & Compliance Vision](./Produktvision%20Finanz-%20und%20Compliance-Management.md)**             | Financial management & GoBD      | ✅ Active | 2025-01-27   |
+| **[Finance & Compliance Vision](./Produktvision%20Finanz-%20und%20Compliance-Management.md)**             | Financial management & GoBD      | ✅ Active (v2.0 primary) | 2025-01-27   |
+
+> ℹ️ Die frühere PDF-Konvertierung _„Produktvision „Finanz- & Compliance-Management“_ ist archiviert und dient nur noch als Referenz. Alle Aktualisierungen bitte ausschließlich in der konsolidierten v2.0 pflegen.
 
 ---
 

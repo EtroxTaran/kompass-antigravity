@@ -1,9 +1,11 @@
 # Produktvision – Finanz- & Compliance-Management
 
-**Document Version:** 2.0  
-**Date:** 2025-01-28  
-**Status:** ✅ UPDATED (Focus: Offers, Contracts, Lexware Integration)  
+**Document Version:** 2.0
+**Date:** 2025-01-28
+**Status:** ✅ UPDATED (Focus: Offers, Contracts, Lexware Integration) — **Primary Reference**
 **Purpose:** Vision und Anforderungen für Angebotsmanagement, Vertragsmanagement, und Lexware-Integration
+**Note:** Dieses Dokument ersetzt die frühere PDF-Konvertierung _„Produktvision „Finanz- & Compliance-Management“_ (archiviert);
+Feinjustierungen oder Ergänzungen sind ausschließlich hier zu pflegen.
 
 **⚡ Verknüpfte Spezifikationen:**
 

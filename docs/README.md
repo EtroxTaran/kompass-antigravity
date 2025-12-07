@@ -21,7 +21,7 @@
 - **[AI & Automation Features Vision](./product-vision/Produktvision%20KI%20&%20Automation-Features.md)** – ✨ NEW: RAG-basiertes Wissensmanagement, n8n Intelligent Automation, Predictive Forecasting & BI-Dashboards, Strategic ROI (2025 Extensions)
 - **[Projektmanagement Vision](./product-vision/Produktvision%20Projektmanagement%20&%20-durchführung.md)** – Project Management Features, Workflows, Phase 2 AI Risk Assessment
 - **[CRM Vision](<./product-vision/Produktvision%20&%20Zielbild%20–%20Kontakt-%20&%20Kundenverwaltung%20(CRM-Basis).md>)** – Customer/Contact/Opportunity Management
-- **[Finanz & Compliance Vision](./product-vision/Produktvision%20Finanz-%20und%20Compliance-Management.md)** – Offers/Contracts Management, Lexware Integration (Phase 2+), GoBD, DSGVO
+- **[Finanz & Compliance Vision](./product-vision/Produktvision%20Finanz-%20und%20Compliance-Management.md)** – v2.0 (Primary): Offers/Contracts Management, Lexware Integration (Phase 2+), GoBD, DSGVO _(PDF-Konvertierung archiviert; nur diese Version pflegen)_
 
 ### 👥 For UX/Product Design
 
