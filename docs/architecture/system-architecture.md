@@ -67,6 +67,7 @@ KOMPASS is an **integrated CRM and Project Management system** designed as an **
 ### AI Proxy Service
 
 - **Role**: Sole AI entrypoint that standardizes HTTP/WS contracts for prompts, tool-calls, and streaming responses.
+- **Implementation Reference**: Detailed deployment, sizing, and operational patterns live in the [AI Extensions Implementation Guide](./ai-extensions/AI_Automation_Extensions_Implementation_Guide.md); use it alongside this section when enabling Phase 2 features.
 - **Boundary**: All AI traffic uses `/api/ai/*` paths over HTTPS or WebSocket; responses use a unified envelope (request id, status, payload, error) and explicit streaming events for partial tokens.
 - **Routing**: API gateway performs path-based forwarding for `/api/ai/*` to the AI Proxy; other backend routes remain untouched.
 - **Provider selection**:
@@ -338,6 +339,8 @@ Controller → Service → Repository → Database
 ### Phase 2: AI & Automation Extensions (6-8 months)
 
 **AI Integration Architecture:**
+
+_Weitere technische Details, Container-Layouts und Rollout-Playbooks findest du im [AI Extensions Implementation Guide](./ai-extensions/AI_Automation_Extensions_Implementation_Guide.md)._
 
 ```
 ┌──────────────┐      ┌──────────────┐      ┌──────────────┐      ┌──────────────┐
@@ -703,6 +706,8 @@ await transcriptionQueue.add('transcribe', { jobId, fileUrl });
 ### MVP to Advanced Features
 
 The architecture is designed for **non-breaking evolution**:
+
+For the phased sequence, rollout prerequisites, and migration safeguards, follow the [Architecture Evolution Guide](./evolution/ARCHITECTURE_EVOLUTION_GUIDE.md) in conjunction with the steps below.
 
 1. **Phase 1 (MVP)**: Core CRM/PM functionality with offline capability
 2. **Phase 2 (AI)**: Add AI services without changing core architecture
