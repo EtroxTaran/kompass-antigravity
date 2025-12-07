@@ -32,6 +32,7 @@
 14. [Request/Response DTOs](#14-requestresponse-dtos)
 15. [OpenAPI Documentation Patterns](#15-openapi-documentation-patterns)
 16. [Future Endpoints (Placeholders)](#16-future-endpoints-placeholders)
+17. [AI Proxy Endpoints (NEW)](#23-ai-proxy-endpoints-new)
 
 ---
 
@@ -7161,6 +7162,207 @@ interface ProtocolImportExecuteResponseDto {
 
 ---
 
+## 23. AI Proxy Endpoints (NEW)
+
+**Added:** 2025-02-21
+**Priority:** Phase 1 - Enables AI-assisted workflows with safe fallbacks
+
+### 23.1 Scope and Versioned Path
+
+- All AI proxy endpoints are versioned and **must** live under `/api/v1/ai/*`.
+- The proxy encapsulates provider-specific behavior and returns normalized envelopes, ensuring backward compatibility across AI model upgrades.
+
+### 23.2 Shared Response Envelope
+
+```typescript
+interface AiResponseEnvelope<TData = any> {
+  status: 'success' | 'clarification_needed' | 'error';
+  correlationId: string; // echo from request header or generated server-side
+  conversationId?: string; // present when conversational state is maintained
+  operationId?: string; // BullMQ jobId for long-running operations
+  message?: string; // human-readable summary
+  data?: TData; // primary payload for success
+  clarification?: { // required when status === 'clarification_needed'
+    prompt: string;
+    missingFields?: string[];
+    suggestedQuestions?: string[];
+  };
+  errors?: Array<{
+    code: AiErrorCode;
+    message: string;
+    target?: string; // field or section name
+  }>;
+}
+
+type AiErrorCode =
+  | 'ai_request_invalid_input'
+  | 'ai_provider_unavailable'
+  | 'ai_provider_error'
+  | 'ai_rate_limited'
+  | 'ai_conversation_not_found'
+  | 'ai_operation_not_found'
+  | 'ai_operation_expired';
+```
+
+**Status semantics:**
+
+- `success` → Data is complete; the caller can render or persist the payload.
+- `clarification_needed` → Additional input is required; clients must call `POST /api/v1/ai/conversation/{conversationId}/message` with the provided `conversationId`.
+- `error` → One or more `errors` are present; retry and escalation logic is client-driven.
+
+### 23.3 Correlation & Conversation Identifiers
+
+- **Correlation ID:**
+  - Accepted from `X-Correlation-Id`; generated if absent and echoed in every response.
+  - Logged across HTTP handlers and BullMQ processors for end-to-end tracing.
+- **Conversation ID:**
+  - Established on the first AI interaction that requires context preservation (e.g., clarifications or multi-turn conversations).
+  - Clients must supply it in subsequent conversation messages to maintain continuity.
+
+### 23.4 Error Codes
+
+| Code                        | Description                                                          | Recommended Client Action                    |
+| --------------------------- | -------------------------------------------------------------------- | -------------------------------------------- |
+| `ai_request_invalid_input`  | Request payload failed schema or safety validation                   | Fix inputs and retry                         |
+| `ai_provider_unavailable`   | Upstream AI provider not reachable or degraded                       | Retry with backoff or fall back to cached UI |
+| `ai_provider_error`         | Provider returned an unexpected failure                              | Retry with backoff; capture correlation ID   |
+| `ai_rate_limited`           | Provider or proxy rate limit exceeded                                | Apply exponential backoff                    |
+| `ai_conversation_not_found` | Conversation ID is unknown or expired                                | Restart flow with a new message              |
+| `ai_operation_not_found`    | Polling for a job that does not exist                                | Validate operationId before polling          |
+| `ai_operation_expired`      | Long-running job exceeded retention window                           | Re-run the analysis request                  |
+
+### 23.5 Core Endpoints
+
+#### 23.5.1 POST /api/v1/ai/analyze-text
+
+Runs synchronous or queued AI analysis on freeform text.
+
+**Request Body:**
+
+```json
+{
+  "text": "Summarize the meeting notes and list risks.",
+  "task": "summary", // summary | classification | extraction
+  "language": "de-DE",
+  "context": {
+    "customerId": "customer-123",
+    "projectId": "project-456"
+  }
+}
+```
+
+**Response (200 OK — success):**
+
+```json
+{
+  "status": "success",
+  "correlationId": "a1b2c3",
+  "conversationId": "conv-789",
+  "data": {
+    "summary": "Meeting agreed on rollout in Q2.",
+    "risks": ["Pending budget approval", "Vendor SLA unconfirmed"]
+  }
+}
+```
+
+**Response (206 Partial — clarification_needed):**
+
+```json
+{
+  "status": "clarification_needed",
+  "correlationId": "a1b2c3",
+  "conversationId": "conv-789",
+  "clarification": {
+    "prompt": "Please specify which risk categories to extract.",
+    "missingFields": ["riskCategories"],
+    "suggestedQuestions": ["Security?", "Timeline?"]
+  }
+}
+```
+
+**Response (202 Accepted — queued):**
+
+```json
+{
+  "status": "success",
+  "correlationId": "a1b2c3",
+  "operationId": "job-456",
+  "message": "Analysis queued; poll operations endpoint for completion."
+}
+```
+
+#### 23.5.2 POST /api/v1/ai/conversation/{conversationId}/message
+
+Continues a multi-turn AI dialogue to resolve clarifications or ask follow-up questions.
+
+**Request Body:**
+
+```json
+{
+  "message": "Extract only timeline risks",
+  "context": {
+    "projectId": "project-456"
+  }
+}
+```
+
+**Response (200 OK):** Uses the shared envelope; typically returns `success` with the resolved payload or `clarification_needed` with updated prompts.
+
+#### 23.5.3 GET /api/v1/ai/operations/{jobId}
+
+Polls BullMQ-backed long-running operations created by `/analyze-text` (and future AI tasks).
+
+- **Query Params:** none.
+- **Response (200 OK):**
+
+```json
+{
+  "status": "success",
+  "correlationId": "a1b2c3",
+  "operationId": "job-456",
+  "data": {
+    "state": "completed", // waiting | active | completed | failed | delayed
+    "progress": 100,
+    "result": {
+      "summary": "...",
+      "risks": ["..."]
+    }
+  }
+}
+```
+
+- **Response (200 OK — still running):**
+
+```json
+{
+  "status": "success",
+  "correlationId": "a1b2c3",
+  "operationId": "job-456",
+  "data": {
+    "state": "active",
+    "progress": 45
+  }
+}
+```
+
+### 23.6 Multi-Turn Clarification Workflow
+
+1. Client sends initial request to `/api/v1/ai/analyze-text` with optional `X-Correlation-Id`.
+2. If `clarification_needed`, the response includes `conversationId` and a targeted prompt.
+3. Client displays the prompt to the user and submits the user's answer to `/api/v1/ai/conversation/{conversationId}/message`, including the correlation ID.
+4. The proxy maintains conversation state and merges prior context to produce the next response.
+5. Flow ends when the proxy returns `success` or an unrecoverable `error`.
+
+### 23.7 Long-Running Operations & BullMQ Polling
+
+- Large inputs or provider-triggered throttling move work to a BullMQ queue.
+- `/api/v1/ai/analyze-text` immediately returns `202 Accepted` with `operationId` and `correlationId`.
+- Workers update job `progress` (0-100) and attach the final AI result to the job when completed.
+- Clients poll `GET /api/v1/ai/operations/{jobId}` every 2-5 seconds until `state === "completed"` or `state === "failed"`.
+- Failed jobs return `status: "error"` with `ai_provider_error` or `ai_operation_expired` codes; clients may re-run the request with a fresh correlation ID.
+
+---
+
 ## Document History
 
 | Version | Date       | Author | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
@@ -7173,7 +7375,8 @@ interface ProtocolImportExecuteResponseDto {
 | 1.5     | 2025-01-28 | System | **Added Time Tracking & Project Cost Management Endpoints (Phase 1 MVP)**: TimeEntry endpoints (CRUD, timer start/stop, bulk approve/reject, labor cost reports, pending approval queue) with complete DTOs; ProjectCost endpoints (CRUD, approval workflow, material cost summaries, pending payment tracking) with complete DTOs. Includes comprehensive RBAC permissions, business rules, status lifecycle transitions, cost calculations, and GoBD compliance for approved/paid entries                                                                                                                                                                                                                                                                                                                                                                               |
 | 1.6     | 2025-11-12 | System | **CRITICAL UPDATE - Added Supplier & Material Management Endpoints (Phase 1 MVP)**: Complete REST API for Supplier management (CRUD, approval, blacklist, contracts), Material catalog (CRUD, multi-supplier pricing, search), Project Material Requirements (BOM management, cost tracking), Purchase Orders (CRUD, approval workflow, delivery recording with real-time project cost updates), Supplier Invoices (CRUD, 3-way match, approval workflow, payment tracking), Supplier Communications (logging). Addresses Pre-Mortem Danger #3 (Critical Workflow Gaps). See [Supplier Management Spec](./SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md) and [Material Management Spec](./MATERIAL_INVENTORY_MANAGEMENT_SPEC.md) for complete business logic.                                                                                                                 |
 | 1.7     | 2025-01-27 | System | **Added Import/Export Endpoints (MVP)**: Customer import endpoints (upload Excel/CSV, map fields, validate, execute, error log) with automatic/manual field mapping, duplicate detection, and validation; Protocol import endpoints (upload Word document, extract table, parse dates with fallback to manual entry, assign customers, validate, execute, error log) with table extraction, date parsing (multiple formats), and customer assignment; Customer export endpoints (CSV/Excel/JSON/DATEV) with field selection and filtering; Protocol export endpoints (CSV/Excel/Word/JSON) with customer/protocol type filtering. Includes complete DTOs, business rules, performance considerations, and RBAC permissions. Required for data migration and ongoing operations. See [Import/Export Specification](./IMPORT_EXPORT_SPECIFICATION.md) for complete details. |
+| 1.8     | 2025-02-21 | System | **Added AI Proxy Endpoints**: Versioned `/api/v1/ai/*` surface with shared response envelope, correlation/conversation IDs, clarification workflow, BullMQ-backed long-running jobs with polling endpoint, and documented core routes (`/analyze-text`, `/conversation/{id}/message`, `/operations/{jobId}`). |
 
 ---
 
-**End of API_SPECIFICATION.md v1.7**
+**End of API_SPECIFICATION.md v1.8**
