@@ -1,6 +1,6 @@
 # Produktvision „Finanz- & Compliance-Management“
 
-> **Status:** 🗄️ Archiviert. Diese PDF-Konvertierung wird nicht mehr gepflegt und wurde durch die konsolidierte Version [„Produktvision Finanz- und Compliance-Management“](./Produktvision%20Finanz-%20und%20Compliance-Management.md) (v2.0) ersetzt. Neue Inhalte oder Korrekturen bitte ausschließlich dort einpflegen.
+> **Status:** 🗄️ Archiviert. Diese PDF-Konvertierung wird nicht mehr gepflegt und wurde durch die konsolidierte Version [„Produktvision Finanz- und Compliance-Management“](../Produktvision%20Finanz-%20und%20Compliance-Management.md) (v2.0) ersetzt. Neue Inhalte oder Korrekturen bitte ausschließlich dort einpflegen.
 
 _Converted from: Produktvision „Finanz- & Compliance-Management“.pdf_
 
