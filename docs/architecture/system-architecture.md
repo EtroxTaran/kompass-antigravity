@@ -55,6 +55,33 @@ KOMPASS is an **integrated CRM and Project Management system** designed as an **
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+### AI Proxy Service
+
+- **Role**: Sole AI entrypoint that standardizes HTTP/WS contracts for prompts, tool-calls, and streaming responses.
+- **Boundary**: All AI traffic uses `/api/ai/*` paths over HTTPS or WebSocket; responses use a unified envelope (request id, status, payload, error) and explicit streaming events for partial tokens.
+- **Routing**: API gateway performs path-based forwarding for `/api/ai/*` to the AI Proxy; other backend routes remain untouched.
+- **Provider selection**:
+  - **n8n workflows** (default for orchestrations and retrieval-augmented flows) enabled via `AI_PROVIDER=n8n`.
+  - **OpenAI** (managed SaaS) enabled via `AI_PROVIDER=openai` with API key/endpoint variables.
+  - **Self-hosted LLM** (e.g., local Ollama/Inference server) enabled via `AI_PROVIDER=self_hosted` and provider-specific host flags.
+- **Fallback logic**: The proxy prefers the configured primary provider, falls back to OpenAI if n8n/self-hosted are unavailable, and finally queues the request for deferred processing when no provider is reachable; retries are idempotent via request ids.
+- **Internal usage**: Backend services, jobs, and webhooks must call the AI Proxy; direct calls to OpenAI/n8n/self-hosted LLMs are prohibited to preserve observability and policy enforcement.
+
+```
+Frontend (PWA)
+    │  HTTPS / WS /api/ai/*
+    ▼
+API Gateway (NestJS path-based forwarding)
+    │
+    ▼
+AI Proxy (contract enforcement, provider selection, retries)
+    │                     │
+    │                     ├──> n8n workflows (primary orchestration)
+    │                     ├──> OpenAI API (managed fallback)
+    │                     └──> Self-hosted LLM (local inference)
+    └──> Async queues for deferred/failed calls
+```
+
 ### Technology Stack
 
 | Layer                | Technology                   | Purpose                               | Status       |
