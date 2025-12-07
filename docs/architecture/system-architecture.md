@@ -796,6 +796,25 @@ The architecture is designed for **non-breaking evolution**:
 - Implementation plan with rollback procedure
 - Post-implementation review
 
+### Incident-Driven Governance Responses
+
+**Every Severity 1–2 incident triggers the following governance actions within defined timelines:**
+
+- **ADR review (Owner: Architecture Lead)**
+  - Create/update an ADR that documents the incident context, the architectural options considered, and the chosen mitigation within **3 business days** of incident closure.
+  - Flag any architectural debt uncovered and add follow-up ADRs to the **next quarterly review cycle** if not immediately actionable.
+- **Configuration audit (Owner: DevSecOps/Platform Team)**
+  - Run a focused audit of infrastructure-as-code and runtime configuration baselines within **24 hours** to confirm drift, secrets hygiene, and policy alignment.
+  - Capture findings in the incident ticket with remediation tasks, each assigned an SLA based on severity (e.g., **5 business days** for Sev 1 blocking items).
+- **Rollout freeze (Owner: Release Manager)**
+  - Apply a targeted freeze on affected services/environments until guardrails are verified (health checks green, audit items closed or risk-accepted).
+  - Document freeze scope and exit criteria in the change log; lift the freeze only after Architecture Lead and DevSecOps sign-off.
+- **Documentation updates (Owner: Technical Writer + Service Owner)**
+  - Update runbooks, onboarding guides, and SLO/SLA definitions to reflect new guardrails or operational steps within **2 business days**.
+  - Ensure code-level docs (READMEs/config comments) are updated alongside ADR changes to keep implementation and guidance aligned.
+
+**Closing the loop:** The Incident Commander tracks all above actions in the root incident ticket and confirms completion during the **post-incident review (scheduled within 7 business days)**. Any open items convert into dated follow-up issues with named owners; the Architecture Lead reports status in the next governance sync.
+
 ### Quality Assurance
 
 **Architecture compliance checked via:**
