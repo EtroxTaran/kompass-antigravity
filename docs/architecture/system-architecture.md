@@ -119,6 +119,34 @@ To manage iOS 50MB storage limits, we implement automatic 3-tier data management
 
 **Total Budget**: ~50MB (iOS Safari safe zone with buffer)
 
+#### Browser Storage + Replication Behavior
+
+- **Storage quotas by engine**
+  - **Safari/iOS WKWebView**: Practical ~50MB IndexedDB cap per origin before eviction heuristics start; stays stable when the PWA is installed and storage is marked persistent.
+  - **Chromium (Chrome/Edge)**: 6–10% of free disk as a per-origin limit; individual PouchDB databases typically stay well below this, but large attachment replication can burst usage.
+  - **Firefox**: 10% of free disk globally with per-origin clamps; evicts least-recently-used origins when global pressure triggers.
+- **Eviction triggers**
+  - User-initiated **Clear Site Data** or storage setting changes immediately purge IndexedDB, causing PouchDB to request a fresh bootstrap sync.
+  - **OS-level reclamation** on mobile (low disk space) can clear non-persistent storage; we request `navigator.storage.persist()` on first launch and after large syncs to harden against this.
+  - Browsers may evict background tabs that exceed quota during replication bursts; we cap replication batch sizes and attachments per batch (see below) to avoid transient quota spikes.
+- **Back-pressure handling**
+  - PouchDB `changes` feeds are throttled when `storageEstimate.quota` approaches 85% of the effective cap; replication switches to **metadata-only** until free space recovers.
+  - Attachments larger than **2MB** are fetched in staggered batches (max 3 attachments per replication cycle) with progressive LZ compression; skipped attachments are marked with `pendingAttachment: true` for retry.
+  - When persistent storage is unavailable, the app surfaces a **"Storage Nearly Full"** toast, pauses background replication, and prompts the user to free space or deselect on-demand tiers.
+
+#### Conflict Escalation and Audit Reconciliation
+
+- **Automatic vs. manual path**
+  - Auto-resolvable conflicts follow the existing merge policies; manual conflicts raise a **"needs review"** flag on the document and defer replication of child attachments until resolved.
+  - Escalated conflicts trigger a **three-way merge view** on next connectivity with base, local, and remote revisions.
+- **Audit log chaining across offline edits**
+  - Every offline mutation writes a local audit record (hash + previousHash) in `kompass-audit` within PouchDB; upon reconnect, these entries replicate before operational docs to preserve chain integrity.
+  - If divergent chains appear (e.g., two offline editors), reconciliation creates a **branch-aware chain**: two audit entries reference the same `previousHash`; the server appends a **link entry** documenting the manual merge decision.
+  - The immutable chain always advances; even rejected changes are recorded with `operation: "REJECTED"` and the winning revision hash to keep tamper evidence intact.
+- **Examples**
+  - **Large attachment conflict**: User A uploads a 5MB photo offline; User B edits metadata online. During sync, the attachment download defers until metadata conflict is resolved; once resolved, the attachment streams in 1MB chunks with back-pressure and the audit log records the attachment hash plus chunk order to confirm integrity.
+  - **Dense history replay**: A project note edited 20 times offline creates 20 audit entries chained locally. On reconnection, the chain replicates first, then the compacted document revision set. If a conflict arises on revision 12 vs. 20, the merge decision is logged as a link entry, and the losing branch remains auditable without being the live state.
+
 #### Conflict Resolution Strategy
 
 **90% Automatic Resolution:**
