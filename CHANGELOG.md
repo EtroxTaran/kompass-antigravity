@@ -36,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rollback Procedures
 - Development Workflow guide
 - Quick Start guide for first-time setup
+- Architecture README references critical review and open risks
+- System architecture document lists planned updates for offline handling, AI fallback governance, RBAC regression prevention, and ops for new AI services
 
 ### Security
 

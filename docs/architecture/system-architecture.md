@@ -22,6 +22,15 @@ KOMPASS is an **integrated CRM and Project Management system** designed as an **
 4. **Risk-Mitigated**: Pragmatic decisions based on team size and timeline constraints
 5. **Self-Hosted**: Open-source components, no vendor lock-in, full data control
 
+### Planned Documentation Updates (Critical Review Follow-Up)
+
+| Area                          | Gap Identified                                                                 | Planned Update (scope)                                                                                   | Owner / Due |
+| ----------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----------- |
+| Offline handling              | Missing eviction/back-pressure guidance and essential-data overflow handling   | Add browser-specific quota/eviction rules, sync back-pressure flow, and recovery steps for essential tiers | Arch + Frontend / Feb 2025 |
+| AI fallback governance        | OpenAI fallback paths conflict with GDPR/consent expectations                  | Document tenant consent gates, residency controls, and approval/audit steps before any fallback activation | Arch + Security / Feb 2025 |
+| RBAC regression prevention    | No regression test/migration guidance despite prior PLAN access rollback       | Add rollout/migration playbook, pre/post-deploy RBAC regression checks, and telemetry signals for regressions | Backend Lead / Feb 2025 |
+| Ops for new AI services       | No backup/monitoring/capacity guidance for Weaviate, Redis/BullMQ, GPU runners | Extend ops tables with backup/restore, SLOs, and isolation/capacity assumptions for Phase 2+ AI services    | SRE / Feb 2025 |
+
 ---
 
 ## System Overview
