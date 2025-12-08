@@ -15,3 +15,15 @@ export interface BaseEntity {
     _conflicts?: string[];
     lastSyncedAt?: string; // ISO Date string
 }
+
+export interface Address {
+    street: string;
+    streetNumber?: string;
+    addressLine2?: string;
+    zipCode: string;
+    city: string;
+    state?: string;
+    country: string;
+    latitude?: number;
+    longitude?: number;
+}
