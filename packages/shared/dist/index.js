@@ -15,4 +15,12 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./types/customer"), exports);
+__exportStar(require("./types/location"), exports);
+__exportStar(require("./types/contact"), exports);
+__exportStar(require("./types/opportunity"), exports);
+__exportStar(require("./types/protocol"), exports);
+__exportStar(require("./types/supplier"), exports);
+__exportStar(require("./types/material"), exports);
+__exportStar(require("./types/project"), exports);
+__exportStar(require("./types/project-task"), exports);
 __exportStar(require("./types/base"), exports);

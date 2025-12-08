@@ -1,15 +1,4 @@
-import { BaseEntity } from './base';
-export interface Address {
-    street: string;
-    streetNumber?: string;
-    addressLine2?: string;
-    zipCode: string;
-    city: string;
-    state?: string;
-    country: string;
-    latitude?: number;
-    longitude?: number;
-}
+import { BaseEntity, Address } from './base';
 export interface Customer extends BaseEntity {
     type: 'customer';
     companyName: string;

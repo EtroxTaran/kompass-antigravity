@@ -29,7 +29,7 @@ export function useCustomers() {
             live: true,
             include_docs: true,
             filter: (doc) => doc.type === 'customer',
-        }).on('change', (change) => {
+        }).on('change', () => {
             // Simple reload for MVP (could be optimized)
             fetchCustomers();
         });
