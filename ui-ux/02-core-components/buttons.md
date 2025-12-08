@@ -33,7 +33,7 @@
 
 ## Button Specifications (from Reference Repository)
 
-**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/ButtonVariants.tsx`, `ButtonSizes.tsx`
+**Reference Source:** `ui-ux/Kompassuimusterbibliothek/src/components/ButtonVariants.tsx`, `ButtonSizes.tsx`
 
 **Primary Button (Default):**
 
@@ -116,7 +116,7 @@
    - Use for: Secondary actions, table actions, compact layouts
    - Example: `<Button size="sm">Speichern</Button>`
 
-**Reference:** `EtroxTaran/Kompassuimusterbibliothek/src/components/ButtonSizes.tsx`
+**Reference:** `ui-ux/Kompassuimusterbibliothek/src/components/ButtonSizes.tsx`
 
 **Icon + Text Button:**
 

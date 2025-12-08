@@ -126,14 +126,24 @@ Create a comprehensive project portfolio view for KOMPASS, a German CRM applicat
 - Project cards: Larger than opportunity cards
 - Cards show: Number, customer, timeline, progress, budget, manager
 
-**Timeline View (Alternative):**
+**Timeline View (Gantt Chart):**
 
-- Gantt-chart style
-- Y-axis: Project list
-- X-axis: Timeline (months)
-- Bars: Project duration
-- Today line: Vertical red line
-- Dependencies: Connecting lines between projects
+-   **Component**: `ProjectGanttChart.tsx`
+-   **View Modes**:
+    -   **Week**: High detail, 3-week window, daily columns
+    -   **Month**: Standard view, 2-month window, daily columns
+    -   **Quarter**: Long-term, 6-month window, weekly columns
+    -   **Year**: Strategic view, 2-year window, monthly columns
+-   **Features**:
+    -   **Auto-Zoom**: Automatic view switching based on project duration (e.g., >250 days switches to Year view)
+    -   **Dependencies**: SVG lines connecting dependent tasks with arrowheads
+    -   **Sidebar**: Collapsible project rows showing status, manager, and progress
+    -   **Navigation**: "Today" button, Date navigation, Header with dual time-scales (e.g., Month name + Day numbers)
+-   **Visuals**:
+    -   Today line (Red vertical marker)
+    -   Status-colored progress bars (Blue, Emerald, Purple, Amber, Red)
+    -   weekend highlighting
+
 
 **Filter Sheet:**
 

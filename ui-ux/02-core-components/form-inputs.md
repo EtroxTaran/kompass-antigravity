@@ -36,7 +36,7 @@
 
 ## Input Specifications (from Reference Repository)
 
-**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/FormInputsDemo.tsx`
+**Reference Source:** `ui-ux/Kompassuimusterbibliothek/src/components/FormInputsDemo.tsx`
 
 **Text Input (Standard):**
 
@@ -281,7 +281,7 @@ npx shadcn-ui@latest add form
 
 ### Input Component Usage (from Reference Repository)
 
-**Reference:** `EtroxTaran/Kompassuimusterbibliothek/src/components/FormInputsDemo.tsx`
+**Reference:** `ui-ux/Kompassuimusterbibliothek/src/components/FormInputsDemo.tsx`
 
 ```typescript
 // Standard Text Input

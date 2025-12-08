@@ -1,13 +1,13 @@
 # UI Consistency Audit Report
 **Date**: 2025-01-28  
 **Command**: `/checkUIStyle`  
-**Reference Repository**: `EtroxTaran/Kompassuimusterbibliothek`  
+**Reference Repository**: `ui-ux/Kompassuimusterbibliothek`  
 **Local Documentation**: `ui-ux/` directory
 
 ## Executive Summary
 
 A comprehensive UI consistency audit was performed comparing the local application implementation against:
-1. The GitHub UI reference repository (`EtroxTaran/Kompassuimusterbibliothek`)
+1. The GitHub UI reference repository (`ui-ux/Kompassuimusterbibliothek`)
 2. Local UI documentation in `ui-ux/` directory (which should reflect reference patterns)
 
 **Status**: ⚠️ **Partial Alignment** - Core components use shadcn/ui correctly, but several pages are missing documented features and patterns.
@@ -228,7 +228,7 @@ A comprehensive UI consistency audit was performed comparing the local applicati
 
 ## Notes
 
-- The GitHub UI reference repository (`EtroxTaran/Kompassuimusterbibliothek`) appears to be private or the specific commit SHA is not accessible
+- The GitHub UI reference repository (`ui-ux/Kompassuimusterbibliothek`) appears to be private or the specific commit SHA is not accessible
 - Local UI documentation in `ui-ux/` is comprehensive and should reflect reference patterns
 - Core shadcn/ui components are correctly installed and used
 - Main gaps are in page-level implementations (list views, forms) rather than component-level

@@ -31,7 +31,7 @@
 
 ## Grid System Specifications (from Reference Repository)
 
-**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx` and layout patterns
+**Reference Source:** `ui-ux/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx` and layout patterns
 
 The grid system uses Tailwind CSS utilities for responsive layouts.
 
@@ -144,8 +144,7 @@ Ensure all examples follow German business use cases (customer lists, project ti
 ## Implementation Notes
 
 ### Tailwind Grid Classes (from Reference Repository)
-
-**Reference:** `EtroxTaran/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx`
+**Reference Source:** `ui-ux/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx`
 
 ```tsx
 // Responsive Grid: 1 col mobile, 2 tablet, 3 desktop

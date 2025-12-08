@@ -9,14 +9,14 @@ This checklist ensures all UI implementations follow the GitHub UI reference rep
   - [ ] Identify UI components/pages needed
   - [ ] Note any specific design requirements
 
-- [ ] **Check GitHub UI Reference Repository**
-  - [ ] Use `./scripts/list-ui-reference.sh` or GitHub MCP to explore repository structure
-  - [ ] Search for matching components: `./scripts/search-ui-reference.sh <term>`
+- [ ] **Check Local UI Reference**
+  - [ ] Explore directory structure: `ui-ux/Kompassuimusterbibliothek`
+  - [ ] Search for matching components (use file search tools)
   - [ ] Identify reference files that match requirements
   - [ ] If component not found: **STOP and ask user for clarification**
 
-- [ ] **Fetch Reference Files**
-  - [ ] Use `./scripts/fetch-ui-reference.sh <file-path>` or GitHub MCP to get reference files
+- [ ] **Inspect Reference Files**
+  - [ ] Open relevant reference files from `ui-ux/Kompassuimusterbibliothek/src/...`
   - [ ] Inspect component structure, props, styling patterns
   - [ ] Understand layout hierarchy and component nesting
   - [ ] Note styling conventions (Tailwind classes, spacing, colors)
@@ -82,30 +82,17 @@ This checklist ensures all UI implementations follow the GitHub UI reference rep
   - [ ] UI/UX documentation updated
   - [ ] PR description complete with reference information
 
-## Helper Scripts
+## Tools
 
-Use these scripts to work with the reference repository:
+Use your standard file exploration tools:
 
-- **List repository structure:**
-
-  ```bash
-  ./scripts/list-ui-reference.sh [path]
-  ```
-
-- **Search for components:**
-
-  ```bash
-  ./scripts/search-ui-reference.sh <search-term>
-  ```
-
-- **Fetch specific file:**
-  ```bash
-  ./scripts/fetch-ui-reference.sh <file-path> [--open]
-  ```
+- **List files:** `ls -R ui-ux/Kompassuimusterbibliothek`
+- **Read content:** `view_file` or `cat`
+- **Global search:** `grep` or `grep_search`
 
 ## References
 
-- GitHub UI Reference: `docs/design-system/github-ui-reference.md`
+- Local UI Reference: `docs/design-system/ui-reference.md`
 - UI Implementation Template: `docs/guides/ui-implementation-template.md`
 - UI Components Rule: `.cursor/rules/ui-components.mdc`
 - UI/UX Documentation Sync: `.cursor/rules/ui-ux-documentation-sync.mdc`

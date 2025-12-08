@@ -35,7 +35,7 @@
 
 ## Table Specifications (from Reference Repository)
 
-**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx`
+**Reference Source:** `ui-ux/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx`
 
 The table system uses shadcn/ui `Table` components with sorting, filtering, pagination, and multi-select capabilities.
 

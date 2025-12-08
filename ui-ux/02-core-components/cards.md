@@ -32,7 +32,7 @@
 
 ## Card Specifications (from Reference Repository)
 
-**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/CardDemo.tsx`
+**Reference Source:** `ui-ux/Kompassuimusterbibliothek/src/components/CardDemo.tsx`
 
 **Basic Card (Standard):**
 
@@ -294,7 +294,7 @@ npx shadcn-ui@latest add card
 
 ### Basic Card Usage (from Reference Repository)
 
-**Reference:** `EtroxTaran/Kompassuimusterbibliothek/src/components/CardDemo.tsx`
+**Reference:** `ui-ux/Kompassuimusterbibliothek/src/components/CardDemo.tsx`
 
 ```typescript
 // Basic Card Structure

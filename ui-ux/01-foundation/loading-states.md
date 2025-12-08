@@ -35,9 +35,9 @@
 
 **Reference Source:**
 
-- `EtroxTaran/Kompassuimusterbibliothek/src/components/CustomerListSkeleton.tsx`
-- `EtroxTaran/Kompassuimusterbibliothek/src/components/LoadingStateDemo.tsx`
-- `EtroxTaran/Kompassuimusterbibliothek/src/components/FullScreenLoader.tsx`
+- `ui-ux/Kompassuimusterbibliothek/src/components/CustomerListSkeleton.tsx`
+- `ui-ux/Kompassuimusterbibliothek/src/components/LoadingStateDemo.tsx`
+- `ui-ux/Kompassuimusterbibliothek/src/components/FullScreenLoader.tsx`
 
 The loading system uses shadcn/ui `Skeleton` components for content placeholders and spinner components for inline loading states.
 

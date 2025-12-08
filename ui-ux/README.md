@@ -4,7 +4,7 @@
 
 ## 📋 Overview
 
-This directory contains **UI/UX documentation** organized into 8 categories, covering the complete UI/UX design system for KOMPASS. All UI patterns must reference and mirror the canonical GitHub UI reference repository: `EtroxTaran/Kompassuimusterbibliothek`.
+This directory contains **UI/UX documentation** organized into 8 categories, covering the complete UI/UX design system for KOMPASS. All UI patterns must reference and mirror the canonical GitHub UI reference repository: `ui-ux/Kompassuimusterbibliothek`.
 
 **CRITICAL:** The GitHub UI reference repository is the **ONLY authoritative source** for UI patterns. Always check the reference repository before implementing any UI component.
 
@@ -45,12 +45,16 @@ ui-ux/
 
 ### 📚 Using GitHub UI Reference Repository
 
-**The canonical source for all UI patterns is:** `EtroxTaran/Kompassuimusterbibliothek`
+**The canonical source for all UI patterns is:** `ui-ux/Kompassuimusterbibliothek`
+
+> **IMPORTANT:** This folder (`ui-ux/Kompassuimusterbibliothek`) is a **READ-ONLY REFERENCE**.
+> Do **NOT** write code, install packages, or configure your app inside this directory.
+> Your application code should live in `app/` (or your project root), and you should **copy** patterns from here.
 
 **Workflow for Implementing UI:**
 
 1. **Check GitHub UI Reference Repository FIRST**
-   - Use GitHub MCP to fetch files from `EtroxTaran/Kompassuimusterbibliothek`
+   - Use local file exploration (ls, view_file) to fetch files from `ui-ux/Kompassuimusterbibliothek`
    - Identify matching components/pages
    - Read component source code, layout structures, styling conventions
 
@@ -78,7 +82,7 @@ See `docs/design-system/github-ui-reference.md` for complete workflow documentat
 
 ### How to Use This Documentation
 
-1. **Check GitHub UI Reference** - Always fetch from `EtroxTaran/Kompassuimusterbibliothek` first
+1. **Check GitHub UI Reference** - Always fetch from `ui-ux/Kompassuimusterbibliothek` first
 2. **Review Documentation** - Check relevant `.md` files in this directory for specifications
 3. **Implement** - Build using shadcn/ui matching reference patterns
 4. **Document** - Update documentation with reference source and adaptations
@@ -449,7 +453,7 @@ Architecture supports future localization:
 - **shadcn/ui**: https://ui.shadcn.com/
 - **shadcraft.com**: https://shadcraft.com/ (components, blocks, templates)
 - **RadixUI**: https://www.radix-ui.com/
-- **GitHub UI Reference**: https://github.com/EtroxTaran/Kompassuimusterbibliothek
+- **GitHub UI Reference**: `ui-ux/Kompassuimusterbibliothek`
 - **GitHub UI Reference Documentation**: `../docs/design-system/github-ui-reference.md`
 - **WCAG 2.1**: https://www.w3.org/WAI/WCAG21/quickref/
 
@@ -485,7 +489,7 @@ Architecture supports future localization:
 
 ### Implementation Strategy
 
-1. **Fetch Reference**: Use GitHub MCP to get patterns from `EtroxTaran/Kompassuimusterbibliothek`
+1. **Fetch Reference**: Use local file exploration to get patterns from `ui-ux/Kompassuimusterbibliothek`
 2. **Review**: Check reference patterns against requirements
 3. **Document**: Update documentation with reference source
 4. **Implement**: Build using shadcn/ui matching reference patterns
@@ -527,7 +531,7 @@ Architecture supports future localization:
 - **Created**: November 2024
 - **Last Updated**: January 27, 2025
 - **Version**: 2.0.0
-- **UI Reference**: GitHub repository `EtroxTaran/Kompassuimusterbibliothek`
+- **UI Reference**: Local checkout `ui-ux/Kompassuimusterbibliothek`
 - **Status**: ✅ Complete (migrated to GitHub UI reference repository)
 
 ---
@@ -544,6 +548,5 @@ Architecture supports future localization:
 
 ---
 
-**Built for KOMPASS** - Integrated CRM & Project Management Tool  
-**UI Reference**: `EtroxTaran/Kompassuimusterbibliothek` (GitHub)  
+**Built for KOMPASS** - Integrated CRM & Project Management Tool - **UI Reference:** `ui-ux/Kompassuimusterbibliothek` (Local Checkout)  
 **Powered by**: shadcn/ui, RadixUI, Tailwind CSS

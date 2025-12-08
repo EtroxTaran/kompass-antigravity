@@ -6,13 +6,13 @@ Use this template when documenting UI implementations from the GitHub UI referen
 
 **Component/Page:** [Name of component or page implemented]  
 **Linear Issue:** [KOM-XXX]  
-**Reference Repository:** `EtroxTaran/Kompassuimusterbibliothek`
+**Reference Path:** `ui-ux/Kompassuimusterbibliothek`
 
 ## Reference Source
 
-### Files Used from Reference Repository
+### Files Used from Local Reference
 
-List all files from the reference repository that were used:
+List all files from `ui-ux/Kompassuimusterbibliothek` that were used:
 
 - `src/components/[ComponentName].tsx` - [Brief description of what was extracted]
 - `src/pages/[PageName].tsx` - [Brief description of layout patterns]
@@ -88,5 +88,5 @@ List any deviations from the reference repository (with justification):
 ## Related Documentation
 
 - UI/UX Documentation: `ui-ux/[category]/[component-name].md`
-- GitHub UI Reference: `docs/design-system/github-ui-reference.md`
+- Local UI Reference: `docs/design-system/ui-reference.md`
 - Implementation Checklist: `docs/guides/ui-implementation-checklist.md`

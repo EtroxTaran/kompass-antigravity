@@ -36,11 +36,11 @@
 
 **Reference Source:**
 
-- `EtroxTaran/Kompassuimusterbibliothek/src/components/EmptyCustomerList.tsx`
-- `EtroxTaran/Kompassuimusterbibliothek/src/components/EmptySearchResults.tsx`
-- `EtroxTaran/Kompassuimusterbibliothek/src/components/NetworkErrorState.tsx`
-- `EtroxTaran/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx` (empty state patterns)
-- `EtroxTaran/Kompassuimusterbibliothek/src/components/FormInputsDemo.tsx` (error states)
+- `ui-ux/Kompassuimusterbibliothek/src/components/EmptyCustomerList.tsx`
+- `ui-ux/Kompassuimusterbibliothek/src/components/EmptySearchResults.tsx`
+- `ui-ux/Kompassuimusterbibliothek/src/components/NetworkErrorState.tsx`
+- `ui-ux/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx` (empty state patterns)
+- `ui-ux/Kompassuimusterbibliothek/src/components/FormInputsDemo.tsx` (error states)
 
 The error and empty state system uses shadcn/ui `Alert`, `Card`, and `Button` components with clear messaging and actionable recovery options.
 

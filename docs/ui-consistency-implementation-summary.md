@@ -2,7 +2,7 @@
 
 **Date**: 2025-01-28  
 **Status**: ✅ **Complete**  
-**Reference Repository**: `EtroxTaran/Kompassuimusterbibliothek`
+**Reference Repository**: `ui-ux/Kompassuimusterbibliothek`
 
 ## Overview
 

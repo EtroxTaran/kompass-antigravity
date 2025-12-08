@@ -2,8 +2,7 @@
 
 ## Reference Source
 
-**GitHub UI Reference Repository:** `EtroxTaran/Kompassuimusterbibliothek`
-- **Reference File:** `src/styles/globals.css`
+**Reference Source:** `ui-ux/Kompassuimusterbibliothek/src/styles/globals.css`
 - **Design System Documentation:** `src/DESIGN_SYSTEM_UPDATE.md`
 - **Last Updated:** 2025-01-27
 

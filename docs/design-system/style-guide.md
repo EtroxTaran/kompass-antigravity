@@ -2,7 +2,7 @@
 
 ## Reference Source
 
-**GitHub UI Reference Repository:** `EtroxTaran/Kompassuimusterbibliothek`
+**Local UI Reference:** `ui-ux/Kompassuimusterbibliothek`
 
 - **Primary Reference:** `src/styles/globals.css`
 - **Design System Documentation:** `src/DESIGN_SYSTEM_UPDATE.md`
@@ -11,7 +11,7 @@
 
 ## Overview
 
-This style guide provides a quick reference for the complete KOMPASS design system extracted from the reference repository. All values, patterns, and specifications are sourced directly from `EtroxTaran/Kompassuimusterbibliothek`.
+This style guide provides a quick reference for the complete KOMPASS design system extracted from the reference repository. All values, patterns, and specifications are sourced directly from `ui-ux/Kompassuimusterbibliothek`.
 
 ## Color System
 
@@ -356,12 +356,12 @@ Base unit: **4px** (`0.25rem`)
 
 All specifications are extracted from:
 
-- `EtroxTaran/Kompassuimusterbibliothek/src/styles/globals.css`
-- `EtroxTaran/Kompassuimusterbibliothek/src/components/`
-- `EtroxTaran/Kompassuimusterbibliothek/src/DESIGN_SYSTEM_UPDATE.md`
+- `ui-ux/Kompassuimusterbibliothek/src/styles/globals.css`
+- `ui-ux/Kompassuimusterbibliothek/src/components/`
+- `ui-ux/Kompassuimusterbibliothek/src/DESIGN_SYSTEM_UPDATE.md`
 
 For complete details, see:
 
 - `ui-ux/01-foundation/design-tokens.md` - Full design token documentation
 - `ui-ux/02-core-components/` - Component-specific documentation
-- `docs/design-system/github-ui-reference.md` - Workflow for using reference repository
+- `docs/design-system/ui-reference.md` - Workflow for using local reference

@@ -1,7 +1,0 @@
-{
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {},
-  "references": [{ "path": "./packages/shared" }, { "path": "./apps/backend" }, { "path": "./apps/frontend" }],
-  "files": [],
-  "exclude": ["node_modules", "dist", "build", ".turbo", "coverage", "templates"]
-}

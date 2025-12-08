@@ -177,11 +177,21 @@ Create a mobile map and route planner for KOMPASS ADM users with GPS tracking, m
 11. Notification: "Check-in bei Hofladen Müller?"
 12. User taps "Ja" → Opens quick activity log
 
-## Implementation Notes
+## Implementation Notes: Google Maps Integration
 
-```bash
-npx shadcn-ui@latest add sheet button badge
-# Map: Use react-leaflet or @googlemaps/react-wrapper
-# GPS: Use Geolocation API
-# Routing: Use Google Directions API or Mapbox
-```
+-   **Component**: `GoogleMapsView.tsx`
+-   **API Key Handling**:
+    -   Securely loaded from `import.meta.env.VITE_GOOGLE_MAPS_API_KEY`
+    -   Fallback to `localStorage` for user-provided keys (enables local testing without rebuilds)
+    -   Input UI provided if key is missing
+-   **Visuals**:
+    -   **Markers**:
+        -   Red Dot: `status === 'overdue'`
+        -   Yellow Dot: `hasOpportunity === true`
+        -   Blue Dot: Default state
+    -   **Routes**: Blue polyline with 80% opacity connecting stops
+    -   **User Location**: Blue pulsing circle
+-   **Dependencies**:
+    -   `@react-google-maps/api`
+    -   `lucide-react` (icons)
+

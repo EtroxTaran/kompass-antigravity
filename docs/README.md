@@ -31,6 +31,7 @@
 - **[Planning Persona](./personas/Strategische%20Referenzpersona_%20Planungsabteilung.md)** – Planer, AI Risk Assessment (Phase 2.1), Collaboration + ✨ Timeline-Forecasting, RAG-Wissenssuche, Design-Pattern-Library (2025)
 - **[Accounting Persona](<./personas/Persona-Bericht_%20Buchhaltung%20(Integriertes%20CRM-%20und%20PM-Tool).md>)** – Buchhaltung, GoBD Compliance, Observability (Phase 1.5) + ✨ Liquiditäts-Forecasting, BI-Dashboards, Predictive Collections (2025)
 - **[Marketing Persona](<./personas/Persona%20Marketing%20und%20Grafik%20(Merged%20Profile).md>)** – Marketing/Grafik, Customer Portal (Phase 2.2), Analytics
+- **[UI Reference System](./design-system/ui-reference.md)** – ✅ **Single Source of Truth** for UI patterns (`ui-ux/Kompassuimusterbibliothek`)
 
 ### 🏗️ For Developers
 
@@ -44,8 +45,9 @@
 - **[Architecture Critical Review & Pre-Mortem](./architecture/architecture-docs-critical-review.md)** – Risikoanalyse, Gegenmaßnahmen und Feedback-Schleifen
 - **[AI Extensions Implementation Guide](./architecture/ai-extensions/AI_Automation_Extensions_Implementation_Guide.md)** – ✨ NEW: Step-by-Step Setup for RAG, n8n, Neo4j, ML-Models, BI-Dashboards (with Docker Compose, code templates, troubleshooting)
 - **[Architecture Evolution Guide](./architecture/evolution/ARCHITECTURE_EVOLUTION_GUIDE.md)** – Step-by-Step Migration from MVP to Phase 2/3 (with code examples)
-- **[Technology Roadmap](./product-vision/TECHNOLOGY_ROADMAP.md)** – Detailed Timeline, Tech Stack Evolution, Budget
+- **[Technology Roadmap](./product-vision/TECHNOLOGY_ROADM.md)** – Detailed Timeline, Tech Stack Evolution, Budget
 - **[CI/CD Quality Gates](./processes/ci-cd-pipeline.md)** – GitHub Actions matrix, performance & security gates, Docker artifact publishing
+- **[UI Implementation Guide](./guides/ui-implementation-checklist.md)** – Workflow for implementing UI components from local reference
 
 ### 📋 For QA/Testing
 

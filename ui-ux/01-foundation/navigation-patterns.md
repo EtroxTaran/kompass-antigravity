@@ -34,7 +34,7 @@
 
 ## Navigation Specifications (from Reference Repository)
 
-**Reference Source:** `EtroxTaran/Kompassuimusterbibliothek/src/components/DesktopSidebar.tsx`
+**Reference Source:** `ui-ux/Kompassuimusterbibliothek/src/components/DesktopSidebar.tsx`
 
 **Desktop Navigation (Sidebar):**
 

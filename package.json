@@ -1,80 +1,17 @@
 {
-  "name": "kompass",
-  "version": "1.0.0",
-  "description": "Integrated CRM and Project Management Tool for Ladenbau",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "test": "turbo run test",
-    "test:unit": "turbo run test:unit",
-    "test:integration": "turbo run test:integration --filter=@kompass/backend",
-    "test:e2e": "turbo run test:e2e",
-    "test:performance": "ts-node tests/performance/performance-regression.test.ts",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "type-check": "turbo run type-check",
-    "generate:api-docs": "ts-node scripts/generate-api-docs.ts",
-    "changelog:generate": "bash scripts/generate-changelog.sh",
-    "db:init": "ts-node scripts/database/init-couchdb.ts",
-    "db:cluster:init": "ts-node scripts/database/cluster-init.ts",
-    "db:migrate": "ts-node scripts/database/migrate.ts --list",
-    "db:migrate:dry-run": "ts-node scripts/database/migrate.ts --dry-run",
-    "db:migrate:execute": "ts-node scripts/database/migrate.ts --execute",
-    "prepare": "sh -c 'if command -v husky >/dev/null 2>&1; then husky install; else echo \"[husky] not installed, skipping hooks setup\"; fi'",
-    "clean": "turbo run clean && rm -rf node_modules",
-    "precommit:build": "pnpm --filter @kompass/shared build",
-    "precommit:check": "pnpm precommit:build && pnpm lint && pnpm format:check && pnpm precommit:branch",
-    "precommit:branch": "bash -c 'BRANCH_NAME=$(git branch --show-current); if [[ \"$BRANCH_NAME\" == \"main\" || \"$BRANCH_NAME\" == \"master\" ]]; then echo \"✅ Skipping branch name validation for protected branch: $BRANCH_NAME\"; exit 0; fi; if [[ ! \"$BRANCH_NAME\" =~ ^(feature|bugfix|hotfix|refactor|docs|test|chore)/KOM-[0-9]+-[a-z0-9-]+$ ]]; then echo \"❌ Branch name does not follow required format: $BRANCH_NAME\"; echo \"Required: <type>/KOM-###-short-description\"; exit 1; fi; echo \"✅ Branch name follows required format\"'",
-    "precommit:commit": "commitlint --edit",
-    "lint:ci": "ESLINT_MAX_WARNINGS=150 pnpm lint",
-    "ci-check": "bash scripts/ci-check.sh"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^18.4.3",
-    "@commitlint/config-conventional": "^18.4.3",
-    "@playwright/test": "^1.40.1",
-    "@types/autocannon": "^7.12.7",
-    "@types/node": "^20.10.5",
-    "@typescript-eslint/eslint-plugin": "^6.15.0",
-    "@typescript-eslint/parser": "^6.15.0",
-    "autocannon": "^7.15.0",
-    "conventional-changelog-cli": "^4.1.0",
-    "eslint": "^8.56.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-import-resolver-alias": "^1.1.2",
-    "eslint-import-resolver-typescript": "^4.4.4",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.2.0",
-    "nano": "^10.1.2",
-    "prettier": "^3.1.1",
-    "shadcn": "^3.5.0",
-    "test-exclude": "^7.0.1",
-    "ts-node": "^10.9.2",
-    "tslib": "^2.6.2",
-    "turbo": "^1.11.2",
-    "typescript": "^5.3.3"
-  },
-  "pnpm": {
-    "overrides": {
-      "js-yaml": "4.1.1",
-      "esbuild": "0.25.0",
-      "tmp": "0.2.4",
-      "glob": "^11.1.0",
-      "test-exclude": "^7.0.1"
-    }
-  },
-  "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=8.0.0"
-  },
-  "packageManager": "pnpm@8.15.0"
+    "name": "kompass-monorepo",
+    "private": true,
+    "scripts": {
+        "build": "turbo run build",
+        "dev": "turbo run dev",
+        "lint": "turbo run lint",
+        "test": "turbo run test",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    },
+    "devDependencies": {
+        "turbo": "latest",
+        "prettier": "latest",
+        "typescript": "latest"
+    },
+    "packageManager": "pnpm@9.0.0"
 }
