@@ -36,6 +36,8 @@ import { ProjectCostModule } from './modules/project-cost/project-cost.module';
 import { PurchaseOrderModule } from './modules/purchase-order/purchase-order.module';
 import { CalendarModule } from './modules/calendar/calendar.module';
 import { SupplierContractModule } from './modules/supplier-contract/supplier-contract.module';
+import { SupplierInvoiceModule } from './modules/supplier-invoice/supplier-invoice.module';
+import { DeliveryModule } from './modules/delivery/delivery.module';
 
 // Guards
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -86,6 +88,7 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     PurchaseOrderModule,
     CalendarModule,
     SupplierContractModule,
+    SupplierInvoiceModule,
   ],
   providers: [
     // Global exception filter (RFC 7807)
@@ -95,4 +98,4 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

@@ -32,6 +32,7 @@ const PERMISSION_MATRIX: Record<
     Activity: { CREATE: true, READ: true, UPDATE: true, DELETE: true },
     Offer: { CREATE: true, READ: true, UPDATE: true, DELETE: true },
     Contract: { CREATE: true, READ: true, UPDATE: true, DELETE: true },
+    SupplierInvoice: { CREATE: true, READ: true, UPDATE: true, DELETE: true },
   },
   ADMIN: {
     Customer: { CREATE: true, READ: true, UPDATE: true, DELETE: true },
@@ -49,6 +50,7 @@ const PERMISSION_MATRIX: Record<
     Activity: { CREATE: true, READ: true, UPDATE: true, DELETE: true },
     Offer: { CREATE: true, READ: true, UPDATE: true, DELETE: true },
     Contract: { CREATE: true, READ: true, UPDATE: true, DELETE: true },
+    SupplierInvoice: { CREATE: true, READ: true, UPDATE: true, DELETE: true },
   },
   ADM: {
     Customer: { CREATE: true, READ: true, UPDATE: true, DELETE: false },
@@ -83,6 +85,7 @@ const PERMISSION_MATRIX: Record<
     Activity: { CREATE: true, READ: true, UPDATE: true, DELETE: false },
     Offer: { CREATE: true, READ: true, UPDATE: true, DELETE: false },
     Contract: { CREATE: true, READ: true, UPDATE: true, DELETE: false },
+    SupplierInvoice: { CREATE: true, READ: true, UPDATE: true, DELETE: false },
   },
   PLAN: {
     Customer: { CREATE: false, READ: true, UPDATE: false, DELETE: false },
@@ -117,6 +120,7 @@ const PERMISSION_MATRIX: Record<
     Activity: { CREATE: false, READ: true, UPDATE: false, DELETE: false },
     Offer: { CREATE: false, READ: true, UPDATE: false, DELETE: false },
     Contract: { CREATE: false, READ: true, UPDATE: false, DELETE: false },
+    SupplierInvoice: { CREATE: true, READ: true, UPDATE: true, DELETE: true },
   },
   KALK: {
     Customer: { CREATE: false, READ: true, UPDATE: false, DELETE: false },
@@ -139,7 +143,7 @@ const PERMISSION_MATRIX: Record<
 
 @Injectable()
 export class RbacGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector) { }
 
   canActivate(context: ExecutionContext): boolean {
     const requiredPermissions = this.reflector.getAllAndOverride<
