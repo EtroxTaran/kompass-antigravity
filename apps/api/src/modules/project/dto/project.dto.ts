@@ -57,6 +57,15 @@ export class CreateProjectDto {
   @Min(0)
   @IsOptional()
   budget?: number;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(2000)
+  description?: string;
+
+  @IsString()
+  @IsOptional()
+  offerId?: string;
 }
 
 export class UpdateProjectDto {

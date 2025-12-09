@@ -15,6 +15,7 @@ import { OpportunityService } from './opportunity.service';
 import {
   CreateOpportunityDto,
   UpdateOpportunityDto,
+  MarkAsWonDto,
 } from './dto/opportunity.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RbacGuard } from '../../auth/guards/rbac.guard';
@@ -24,7 +25,7 @@ import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 @Controller('api/v1/opportunities')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class OpportunityController {
-  constructor(private readonly opportunityService: OpportunityService) {}
+  constructor(private readonly opportunityService: OpportunityService) { }
 
   /**
    * GET /api/v1/opportunities
@@ -96,6 +97,20 @@ export class OpportunityController {
     @CurrentUser() user: any,
   ) {
     return this.opportunityService.update(id, dto, user);
+  }
+
+  /**
+   * POST /api/v1/opportunities/:id/won
+   * Mark opportunity as won and create project
+   */
+  @Post(':id/won')
+  @Permissions({ entity: 'Opportunity', action: 'UPDATE' })
+  async markAsWon(
+    @Param('id') id: string,
+    @Body() dto: MarkAsWonDto,
+    @CurrentUser() user: any,
+  ) {
+    return this.opportunityService.markAsWon(id, dto, user);
   }
 
   /**

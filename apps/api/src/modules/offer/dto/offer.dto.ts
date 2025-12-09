@@ -42,6 +42,28 @@ export class OfferLineItemDto {
   unit?: string;
 }
 
+export class OfferMaterialDto {
+  @IsOptional()
+  @IsString()
+  id?: string;
+
+  @IsOptional()
+  @IsString()
+  materialId?: string;
+
+  @IsString()
+  @Length(3, 500)
+  description: string;
+
+  @IsNumber()
+  @Min(0.01)
+  quantity: number;
+
+  @IsString()
+  @Length(1, 50)
+  unit: string;
+}
+
 export class CreateOfferDto {
   @IsString()
   opportunityId: string;
@@ -83,6 +105,12 @@ export class CreateOfferDto {
   @ArrayMinSize(1, { message: 'Offer must have at least one line item' })
   @Type(() => OfferLineItemDto)
   lineItems: OfferLineItemDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => OfferMaterialDto)
+  materials?: OfferMaterialDto[];
 
   @IsOptional()
   @IsNumber()
@@ -155,6 +183,12 @@ export class UpdateOfferDto {
   @ArrayMinSize(1, { message: 'Offer must have at least one line item' })
   @Type(() => OfferLineItemDto)
   lineItems?: OfferLineItemDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => OfferMaterialDto)
+  materials?: OfferMaterialDto[];
 
   @IsOptional()
   @IsNumber()

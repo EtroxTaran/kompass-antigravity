@@ -39,7 +39,7 @@ export class OfferService {
     private readonly pdfService: PdfService,
     private readonly mailService: MailService,
     private readonly searchService: SearchService,
-  ) {}
+  ) { }
 
   async findAll(options: OfferQueryOptions = {}) {
     if (options.search) {
@@ -151,6 +151,17 @@ export class OfferService {
       unit: item.unit,
     }));
 
+    // Handle materials if present
+    const materials = dto.materials
+      ? dto.materials.map((m) => ({
+        id: m.id || uuidv4(),
+        materialId: m.materialId,
+        description: m.description,
+        quantity: m.quantity,
+        unit: m.unit,
+      }))
+      : undefined;
+
     // Calculate totals
     const subtotalEur = lineItems.reduce(
       (sum, item) => sum + item.totalPrice,
@@ -183,6 +194,7 @@ export class OfferService {
       paymentTerms: dto.paymentTerms,
       deliveryTerms: dto.deliveryTerms,
       notes: dto.notes,
+      materials,
     };
 
     const newOffer = await this.offerRepository.create(
@@ -252,6 +264,17 @@ export class OfferService {
         rejectionReason: dto.rejectionReason,
       }),
     };
+
+    // Update materials if provided
+    if (dto.materials) {
+      updateData.materials = dto.materials.map((m) => ({
+        id: m.id || uuidv4(),
+        materialId: m.materialId,
+        description: m.description,
+        quantity: m.quantity,
+        unit: m.unit,
+      }));
+    }
 
     // Recalculate totals if line items changed
     if (dto.lineItems) {

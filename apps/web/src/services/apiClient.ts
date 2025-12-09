@@ -514,6 +514,13 @@ export const opportunitiesApi = {
     return put(`/opportunities/${id}`, data);
   },
 
+  async markAsWon(
+    id: string,
+    data: { startDate?: string; projectManagerId?: string; offerId?: string },
+  ): Promise<unknown> {
+    return post(`/opportunities/${id}/won`, data);
+  },
+
   async delete(id: string): Promise<void> {
     return del(`/opportunities/${id}`);
   },

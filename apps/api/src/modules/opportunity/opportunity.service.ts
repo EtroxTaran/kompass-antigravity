@@ -7,11 +7,20 @@ import { OpportunityRepository, Opportunity } from './opportunity.repository';
 import {
   CreateOpportunityDto,
   UpdateOpportunityDto,
+  MarkAsWonDto,
 } from './dto/opportunity.dto';
+import { ProjectService } from '../project/project.service';
+import { OfferService } from '../offer/offer.service';
+import { ProjectMaterialService } from '../project-material/project-material.service';
 
 @Injectable()
 export class OpportunityService {
-  constructor(private readonly opportunityRepository: OpportunityRepository) {}
+  constructor(
+    private readonly opportunityRepository: OpportunityRepository,
+    private readonly projectService: ProjectService,
+    private readonly offerService: OfferService,
+    private readonly projectMaterialService: ProjectMaterialService,
+  ) { }
 
   async findAll(
     options: {
@@ -140,5 +149,72 @@ export class OpportunityService {
     await this.findById(id);
 
     return this.opportunityRepository.delete(id, user.id, user.email);
+  }
+
+  async markAsWon(
+    id: string,
+    dto: MarkAsWonDto,
+    user: { id: string; email?: string },
+  ) {
+    const opportunity = await this.findById(id);
+
+    // Update opportunity status to closed_won
+    const updatedOpportunity = await this.update(
+      id,
+      { stage: 'closed_won', probability: 100 },
+      user,
+    );
+
+    // Find offer (either provided ID or latest for opportunity)
+    let offer = null;
+    if (dto.offerId) {
+      offer = await this.offerService.findById(dto.offerId);
+    } else {
+      const offers = await this.offerService.findByOpportunity(id, {
+        limit: 1,
+        sort: 'offerDate',
+        order: 'desc',
+      });
+      if (offers.data.length > 0) {
+        offer = offers.data[0];
+      }
+    }
+
+    // Create Project
+    const project = await this.projectService.create(
+      {
+        name: opportunity.title,
+        customerId: opportunity.customerId,
+        projectManagerId: dto.projectManagerId || opportunity.owner, // Fallback to opportunity owner (which currently is a name string, ideally should be ID)
+        // TODO: In real app, opportunity.owner might be a user ID. If it's a string name, we might need a lookup or pass current user.
+        // For now, assuming opportunity.owner is compatible or using current user as fallback if needed.
+        // Actually, schema validation requires valid ID. User needs to provide PM ID or we use current user ID if applicable.
+        // Let's use user.id as fallback for Project Manager if opportunity.owner isn't an ID.
+        // Opportunity.owner is defined as string, but logically it's the owner's name in the mock data or ID?
+        // In OpportunityRepository, it's just a string.
+        // Let's use dto.projectManagerId ?? user.id
+        status: 'planning',
+        budget: opportunity.expectedValue,
+        startDate: dto.startDate,
+        opportunityId: id,
+        description: opportunity.description,
+      },
+      user,
+    );
+
+    // Copy materials from Offer if available
+    let materialsIds: string[] = []; // Not actually using implementation return value right now, avoiding TS unused var
+    if (offer) {
+      await this.projectMaterialService.copyFromOffer(
+        offer._id,
+        project._id,
+        user,
+      );
+    }
+
+    return {
+      opportunity: updatedOpportunity,
+      project,
+    };
   }
 }

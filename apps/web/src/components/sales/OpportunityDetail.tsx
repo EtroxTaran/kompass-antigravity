@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Opportunity } from "@kompass/shared";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { useCustomer } from "@/hooks/useCustomer";
 import { ActivityTimeline } from "@/components/crm/ActivityTimeline";
 import { Separator } from "@/components/ui/separator";
+import { OpportunityWonDialog } from "./OpportunityWonDialog";
+import { opportunitiesApi } from "@/services/apiClient";
 
 interface OpportunityDetailProps {
   opportunity: Opportunity;
@@ -14,6 +17,22 @@ interface OpportunityDetailProps {
 export function OpportunityDetail({ opportunity }: OpportunityDetailProps) {
   const navigate = useNavigate();
   const { customer } = useCustomer(opportunity.customerId);
+  const [showWonDialog, setShowWonDialog] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleMarkAsWon = async (data: { startDate?: string; projectManagerId?: string }) => {
+    setIsProcessing(true);
+    try {
+      const response = await opportunitiesApi.markAsWon(opportunity._id, data);
+      const project = (response as any).project;
+      navigate(`/projects/${project._id}`);
+    } catch (error) {
+      console.error("Failed to mark as won:", error);
+      // Ideally show toast here
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -35,9 +54,16 @@ export function OpportunityDetail({ opportunity }: OpportunityDetailProps) {
             )}
           </p>
         </div>
-        <Button onClick={() => navigate(`/sales/${opportunity._id}/edit`)}>
-          Edit Opportunity
-        </Button>
+        <div className="flex gap-2">
+          {opportunity.stage !== "closed_won" && (
+            <Button onClick={() => setShowWonDialog(true)}>
+              Mark as Won
+            </Button>
+          )}
+          <Button variant="outline" onClick={() => navigate(`/sales/${opportunity._id}/edit`)}>
+            Edit Opportunity
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -57,10 +83,10 @@ export function OpportunityDetail({ opportunity }: OpportunityDetailProps) {
           <ActivityTimeline
             customerId={opportunity.customerId}
             customerName={customer?.companyName}
-            // Note: ActivityTimeline filters by contactId or ActivityType, but maybe we want to filter by context (Opportunity)?
-            // The current Activity model doesn't link to Opportunity directly.
-            // I will display all activities for this customer for now, or just leave it as customer timeline.
-            // Ideally we'd link activities to opportunities, but Activity type (contact.ts/activity.ts) doesn't seem to have opportunityId.
+          // Note: ActivityTimeline filters by contactId or ActivityType, but maybe we want to filter by context (Opportunity)?
+          // The current Activity model doesn't link to Opportunity directly.
+          // I will display all activities for this customer for now, or just leave it as customer timeline.
+          // Ideally we'd link activities to opportunities, but Activity type (contact.ts/activity.ts) doesn't seem to have opportunityId.
           />
         </div>
 
@@ -119,6 +145,12 @@ export function OpportunityDetail({ opportunity }: OpportunityDetailProps) {
           </Card>
         </div>
       </div>
+      <OpportunityWonDialog
+        open={showWonDialog}
+        onOpenChange={setShowWonDialog}
+        onConfirm={handleMarkAsWon}
+        isLoading={isProcessing}
+      />
     </div>
   );
 }

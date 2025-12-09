@@ -27,6 +27,14 @@ export interface OfferLineItem {
   unit?: string;
 }
 
+export interface OfferMaterial {
+  id: string;
+  materialId?: string;
+  description: string;
+  quantity: number;
+  unit: string;
+}
+
 export interface Offer extends BaseEntity {
   type: 'offer';
   offerNumber: string;
@@ -37,6 +45,7 @@ export interface Offer extends BaseEntity {
   validUntil: string;
   status: OfferStatus;
   lineItems: OfferLineItem[];
+  materials?: OfferMaterial[];
   subtotalEur: number;
   discountPercent?: number;
   discountEur?: number;

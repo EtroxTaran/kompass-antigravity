@@ -144,3 +144,17 @@ export class UpdateOpportunityDto {
   @IsOptional()
   owner?: string;
 }
+
+export class MarkAsWonDto {
+  @IsString()
+  @IsOptional()
+  startDate?: string;
+
+  @IsString()
+  @IsOptional()
+  projectManagerId?: string;
+
+  @IsString()
+  @IsOptional()
+  offerId?: string;
+}

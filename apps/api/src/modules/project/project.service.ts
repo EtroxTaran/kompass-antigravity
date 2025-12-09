@@ -8,7 +8,7 @@ export class ProjectService {
   constructor(
     private readonly projectRepository: ProjectRepository,
     private readonly searchService: SearchService,
-  ) {}
+  ) { }
 
   async findAll(
     options: {
@@ -135,6 +135,8 @@ export class ProjectService {
       projectNumber,
       status: dto.status || 'planning',
       teamMemberIds: dto.teamMemberIds || [],
+      description: dto.description,
+      offerId: dto.offerId,
     };
 
     const newProject = await this.projectRepository.create(

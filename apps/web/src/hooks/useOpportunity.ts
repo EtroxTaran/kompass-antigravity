@@ -48,12 +48,33 @@ export function useOpportunity(id?: string) {
     }
   };
 
+  const markAsWon = async (data: {
+    startDate?: string;
+    projectManagerId?: string;
+    offerId?: string;
+  }) => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const result = await opportunitiesApi.markAsWon(id, data);
+      await fetchOpportunity(); // Reload to get updated status
+      return result;
+    } catch (err) {
+      console.error("Error marking opportunity as won", err);
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     opportunity,
     loading,
     error,
     saveOpportunity,
     refetch: fetchOpportunity,
+    markAsWon,
   };
 }
 
