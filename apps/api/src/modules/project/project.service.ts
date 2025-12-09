@@ -175,6 +175,55 @@ export class ProjectService {
 
     return this.projectRepository.delete(id, user.id, user.email);
   }
+  async updateActualCost(
+    projectId: string,
+    costType: 'material' | 'labor' | 'subcontractor' | 'expenses',
+    amountDelta: number,
+    userId: string,
+  ): Promise<Project> {
+    const project = await this.findById(projectId);
+
+    // Update specific cost component
+    switch (costType) {
+      case 'material':
+        project.actualMaterialCost = (project.actualMaterialCost || 0) + amountDelta;
+        break;
+      case 'labor':
+        project.actualLaborCost = (project.actualLaborCost || 0) + amountDelta;
+        break;
+      case 'subcontractor':
+        project.actualSubcontractorCost = (project.actualSubcontractorCost || 0) + amountDelta;
+        break;
+      case 'expenses':
+        project.actualExpenses = (project.actualExpenses || 0) + amountDelta;
+        break;
+    }
+
+    // Recalculate Total
+    project.actualTotalCost =
+      (project.actualMaterialCost || 0) +
+      (project.actualLaborCost || 0) +
+      (project.actualSubcontractorCost || 0) +
+      (project.actualExpenses || 0);
+
+    // Update Status
+    if (project.budget && project.budget > 0) {
+      const percentage = (project.actualTotalCost / project.budget) * 100;
+      if (percentage >= 100) {
+        project.budgetStatus = 'Exceeded';
+      } else if (percentage >= 80) {
+        project.budgetStatus = 'Warning';
+      } else {
+        project.budgetStatus = 'OnTrack';
+      }
+    } else {
+      project.budgetStatus = 'OnTrack'; // formatted as no budget = on track or maybe 'Unknown'? Defaulting to OnTrack for MVP
+    }
+
+    // Save
+    return this.projectRepository.update(project._id, project, userId);
+  }
+
   private async indexProject(project: Project) {
     try {
       await this.searchService.addDocuments('projects', [
@@ -185,6 +234,7 @@ export class ProjectService {
           status: project.status,
           projectManagerId: project.projectManagerId,
           customerId: project.customerId,
+          budgetStatus: project.budgetStatus,
         },
       ]);
     } catch (e) {

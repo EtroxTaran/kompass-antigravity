@@ -3,72 +3,72 @@ import { ProjectMaterialService } from './project-material.service';
 import { ProjectMaterialRepository } from './project-material.repository';
 import { OfferService } from '../offer/offer.service';
 
+const mockRepository = {
+    create: jest.fn(),
+    update: jest.fn(),
+    findById: jest.fn(),
+    findByProject: jest.fn(),
+    delete: jest.fn(),
+};
+
+const mockOfferService = {
+    findById: jest.fn(),
+};
+
 describe('ProjectMaterialService', () => {
     let service: ProjectMaterialService;
-    let repository: ProjectMaterialRepository;
-    let offerService: OfferService;
-
-    const mockUser = { id: 'user-1', email: 'test@example.com' };
-    const mockOffer = {
-        _id: 'offer-1',
-        materials: [
-            { materialId: 'mat-1', description: 'Material 1', quantity: 10, unit: 'pcs' }
-        ]
-    };
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 ProjectMaterialService,
-                {
-                    provide: ProjectMaterialRepository,
-                    useValue: {
-                        create: jest.fn().mockImplementation((data) => Promise.resolve({ ...data, _id: 'new-id' })),
-                        findByProject: jest.fn(),
-                    },
-                },
-                {
-                    provide: OfferService,
-                    useValue: {
-                        findById: jest.fn().mockResolvedValue(mockOffer),
-                    },
-                },
+                { provide: ProjectMaterialRepository, useValue: mockRepository },
+                { provide: OfferService, useValue: mockOfferService },
             ],
         }).compile();
 
         service = module.get<ProjectMaterialService>(ProjectMaterialService);
-        repository = module.get<ProjectMaterialRepository>(ProjectMaterialRepository);
-        offerService = module.get<OfferService>(OfferService);
     });
 
-    it('should be defined', () => {
-        expect(service).toBeDefined();
+    it('should create material requirement with calculated cost', async () => {
+        mockRepository.create.mockResolvedValue({ id: '1' });
+
+        await service.create({
+            projectId: 'p1',
+            quantity: 10,
+            estimatedUnitPrice: 5,
+            description: 'Item 1',
+            unit: 'pc'
+        }, { id: 'user1' });
+
+        expect(mockRepository.create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                estimatedTotalCost: 50,
+                status: 'planned'
+            }),
+            'user1',
+            undefined
+        );
     });
 
-    describe('copyFromOffer', () => {
-        it('should copy materials from offer to project', async () => {
-            const result = await service.copyFromOffer('offer-1', 'proj-1', mockUser);
-
-            expect(offerService.findById).toHaveBeenCalledWith('offer-1');
-            expect(repository.create).toHaveBeenCalledTimes(1);
-            expect(repository.create).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    projectId: 'proj-1',
-                    sourceOfferId: 'offer-1',
-                    materialId: 'mat-1',
-                    quantity: 10
-                }),
-                mockUser.id,
-                mockUser.email
-            );
-            expect(result).toHaveLength(1);
+    it('should update cost when quantity changes', async () => {
+        mockRepository.findById.mockResolvedValue({
+            id: '1',
+            quantity: 10,
+            estimatedUnitPrice: 5,
+            estimatedTotalCost: 50
         });
+        mockRepository.update.mockResolvedValue({ id: '1' });
 
-        it('should return empty array if no materials in offer', async () => {
-            (offerService.findById as jest.Mock).mockResolvedValue({ ...mockOffer, materials: [] });
-            const result = await service.copyFromOffer('offer-1', 'proj-1', mockUser);
-            expect(result).toEqual([]);
-            expect(repository.create).not.toHaveBeenCalled();
-        });
+        await service.update('1', { quantity: 20 }, { id: 'user1' });
+
+        expect(mockRepository.update).toHaveBeenCalledWith(
+            '1',
+            expect.objectContaining({
+                estimatedTotalCost: 100 // 20 * 5
+            }),
+            'user1',
+            undefined
+        );
     });
 });

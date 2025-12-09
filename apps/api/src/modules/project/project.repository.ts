@@ -29,7 +29,23 @@ export interface Project extends BaseEntity {
   teamMemberIds: string[];
 
   // Financial
-  budget?: number;
+  budget?: number; // Kept for backward compatibility or as manual override base
+
+  // Estimated costs (from offer/BOM)
+  estimatedMaterialCost?: number;
+  estimatedLaborCost?: number;
+  estimatedSubcontractorCost?: number;
+  estimatedTotalCost?: number;
+
+  // Actual costs (real-time)
+  actualMaterialCost?: number;
+  actualLaborCost?: number;
+  actualSubcontractorCost?: number;
+  actualExpenses?: number;
+  actualTotalCost?: number;
+
+  // Analysis
+  budgetStatus?: 'OnTrack' | 'Warning' | 'Exceeded';
 }
 
 @Injectable()

@@ -12,4 +12,14 @@ export interface Project extends BaseEntity {
     projectManagerId: string;
     teamMemberIds: string[];
     budget?: number;
+    estimatedMaterialCost?: number;
+    estimatedLaborCost?: number;
+    estimatedSubcontractorCost?: number;
+    estimatedTotalCost?: number;
+    actualMaterialCost?: number;
+    actualLaborCost?: number;
+    actualSubcontractorCost?: number;
+    actualExpenses?: number;
+    actualTotalCost?: number;
+    budgetStatus?: "OnTrack" | "Warning" | "Exceeded";
 }

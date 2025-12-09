@@ -15,6 +15,8 @@ import { format } from "date-fns";
 import { TaskList } from "./TaskList";
 import { TimeTrackingList } from "./TimeTrackingList";
 import { ProjectTaskKanban } from "@/components/tasks/ProjectTaskKanban";
+import { ProjectCostOverview } from "./ProjectCostOverview";
+import { ProjectMaterialList } from "./material/ProjectMaterialList";
 
 interface ProjectDetailProps {
   project: Project;
@@ -58,6 +60,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
           <TabsTrigger value="kanban">Kanban Board</TabsTrigger>
           <TabsTrigger value="tasks">Tasks</TabsTrigger>
           <TabsTrigger value="time">Zeiterfassung</TabsTrigger>
+          <TabsTrigger value="materials">Materials</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
         </TabsList>
 
@@ -114,6 +117,8 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
               </CardContent>
             </Card>
           </div>
+
+          <ProjectCostOverview project={project} />
         </TabsContent>
 
         <TabsContent value="kanban" className="space-y-4">
@@ -126,6 +131,10 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
 
         <TabsContent value="time" className="space-y-4">
           <TimeTrackingList projectId={project._id} />
+        </TabsContent>
+
+        <TabsContent value="materials" className="space-y-4">
+          <ProjectMaterialList projectId={project._id} />
         </TabsContent>
 
         <TabsContent value="team" className="space-y-4">
@@ -147,6 +156,6 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </div >
   );
 }

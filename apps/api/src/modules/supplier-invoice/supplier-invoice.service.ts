@@ -11,6 +11,7 @@ import {
 import { PurchaseOrderService } from '../purchase-order/purchase-order.service';
 import { DeliveryService } from '../delivery/delivery.service';
 import { PurchaseOrder } from '@kompass/shared';
+import { ProjectService } from '../project/project.service';
 
 @Injectable()
 export class SupplierInvoiceService {
@@ -18,6 +19,7 @@ export class SupplierInvoiceService {
         private readonly supplierInvoiceRepository: SupplierInvoiceRepository,
         private readonly purchaseOrderService: PurchaseOrderService,
         private readonly deliveryService: DeliveryService,
+        private readonly projectService: ProjectService,
     ) { }
 
     async create(
@@ -45,6 +47,15 @@ export class SupplierInvoiceService {
             invoice.paymentStatus = 'Approved';
             invoice.approvedBy = 'SYSTEM';
             invoice.approvedAt = new Date().toISOString();
+
+            // Trigger Cost Update
+            const costType = validation.deliveryMatch ? 'material' : 'subcontractor';
+            await this.projectService.updateActualCost(
+                invoice.projectId,
+                costType,
+                invoice.netAmount, // Use net amount for cost tracking usually? Or gross? Usually net for internal cost. Using netAmount.
+                userId
+            );
         }
 
         return this.supplierInvoiceRepository.create(invoice, userId);
@@ -75,7 +86,20 @@ export class SupplierInvoiceService {
         invoice.paymentStatus = 'Approved';
         invoice.approvedBy = userId;
         invoice.approvedAt = new Date().toISOString();
-        return this.supplierInvoiceRepository.update(id, invoice, userId);
+
+        const updatedInvoice = await this.supplierInvoiceRepository.update(id, invoice, userId);
+
+        // Trigger Cost Update
+        // Determine type based on validation or default
+        const costType = invoice.matchValidation?.deliveryMatch ? 'material' : 'subcontractor';
+        await this.projectService.updateActualCost(
+            invoice.projectId,
+            costType,
+            invoice.netAmount,
+            userId
+        );
+
+        return updatedInvoice;
     }
 
     async validate3WayMatch(

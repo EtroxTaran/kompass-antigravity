@@ -25,6 +25,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@kompass/shared": [
+        "../../packages/shared"
       ]
     }
   },

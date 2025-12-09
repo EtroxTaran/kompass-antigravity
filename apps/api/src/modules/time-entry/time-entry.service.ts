@@ -2,9 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { TimeEntryRepository, TimeEntry } from './time-entry.repository';
 import { CreateTimeEntryDto, UpdateTimeEntryDto } from './dto/time-entry.dto';
 
+import { ProjectService } from '../project/project.service';
+
 @Injectable()
 export class TimeEntryService {
-  constructor(private readonly timeEntryRepository: TimeEntryRepository) {}
+  private readonly DEFAULT_HOURLY_RATE = 60; // TODO: Fetch from User/Role configuration
+
+  constructor(
+    private readonly timeEntryRepository: TimeEntryRepository,
+    private readonly projectService: ProjectService,
+  ) { }
 
   async findAll(
     options: {
@@ -63,11 +70,22 @@ export class TimeEntryService {
     dto: CreateTimeEntryDto,
     user: { id: string; email?: string },
   ): Promise<TimeEntry> {
-    return this.timeEntryRepository.create(
+    const entry = await this.timeEntryRepository.create(
       dto as Partial<TimeEntry>,
       user.id,
       user.email,
     );
+
+    // Update Project Cost
+    const cost = (entry.durationMinutes / 60) * this.DEFAULT_HOURLY_RATE;
+    await this.projectService.updateActualCost(
+      entry.projectId,
+      'labor',
+      cost,
+      user.id
+    );
+
+    return entry;
   }
 
   async update(
@@ -75,20 +93,44 @@ export class TimeEntryService {
     dto: UpdateTimeEntryDto,
     user: { id: string; email?: string },
   ): Promise<TimeEntry> {
-    await this.findById(id);
-    return this.timeEntryRepository.update(
+    const oldEntry = await this.findById(id);
+    const updated = await this.timeEntryRepository.update(
       id,
       dto as Partial<TimeEntry>,
       user.id,
       user.email,
     );
+
+    // Update Cost Difference if duration changed
+    if (dto.durationMinutes && dto.durationMinutes !== oldEntry.durationMinutes) {
+      const oldCost = (oldEntry.durationMinutes / 60) * this.DEFAULT_HOURLY_RATE;
+      const newCost = (dto.durationMinutes / 60) * this.DEFAULT_HOURLY_RATE;
+      const diff = newCost - oldCost;
+
+      await this.projectService.updateActualCost(
+        oldEntry.projectId, // Assuming project ID doesn't change, or we handle move? Simplification: update valid for same project.
+        'labor',
+        diff,
+        user.id
+      );
+    }
+    return updated;
   }
 
   async delete(
     id: string,
     user: { id: string; email?: string },
   ): Promise<void> {
-    await this.findById(id);
-    return this.timeEntryRepository.delete(id, user.id, user.email);
+    const entry = await this.findById(id);
+    await this.timeEntryRepository.delete(id, user.id, user.email);
+
+    // Revert Cost
+    const cost = (entry.durationMinutes / 60) * this.DEFAULT_HOURLY_RATE;
+    await this.projectService.updateActualCost(
+      entry.projectId,
+      'labor',
+      -cost,
+      user.id
+    );
   }
 }

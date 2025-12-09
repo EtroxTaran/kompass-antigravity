@@ -66,9 +66,11 @@ export function clearAuthToken() {
 /**
  * Build headers for API requests
  */
-function buildHeaders(contentType: string = "application/json"): Headers {
+function buildHeaders(contentType: string | null = "application/json"): Headers {
   const headers = new Headers();
-  headers.set("Content-Type", contentType);
+  if (contentType) {
+    headers.set("Content-Type", contentType);
+  }
   headers.set("Accept", "application/json");
 
   const token = getAuthToken();
@@ -149,6 +151,21 @@ async function post<T>(path: string, body?: unknown): Promise<T> {
     method: "POST",
     headers: buildHeaders(),
     body: body ? JSON.stringify(body) : undefined,
+  });
+
+  return parseResponse<T>(response);
+}
+
+/**
+ * Make a POST request with FormData (Upload)
+ */
+async function upload<T>(path: string, formData: FormData): Promise<T> {
+  const headers = buildHeaders(null); // Let browser set Content-Type with boundary
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers,
+    body: formData,
   });
 
   return parseResponse<T>(response);
@@ -674,6 +691,21 @@ export const locationsApi = {
 // Time Entries API
 // =============================================================================
 
+export const projectMaterialsApi = {
+  list: (projectId: string) =>
+    get<ProjectMaterialRequirement[]>(`/projects/${projectId}/materials`),
+  create: (projectId: string, data: Partial<ProjectMaterialRequirement>) =>
+    post<ProjectMaterialRequirement>(`/projects/${projectId}/materials`, data),
+  update: (projectId: string, id: string, data: Partial<ProjectMaterialRequirement>) =>
+    patch<ProjectMaterialRequirement>(`/projects/${projectId}/materials/${id}`, data),
+  delete: (projectId: string, id: string) =>
+    del<void>(`/projects/${projectId}/materials/${id}`),
+};
+
+import {
+  ProjectMaterialRequirement,
+} from "@kompass/shared";
+
 export const timeEntriesApi = {
   async list(params?: {
     projectId?: string;
@@ -812,6 +844,18 @@ export const protocolsApi = {
 
   async delete(id: string): Promise<void> {
     return del(`/protocols/${id}`);
+  },
+};
+
+// =============================================================================
+// Transcribe API
+// =============================================================================
+
+export const transcribeApi = {
+  async transcribe(file: Blob): Promise<{ text: string }> {
+    const formData = new FormData();
+    formData.append("file", file, "recording.webm");
+    return upload<{ text: string }>("/transcribe", formData);
   },
 };
 

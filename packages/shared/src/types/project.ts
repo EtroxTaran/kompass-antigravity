@@ -22,6 +22,22 @@ export interface Project extends BaseEntity {
   projectManagerId: string;
   teamMemberIds: string[];
 
-  // Financial info could be sensitive, might be in a separate Cost entity or protected fields
+  // Financial
   budget?: number;
+
+  // Estimated costs (from offer/BOM)
+  estimatedMaterialCost?: number;
+  estimatedLaborCost?: number;
+  estimatedSubcontractorCost?: number;
+  estimatedTotalCost?: number;
+
+  // Actual costs (real-time)
+  actualMaterialCost?: number;
+  actualLaborCost?: number;
+  actualSubcontractorCost?: number;
+  actualExpenses?: number;
+  actualTotalCost?: number;
+
+  // Analysis
+  budgetStatus?: "OnTrack" | "Warning" | "Exceeded";
 }

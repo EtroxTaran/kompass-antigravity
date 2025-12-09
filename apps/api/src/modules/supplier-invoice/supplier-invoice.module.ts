@@ -4,9 +4,10 @@ import { SupplierInvoiceController } from './supplier-invoice.controller';
 import { SupplierInvoiceRepository } from './supplier-invoice.repository';
 import { PurchaseOrderModule } from '../purchase-order/purchase-order.module';
 import { DeliveryModule } from '../delivery/delivery.module';
+import { ProjectModule } from '../project/project.module';
 
 @Module({
-    imports: [PurchaseOrderModule, DeliveryModule],
+    imports: [PurchaseOrderModule, DeliveryModule, ProjectModule],
     controllers: [SupplierInvoiceController],
     providers: [SupplierInvoiceService, SupplierInvoiceRepository],
     exports: [SupplierInvoiceService],

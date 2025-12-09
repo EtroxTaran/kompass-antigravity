@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate, useParams } from "react-router-dom";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
+import { VoiceRecorder } from "@/components/shared/VoiceRecorder";
 
 export function ProtocolForm() {
   const { id } = useParams<{ id: string }>();
@@ -42,6 +43,15 @@ export function ProtocolForm() {
 
   const handleEditorChange = (content: string) => {
     setFormData((prev) => ({ ...prev, summary: content }));
+  };
+
+  const handleTranscription = (text: string) => {
+    setFormData((prev) => {
+      const newSummary = prev.summary
+        ? `${prev.summary}<p>${text}</p>`
+        : `<p>${text}</p>`;
+      return { ...prev, summary: newSummary };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -122,7 +132,10 @@ export function ProtocolForm() {
           </div>
 
           <div className="space-y-2">
-            <Label>Inhalt / Notizen</Label>
+            <div className="flex justify-between items-center">
+              <Label>Inhalt / Notizen</Label>
+              <VoiceRecorder onTranscription={handleTranscription} />
+            </div>
             <RichTextEditor
               value={formData.summary}
               onChange={handleEditorChange}

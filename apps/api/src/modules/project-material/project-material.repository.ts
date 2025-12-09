@@ -4,16 +4,7 @@ import { AuditService } from '../../shared/services/audit.service';
 import { BaseRepository, BaseEntity } from '../../shared/base.repository';
 import * as Nano from 'nano';
 
-export interface ProjectMaterialRequirement extends BaseEntity {
-    type: 'project-material-requirement';
-    projectId: string;
-    materialId?: string; // Optional link to material catalog
-    description: string;
-    quantity: number;
-    unit: string;
-    status: 'planned' | 'ordered' | 'delivered';
-    sourceOfferId?: string; // Track origin
-}
+import { ProjectMaterialRequirement } from '@kompass/shared';
 
 @Injectable()
 export class ProjectMaterialRepository extends BaseRepository<ProjectMaterialRequirement> {

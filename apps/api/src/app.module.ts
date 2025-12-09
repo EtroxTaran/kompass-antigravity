@@ -38,6 +38,7 @@ import { CalendarModule } from './modules/calendar/calendar.module';
 import { SupplierContractModule } from './modules/supplier-contract/supplier-contract.module';
 import { SupplierInvoiceModule } from './modules/supplier-invoice/supplier-invoice.module';
 import { DeliveryModule } from './modules/delivery/delivery.module';
+import { TranscribeModule } from './modules/transcribe/transcribe.module';
 
 // Guards
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -89,6 +90,8 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     CalendarModule,
     SupplierContractModule,
     SupplierInvoiceModule,
+    DeliveryModule,
+    TranscribeModule,
   ],
   providers: [
     // Global exception filter (RFC 7807)
