@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { SupplierRepository, Supplier } from './supplier.repository';
 import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
 
 @Injectable()
 export class SupplierService {
-  constructor(private readonly supplierRepository: SupplierRepository) {}
+  constructor(private readonly supplierRepository: SupplierRepository) { }
 
   async findAll(
     options: {
@@ -77,5 +77,63 @@ export class SupplierService {
   ): Promise<void> {
     await this.findById(id);
     return this.supplierRepository.delete(id, user.id, user.email);
+  }
+  async blacklist(
+    id: string,
+    user: { id: string; email?: string },
+    reason: string,
+  ): Promise<Supplier> {
+    const supplier = await this.findById(id);
+
+    if (supplier.activeProjectCount && supplier.activeProjectCount > 0) {
+      throw new BadRequestException(
+        'Cannot blacklist supplier with active project assignments',
+      );
+    }
+
+    if (!reason || reason.trim().length < 20) {
+      throw new BadRequestException(
+        'Blacklist reason is mandatory and must be at least 20 characters',
+      );
+    }
+
+    return this.supplierRepository.update(
+      id,
+      {
+        status: 'Blacklisted',
+        blacklistReason: reason,
+        blacklistedBy: user.id,
+        blacklistedAt: new Date().toISOString(),
+      } as Partial<Supplier>,
+      user.id,
+      user.email,
+    );
+  }
+
+  async reinstate(
+    id: string,
+    user: { id: string; email?: string },
+  ): Promise<Supplier> {
+    const supplier = await this.findById(id);
+
+    if (supplier.status !== 'Blacklisted') {
+      throw new BadRequestException('Supplier is not blacklisted');
+    }
+
+    return this.supplierRepository.update(
+      id,
+      {
+        status: 'Inactive', // Needs re-approval usually, setting to Inactive for safety
+        reinstatedBy: user.id,
+        reinstatedAt: new Date().toISOString(),
+        // Clear blacklist info? Often better to keep history, but for current state we might want to clear or keep as history.
+        // Requirements say "Blacklist history visible", so we shouldn't wipe fields immediately if we want to show them.
+        // But for 'current status', we just change status.
+        // Let's keep the old blacklist info there or maybe we need a separate history log. 
+        // For now, simple state change.
+      } as Partial<Supplier>,
+      user.id,
+      user.email,
+    );
   }
 }

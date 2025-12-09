@@ -34,6 +34,14 @@ export interface Supplier extends BaseEntity {
 
   rating?: 'A' | 'B' | 'C';
   category?: string[];
+
+  status?: 'Active' | 'Inactive' | 'Blacklisted';
+  blacklistReason?: string;
+  blacklistedBy?: string;
+  blacklistedAt?: string;
+  reinstatedBy?: string;
+  reinstatedAt?: string;
+  activeProjectCount?: number;
 }
 
 @Injectable()

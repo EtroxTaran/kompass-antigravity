@@ -48,7 +48,47 @@ export function useSupplier(id?: string) {
     }
   };
 
-  return { supplier, loading, error, saveSupplier, refetch: fetchSupplier };
+  const blacklistSupplier = async (reason: string) => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const result = await suppliersApi.blacklist(id, reason);
+      setSupplier(result as unknown as Supplier);
+      return result;
+    } catch (err) {
+      console.error("Error blacklisting supplier", err);
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const reinstateSupplier = async () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const result = await suppliersApi.reinstate(id);
+      setSupplier(result as unknown as Supplier);
+      return result;
+    } catch (err) {
+      console.error("Error reinstating supplier", err);
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    supplier,
+    loading,
+    error,
+    saveSupplier,
+    blacklistSupplier,
+    reinstateSupplier,
+    refetch: fetchSupplier,
+  };
 }
 
 export function useSuppliers() {
