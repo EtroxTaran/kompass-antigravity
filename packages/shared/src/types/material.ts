@@ -1,5 +1,21 @@
 import { BaseEntity } from './base';
 
+/**
+ * Supplier-specific pricing for a material
+ * Enables multi-supplier price comparison for KALK estimates
+ */
+export interface SupplierPrice {
+    supplierId: string;
+    supplierName: string;         // Denormalized for quick display
+    unitPrice: number;            // € per unit
+    currency: 'EUR';
+    minimumOrderQuantity: number; // MOQ
+    leadTimeDays: number;         // Delivery time in days
+    isPreferred: boolean;         // Preferred supplier for this material
+    notes?: string;               // Price conditions, terms
+    lastUpdated?: string;         // ISO date string
+}
+
 export interface Material extends BaseEntity {
     type: 'material';
 
@@ -11,12 +27,17 @@ export interface Material extends BaseEntity {
     category: string;
     unit: 'pc' | 'm' | 'm2' | 'm3' | 'kg' | 'l';
 
-    // Pricing
+    // Pricing (legacy single-supplier)
     purchasePrice: number;
     currency: string;
     validFrom?: string;
 
-    // Supplier
+    // Multi-Supplier Pricing
+    supplierPrices?: SupplierPrice[];
+    averagePrice?: number;        // Calculated: average of supplier prices
+    lowestPrice?: number;         // Calculated: min of supplier prices
+
+    // Supplier (legacy - kept for backward compatibility)
     preferredSupplierId?: string;
     supplierItemNumber?: string;
 
