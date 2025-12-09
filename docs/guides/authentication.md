@@ -149,17 +149,17 @@ The `JwtAuthGuard` protects routes by:
 ### Usage in Controllers
 
 ```typescript
-import { Controller, Get, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RbacGuard } from '../auth/guards/rbac.guard';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { Controller, Get, UseGuards } from "@nestjs/common";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
+import { RbacGuard } from "../auth/guards/rbac.guard";
+import { CurrentUser } from "../auth/decorators/current-user.decorator";
+import { RequirePermission } from "../auth/decorators/require-permission.decorator";
 
-@Controller('api/v1/customers')
+@Controller("api/v1/customers")
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class CustomerController {
   @Get()
-  @RequirePermission('Customer', 'READ')
+  @RequirePermission("Customer", "READ")
   async findAll(@CurrentUser() user: User) {
     // user is automatically populated from JWT token
     return this.customerService.findAll(user);
@@ -184,7 +184,7 @@ The backend validates tokens using:
 The frontend uses `keycloak-js` to interact with Keycloak:
 
 ```typescript
-import { initKeycloak, login, logout } from './lib/auth';
+import { initKeycloak, login, logout } from "./lib/auth";
 
 // Initialize on app startup
 await initKeycloak();
@@ -212,7 +212,7 @@ The `AuthContext` provides:
 Use `ProtectedRoute` component to protect routes:
 
 ```tsx
-import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
 <Route
   path="/dashboard"
@@ -269,7 +269,7 @@ export function setupTokenRefresh(): void {
         await logout(); // Refresh failed, logout user
       }
     },
-    5 * 60 * 1000
+    5 * 60 * 1000,
   ); // Check every 5 minutes
 }
 ```

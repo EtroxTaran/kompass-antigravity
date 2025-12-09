@@ -33,7 +33,7 @@ The pre-mortem analysis identified the **complete absence of Supplier & Subcontr
 interface Supplier extends BaseEntity {
   _id: string; // "supplier-{uuid}"
   _rev: string;
-  type: 'supplier';
+  type: "supplier";
 
   // Basic Information
   companyName: string; // Required, 2-200 chars
@@ -83,7 +83,7 @@ interface Supplier extends BaseEntity {
   references?: Document[]; // Reference letters
 
   // Status
-  status: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval';
+  status: "Active" | "Inactive" | "Blacklisted" | "PendingApproval";
   blacklistReason?: string; // Required if Blacklisted
   approvedBy?: string; // User ID (GF approval for first contract)
   approvedAt?: Date;
@@ -101,47 +101,47 @@ interface Supplier extends BaseEntity {
 }
 
 enum SupplierType {
-  MATERIAL_SUPPLIER = 'material_supplier', // Sells materials
-  SERVICE_PROVIDER = 'service_provider', // Provides services
-  SUBCONTRACTOR = 'subcontractor', // Full subcontracted work
-  CRAFTSMAN = 'craftsman', // Individual tradesman
-  LOGISTICS = 'logistics', // Transport/delivery
-  MIXED = 'mixed', // Materials + services
+  MATERIAL_SUPPLIER = "material_supplier", // Sells materials
+  SERVICE_PROVIDER = "service_provider", // Provides services
+  SUBCONTRACTOR = "subcontractor", // Full subcontracted work
+  CRAFTSMAN = "craftsman", // Individual tradesman
+  LOGISTICS = "logistics", // Transport/delivery
+  MIXED = "mixed", // Materials + services
 }
 
 enum ServiceCategory {
   // Trades
-  CARPENTRY = 'carpentry', // Tischlerei
-  METALWORK = 'metalwork', // Metallbau
-  ELECTRICAL = 'electrical', // Elektrik
-  PLUMBING = 'plumbing', // Sanitär
-  HVAC = 'hvac', // Heizung/Klima
-  PAINTING = 'painting', // Malerei
-  FLOORING = 'flooring', // Bodenbeläge
+  CARPENTRY = "carpentry", // Tischlerei
+  METALWORK = "metalwork", // Metallbau
+  ELECTRICAL = "electrical", // Elektrik
+  PLUMBING = "plumbing", // Sanitär
+  HVAC = "hvac", // Heizung/Klima
+  PAINTING = "painting", // Malerei
+  FLOORING = "flooring", // Bodenbeläge
 
   // Materials
-  WOOD_MATERIALS = 'wood_materials', // Holzmaterialien
-  METAL_MATERIALS = 'metal_materials', // Metallmaterialien
-  LIGHTING = 'lighting', // Beleuchtung
-  FURNITURE = 'furniture', // Möbel
-  FIXTURES = 'fixtures', // Einrichtungsgegenstände
+  WOOD_MATERIALS = "wood_materials", // Holzmaterialien
+  METAL_MATERIALS = "metal_materials", // Metallmaterialien
+  LIGHTING = "lighting", // Beleuchtung
+  FURNITURE = "furniture", // Möbel
+  FIXTURES = "fixtures", // Einrichtungsgegenstände
 
   // Services
-  INSTALLATION = 'installation', // Montage
-  TRANSPORT = 'transport', // Transport
-  DISPOSAL = 'disposal', // Entsorgung
-  CLEANING = 'cleaning', // Reinigung
+  INSTALLATION = "installation", // Montage
+  TRANSPORT = "transport", // Transport
+  DISPOSAL = "disposal", // Entsorgung
+  CLEANING = "cleaning", // Reinigung
 
-  OTHER = 'other',
+  OTHER = "other",
 }
 
 interface PaymentTerms {
   paymentMethod:
-    | 'Invoice'
-    | 'DirectDebit'
-    | 'CreditCard'
-    | 'Cash'
-    | 'BankTransfer';
+    | "Invoice"
+    | "DirectDebit"
+    | "CreditCard"
+    | "Cash"
+    | "BankTransfer";
   daysUntilDue: number; // Standard: 30, can be 14, 21, 60, 90
   discountPercentage?: number; // Optional, e.g., 2% for payment within 10 days
   discountDays?: number; // Days for discount eligibility
@@ -165,7 +165,7 @@ interface SupplierRating {
 interface SupplierContract extends BaseEntity {
   _id: string; // "supplier-contract-{uuid}"
   _rev: string;
-  type: 'supplier_contract';
+  type: "supplier_contract";
 
   // Contract Basics
   contractNumber: string; // Required, unique, "SC-2025-00123"
@@ -180,7 +180,7 @@ interface SupplierContract extends BaseEntity {
 
   // Financial
   contractValue: number; // Required, € total
-  valueType: 'Fixed' | 'TimeAndMaterial' | 'UnitPrice' | 'CostPlus';
+  valueType: "Fixed" | "TimeAndMaterial" | "UnitPrice" | "CostPlus";
   paymentSchedule: PaymentMilestone[]; // Required
   retentionPercentage?: number; // Gewährleistungseinbehalt, typically 5-10%
 
@@ -217,21 +217,21 @@ interface SupplierContract extends BaseEntity {
 }
 
 enum ContractType {
-  FRAMEWORK = 'framework', // Rahmenvertrag (ongoing)
-  PROJECT = 'project', // Project-specific
-  SERVICE_AGREEMENT = 'service_agreement', // Wartungsvertrag
-  PURCHASE_ORDER = 'purchase_order', // Simple PO
+  FRAMEWORK = "framework", // Rahmenvertrag (ongoing)
+  PROJECT = "project", // Project-specific
+  SERVICE_AGREEMENT = "service_agreement", // Wartungsvertrag
+  PURCHASE_ORDER = "purchase_order", // Simple PO
 }
 
 enum ContractStatus {
-  DRAFT = 'draft',
-  PENDING_APPROVAL = 'pending_approval', // Awaiting GF approval
-  SENT_TO_SUPPLIER = 'sent_to_supplier', // Awaiting supplier signature
-  SIGNED = 'signed', // Active
-  IN_EXECUTION = 'in_execution', // Work underway
-  COMPLETED = 'completed',
-  TERMINATED = 'terminated',
-  CANCELLED = 'cancelled',
+  DRAFT = "draft",
+  PENDING_APPROVAL = "pending_approval", // Awaiting GF approval
+  SENT_TO_SUPPLIER = "sent_to_supplier", // Awaiting supplier signature
+  SIGNED = "signed", // Active
+  IN_EXECUTION = "in_execution", // Work underway
+  COMPLETED = "completed",
+  TERMINATED = "terminated",
+  CANCELLED = "cancelled",
 }
 
 interface PaymentMilestone {
@@ -242,7 +242,7 @@ interface PaymentMilestone {
   dueDate?: Date; // Optional specific date
   invoiceId?: string; // Link to invoice when billed
   paidDate?: Date; // When payment completed
-  status: 'Pending' | 'Invoiced' | 'Paid';
+  status: "Pending" | "Invoiced" | "Paid";
 }
 ```
 
@@ -252,7 +252,7 @@ interface PaymentMilestone {
 interface SupplierInvoice extends BaseEntity {
   _id: string; // "supplier-invoice-{uuid}"
   _rev: string;
-  type: 'supplier_invoice';
+  type: "supplier_invoice";
 
   // Invoice Basics
   invoiceNumber: string; // Supplier's invoice number
@@ -272,7 +272,7 @@ interface SupplierInvoice extends BaseEntity {
   lineItems: SupplierInvoiceLineItem[];
 
   // Payment
-  paymentStatus: 'Pending' | 'Approved' | 'Paid' | 'Disputed';
+  paymentStatus: "Pending" | "Approved" | "Paid" | "Disputed";
   approvedBy?: string; // BUCH or GF
   approvedAt?: Date;
   paidDate?: Date;
@@ -307,7 +307,7 @@ interface SupplierInvoiceLineItem {
 interface ProjectSubcontractor extends BaseEntity {
   _id: string; // "project-subcontractor-{uuid}"
   _rev: string;
-  type: 'project_subcontractor';
+  type: "project_subcontractor";
 
   // Assignment
   projectId: string; // Required
@@ -328,10 +328,10 @@ interface ProjectSubcontractor extends BaseEntity {
   // Financial
   estimatedCost: number; // Required, from KALK
   actualCost?: number; // Updated as invoices arrive
-  budgetStatus: 'OnTrack' | 'Warning' | 'Exceeded';
+  budgetStatus: "OnTrack" | "Warning" | "Exceeded";
 
   // Status
-  status: 'Planned' | 'Confirmed' | 'InProgress' | 'Completed' | 'Cancelled';
+  status: "Planned" | "Confirmed" | "InProgress" | "Completed" | "Cancelled";
   completionPercentage: number; // 0-100
 
   // Performance
@@ -355,7 +355,7 @@ interface ProjectSubcontractor extends BaseEntity {
 interface SupplierCommunication extends BaseEntity {
   _id: string; // "supplier-comm-{uuid}"
   _rev: string;
-  type: 'supplier_communication';
+  type: "supplier_communication";
 
   // Context
   supplierId: string; // Required
@@ -363,8 +363,8 @@ interface SupplierCommunication extends BaseEntity {
   contractId?: string; // Optional
 
   // Communication Details
-  communicationType: 'Email' | 'Phone' | 'InPerson' | 'Video' | 'SMS';
-  direction: 'Inbound' | 'Outbound';
+  communicationType: "Email" | "Phone" | "InPerson" | "Video" | "SMS";
+  direction: "Inbound" | "Outbound";
   subject: string; // Required, 10-200 chars
   content: string; // Required, 20-5000 chars
 
@@ -999,12 +999,12 @@ function calculateOverallRating(ratings: ProjectRating[]): SupplierRating {
 
 ```typescript
 const VALID_CONTRACT_TRANSITIONS = {
-  Draft: ['PendingApproval', 'Cancelled'],
-  PendingApproval: ['Draft', 'SentToSupplier', 'Cancelled'],
-  SentToSupplier: ['UnderNegotiation', 'Signed', 'Cancelled'],
-  UnderNegotiation: ['SentToSupplier', 'Cancelled'],
-  Signed: ['InExecution', 'Terminated'],
-  InExecution: ['Completed', 'Terminated'],
+  Draft: ["PendingApproval", "Cancelled"],
+  PendingApproval: ["Draft", "SentToSupplier", "Cancelled"],
+  SentToSupplier: ["UnderNegotiation", "Signed", "Cancelled"],
+  UnderNegotiation: ["SentToSupplier", "Cancelled"],
+  Signed: ["InExecution", "Terminated"],
+  InExecution: ["Completed", "Terminated"],
   Completed: [], // Terminal state
   Terminated: [], // Terminal state
   Cancelled: [], // Terminal state
@@ -1015,7 +1015,7 @@ const VALID_CONTRACT_TRANSITIONS = {
 
 ```typescript
 async function updateProjectCostsFromSupplierInvoice(
-  invoice: SupplierInvoice
+  invoice: SupplierInvoice,
 ): Promise<void> {
   // When supplier invoice is marked paid, update project actual costs
   const project = await projectRepository.findById(invoice.projectId);
@@ -1032,23 +1032,23 @@ async function updateProjectCostsFromSupplierInvoice(
 
   // Update budget status
   if (project.actualCost > project.budget) {
-    project.budgetStatus = 'Exceeded';
+    project.budgetStatus = "Exceeded";
   } else if (project.actualCost > project.budget * 0.9) {
-    project.budgetStatus = 'Warning';
+    project.budgetStatus = "Warning";
   } else {
-    project.budgetStatus = 'OnTrack';
+    project.budgetStatus = "OnTrack";
   }
 
   await projectRepository.update(project);
 
   // Notify PLAN and BUCH if budget warning
   if (
-    project.budgetStatus === 'Warning' ||
-    project.budgetStatus === 'Exceeded'
+    project.budgetStatus === "Warning" ||
+    project.budgetStatus === "Exceeded"
   ) {
     await notificationService.send({
-      recipients: [project.projectManager, 'BUCH'],
-      type: 'BudgetAlert',
+      recipients: [project.projectManager, "BUCH"],
+      type: "BudgetAlert",
       message: `Project ${project.projectNumber}: Budget at ${percentage}%`,
       link: `/projects/${project.id}`,
     });

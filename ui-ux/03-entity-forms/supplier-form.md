@@ -505,8 +505,8 @@ npx shadcn-ui@latest add form input textarea select checkbox radio-group button 
 ### Form Structure (react-hook-form)
 
 ```tsx
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -514,17 +514,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 
 const supplierSchema = z.object({
   companyName: z.string().min(2).max(200),
   supplierType: z.enum([
-    'material_supplier',
-    'service_provider',
-    'subcontractor',
-    'craftsman',
-    'logistics',
-    'mixed',
+    "material_supplier",
+    "service_provider",
+    "subcontractor",
+    "craftsman",
+    "logistics",
+    "mixed",
   ]),
   email: z.string().email(),
   phone: z.string().min(7).max(20),

@@ -1,0 +1,885 @@
+/**
+ * API Client Service
+ *
+ * This service handles all REST API communication with the backend.
+ * It abstracts authentication token management and provides typed
+ * methods for all API operations.
+ */
+
+// Configuration
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+// RFC 7807 Problem Details format
+interface ProblemDetails {
+  type: string;
+  title: string;
+  status: number;
+  detail: string;
+  instance?: string;
+}
+
+class ApiError extends Error {
+  constructor(
+    public status: number,
+    public title: string,
+    public detail: string,
+    public type?: string,
+  ) {
+    super(detail);
+    this.name = "ApiError";
+  }
+}
+
+// Token storage
+let authToken: string | null = null;
+
+/**
+ * Set the authentication token for API requests
+ */
+export function setAuthToken(token: string | null) {
+  authToken = token;
+  if (token) {
+    localStorage.setItem("auth_token", token);
+  } else {
+    localStorage.removeItem("auth_token");
+  }
+}
+
+/**
+ * Get the current authentication token
+ */
+export function getAuthToken(): string | null {
+  if (!authToken) {
+    authToken = localStorage.getItem("auth_token");
+  }
+  return authToken;
+}
+
+/**
+ * Clear authentication token
+ */
+export function clearAuthToken() {
+  authToken = null;
+  localStorage.removeItem("auth_token");
+}
+
+/**
+ * Build headers for API requests
+ */
+function buildHeaders(contentType: string = "application/json"): Headers {
+  const headers = new Headers();
+  headers.set("Content-Type", contentType);
+  headers.set("Accept", "application/json");
+
+  const token = getAuthToken();
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
+  return headers;
+}
+
+/**
+ * Parse API response
+ */
+async function parseResponse<T>(response: Response): Promise<T> {
+  const contentType = response.headers.get("content-type");
+
+  if (!response.ok) {
+    // Try to parse as RFC 7807 Problem Details
+    if (
+      contentType?.includes("application/problem+json") ||
+      contentType?.includes("application/json")
+    ) {
+      try {
+        const problem = (await response.json()) as ProblemDetails;
+        throw new ApiError(
+          problem.status || response.status,
+          problem.title || response.statusText,
+          problem.detail || "An error occurred",
+          problem.type,
+        );
+      } catch (e) {
+        if (e instanceof ApiError) throw e;
+      }
+    }
+    throw new ApiError(
+      response.status,
+      response.statusText,
+      "An error occurred",
+    );
+  }
+
+  if (response.status === 204 || !contentType?.includes("application/json")) {
+    return undefined as T;
+  }
+
+  return response.json();
+}
+
+/**
+ * Make a GET request
+ */
+async function get<T>(
+  path: string,
+  params?: Record<string, string>,
+): Promise<T> {
+  const url = new URL(`${API_BASE_URL}${path}`);
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        url.searchParams.set(key, value);
+      }
+    });
+  }
+
+  const response = await fetch(url.toString(), {
+    method: "GET",
+    headers: buildHeaders(),
+  });
+
+  return parseResponse<T>(response);
+}
+
+/**
+ * Make a POST request
+ */
+async function post<T>(path: string, body?: unknown): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers: buildHeaders(),
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  return parseResponse<T>(response);
+}
+
+/**
+ * Make a PUT request
+ */
+async function put<T>(path: string, body: unknown): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "PUT",
+    headers: buildHeaders(),
+    body: JSON.stringify(body),
+  });
+
+  return parseResponse<T>(response);
+}
+
+/**
+ * Make a PATCH request
+ */
+async function patch<T>(path: string, body: unknown): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "PATCH",
+    headers: buildHeaders(),
+    body: JSON.stringify(body),
+  });
+
+  return parseResponse<T>(response);
+}
+
+/**
+ * Make a DELETE request
+ */
+async function del<T>(path: string): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "DELETE",
+    headers: buildHeaders(),
+  });
+
+  return parseResponse<T>(response);
+}
+
+// =============================================================================
+// API Resource Types
+// =============================================================================
+
+interface ListResponse<T> {
+  data: T[];
+  total: number;
+  limit?: number;
+  offset?: number;
+}
+
+interface AuthUser {
+  _id: string;
+  type: "user";
+  email: string;
+  displayName: string;
+  firstName?: string;
+  lastName?: string;
+  roles: string[];
+  primaryRole: string;
+  active: boolean;
+  lastSyncedAt?: string;
+}
+
+// =============================================================================
+// Auth API
+// =============================================================================
+
+export const authApi = {
+  /**
+   * Get current user profile
+   */
+  async getMe(): Promise<AuthUser> {
+    return get<AuthUser>("/auth/me");
+  },
+
+  /**
+   * Sync users from Keycloak (admin only)
+   */
+  async syncUsers(): Promise<{
+    message: string;
+    synced: number;
+    errors: number;
+  }> {
+    return post("/auth/sync-users");
+  },
+
+  /**
+   * Get all synced users (admin only)
+   */
+  async getUsers(): Promise<ListResponse<AuthUser>> {
+    return get("/auth/users");
+  },
+
+  /**
+   * Health check
+   */
+  async healthCheck(): Promise<{ status: string; timestamp: string }> {
+    return get("/auth/health");
+  },
+};
+
+// =============================================================================
+// Customers API
+// =============================================================================
+
+export const customersApi = {
+  async list(params?: {
+    status?: string;
+    limit?: string;
+    offset?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/customers", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/customers/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/customers", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/customers/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/customers/${id}`);
+  },
+};
+
+// =============================================================================
+// Projects API
+// =============================================================================
+
+export const projectsApi = {
+  async list(params?: {
+    customerId?: string;
+    status?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/projects", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/projects/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/projects", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/projects/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/projects/${id}`);
+  },
+};
+
+// =============================================================================
+// Project Tasks API
+// =============================================================================
+
+export const projectTasksApi = {
+  async list(
+    projectId: string,
+    params?: { status?: string; phase?: string },
+  ): Promise<ListResponse<unknown>> {
+    return get(`/projects/${projectId}/tasks`, params);
+  },
+
+  async get(projectId: string, taskId: string): Promise<unknown> {
+    return get(`/projects/${projectId}/tasks/${taskId}`);
+  },
+
+  async create(projectId: string, data: unknown): Promise<unknown> {
+    return post(`/projects/${projectId}/tasks`, data);
+  },
+
+  async update(
+    projectId: string,
+    taskId: string,
+    data: unknown,
+  ): Promise<unknown> {
+    return patch(`/projects/${projectId}/tasks/${taskId}`, data);
+  },
+
+  async delete(projectId: string, taskId: string): Promise<void> {
+    return del(`/projects/${projectId}/tasks/${taskId}`);
+  },
+};
+
+// =============================================================================
+// User Tasks API
+// =============================================================================
+
+export const userTasksApi = {
+  async list(params?: {
+    status?: string;
+    priority?: string;
+    overdue?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/user-tasks", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/user-tasks/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/user-tasks", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return patch(`/user-tasks/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/user-tasks/${id}`);
+  },
+};
+
+// =============================================================================
+// Activities API
+// =============================================================================
+
+export const activitiesApi = {
+  async list(params?: {
+    customerId?: string;
+    type?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/activities", params);
+  },
+
+  async getTimeline(customerId: string): Promise<{ data: unknown[] }> {
+    return get(`/activities/timeline/${customerId}`);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/activities/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/activities", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return patch(`/activities/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/activities/${id}`);
+  },
+};
+
+// =============================================================================
+// Offers API
+// =============================================================================
+
+export const offersApi = {
+  async list(params?: {
+    customerId?: string;
+    status?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/offers", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/offers/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/offers", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return patch(`/offers/${id}`, data);
+  },
+
+  async updateStatus(
+    id: string,
+    status: string,
+    rejectionReason?: string,
+  ): Promise<unknown> {
+    return patch(`/offers/${id}/status`, { status, rejectionReason });
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/offers/${id}`);
+  },
+};
+
+// =============================================================================
+// Contracts API
+// =============================================================================
+
+export const contractsApi = {
+  async list(params?: {
+    customerId?: string;
+    status?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/contracts", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/contracts/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/contracts", data);
+  },
+
+  async createFromOffer(offerId: string, data: unknown): Promise<unknown> {
+    return post("/contracts/from-offer", { offerId, ...(data as any) });
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return patch(`/contracts/${id}`, data);
+  },
+
+  async updateStatus(
+    id: string,
+    status: string,
+    signedBy?: string,
+  ): Promise<unknown> {
+    return patch(`/contracts/${id}/status`, { status, signedBy });
+  },
+
+  async sign(
+    id: string,
+    data: { signedBy: string; signedAt: string },
+  ): Promise<unknown> {
+    return post(`/contracts/${id}/sign`, data);
+  },
+};
+
+// =============================================================================
+// Opportunities API
+// =============================================================================
+
+export const opportunitiesApi = {
+  async list(params?: {
+    customerId?: string;
+    stage?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/opportunities", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/opportunities/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/opportunities", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/opportunities/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/opportunities/${id}`);
+  },
+};
+
+// =============================================================================
+// Suppliers API
+// =============================================================================
+
+export const suppliersApi = {
+  async list(params?: { category?: string }): Promise<ListResponse<unknown>> {
+    return get("/suppliers", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/suppliers/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/suppliers", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/suppliers/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/suppliers/${id}`);
+  },
+};
+
+// =============================================================================
+// Materials API
+// =============================================================================
+
+export const materialsApi = {
+  async list(params?: {
+    supplierId?: string;
+    category?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/materials", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/materials/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/materials", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/materials/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/materials/${id}`);
+  },
+};
+
+// =============================================================================
+// Invoices API
+// =============================================================================
+
+export const invoicesApi = {
+  async list(params?: {
+    customerId?: string;
+    status?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/invoices", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/invoices/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/invoices", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/invoices/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/invoices/${id}`);
+  },
+};
+
+// =============================================================================
+// Contacts API
+// =============================================================================
+
+export const contactsApi = {
+  async list(params?: { customerId?: string }): Promise<ListResponse<unknown>> {
+    return get("/contacts", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/contacts/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/contacts", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/contacts/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/contacts/${id}`);
+  },
+};
+
+// =============================================================================
+// Locations API
+// =============================================================================
+
+export const locationsApi = {
+  async list(params?: { customerId?: string }): Promise<ListResponse<unknown>> {
+    return get("/locations", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/locations/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/locations", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/locations/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/locations/${id}`);
+  },
+};
+
+// =============================================================================
+// Time Entries API
+// =============================================================================
+
+export const timeEntriesApi = {
+  async list(params?: {
+    projectId?: string;
+    userId?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/time-entries", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/time-entries/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/time-entries", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/time-entries/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/time-entries/${id}`);
+  },
+};
+
+// =============================================================================
+// Expenses API
+// =============================================================================
+
+export const expensesApi = {
+  async list(params?: {
+    projectId?: string;
+    status?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/expenses", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/expenses/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/expenses", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/expenses/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/expenses/${id}`);
+  },
+};
+
+// =============================================================================
+// Tours API
+// =============================================================================
+
+export const toursApi = {
+  async list(params?: {
+    date?: string;
+    status?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/tours", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/tours/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/tours", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/tours/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/tours/${id}`);
+  },
+};
+
+// =============================================================================
+// Mileage API
+// =============================================================================
+
+export const mileageApi = {
+  async list(params?: {
+    vehicleId?: string;
+    date?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/mileage", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/mileage/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/mileage", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/mileage/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/mileage/${id}`);
+  },
+};
+
+// =============================================================================
+// Protocols API
+// =============================================================================
+
+export const protocolsApi = {
+  async list(params?: {
+    customerId?: string;
+    projectId?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/protocols", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/protocols/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/protocols", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/protocols/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/protocols/${id}`);
+  },
+};
+
+// =============================================================================
+// Project Costs API
+// =============================================================================
+
+export const projectCostsApi = {
+  async list(params?: { projectId?: string }): Promise<ListResponse<unknown>> {
+    return get("/project-costs", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/project-costs/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/project-costs", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/project-costs/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/project-costs/${id}`);
+  },
+};
+
+// =============================================================================
+// Purchase Orders API
+// =============================================================================
+
+export const purchaseOrdersApi = {
+  async list(params?: {
+    supplierId?: string;
+    projectId?: string;
+  }): Promise<ListResponse<unknown>> {
+    return get("/purchase-orders", params);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/purchase-orders/${id}`);
+  },
+
+  async create(data: unknown): Promise<unknown> {
+    return post("/purchase-orders", data);
+  },
+
+  async update(id: string, data: unknown): Promise<unknown> {
+    return put(`/purchase-orders/${id}`, data);
+  },
+
+  async delete(id: string): Promise<void> {
+    return del(`/purchase-orders/${id}`);
+  },
+};
+
+// =============================================================================
+// Supplier Contracts API
+// =============================================================================
+
+export const supplierContractsApi = {
+  async list(supplierId: string): Promise<ListResponse<unknown>> {
+    return get(`/suppliers/${supplierId}/contracts`);
+  },
+
+  async get(id: string): Promise<unknown> {
+    return get(`/supplier-contracts/${id}`);
+  },
+
+  async create(supplierId: string, data: unknown): Promise<unknown> {
+    return post(`/suppliers/${supplierId}/contracts`, data);
+  },
+
+  async approve(id: string): Promise<unknown> {
+    return put(`/supplier-contracts/${id}/approve`, {});
+  },
+
+  async sign(id: string): Promise<unknown> {
+    return put(`/supplier-contracts/${id}/sign`, {});
+  },
+};
+
+// Export error class for use in components
+export { ApiError };

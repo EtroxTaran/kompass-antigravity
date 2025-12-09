@@ -1,24 +1,24 @@
-import { BaseEntity, Address } from './base';
+import { BaseEntity, Address } from "./base";
 
 export interface Supplier extends BaseEntity {
-    type: 'supplier';
+  type: "supplier";
 
-    companyName: string;
-    supplierNumber?: string;
-    vatNumber?: string;
+  companyName: string;
+  supplierNumber?: string;
+  vatNumber?: string;
 
-    // Contact info
-    email?: string;
-    phone?: string;
-    website?: string;
+  // Contact info
+  email?: string;
+  phone?: string;
+  website?: string;
 
-    billingAddress: Address;
+  billingAddress: Address;
 
-    // Terms
-    paymentTerms?: string;
-    deliveryTerms?: string;
+  // Terms
+  paymentTerms?: string;
+  deliveryTerms?: string;
 
-    // Evaluation
-    rating?: 'A' | 'B' | 'C';
-    category?: string[]; // e.g., 'wood', 'metal', 'electronics'
+  // Evaluation
+  rating?: "A" | "B" | "C";
+  category?: string[]; // e.g., 'wood', 'metal', 'electronics'
 }

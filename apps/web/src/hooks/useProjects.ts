@@ -1,53 +1,77 @@
-import { useState, useEffect } from 'react';
-import { dbService } from '@/lib/db';
-import { Project } from '@kompass/shared';
+import { useState, useEffect, useCallback } from "react";
+import { projectsApi } from "@/services/apiClient";
+import { Project } from "@kompass/shared";
 
-export function useProjects() {
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [loading, setLoading] = useState(true);
+export function useProjects(params?: { customerId?: string }) {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    const fetchProjects = async () => {
-        const db = dbService.getDB();
-        try {
-            const result = await db.find({
-                selector: { type: 'project' },
-            });
-            setProjects(result.docs as unknown as Project[]);
-        } catch (err) {
-            console.error('Error fetching projects', err);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const fetchProjects = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await projectsApi.list(params);
+      if (result && Array.isArray(result.data)) {
+        setProjects(result.data as unknown as Project[]);
+      } else {
+        setProjects([]);
+      }
+    } catch (err) {
+      console.error("Error fetching projects", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
 
-    useEffect(() => {
-        fetchProjects();
-        const db = dbService.getDB();
-        const changes = db.changes({
-            since: 'now',
-            live: true,
-            include_docs: true,
-            filter: (doc) => doc.type === 'project',
-        }).on('change', () => {
-            fetchProjects();
-        });
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
-        return () => {
-            changes.cancel();
-        };
-    }, []);
+  return { projects, loading, refetch: fetchProjects };
+}
 
-    const addProject = async (project: Omit<Project, '_id' | '_rev'>) => {
-        const db = dbService.getDB();
-        const newDoc = {
-            ...project,
-            _id: `project-${crypto.randomUUID()}`,
-            createdAt: new Date().toISOString(),
-            modifiedAt: new Date().toISOString(),
-            version: 1,
-        };
-        await db.put(newDoc);
-    };
+export function useProject(id?: string) {
+  const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(!!id);
+  const [error, setError] = useState<Error | null>(null);
 
-    return { projects, loading, addProject };
+  const fetchProject = useCallback(async () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const result = await projectsApi.get(id);
+      setProject(result as unknown as Project);
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching project", err);
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchProject();
+  }, [fetchProject]);
+
+  const saveProject = async (data: Partial<Project>) => {
+    setLoading(true);
+    try {
+      let result;
+      if (id && project) {
+        result = await projectsApi.update(id, data);
+      } else {
+        result = await projectsApi.create(data);
+      }
+      setProject(result as unknown as Project);
+      return result;
+    } catch (err) {
+      console.error("Error saving project", err);
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { project, loading, error, saveProject, refetch: fetchProject };
 }

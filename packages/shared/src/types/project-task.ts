@@ -1,24 +1,44 @@
-import { BaseEntity } from './base';
+import { BaseEntity } from "./base";
+
+export type ProjectTaskStatus =
+  | "todo"
+  | "in_progress"
+  | "review"
+  | "done"
+  | "blocked";
+export type ProjectTaskPriority = "low" | "medium" | "high" | "critical";
+export type ProjectPhase = "planning" | "execution" | "delivery" | "closure";
 
 export interface ProjectTask extends BaseEntity {
-    type: 'project_task';
+  type: "project_task";
 
-    // Associations
-    projectId: string;
-    parentTaskId?: string; // Hierarchical tasks
+  // Associations
+  projectId: string;
+  parentTaskId?: string; // Hierarchical tasks
 
-    // Core Info
-    title: string;
-    description?: string;
+  // Core Info
+  title: string;
+  description?: string;
 
-    // Status
-    status: 'todo' | 'in_progress' | 'review' | 'done';
-    priority: 'low' | 'medium' | 'high' | 'urgent';
+  // Status & Priority
+  status: ProjectTaskStatus;
+  priority: ProjectTaskPriority;
 
-    // Execution
-    assignedToId?: string;
-    dueDate?: string;
+  // Project phase
+  phase?: ProjectPhase;
+  milestone?: string;
 
-    estimatedHours?: number;
-    actualHours?: number;
+  // Execution
+  assignedToId?: string;
+  dueDate?: string;
+
+  estimatedHours?: number;
+  actualHours?: number;
+
+  // Blocking (required when status is 'blocked')
+  blockingReason?: string;
+
+  // Completion tracking
+  completedAt?: string;
+  completedBy?: string;
 }

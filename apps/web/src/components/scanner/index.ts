@@ -1,0 +1,1 @@
+export { BusinessCardScanner } from "./BusinessCardScanner";

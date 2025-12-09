@@ -24,10 +24,10 @@ KOMPASS follows a **unified architectural approach** that provides clear guidanc
 
 ### Primary Reference
 
-| Document                                                          | Purpose                          | Status                   | Use For                                                                 |
-| ----------------------------------------------------------------- | -------------------------------- | ------------------------ | ---------------------------------------------------------------------- |
-| **[System Architecture](./system-architecture.md)**               | Complete technical specification | ✅ **Primary Reference** | All development decisions, implementation guidance, and future planning |
-| **[Architecture Critical Review](./architecture-docs-critical-review.md)** | Gap analysis and open risks     | 🔎 In Review             | Identifying documentation gaps, open risks, and required updates       |
+| Document                                                                   | Purpose                          | Status                   | Use For                                                                 |
+| -------------------------------------------------------------------------- | -------------------------------- | ------------------------ | ----------------------------------------------------------------------- |
+| **[System Architecture](./system-architecture.md)**                        | Complete technical specification | ✅ **Primary Reference** | All development decisions, implementation guidance, and future planning |
+| **[Architecture Critical Review](./architecture-docs-critical-review.md)** | Gap analysis and open risks      | 🔎 In Review             | Identifying documentation gaps, open risks, and required updates        |
 
 ### Supporting Documentation
 

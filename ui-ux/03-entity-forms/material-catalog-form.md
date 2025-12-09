@@ -593,8 +593,8 @@ npx shadcn-ui@latest add form input textarea select checkbox radio-group button 
 ### Form Structure
 
 ```tsx
-import { useForm, useFieldArray } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const materialSchema = z.object({
   materialName: z.string().min(5).max(200),

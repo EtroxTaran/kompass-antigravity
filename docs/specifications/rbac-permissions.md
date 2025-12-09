@@ -91,7 +91,7 @@ interface User {
 function hasPermission(
   roles: UserRole[],
   entity: EntityType,
-  action: Permission
+  action: Permission,
 ): boolean {
   // Check if ANY role has the permission
   return roles.some((role) => {
@@ -196,25 +196,25 @@ KOMPASS will use a **hybrid RBAC architecture** that combines:
 ```typescript
 // TypeScript enums remain for type safety
 export enum UserRole {
-  GF = 'GF',
-  PLAN = 'PLAN',
-  ADM = 'ADM',
-  INNEN = 'INNEN',
-  KALK = 'KALK',
-  BUCH = 'BUCH',
+  GF = "GF",
+  PLAN = "PLAN",
+  ADM = "ADM",
+  INNEN = "INNEN",
+  KALK = "KALK",
+  BUCH = "BUCH",
 }
 
 export enum EntityType {
-  Customer = 'Customer',
-  Project = 'Project',
+  Customer = "Customer",
+  Project = "Project",
   // ... etc
 }
 
 export enum Permission {
-  CREATE = 'CREATE',
-  READ = 'READ',
-  UPDATE = 'UPDATE',
-  DELETE = 'DELETE',
+  CREATE = "CREATE",
+  READ = "READ",
+  UPDATE = "UPDATE",
+  DELETE = "DELETE",
   // ... etc
 }
 
@@ -278,8 +278,8 @@ export class RbacGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const user = context.switchToHttp().getRequest().user;
     const requiredPermission = this.reflector.get(
-      'permission',
-      context.getHandler()
+      "permission",
+      context.getHandler(),
     );
 
     // 1. Fetch runtime permission matrix from CouchDB
@@ -288,7 +288,7 @@ export class RbacGuard implements CanActivate {
       permissionMatrix = await this.roleService.getActivePermissionMatrix();
     } catch (error) {
       // 2. Fallback to static matrix if database unavailable
-      console.warn('Using static permission matrix (DB unavailable)');
+      console.warn("Using static permission matrix (DB unavailable)");
       permissionMatrix = PERMISSION_MATRIX;
     }
 
@@ -297,7 +297,7 @@ export class RbacGuard implements CanActivate {
       user.roles,
       requiredPermission.entity,
       requiredPermission.action,
-      permissionMatrix
+      permissionMatrix,
     );
   }
 }
@@ -547,19 +547,19 @@ If a user has **both INNEN and PLAN roles**:
 **BR-RBAC-001: INNEN Cannot Manage Project Execution**
 
 ```typescript
-if (user.role === 'INNEN') {
+if (user.role === "INNEN") {
   // Can view projects for customer context
-  if (action === 'READ' && entity === 'Project') {
+  if (action === "READ" && entity === "Project") {
     return true;
   }
 
   // Cannot create/edit/delete projects, tasks, time entries, project costs
   if (
-    ['CREATE', 'UPDATE', 'DELETE'].includes(action) &&
-    ['Project', 'ProjectTask', 'TimeEntry', 'ProjectCost'].includes(entity)
+    ["CREATE", "UPDATE", "DELETE"].includes(action) &&
+    ["Project", "ProjectTask", "TimeEntry", "ProjectCost"].includes(entity)
   ) {
     throw new ForbiddenException(
-      'INNEN role cannot manage project execution. Contact PLAN team.'
+      "INNEN role cannot manage project execution. Contact PLAN team.",
     );
   }
 }
@@ -568,19 +568,19 @@ if (user.role === 'INNEN') {
 **BR-RBAC-002: PLAN Cannot Manage Customers**
 
 ```typescript
-if (user.role === 'PLAN') {
+if (user.role === "PLAN") {
   // Can view customers for project context
-  if (action === 'READ' && entity === 'Customer') {
+  if (action === "READ" && entity === "Customer") {
     return true;
   }
 
   // Cannot create/edit/delete customers
   if (
-    ['CREATE', 'UPDATE', 'DELETE'].includes(action) &&
-    entity === 'Customer'
+    ["CREATE", "UPDATE", "DELETE"].includes(action) &&
+    entity === "Customer"
   ) {
     throw new ForbiddenException(
-      'PLAN role cannot manage customers. Contact INNEN or ADM.'
+      "PLAN role cannot manage customers. Contact INNEN or ADM.",
     );
   }
 }
@@ -589,24 +589,24 @@ if (user.role === 'PLAN') {
 **BR-RBAC-003: PLAN Cannot Manage Pre-Sales**
 
 ```typescript
-if (user.role === 'PLAN') {
+if (user.role === "PLAN") {
   // Cannot access opportunities or offers
   if (
-    ['READ', 'CREATE', 'UPDATE', 'DELETE'].includes(action) &&
-    ['Opportunity', 'Offer'].includes(entity)
+    ["READ", "CREATE", "UPDATE", "DELETE"].includes(action) &&
+    ["Opportunity", "Offer"].includes(entity)
   ) {
     throw new ForbiddenException(
-      'PLAN role cannot manage opportunities or offers. Contact INNEN.'
+      "PLAN role cannot manage opportunities or offers. Contact INNEN.",
     );
   }
 
   // Can READ contracts (for project scope), but cannot CREATE/UPDATE/DELETE
   if (
-    ['CREATE', 'UPDATE', 'DELETE'].includes(action) &&
-    entity === 'Contract'
+    ["CREATE", "UPDATE", "DELETE"].includes(action) &&
+    entity === "Contract"
   ) {
     throw new ForbiddenException(
-      'PLAN role cannot manage contracts. Contact INNEN or GF.'
+      "PLAN role cannot manage contracts. Contact INNEN or GF.",
     );
   }
 }

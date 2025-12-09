@@ -72,6 +72,7 @@ ui-ux/Kompassuimusterbibliothek/
 **Use your file exploration tools (e.g., `list_dir`, `view_file`) to:**
 
 1. **List directories** in the reference folder:
+
    ```bash
    ls -R ui-ux/Kompassuimusterbibliothek/src
    # or use list_dir tool

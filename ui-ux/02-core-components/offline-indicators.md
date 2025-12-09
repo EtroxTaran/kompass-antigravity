@@ -199,18 +199,18 @@ navigator.onLine; // Basic check
 async function checkConnection() {
   try {
     const start = Date.now();
-    await fetch('/api/ping', {
-      method: 'HEAD',
-      cache: 'no-store',
+    await fetch("/api/ping", {
+      method: "HEAD",
+      cache: "no-store",
     });
     const latency = Date.now() - start;
 
     return {
       online: true,
-      quality: latency < 100 ? 'good' : latency < 500 ? 'fair' : 'poor',
+      quality: latency < 100 ? "good" : latency < 500 ? "fair" : "poor",
     };
   } catch {
-    return { online: false, quality: 'none' };
+    return { online: false, quality: "none" };
   }
 }
 ```
@@ -227,11 +227,11 @@ interface SyncStatus {
 
 // Visual states based on sync status
 function getSyncIndicator(item: Entity): SyncIndicator {
-  if (item._conflicts) return 'error';
-  if (item._queuedForSync && !navigator.onLine) return 'pending';
-  if (item._syncing) return 'syncing';
-  if (item._syncError) return 'error';
-  if (item._justSynced) return 'success'; // Fade out
+  if (item._conflicts) return "error";
+  if (item._queuedForSync && !navigator.onLine) return "pending";
+  if (item._syncing) return "syncing";
+  if (item._syncError) return "error";
+  if (item._justSynced) return "success"; // Fade out
   return null; // No indicator
 }
 ```
@@ -247,13 +247,13 @@ function getDataAgeIndicator(lastSync: Date): DataAge {
   if (hours < 24)
     return {
       text: `vor ${Math.floor(hours)} Std.`,
-      level: 'info',
+      level: "info",
     };
 
   const days = Math.floor(hours / 24);
   return {
-    text: `vor ${days} ${days === 1 ? 'Tag' : 'Tagen'}`,
-    level: 'warning',
+    text: `vor ${days} ${days === 1 ? "Tag" : "Tagen"}`,
+    level: "warning",
     showRefresh: true,
   };
 }

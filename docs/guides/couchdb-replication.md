@@ -77,17 +77,17 @@ curl -X PUT "http://admin:password@localhost:5984/kompass/_design/filters" \
 ### Basic Replication Setup
 
 ```typescript
-import PouchDB from 'pouchdb';
-import PouchDBReplication from 'pouchdb-replication';
+import PouchDB from "pouchdb";
+import PouchDBReplication from "pouchdb-replication";
 
 // Local PouchDB database
-const localDB = new PouchDB('kompass-local');
+const localDB = new PouchDB("kompass-local");
 
 // Remote CouchDB database
-const remoteDB = new PouchDB('http://localhost:5984/kompass', {
+const remoteDB = new PouchDB("http://localhost:5984/kompass", {
   auth: {
-    username: 'user',
-    password: 'password',
+    username: "user",
+    password: "password",
   },
 });
 
@@ -107,18 +107,18 @@ const syncOptions = {
 const replication = localDB.sync(remoteDB, syncOptions);
 
 replication
-  .on('change', (info) => {
-    console.log('Sync change:', info);
+  .on("change", (info) => {
+    console.log("Sync change:", info);
     // Handle document changes
   })
-  .on('paused', () => {
-    console.log('Sync paused (offline)');
+  .on("paused", () => {
+    console.log("Sync paused (offline)");
   })
-  .on('active', () => {
-    console.log('Sync active (online)');
+  .on("active", () => {
+    console.log("Sync active (online)");
   })
-  .on('error', (error) => {
-    console.error('Sync error:', error);
+  .on("error", (error) => {
+    console.error("Sync error:", error);
     // Handle sync errors
   });
 ```
@@ -132,7 +132,7 @@ Replicate only documents relevant to the user:
 const replication = localDB.replicate.from(remoteDB, {
   live: true,
   retry: true,
-  filter: 'filters/filter_by_user',
+  filter: "filters/filter_by_user",
   query_params: {
     userId: currentUser.id,
     role: currentUser.primaryRole,
@@ -199,9 +199,9 @@ To manage iOS 50MB storage limits:
 // Essential data (always synced)
 const essentialFilter = {
   $or: [
-    { type: 'user', _id: `user-${userId}` },
-    { type: 'customer', owner: userId },
-    { type: 'opportunity', owner: userId, status: { $ne: 'Lost' } },
+    { type: "user", _id: `user-${userId}` },
+    { type: "customer", owner: userId },
+    { type: "opportunity", owner: userId, status: { $ne: "Lost" } },
   ],
 };
 
@@ -223,7 +223,7 @@ const pinnedFilter = {
 All replication must be authenticated:
 
 ```typescript
-const remoteDB = new PouchDB('http://localhost:5984/kompass', {
+const remoteDB = new PouchDB("http://localhost:5984/kompass", {
   auth: {
     username: user.email,
     password: userToken, // JWT token or session token
@@ -268,7 +268,7 @@ Only replicate necessary documents:
 // Replicate only active documents
 const replication = localDB.replicate.from(remoteDB, {
   live: true,
-  filter: 'filters/active_documents_only',
+  filter: "filters/active_documents_only",
   query_params: {
     active: true,
   },
@@ -282,10 +282,10 @@ const replication = localDB.replicate.from(remoteDB, {
 Monitor replication health:
 
 ```typescript
-replication.on('change', (info) => {
-  console.log('Documents pulled:', info.pull?.docs_read || 0);
-  console.log('Documents pushed:', info.push?.docs_written || 0);
-  console.log('Conflicts:', info.pull?.conflicts || 0);
+replication.on("change", (info) => {
+  console.log("Documents pulled:", info.pull?.docs_read || 0);
+  console.log("Documents pushed:", info.push?.docs_written || 0);
+  console.log("Conflicts:", info.pull?.conflicts || 0);
 });
 ```
 
@@ -340,7 +340,7 @@ Track sync performance:
 Enable debug logging:
 
 ```typescript
-PouchDB.debug.enable('*'); // Enable all debug logs
+PouchDB.debug.enable("*"); // Enable all debug logs
 ```
 
 ## Best Practices

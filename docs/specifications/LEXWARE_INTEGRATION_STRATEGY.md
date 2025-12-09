@@ -243,7 +243,7 @@ Lexware supports file-based import/export APIs (not REST APIs, but programmatic 
 @Injectable()
 export class LexwareSyncService {
   // Runs nightly at 2:00 AM
-  @Cron('0 2 * * *')
+  @Cron("0 2 * * *")
   async exportContractsToLexware(): Promise<SyncResult> {
     // 1. Query new/updated contracts (last 24h)
     const contracts =
@@ -258,18 +258,18 @@ export class LexwareSyncService {
 
     // 4. Log export
     await this.syncLogRepository.create({
-      direction: 'export',
-      entityType: 'contract',
+      direction: "export",
+      entityType: "contract",
       recordCount: contracts.length,
       filename,
-      status: 'success',
+      status: "success",
       timestamp: new Date(),
     });
 
     // 5. Notify BUCH
     await this.notificationService.send({
-      recipients: ['BUCH'],
-      type: 'LexwareExportReady',
+      recipients: ["BUCH"],
+      type: "LexwareExportReady",
       message: `${contracts.length} Verträge für Lexware bereit`,
       link: `/integration/lexware/exports`,
     });
@@ -278,12 +278,12 @@ export class LexwareSyncService {
   }
 
   // Runs every 15 minutes during business hours
-  @Cron('*/15 8-18 * * 1-5')
+  @Cron("*/15 8-18 * * 1-5")
   async importPaymentsFromLexware(): Promise<SyncResult> {
     // 1. List files in imports folder
-    const files = await fs.readdir('/mnt/kompass-lexware-sync/imports/');
+    const files = await fs.readdir("/mnt/kompass-lexware-sync/imports/");
     const unprocessed = files.filter(
-      (f) => f.endsWith('.csv') && !this.isProcessed(f)
+      (f) => f.endsWith(".csv") && !this.isProcessed(f),
     );
 
     if (unprocessed.length === 0) return { imported: 0, errors: 0 };
@@ -291,7 +291,7 @@ export class LexwareSyncService {
     // 2. Process each file
     for (const file of unprocessed) {
       const csvContent = await fs.readFile(
-        `/mnt/kompass-lexware-sync/imports/${file}`
+        `/mnt/kompass-lexware-sync/imports/${file}`,
       );
       const payments = this.parsePaymentCSV(csvContent);
 
@@ -364,14 +364,14 @@ echo Lexware import completed.
 ```typescript
 interface SyncError {
   id: string;
-  syncDirection: 'export' | 'import';
-  entityType: 'contract' | 'invoice' | 'payment';
+  syncDirection: "export" | "import";
+  entityType: "contract" | "invoice" | "payment";
   entityId: string;
   errorType:
-    | 'ValidationError'
-    | 'NotFoundError'
-    | 'DuplicateError'
-    | 'AmountMismatchError';
+    | "ValidationError"
+    | "NotFoundError"
+    | "DuplicateError"
+    | "AmountMismatchError";
   errorMessage: string;
   retryCount: number;
   resolvedBy?: string;
@@ -569,7 +569,7 @@ export class LexwareCSVExportService {
   async exportContracts(startDate: Date, endDate: Date): Promise<string> {
     const contracts = await this.contractRepository.findByDateRange(
       startDate,
-      endDate
+      endDate,
     );
 
     const csvRows = contracts.map((contract) => ({
@@ -590,12 +590,12 @@ export class LexwareCSVExportService {
 
   private formatDate(date: Date): string {
     // Lexware expects: DD.MM.YYYY
-    return date.toLocaleDateString('de-DE');
+    return date.toLocaleDateString("de-DE");
   }
 
   private sanitizeCSV(text: string): string {
     // Escape quotes, commas, newlines for CSV safety
-    return text.replace(/"/g, '""').replace(/\n/g, ' ');
+    return text.replace(/"/g, '""').replace(/\n/g, " ");
   }
 }
 ```
@@ -630,11 +630,11 @@ export class LexwareSyncModule {}
 ```typescript
 // apps/backend/src/modules/integration/lexware/lexware-webhook.controller.ts
 
-@Controller('webhooks/lexware')
+@Controller("webhooks/lexware")
 export class LexwareWebhookController {
-  @Post('invoice-created')
+  @Post("invoice-created")
   async handleInvoiceCreated(
-    @Body() webhook: LexwareInvoiceWebhook
+    @Body() webhook: LexwareInvoiceWebhook,
   ): Promise<void> {
     // 1. Verify webhook signature (security)
     this.verifyWebhookSignature(webhook);
@@ -644,11 +644,11 @@ export class LexwareWebhookController {
 
     // 3. Find matching contract in KOMPASS
     const contract = await this.contractRepository.findByNumber(
-      invoiceData.contractReference
+      invoiceData.contractReference,
     );
 
     if (!contract) {
-      throw new NotFoundException('Contract not found in KOMPASS');
+      throw new NotFoundException("Contract not found in KOMPASS");
     }
 
     // 4. Create invoice reference in KOMPASS
@@ -666,16 +666,16 @@ export class LexwareWebhookController {
 
     // 5. Notify BUCH
     await this.notificationService.send({
-      recipients: ['BUCH'],
-      type: 'InvoiceCreatedInLexware',
+      recipients: ["BUCH"],
+      type: "InvoiceCreatedInLexware",
       message: `Rechnung ${invoiceData.invoiceNumber} in Lexware erstellt`,
       link: `/invoices/${invoiceData.invoiceNumber}`,
     });
   }
 
-  @Post('payment-recorded')
+  @Post("payment-recorded")
   async handlePaymentRecorded(
-    @Body() webhook: LexwarePaymentWebhook
+    @Body() webhook: LexwarePaymentWebhook,
   ): Promise<void> {
     // Similar logic for payment recording
     // Updates invoice payment status in KOMPASS real-time

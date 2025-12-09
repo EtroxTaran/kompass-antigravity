@@ -3,6 +3,7 @@
 ## Usage Rules
 
 1.  **Always use the CLI**: When adding components, use the shadcn CLI.
+
     ```bash
     npx shadcn@latest add @shadcraft/component-name
     ```

@@ -475,8 +475,8 @@ The Task Form is used for creating and editing both UserTask (personal todos) an
 
 ```typescript
 interface TaskFormProps {
-  mode: 'create' | 'edit';
-  taskType: 'user_task' | 'project_task';
+  mode: "create" | "edit";
+  taskType: "user_task" | "project_task";
   initialData?: Partial<UserTask | ProjectTask>;
   projectId?: string; // Required for ProjectTask
   onSubmit: (data: CreateUserTaskDto | CreateProjectTaskDto) => Promise<void>;

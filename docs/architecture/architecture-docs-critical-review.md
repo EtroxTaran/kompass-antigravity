@@ -1,6 +1,7 @@
 # Architecture Documentation Critical Review & Pre-Mortem
 
 ## Findings (gaps, contradictions, and non-robust areas)
+
 - **Offline storage plan is underspecified for real-world data sizes.** The document budgets exactly 50 MB across three tiers but does not describe eviction triggers, quota enforcement on different browsers, or what happens when essential data alone exceeds the budget (e.g., large attachments or dense customer histories).【F:docs/architecture/system-architecture.md†L104-L120】
 - **Compliance posture conflicts with AI routing and fallback.** The AI proxy automatically falls back to OpenAI when self-hosted providers fail, yet the same document promises GDPR-compliant processing and on-prem data control. The missing residency/consent controls for the fallback path make the claim of built-in privacy controls questionable.【F:docs/architecture/system-architecture.md†L58-L68】【F:docs/architecture/system-architecture.md†L385-L392】
 - **Risk section overstates certainty.** Multiple technical and operational risks are labeled “Solved” without residual risk, mitigations, or owners, leaving no guidance for monitoring or contingency actions if assumptions fail.【F:docs/architecture/system-architecture.md†L615-L628】
@@ -12,6 +13,7 @@
 - **Supplier quality and access problems indicate missing feedback loops.** The API includes rollback reasons for access and quality issues, but the architecture doc does not define how production incidents feed into architecture updates or configuration audits.【F:docs/specifications/api-specification.md†L1039-L1058】【F:docs/specifications/api-specification.md†L5565-L5588】
 
 ## Pre-mortem scenarios (most plausible failure modes)
+
 - **Data loss or corruption during sync surge.** A regional outage forces many field users to resync simultaneously; without documented quota handling and conflict escalation, replication overwhelms CouchDB, causing missed writes and inconsistent audit chains. The missing offline eviction and audit reconciliation guidance contributes to the failure.【F:docs/architecture/system-architecture.md†L104-L120】【F:docs/architecture/system-architecture.md†L406-L429】
 - **Compliance breach via AI fallback.** An unplanned AI provider outage triggers automatic fallback to OpenAI, sending sensitive data to a cloud region without recorded consent or data-processing agreements. The architecture’s privacy claims lacked controls or approvals around fallback routing, enabling the breach.【F:docs/architecture/system-architecture.md†L58-L68】【F:docs/architecture/system-architecture.md†L385-L392】
 - **Role regression in production.** A permission matrix rollout silently removes PLAN access, requiring rollback. The architecture does not define regression testing, migration sequencing, or observability for RBAC changes, so the issue is detected only after user complaints and disrupts operations.【F:docs/specifications/api-specification.md†L1039-L1058】【F:docs/architecture/system-architecture.md†L441-L469】
@@ -19,6 +21,7 @@
 - **Incomplete disaster recovery.** A storage failure wipes the vector index and Redis queue; backups only cover CouchDB and user files, so AI workflows cannot resume and data reconstructions are impossible. Missing backup/restore runbooks for new services extend downtime.【F:docs/architecture/system-architecture.md†L557-L580】【F:docs/architecture/ai-extensions/AI_Automation_Extensions_Implementation_Guide.md†L36-L115】
 
 ## Optimization plan for architecture documentation
+
 - **Clarify offline-first constraints and recovery.** Add browser-specific quota expectations, eviction/back-pressure rules, and conflict escalation flows for PouchDB/CouchDB, including how audit logs reconcile after offline edits.【F:docs/architecture/system-architecture.md†L104-L120】【F:docs/architecture/system-architecture.md†L406-L429】
 - **Document compliant AI routing.** Extend the AI proxy section with data-classification rules, allowed providers per classification, consent tracking, and explicit opt-out paths before any cloud fallback occurs.【F:docs/architecture/system-architecture.md†L58-L68】【F:docs/architecture/system-architecture.md†L385-L392】
 - **Make RBAC guidance testable.** Include migration playbooks, pre/post-deploy RBAC regression tests, and telemetry signals (role change audits, authorization error rates) to prevent repeats of PLAN access regressions.【F:docs/architecture/system-architecture.md†L441-L469】【F:docs/specifications/api-specification.md†L1039-L1058】

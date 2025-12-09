@@ -1,0 +1,223 @@
+{
+    "realm": "kompass",
+    "enabled": true,
+    "displayName": "KOMPASS",
+    "displayNameHtml": "<strong>KOMPASS</strong>",
+    "registrationAllowed": false,
+    "registrationEmailAsUsername": true,
+    "rememberMe": true,
+    "verifyEmail": false,
+    "loginWithEmailAllowed": true,
+    "duplicateEmailsAllowed": false,
+    "resetPasswordAllowed": true,
+    "editUsernameAllowed": false,
+    "bruteForceProtected": true,
+    "permanentLockout": false,
+    "maxFailureWaitSeconds": 900,
+    "minimumQuickLoginWaitSeconds": 60,
+    "waitIncrementSeconds": 60,
+    "quickLoginCheckMilliSeconds": 1000,
+    "maxDeltaTimeSeconds": 43200,
+    "failureFactor": 5,
+    "roles": {
+        "realm": [
+            {
+                "name": "GF",
+                "description": "Geschäftsführung - Full access to all features"
+            },
+            {
+                "name": "ADMIN",
+                "description": "Administrator - System administration privileges"
+            },
+            {
+                "name": "ADM",
+                "description": "Außendienst Manager - Sales and CRM access"
+            },
+            {
+                "name": "INNEN",
+                "description": "Innendienst - Office staff with limited access"
+            },
+            {
+                "name": "PLAN",
+                "description": "Planung - Project planning and scheduling"
+            },
+            {
+                "name": "BUCH",
+                "description": "Buchhaltung - Accounting and invoicing"
+            },
+            {
+                "name": "KALK",
+                "description": "Kalkulation - Cost calculation and offers"
+            }
+        ]
+    },
+    "clients": [
+        {
+            "clientId": "kompass-api",
+            "name": "KOMPASS API",
+            "description": "Backend API service",
+            "enabled": true,
+            "publicClient": false,
+            "bearerOnly": true,
+            "protocol": "openid-connect",
+            "standardFlowEnabled": false,
+            "implicitFlowEnabled": false,
+            "directAccessGrantsEnabled": true,
+            "serviceAccountsEnabled": true
+        },
+        {
+            "clientId": "kompass-web",
+            "name": "KOMPASS Web",
+            "description": "PWA Frontend Application",
+            "enabled": true,
+            "publicClient": true,
+            "protocol": "openid-connect",
+            "standardFlowEnabled": true,
+            "implicitFlowEnabled": false,
+            "directAccessGrantsEnabled": false,
+            "serviceAccountsEnabled": false,
+            "rootUrl": "http://localhost:5173",
+            "baseUrl": "/",
+            "redirectUris": [
+                "http://localhost:5173/*",
+                "http://localhost:4173/*"
+            ],
+            "webOrigins": [
+                "http://localhost:5173",
+                "http://localhost:4173"
+            ],
+            "attributes": {
+                "pkce.code.challenge.method": "S256"
+            }
+        }
+    ],
+    "users": [
+        {
+            "username": "admin",
+            "email": "admin@kompass.local",
+            "firstName": "System",
+            "lastName": "Administrator",
+            "enabled": true,
+            "emailVerified": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "admin123",
+                    "temporary": true
+                }
+            ],
+            "realmRoles": [
+                "ADMIN",
+                "GF"
+            ]
+        },
+        {
+            "username": "gf",
+            "email": "gf@kompass.local",
+            "firstName": "Geschäfts",
+            "lastName": "Führer",
+            "enabled": true,
+            "emailVerified": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "gf123",
+                    "temporary": true
+                }
+            ],
+            "realmRoles": [
+                "GF"
+            ]
+        },
+        {
+            "username": "adm",
+            "email": "adm@kompass.local",
+            "firstName": "Max",
+            "lastName": "Mustermann",
+            "enabled": true,
+            "emailVerified": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "adm123",
+                    "temporary": true
+                }
+            ],
+            "realmRoles": [
+                "ADM"
+            ]
+        },
+        {
+            "username": "innendienst",
+            "email": "innen@kompass.local",
+            "firstName": "Erika",
+            "lastName": "Musterfrau",
+            "enabled": true,
+            "emailVerified": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "innen123",
+                    "temporary": true
+                }
+            ],
+            "realmRoles": [
+                "INNEN"
+            ]
+        },
+        {
+            "username": "planer",
+            "email": "plan@kompass.local",
+            "firstName": "Thomas",
+            "lastName": "Planer",
+            "enabled": true,
+            "emailVerified": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "plan123",
+                    "temporary": true
+                }
+            ],
+            "realmRoles": [
+                "PLAN"
+            ]
+        },
+        {
+            "username": "buchhalter",
+            "email": "buch@kompass.local",
+            "firstName": "Anna",
+            "lastName": "Buchhalter",
+            "enabled": true,
+            "emailVerified": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "buch123",
+                    "temporary": true
+                }
+            ],
+            "realmRoles": [
+                "BUCH"
+            ]
+        },
+        {
+            "username": "kalkulator",
+            "email": "kalk@kompass.local",
+            "firstName": "Peter",
+            "lastName": "Rechner",
+            "enabled": true,
+            "emailVerified": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "kalk123",
+                    "temporary": true
+                }
+            ],
+            "realmRoles": [
+                "KALK"
+            ]
+        }
+    ]
+}

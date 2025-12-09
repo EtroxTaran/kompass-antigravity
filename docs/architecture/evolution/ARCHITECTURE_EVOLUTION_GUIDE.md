@@ -46,18 +46,18 @@ Search (MeiliSearch)                             Portal
 
 ```typescript
 // apps/backend/src/main.ts
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { Resource } from '@opentelemetry/resources';
-import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { NodeSDK } from "@opentelemetry/sdk-node";
+import { PrometheusExporter } from "@opentelemetry/exporter-prometheus";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
+import { Resource } from "@opentelemetry/resources";
+import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 
 const sdk = new NodeSDK({
   resource: new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: 'kompass-backend',
+    [SemanticResourceAttributes.SERVICE_NAME]: "kompass-backend",
   }),
   traceExporter: new OTLPTraceExporter({
-    url: 'http://grafana-tempo:4318/v1/traces',
+    url: "http://grafana-tempo:4318/v1/traces",
   }),
   metricReader: new PrometheusExporter({ port: 9464 }),
 });
@@ -71,17 +71,17 @@ sdk.start();
 
 ```typescript
 // apps/frontend/src/instrumentation.ts
-import { registerInstrumentations } from '@opentelemetry/instrumentation';
-import { getWebAutoInstrumentations } from '@opentelemetry/auto-instrumentations-web';
-import { ZoneContextManager } from '@opentelemetry/context-zone';
-import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { registerInstrumentations } from "@opentelemetry/instrumentation";
+import { getWebAutoInstrumentations } from "@opentelemetry/auto-instrumentations-web";
+import { ZoneContextManager } from "@opentelemetry/context-zone";
+import { WebTracerProvider } from "@opentelemetry/sdk-trace-web";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 
 const provider = new WebTracerProvider();
 provider.addSpanProcessor(
   new BatchSpanProcessor(
-    new OTLPTraceExporter({ url: 'https://api.kompass.de/v1/traces' })
-  )
+    new OTLPTraceExporter({ url: "https://api.kompass.de/v1/traces" }),
+  ),
 );
 
 provider.register({
@@ -99,12 +99,12 @@ registerInstrumentations({
 
 ```yaml
 # docker-compose.observability.yml
-version: '3.8'
+version: "3.8"
 services:
   prometheus:
     image: prom/prometheus:latest
     ports:
-      - '9090:9090'
+      - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
@@ -112,22 +112,22 @@ services:
   loki:
     image: grafana/loki:latest
     ports:
-      - '3100:3100'
+      - "3100:3100"
     volumes:
       - loki-data:/loki
 
   tempo:
     image: grafana/tempo:latest
     ports:
-      - '3200:3200' # Tempo HTTP
-      - '4318:4318' # OTLP gRPC
+      - "3200:3200" # Tempo HTTP
+      - "4318:4318" # OTLP gRPC
     volumes:
       - tempo-data:/tmp/tempo
 
   grafana:
     image: grafana/grafana:latest
     ports:
-      - '3001:3000'
+      - "3001:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=secure_password_here
     volumes:
@@ -166,13 +166,13 @@ groups:
         expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1.5
         for: 5m
         annotations:
-          summary: 'API P95 latency >1.5s'
+          summary: "API P95 latency >1.5s"
 
       - alert: HighErrorRate
         expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.01
         for: 2m
         annotations:
-          summary: 'Error rate >1%'
+          summary: "Error rate >1%"
 ```
 
 ---
@@ -203,21 +203,21 @@ React PWA        ──→  + Socket.IO Gateway (Real-Time)
 
 ```typescript
 // apps/backend/src/queue/queue.module.ts
-import { BullModule } from '@nestjs/bull';
+import { BullModule } from "@nestjs/bull";
 
 @Module({
   imports: [
     BullModule.forRoot({
       redis: {
-        host: process.env.REDIS_HOST || 'localhost',
+        host: process.env.REDIS_HOST || "localhost",
         port: parseInt(process.env.REDIS_PORT) || 6379,
       },
     }),
     BullModule.registerQueue({
-      name: 'ai-transcription',
+      name: "ai-transcription",
     }),
     BullModule.registerQueue({
-      name: 'lead-scoring',
+      name: "lead-scoring",
     }),
   ],
 })
@@ -266,26 +266,26 @@ import {
   SubscribeMessage,
   MessageBody,
   ConnectedSocket,
-} from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+} from "@nestjs/websockets";
+import { Server, Socket } from "socket.io";
+import { UseGuards } from "@nestjs/common";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.ALLOWED_ORIGINS?.split(',') || [
-      'http://localhost:3000',
+    origin: process.env.ALLOWED_ORIGINS?.split(",") || [
+      "http://localhost:3000",
     ],
     credentials: true,
   },
-  adapter: require('socket.io-redis'), // Redis Adapter for Horizontal Scaling
+  adapter: require("socket.io-redis"), // Redis Adapter for Horizontal Scaling
 })
 @UseGuards(JwtAuthGuard)
 export class WebSocketGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('subscribe:activity-feed')
+  @SubscribeMessage("subscribe:activity-feed")
   handleActivityFeedSubscribe(@ConnectedSocket() client: Socket) {
     const userId = client.data.user.id;
     client.join(`user:${userId}`);
@@ -299,15 +299,15 @@ export class WebSocketGateway {
 **Redis Adapter for Horizontal Scaling:**
 
 ```typescript
-import { IoAdapter } from '@nestjs/platform-socket.io';
-import { createAdapter } from '@socket.io/redis-adapter';
-import { createClient } from 'redis';
+import { IoAdapter } from "@nestjs/platform-socket.io";
+import { createAdapter } from "@socket.io/redis-adapter";
+import { createClient } from "redis";
 
 export class RedisIoAdapter extends IoAdapter {
   private adapterConstructor: ReturnType<typeof createAdapter>;
 
   async connectToRedis(): Promise<void> {
-    const pubClient = createClient({ host: 'localhost', port: 6379 });
+    const pubClient = createClient({ host: "localhost", port: 6379 });
     const subClient = pubClient.duplicate();
 
     await Promise.all([pubClient.connect(), subClient.connect()]);
@@ -331,9 +331,9 @@ export class RedisIoAdapter extends IoAdapter {
 
 ```typescript
 // apps/frontend/src/hooks/useWebSocket.ts
-import { useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { useAuth } from './useAuth';
+import { useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
+import { useAuth } from "./useAuth";
 
 export function useWebSocket() {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -342,21 +342,21 @@ export function useWebSocket() {
   useEffect(() => {
     if (!token) return;
 
-    const socketInstance = io('wss://api.kompass.de', {
+    const socketInstance = io("wss://api.kompass.de", {
       auth: { token },
-      transports: ['websocket'],
+      transports: ["websocket"],
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
     });
 
-    socketInstance.on('connect', () => {
-      console.log('WebSocket connected');
-      socketInstance.emit('subscribe:activity-feed');
+    socketInstance.on("connect", () => {
+      console.log("WebSocket connected");
+      socketInstance.emit("subscribe:activity-feed");
     });
 
-    socketInstance.on('activity', (event) => {
-      console.log('Activity event:', event);
+    socketInstance.on("activity", (event) => {
+      console.log("Activity event:", event);
       // Update Redux/Zustand store
     });
 
@@ -380,10 +380,10 @@ export function useWebSocket() {
 ```typescript
 // packages/shared/src/constants/feature-flags.ts
 export const FEATURE_FLAGS = {
-  AI_TRANSCRIPTION: process.env.FEATURE_AI_TRANSCRIPTION === 'true',
-  AI_LEAD_SCORING: process.env.FEATURE_AI_LEAD_SCORING === 'true',
-  REAL_TIME_ACTIVITY_FEED: process.env.FEATURE_REALTIME_FEED === 'true',
-  CONTEXTUAL_COMMENTING: process.env.FEATURE_COMMENTING === 'true',
+  AI_TRANSCRIPTION: process.env.FEATURE_AI_TRANSCRIPTION === "true",
+  AI_LEAD_SCORING: process.env.FEATURE_AI_LEAD_SCORING === "true",
+  REAL_TIME_ACTIVITY_FEED: process.env.FEATURE_REALTIME_FEED === "true",
+  CONTEXTUAL_COMMENTING: process.env.FEATURE_COMMENTING === "true",
 } as const;
 
 // Frontend
@@ -393,7 +393,7 @@ if (FEATURE_FLAGS.AI_TRANSCRIPTION) {
 
 // Backend
 if (FEATURE_FLAGS.AI_LEAD_SCORING) {
-  await this.queueService.add('lead-scoring', { opportunityId });
+  await this.queueService.add("lead-scoring", { opportunityId });
 }
 ```
 
@@ -432,12 +432,12 @@ React PWA                                           Custom Dashboards (GraphQL)
 
 ```yaml
 # docker-compose.postgres.yml
-version: '3.8'
+version: "3.8"
 services:
   postgres:
     image: postgres:15
     ports:
-      - '5432:5432'
+      - "5432:5432"
     environment:
       POSTGRES_DB: kompass_analytics
       POSTGRES_USER: kompass
@@ -475,17 +475,17 @@ CREATE INDEX idx_opportunities_created_at ON opportunities(created_at);
 
 ```typescript
 // apps/backend/src/cqrs/cqrs-replication.service.ts
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import Nano from 'nano';
+import { Injectable, OnModuleInit } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import Nano from "nano";
 
 @Injectable()
 export class CQRSReplicationService implements OnModuleInit {
   constructor(
     @InjectRepository(OpportunityEntity)
     private readonly opportunityRepo: Repository<OpportunityEntity>,
-    private readonly nano: Nano
+    private readonly nano: Nano,
   ) {}
 
   async onModuleInit() {
@@ -493,21 +493,21 @@ export class CQRSReplicationService implements OnModuleInit {
   }
 
   private async startChangesFeed() {
-    const db = this.nano.use('kompass');
+    const db = this.nano.use("kompass");
     const feed = db.changesReader.start({
-      since: 'now',
+      since: "now",
       includeDocs: true,
-      filter: (doc: any) => doc.type === 'opportunity',
+      filter: (doc: any) => doc.type === "opportunity",
     });
 
-    feed.on('batch', async (changes: any[]) => {
+    feed.on("batch", async (changes: any[]) => {
       for (const change of changes) {
         await this.replicateToPostgreSQL(change.doc);
       }
     });
 
-    feed.on('error', (err) => {
-      console.error('CouchDB changes feed error:', err);
+    feed.on("error", (err) => {
+      console.error("CouchDB changes feed error:", err);
       // Retry logic
     });
   }
@@ -524,7 +524,7 @@ export class CQRSReplicationService implements OnModuleInit {
       updatedAt: new Date(doc.modifiedAt),
     };
 
-    await this.opportunityRepo.upsert(opportunity, ['id']); // Upsert = Insert or Update
+    await this.opportunityRepo.upsert(opportunity, ["id"]); // Upsert = Insert or Update
   }
 }
 ```
@@ -539,30 +539,30 @@ export class CQRSReplicationService implements OnModuleInit {
 
 ```typescript
 // apps/backend/src/analytics/analytics.resolver.ts
-import { Query, Args, Resolver } from '@nestjs/graphql';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Query, Args, Resolver } from "@nestjs/graphql";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 @Resolver()
 export class AnalyticsResolver {
   constructor(
     @InjectRepository(OpportunityEntity)
-    private readonly opportunityRepo: Repository<OpportunityEntity>
+    private readonly opportunityRepo: Repository<OpportunityEntity>,
   ) {}
 
   @Query(() => [OpportunitySummary])
   async opportunitiesByStatus(
-    @Args('status', { nullable: true }) status?: string
+    @Args("status", { nullable: true }) status?: string,
   ): Promise<OpportunitySummary[]> {
     const query = this.opportunityRepo
-      .createQueryBuilder('o')
-      .select('o.status', 'status')
-      .addSelect('COUNT(*)', 'count')
-      .addSelect('SUM(o.estimatedValue)', 'totalValue')
-      .groupBy('o.status');
+      .createQueryBuilder("o")
+      .select("o.status", "status")
+      .addSelect("COUNT(*)", "count")
+      .addSelect("SUM(o.estimatedValue)", "totalValue")
+      .groupBy("o.status");
 
     if (status) {
-      query.where('o.status = :status', { status });
+      query.where("o.status = :status", { status });
     }
 
     return query.getRawMany();
@@ -574,7 +574,7 @@ export class AnalyticsResolver {
 
 ```typescript
 // apps/frontend/src/hooks/useAnalytics.ts
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql } from "@apollo/client";
 
 const OPPORTUNITIES_BY_STATUS = gql`
   query OpportunitiesByStatus($status: String) {
@@ -656,23 +656,23 @@ export function DashboardEditor() {
 
 ```typescript
 // Yjs PoC
-import * as Y from 'yjs';
-import { WebsocketProvider } from 'y-websocket';
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
 
 const ydoc = new Y.Doc();
-const ybudget = ydoc.getMap('project-budget');
+const ybudget = ydoc.getMap("project-budget");
 
 const provider = new WebsocketProvider(
-  'ws://localhost:1234',
-  'project-123',
-  ydoc
+  "ws://localhost:1234",
+  "project-123",
+  ydoc,
 );
 
 // User 1 editiert
-ybudget.set('totalBudget', 50000);
+ybudget.set("totalBudget", 50000);
 
 // User 2 editiert gleichzeitig
-ybudget.set('usedBudget', 30000);
+ybudget.set("usedBudget", 30000);
 
 // Automatisches Merge: { totalBudget: 50000, usedBudget: 30000 } ✅
 ```
@@ -693,32 +693,32 @@ ybudget.set('usedBudget', 30000);
 
 ```typescript
 // Custom Yjs CouchDB Provider
-import * as Y from 'yjs';
-import Nano from 'nano';
+import * as Y from "yjs";
+import Nano from "nano";
 
 export class YjsCouchDBProvider {
   constructor(
     private readonly docId: string,
-    private readonly nano: Nano
+    private readonly nano: Nano,
   ) {}
 
   async persistState(ydoc: Y.Doc): Promise<void> {
     const state = Y.encodeStateAsUpdate(ydoc);
-    const db = this.nano.use('kompass');
+    const db = this.nano.use("kompass");
 
     await db.attachment.insert(
       `${this.docId}-yjs-state`,
-      'yjs-state',
+      "yjs-state",
       Buffer.from(state),
-      'application/octet-stream',
-      {}
+      "application/octet-stream",
+      {},
     );
 
     // Also persist final JSON snapshot
     const finalJSON = ydoc.toJSON();
     await db.insert({
       _id: this.docId,
-      type: 'project',
+      type: "project",
       ...finalJSON,
     });
   }

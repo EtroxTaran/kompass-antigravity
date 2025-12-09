@@ -1,6 +1,7 @@
 # Audit Trail Viewer - Figma Make Prompt
 
 ## Context & Purpose
+
 - **Component Type**: Change history and audit log viewer
 - **User Roles**: GF/BUCH (full access), others (limited)
 - **Usage Context**: Track all changes to entities for compliance and debugging
@@ -11,6 +12,7 @@
 Create an audit trail viewer for KOMPASS showing complete change history with field-level diffs, user attribution, timestamps, filters, and GoBD compliance indicators with German labels.
 
 **Entry Points:**
+
 - Entity detail: "Änderungsverlauf" tab or button
 - Global: "Audit-Log" in admin menu (GF/BUCH only)
 - GoBD: "Protokoll anzeigen" on invoices
@@ -18,12 +20,14 @@ Create an audit trail viewer for KOMPASS showing complete change history with fi
 **Audit Trail View (Timeline):**
 
 **Header:**
+
 - Title: "Änderungsverlauf" (24px, bold)
 - Entity: "Kunde: Hofladen Müller GmbH" (breadcrumb)
 - Icon: History icon (clock with arrow)
 - Filters button: "Filter" (opens filter panel)
 
 **Timeline Layout:**
+
 - Vertical timeline (left border, blue)
 - Events: Cards attached to timeline
 - Chronological: Most recent at top
@@ -32,12 +36,14 @@ Create an audit trail viewer for KOMPASS showing complete change history with fi
 **Timeline Event Card:**
 
 **Card Structure:**
+
 - Timestamp: "15.11.2024, 10:45 Uhr" (bold, top-left)
 - Action icon: Created (plus), Updated (edit), Deleted (trash)
 - User: Avatar + "Anna Weber (BUCH)" (top-right)
 - Event type: "Aktualisiert" or "Erstellt" or "Gelöscht" (badge)
 
 **Change Details:**
+
 - Section: "Geänderte Felder (3)"
 - Each field:
   - Field name: "Firmenname" (bold)
@@ -47,6 +53,7 @@ Create an audit trail viewer for KOMPASS showing complete change history with fi
 - Unchanged fields: Hidden (collapsible "Alle Felder anzeigen")
 
 **Example Card:**
+
 ```
 15.11.2024, 10:45 Uhr                     [Avatar] Anna Weber (BUCH)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -65,6 +72,7 @@ Gerät: Chrome 119, Windows 10
 **GoBD-Specific Events:**
 
 **Invoice Finalization:**
+
 - Event: "Rechnung finalisiert" (lock icon)
 - Card: Prominent (green border)
 - Fields: Shows all finalized fields
@@ -73,6 +81,7 @@ Gerät: Chrome 119, Windows 10
 - Warning: "Ab jetzt unveränderlich"
 
 **Invoice Correction (GF Approval):**
+
 - Event: "Korrektur durch GF" (shield icon)
 - Card: Prominent (amber border)
 - Reason: "Tippfehler in Rechnungsbetrag"
@@ -84,6 +93,7 @@ Gerät: Chrome 119, Windows 10
 **Filter Panel (Sidebar or Dialog):**
 
 **Filters:**
+
 - Date range: "Von/Bis" (date pickers)
 - User: Multi-select dropdown (all users)
 - Action type: Checkboxes "Erstellt", "Aktualisiert", "Gelöscht"
@@ -91,6 +101,7 @@ Gerät: Chrome 119, Windows 10
 - GoBD events: Toggle "Nur GoBD-relevante Änderungen"
 
 **Quick Filters (Chips):**
+
 - "Letzte 7 Tage"
 - "Letzter Monat"
 - "Dieses Jahr"
@@ -100,6 +111,7 @@ Gerät: Chrome 119, Windows 10
 **Field-Level Diff View:**
 
 **Detailed Diff (Expandable):**
+
 - Click field: Opens detailed diff modal
 - Shows: Side-by-side comparison
 - Left: "Vorher" (old value)
@@ -109,6 +121,7 @@ Gerät: Chrome 119, Windows 10
   - "Müller" → "Müller GmbH" (added " GmbH" in green)
 
 **Complex Field Diffs (Arrays):**
+
 - Shows: Added/removed items
 - Example: ContactPersons array
   - Added: "+1 Kontakt: Hans Müller"
@@ -118,6 +131,7 @@ Gerät: Chrome 119, Windows 10
 **User Attribution:**
 
 **User Card (Top-Right):**
+
 - Avatar: 40px
 - Name: "Anna Weber"
 - Role: "BUCH" (badge)
@@ -125,6 +139,7 @@ Gerät: Chrome 119, Windows 10
 - Link: "Alle Änderungen von Anna" (filters by user)
 
 **IP & Device Info:**
+
 - IP Address: "192.168.1.100" (for security audit)
 - Device: "Chrome 119, Windows 10"
 - Location: "München, Germany" (if available)
@@ -133,15 +148,18 @@ Gerät: Chrome 119, Windows 10
 **Export Options:**
 
 **Export Button (Top-Right):**
+
 - Formats: PDF, CSV, JSON
 - Scope: Current view or all history
 - GoBD: "GoBD-konformer Export" (includes hash, signatures)
 - Filename: "Audit-Trail_Hofladen-Mueller_2024-11-15.pdf"
 
 **CSV Export Columns:**
+
 - Timestamp, User, Role, Action, Field, Old Value, New Value, Reason, IP, Hash
 
 **Search:**
+
 - Search bar: "Änderungen durchsuchen..."
 - Searches: Field names, values, user names, reasons
 - Highlight: Search terms in results
@@ -149,11 +167,13 @@ Gerät: Chrome 119, Windows 10
 **Empty States:**
 
 **No Changes:**
+
 - Icon: Empty folder
 - Text: "Keine Änderungen gefunden"
 - Subtext: "Für diesen Zeitraum gibt es keine Einträge"
 
 **No GoBD Events:**
+
 - Icon: Shield checkmark
 - Text: "Keine GoBD-relevanten Änderungen"
 - Subtext: "Alle finanziellen Daten sind unverändert"
@@ -161,6 +181,7 @@ Gerät: Chrome 119, Windows 10
 **Permissions:**
 
 **Access Restrictions:**
+
 - GF/BUCH: Full access to all audit trails
 - PLAN: Access to own and managed entities
 - ADM/KALK: Access to own changes only
@@ -168,26 +189,29 @@ Gerät: Chrome 119, Windows 10
   - Example: "Kreditlimit: XXX.XXX → XXX.XXX" (if no permission)
 
 **Mobile View:**
+
 - Timeline: Simplified cards
 - Swipe: Expand for details
 - Filters: Bottom sheet
 - Export: Share sheet
 
 **Accessibility:**
+
 - ARIA labels: Describe events and changes
 - Keyboard navigation: Tab through events
 - Screen reader: Reads timeline chronologically
 - High contrast: Clear visual hierarchy
 
 **Real-Time Updates:**
+
 - New changes: Appear at top with animation
 - Toast: "Neue Änderung erkannt" (blue)
 - Auto-refresh: Every 30 seconds (if viewing global log)
 
 ## Implementation Notes
+
 ```bash
 npx shadcn-ui@latest add card badge button tabs
 # Audit log: Store in CouchDB audit database
 # GoBD: Immutable audit entries with SHA-256 hash
 ```
-

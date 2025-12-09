@@ -369,16 +369,16 @@ pnpm add @tiptap/extension-link @tiptap/extension-underline
 ### Form Schema
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 const locationSchema = z.object({
   locationName: z.string().min(2).max(100),
   locationType: z.enum([
-    'headquarter',
-    'branch',
-    'warehouse',
-    'project_site',
-    'other',
+    "headquarter",
+    "branch",
+    "warehouse",
+    "project_site",
+    "other",
   ]),
   isActive: z.boolean(),
   deliveryAddress: addressSchema,

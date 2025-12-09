@@ -166,11 +166,11 @@ function selectNextIssue(issues: Issue[]): Issue | null {
   // Step 1: Filter candidates
   const candidates = issues.filter(
     (issue) =>
-      issue.labels.includes('ready:dev') &&
-      issue.state === 'Todo' &&
-      !['Done', 'In Progress', 'In Review', 'Canceled', 'Duplicate'].includes(
-        issue.state
-      )
+      issue.labels.includes("ready:dev") &&
+      issue.state === "Todo" &&
+      !["Done", "In Progress", "In Review", "Canceled", "Duplicate"].includes(
+        issue.state,
+      ),
   );
 
   if (candidates.length === 0) {
@@ -181,9 +181,9 @@ function selectNextIssue(issues: Issue[]): Issue | null {
   const sorted = candidates.sort((a, b) => {
     // Phase comparison (P01 < P02 < P03 < future)
     const phaseOrder = {
-      'P01-foundation': 1,
-      'P02-skeleton': 2,
-      'P03-mvp': 3,
+      "P01-foundation": 1,
+      "P02-skeleton": 2,
+      "P03-mvp": 3,
       future: 4,
     };
     const phaseA = extractPhase(a.labels);
@@ -416,24 +416,24 @@ For automated dependency resolution, consider using Linear's built-in "blocks" a
 const nextIssue = await selectNextIssue(linearIssues);
 
 // 2. Verify it's ready
-if (nextIssue.labels.includes('ready:dev') && nextIssue.state === 'Todo') {
+if (nextIssue.labels.includes("ready:dev") && nextIssue.state === "Todo") {
   // 3. Start work
-  await updateIssue(nextIssue.id, { state: 'In Progress' });
+  await updateIssue(nextIssue.id, { state: "In Progress" });
 
   // 4. Begin development
   // ... implement feature ...
 
   // 5. Check dependent issues when done
-  if (nextIssue.status === 'Done') {
+  if (nextIssue.status === "Done") {
     const dependents = await findDependentIssues(nextIssue.id);
     for (const dependent of dependents) {
       if (allBlockersResolved(dependent)) {
         await updateIssue(dependent.id, {
           labels: [
-            ...dependent.labels.filter((l) => !l.startsWith('ready:')),
-            'ready:dev',
+            ...dependent.labels.filter((l) => !l.startsWith("ready:")),
+            "ready:dev",
           ],
-          state: 'Todo',
+          state: "Todo",
         });
       }
     }

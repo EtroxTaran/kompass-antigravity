@@ -1620,14 +1620,14 @@ import {
   Length,
   Matches,
   ValidateNested,
-} from 'class-validator';
-import { Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+} from "class-validator";
+import { Type } from "class-transformer";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateLocationDto {
   @ApiProperty({
-    description: 'Descriptive name for the location',
-    example: 'Filiale München Süd',
+    description: "Descriptive name for the location",
+    example: "Filiale München Süd",
     minLength: 2,
     maxLength: 100,
   })
@@ -1635,20 +1635,20 @@ export class CreateLocationDto {
   @Length(2, 100)
   @Matches(/^[a-zA-ZäöüÄÖÜß0-9\s\.\-&()]+$/, {
     message:
-      'Location name can only contain letters, numbers, and basic punctuation',
+      "Location name can only contain letters, numbers, and basic punctuation",
   })
   locationName: string;
 
   @ApiProperty({
-    description: 'Type of location',
-    enum: ['headquarter', 'branch', 'warehouse', 'project_site', 'other'],
-    example: 'branch',
+    description: "Type of location",
+    enum: ["headquarter", "branch", "warehouse", "project_site", "other"],
+    example: "branch",
   })
-  @IsEnum(['headquarter', 'branch', 'warehouse', 'project_site', 'other'])
+  @IsEnum(["headquarter", "branch", "warehouse", "project_site", "other"])
   locationType: string;
 
   @ApiProperty({
-    description: 'Delivery address for this location',
+    description: "Delivery address for this location",
     type: () => AddressDto,
   })
   @ValidateNested()
@@ -1656,15 +1656,15 @@ export class CreateLocationDto {
   deliveryAddress: AddressDto;
 
   @ApiProperty({
-    description: 'Whether the location is currently operational',
+    description: "Whether the location is currently operational",
     example: true,
   })
   @IsBoolean()
   isActive: boolean;
 
   @ApiProperty({
-    description: 'Primary contact person ID for this location',
-    example: 'contact-111',
+    description: "Primary contact person ID for this location",
+    example: "contact-111",
     required: false,
   })
   @IsOptional()
@@ -1672,9 +1672,9 @@ export class CreateLocationDto {
   primaryContactPersonId?: string;
 
   @ApiProperty({
-    description: 'Array of contact person IDs assigned to this location',
+    description: "Array of contact person IDs assigned to this location",
     type: [String],
-    example: ['contact-111', 'contact-112'],
+    example: ["contact-111", "contact-112"],
     required: false,
   })
   @IsOptional()
@@ -1682,8 +1682,8 @@ export class CreateLocationDto {
   contactPersons?: string[];
 
   @ApiProperty({
-    description: 'Special delivery instructions',
-    example: 'Hintereingang nutzen, Parkplatz vorhanden',
+    description: "Special delivery instructions",
+    example: "Hintereingang nutzen, Parkplatz vorhanden",
     required: false,
   })
   @IsOptional()
@@ -1692,8 +1692,8 @@ export class CreateLocationDto {
   deliveryNotes?: string;
 
   @ApiProperty({
-    description: 'Operating hours',
-    example: 'Mo-Fr 8:00-18:00, Sa 9:00-14:00',
+    description: "Operating hours",
+    example: "Mo-Fr 8:00-18:00, Sa 9:00-14:00",
     required: false,
   })
   @IsOptional()
@@ -1702,8 +1702,8 @@ export class CreateLocationDto {
   openingHours?: string;
 
   @ApiProperty({
-    description: 'Parking and access instructions',
-    example: 'Parkplätze vor dem Gebäude',
+    description: "Parking and access instructions",
+    example: "Parkplätze vor dem Gebäude",
     required: false,
   })
   @IsOptional()
@@ -1726,7 +1726,7 @@ export class UpdateLocationDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsEnum(['headquarter', 'branch', 'warehouse', 'project_site', 'other'])
+  @IsEnum(["headquarter", "branch", "warehouse", "project_site", "other"])
   locationType?: string;
 
   @ApiProperty({ required: false })
@@ -1749,16 +1749,16 @@ export class UpdateLocationDto {
 ```typescript
 export class AddressDto {
   @ApiProperty({
-    description: 'Street name',
-    example: 'Lindwurmstraße',
+    description: "Street name",
+    example: "Lindwurmstraße",
   })
   @IsString()
   @Length(2, 100)
   street: string;
 
   @ApiProperty({
-    description: 'House/building number',
-    example: '85',
+    description: "House/building number",
+    example: "85",
     required: false,
   })
   @IsOptional()
@@ -1767,8 +1767,8 @@ export class AddressDto {
   streetNumber?: string;
 
   @ApiProperty({
-    description: 'Additional address information',
-    example: 'Hintereingang, 2. Stock',
+    description: "Additional address information",
+    example: "Hintereingang, 2. Stock",
     required: false,
   })
   @IsOptional()
@@ -1777,24 +1777,24 @@ export class AddressDto {
   addressLine2?: string;
 
   @ApiProperty({
-    description: 'Postal code',
-    example: '80337',
+    description: "Postal code",
+    example: "80337",
   })
   @IsString()
-  @Matches(/^\d{5}$/, { message: 'German postal code must be 5 digits' })
+  @Matches(/^\d{5}$/, { message: "German postal code must be 5 digits" })
   zipCode: string;
 
   @ApiProperty({
-    description: 'City name',
-    example: 'München',
+    description: "City name",
+    example: "München",
   })
   @IsString()
   @Length(2, 100)
   city: string;
 
   @ApiProperty({
-    description: 'State/Bundesland',
-    example: 'Bayern',
+    description: "State/Bundesland",
+    example: "Bayern",
     required: false,
   })
   @IsOptional()
@@ -1803,16 +1803,16 @@ export class AddressDto {
   state?: string;
 
   @ApiProperty({
-    description: 'Country name',
-    example: 'Deutschland',
-    default: 'Deutschland',
+    description: "Country name",
+    example: "Deutschland",
+    default: "Deutschland",
   })
   @IsString()
   @Length(2, 100)
   country: string;
 
   @ApiProperty({
-    description: 'GPS latitude',
+    description: "GPS latitude",
     example: 48.1351,
     required: false,
   })
@@ -1821,7 +1821,7 @@ export class AddressDto {
   latitude?: number;
 
   @ApiProperty({
-    description: 'GPS longitude',
+    description: "GPS longitude",
     example: 11.582,
     required: false,
   })
@@ -1842,7 +1842,7 @@ export class LocationResponseDto {
   _rev: string;
 
   @ApiProperty()
-  type: 'location';
+  type: "location";
 
   @ApiProperty()
   customerId: string;
@@ -1896,41 +1896,41 @@ export class LocationResponseDto {
 ```typescript
 export class UpdateDecisionAuthorityDto {
   @ApiProperty({
-    description: 'Decision-making role',
+    description: "Decision-making role",
     enum: [
-      'decision_maker',
-      'key_influencer',
-      'recommender',
-      'gatekeeper',
-      'operational_contact',
-      'informational',
+      "decision_maker",
+      "key_influencer",
+      "recommender",
+      "gatekeeper",
+      "operational_contact",
+      "informational",
     ],
   })
   @IsEnum([
-    'decision_maker',
-    'key_influencer',
-    'recommender',
-    'gatekeeper',
-    'operational_contact',
-    'informational',
+    "decision_maker",
+    "key_influencer",
+    "recommender",
+    "gatekeeper",
+    "operational_contact",
+    "informational",
   ])
   decisionMakingRole: string;
 
   @ApiProperty({
-    description: 'Authority level',
-    enum: ['low', 'medium', 'high', 'final_authority'],
+    description: "Authority level",
+    enum: ["low", "medium", "high", "final_authority"],
   })
-  @IsEnum(['low', 'medium', 'high', 'final_authority'])
+  @IsEnum(["low", "medium", "high", "final_authority"])
   authorityLevel: string;
 
   @ApiProperty({
-    description: 'Can approve orders/quotes',
+    description: "Can approve orders/quotes",
   })
   @IsBoolean()
   canApproveOrders: boolean;
 
   @ApiProperty({
-    description: 'Maximum order value they can approve (EUR)',
+    description: "Maximum order value they can approve (EUR)",
     example: 50000,
     required: false,
   })
@@ -1941,26 +1941,26 @@ export class UpdateDecisionAuthorityDto {
   approvalLimitEur?: number;
 
   @ApiProperty({
-    description: 'Functional roles',
+    description: "Functional roles",
     type: [String],
     enum: [
-      'owner_ceo',
-      'purchasing_manager',
-      'facility_manager',
-      'store_manager',
-      'project_coordinator',
-      'financial_controller',
-      'operations_manager',
-      'administrative',
+      "owner_ceo",
+      "purchasing_manager",
+      "facility_manager",
+      "store_manager",
+      "project_coordinator",
+      "financial_controller",
+      "operations_manager",
+      "administrative",
     ],
   })
   @IsString({ each: true })
   functionalRoles: string[];
 
   @ApiProperty({
-    description: 'Departments this contact influences',
+    description: "Departments this contact influences",
     type: [String],
-    example: ['purchasing', 'operations'],
+    example: ["purchasing", "operations"],
   })
   @IsString({ each: true })
   departmentInfluence: string[];
@@ -2027,7 +2027,7 @@ import {
   Body,
   Param,
   UseGuards,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   ApiTags,
   ApiBearerAuth,
@@ -2035,83 +2035,83 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
-} from '@nestjs/swagger';
-import { JwtAuthGuard, RbacGuard } from '@/guards';
-import { RequirePermission } from '@/decorators';
-import { CurrentUser } from '@/decorators';
-import { User } from '@/types';
+} from "@nestjs/swagger";
+import { JwtAuthGuard, RbacGuard } from "@/guards";
+import { RequirePermission } from "@/decorators";
+import { CurrentUser } from "@/decorators";
+import { User } from "@/types";
 
-@Controller('api/v1/customers/:customerId/locations')
-@ApiTags('Locations')
+@Controller("api/v1/customers/:customerId/locations")
+@ApiTags("Locations")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class LocationController {
   @Post()
   @ApiOperation({
-    summary: 'Create new location for customer',
+    summary: "Create new location for customer",
     description:
-      'Creates a new delivery location with address and operational details. Location names must be unique within a customer.',
+      "Creates a new delivery location with address and operational details. Location names must be unique within a customer.",
   })
   @ApiParam({
-    name: 'customerId',
-    description: 'Customer ID',
-    example: 'customer-12345',
+    name: "customerId",
+    description: "Customer ID",
+    example: "customer-12345",
   })
   @ApiBody({ type: CreateLocationDto })
   @ApiResponse({
     status: 201,
-    description: 'Location created successfully',
+    description: "Location created successfully",
     type: LocationResponseDto,
   })
   @ApiResponse({
     status: 400,
-    description: 'Validation error - invalid input data',
+    description: "Validation error - invalid input data",
   })
   @ApiResponse({
     status: 403,
-    description: 'Forbidden - insufficient permissions',
+    description: "Forbidden - insufficient permissions",
   })
   @ApiResponse({
     status: 404,
-    description: 'Customer not found',
+    description: "Customer not found",
   })
   @ApiResponse({
     status: 409,
-    description: 'Conflict - location name already exists for this customer',
+    description: "Conflict - location name already exists for this customer",
   })
-  @RequirePermission('Location', 'CREATE')
+  @RequirePermission("Location", "CREATE")
   async createLocation(
-    @Param('customerId') customerId: string,
+    @Param("customerId") customerId: string,
     @Body() createLocationDto: CreateLocationDto,
-    @CurrentUser() user: User
+    @CurrentUser() user: User,
   ): Promise<LocationResponseDto> {
     return this.locationService.create(customerId, createLocationDto, user);
   }
 
   @Get()
   @ApiOperation({
-    summary: 'List all locations for customer',
+    summary: "List all locations for customer",
     description:
-      'Retrieves all delivery locations for a specific customer with optional filtering.',
+      "Retrieves all delivery locations for a specific customer with optional filtering.",
   })
-  @ApiParam({ name: 'customerId', description: 'Customer ID' })
+  @ApiParam({ name: "customerId", description: "Customer ID" })
   @ApiResponse({
     status: 200,
-    description: 'Locations retrieved successfully',
+    description: "Locations retrieved successfully",
     type: [LocationResponseDto],
   })
   @ApiResponse({
     status: 403,
-    description: 'Forbidden - insufficient permissions',
+    description: "Forbidden - insufficient permissions",
   })
   @ApiResponse({
     status: 404,
-    description: 'Customer not found',
+    description: "Customer not found",
   })
-  @RequirePermission('Location', 'READ')
+  @RequirePermission("Location", "READ")
   async listLocations(
-    @Param('customerId') customerId: string,
-    @CurrentUser() user: User
+    @Param("customerId") customerId: string,
+    @CurrentUser() user: User,
   ): Promise<LocationResponseDto[]> {
     return this.locationService.findByCustomer(customerId, user);
   }
@@ -3022,8 +3022,8 @@ Retrieves all overdue tasks for current user (or team if GF/PLAN).
 ```typescript
 export class CreateUserTaskDto {
   @ApiProperty({
-    description: 'Task title',
-    example: 'Call Hofladen Müller about delivery',
+    description: "Task title",
+    example: "Call Hofladen Müller about delivery",
     minLength: 5,
     maxLength: 200,
   })
@@ -3033,7 +3033,7 @@ export class CreateUserTaskDto {
   title: string;
 
   @ApiProperty({
-    description: 'Detailed description',
+    description: "Detailed description",
     required: false,
     maxLength: 2000,
   })
@@ -3043,22 +3043,22 @@ export class CreateUserTaskDto {
   description?: string;
 
   @ApiProperty({
-    description: 'Task status',
-    enum: ['open', 'in_progress', 'completed', 'cancelled'],
-    default: 'open',
+    description: "Task status",
+    enum: ["open", "in_progress", "completed", "cancelled"],
+    default: "open",
   })
-  @IsEnum(['open', 'in_progress', 'completed', 'cancelled'])
+  @IsEnum(["open", "in_progress", "completed", "cancelled"])
   status: string;
 
   @ApiProperty({
-    description: 'Task priority',
-    enum: ['low', 'medium', 'high', 'urgent'],
+    description: "Task priority",
+    enum: ["low", "medium", "high", "urgent"],
   })
-  @IsEnum(['low', 'medium', 'high', 'urgent'])
+  @IsEnum(["low", "medium", "high", "urgent"])
   priority: string;
 
   @ApiProperty({
-    description: 'Due date',
+    description: "Due date",
     required: false,
   })
   @IsOptional()
@@ -3066,7 +3066,7 @@ export class CreateUserTaskDto {
   dueDate?: Date;
 
   @ApiProperty({
-    description: 'User ID to assign task to (defaults to current user)',
+    description: "User ID to assign task to (defaults to current user)",
     required: false,
   })
   @IsOptional()
@@ -3074,7 +3074,7 @@ export class CreateUserTaskDto {
   assignedTo?: string;
 
   @ApiProperty({
-    description: 'Related customer ID',
+    description: "Related customer ID",
     required: false,
   })
   @IsOptional()
@@ -3082,7 +3082,7 @@ export class CreateUserTaskDto {
   relatedCustomerId?: string;
 
   @ApiProperty({
-    description: 'Related opportunity ID',
+    description: "Related opportunity ID",
     required: false,
   })
   @IsOptional()
@@ -3090,7 +3090,7 @@ export class CreateUserTaskDto {
   relatedOpportunityId?: string;
 
   @ApiProperty({
-    description: 'Related project ID',
+    description: "Related project ID",
     required: false,
   })
   @IsOptional()
@@ -3104,8 +3104,8 @@ export class CreateUserTaskDto {
 ```typescript
 export class CreateProjectTaskDto {
   @ApiProperty({
-    description: 'Task title',
-    example: 'Create technical drawings',
+    description: "Task title",
+    example: "Create technical drawings",
     minLength: 5,
     maxLength: 200,
   })
@@ -3115,7 +3115,7 @@ export class CreateProjectTaskDto {
   title: string;
 
   @ApiProperty({
-    description: 'Detailed description',
+    description: "Detailed description",
     required: false,
     maxLength: 2000,
   })
@@ -3125,29 +3125,29 @@ export class CreateProjectTaskDto {
   description?: string;
 
   @ApiProperty({
-    description: 'Task status',
-    enum: ['todo', 'in_progress', 'review', 'done', 'blocked'],
-    default: 'todo',
+    description: "Task status",
+    enum: ["todo", "in_progress", "review", "done", "blocked"],
+    default: "todo",
   })
-  @IsEnum(['todo', 'in_progress', 'review', 'done', 'blocked'])
+  @IsEnum(["todo", "in_progress", "review", "done", "blocked"])
   status: string;
 
   @ApiProperty({
-    description: 'Task priority',
-    enum: ['low', 'medium', 'high', 'critical'],
+    description: "Task priority",
+    enum: ["low", "medium", "high", "critical"],
   })
-  @IsEnum(['low', 'medium', 'high', 'critical'])
+  @IsEnum(["low", "medium", "high", "critical"])
   priority: string;
 
   @ApiProperty({
-    description: 'User ID to assign task to (must have Project.READ)',
+    description: "User ID to assign task to (must have Project.READ)",
     required: true,
   })
   @IsString()
   assignedTo: string;
 
   @ApiProperty({
-    description: 'Due date',
+    description: "Due date",
     required: false,
   })
   @IsOptional()
@@ -3155,16 +3155,16 @@ export class CreateProjectTaskDto {
   dueDate?: Date;
 
   @ApiProperty({
-    description: 'Project phase',
-    enum: ['planning', 'execution', 'delivery', 'closure'],
+    description: "Project phase",
+    enum: ["planning", "execution", "delivery", "closure"],
     required: false,
   })
   @IsOptional()
-  @IsEnum(['planning', 'execution', 'delivery', 'closure'])
+  @IsEnum(["planning", "execution", "delivery", "closure"])
   phase?: string;
 
   @ApiProperty({
-    description: 'Milestone ID',
+    description: "Milestone ID",
     required: false,
   })
   @IsOptional()
@@ -3172,7 +3172,7 @@ export class CreateProjectTaskDto {
   milestone?: string;
 
   @ApiProperty({
-    description: 'Blocking reason (required if status = blocked)',
+    description: "Blocking reason (required if status = blocked)",
     required: false,
     minLength: 10,
     maxLength: 500,
@@ -3189,10 +3189,10 @@ export class CreateProjectTaskDto {
 ```typescript
 export class UpdateTaskStatusDto {
   @ApiProperty({
-    description: 'New status',
+    description: "New status",
     enum: {
-      UserTask: ['open', 'in_progress', 'completed', 'cancelled'],
-      ProjectTask: ['todo', 'in_progress', 'review', 'done', 'blocked'],
+      UserTask: ["open", "in_progress", "completed", "cancelled"],
+      ProjectTask: ["todo", "in_progress", "review", "done", "blocked"],
     },
   })
   @IsString()
@@ -3200,7 +3200,7 @@ export class UpdateTaskStatusDto {
 
   @ApiProperty({
     description:
-      'Blocking reason (required if status = blocked for ProjectTask)',
+      "Blocking reason (required if status = blocked for ProjectTask)",
     required: false,
   })
   @IsOptional()
@@ -3713,135 +3713,135 @@ END:VCALENDAR
 ```typescript
 export class CalendarEventDto {
   @ApiProperty({
-    description: 'Unique event ID',
-    example: 'usertask-123',
+    description: "Unique event ID",
+    example: "usertask-123",
   })
   id: string;
 
   @ApiProperty({
-    description: 'Event type',
+    description: "Event type",
     enum: [
-      'user_task',
-      'project_task',
-      'project_deadline',
-      'project_start',
-      'project_milestone',
-      'opportunity_close',
-      'invoice_due',
-      'activity_scheduled',
-      'user_vacation',
-      'holiday',
+      "user_task",
+      "project_task",
+      "project_deadline",
+      "project_start",
+      "project_milestone",
+      "opportunity_close",
+      "invoice_due",
+      "activity_scheduled",
+      "user_vacation",
+      "holiday",
     ],
   })
   type: CalendarEventType;
 
   @ApiProperty({
-    description: 'Event title',
-    example: 'Follow up with customer',
+    description: "Event title",
+    example: "Follow up with customer",
     maxLength: 200,
   })
   title: string;
 
   @ApiProperty({
-    description: 'Event description',
+    description: "Event description",
     required: false,
     maxLength: 2000,
   })
   description?: string;
 
   @ApiProperty({
-    description: 'Hex color for visual coding',
-    example: '#3B82F6',
-    pattern: '^#[0-9A-F]{6}$',
+    description: "Hex color for visual coding",
+    example: "#3B82F6",
+    pattern: "^#[0-9A-F]{6}$",
   })
   color: string;
 
   @ApiProperty({
-    description: 'Icon name for event type',
-    example: 'CheckSquare',
+    description: "Icon name for event type",
+    example: "CheckSquare",
     required: false,
   })
   icon?: string;
 
   @ApiProperty({
-    description: 'Event start date/time',
-    type: 'string',
-    format: 'date-time',
-    example: '2025-02-05T00:00:00Z',
+    description: "Event start date/time",
+    type: "string",
+    format: "date-time",
+    example: "2025-02-05T00:00:00Z",
   })
   startDate: Date;
 
   @ApiProperty({
-    description: 'Event end date/time',
-    type: 'string',
-    format: 'date-time',
+    description: "Event end date/time",
+    type: "string",
+    format: "date-time",
     required: false,
   })
   endDate?: Date;
 
   @ApiProperty({
-    description: 'True if all-day event',
+    description: "True if all-day event",
     example: true,
   })
   allDay: boolean;
 
   @ApiProperty({
-    description: 'Reference to source entity ID',
-    example: 'usertask-123',
+    description: "Reference to source entity ID",
+    example: "usertask-123",
   })
   entityId: string;
 
   @ApiProperty({
-    description: 'Source entity type',
+    description: "Source entity type",
     enum: [
-      'UserTask',
-      'ProjectTask',
-      'Project',
-      'Opportunity',
-      'Invoice',
-      'Activity',
-      'User',
-      'System',
+      "UserTask",
+      "ProjectTask",
+      "Project",
+      "Opportunity",
+      "Invoice",
+      "Activity",
+      "User",
+      "System",
     ],
   })
   entityType: CalendarEntityType;
 
   @ApiProperty({
-    description: 'Entity-specific status',
-    example: 'open',
+    description: "Entity-specific status",
+    example: "open",
   })
   status: string;
 
   @ApiProperty({
-    description: 'Priority level',
-    enum: ['low', 'medium', 'high', 'urgent', 'critical'],
+    description: "Priority level",
+    enum: ["low", "medium", "high", "urgent", "critical"],
     required: false,
   })
   priority?: CalendarPriority;
 
   @ApiProperty({
-    description: 'User IDs assigned to event',
+    description: "User IDs assigned to event",
     type: [String],
     required: false,
   })
   assignedTo?: string[];
 
   @ApiProperty({
-    description: 'Physical location',
+    description: "Physical location",
     required: false,
   })
   location?: string;
 
   @ApiProperty({
-    description: 'Custom tags for filtering',
+    description: "Custom tags for filtering",
     type: [String],
     required: false,
   })
   tags?: string[];
 
   @ApiProperty({
-    description: 'Deep link to entity detail page',
-    example: '/tasks/usertask-123',
+    description: "Deep link to entity detail page",
+    example: "/tasks/usertask-123",
     required: false,
   })
   url?: string;
@@ -3853,32 +3853,32 @@ export class CalendarEventDto {
 ```typescript
 export class CalendarQueryDto {
   @ApiProperty({
-    description: 'Start date for event range',
-    type: 'string',
-    format: 'date-time',
-    example: '2025-01-01T00:00:00Z',
+    description: "Start date for event range",
+    type: "string",
+    format: "date-time",
+    example: "2025-01-01T00:00:00Z",
   })
   @IsISO8601()
   startDate: string;
 
   @ApiProperty({
-    description: 'End date for event range',
-    type: 'string',
-    format: 'date-time',
-    example: '2025-01-31T23:59:59Z',
+    description: "End date for event range",
+    type: "string",
+    format: "date-time",
+    example: "2025-01-31T23:59:59Z",
   })
   @IsISO8601()
   endDate: string;
 
   @ApiProperty({
-    description: 'Filter by event types',
+    description: "Filter by event types",
     type: [String],
     required: false,
     enum: [
-      'user_task',
-      'project_task',
-      'project_deadline',
-      'opportunity_close',
+      "user_task",
+      "project_task",
+      "project_deadline",
+      "opportunity_close",
     ],
   })
   @IsOptional()
@@ -3886,7 +3886,7 @@ export class CalendarQueryDto {
   types?: CalendarEventType[];
 
   @ApiProperty({
-    description: 'Filter events assigned to specific user',
+    description: "Filter events assigned to specific user",
     required: false,
   })
   @IsOptional()
@@ -3894,7 +3894,7 @@ export class CalendarQueryDto {
   assignedTo?: string;
 
   @ApiProperty({
-    description: 'Filter by status',
+    description: "Filter by status",
     type: [String],
     required: false,
   })
@@ -3903,10 +3903,10 @@ export class CalendarQueryDto {
   status?: string[];
 
   @ApiProperty({
-    description: 'Filter by priority',
+    description: "Filter by priority",
     type: [String],
     required: false,
-    enum: ['low', 'medium', 'high', 'urgent', 'critical'],
+    enum: ["low", "medium", "high", "urgent", "critical"],
   })
   @IsOptional()
   @IsArray()
@@ -4791,20 +4791,20 @@ Get all costs awaiting payment (INVOICED status).
 
 ```typescript
 export class CreateProjectCostDto {
-  @ApiProperty({ description: 'Project ID', example: 'project-abc123' })
+  @ApiProperty({ description: "Project ID", example: "project-abc123" })
   @IsString()
   projectId: string;
 
   @ApiProperty({
-    description: 'Cost type',
-    enum: ['material', 'contractor', 'external_service', 'equipment', 'other'],
+    description: "Cost type",
+    enum: ["material", "contractor", "external_service", "equipment", "other"],
   })
   @IsEnum(ProjectCostType)
   costType: ProjectCostType;
 
   @ApiProperty({
-    description: 'Cost description',
-    example: 'Oak wood planks for shelving',
+    description: "Cost description",
+    example: "Oak wood planks for shelving",
     minLength: 10,
     maxLength: 500,
   })
@@ -4812,24 +4812,24 @@ export class CreateProjectCostDto {
   @Length(10, 500)
   description: string;
 
-  @ApiProperty({ description: 'Supplier name', required: false })
+  @ApiProperty({ description: "Supplier name", required: false })
   @IsOptional()
   @IsString()
   @Length(2, 200)
   supplierName?: string;
 
-  @ApiProperty({ description: 'Quantity', example: 50 })
+  @ApiProperty({ description: "Quantity", example: 50 })
   @IsNumber()
   @Min(0.01)
   quantity: number;
 
-  @ApiProperty({ description: 'Unit price in EUR', example: 45.0 })
+  @ApiProperty({ description: "Unit price in EUR", example: 45.0 })
   @IsNumber()
   @Min(0)
   unitPriceEur: number;
 
   @ApiProperty({
-    description: 'Tax rate (0-1)',
+    description: "Tax rate (0-1)",
     example: 0.19,
     required: false,
   })
@@ -4839,24 +4839,24 @@ export class CreateProjectCostDto {
   @Max(1)
   taxRate?: number;
 
-  @ApiProperty({ description: 'Invoice number', required: false })
+  @ApiProperty({ description: "Invoice number", required: false })
   @IsOptional()
   @IsString()
   invoiceNumber?: string;
 
-  @ApiProperty({ description: 'Invoice date', required: false })
+  @ApiProperty({ description: "Invoice date", required: false })
   @IsOptional()
   @IsISO8601()
   invoiceDate?: string;
 
-  @ApiProperty({ description: 'Purchase order number', required: false })
+  @ApiProperty({ description: "Purchase order number", required: false })
   @IsOptional()
   @IsString()
   orderNumber?: string;
 
   @ApiProperty({
-    description: 'Cost status',
-    enum: ['planned', 'ordered', 'received', 'invoiced', 'paid'],
+    description: "Cost status",
+    enum: ["planned", "ordered", "received", "invoiced", "paid"],
   })
   @IsEnum(ProjectCostStatus)
   status: ProjectCostStatus;
@@ -5528,12 +5528,12 @@ List suppliers with filtering.
 ```typescript
 [
   {
-    _id: 'supplier-abc123',
-    companyName: 'Schreinerei Müller GmbH',
-    supplierType: 'subcontractor',
+    _id: "supplier-abc123",
+    companyName: "Schreinerei Müller GmbH",
+    supplierType: "subcontractor",
     rating: { overall: 4.8, reviewCount: 12 },
     activeProjectCount: 5,
-    status: 'Active',
+    status: "Active",
   },
 ];
 ```
@@ -5696,11 +5696,11 @@ Search material catalog.
 ```typescript
 [
   {
-    _id: 'material-xyz123',
-    materialCode: 'MAT-LED-001',
-    materialName: 'LED-Panel 60x60cm warmweiß',
-    category: 'ceiling_lights',
-    unit: 'piece',
+    _id: "material-xyz123",
+    materialCode: "MAT-LED-001",
+    materialName: "LED-Panel 60x60cm warmweiß",
+    category: "ceiling_lights",
+    unit: "piece",
     averagePrice: 145.0,
     lowestPrice: 138.0,
     supplierCount: 2,
@@ -5781,18 +5781,18 @@ Get project BOM.
 ```typescript
 [
   {
-    _id: 'project-material-123',
-    materialId: 'material-xyz123',
-    materialName: 'LED-Panel 60x60cm',
-    phase: 'installation',
+    _id: "project-material-123",
+    materialId: "material-xyz123",
+    materialName: "LED-Panel 60x60cm",
+    phase: "installation",
     estimatedQuantity: 24,
     actualQuantity: 24,
     estimatedTotalCost: 3480.0,
     actualTotalCost: 3408.0,
     costVariance: -72.0,
     costVariancePercentage: -2.1,
-    deliveryStatus: 'delivered',
-    requirementStatus: 'delivered',
+    deliveryStatus: "delivered",
+    requirementStatus: "delivered",
   },
 ];
 ```
@@ -6838,7 +6838,7 @@ interface CustomerImportUploadDto {
   filename: string;
   rowCount: number;
   headers: string[];
-  status: 'uploaded';
+  status: "uploaded";
   uploadedAt: Date;
 }
 
@@ -6854,7 +6854,7 @@ interface CustomerImportMapResponseDto {
   mappings: Record<string, string>;
   unmappedColumns: string[];
   requiredFieldsMapped: boolean;
-  status: 'mapped';
+  status: "mapped";
   mappedAt: Date;
 }
 
@@ -6867,13 +6867,13 @@ interface CustomerImportValidateDto {
   duplicateRows: number;
   validationResults: ValidationResult[];
   duplicates?: DuplicateMatch[];
-  status: 'validated';
+  status: "validated";
   validatedAt: Date;
 }
 
 interface ValidationResult {
   row: number;
-  status: 'valid' | 'warning' | 'error' | 'duplicate';
+  status: "valid" | "warning" | "error" | "duplicate";
   field: string;
   error: string;
   value: unknown;
@@ -6906,7 +6906,7 @@ interface CustomerImportExecuteResponseDto {
   duplicateCount: number;
   updatedCount: number;
   importedCustomerIds: string[];
-  status: 'completed';
+  status: "completed";
   completedAt: Date;
   errorLogUrl: string;
 }
@@ -6921,7 +6921,7 @@ interface ProtocolImportUploadDto {
   filename: string;
   tableCount: number;
   rowCount: number;
-  status: 'uploaded';
+  status: "uploaded";
   uploadedAt: Date;
 }
 
@@ -6942,7 +6942,7 @@ interface ProtocolImportExtractResponseDto {
   headers: string[];
   rowCount: number;
   sampleRows: ProtocolImportRow[];
-  status: 'extracted';
+  status: "extracted";
   extractedAt: Date;
 }
 
@@ -6966,7 +6966,7 @@ interface ProtocolImportParseDatesResponseDto {
   parsedCount: number;
   failedCount: number;
   dateParsingResults: DateParsingResult[];
-  status: 'parsed';
+  status: "parsed";
   parsedAt: Date;
 }
 
@@ -6975,7 +6975,7 @@ interface DateParsingResult {
   originalValue: string;
   parsedValue: string | null;
   format: string | null;
-  status: 'success' | 'failed';
+  status: "success" | "failed";
   confidence: number;
   requiresManualEntry?: boolean;
   suggestedFormats?: string[];
@@ -7011,7 +7011,7 @@ interface ProtocolImportAssignCustomersResponseDto {
   autoMatchedCount: number;
   manualAssignedCount: number;
   unassignedCount: number;
-  status: 'assigned';
+  status: "assigned";
   assignedAt: Date;
 }
 
@@ -7022,7 +7022,7 @@ interface ProtocolImportValidateDto {
   validRows: number;
   invalidRows: number;
   validationResults: ValidationResult[];
-  status: 'validated';
+  status: "validated";
   validatedAt: Date;
 }
 
@@ -7043,7 +7043,7 @@ interface ProtocolImportExecuteResponseDto {
   skippedCount: number;
   errorCount: number;
   importedProtocolIds: string[];
-  status: 'completed';
+  status: "completed";
   completedAt: Date;
   errorLogUrl: string;
 }
@@ -7176,13 +7176,14 @@ interface ProtocolImportExecuteResponseDto {
 
 ```typescript
 interface AiResponseEnvelope<TData = any> {
-  status: 'success' | 'clarification_needed' | 'error';
+  status: "success" | "clarification_needed" | "error";
   correlationId: string; // echo from request header or generated server-side
   conversationId?: string; // present when conversational state is maintained
   operationId?: string; // BullMQ jobId for long-running operations
   message?: string; // human-readable summary
   data?: TData; // primary payload for success
-  clarification?: { // required when status === 'clarification_needed'
+  clarification?: {
+    // required when status === 'clarification_needed'
     prompt: string;
     missingFields?: string[];
     suggestedQuestions?: string[];
@@ -7195,13 +7196,13 @@ interface AiResponseEnvelope<TData = any> {
 }
 
 type AiErrorCode =
-  | 'ai_request_invalid_input'
-  | 'ai_provider_unavailable'
-  | 'ai_provider_error'
-  | 'ai_rate_limited'
-  | 'ai_conversation_not_found'
-  | 'ai_operation_not_found'
-  | 'ai_operation_expired';
+  | "ai_request_invalid_input"
+  | "ai_provider_unavailable"
+  | "ai_provider_error"
+  | "ai_rate_limited"
+  | "ai_conversation_not_found"
+  | "ai_operation_not_found"
+  | "ai_operation_expired";
 ```
 
 **Status semantics:**
@@ -7221,15 +7222,15 @@ type AiErrorCode =
 
 ### 23.4 Error Codes
 
-| Code                        | Description                                                          | Recommended Client Action                    |
-| --------------------------- | -------------------------------------------------------------------- | -------------------------------------------- |
-| `ai_request_invalid_input`  | Request payload failed schema or safety validation                   | Fix inputs and retry                         |
-| `ai_provider_unavailable`   | Upstream AI provider not reachable or degraded                       | Retry with backoff or fall back to cached UI |
-| `ai_provider_error`         | Provider returned an unexpected failure                              | Retry with backoff; capture correlation ID   |
-| `ai_rate_limited`           | Provider or proxy rate limit exceeded                                | Apply exponential backoff                    |
-| `ai_conversation_not_found` | Conversation ID is unknown or expired                                | Restart flow with a new message              |
-| `ai_operation_not_found`    | Polling for a job that does not exist                                | Validate operationId before polling          |
-| `ai_operation_expired`      | Long-running job exceeded retention window                           | Re-run the analysis request                  |
+| Code                        | Description                                        | Recommended Client Action                    |
+| --------------------------- | -------------------------------------------------- | -------------------------------------------- |
+| `ai_request_invalid_input`  | Request payload failed schema or safety validation | Fix inputs and retry                         |
+| `ai_provider_unavailable`   | Upstream AI provider not reachable or degraded     | Retry with backoff or fall back to cached UI |
+| `ai_provider_error`         | Provider returned an unexpected failure            | Retry with backoff; capture correlation ID   |
+| `ai_rate_limited`           | Provider or proxy rate limit exceeded              | Apply exponential backoff                    |
+| `ai_conversation_not_found` | Conversation ID is unknown or expired              | Restart flow with a new message              |
+| `ai_operation_not_found`    | Polling for a job that does not exist              | Validate operationId before polling          |
+| `ai_operation_expired`      | Long-running job exceeded retention window         | Re-run the analysis request                  |
 
 ### 23.5 Core Endpoints
 
@@ -7445,7 +7446,7 @@ Polls BullMQ-backed long-running operations created by `/analyze-text` (and futu
 | 1.5     | 2025-01-28 | System | **Added Time Tracking & Project Cost Management Endpoints (Phase 1 MVP)**: TimeEntry endpoints (CRUD, timer start/stop, bulk approve/reject, labor cost reports, pending approval queue) with complete DTOs; ProjectCost endpoints (CRUD, approval workflow, material cost summaries, pending payment tracking) with complete DTOs. Includes comprehensive RBAC permissions, business rules, status lifecycle transitions, cost calculations, and GoBD compliance for approved/paid entries                                                                                                                                                                                                                                                                                                                                                                               |
 | 1.6     | 2025-11-12 | System | **CRITICAL UPDATE - Added Supplier & Material Management Endpoints (Phase 1 MVP)**: Complete REST API for Supplier management (CRUD, approval, blacklist, contracts), Material catalog (CRUD, multi-supplier pricing, search), Project Material Requirements (BOM management, cost tracking), Purchase Orders (CRUD, approval workflow, delivery recording with real-time project cost updates), Supplier Invoices (CRUD, 3-way match, approval workflow, payment tracking), Supplier Communications (logging). Addresses Pre-Mortem Danger #3 (Critical Workflow Gaps). See [Supplier Management Spec](./SUPPLIER_SUBCONTRACTOR_MANAGEMENT_SPEC.md) and [Material Management Spec](./MATERIAL_INVENTORY_MANAGEMENT_SPEC.md) for complete business logic.                                                                                                                 |
 | 1.7     | 2025-01-27 | System | **Added Import/Export Endpoints (MVP)**: Customer import endpoints (upload Excel/CSV, map fields, validate, execute, error log) with automatic/manual field mapping, duplicate detection, and validation; Protocol import endpoints (upload Word document, extract table, parse dates with fallback to manual entry, assign customers, validate, execute, error log) with table extraction, date parsing (multiple formats), and customer assignment; Customer export endpoints (CSV/Excel/JSON/DATEV) with field selection and filtering; Protocol export endpoints (CSV/Excel/Word/JSON) with customer/protocol type filtering. Includes complete DTOs, business rules, performance considerations, and RBAC permissions. Required for data migration and ongoing operations. See [Import/Export Specification](./IMPORT_EXPORT_SPECIFICATION.md) for complete details. |
-| 1.8     | 2025-02-21 | System | **Added AI Proxy Endpoints**: Versioned `/api/v1/ai/*` surface with shared response envelope, correlation/conversation IDs, clarification workflow, BullMQ-backed long-running jobs with polling endpoint, and documented core routes (`/analyze-text`, `/conversation/{id}/message`, `/operations/{jobId}`). |
+| 1.8     | 2025-02-21 | System | **Added AI Proxy Endpoints**: Versioned `/api/v1/ai/*` surface with shared response envelope, correlation/conversation IDs, clarification workflow, BullMQ-backed long-running jobs with polling endpoint, and documented core routes (`/analyze-text`, `/conversation/{id}/message`, `/operations/{jobId}`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 ---
 

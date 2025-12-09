@@ -96,7 +96,7 @@ The User entity represents a system user with authentication credentials and rol
 ```typescript
 interface User extends BaseEntity {
   _id: string; // Format: "user-{uuid}"
-  type: 'user'; // Fixed discriminator
+  type: "user"; // Fixed discriminator
 
   // Identity
   email: string; // Unique email address (login username)
@@ -117,7 +117,7 @@ interface User extends BaseEntity {
   department?: string; // Department/division
 
   // Preferences
-  language?: 'de' | 'en'; // UI language (default: 'de')
+  language?: "de" | "en"; // UI language (default: 'de')
   timezone?: string; // User timezone (default: 'Europe/Berlin')
 
   // Working Hours & Availability (NEW - Phase 1)
@@ -156,7 +156,7 @@ interface DayWorkingHours {
 }
 
 interface UserAvailability {
-  status: 'available' | 'busy' | 'away' | 'vacation' | 'sick' | 'offline'; // Current status
+  status: "available" | "busy" | "away" | "vacation" | "sick" | "offline"; // Current status
   statusMessage?: string; // Custom status message (max 200 chars)
   availableUntil?: Date; // When status expires (auto-reset to 'available')
   lastUpdated: Date; // When status was last changed
@@ -178,14 +178,14 @@ interface OfficePresenceSchedule {
 }
 
 interface OfficePresenceDay {
-  location: 'office' | 'remote' | 'hybrid' | 'off'; // Where user is working
+  location: "office" | "remote" | "hybrid" | "off"; // Where user is working
   officeLocationId?: string; // Specific office location (if 'office' or 'hybrid')
   notes?: string; // Optional notes (max 200 chars)
 }
 
 interface OfficePresenceOverride {
   date: Date; // Specific date for override
-  location: 'office' | 'remote' | 'hybrid' | 'off';
+  location: "office" | "remote" | "hybrid" | "off";
   officeLocationId?: string;
   notes?: string;
 }
@@ -199,7 +199,7 @@ interface DateRange {
 interface RoleChangeEntry {
   timestamp: Date; // When role was changed
   changedBy: string; // User ID who made the change
-  action: 'ASSIGN' | 'REVOKE' | 'PRIMARY_CHANGED'; // What changed
+  action: "ASSIGN" | "REVOKE" | "PRIMARY_CHANGED"; // What changed
   role: UserRole; // Which role was affected
   reason: string; // Why the change was made (required)
 }
@@ -257,7 +257,7 @@ The Role entity represents a configurable role definition stored in CouchDB. Thi
 ```typescript
 interface Role extends BaseEntity {
   _id: string; // Format: "role-{roleId}" (e.g., "role-plan")
-  type: 'role'; // Fixed discriminator
+  type: "role"; // Fixed discriminator
 
   // Role identification
   roleId: UserRole; // Role identifier matching UserRole enum (e.g., 'PLAN')
@@ -341,7 +341,7 @@ The PermissionMatrix entity represents a versioned snapshot of the complete perm
 ```typescript
 interface PermissionMatrix extends BaseEntity {
   _id: string; // Format: "permission-matrix-{version}" (e.g., "permission-matrix-v2.0")
-  type: 'permission_matrix'; // Fixed discriminator
+  type: "permission_matrix"; // Fixed discriminator
 
   // Version control
   version: string; // Semantic version (e.g., "2.0", "2.1")
@@ -429,7 +429,7 @@ The Customer entity represents a company or organization. Customers can have mul
 ```typescript
 interface Customer extends BaseEntity {
   _id: string; // Format: "customer-{uuid}"
-  type: 'customer'; // Fixed discriminator
+  type: "customer"; // Fixed discriminator
 
   // Basic company information
   companyName: string; // Official company name (2-200 chars)
@@ -445,12 +445,12 @@ interface Customer extends BaseEntity {
   // Categorization
   industry?: string; // Business sector/industry
   customerType?:
-    | 'direct_marketer'
-    | 'retail'
-    | 'franchise'
-    | 'cooperative'
-    | 'other';
-  rating?: 'A' | 'B' | 'C'; // Customer rating (A=best)
+    | "direct_marketer"
+    | "retail"
+    | "franchise"
+    | "cooperative"
+    | "other";
+  rating?: "A" | "B" | "C"; // Customer rating (A=best)
 
   // Address Management (NEW)
   billingAddress: Address; // Single primary billing address (REQUIRED)
@@ -505,7 +505,7 @@ The Location entity represents a physical location for a customer (e.g., headqua
 ```typescript
 interface Location extends BaseEntity {
   _id: string; // Format: "location-{uuid}"
-  type: 'location'; // Fixed discriminator
+  type: "location"; // Fixed discriminator
 
   // Parent reference
   customerId: string; // Parent customer ID (REQUIRED)
@@ -513,11 +513,11 @@ interface Location extends BaseEntity {
   // Location identity
   locationName: string; // Descriptive name (e.g., "Filiale München", "Hauptstandort")
   locationType:
-    | 'headquarter'
-    | 'branch'
-    | 'warehouse'
-    | 'project_site'
-    | 'other';
+    | "headquarter"
+    | "branch"
+    | "warehouse"
+    | "project_site"
+    | "other";
   isActive: boolean; // Whether location is currently operational
 
   // Delivery address (separate from billing)
@@ -588,7 +588,7 @@ The Contact entity represents an individual person associated with a customer. C
 ```typescript
 interface ContactPerson extends BaseEntity {
   _id: string; // Format: "contact-{uuid}"
-  type: 'contact'; // Fixed discriminator
+  type: "contact"; // Fixed discriminator
 
   // Basic information
   firstName: string; // First name (REQUIRED)
@@ -606,7 +606,7 @@ interface ContactPerson extends BaseEntity {
 
   // Decision-Making & Authority (NEW)
   decisionMakingRole: DecisionMakingRole; // Role in decision-making process (REQUIRED)
-  authorityLevel: 'low' | 'medium' | 'high' | 'final_authority'; // Authority level
+  authorityLevel: "low" | "medium" | "high" | "final_authority"; // Authority level
   canApproveOrders: boolean; // Can approve orders/quotes
   approvalLimitEur?: number; // Maximum order value they can approve (required if canApproveOrders=true)
 
@@ -619,7 +619,7 @@ interface ContactPerson extends BaseEntity {
   isPrimaryContactForLocations: string[]; // Locations where they're the main contact
 
   // Communication preferences
-  preferredContactMethod?: 'email' | 'phone' | 'mobile';
+  preferredContactMethod?: "email" | "phone" | "mobile";
   language?: string; // Preferred language (ISO 639-1 code, default: "de")
 
   // Audit trail (inherited from BaseEntity)
@@ -650,12 +650,12 @@ Defines the role of a contact in the decision-making process.
 
 ```typescript
 enum DecisionMakingRole {
-  DECISION_MAKER = 'decision_maker', // Final decision authority (e.g., CEO, Owner)
-  KEY_INFLUENCER = 'key_influencer', // Strong influence on decisions (e.g., Purchasing Manager)
-  RECOMMENDER = 'recommender', // Provides recommendations (e.g., Project Manager)
-  GATEKEEPER = 'gatekeeper', // Controls access to decision makers (e.g., Executive Assistant)
-  OPERATIONAL_CONTACT = 'operational_contact', // Day-to-day operations only (e.g., Store Manager)
-  INFORMATIONAL = 'informational', // Kept informed, no decision power (e.g., Receptionist)
+  DECISION_MAKER = "decision_maker", // Final decision authority (e.g., CEO, Owner)
+  KEY_INFLUENCER = "key_influencer", // Strong influence on decisions (e.g., Purchasing Manager)
+  RECOMMENDER = "recommender", // Provides recommendations (e.g., Project Manager)
+  GATEKEEPER = "gatekeeper", // Controls access to decision makers (e.g., Executive Assistant)
+  OPERATIONAL_CONTACT = "operational_contact", // Day-to-day operations only (e.g., Store Manager)
+  INFORMATIONAL = "informational", // Kept informed, no decision power (e.g., Receptionist)
 }
 ```
 
@@ -665,14 +665,14 @@ Defines the functional responsibilities of a contact.
 
 ```typescript
 enum FunctionalRole {
-  OWNER_CEO = 'owner_ceo', // Business owner or CEO
-  PURCHASING_MANAGER = 'purchasing_manager', // Purchasing/procurement
-  FACILITY_MANAGER = 'facility_manager', // Facility management
-  STORE_MANAGER = 'store_manager', // Store/branch management
-  PROJECT_COORDINATOR = 'project_coordinator', // Project coordination
-  FINANCIAL_CONTROLLER = 'financial_controller', // Financial control
-  OPERATIONS_MANAGER = 'operations_manager', // Operations management
-  ADMINISTRATIVE = 'administrative', // Administrative support
+  OWNER_CEO = "owner_ceo", // Business owner or CEO
+  PURCHASING_MANAGER = "purchasing_manager", // Purchasing/procurement
+  FACILITY_MANAGER = "facility_manager", // Facility management
+  STORE_MANAGER = "store_manager", // Store/branch management
+  PROJECT_COORDINATOR = "project_coordinator", // Project coordination
+  FINANCIAL_CONTROLLER = "financial_controller", // Financial control
+  OPERATIONS_MANAGER = "operations_manager", // Operations management
+  ADMINISTRATIVE = "administrative", // Administrative support
 }
 ```
 
@@ -960,7 +960,7 @@ interface Address {
 if (customer.defaultDeliveryLocationId) {
   if (!customer.locations.includes(customer.defaultDeliveryLocationId)) {
     throw new ValidationException(
-      "Default delivery location must be one of the customer's locations"
+      "Default delivery location must be one of the customer's locations",
     );
   }
 }
@@ -971,13 +971,13 @@ if (customer.defaultDeliveryLocationId) {
 ```typescript
 if (customer.locations.length > 0) {
   const activeLocations = await this.locationRepo.findActive(
-    customer.locations
+    customer.locations,
   );
   if (activeLocations.length === 0) {
     warnings.push({
-      level: 'warning',
+      level: "warning",
       message:
-        'Customer has no active locations. At least one should be active.',
+        "Customer has no active locations. At least one should be active.",
     });
   }
 }
@@ -987,7 +987,7 @@ if (customer.locations.length > 0) {
 
 ```typescript
 // Tour planning fields only visible to ADM, INNEN, GF roles
-if (user.role !== 'ADM' && user.role !== 'INNEN' && user.role !== 'GF') {
+if (user.role !== "ADM" && user.role !== "INNEN" && user.role !== "GF") {
   // Strip tour planning fields from response
   delete customerResponse.lastVisitDate;
   delete customerResponse.visitFrequencyDays;
@@ -1001,7 +1001,7 @@ if (user.role !== 'ADM' && user.role !== 'INNEN' && user.role !== 'GF') {
 // When protocol is created with locationCheckIn (on-site visit)
 if (
   protocol.locationCheckIn &&
-  protocol.locationCheckIn.checkInType === 'on_site'
+  protocol.locationCheckIn.checkInType === "on_site"
 ) {
   customer.lastVisitDate = protocol.createdAt;
   await customerRepository.update(customer);
@@ -1015,12 +1015,12 @@ if (
 if (customer.visitFrequencyDays && customer.lastVisitDate) {
   const nextVisitDate = addDays(
     customer.lastVisitDate,
-    customer.visitFrequencyDays
+    customer.visitFrequencyDays,
   );
 
   if (isAfter(new Date(), nextVisitDate)) {
     warnings.push({
-      level: 'info',
+      level: "info",
       message: `Customer is due for a visit (last: ${customer.lastVisitDate}, frequency: ${customer.visitFrequencyDays} days)`,
     });
   }
@@ -1034,11 +1034,11 @@ if (customer.visitFrequencyDays && customer.lastVisitDate) {
 ```typescript
 const existingLocation = await this.locationRepo.findByCustomerAndName(
   location.customerId,
-  location.locationName
+  location.locationName,
 );
 if (existingLocation && existingLocation._id !== location._id) {
   throw new ValidationException(
-    `Location name "${location.locationName}" already exists for this customer`
+    `Location name "${location.locationName}" already exists for this customer`,
   );
 }
 ```
@@ -1049,7 +1049,7 @@ if (existingLocation && existingLocation._id !== location._id) {
 if (location.primaryContactPersonId) {
   if (!location.contactPersons.includes(location.primaryContactPersonId)) {
     throw new ValidationException(
-      'Primary contact must be in the list of assigned contact persons'
+      "Primary contact must be in the list of assigned contact persons",
     );
   }
 }
@@ -1063,13 +1063,13 @@ if (location.gpsCoordinates) {
 
   if (latitude < -90 || latitude > 90) {
     throw new ValidationException(
-      `Latitude must be between -90 and 90 (got ${latitude})`
+      `Latitude must be between -90 and 90 (got ${latitude})`,
     );
   }
 
   if (longitude < -180 || longitude > 180) {
     throw new ValidationException(
-      `Longitude must be between -180 and 180 (got ${longitude})`
+      `Longitude must be between -180 and 180 (got ${longitude})`,
     );
   }
 }
@@ -1080,15 +1080,15 @@ if (location.gpsCoordinates) {
 ```typescript
 if (location.isHotel === true && !location.hotelRating) {
   warnings.push({
-    level: 'warning',
-    message: 'Hotel locations should have a rating (1-5 stars)',
+    level: "warning",
+    message: "Hotel locations should have a rating (1-5 stars)",
   });
 }
 
 if (location.hotelRating && location.isHotel !== true) {
   warnings.push({
-    level: 'info',
-    message: 'Hotel rating is only applicable for hotel locations',
+    level: "info",
+    message: "Hotel rating is only applicable for hotel locations",
   });
 }
 ```
@@ -1130,7 +1130,7 @@ function calculateDistance(loc1: Location, loc2: Location): number {
 if (contact.canApproveOrders === true) {
   if (!contact.approvalLimitEur || contact.approvalLimitEur <= 0) {
     throw new ValidationException(
-      'Contacts who can approve orders must have an approval limit > 0'
+      "Contacts who can approve orders must have an approval limit > 0",
     );
   }
 }
@@ -1142,7 +1142,7 @@ if (contact.canApproveOrders === true) {
 for (const primaryLocationId of contact.isPrimaryContactForLocations) {
   if (!contact.assignedLocationIds.includes(primaryLocationId)) {
     throw new ValidationException(
-      `Contact is primary for location ${primaryLocationId} but not assigned to it`
+      `Contact is primary for location ${primaryLocationId} but not assigned to it`,
     );
   }
 }
@@ -1155,14 +1155,14 @@ for (const primaryLocationId of contact.isPrimaryContactForLocations) {
 const contacts = await this.contactRepo.findByCustomer(customerId);
 const hasDecisionMaker = contacts.some(
   (c) =>
-    c.decisionMakingRole === 'decision_maker' ||
-    c.decisionMakingRole === 'key_influencer'
+    c.decisionMakingRole === "decision_maker" ||
+    c.decisionMakingRole === "key_influencer",
 );
 if (!hasDecisionMaker) {
   warnings.push({
-    level: 'warning',
+    level: "warning",
     message:
-      'Customer should have at least one decision maker or key influencer',
+      "Customer should have at least one decision maker or key influencer",
   });
 }
 ```
@@ -1288,11 +1288,11 @@ interface Customer {
 
    ```typescript
    const defaultLocation: Location = {
-     _id: generateId('location'),
-     type: 'location',
+     _id: generateId("location"),
+     type: "location",
      customerId: customer._id,
-     locationName: 'Hauptstandort',
-     locationType: 'headquarter',
+     locationName: "Hauptstandort",
+     locationType: "headquarter",
      deliveryAddress: customer.billingAddress, // Copy billing address
      isActive: true,
      contactPersons: customer.contactPersons,
@@ -1335,8 +1335,8 @@ interface Contact {
 1. **Set Default Values:**
 
    ```typescript
-   contact.decisionMakingRole = 'operational_contact'; // Conservative default
-   contact.authorityLevel = 'low';
+   contact.decisionMakingRole = "operational_contact"; // Conservative default
+   contact.authorityLevel = "low";
    contact.canApproveOrders = false;
    contact.functionalRoles = [];
    contact.assignedLocationIds = [];
@@ -1380,8 +1380,8 @@ interface Contact {
 async function migrateCustomerAddresses() {
   const customers = await db.allDocs({
     include_docs: true,
-    startkey: 'customer-',
-    endkey: 'customer-\ufff0',
+    startkey: "customer-",
+    endkey: "customer-\ufff0",
   });
 
   for (const row of customers.rows) {
@@ -1399,7 +1399,7 @@ async function migrateCustomerAddresses() {
     }
 
     // Step 3: Update metadata
-    customer.modifiedBy = 'system-migration';
+    customer.modifiedBy = "system-migration";
     customer.modifiedAt = new Date();
     customer.version += 1;
 
@@ -1410,8 +1410,8 @@ async function migrateCustomerAddresses() {
 async function migrateContactDecisionRoles() {
   const contacts = await db.allDocs({
     include_docs: true,
-    startkey: 'contact-',
-    endkey: 'contact-\ufff0',
+    startkey: "contact-",
+    endkey: "contact-\ufff0",
   });
 
   for (const row of contacts.rows) {
@@ -1419,14 +1419,14 @@ async function migrateContactDecisionRoles() {
 
     // Set defaults for new fields
     if (!contact.decisionMakingRole) {
-      contact.decisionMakingRole = 'operational_contact';
-      contact.authorityLevel = 'low';
+      contact.decisionMakingRole = "operational_contact";
+      contact.authorityLevel = "low";
       contact.canApproveOrders = false;
       contact.functionalRoles = [];
       contact.assignedLocationIds = [];
       contact.isPrimaryContactForLocations = [];
 
-      contact.modifiedBy = 'system-migration';
+      contact.modifiedBy = "system-migration";
       contact.modifiedAt = new Date();
       contact.version += 1;
 
@@ -1508,25 +1508,25 @@ The following entities will be documented in future iterations:
 
 ```typescript
 const simpleCustomer: Customer = {
-  _id: 'customer-12345',
-  _rev: '1-abc',
-  type: 'customer',
-  companyName: 'Hofladen Müller GmbH',
-  vatNumber: 'DE123456789',
+  _id: "customer-12345",
+  _rev: "1-abc",
+  type: "customer",
+  companyName: "Hofladen Müller GmbH",
+  vatNumber: "DE123456789",
   billingAddress: {
-    street: 'Hauptstraße',
-    streetNumber: '15',
-    zipCode: '80331',
-    city: 'München',
-    country: 'Deutschland',
+    street: "Hauptstraße",
+    streetNumber: "15",
+    zipCode: "80331",
+    city: "München",
+    country: "Deutschland",
   },
   locations: [], // No separate delivery locations
-  owner: 'user-adm-001',
-  contactPersons: ['contact-001'],
-  createdBy: 'user-adm-001',
-  createdAt: new Date('2025-01-15'),
-  modifiedBy: 'user-adm-001',
-  modifiedAt: new Date('2025-01-15'),
+  owner: "user-adm-001",
+  contactPersons: ["contact-001"],
+  createdBy: "user-adm-001",
+  createdAt: new Date("2025-01-15"),
+  modifiedBy: "user-adm-001",
+  modifiedAt: new Date("2025-01-15"),
   version: 1,
 };
 // ✅ Valid: Billing address provided, no locations (simple case)
@@ -1536,51 +1536,51 @@ const simpleCustomer: Customer = {
 
 ```typescript
 const franchiseCustomer: Customer = {
-  _id: 'customer-67890',
-  _rev: '1-def',
-  type: 'customer',
-  companyName: 'Bäckerei Schmidt Franchise GmbH',
-  vatNumber: 'DE987654321',
+  _id: "customer-67890",
+  _rev: "1-def",
+  type: "customer",
+  companyName: "Bäckerei Schmidt Franchise GmbH",
+  vatNumber: "DE987654321",
   billingAddress: {
-    street: 'Verwaltungsweg',
-    streetNumber: '10',
-    zipCode: '70173',
-    city: 'Stuttgart',
-    country: 'Deutschland',
+    street: "Verwaltungsweg",
+    streetNumber: "10",
+    zipCode: "70173",
+    city: "Stuttgart",
+    country: "Deutschland",
   },
-  locations: ['location-001', 'location-002', 'location-003'],
-  defaultDeliveryLocationId: 'location-001',
-  owner: 'user-adm-002',
-  contactPersons: ['contact-100', 'contact-101', 'contact-102'],
-  createdBy: 'user-adm-002',
-  createdAt: new Date('2025-01-20'),
-  modifiedBy: 'user-adm-002',
-  modifiedAt: new Date('2025-01-20'),
+  locations: ["location-001", "location-002", "location-003"],
+  defaultDeliveryLocationId: "location-001",
+  owner: "user-adm-002",
+  contactPersons: ["contact-100", "contact-101", "contact-102"],
+  createdBy: "user-adm-002",
+  createdAt: new Date("2025-01-20"),
+  modifiedBy: "user-adm-002",
+  modifiedAt: new Date("2025-01-20"),
   version: 1,
 };
 
 const location1: Location = {
-  _id: 'location-001',
-  _rev: '1-ghi',
-  type: 'location',
-  customerId: 'customer-67890',
-  locationName: 'Filiale Stuttgart Mitte',
-  locationType: 'branch',
+  _id: "location-001",
+  _rev: "1-ghi",
+  type: "location",
+  customerId: "customer-67890",
+  locationName: "Filiale Stuttgart Mitte",
+  locationType: "branch",
   isActive: true,
   deliveryAddress: {
-    street: 'Königstraße',
-    streetNumber: '42',
-    zipCode: '70173',
-    city: 'Stuttgart',
-    country: 'Deutschland',
+    street: "Königstraße",
+    streetNumber: "42",
+    zipCode: "70173",
+    city: "Stuttgart",
+    country: "Deutschland",
   },
-  primaryContactPersonId: 'contact-100',
-  contactPersons: ['contact-100'],
-  deliveryNotes: 'Hintereingang nutzen, Mo-Fr 6:00-14:00 Uhr',
-  createdBy: 'user-adm-002',
-  createdAt: new Date('2025-01-20'),
-  modifiedBy: 'user-adm-002',
-  modifiedAt: new Date('2025-01-20'),
+  primaryContactPersonId: "contact-100",
+  contactPersons: ["contact-100"],
+  deliveryNotes: "Hintereingang nutzen, Mo-Fr 6:00-14:00 Uhr",
+  createdBy: "user-adm-002",
+  createdAt: new Date("2025-01-20"),
+  modifiedBy: "user-adm-002",
+  modifiedAt: new Date("2025-01-20"),
   version: 1,
 };
 // ✅ Valid: Multi-location setup with default delivery location
@@ -1590,32 +1590,32 @@ const location1: Location = {
 
 ```typescript
 const decisionMakerContact: ContactPerson = {
-  _id: 'contact-100',
-  _rev: '1-jkl',
-  type: 'contact',
-  firstName: 'Thomas',
-  lastName: 'Schmidt',
-  position: 'Geschäftsführer',
-  email: 'thomas.schmidt@baeckerei-schmidt.de',
-  phone: '+49-711-123456',
-  customerId: 'customer-67890',
+  _id: "contact-100",
+  _rev: "1-jkl",
+  type: "contact",
+  firstName: "Thomas",
+  lastName: "Schmidt",
+  position: "Geschäftsführer",
+  email: "thomas.schmidt@baeckerei-schmidt.de",
+  phone: "+49-711-123456",
+  customerId: "customer-67890",
 
   // Decision-making fields
-  decisionMakingRole: 'decision_maker',
-  authorityLevel: 'final_authority',
+  decisionMakingRole: "decision_maker",
+  authorityLevel: "final_authority",
   canApproveOrders: true,
   approvalLimitEur: 100000, // Can approve up to €100k
 
-  functionalRoles: ['owner_ceo', 'purchasing_manager'],
-  departmentInfluence: ['purchasing', 'operations', 'finance'],
+  functionalRoles: ["owner_ceo", "purchasing_manager"],
+  departmentInfluence: ["purchasing", "operations", "finance"],
 
-  assignedLocationIds: ['location-001', 'location-002', 'location-003'],
-  isPrimaryContactForLocations: ['location-001'],
+  assignedLocationIds: ["location-001", "location-002", "location-003"],
+  isPrimaryContactForLocations: ["location-001"],
 
-  createdBy: 'user-adm-002',
-  createdAt: new Date('2025-01-20'),
-  modifiedBy: 'user-adm-002',
-  modifiedAt: new Date('2025-01-20'),
+  createdBy: "user-adm-002",
+  createdAt: new Date("2025-01-20"),
+  modifiedBy: "user-adm-002",
+  modifiedAt: new Date("2025-01-20"),
   version: 1,
 };
 // ✅ Valid: Decision maker with high approval limit
@@ -1637,8 +1637,8 @@ const invalidContact: ContactPerson = {
 ```typescript
 // Customer already has location named "Filiale München"
 const duplicateLocation: Location = {
-  customerId: 'customer-12345',
-  locationName: 'Filiale München', // ❌ ERROR: Already exists
+  customerId: "customer-12345",
+  locationName: "Filiale München", // ❌ ERROR: Already exists
   // ... other fields
 };
 // ValidationException: "Location name 'Filiale München' already exists for this customer"
@@ -1658,13 +1658,13 @@ The UserTask entity represents personal todo items and follow-up tasks for indiv
 ```typescript
 interface UserTask extends BaseEntity {
   _id: string; // Format: "usertask-{uuid}"
-  type: 'user_task'; // Fixed discriminator
+  type: "user_task"; // Fixed discriminator
 
   // Core MVP fields
   title: string; // Task title (5-200 chars)
   description?: string; // Detailed description (rich text)
-  status: 'open' | 'in_progress' | 'completed' | 'cancelled'; // Task status
-  priority: 'low' | 'medium' | 'high' | 'urgent'; // Task priority
+  status: "open" | "in_progress" | "completed" | "cancelled"; // Task status
+  priority: "low" | "medium" | "high" | "urgent"; // Task priority
   dueDate?: Date; // Optional due date
   assignedTo: string; // User ID (can be self-assigned)
 
@@ -1695,7 +1695,7 @@ interface UserTask extends BaseEntity {
 
 ```typescript
 interface RecurringPattern {
-  frequency: 'daily' | 'weekly' | 'monthly';
+  frequency: "daily" | "weekly" | "monthly";
   interval: number; // Every N days/weeks/months
   endDate?: Date; // When to stop creating recurring tasks
   lastCreated?: Date; // Last time task was auto-created
@@ -1791,14 +1791,14 @@ The ProjectTask entity represents work items within a project context. These tas
 ```typescript
 interface ProjectTask extends BaseEntity {
   _id: string; // Format: "projecttask-{uuid}"
-  type: 'project_task'; // Fixed discriminator
+  type: "project_task"; // Fixed discriminator
 
   // Core MVP fields
   projectId: string; // Parent project ID (REQUIRED)
   title: string; // Task title (5-200 chars)
   description?: string; // Detailed description (rich text)
-  status: 'todo' | 'in_progress' | 'review' | 'done' | 'blocked'; // Task status
-  priority: 'low' | 'medium' | 'high' | 'critical'; // Task priority
+  status: "todo" | "in_progress" | "review" | "done" | "blocked"; // Task status
+  priority: "low" | "medium" | "high" | "critical"; // Task priority
   assignedTo: string; // User ID (PLAN, INNEN, etc.)
   dueDate?: Date; // Optional due date
 
@@ -1966,20 +1966,20 @@ interface TimeEntry {
 
 ```typescript
 const validProjectTask: ProjectTask = {
-  _id: 'projecttask-12345',
-  _rev: '1-abc',
-  type: 'project_task',
-  projectId: 'project-98765',
-  title: 'Schedule installation team for week 8',
-  status: 'todo',
-  priority: 'medium',
-  assignedTo: 'user-innen-001',
-  dueDate: new Date('2025-02-20'),
-  phase: 'execution',
-  createdBy: 'user-innen-001',
-  createdAt: new Date('2025-01-28'),
-  modifiedBy: 'user-innen-001',
-  modifiedAt: new Date('2025-01-28'),
+  _id: "projecttask-12345",
+  _rev: "1-abc",
+  type: "project_task",
+  projectId: "project-98765",
+  title: "Schedule installation team for week 8",
+  status: "todo",
+  priority: "medium",
+  assignedTo: "user-innen-001",
+  dueDate: new Date("2025-02-20"),
+  phase: "execution",
+  createdBy: "user-innen-001",
+  createdAt: new Date("2025-01-28"),
+  modifiedBy: "user-innen-001",
+  modifiedAt: new Date("2025-01-28"),
   version: 1,
 };
 // ✅ Valid: All required fields present, valid project reference
@@ -1990,7 +1990,7 @@ const validProjectTask: ProjectTask = {
 ```typescript
 const invalidTask: ProjectTask = {
   // ... other fields
-  status: 'blocked',
+  status: "blocked",
   blockingReason: undefined, // ❌ ERROR: Required when status = blocked
 };
 // ValidationException: "Blocking reason is required when task status is blocked"
@@ -2001,8 +2001,8 @@ const invalidTask: ProjectTask = {
 ```typescript
 // User 'user-adm-005' does NOT have Project.READ permission on project-98765
 const invalidTask: ProjectTask = {
-  projectId: 'project-98765',
-  assignedTo: 'user-adm-005', // ❌ ERROR: User cannot access this project
+  projectId: "project-98765",
+  assignedTo: "user-adm-005", // ❌ ERROR: User cannot access this project
   // ... other fields
 };
 // ForbiddenException: "Cannot assign task to user who doesn't have access to project"
@@ -2021,7 +2021,7 @@ if (userTask.dueDate) {
   const now = new Date();
   if (userTask.dueDate < now && !userTask._id) {
     // Only check on creation
-    throw new ValidationException('Due date cannot be in the past');
+    throw new ValidationException("Due date cannot be in the past");
   }
 }
 ```
@@ -2033,10 +2033,10 @@ if (userTask.dueDate) {
 if (userTask.relatedCustomerId) {
   const customer = await this.customerRepo.findById(userTask.relatedCustomerId);
   if (!customer) {
-    throw new ValidationException('Related customer not found');
+    throw new ValidationException("Related customer not found");
   }
-  if (!hasPermission(currentUser.roles, 'Customer', 'READ')) {
-    throw new ForbiddenException('Cannot link to customer you cannot access');
+  if (!hasPermission(currentUser.roles, "Customer", "READ")) {
+    throw new ForbiddenException("Cannot link to customer you cannot access");
   }
 }
 ```
@@ -2046,9 +2046,9 @@ if (userTask.relatedCustomerId) {
 ```typescript
 // Only GF and PLAN can assign tasks to other users
 if (userTask.assignedTo !== currentUser.id) {
-  if (!hasPermission(currentUser.roles, 'UserTask', 'ASSIGN_TO_OTHERS')) {
+  if (!hasPermission(currentUser.roles, "UserTask", "ASSIGN_TO_OTHERS")) {
     throw new ForbiddenException(
-      'You can only create tasks assigned to yourself. GF/PLAN can assign to others.'
+      "You can only create tasks assigned to yourself. GF/PLAN can assign to others.",
     );
   }
 }
@@ -2058,7 +2058,7 @@ if (userTask.assignedTo !== currentUser.id) {
 
 ```typescript
 // When marking completed, set completion metadata
-if (userTask.status === 'completed') {
+if (userTask.status === "completed") {
   if (!userTask.completedAt) {
     userTask.completedAt = new Date();
     userTask.completedBy = currentUser.id;
@@ -2074,11 +2074,11 @@ if (userTask.status === 'completed') {
 // User must have Project.READ permission
 const project = await this.projectRepo.findById(projectTask.projectId);
 if (!project) {
-  throw new NotFoundException('Project not found');
+  throw new NotFoundException("Project not found");
 }
-if (!hasPermission(currentUser.roles, 'Project', 'READ')) {
+if (!hasPermission(currentUser.roles, "Project", "READ")) {
   throw new ForbiddenException(
-    'Cannot create tasks for projects you cannot access'
+    "Cannot create tasks for projects you cannot access",
   );
 }
 ```
@@ -2088,9 +2088,9 @@ if (!hasPermission(currentUser.roles, 'Project', 'READ')) {
 ```typescript
 // Assignee must have Project.READ on parent project
 const assignee = await this.userRepo.findById(projectTask.assignedTo);
-if (!hasPermission(assignee.roles, 'Project', 'READ')) {
+if (!hasPermission(assignee.roles, "Project", "READ")) {
   throw new ValidationException(
-    'Cannot assign task to user who does not have access to this project'
+    "Cannot assign task to user who does not have access to this project",
   );
 }
 ```
@@ -2098,10 +2098,10 @@ if (!hasPermission(assignee.roles, 'Project', 'READ')) {
 **Rule PT-003: Blocking Reason Requirement**
 
 ```typescript
-if (projectTask.status === 'blocked') {
+if (projectTask.status === "blocked") {
   if (!projectTask.blockingReason || projectTask.blockingReason.length < 10) {
     throw new ValidationException(
-      'Blocking reason is required (min 10 characters) when task status is blocked'
+      "Blocking reason is required (min 10 characters) when task status is blocked",
     );
   }
 }
@@ -2112,10 +2112,10 @@ if (projectTask.status === 'blocked') {
 ```typescript
 // If phase specified, should be valid project phase
 if (projectTask.phase) {
-  const validPhases = ['planning', 'execution', 'delivery', 'closure'];
+  const validPhases = ["planning", "execution", "delivery", "closure"];
   if (!validPhases.includes(projectTask.phase)) {
     throw new ValidationException(
-      `Invalid phase. Must be one of: ${validPhases.join(', ')}`
+      `Invalid phase. Must be one of: ${validPhases.join(", ")}`,
     );
   }
 }
@@ -2125,11 +2125,11 @@ if (projectTask.phase) {
 
 ```typescript
 // When status changes to 'review', task should be assigned to reviewer (not original assignee)
-if (projectTask.status === 'review') {
+if (projectTask.status === "review") {
   warnings.push({
-    level: 'info',
+    level: "info",
     message:
-      'Task is in review status. Consider reassigning to reviewer if not already done.',
+      "Task is in review status. Consider reassigning to reviewer if not already done.",
   });
 }
 ```
@@ -2195,16 +2195,16 @@ interface CalendarEvent {
 
 ```typescript
 enum CalendarEventType {
-  USER_TASK = 'user_task', // UserTask due date
-  PROJECT_TASK = 'project_task', // ProjectTask due date
-  PROJECT_DEADLINE = 'project_deadline', // Project plannedEndDate
-  PROJECT_START = 'project_start', // Project plannedStartDate
-  PROJECT_MILESTONE = 'project_milestone', // Project milestone
-  OPPORTUNITY_CLOSE = 'opportunity_close', // Opportunity expectedCloseDate
-  INVOICE_DUE = 'invoice_due', // Invoice paymentDueDate
-  ACTIVITY_SCHEDULED = 'activity_scheduled', // Scheduled activity/meeting
-  USER_VACATION = 'user_vacation', // User vacation/time off
-  HOLIDAY = 'holiday', // Company/public holiday
+  USER_TASK = "user_task", // UserTask due date
+  PROJECT_TASK = "project_task", // ProjectTask due date
+  PROJECT_DEADLINE = "project_deadline", // Project plannedEndDate
+  PROJECT_START = "project_start", // Project plannedStartDate
+  PROJECT_MILESTONE = "project_milestone", // Project milestone
+  OPPORTUNITY_CLOSE = "opportunity_close", // Opportunity expectedCloseDate
+  INVOICE_DUE = "invoice_due", // Invoice paymentDueDate
+  ACTIVITY_SCHEDULED = "activity_scheduled", // Scheduled activity/meeting
+  USER_VACATION = "user_vacation", // User vacation/time off
+  HOLIDAY = "holiday", // Company/public holiday
 }
 ```
 
@@ -2212,14 +2212,14 @@ enum CalendarEventType {
 
 ```typescript
 enum CalendarEntityType {
-  USER_TASK = 'UserTask',
-  PROJECT_TASK = 'ProjectTask',
-  PROJECT = 'Project',
-  OPPORTUNITY = 'Opportunity',
-  INVOICE = 'Invoice',
-  ACTIVITY = 'Activity',
-  USER = 'User',
-  SYSTEM = 'System',
+  USER_TASK = "UserTask",
+  PROJECT_TASK = "ProjectTask",
+  PROJECT = "Project",
+  OPPORTUNITY = "Opportunity",
+  INVOICE = "Invoice",
+  ACTIVITY = "Activity",
+  USER = "User",
+  SYSTEM = "System",
 }
 ```
 
@@ -2227,11 +2227,11 @@ enum CalendarEntityType {
 
 ```typescript
 enum CalendarPriority {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-  URGENT = 'urgent',
-  CRITICAL = 'critical',
+  LOW = "low",
+  MEDIUM = "medium",
+  HIGH = "high",
+  URGENT = "urgent",
+  CRITICAL = "critical",
 }
 ```
 
@@ -2267,8 +2267,8 @@ function userTaskToCalendarEvent(task: UserTask): CalendarEvent {
     type: CalendarEventType.USER_TASK,
     title: task.title,
     description: task.description,
-    color: getPriorityColor(task.priority) || '#3B82F6',
-    icon: 'CheckSquare',
+    color: getPriorityColor(task.priority) || "#3B82F6",
+    icon: "CheckSquare",
     startDate: task.dueDate,
     endDate: task.dueDate,
     allDay: true,
@@ -2291,8 +2291,8 @@ function projectTaskToCalendarEvent(task: ProjectTask): CalendarEvent {
     type: CalendarEventType.PROJECT_TASK,
     title: task.title,
     description: task.description,
-    color: getPriorityColor(task.priority) || '#10B981',
-    icon: 'Briefcase',
+    color: getPriorityColor(task.priority) || "#10B981",
+    icon: "Briefcase",
     startDate: task.dueDate,
     endDate: task.dueDate,
     allDay: true,
@@ -2318,8 +2318,8 @@ function projectToCalendarEvents(project: Project): CalendarEvent[] {
     type: CalendarEventType.PROJECT_START,
     title: `Start: ${project.projectName}`,
     description: project.projectDescription,
-    color: '#22C55E',
-    icon: 'PlayCircle',
+    color: "#22C55E",
+    icon: "PlayCircle",
     startDate: project.plannedStartDate,
     endDate: project.plannedStartDate,
     allDay: true,
@@ -2335,8 +2335,8 @@ function projectToCalendarEvents(project: Project): CalendarEvent[] {
     type: CalendarEventType.PROJECT_DEADLINE,
     title: `Deadline: ${project.projectName}`,
     description: project.projectDescription,
-    color: '#10B981',
-    icon: 'Flag',
+    color: "#10B981",
+    icon: "Flag",
     startDate: project.plannedEndDate,
     endDate: project.plannedEndDate,
     allDay: true,
@@ -2354,8 +2354,8 @@ function projectToCalendarEvents(project: Project): CalendarEvent[] {
         type: CalendarEventType.PROJECT_MILESTONE,
         title: milestone.name,
         description: milestone.description,
-        color: '#059669',
-        icon: 'Target',
+        color: "#059669",
+        icon: "Target",
         startDate: milestone.dueDate,
         endDate: milestone.dueDate,
         allDay: true,
@@ -2380,8 +2380,8 @@ function opportunityToCalendarEvent(opp: Opportunity): CalendarEvent {
     type: CalendarEventType.OPPORTUNITY_CLOSE,
     title: `Close: ${opp.title}`,
     description: opp.description,
-    color: '#A855F7',
-    icon: 'Target',
+    color: "#A855F7",
+    icon: "Target",
     startDate: opp.expectedCloseDate,
     endDate: opp.expectedCloseDate,
     allDay: true,
@@ -2441,29 +2441,29 @@ Calendar events inherit permissions from source entities:
 ```typescript
 function filterCalendarEvents(
   events: CalendarEvent[],
-  user: User
+  user: User,
 ): CalendarEvent[] {
   return events.filter((event) => {
     switch (event.entityType) {
       case CalendarEntityType.USER_TASK:
         return (
-          hasPermission(user, 'UserTask', 'READ') &&
-          (user.role === 'GF' ||
-            user.role === 'PLAN' ||
+          hasPermission(user, "UserTask", "READ") &&
+          (user.role === "GF" ||
+            user.role === "PLAN" ||
             event.assignedTo?.includes(user._id))
         );
 
       case CalendarEntityType.PROJECT_TASK:
         return (
-          hasPermission(user, 'ProjectTask', 'READ') &&
+          hasPermission(user, "ProjectTask", "READ") &&
           canAccessProject(user, event.entityId)
         );
 
       case CalendarEntityType.PROJECT:
-        return hasPermission(user, 'Project', 'READ');
+        return hasPermission(user, "Project", "READ");
 
       case CalendarEntityType.OPPORTUNITY:
-        return hasPermission(user, 'Opportunity', 'READ');
+        return hasPermission(user, "Opportunity", "READ");
 
       default:
         return false;
@@ -2515,7 +2515,7 @@ The CalendarSubscription entity represents a subscription feed that allows users
 ```typescript
 interface CalendarSubscription extends BaseEntity {
   _id: string; // Format: "calendar-subscription-{uuid}"
-  type: 'calendar-subscription'; // Fixed discriminator
+  type: "calendar-subscription"; // Fixed discriminator
 
   // Subscription Identity
   name: string; // Subscription name (e.g., "Personal Tasks", "Team Calendar")
@@ -2551,7 +2551,7 @@ interface CalendarSubscription extends BaseEntity {
 }
 
 interface SubscriptionScope {
-  type: 'personal' | 'team' | 'custom'; // Subscription scope type
+  type: "personal" | "team" | "custom"; // Subscription scope type
 
   // Personal scope (default)
   includeOwnTasks?: boolean; // Include own UserTasks (default: true)
@@ -2574,15 +2574,15 @@ interface SubscriptionScope {
 }
 
 enum DateRangeType {
-  PAST_7_DAYS = 'past_7_days',
-  PAST_30_DAYS = 'past_30_days',
-  NEXT_7_DAYS = 'next_7_days',
-  NEXT_30_DAYS = 'next_30_days',
-  NEXT_90_DAYS = 'next_90_days',
-  CURRENT_MONTH = 'current_month',
-  CURRENT_QUARTER = 'current_quarter',
-  CURRENT_YEAR = 'current_year',
-  ALL = 'all', // All events (no date filter)
+  PAST_7_DAYS = "past_7_days",
+  PAST_30_DAYS = "past_30_days",
+  NEXT_7_DAYS = "next_7_days",
+  NEXT_30_DAYS = "next_30_days",
+  NEXT_90_DAYS = "next_90_days",
+  CURRENT_MONTH = "current_month",
+  CURRENT_QUARTER = "current_quarter",
+  CURRENT_YEAR = "current_year",
+  ALL = "all", // All events (no date filter)
 }
 ```
 
@@ -2646,33 +2646,33 @@ enum DateRangeType {
 
 ```typescript
 const personalSubscription: CalendarSubscription = {
-  _id: 'calendar-subscription-1',
-  type: 'calendar-subscription',
-  name: 'My Tasks',
-  description: 'Personal task calendar for Outlook',
-  userId: 'user-adm-1',
+  _id: "calendar-subscription-1",
+  type: "calendar-subscription",
+  name: "My Tasks",
+  description: "Personal task calendar for Outlook",
+  userId: "user-adm-1",
   scope: {
-    type: 'personal',
+    type: "personal",
     includeOwnTasks: true,
     includeAssignedTasks: true,
     includeProjects: false,
     includeOpportunities: false,
   },
-  token: 'a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456',
+  token: "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
   webcalUrl:
-    'webcal://api.kompass.de/api/v1/calendar/subscriptions/a1b2...56/feed.ics',
+    "webcal://api.kompass.de/api/v1/calendar/subscriptions/a1b2...56/feed.ics",
   httpsUrl:
-    'https://api.kompass.de/api/v1/calendar/subscriptions/a1b2...56/feed.ics',
-  eventTypes: ['USER_TASK', 'PROJECT_TASK'],
-  status: ['TODO', 'IN_PROGRESS'],
-  dateRangeType: 'NEXT_90_DAYS',
+    "https://api.kompass.de/api/v1/calendar/subscriptions/a1b2...56/feed.ics",
+  eventTypes: ["USER_TASK", "PROJECT_TASK"],
+  status: ["TODO", "IN_PROGRESS"],
+  dateRangeType: "NEXT_90_DAYS",
   active: true,
   accessCount: 0,
   maxRequestsPerHour: 60,
-  createdBy: 'user-adm-1',
-  createdAt: new Date('2025-02-01'),
-  modifiedBy: 'user-adm-1',
-  modifiedAt: new Date('2025-02-01'),
+  createdBy: "user-adm-1",
+  createdAt: new Date("2025-02-01"),
+  modifiedBy: "user-adm-1",
+  modifiedAt: new Date("2025-02-01"),
   version: 1,
 };
 ```
@@ -2681,32 +2681,32 @@ const personalSubscription: CalendarSubscription = {
 
 ```typescript
 const teamSubscription: CalendarSubscription = {
-  _id: 'calendar-subscription-2',
-  type: 'calendar-subscription',
-  name: 'Team Overview',
-  description: 'All team tasks and projects',
-  userId: 'user-gf-1',
+  _id: "calendar-subscription-2",
+  type: "calendar-subscription",
+  name: "Team Overview",
+  description: "All team tasks and projects",
+  userId: "user-gf-1",
   scope: {
-    type: 'team',
+    type: "team",
     includeTeamTasks: true,
     includeTeamProjects: true,
     includeTeamOpportunities: false,
   },
-  token: 'f1e2d3c4b5a6987654321fedcba9876543210fedcba9876543210fedcba98765',
+  token: "f1e2d3c4b5a6987654321fedcba9876543210fedcba9876543210fedcba98765",
   webcalUrl:
-    'webcal://api.kompass.de/api/v1/calendar/subscriptions/f1e2...65/feed.ics',
+    "webcal://api.kompass.de/api/v1/calendar/subscriptions/f1e2...65/feed.ics",
   httpsUrl:
-    'https://api.kompass.de/api/v1/calendar/subscriptions/f1e2...65/feed.ics',
-  eventTypes: ['USER_TASK', 'PROJECT_TASK', 'PROJECT_DEADLINE'],
-  dateRangeType: 'NEXT_30_DAYS',
+    "https://api.kompass.de/api/v1/calendar/subscriptions/f1e2...65/feed.ics",
+  eventTypes: ["USER_TASK", "PROJECT_TASK", "PROJECT_DEADLINE"],
+  dateRangeType: "NEXT_30_DAYS",
   active: true,
-  expiresAt: new Date('2025-12-31'), // Expires end of year
+  expiresAt: new Date("2025-12-31"), // Expires end of year
   accessCount: 0,
   maxRequestsPerHour: 120, // Higher limit for team calendar
-  createdBy: 'user-gf-1',
-  createdAt: new Date('2025-02-01'),
-  modifiedBy: 'user-gf-1',
-  modifiedAt: new Date('2025-02-01'),
+  createdBy: "user-gf-1",
+  createdAt: new Date("2025-02-01"),
+  modifiedBy: "user-gf-1",
+  modifiedAt: new Date("2025-02-01"),
   version: 1,
 };
 ```
@@ -2740,7 +2740,7 @@ The Tour entity represents a business trip that groups multiple customer meeting
 ```typescript
 interface Tour extends BaseEntity {
   _id: string; // Format: "tour-{uuid}"
-  type: 'tour'; // Fixed discriminator
+  type: "tour"; // Fixed discriminator
 
   // Tour Identity
   title: string; // Tour name (2-200 chars)
@@ -2782,10 +2782,10 @@ interface Tour extends BaseEntity {
 
 ```typescript
 enum TourStatus {
-  PLANNED = 'planned', // Tour is scheduled
-  ACTIVE = 'active', // Tour is in progress
-  COMPLETED = 'completed', // Tour finished
-  CANCELLED = 'cancelled', // Tour cancelled
+  PLANNED = "planned", // Tour is scheduled
+  ACTIVE = "active", // Tour is in progress
+  COMPLETED = "completed", // Tour finished
+  CANCELLED = "cancelled", // Tour cancelled
 }
 ```
 
@@ -2854,7 +2854,7 @@ The Meeting/Appointment entity represents a scheduled customer visit. Meetings c
 ```typescript
 interface Meeting extends BaseEntity {
   _id: string; // Format: "meeting-{uuid}"
-  type: 'meeting'; // Fixed discriminator
+  type: "meeting"; // Fixed discriminator
 
   // Meeting Identity
   title: string; // Meeting subject (2-200 chars)
@@ -2904,13 +2904,13 @@ interface Meeting extends BaseEntity {
 
 ```typescript
 enum MeetingType {
-  FIRST_VISIT = 'first_visit',
-  FOLLOW_UP = 'follow_up',
-  PRESENTATION = 'presentation',
-  NEGOTIATION = 'negotiation',
-  CLOSING = 'closing',
-  PROJECT_REVIEW = 'project_review',
-  OTHER = 'other',
+  FIRST_VISIT = "first_visit",
+  FOLLOW_UP = "follow_up",
+  PRESENTATION = "presentation",
+  NEGOTIATION = "negotiation",
+  CLOSING = "closing",
+  PROJECT_REVIEW = "project_review",
+  OTHER = "other",
 }
 ```
 
@@ -2918,11 +2918,11 @@ enum MeetingType {
 
 ```typescript
 enum MeetingOutcome {
-  SUCCESSFUL = 'successful',
-  NEEDS_FOLLOW_UP = 'needs_follow_up',
-  DELAYED = 'delayed',
-  CANCELLED = 'cancelled',
-  NO_SHOW = 'no_show',
+  SUCCESSFUL = "successful",
+  NEEDS_FOLLOW_UP = "needs_follow_up",
+  DELAYED = "delayed",
+  CANCELLED = "cancelled",
+  NO_SHOW = "no_show",
 }
 ```
 
@@ -2984,7 +2984,7 @@ The HotelStay entity represents overnight accommodation during business trips. T
 ```typescript
 interface HotelStay extends BaseEntity {
   _id: string; // Format: "hotel-stay-{uuid}"
-  type: 'hotel_stay'; // Fixed discriminator
+  type: "hotel_stay"; // Fixed discriminator
 
   // Tour Association
   tourId: string; // Tour ID (REQUIRED)
@@ -3082,7 +3082,7 @@ The Expense entity represents all business expenses including receipts, mileage,
 ```typescript
 interface Expense extends BaseEntity {
   _id: string; // Format: "expense-{uuid}"
-  type: 'expense'; // Fixed discriminator
+  type: "expense"; // Fixed discriminator
 
   // Expense Identity
   title: string; // Description (2-200 chars)
@@ -3138,17 +3138,17 @@ interface Expense extends BaseEntity {
 
 ```typescript
 enum ExpenseCategory {
-  MILEAGE = 'mileage',
-  HOTEL = 'hotel',
-  MEAL = 'meal',
-  FUEL = 'fuel',
-  PARKING = 'parking',
-  TOLL = 'toll',
-  PUBLIC_TRANSPORT = 'public_transport',
-  CLIENT_ENTERTAINMENT = 'client_entertainment',
-  OFFICE_SUPPLIES = 'office_supplies',
-  PHONE = 'phone',
-  OTHER = 'other',
+  MILEAGE = "mileage",
+  HOTEL = "hotel",
+  MEAL = "meal",
+  FUEL = "fuel",
+  PARKING = "parking",
+  TOLL = "toll",
+  PUBLIC_TRANSPORT = "public_transport",
+  CLIENT_ENTERTAINMENT = "client_entertainment",
+  OFFICE_SUPPLIES = "office_supplies",
+  PHONE = "phone",
+  OTHER = "other",
 }
 ```
 
@@ -3156,11 +3156,11 @@ enum ExpenseCategory {
 
 ```typescript
 enum ExpenseStatus {
-  DRAFT = 'draft', // Being edited
-  SUBMITTED = 'submitted', // Submitted for approval
-  APPROVED = 'approved', // Approved by GF
-  REJECTED = 'rejected', // Rejected (can resubmit)
-  PAID = 'paid', // Reimbursed
+  DRAFT = "draft", // Being edited
+  SUBMITTED = "submitted", // Submitted for approval
+  APPROVED = "approved", // Approved by GF
+  REJECTED = "rejected", // Rejected (can resubmit)
+  PAID = "paid", // Reimbursed
 }
 ```
 
@@ -3244,7 +3244,7 @@ The MileageLog entity tracks GPS-recorded journeys for tour expense calculation.
 ```typescript
 interface MileageLog extends BaseEntity {
   _id: string; // Format: "mileage-log-{uuid}"
-  type: 'mileage_log'; // Fixed discriminator
+  type: "mileage_log"; // Fixed discriminator
 
   // Tour Association
   tourId: string; // Tour ID (REQUIRED)
@@ -3367,7 +3367,7 @@ duration = (endTime - startTime) / (1000 * 60); // minutes
 // Haversine formula for direct distance
 function calculateGPSDistance(
   from: GPSCoordinates,
-  to: GPSCoordinates
+  to: GPSCoordinates,
 ): number {
   const R = 6371; // Earth radius in km
   const φ1 = (from.latitude * Math.PI) / 180;
@@ -3465,7 +3465,7 @@ The TimeEntry entity represents time worked by team members on projects, support
 ```typescript
 interface TimeEntry extends BaseEntity {
   _id: string; // Format: "time-entry-{uuid}"
-  type: 'time_entry'; // Fixed discriminator
+  type: "time_entry"; // Fixed discriminator
 
   // Project & Task references
   projectId: string; // Parent project (REQUIRED)
@@ -3497,10 +3497,10 @@ interface TimeEntry extends BaseEntity {
 }
 
 enum TimeEntryStatus {
-  IN_PROGRESS = 'in_progress', // Timer running or manual entry not completed
-  COMPLETED = 'completed', // Timer stopped, ready for approval
-  APPROVED = 'approved', // Approved by manager (included in cost calculations)
-  REJECTED = 'rejected', // Rejected by manager
+  IN_PROGRESS = "in_progress", // Timer running or manual entry not completed
+  COMPLETED = "completed", // Timer stopped, ready for approval
+  APPROVED = "approved", // Approved by manager (included in cost calculations)
+  REJECTED = "rejected", // Rejected by manager
 }
 ```
 
@@ -3609,10 +3609,10 @@ interface TimeEntryResponseDto extends TimeEntry {
 ```typescript
 // Valid status transitions
 const VALID_TRANSITIONS = {
-  IN_PROGRESS: ['COMPLETED'], // Timer stopped
-  COMPLETED: ['APPROVED', 'REJECTED'], // Manager review
+  IN_PROGRESS: ["COMPLETED"], // Timer stopped
+  COMPLETED: ["APPROVED", "REJECTED"], // Manager review
   APPROVED: [], // Terminal state
-  REJECTED: ['COMPLETED'], // Re-submit after rejection
+  REJECTED: ["COMPLETED"], // Re-submit after rejection
 };
 ```
 
@@ -3708,7 +3708,7 @@ The ProjectCost entity represents all non-labor costs associated with projects, 
 ```typescript
 interface ProjectCost extends BaseEntity {
   _id: string; // Format: "project-cost-{uuid}"
-  type: 'project_cost'; // Fixed discriminator
+  type: "project_cost"; // Fixed discriminator
 
   // Project reference
   projectId: string; // Parent project (REQUIRED)
@@ -3742,19 +3742,19 @@ interface ProjectCost extends BaseEntity {
 }
 
 enum ProjectCostType {
-  MATERIAL = 'material', // Construction materials, supplies
-  CONTRACTOR = 'contractor', // External contractor labor
-  EXTERNAL_SERVICE = 'external_service', // Consulting, specialized services
-  EQUIPMENT = 'equipment', // Equipment rental or purchase
-  OTHER = 'other', // Miscellaneous costs
+  MATERIAL = "material", // Construction materials, supplies
+  CONTRACTOR = "contractor", // External contractor labor
+  EXTERNAL_SERVICE = "external_service", // Consulting, specialized services
+  EQUIPMENT = "equipment", // Equipment rental or purchase
+  OTHER = "other", // Miscellaneous costs
 }
 
 enum ProjectCostStatus {
-  PLANNED = 'planned', // Planned but not yet ordered
-  ORDERED = 'ordered', // Purchase order issued
-  RECEIVED = 'received', // Goods/services received
-  INVOICED = 'invoiced', // Invoice received
-  PAID = 'paid', // Payment completed
+  PLANNED = "planned", // Planned but not yet ordered
+  ORDERED = "ordered", // Purchase order issued
+  RECEIVED = "received", // Goods/services received
+  INVOICED = "invoiced", // Invoice received
+  PAID = "paid", // Payment completed
 }
 ```
 
@@ -3868,10 +3868,10 @@ totalWithTaxEur = Math.round(totalWithTaxEur * 100) / 100;
 ```typescript
 // Valid status transitions
 const VALID_TRANSITIONS = {
-  PLANNED: ['ORDERED', 'PAID'], // Direct payment for small items
-  ORDERED: ['RECEIVED', 'PAID'], // Goods arrived or prepaid
-  RECEIVED: ['INVOICED', 'PAID'], // Invoice received or payment on delivery
-  INVOICED: ['PAID'], // Payment made
+  PLANNED: ["ORDERED", "PAID"], // Direct payment for small items
+  ORDERED: ["RECEIVED", "PAID"], // Goods arrived or prepaid
+  RECEIVED: ["INVOICED", "PAID"], // Invoice received or payment on delivery
+  INVOICED: ["PAID"], // Payment made
   PAID: [], // Terminal state
 };
 ```
@@ -3925,14 +3925,14 @@ const VALID_TRANSITIONS = {
 // Warn if project costs exceed budget
 if (materialCostSummary.totalWithTaxEur > project.budget * 0.8) {
   warnings.push({
-    level: 'warning',
+    level: "warning",
     message: `Material costs at 80% of budget (€${materialCostSummary.totalWithTaxEur} / €${project.budget})`,
   });
 }
 
 if (materialCostSummary.totalWithTaxEur > project.budget) {
   warnings.push({
-    level: 'critical',
+    level: "critical",
     message: `Material costs EXCEED budget by €${materialCostSummary.totalWithTaxEur - project.budget}`,
   });
 }
@@ -3987,7 +3987,7 @@ The Offer entity represents a formal price quote/proposal sent to a customer bas
 ```typescript
 interface Offer extends BaseEntity {
   _id: string; // Format: "offer-{uuid}" or "A-YYYY-NNNNN" (GoBD-compliant)
-  type: 'offer'; // Fixed discriminator
+  type: "offer"; // Fixed discriminator
 
   // References
   opportunityId: string; // Source opportunity (REQUIRED)
@@ -4037,13 +4037,13 @@ interface Offer extends BaseEntity {
 }
 
 enum OfferStatus {
-  DRAFT = 'draft', // Being created
-  SENT = 'sent', // Sent to customer
-  VIEWED = 'viewed', // Customer opened PDF
-  ACCEPTED = 'accepted', // Customer accepted (→ Contract)
-  REJECTED = 'rejected', // Customer declined
-  EXPIRED = 'expired', // Validity period passed
-  SUPERSEDED = 'superseded', // Replaced by newer offer
+  DRAFT = "draft", // Being created
+  SENT = "sent", // Sent to customer
+  VIEWED = "viewed", // Customer opened PDF
+  ACCEPTED = "accepted", // Customer accepted (→ Contract)
+  REJECTED = "rejected", // Customer declined
+  EXPIRED = "expired", // Validity period passed
+  SUPERSEDED = "superseded", // Replaced by newer offer
 }
 
 interface OfferLineItem {
@@ -4104,7 +4104,7 @@ interface OfferLineItem {
 ```typescript
 const subtotal = offer.lineItems.reduce(
   (sum, item) => sum + item.totalPriceEur,
-  0
+  0,
 );
 const discountAmount = offer.discountPercent
   ? subtotal * (offer.discountPercent / 100)
@@ -4114,7 +4114,7 @@ const taxAmount = netTotal * (offer.taxRate / 100);
 const total = netTotal + taxAmount;
 
 if (Math.abs(total - offer.totalEur) >= 0.01) {
-  throw new ValidationException('Offer total calculation mismatch');
+  throw new ValidationException("Offer total calculation mismatch");
 }
 ```
 
@@ -4125,7 +4125,7 @@ if (offer.status === OfferStatus.SENT || offer.status === OfferStatus.VIEWED) {
   if (new Date() > offer.validUntil) {
     offer.status = OfferStatus.EXPIRED;
     warnings.push({
-      level: 'warning',
+      level: "warning",
       message: `Offer ${offer.offerNumber} has expired`,
     });
   }
@@ -4185,7 +4185,7 @@ The Contract entity represents a legally binding agreement between the company a
 ```typescript
 interface Contract extends BaseEntity {
   _id: string; // Format: "contract-{uuid}" or "C-YYYY-NNNNN"
-  type: 'contract'; // Fixed discriminator
+  type: "contract"; // Fixed discriminator
 
   // References
   offerId: string; // Source offer (REQUIRED)
@@ -4233,12 +4233,12 @@ interface Contract extends BaseEntity {
 }
 
 enum ContractStatus {
-  DRAFT = 'draft', // Being prepared
-  PENDING_SIGNATURE = 'pending_signature', // Awaiting customer signature
-  SIGNED = 'signed', // Signed by customer
-  ACTIVE = 'active', // Project in progress
-  COMPLETED = 'completed', // Project delivered
-  TERMINATED = 'terminated', // Contract cancelled
+  DRAFT = "draft", // Being prepared
+  PENDING_SIGNATURE = "pending_signature", // Awaiting customer signature
+  SIGNED = "signed", // Signed by customer
+  ACTIVE = "active", // Project in progress
+  COMPLETED = "completed", // Project delivered
+  TERMINATED = "terminated", // Contract cancelled
 }
 ```
 
@@ -4281,17 +4281,17 @@ enum ContractStatus {
 async function createContractFromOffer(offer: Offer): Promise<Contract> {
   if (offer.status !== OfferStatus.ACCEPTED) {
     throw new BusinessRuleException(
-      'Cannot create contract from non-accepted offer'
+      "Cannot create contract from non-accepted offer",
     );
   }
 
   const contract: Contract = {
     _id: generateContractId(),
-    type: 'contract',
+    type: "contract",
     offerId: offer._id,
     opportunityId: offer.opportunityId,
     customerId: offer.customerId,
-    contractNumber: await generateGoBDNumber('contract'),
+    contractNumber: await generateGoBDNumber("contract"),
     contractDate: new Date(),
     startDate: addDays(new Date(), 7), // Default: start in 1 week
     status: ContractStatus.DRAFT,
@@ -4299,9 +4299,9 @@ async function createContractFromOffer(offer: Offer): Promise<Contract> {
     subtotalEur: offer.subtotalEur,
     taxAmountEur: offer.taxAmountEur,
     paymentTermsDays: offer.paymentTermsDays,
-    terms: offer.terms || '',
+    terms: offer.terms || "",
     finalized: false,
-    immutableHash: '',
+    immutableHash: "",
     changeLog: [],
     // ... audit fields
   };
@@ -4316,10 +4316,10 @@ async function createContractFromOffer(offer: Offer): Promise<Contract> {
 async function signContract(
   contract: Contract,
   signature: string,
-  user: User
+  user: User,
 ): Promise<Contract> {
   if (contract.finalized) {
-    throw new BusinessRuleException('Contract is already signed and immutable');
+    throw new BusinessRuleException("Contract is already signed and immutable");
   }
 
   contract.status = ContractStatus.SIGNED;
@@ -4338,17 +4338,17 @@ async function signContract(
 ```typescript
 async function createProjectFromContract(
   contract: Contract,
-  user: User
+  user: User,
 ): Promise<Project> {
   if (contract.status !== ContractStatus.SIGNED) {
     throw new BusinessRuleException(
-      'Contract must be signed before project creation'
+      "Contract must be signed before project creation",
     );
   }
 
-  if (user.role !== 'PLAN' && user.role !== 'GF') {
+  if (user.role !== "PLAN" && user.role !== "GF") {
     throw new ForbiddenException(
-      'Only PLAN or GF can create projects from contracts'
+      "Only PLAN or GF can create projects from contracts",
     );
   }
 
@@ -4371,7 +4371,7 @@ async function correctContract(
   contract: Contract,
   correction: Partial<Contract>,
   reason: string,
-  user: User
+  user: User,
 ): Promise<Contract> {
   if (!contract.finalized) {
     // Draft contracts can be edited normally
@@ -4379,8 +4379,8 @@ async function correctContract(
   }
 
   // Signed contracts require GF approval and change log
-  if (user.role !== 'GF') {
-    throw new ForbiddenException('Only GF can correct signed contracts');
+  if (user.role !== "GF") {
+    throw new ForbiddenException("Only GF can correct signed contracts");
   }
 
   // Log every field change
@@ -4449,7 +4449,7 @@ Opportunity (INNEN)
 interface Supplier extends BaseEntity {
   _id: string; // Format: "supplier-{uuid}"
   _rev: string;
-  type: 'supplier';
+  type: "supplier";
 
   // Basic Information
   companyName: string; // Required, 2-200 chars
@@ -4469,23 +4469,23 @@ interface Supplier extends BaseEntity {
 
   // Supplier Classification
   supplierType:
-    | 'material_supplier'
-    | 'service_provider'
-    | 'subcontractor'
-    | 'craftsman'
-    | 'logistics'
-    | 'mixed';
+    | "material_supplier"
+    | "service_provider"
+    | "subcontractor"
+    | "craftsman"
+    | "logistics"
+    | "mixed";
   serviceCategories: string[]; // Required, min 1
   serviceDescription: string; // Required, 50-1000 chars
 
   // Business Details
   paymentTerms: {
     paymentMethod:
-      | 'Invoice'
-      | 'DirectDebit'
-      | 'CreditCard'
-      | 'Cash'
-      | 'BankTransfer';
+      | "Invoice"
+      | "DirectDebit"
+      | "CreditCard"
+      | "Cash"
+      | "BankTransfer";
     daysUntilDue: number; // 0-120
     discountPercentage?: number; // Skonto
     discountDays?: number;
@@ -4512,7 +4512,7 @@ interface Supplier extends BaseEntity {
   activeProjectCount: number; // Current assignments
 
   // Status
-  status: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval';
+  status: "Active" | "Inactive" | "Blacklisted" | "PendingApproval";
   blacklistReason?: string;
   approvedBy?: string; // User ID (GF)
   approvedAt?: Date;
@@ -4572,7 +4572,7 @@ interface Supplier extends BaseEntity {
 interface Material extends BaseEntity {
   _id: string; // Format: "material-{uuid}"
   _rev: string;
-  type: 'material';
+  type: "material";
 
   // Basic Information
   materialCode: string; // Required, unique, "MAT-XXX-###"
@@ -4583,21 +4583,21 @@ interface Material extends BaseEntity {
 
   // Specifications
   unit:
-    | 'piece'
-    | 'square_meter'
-    | 'linear_meter'
-    | 'cubic_meter'
-    | 'kilogram'
-    | 'liter'
-    | 'package'
-    | 'set'
-    | 'hour';
+    | "piece"
+    | "square_meter"
+    | "linear_meter"
+    | "cubic_meter"
+    | "kilogram"
+    | "liter"
+    | "package"
+    | "set"
+    | "hour";
   dimensions?: {
     length?: number; // cm
     width?: number;
     height?: number;
     diameter?: number;
-    unit: 'cm' | 'mm' | 'm';
+    unit: "cm" | "mm" | "m";
   };
   color?: string;
   finish?: string; // "Matt", "Glänzend", etc.
@@ -4641,7 +4641,7 @@ interface Material extends BaseEntity {
   lastUsedDate?: Date;
 
   // Status
-  status: 'Active' | 'Discontinued' | 'OutOfStock';
+  status: "Active" | "Discontinued" | "OutOfStock";
   alternativeMaterialId?: string; // Replacement
 
   // Audit Trail
@@ -4684,7 +4684,7 @@ interface Material extends BaseEntity {
 interface ProjectMaterialRequirement extends BaseEntity {
   _id: string; // Format: "project-material-{uuid}"
   _rev: string;
-  type: 'project_material_requirement';
+  type: "project_material_requirement";
 
   // Assignment
   projectId: string; // Required
@@ -4692,12 +4692,12 @@ interface ProjectMaterialRequirement extends BaseEntity {
 
   // Details
   phase:
-    | 'planning'
-    | 'preparation'
-    | 'construction'
-    | 'installation'
-    | 'finishing'
-    | 'handover';
+    | "planning"
+    | "preparation"
+    | "construction"
+    | "installation"
+    | "finishing"
+    | "handover";
   workPackage?: string;
   description?: string;
 
@@ -4719,21 +4719,21 @@ interface ProjectMaterialRequirement extends BaseEntity {
   expectedDeliveryDate?: Date;
   actualDeliveryDate?: Date;
   deliveryStatus:
-    | 'not_ordered'
-    | 'ordered'
-    | 'in_transit'
-    | 'delivered'
-    | 'delayed'
-    | 'cancelled';
+    | "not_ordered"
+    | "ordered"
+    | "in_transit"
+    | "delivered"
+    | "delayed"
+    | "cancelled";
 
   // Status
   requirementStatus:
-    | 'estimated'
-    | 'confirmed'
-    | 'ordered'
-    | 'delivered'
-    | 'installed'
-    | 'returned';
+    | "estimated"
+    | "confirmed"
+    | "ordered"
+    | "delivered"
+    | "installed"
+    | "returned";
 
   // Audit Trail
   createdBy: string;
@@ -4766,7 +4766,7 @@ interface ProjectMaterialRequirement extends BaseEntity {
 interface PurchaseOrder extends BaseEntity {
   _id: string; // Format: "purchase-order-{uuid}"
   _rev: string;
-  type: 'purchase_order';
+  type: "purchase_order";
 
   // PO Basics
   poNumber: string; // Required, unique, "PO-2025-00234"
@@ -4803,14 +4803,14 @@ interface PurchaseOrder extends BaseEntity {
 
   // Status
   poStatus:
-    | 'draft'
-    | 'pending_approval'
-    | 'approved'
-    | 'sent_to_supplier'
-    | 'confirmed_by_supplier'
-    | 'partially_delivered'
-    | 'delivered'
-    | 'cancelled';
+    | "draft"
+    | "pending_approval"
+    | "approved"
+    | "sent_to_supplier"
+    | "confirmed_by_supplier"
+    | "partially_delivered"
+    | "delivered"
+    | "cancelled";
 
   // Payment
   invoiceReceived: boolean;
@@ -4863,7 +4863,7 @@ interface PurchaseOrder extends BaseEntity {
 interface SupplierContract extends BaseEntity {
   _id: string; // Format: "supplier-contract-{uuid}"
   _rev: string;
-  type: 'supplier_contract';
+  type: "supplier_contract";
 
   // Contract Basics
   contractNumber: string; // Required, unique, "SC-2025-00123"
@@ -4872,17 +4872,17 @@ interface SupplierContract extends BaseEntity {
 
   // Details
   contractType:
-    | 'framework'
-    | 'project'
-    | 'service_agreement'
-    | 'purchase_order';
+    | "framework"
+    | "project"
+    | "service_agreement"
+    | "purchase_order";
   title: string; // Required, 10-200 chars
   description: string; // Required, 50-2000 chars
   scope: string[]; // Work packages
 
   // Financial
   contractValue: number; // Required, € total
-  valueType: 'Fixed' | 'TimeAndMaterial' | 'UnitPrice' | 'CostPlus';
+  valueType: "Fixed" | "TimeAndMaterial" | "UnitPrice" | "CostPlus";
   paymentSchedule: Array<{
     description: string;
     percentage: number;
@@ -4891,7 +4891,7 @@ interface SupplierContract extends BaseEntity {
     dueDate?: Date;
     invoiceId?: string;
     paidDate?: Date;
-    status: 'Pending' | 'Invoiced' | 'Paid';
+    status: "Pending" | "Invoiced" | "Paid";
   }>;
   retentionPercentage?: number; // Gewährleistungseinbehalt
 
@@ -4902,15 +4902,15 @@ interface SupplierContract extends BaseEntity {
 
   // Status
   status:
-    | 'draft'
-    | 'pending_approval'
-    | 'sent_to_supplier'
-    | 'under_negotiation'
-    | 'signed'
-    | 'in_execution'
-    | 'completed'
-    | 'terminated'
-    | 'cancelled';
+    | "draft"
+    | "pending_approval"
+    | "sent_to_supplier"
+    | "under_negotiation"
+    | "signed"
+    | "in_execution"
+    | "completed"
+    | "terminated"
+    | "cancelled";
   signedBySupplier: boolean;
   signedByUs: boolean;
   signedDate?: Date;
@@ -4950,7 +4950,7 @@ interface SupplierContract extends BaseEntity {
 interface ProjectSubcontractor extends BaseEntity {
   _id: string; // Format: "project-subcontractor-{uuid}"
   _rev: string;
-  type: 'project_subcontractor';
+  type: "project_subcontractor";
 
   // Assignment
   projectId: string; // Required
@@ -4971,10 +4971,10 @@ interface ProjectSubcontractor extends BaseEntity {
   // Financial
   estimatedCost: number;
   actualCost?: number;
-  budgetStatus: 'OnTrack' | 'Warning' | 'Exceeded';
+  budgetStatus: "OnTrack" | "Warning" | "Exceeded";
 
   // Status
-  status: 'Planned' | 'Confirmed' | 'InProgress' | 'Completed' | 'Cancelled';
+  status: "Planned" | "Confirmed" | "InProgress" | "Completed" | "Cancelled";
   completionPercentage: number; // 0-100
 
   // Performance
@@ -5012,7 +5012,7 @@ interface ProjectSubcontractor extends BaseEntity {
 interface SupplierInvoice extends BaseEntity {
   _id: string; // Format: "supplier-invoice-{uuid}"
   _rev: string;
-  type: 'supplier_invoice';
+  type: "supplier_invoice";
 
   // Invoice Basics
   invoiceNumber: string; // Supplier's invoice number
@@ -5040,7 +5040,7 @@ interface SupplierInvoice extends BaseEntity {
   }>;
 
   // Payment
-  paymentStatus: 'Pending' | 'Approved' | 'Paid' | 'Disputed';
+  paymentStatus: "Pending" | "Approved" | "Paid" | "Disputed";
   approvedBy?: string; // BUCH or GF
   approvedAt?: Date;
   paidDate?: Date;
@@ -5076,7 +5076,7 @@ interface SupplierInvoice extends BaseEntity {
 interface SupplierCommunication extends BaseEntity {
   _id: string; // Format: "supplier-comm-{uuid}"
   _rev: string;
-  type: 'supplier_communication';
+  type: "supplier_communication";
 
   // Context
   supplierId: string; // Required
@@ -5084,8 +5084,8 @@ interface SupplierCommunication extends BaseEntity {
   contractId?: string;
 
   // Communication
-  communicationType: 'Email' | 'Phone' | 'InPerson' | 'Video' | 'SMS';
-  direction: 'Inbound' | 'Outbound';
+  communicationType: "Email" | "Phone" | "InPerson" | "Video" | "SMS";
+  direction: "Inbound" | "Outbound";
   subject: string; // Required, 10-200 chars
   content: string; // Required, 20-5000 chars
 

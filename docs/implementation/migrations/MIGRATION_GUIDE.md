@@ -200,7 +200,7 @@ After verifying migration success, you may want to:
    // CouchDB admin console
    db.allDocs({ include_docs: true }).then((result) => {
      result.rows.forEach((row) => {
-       if (row.doc.type === 'customer' && row.doc.address) {
+       if (row.doc.type === "customer" && row.doc.address) {
          delete row.doc.address;
          db.put(row.doc);
        }

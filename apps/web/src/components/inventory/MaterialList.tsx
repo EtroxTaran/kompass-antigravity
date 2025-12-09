@@ -1,65 +1,57 @@
-import { useMaterials } from '@/hooks/useMaterials';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Material } from '@kompass/shared';
+import { useMaterials } from "@/hooks/useMaterials";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export function MaterialList() {
-    const { materials, loading, addMaterial } = useMaterials();
+  const { materials, loading } = useMaterials();
+  const navigate = useNavigate();
 
-    const handleAddDummy = () => {
-        const dummy: Omit<Material, '_id' | '_rev'> = {
-            type: 'material',
-            itemNumber: `M-${Date.now()}`,
-            name: `Wood Panel ${Date.now()}`,
-            category: 'wood',
-            unit: 'm2',
-            purchasePrice: 45.50,
-            currency: 'EUR',
-            createdBy: 'user-1',
-            createdAt: new Date().toISOString(),
-            modifiedBy: 'user-1',
-            modifiedAt: new Date().toISOString(),
-            version: 1,
-        };
-        addMaterial(dummy);
-    };
+  if (loading) return <div>Loading Materials...</div>;
 
-    if (loading) return <div>Loading Materials...</div>;
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Materials</h2>
+        <Button onClick={() => navigate("/materials/new")}>Add Material</Button>
+      </div>
 
-    return (
-        <div className="space-y-4">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold">Materials</h2>
-                <Button onClick={handleAddDummy} variant="secondary">Add Material</Button>
-            </div>
-
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Item No.</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead className="text-right">Price</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {materials.map((m) => (
-                        <TableRow key={m._id}>
-                            <TableCell className="font-medium">{m.itemNumber}</TableCell>
-                            <TableCell>{m.name}</TableCell>
-                            <TableCell className="text-right">
-                                {m.purchasePrice.toLocaleString('de-DE', { style: 'currency', currency: m.currency })} / {m.unit}
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </div>
-    );
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {materials.map((item) => (
+          <Card
+            key={item._id}
+            className="cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => navigate(`/materials/${item._id}`)}
+          >
+            <CardHeader className="pb-2">
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-base font-medium truncate pr-2">
+                  {item.name}
+                </CardTitle>
+                <span className="text-xs text-muted-foreground font-mono">
+                  {item.itemNumber}
+                </span>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-end">
+                <div>
+                  <p className="text-2xl font-bold">{item.inStock}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {item.unit} in stock
+                  </p>
+                </div>
+                <div className="text-sm font-semibold">
+                  {item.purchasePrice.toLocaleString("de-DE", {
+                    style: "currency",
+                    currency: item.currency,
+                  })}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
 }

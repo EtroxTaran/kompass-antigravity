@@ -45,7 +45,7 @@ function processData(data: any) {
 // Cursor will suggest:
 function processData(data: unknown): void {
   // ✅
-  if (typeof data === 'string') {
+  if (typeof data === "string") {
     console.log(data);
   }
 }
@@ -95,7 +95,7 @@ function MyButton() {
 
 ```tsx
 // Cursor will suggest:
-import { Button } from '@/components/ui/button'; // ✅
+import { Button } from "@/components/ui/button"; // ✅
 
 function MyComponent() {
   return <Button variant="default">Click</Button>;
@@ -126,7 +126,7 @@ export class CustomerService {
 @Injectable()
 export class CustomerService {
   constructor(
-    private readonly repository: CustomerRepository // ✅
+    private readonly repository: CustomerRepository, // ✅
   ) {}
 
   async findById(id: string): Promise<Customer> {
@@ -141,10 +141,10 @@ export class CustomerService {
 
 ```typescript
 // Cursor will warn
-@Controller('customers')
+@Controller("customers")
 export class CustomerController {
-  @Get(':id') // ❌ No guards!
-  async findOne(@Param('id') id: string) {
+  @Get(":id") // ❌ No guards!
+  async findOne(@Param("id") id: string) {
     return this.service.findById(id);
   }
 }
@@ -154,14 +154,14 @@ export class CustomerController {
 
 ```typescript
 // Cursor will suggest:
-@Controller('customers')
+@Controller("customers")
 @UseGuards(JwtAuthGuard, RbacGuard) // ✅
 export class CustomerController {
-  @Get(':id')
-  @RequirePermission('Customer', 'READ') // ✅
+  @Get(":id")
+  @RequirePermission("Customer", "READ") // ✅
   async findOne(
-    @Param('id') id: string,
-    @CurrentUser() user: User // ✅
+    @Param("id") id: string,
+    @CurrentUser() user: User, // ✅
   ) {
     return this.service.findById(id, user);
   }
@@ -189,7 +189,7 @@ interface Customer extends BaseEntity {
   // ✅
   _id: string;
   _rev: string;
-  type: 'customer'; // ✅
+  type: "customer"; // ✅
   name: string;
   // Audit fields inherited from BaseEntity:
   createdBy: string; // ✅
@@ -242,19 +242,19 @@ async function updateInvoice(invoice: Invoice) {
 async function updateInvoice(
   invoice: Invoice,
   updates: Partial<Invoice>,
-  user: User
+  user: User,
 ) {
   if (invoice.finalized) {
     // Check immutable fields
-    const immutableFields = ['invoiceNumber', 'totalAmount'];
+    const immutableFields = ["invoiceNumber", "totalAmount"];
     const changedImmutable = immutableFields.filter(
-      (field) => updates[field] !== undefined
+      (field) => updates[field] !== undefined,
     );
 
     if (changedImmutable.length > 0) {
-      if (user.role !== 'GF') {
+      if (user.role !== "GF") {
         // ✅
-        throw new ForbiddenException('Requires GF approval');
+        throw new ForbiddenException("Requires GF approval");
       }
 
       // Log correction
@@ -265,7 +265,7 @@ async function updateInvoice(
         newValue: updates[changedImmutable[0]],
         changedBy: user.id,
         changedAt: new Date(),
-        reason: 'Correction by GF',
+        reason: "Correction by GF",
         approvedBy: user.id,
       });
     }
@@ -302,7 +302,7 @@ async function getCustomer(id: string) {
 
   // Fetch from API if not in local
   if (!navigator.onLine) {
-    throw new Error('Customer not available offline');
+    throw new Error("Customer not available offline");
   }
 
   const remote = await fetch(`/api/customers/${id}`);
@@ -610,7 +610,7 @@ interface Product extends BaseEntity {
 **You write:**
 
 ```typescript
-@Controller('products')
+@Controller("products")
 export class ProductController {
   @Get()
   async findAll() {
@@ -643,7 +643,7 @@ export class ProductController {
 ```tsx
 function MyCard({ children }) {
   return (
-    <div style={{ border: '1px solid gray', padding: '10px' }}>{children}</div>
+    <div style={{ border: "1px solid gray", padding: "10px" }}>{children}</div>
   );
 }
 ```

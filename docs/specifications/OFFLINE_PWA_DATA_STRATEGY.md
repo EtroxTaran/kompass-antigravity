@@ -243,7 +243,7 @@ interface QuotaStatus {
     tier3Pinned: 14155776; // 13.5 MB
   };
 
-  status: 'OK'; // OK / Warning / Critical
+  status: "OK"; // OK / Warning / Critical
   message: null;
 }
 
@@ -258,7 +258,7 @@ interface QuotaStatus {
 ```typescript
 // Check quota on app load and periodically
 async function checkQuota(): Promise<QuotaStatus> {
-  if ('storage' in navigator && 'estimate' in navigator.storage) {
+  if ("storage" in navigator && "estimate" in navigator.storage) {
     const estimate = await navigator.storage.estimate();
     const used = estimate.usage || 0;
     const total = 52428800; // Hard-code 50 MB for iOS safety
@@ -269,7 +269,7 @@ async function checkQuota(): Promise<QuotaStatus> {
     updateQuotaIndicator(status);
 
     // Alert user if critical
-    if (status.status === 'Critical') {
+    if (status.status === "Critical") {
       showQuotaWarning(status);
     }
 
@@ -484,8 +484,8 @@ async function checkQuota(): Promise<QuotaStatus> {
 // Compress images before storing offline
 async function compressImage(file: File): Promise<Blob> {
   const img = await createImageBitmap(file);
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
 
   // Resize if large (max 1920x1080 for offline)
   const maxWidth = 1920;
@@ -504,7 +504,7 @@ async function compressImage(file: File): Promise<Blob> {
 
   // Compress to 70% quality JPEG
   const blob = await new Promise<Blob>((resolve) =>
-    canvas.toBlob(resolve, 'image/jpeg', 0.7)
+    canvas.toBlob(resolve, "image/jpeg", 0.7),
   );
 
   return blob;
@@ -518,7 +518,7 @@ async function compressImage(file: File): Promise<Blob> {
 ```typescript
 // After audio note transcription, delete audio file to save space
 async function handleAudioNoteTranscription(
-  audio: AudioRecording
+  audio: AudioRecording,
 ): Promise<void> {
   // 1. Transcribe audio (Whisper API or local model)
   const transcript = await transcribeAudio(audio);
@@ -567,7 +567,7 @@ interface ProtocolSummary {
 ```typescript
 // Only sync changed fields, not entire entities
 interface SyncDelta {
-  entityType: 'customer' | 'project' | 'opportunity';
+  entityType: "customer" | "project" | "opportunity";
   entityId: string;
   changedFields: {
     [key: string]: { oldValue: unknown; newValue: unknown };
@@ -594,7 +594,7 @@ interface SyncDelta {
 ```typescript
 async function detectConflicts(
   localEntity: Entity,
-  serverEntity: Entity
+  serverEntity: Entity,
 ): Promise<Conflict[]> {
   const conflicts: Conflict[] = [];
 
@@ -604,7 +604,7 @@ async function detectConflicts(
 
     // Field-by-field comparison
     for (const field of Object.keys(localEntity)) {
-      if (field.startsWith('_')) continue; // Skip CouchDB metadata
+      if (field.startsWith("_")) continue; // Skip CouchDB metadata
 
       if (!isEqual(localEntity[field], serverEntity[field])) {
         conflicts.push({
@@ -724,8 +724,8 @@ Entity created offline with same ID (UUID collision - extremely rare):
 ```typescript
 interface QueuedChange {
   id: string; // UUID
-  operation: 'CREATE' | 'UPDATE' | 'DELETE';
-  entityType: 'customer' | 'opportunity' | 'activity' | 'protocol' | 'expense';
+  operation: "CREATE" | "UPDATE" | "DELETE";
+  entityType: "customer" | "opportunity" | "activity" | "protocol" | "expense";
   entityId: string;
   entityData: unknown; // Full entity data
 
@@ -733,7 +733,7 @@ interface QueuedChange {
   userId: string;
   deviceId: string; // Device fingerprint
 
-  syncStatus: 'Pending' | 'InProgress' | 'Synced' | 'Failed';
+  syncStatus: "Pending" | "InProgress" | "Synced" | "Failed";
   syncAttempts: number;
   lastSyncAttempt?: Date;
   lastSyncError?: string;
@@ -769,7 +769,7 @@ async function syncQueue(): Promise<SyncResult> {
   for (const change of queue) {
     try {
       // Attempt sync
-      const response = await api.post('/sync', {
+      const response = await api.post("/sync", {
         operation: change.operation,
         entityType: change.entityType,
         entityData: change.entityData,
@@ -784,7 +784,7 @@ async function syncQueue(): Promise<SyncResult> {
       } else {
         // Success
         results.synced++;
-        change.syncStatus = 'Synced';
+        change.syncStatus = "Synced";
         await localDB.remove(change.id); // Remove from queue
       }
     } catch (error) {
@@ -882,12 +882,12 @@ async function createCustomer(data: CreateCustomerDto): Promise<Customer> {
   await localDB.put(customer);
 
   // 3. Show success immediately (optimistic)
-  showSuccessToast('Kunde erstellt');
+  showSuccessToast("Kunde erstellt");
 
   // 4. Queue for sync (background)
   await queueChange({
-    operation: 'CREATE',
-    entityType: 'customer',
+    operation: "CREATE",
+    entityType: "customer",
     entityData: customer,
   });
 

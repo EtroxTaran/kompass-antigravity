@@ -237,9 +237,9 @@ interface SyncProgress {
 
 function calculateProgress(queue: SyncItem[]): SyncProgress {
   const total = queue.length;
-  const completed = queue.filter((i) => i.status === 'completed').length;
-  const failed = queue.filter((i) => i.status === 'failed').length;
-  const inProgress = queue.filter((i) => i.status === 'syncing').length;
+  const completed = queue.filter((i) => i.status === "completed").length;
+  const failed = queue.filter((i) => i.status === "failed").length;
+  const inProgress = queue.filter((i) => i.status === "syncing").length;
 
   const progress = total > 0 ? (completed / total) * 100 : 0;
   const rate = completed / (Date.now() - startTime);
@@ -259,7 +259,7 @@ function calculateProgress(queue: SyncItem[]): SyncProgress {
 
 ```typescript
 function formatTimeRemaining(ms: number): string {
-  if (ms < 60000) return 'Weniger als 1 Minute';
+  if (ms < 60000) return "Weniger als 1 Minute";
 
   const minutes = Math.floor(ms / 60000);
   const seconds = Math.floor((ms % 60000) / 1000);
@@ -286,7 +286,7 @@ interface SyncError {
 // Automatic retry with exponential backoff
 async function retrySyncItem(error: SyncError) {
   if (!error.canRetry || error.retryCount >= 3) {
-    return { status: 'failed', requiresManual: true };
+    return { status: "failed", requiresManual: true };
   }
 
   const delay = Math.pow(2, error.retryCount) * 1000;

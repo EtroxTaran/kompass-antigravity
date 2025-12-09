@@ -376,14 +376,14 @@ const contactSchema = z
     firstName: z.string().min(2).max(50),
     lastName: z.string().min(2).max(50),
     decisionMakingRole: z.enum([
-      'decision_maker',
-      'key_influencer',
-      'recommender',
-      'gatekeeper',
-      'operational_contact',
-      'informational',
+      "decision_maker",
+      "key_influencer",
+      "recommender",
+      "gatekeeper",
+      "operational_contact",
+      "informational",
     ]),
-    authorityLevel: z.enum(['low', 'medium', 'high', 'final_authority']),
+    authorityLevel: z.enum(["low", "medium", "high", "final_authority"]),
     canApproveOrders: z.boolean(),
     approvalLimitEur: z.number().min(0).max(10000000).optional(),
   })
@@ -393,9 +393,9 @@ const contactSchema = z
       (data.approvalLimitEur && data.approvalLimitEur > 0),
     {
       message:
-        'Genehmigungslimit erforderlich wenn Bestellungen genehmigt werden können',
-      path: ['approvalLimitEur'],
-    }
+        "Genehmigungslimit erforderlich wenn Bestellungen genehmigt werden können",
+      path: ["approvalLimitEur"],
+    },
   );
 ```
 

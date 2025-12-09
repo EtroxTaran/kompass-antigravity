@@ -329,14 +329,14 @@ npx shadcn-ui@latest add badge
 ### Toast Notification
 
 ```typescript
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from "@/hooks/use-toast";
 
 const { toast } = useToast();
 
 toast({
-  variant: 'destructive',
-  title: 'Fehler',
-  description: 'Kunde konnte nicht gespeichert werden.',
+  variant: "destructive",
+  title: "Fehler",
+  description: "Kunde konnte nicht gespeichert werden.",
 });
 ```
 

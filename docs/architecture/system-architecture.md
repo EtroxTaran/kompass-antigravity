@@ -24,12 +24,12 @@ KOMPASS is an **integrated CRM and Project Management system** designed as an **
 
 ### Planned Documentation Updates (Critical Review Follow-Up)
 
-| Area                          | Gap Identified                                                                 | Planned Update (scope)                                                                                   | Owner / Due |
-| ----------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----------- |
-| Offline handling              | Missing eviction/back-pressure guidance and essential-data overflow handling   | Add browser-specific quota/eviction rules, sync back-pressure flow, and recovery steps for essential tiers | Arch + Frontend / Feb 2025 |
-| AI fallback governance        | OpenAI fallback paths conflict with GDPR/consent expectations                  | Document tenant consent gates, residency controls, and approval/audit steps before any fallback activation | Arch + Security / Feb 2025 |
-| RBAC regression prevention    | No regression test/migration guidance despite prior PLAN access rollback       | Add rollout/migration playbook, pre/post-deploy RBAC regression checks, and telemetry signals for regressions | Backend Lead / Feb 2025 |
-| Ops for new AI services       | No backup/monitoring/capacity guidance for Weaviate, Redis/BullMQ, GPU runners | Extend ops tables with backup/restore, SLOs, and isolation/capacity assumptions for Phase 2+ AI services    | SRE / Feb 2025 |
+| Area                       | Gap Identified                                                                 | Planned Update (scope)                                                                                        | Owner / Due                |
+| -------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| Offline handling           | Missing eviction/back-pressure guidance and essential-data overflow handling   | Add browser-specific quota/eviction rules, sync back-pressure flow, and recovery steps for essential tiers    | Arch + Frontend / Feb 2025 |
+| AI fallback governance     | OpenAI fallback paths conflict with GDPR/consent expectations                  | Document tenant consent gates, residency controls, and approval/audit steps before any fallback activation    | Arch + Security / Feb 2025 |
+| RBAC regression prevention | No regression test/migration guidance despite prior PLAN access rollback       | Add rollout/migration playbook, pre/post-deploy RBAC regression checks, and telemetry signals for regressions | Backend Lead / Feb 2025    |
+| Ops for new AI services    | No backup/monitoring/capacity guidance for Weaviate, Redis/BullMQ, GPU runners | Extend ops tables with backup/restore, SLOs, and isolation/capacity assumptions for Phase 2+ AI services      | SRE / Feb 2025             |
 
 ---
 
@@ -81,12 +81,12 @@ KOMPASS is an **integrated CRM and Project Management system** designed as an **
     - **Customer**: identifiable customer/project data without special regulatory flags.
     - **Sensitive/Regulated**: personal data subject to GDPR/DSGVO or contractually restricted data.
   - **Allowed providers by classification**:
-    | Classification        | Allowed Providers                            | Consent Requirement               | Logging & Retention                               | Explicit Opt-Out Paths                                        |
+    | Classification | Allowed Providers | Consent Requirement | Logging & Retention | Explicit Opt-Out Paths |
     | -------------------- | -------------------------------------------- | --------------------------------- | ------------------------------------------------ | ------------------------------------------------------------- |
-    | **Public**           | n8n, Self-Hosted, OpenAI                     | None                              | Standard request/response logs (30d)             | Tenant/org setting `ai.optOut.public=false` to disable class  |
-    | **Internal**         | n8n, Self-Hosted (default); OpenAI fallback* | None                              | Standard logs + prompt/result hashing (90d)      | Tenant flag `ai.optOut.internal=true` forces self-hosted only |
-    | **Customer**         | n8n, Self-Hosted; OpenAI fallback*           | Contractual consent (per-tenant)  | Full audit trail + content hashing (180d)        | Per-tenant `ai.providers.customer=openai_disabled`            |
-    | **Sensitive/Regulated** | Self-Hosted only (default); n8n if private-runner | Explicit customer consent + DPA   | Full audit, redaction proof, retention 365d+ per DPA | `AI_PROVIDER_OVERRIDE=forbid_openai`, policy flag `strictNoFallback=true` |
+    | **Public** | n8n, Self-Hosted, OpenAI | None | Standard request/response logs (30d) | Tenant/org setting `ai.optOut.public=false` to disable class |
+    | **Internal** | n8n, Self-Hosted (default); OpenAI fallback* | None | Standard logs + prompt/result hashing (90d) | Tenant flag `ai.optOut.internal=true` forces self-hosted only |
+    | **Customer** | n8n, Self-Hosted; OpenAI fallback* | Contractual consent (per-tenant) | Full audit trail + content hashing (180d) | Per-tenant `ai.providers.customer=openai_disabled` |
+    | **Sensitive/Regulated** | Self-Hosted only (default); n8n if private-runner | Explicit customer consent + DPA | Full audit, redaction proof, retention 365d+ per DPA | `AI_PROVIDER_OVERRIDE=forbid_openai`, policy flag `strictNoFallback=true` |
   - **Consent handling**: Proxy enforces tenant-level consent flags; requests without required consent are rejected with `HTTP 412 Precondition Failed` and a machine-readable error code.
   - **Logging**: All routes produce structured audit records (classification, provider, model, latency, billing tokens). Sensitive/Regulated requests additionally store redaction fingerprints and purpose-of-use codes.
 - **Fallback logic**
@@ -208,7 +208,7 @@ async function auditThenWrite(operation: Operation): Promise<Document> {
   // 3. Create audit log entry with digital signature
   const auditEntry = {
     documentId,
-    operation: 'UPDATE',
+    operation: "UPDATE",
     hash: newHash,
     previousHash,
     signature: await signWithPrivateKey(newHash),
@@ -240,7 +240,6 @@ async function auditThenWrite(operation: Operation): Promise<Document> {
   - **Step 2: Merge + conflict handling** — During bi-directional replication, operational docs resolve conflicts (auto/manual as above). Each resolved revision triggers a **shadow audit write** that records the winning revision id and hashes of losing branches.
   - **Step 3: Integrity checks post-conflict** — After conflict resolution, clients recompute the audit chain from the last agreed checkpoint and compare against server-provided hash summaries. Any divergence marks the local replica as **"quarantined"**; replication switches to **read-only** until a full resync rebuilds the chain.
   - **Step 4: Finalize + compact** — Once hashes align, the reconciliation task writes a **link entry** that binds the reconciled revision to its historical branches, then resumes normal replication with smaller batch sizes until the next checkpoint is reached.
-
 
 ### 3. Clean Architecture Implementation
 
@@ -524,7 +523,7 @@ interface DSGVOConsent {
 ```typescript
 interface AuditLogEntry {
   documentId: string;
-  operation: 'CREATE' | 'UPDATE' | 'DELETE';
+  operation: "CREATE" | "UPDATE" | "DELETE";
   hash: string; // SHA-256 of document state
   previousHash: string; // Blockchain-style chain
   signature: string; // Digital signature
@@ -585,10 +584,10 @@ Long-running AI tasks (transcription, analysis) are handled via **BullMQ** job q
 
 ```typescript
 // Frontend starts AI job
-const jobId = await api.post('/ai/transcribe', { audioFile });
+const jobId = await api.post("/ai/transcribe", { audioFile });
 
 // Backend queues job
-await transcriptionQueue.add('transcribe', { jobId, fileUrl });
+await transcriptionQueue.add("transcribe", { jobId, fileUrl });
 
 // n8n workflow processes job
 // WebSocket notifies frontend of completion
@@ -738,15 +737,15 @@ For the phased sequence, rollout prerequisites, and migration safeguards, follow
 
 ### Risk Register
 
-| Risk | Likelihood | Impact | Mitigation Steps | Detection & Monitoring Signals | Owner | Contingency Actions |
-| ---- | ---------- | ------ | ---------------- | ----------------------------- | ----- | ------------------- |
-| Storage complexity in offline tiering leads to unexpected quota failures | Medium | High | Enforce 3-tier storage policy with hard caps, throttle replication batches, and surface "Storage Nearly Full" UX prompts | PouchDB replication metrics, browser `storageEstimate` thresholds, frontend storage alerts | Mobile Lead | Pause attachment replication, force metadata-only sync, guide users to free space and reattempt sync after clearance |
-| Data loss during sync or conflict resolution | Low | Critical | Default to continuous bidirectional sync with conflict policies, audit-then-write chain, and deferred attachment download on conflicts | Replication error rates, audit chain gaps, conflict queue length in CouchDB metrics | Backend Lead | Switch to read-only mode for affected docs, trigger immediate resync from last good snapshot, and run audit reconciliation playbook |
-| Performance degradation under heavy queries/search | Medium | Medium | Aggressive caching (React Query), indexed queries, capped attachment batch sizes, and scoped search filters | API latency SLOs in Grafana, MeiliSearch query latency, PWA Web Vitals | Platform Lead | Enable feature flags to disable heavy widgets, scale read replicas/MeiliSearch nodes, and run cache warmup jobs |
-| Architecture complexity slowing delivery | Medium | Medium | Phased rollout (MVP→Automation→Analytics), ADR discipline, and feature flags to isolate change risk | ADR cadence adherence, feature flag coverage reports, milestone burn-down | Architecture Lead | De-scope non-critical epics, freeze new ADRs temporarily, and allocate spike budget to unblock decisions |
-| Limited IT resources for operations | Medium | Medium | Self-contained Docker deployment, infra-as-code scripts, and automated monitoring setup | CI pipeline results, infra drift alerts, on-call load reports | DevOps Lead | Engage managed support window, temporarily reduce release cadence, and prioritize reliability work in sprint planning |
-| Vendor dependencies or lock-in risk | Low | High | Prefer open-source/self-hosted components (Keycloak, MeiliSearch, CouchDB) with documented migration paths | Dependency SBOM changes, license scans, availability checks for third-party APIs | Security Lead | Execute migration playbook to alternate OSS component, enable read-only mode during cutover, and communicate downtime window |
-| Compliance gaps (GoBD/DSGVO) | Low | Critical | Immutable audit logs, consent-aware AI routing, retention policies, and purpose-of-use tagging | Audit log completeness dashboards, DPA/consent flag drift alerts, redaction policy checks | Compliance Officer | Invoke incident response for data handling violations, suspend AI fallback to public clouds, and run retroactive audit export for regulators |
+| Risk                                                                     | Likelihood | Impact   | Mitigation Steps                                                                                                                       | Detection & Monitoring Signals                                                             | Owner              | Contingency Actions                                                                                                                          |
+| ------------------------------------------------------------------------ | ---------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Storage complexity in offline tiering leads to unexpected quota failures | Medium     | High     | Enforce 3-tier storage policy with hard caps, throttle replication batches, and surface "Storage Nearly Full" UX prompts               | PouchDB replication metrics, browser `storageEstimate` thresholds, frontend storage alerts | Mobile Lead        | Pause attachment replication, force metadata-only sync, guide users to free space and reattempt sync after clearance                         |
+| Data loss during sync or conflict resolution                             | Low        | Critical | Default to continuous bidirectional sync with conflict policies, audit-then-write chain, and deferred attachment download on conflicts | Replication error rates, audit chain gaps, conflict queue length in CouchDB metrics        | Backend Lead       | Switch to read-only mode for affected docs, trigger immediate resync from last good snapshot, and run audit reconciliation playbook          |
+| Performance degradation under heavy queries/search                       | Medium     | Medium   | Aggressive caching (React Query), indexed queries, capped attachment batch sizes, and scoped search filters                            | API latency SLOs in Grafana, MeiliSearch query latency, PWA Web Vitals                     | Platform Lead      | Enable feature flags to disable heavy widgets, scale read replicas/MeiliSearch nodes, and run cache warmup jobs                              |
+| Architecture complexity slowing delivery                                 | Medium     | Medium   | Phased rollout (MVP→Automation→Analytics), ADR discipline, and feature flags to isolate change risk                                    | ADR cadence adherence, feature flag coverage reports, milestone burn-down                  | Architecture Lead  | De-scope non-critical epics, freeze new ADRs temporarily, and allocate spike budget to unblock decisions                                     |
+| Limited IT resources for operations                                      | Medium     | Medium   | Self-contained Docker deployment, infra-as-code scripts, and automated monitoring setup                                                | CI pipeline results, infra drift alerts, on-call load reports                              | DevOps Lead        | Engage managed support window, temporarily reduce release cadence, and prioritize reliability work in sprint planning                        |
+| Vendor dependencies or lock-in risk                                      | Low        | High     | Prefer open-source/self-hosted components (Keycloak, MeiliSearch, CouchDB) with documented migration paths                             | Dependency SBOM changes, license scans, availability checks for third-party APIs           | Security Lead      | Execute migration playbook to alternate OSS component, enable read-only mode during cutover, and communicate downtime window                 |
+| Compliance gaps (GoBD/DSGVO)                                             | Low        | Critical | Immutable audit logs, consent-aware AI routing, retention policies, and purpose-of-use tagging                                         | Audit log completeness dashboards, DPA/consent flag drift alerts, redaction policy checks  | Compliance Officer | Invoke incident response for data handling violations, suspend AI fallback to public clouds, and run retroactive audit export for regulators |
 
 ---
 

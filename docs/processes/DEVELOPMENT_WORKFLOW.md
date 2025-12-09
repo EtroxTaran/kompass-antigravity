@@ -458,8 +458,8 @@ As a reviewer:
 - High coverage (>80% for critical modules)
 
 ```typescript
-describe('CustomerValidationService', () => {
-  it('should detect duplicate company names', () => {
+describe("CustomerValidationService", () => {
+  it("should detect duplicate company names", () => {
     // Test implementation
   });
 });
@@ -473,8 +473,8 @@ describe('CustomerValidationService', () => {
 - Moderate execution time
 
 ```typescript
-describe('Customer API Integration', () => {
-  it('should create customer and trigger duplicate check', async () => {
+describe("Customer API Integration", () => {
+  it("should create customer and trigger duplicate check", async () => {
     // Test implementation
   });
 });
@@ -488,7 +488,7 @@ describe('Customer API Integration', () => {
 - Slower execution acceptable
 
 ```typescript
-test('Customer creation flow with duplicate warning', async ({ page }) => {
+test("Customer creation flow with duplicate warning", async ({ page }) => {
   // Test implementation
 });
 ```

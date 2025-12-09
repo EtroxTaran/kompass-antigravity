@@ -12,13 +12,13 @@ This directory contains process documentation that governs how the KOMPASS team 
 
 ### Development Processes
 
-| Process                                                                 | Description                                                         | Owner            | Last Updated |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------- | ---------------- | ------------ |
-| **[Development Workflow](./DEVELOPMENT_WORKFLOW.md)**                   | Git workflow, branching strategy, code review process               | Engineering Team | 2025-01-28   |
-| **[File Organization Enforcement](./FILE_ORGANIZATION_ENFORCEMENT.md)** | Automated file organization validation                              | DevOps Team      | 2025-01-28   |
-| **[CI/CD Quality Gates](./ci-cd-pipeline.md)**                          | GitHub Actions matrix, quality gates, performance & security checks | DevOps Team      | 2025-11-14   |
-| **[Documentation Sustainment Checklist](./documentation-sustainment-checklist.md)** | Post-restructure next steps to keep docs aligned              | Technical Writer + Engineering Leads | 2025-03-09   |
-| **[Documentation Update Guide](./documentation-update-guide.md)**       | When and how to update documentation for code changes               | Backend Team     | 2025-01-28   |
+| Process                                                                             | Description                                                         | Owner                                | Last Updated |
+| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------ | ------------ |
+| **[Development Workflow](./DEVELOPMENT_WORKFLOW.md)**                               | Git workflow, branching strategy, code review process               | Engineering Team                     | 2025-01-28   |
+| **[File Organization Enforcement](./FILE_ORGANIZATION_ENFORCEMENT.md)**             | Automated file organization validation                              | DevOps Team                          | 2025-01-28   |
+| **[CI/CD Quality Gates](./ci-cd-pipeline.md)**                                      | GitHub Actions matrix, quality gates, performance & security checks | DevOps Team                          | 2025-11-14   |
+| **[Documentation Sustainment Checklist](./documentation-sustainment-checklist.md)** | Post-restructure next steps to keep docs aligned                    | Technical Writer + Engineering Leads | 2025-03-09   |
+| **[Documentation Update Guide](./documentation-update-guide.md)**                   | When and how to update documentation for code changes               | Backend Team                         | 2025-01-28   |
 
 ---
 

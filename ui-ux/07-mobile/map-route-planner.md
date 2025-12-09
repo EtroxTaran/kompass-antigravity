@@ -179,19 +179,18 @@ Create a mobile map and route planner for KOMPASS ADM users with GPS tracking, m
 
 ## Implementation Notes: Google Maps Integration
 
--   **Component**: `GoogleMapsView.tsx`
--   **API Key Handling**:
-    -   Securely loaded from `import.meta.env.VITE_GOOGLE_MAPS_API_KEY`
-    -   Fallback to `localStorage` for user-provided keys (enables local testing without rebuilds)
-    -   Input UI provided if key is missing
--   **Visuals**:
-    -   **Markers**:
-        -   Red Dot: `status === 'overdue'`
-        -   Yellow Dot: `hasOpportunity === true`
-        -   Blue Dot: Default state
-    -   **Routes**: Blue polyline with 80% opacity connecting stops
-    -   **User Location**: Blue pulsing circle
--   **Dependencies**:
-    -   `@react-google-maps/api`
-    -   `lucide-react` (icons)
-
+- **Component**: `GoogleMapsView.tsx`
+- **API Key Handling**:
+  - Securely loaded from `import.meta.env.VITE_GOOGLE_MAPS_API_KEY`
+  - Fallback to `localStorage` for user-provided keys (enables local testing without rebuilds)
+  - Input UI provided if key is missing
+- **Visuals**:
+  - **Markers**:
+    - Red Dot: `status === 'overdue'`
+    - Yellow Dot: `hasOpportunity === true`
+    - Blue Dot: Default state
+  - **Routes**: Blue polyline with 80% opacity connecting stops
+  - **User Location**: Blue pulsing circle
+- **Dependencies**:
+  - `@react-google-maps/api`
+  - `lucide-react` (icons)

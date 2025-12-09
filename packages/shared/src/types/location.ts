@@ -1,30 +1,31 @@
-import { BaseEntity, Address } from './base';
+import { BaseEntity, Address } from "./base";
 
 export interface Location extends BaseEntity {
-    type: 'location';
+  type: "location";
 
-    // Parent reference
-    customerId: string;
+  // Parent reference
+  customerId?: string;
+  isInternal?: boolean;
 
-    // Location identity
-    locationName: string;
-    locationType:
-    | 'headquarter'
-    | 'branch'
-    | 'warehouse'
-    | 'project_site'
-    | 'other';
-    isActive: boolean;
+  // Location identity
+  locationName: string;
+  locationType:
+    | "headquarter"
+    | "branch"
+    | "warehouse"
+    | "project_site"
+    | "other";
+  isActive: boolean;
 
-    // Delivery address
-    deliveryAddress: Address;
+  // Delivery address
+  deliveryAddress: Address;
 
-    // Contacts
-    primaryContactPersonId?: string;
-    contactPersons: string[]; // IDs
+  // Contacts
+  primaryContactPersonId?: string;
+  contactPersons: string[]; // IDs
 
-    // Operational
-    deliveryNotes?: string;
-    openingHours?: string;
-    parkingInstructions?: string;
+  // Operational
+  deliveryNotes?: string;
+  openingHours?: string;
+  parkingInstructions?: string;
 }

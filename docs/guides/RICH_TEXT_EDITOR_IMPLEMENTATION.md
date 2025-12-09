@@ -387,24 +387,24 @@ function ToolbarButton({
 }
 
 /* Task list styling */
-.ProseMirror ul[data-type='taskList'] {
+.ProseMirror ul[data-type="taskList"] {
   list-style: none;
   padding: 0;
 }
 
-.ProseMirror ul[data-type='taskList'] li {
+.ProseMirror ul[data-type="taskList"] li {
   display: flex;
   align-items: flex-start;
   margin-bottom: 0.5rem;
 }
 
-.ProseMirror ul[data-type='taskList'] li > label {
+.ProseMirror ul[data-type="taskList"] li > label {
   flex: 0 0 auto;
   margin-right: 0.5rem;
   user-select: none;
 }
 
-.ProseMirror ul[data-type='taskList'] li > div {
+.ProseMirror ul[data-type="taskList"] li > div {
   flex: 1 1 auto;
 }
 
@@ -713,9 +713,9 @@ interface GoBDDocument {
 function generateContentHash(html: string): string {
   const encoder = new TextEncoder();
   const data = encoder.encode(html);
-  return crypto.subtle.digest('SHA-256', data).then((hashBuffer) => {
+  return crypto.subtle.digest("SHA-256", data).then((hashBuffer) => {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   });
 }
 
@@ -746,16 +746,16 @@ function recordCorrection(
   document: GoBDDocument,
   newContent: string,
   user: User,
-  reason: string
+  reason: string,
 ): ChangeLogEntry {
   return {
-    field: 'content',
+    field: "content",
     oldValue: document.content,
     newValue: newContent,
     changedBy: user.id,
     changedAt: new Date(),
     reason,
-    approvedBy: user.role === 'GF' ? user.id : undefined,
+    approvedBy: user.role === "GF" ? user.id : undefined,
   };
 }
 ```
@@ -775,7 +775,7 @@ function recordCorrection(
 1. **Lazy Load Extensions**
 
    ```typescript
-   const Table = lazy(() => import('@tiptap/extension-table'));
+   const Table = lazy(() => import("@tiptap/extension-table"));
    ```
 
 2. **Debounce onChange**
@@ -783,7 +783,7 @@ function recordCorrection(
    ```typescript
    const debouncedOnChange = useMemo(
      () => debounce((html: string) => onChange(html), 300),
-     [onChange]
+     [onChange],
    );
    ```
 
@@ -843,27 +843,27 @@ describe('MeetingNotesEditor', () => {
 
 ```typescript
 // activity-protocol-editor.e2e.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('should format text in activity protocol', async ({ page }) => {
-  await page.goto('/customers/123/activities/new');
+test("should format text in activity protocol", async ({ page }) => {
+  await page.goto("/customers/123/activities/new");
 
   // Type in editor
-  const editor = page.locator('.ProseMirror');
+  const editor = page.locator(".ProseMirror");
   await editor.click();
-  await editor.type('Meeting notes');
+  await editor.type("Meeting notes");
 
   // Click bold button
   await page.click('button[aria-label="Fett"]');
-  await editor.type(' with bold text');
+  await editor.type(" with bold text");
 
   // Verify HTML output contains <strong>
   const html = await editor.innerHTML();
-  expect(html).toContain('<strong>with bold text</strong>');
+  expect(html).toContain("<strong>with bold text</strong>");
 
   // Save activity
   await page.click('button:has-text("Aktivität speichern")');
-  await expect(page.locator('.toast-success')).toBeVisible();
+  await expect(page.locator(".toast-success")).toBeVisible();
 });
 ```
 

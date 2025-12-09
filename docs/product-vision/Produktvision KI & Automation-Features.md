@@ -36,7 +36,7 @@ Dieses Dokument definiert die **Produktvision für AI- und Automation-Features**
 - **Immer via Proxy**: Frontend ruft konsequent den AI Proxy auf; direkte Provider-Calls (LLM, n8n, Webhooks) sind verboten.
 - **Strategische Provider-Wahl**: Proxy wählt je Request anhand einer konfigurierbaren Strategie (z. B. Policy/Feature-Flag) den passenden Provider, etwa **N8n Webhook** für Automation oder **direkten LLM-Call** für reine Textgenerierung.
 - **Mehrstufige Klärung**: Rückfragen laufen über **Correlation Tokens** (Request-ID im Kontext); Proxy erkennt die Runde und führt die Konversation bis zur Finalisierung.
-- **Beispiel-Flow**: *User fragt nach „Erstelle Follow-up-Plan“ → Proxy fragt nach gewünschtem Kanal (Clarification Prompt) → User antwortet „E-Mail & Teams“ → Proxy liefert finalen Plan; ein Austausch des Providers (N8n-Workflow ↔ LLM) erfolgt transparent per Konfiguration*.
+- **Beispiel-Flow**: _User fragt nach „Erstelle Follow-up-Plan“ → Proxy fragt nach gewünschtem Kanal (Clarification Prompt) → User antwortet „E-Mail & Teams“ → Proxy liefert finalen Plan; ein Austausch des Providers (N8n-Workflow ↔ LLM) erfolgt transparent per Konfiguration_.
 
 ---
 

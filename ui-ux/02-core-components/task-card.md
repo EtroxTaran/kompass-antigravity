@@ -227,7 +227,7 @@ When clicked, card expands to show:
 ```typescript
 interface TaskCardProps {
   task: UserTask | ProjectTask;
-  variant: 'compact' | 'expanded' | 'kanban';
+  variant: "compact" | "expanded" | "kanban";
   onStatusChange: (taskId: string, newStatus: string) => void;
   onEdit: (taskId: string) => void;
   onDelete: (taskId: string) => void;

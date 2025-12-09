@@ -120,7 +120,7 @@ function canEnableRAGSearch(): boolean {
   // No hard minimum, but warn if very low
   if (totalSearchableChars < 10000) {
     console.warn(
-      'RAG search will have limited results with low content volume'
+      "RAG search will have limited results with low content volume",
     );
   }
   return true; // Always enabled
@@ -247,8 +247,8 @@ FROM customers;
 function canEnableDuplicateDetection(): boolean {
   const totalCustomers = countCustomers();
   const nameCompletionRate = calculateFieldCompletion(
-    'customers',
-    'companyName'
+    "customers",
+    "companyName",
   );
 
   return (
@@ -355,12 +355,12 @@ WHERE status = 'Completed';
 
 ```typescript
 function canEnableSimilarProjectFinder(): boolean {
-  const completedProjects = countProjectsByStatus('Completed');
+  const completedProjects = countProjectsByStatus("Completed");
   const categoryCompletion = calculateFieldCompletion(
-    'projects',
-    'projectCategory'
+    "projects",
+    "projectCategory",
   );
-  const valueCompletion = calculateFieldCompletion('projects', 'contractValue');
+  const valueCompletion = calculateFieldCompletion("projects", "contractValue");
 
   return (
     completedProjects >= 30 &&
@@ -434,8 +434,8 @@ function canEnableLeadScoring(): boolean {
   const closedOpps = countOpportunitiesByOutcome();
   const winRate = closedOpps.won / closedOpps.total;
   const completionRate = calculateFieldCompletion(
-    'opportunities',
-    CRITICAL_FIELDS
+    "opportunities",
+    CRITICAL_FIELDS,
   );
 
   return (
@@ -528,7 +528,7 @@ FROM project_stats;
 
 ```typescript
 function canEnableRiskAssessment(): boolean {
-  const completedProjects = countProjectsByStatus('Completed');
+  const completedProjects = countProjectsByStatus("Completed");
   const projectsWithIssues = countProjectsWithBudgetOrTimelineIssues();
   const costTrackingCompletion = calculateCostTrackingCompleteness();
 

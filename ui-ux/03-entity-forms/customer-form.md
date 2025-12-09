@@ -524,9 +524,9 @@ pnpm add @tiptap/extension-link @tiptap/extension-underline
 ### Form Usage (react-hook-form + zod)
 
 ```typescript
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { customerSchema } from '@kompass/shared/validation/customer';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { customerSchema } from "@kompass/shared/validation/customer";
 
 const form = useForm({
   resolver: zodResolver(customerSchema),

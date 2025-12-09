@@ -388,7 +388,7 @@ npx shadcn-ui@latest add checkbox
 
 ```typescript
 // Using PapaParse for CSV
-import Papa from 'papaparse';
+import Papa from "papaparse";
 
 Papa.parse(file, {
   header: true,

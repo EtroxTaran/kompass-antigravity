@@ -483,14 +483,14 @@ const localizer = momentLocalizer(moment);
 
 ```typescript
 const eventStyleGetter = (event: CalendarEvent) => {
-  const backgroundColor = event.color + '1A'; // 10% opacity
+  const backgroundColor = event.color + "1A"; // 10% opacity
   const borderColor = event.color;
 
   return {
     style: {
       backgroundColor,
       borderLeft: `4px solid ${borderColor}`,
-      color: '#1F2937', // gray-900
+      color: "#1F2937", // gray-900
     },
   };
 };
@@ -499,23 +499,23 @@ const eventStyleGetter = (event: CalendarEvent) => {
 ### German Localization
 
 ```typescript
-import moment from 'moment';
-import 'moment/locale/de';
+import moment from "moment";
+import "moment/locale/de";
 
-moment.locale('de');
+moment.locale("de");
 
 const messages = {
-  today: 'Heute',
-  previous: 'Zurück',
-  next: 'Weiter',
-  month: 'Monat',
-  week: 'Woche',
-  day: 'Tag',
-  agenda: 'Agenda',
-  date: 'Datum',
-  time: 'Zeit',
-  event: 'Ereignis',
-  noEventsInRange: 'Keine Ereignisse in diesem Zeitraum',
+  today: "Heute",
+  previous: "Zurück",
+  next: "Weiter",
+  month: "Monat",
+  week: "Woche",
+  day: "Tag",
+  agenda: "Agenda",
+  date: "Datum",
+  time: "Zeit",
+  event: "Ereignis",
+  noEventsInRange: "Keine Ereignisse in diesem Zeitraum",
 };
 ```
 

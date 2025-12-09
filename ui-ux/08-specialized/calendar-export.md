@@ -499,33 +499,33 @@ const handleExport = async () => {
       scope: exportScope, // 'personal' or 'team'
     };
 
-    const response = await fetch('/api/v1/calendar/export/ics', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("/api/v1/calendar/export/ics", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
       // Convert filters to query params
     });
 
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = `kompass-calendar-${format(new Date(), 'yyyy-MM-dd')}.ics`;
+    link.download = `kompass-calendar-${format(new Date(), "yyyy-MM-dd")}.ics`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
     toast({
-      title: 'Export erfolgreich',
-      description: 'Kalender wurde als ICS-Datei heruntergeladen.',
-      variant: 'success',
+      title: "Export erfolgreich",
+      description: "Kalender wurde als ICS-Datei heruntergeladen.",
+      variant: "success",
     });
 
     onClose();
   } catch (error) {
     toast({
-      title: 'Export fehlgeschlagen',
-      description: 'Bitte versuchen Sie es erneut.',
-      variant: 'destructive',
+      title: "Export fehlgeschlagen",
+      description: "Bitte versuchen Sie es erneut.",
+      variant: "destructive",
     });
   } finally {
     setIsLoading(false);
@@ -570,11 +570,11 @@ const calculateEventCount = useCallback(() => {
 ### German Date Formatting
 
 ```typescript
-import { format } from 'date-fns';
-import { de } from 'date-fns/locale';
+import { format } from "date-fns";
+import { de } from "date-fns/locale";
 
-const formattedDate = format(date, 'dd.MM.yyyy', { locale: de });
-const formattedDateRange = `${format(startDate, 'dd.MM.yyyy')} - ${format(endDate, 'dd.MM.yyyy')}`;
+const formattedDate = format(date, "dd.MM.yyyy", { locale: de });
+const formattedDateRange = `${format(startDate, "dd.MM.yyyy")} - ${format(endDate, "dd.MM.yyyy")}`;
 ```
 
 ---

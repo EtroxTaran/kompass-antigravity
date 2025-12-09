@@ -330,10 +330,10 @@ Changes to `packages/shared/src/` are reflected in both backend and frontend:
    services:
      backend:
        ports:
-         - '3001:3000'
+         - "3001:3000"
      frontend:
        ports:
-         - '5174:5173'
+         - "5174:5173"
    ```
 
 ### Slow File Watching

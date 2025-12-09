@@ -144,6 +144,7 @@ Ensure all examples follow German business use cases (customer lists, project ti
 ## Implementation Notes
 
 ### Tailwind Grid Classes (from Reference Repository)
+
 **Reference Source:** `ui-ux/Kompassuimusterbibliothek/src/components/CustomerListDemo.tsx`
 
 ```tsx
@@ -208,11 +209,11 @@ Ensure all examples follow German business use cases (customer lists, project ti
 module.exports = {
   theme: {
     screens: {
-      sm: '640px',
-      md: '768px', // Tablet
-      lg: '1024px',
-      xl: '1280px', // Desktop
-      '2xl': '1440px', // Wide
+      sm: "640px",
+      md: "768px", // Tablet
+      lg: "1024px",
+      xl: "1280px", // Desktop
+      "2xl": "1440px", // Wide
     },
   },
 };

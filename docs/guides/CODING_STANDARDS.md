@@ -42,7 +42,7 @@ function getUserById(id: string): Promise<User> {
 
 // Use unknown instead of any
 function processData(data: unknown): void {
-  if (typeof data === 'string') {
+  if (typeof data === "string") {
     console.log(data);
   }
 }
@@ -54,13 +54,13 @@ interface Customer {
 }
 
 // Branded types for IDs
-type CustomerId = string & { __brand: 'CustomerId' };
+type CustomerId = string & { __brand: "CustomerId" };
 
 // Discriminated unions for state
 type LoadingState =
-  | { status: 'loading' }
-  | { status: 'success'; data: Customer }
-  | { status: 'error'; error: Error };
+  | { status: "loading" }
+  | { status: "success"; data: Customer }
+  | { status: "error"; error: Error };
 ```
 
 **❌ DON'T:**
@@ -92,14 +92,14 @@ interface Config {
 }
 
 // ✅ Const assertions
-const STATUS = ['NEW', 'ACTIVE', 'COMPLETED'] as const;
+const STATUS = ["NEW", "ACTIVE", "COMPLETED"] as const;
 type Status = (typeof STATUS)[number];
 
 // ✅ Spread for updates
-const updated = { ...original, name: 'New Name' };
+const updated = { ...original, name: "New Name" };
 
 // ❌ Don't mutate
-original.name = 'New Name'; // ❌
+original.name = "New Name"; // ❌
 array.push(item); // ❌ Use [...array, item]
 ```
 
@@ -138,13 +138,13 @@ Controller → Service → Repository → Database
 
 ```typescript
 // Controller: Only HTTP concerns
-@Controller('customers')
+@Controller("customers")
 export class CustomerController {
   constructor(private readonly service: CustomerService) {}
 
-  @Get(':id')
+  @Get(":id")
   @UseGuards(JwtAuthGuard, RbacGuard) // ✅ Guards required
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param("id") id: string) {
     return this.service.findById(id); // ✅ Delegate to service
   }
 }
@@ -172,12 +172,12 @@ export class CustomerRepository {
 
 ```typescript
 // No business logic in controller
-@Controller('customers')
+@Controller("customers")
 export class CustomerController {
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
+  @Get(":id")
+  async findOne(@Param("id") id: string) {
     const customer = await this.db.get(id); // ❌ No DB access
-    customer.status = 'active'; // ❌ No business logic
+    customer.status = "active"; // ❌ No business logic
     return customer;
   }
 }
@@ -195,21 +195,21 @@ export class CustomerService {
 
 ```typescript
 // ✅ Every endpoint must have guards
-@Controller('customers')
+@Controller("customers")
 @UseGuards(JwtAuthGuard, RbacGuard) // ✅ Required
 export class CustomerController {
-  @Get(':id')
-  @RequirePermission('Customer', 'READ') // ✅ Required
-  async findOne(@Param('id') id: string) {
+  @Get(":id")
+  @RequirePermission("Customer", "READ") // ✅ Required
+  async findOne(@Param("id") id: string) {
     // ...
   }
 }
 
 // ❌ No guards
-@Controller('customers')
+@Controller("customers")
 export class CustomerController {
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
+  @Get(":id")
+  async findOne(@Param("id") id: string) {
     // ❌ Missing guards!
     // ...
   }
@@ -242,8 +242,8 @@ interface BaseEntity {
 **✅ DO: Use shadcn/ui ONLY**
 
 ```tsx
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 export function MyComponent() {
   return (
@@ -273,12 +273,12 @@ function MyButton({ children }) {
 ```typescript
 // ✅ Extract complex logic to hooks
 function useCustomerData(id: string) {
-  const { data, isLoading } = useQuery(['customer', id], () =>
-    customerApi.getById(id)
+  const { data, isLoading } = useQuery(["customer", id], () =>
+    customerApi.getById(id),
   );
 
   const { mutate: update } = useMutation((data) =>
-    customerApi.update(id, data)
+    customerApi.update(id, data),
   );
 
   return { customer: data, isLoading, update };
@@ -306,7 +306,7 @@ function CustomerDetail({ id }) {
 ```typescript
 // ✅ Redux Toolkit for global state
 const customerSlice = createSlice({
-  name: 'customer',
+  name: "customer",
   initialState,
   reducers: {
     setCustomers: (state, action) => {
@@ -317,13 +317,13 @@ const customerSlice = createSlice({
 
 // ✅ Zustand for local feature state
 const useCustomerFilters = create((set) => ({
-  searchTerm: '',
+  searchTerm: "",
   setSearchTerm: (term) => set({ searchTerm: term }),
 }));
 
 // ✅ React Query for server state
 function useCustomer(id) {
-  return useQuery(['customer', id], () => api.getById(id));
+  return useQuery(["customer", id], () => api.getById(id));
 }
 
 // ❌ Don't use useState for server data
@@ -401,17 +401,17 @@ function MyComponent() {
 ### Test Structure
 
 ```typescript
-describe('Feature', () => {
-  describe('method', () => {
-    it('should do something when condition', () => {
+describe("Feature", () => {
+  describe("method", () => {
+    it("should do something when condition", () => {
       // Arrange
-      const input = 'test';
+      const input = "test";
 
       // Act
       const result = doSomething(input);
 
       // Assert
-      expect(result).toBe('expected');
+      expect(result).toBe("expected");
     });
   });
 });
@@ -428,7 +428,7 @@ const mockRepository = {
 
 // ✅ Mock dates for consistency
 jest.useFakeTimers();
-jest.setSystemTime(new Date('2024-01-01'));
+jest.setSystemTime(new Date("2024-01-01"));
 
 // ❌ Don't mock the code under test
 const mockService = jest.fn(); // ❌ Test real service
@@ -444,8 +444,8 @@ const apiKey = process.env.API_KEY;
 const jwtSecret = process.env.JWT_SECRET;
 
 // ❌ Hardcoded secrets
-const apiKey = 'sk-1234567890'; // ❌ NEVER!
-const jwtSecret = 'my-secret'; // ❌ NEVER!
+const apiKey = "sk-1234567890"; // ❌ NEVER!
+const jwtSecret = "my-secret"; // ❌ NEVER!
 ```
 
 ### Input Validation (Always)
@@ -598,7 +598,7 @@ refactor/rbac-service-extraction
 
 ```typescript
 // ✅ Lazy load routes
-const CustomerPage = lazy(() => import('./features/customer/CustomerPage'));
+const CustomerPage = lazy(() => import("./features/customer/CustomerPage"));
 
 // ✅ Memoize expensive computations
 const statistics = useMemo(() => {
@@ -611,7 +611,7 @@ const handleClick = useCallback(() => {
 }, []);
 
 // ✅ Virtual scrolling for large lists
-import { useVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer } from "@tanstack/react-virtual";
 ```
 
 ### Backend Performance
@@ -689,11 +689,11 @@ if (!navigator.onLine) {
 ```typescript
 // ✅ Invoice is immutable after finalization
 if (invoice.finalized) {
-  const immutableFields = ['invoiceNumber', 'invoiceDate', 'totalAmount'];
+  const immutableFields = ["invoiceNumber", "invoiceDate", "totalAmount"];
 
   if (changesInclude(immutableFields)) {
-    if (user.role !== 'GF') {
-      throw new ForbiddenException('Requires GF approval');
+    if (user.role !== "GF") {
+      throw new ForbiddenException("Requires GF approval");
     }
 
     // Log correction

@@ -114,12 +114,12 @@ The KOMPASS conflict resolution system supports multiple strategies:
 import {
   resolveConflicts,
   ConflictResolutionStrategy,
-} from './scripts/database/conflict-resolution';
+} from "./scripts/database/conflict-resolution";
 
 await resolveConflicts(
   db,
   documentId,
-  ConflictResolutionStrategy.LAST_WRITE_WINS
+  ConflictResolutionStrategy.LAST_WRITE_WINS,
 );
 ```
 
@@ -131,7 +131,7 @@ await resolveConflicts(
 await resolveConflicts(
   db,
   documentId,
-  ConflictResolutionStrategy.MERGE_NON_CONFLICTING
+  ConflictResolutionStrategy.MERGE_NON_CONFLICTING,
 );
 ```
 
@@ -144,7 +144,7 @@ await resolveConflicts(
   db,
   documentId,
   ConflictResolutionStrategy.USER_DECIDES,
-  'local' // or 'remote'
+  "local", // or 'remote'
 );
 ```
 
@@ -156,7 +156,7 @@ await resolveConflicts(
 await resolveConflicts(
   db,
   documentId,
-  ConflictResolutionStrategy.ENTITY_SPECIFIC
+  ConflictResolutionStrategy.ENTITY_SPECIFIC,
 );
 ```
 
@@ -168,7 +168,7 @@ await resolveConflicts(
 await resolveConflicts(
   db,
   documentId,
-  ConflictResolutionStrategy.ESCALATE_TO_ADMIN
+  ConflictResolutionStrategy.ESCALATE_TO_ADMIN,
 );
 ```
 
@@ -186,7 +186,7 @@ The conflict resolution system automatically:
 ### Finding Conflicts
 
 ```typescript
-import { findConflicts } from './scripts/database/conflict-resolution';
+import { findConflicts } from "./scripts/database/conflict-resolution";
 
 // Find all conflicts in database
 const conflicts = await findConflicts(db);

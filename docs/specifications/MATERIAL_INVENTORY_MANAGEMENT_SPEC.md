@@ -40,7 +40,7 @@ The pre-mortem analysis identified the **complete absence of Material & Inventor
 interface Material extends BaseEntity {
   _id: string; // "material-{uuid}"
   _rev: string;
-  type: 'material';
+  type: "material";
 
   // Basic Information
   materialCode: string; // Required, unique, e.g., "MAT-LED-001"
@@ -82,7 +82,7 @@ interface Material extends BaseEntity {
   averageQuantityPerProject: number; // Calculated
 
   // Status
-  status: 'Active' | 'Discontinued' | 'OutOfStock';
+  status: "Active" | "Discontinued" | "OutOfStock";
   discontinuedReason?: string; // Why discontinued
   alternativeMaterialId?: string; // Replacement material
 
@@ -105,59 +105,59 @@ interface Material extends BaseEntity {
 
 enum MaterialCategory {
   // Shelving & Display
-  SHELVING = 'shelving', // Regale
-  DISPLAY_UNITS = 'display_units', // Präsentationsvitrinen
-  COUNTERS = 'counters', // Theken
+  SHELVING = "shelving", // Regale
+  DISPLAY_UNITS = "display_units", // Präsentationsvitrinen
+  COUNTERS = "counters", // Theken
 
   // Furniture
-  SEATING = 'seating', // Sitzmöbel
-  TABLES = 'tables', // Tische
-  STORAGE = 'storage', // Lagermöbel
+  SEATING = "seating", // Sitzmöbel
+  TABLES = "tables", // Tische
+  STORAGE = "storage", // Lagermöbel
 
   // Lighting
-  CEILING_LIGHTS = 'ceiling_lights', // Deckenleuchten
-  SPOT_LIGHTS = 'spot_lights', // Strahler
-  LED_STRIPS = 'led_strips', // LED-Bänder
-  SIGNAGE_LIGHTS = 'signage_lights', // Leuchtschriften
+  CEILING_LIGHTS = "ceiling_lights", // Deckenleuchten
+  SPOT_LIGHTS = "spot_lights", // Strahler
+  LED_STRIPS = "led_strips", // LED-Bänder
+  SIGNAGE_LIGHTS = "signage_lights", // Leuchtschriften
 
   // Fixtures & Fittings
-  DOOR_HANDLES = 'door_handles', // Türgriffe
-  HOOKS_RAILS = 'hooks_rails', // Haken & Leisten
-  SIGNAGE = 'signage', // Beschilderung
-  MIRRORS = 'mirrors', // Spiegel
+  DOOR_HANDLES = "door_handles", // Türgriffe
+  HOOKS_RAILS = "hooks_rails", // Haken & Leisten
+  SIGNAGE = "signage", // Beschilderung
+  MIRRORS = "mirrors", // Spiegel
 
   // Raw Materials
-  WOOD = 'wood', // Holzmaterialien
-  METAL = 'metal', // Metallmaterialien
-  GLASS = 'glass', // Glas
-  PLASTIC = 'plastic', // Kunststoff
+  WOOD = "wood", // Holzmaterialien
+  METAL = "metal", // Metallmaterialien
+  GLASS = "glass", // Glas
+  PLASTIC = "plastic", // Kunststoff
 
   // Electrical & Plumbing
-  ELECTRICAL_COMPONENTS = 'electrical_components', // Elektrik
-  PLUMBING_FIXTURES = 'plumbing_fixtures', // Sanitär
-  HVAC_COMPONENTS = 'hvac_components', // Heizung/Klima
+  ELECTRICAL_COMPONENTS = "electrical_components", // Elektrik
+  PLUMBING_FIXTURES = "plumbing_fixtures", // Sanitär
+  HVAC_COMPONENTS = "hvac_components", // Heizung/Klima
 
   // Flooring & Walls
-  FLOORING = 'flooring', // Bodenbeläge
-  WALL_PANELS = 'wall_panels', // Wandverkleidungen
-  TILES = 'tiles', // Fliesen
+  FLOORING = "flooring", // Bodenbeläge
+  WALL_PANELS = "wall_panels", // Wandverkleidungen
+  TILES = "tiles", // Fliesen
 
   // Other
-  TOOLS = 'tools', // Werkzeuge
-  CONSUMABLES = 'consumables', // Verbrauchsmaterialien
-  OTHER = 'other',
+  TOOLS = "tools", // Werkzeuge
+  CONSUMABLES = "consumables", // Verbrauchsmaterialien
+  OTHER = "other",
 }
 
 enum UnitOfMeasure {
-  PIECE = 'piece', // Stück
-  SQUARE_METER = 'square_meter', // m²
-  LINEAR_METER = 'linear_meter', // lfm (laufende Meter)
-  CUBIC_METER = 'cubic_meter', // m³
-  KILOGRAM = 'kilogram', // kg
-  LITER = 'liter', // l
-  PACKAGE = 'package', // Paket/Karton
-  SET = 'set', // Set
-  HOUR = 'hour', // Stunde (for labor-like materials)
+  PIECE = "piece", // Stück
+  SQUARE_METER = "square_meter", // m²
+  LINEAR_METER = "linear_meter", // lfm (laufende Meter)
+  CUBIC_METER = "cubic_meter", // m³
+  KILOGRAM = "kilogram", // kg
+  LITER = "liter", // l
+  PACKAGE = "package", // Paket/Karton
+  SET = "set", // Set
+  HOUR = "hour", // Stunde (for labor-like materials)
 }
 
 interface MaterialDimensions {
@@ -165,14 +165,14 @@ interface MaterialDimensions {
   width?: number; // cm
   height?: number; // cm
   diameter?: number; // cm
-  unit: 'cm' | 'mm' | 'm';
+  unit: "cm" | "mm" | "m";
 }
 
 interface SupplierPrice {
   supplierId: string; // Reference to Supplier
   supplierName: string; // Denormalized for quick display
   unitPrice: number; // € per unit
-  currency: 'EUR'; // Future: support other currencies
+  currency: "EUR"; // Future: support other currencies
   minimumOrderQuantity: number; // MOQ
   bulkDiscounts?: BulkDiscount[]; // Optional volume discounts
   leadTimeDays: number; // Delivery time in days
@@ -194,7 +194,7 @@ interface BulkDiscount {
 interface ProjectMaterialRequirement extends BaseEntity {
   _id: string; // "project-material-{uuid}"
   _rev: string;
-  type: 'project_material_requirement';
+  type: "project_material_requirement";
 
   // Assignment
   projectId: string; // Required
@@ -240,30 +240,30 @@ interface ProjectMaterialRequirement extends BaseEntity {
 }
 
 enum ProjectPhase {
-  PLANNING = 'planning', // Pre-construction
-  PREPARATION = 'preparation', // Site prep
-  CONSTRUCTION = 'construction', // Main build
-  INSTALLATION = 'installation', // Fixture installation
-  FINISHING = 'finishing', // Final touches
-  HANDOVER = 'handover', // Client delivery
+  PLANNING = "planning", // Pre-construction
+  PREPARATION = "preparation", // Site prep
+  CONSTRUCTION = "construction", // Main build
+  INSTALLATION = "installation", // Fixture installation
+  FINISHING = "finishing", // Final touches
+  HANDOVER = "handover", // Client delivery
 }
 
 enum DeliveryStatus {
-  NOT_ORDERED = 'not_ordered',
-  ORDERED = 'ordered',
-  IN_TRANSIT = 'in_transit',
-  DELIVERED = 'delivered',
-  DELAYED = 'delayed',
-  CANCELLED = 'cancelled',
+  NOT_ORDERED = "not_ordered",
+  ORDERED = "ordered",
+  IN_TRANSIT = "in_transit",
+  DELIVERED = "delivered",
+  DELAYED = "delayed",
+  CANCELLED = "cancelled",
 }
 
 enum RequirementStatus {
-  ESTIMATED = 'estimated', // From KALK estimate
-  CONFIRMED = 'confirmed', // PLAN confirmed need
-  ORDERED = 'ordered', // PO placed
-  DELIVERED = 'delivered', // Received on-site
-  INSTALLED = 'installed', // Used in project
-  RETURNED = 'returned', // Excess returned to supplier
+  ESTIMATED = "estimated", // From KALK estimate
+  CONFIRMED = "confirmed", // PLAN confirmed need
+  ORDERED = "ordered", // PO placed
+  DELIVERED = "delivered", // Received on-site
+  INSTALLED = "installed", // Used in project
+  RETURNED = "returned", // Excess returned to supplier
 }
 ```
 
@@ -273,7 +273,7 @@ enum RequirementStatus {
 interface PurchaseOrder extends BaseEntity {
   _id: string; // "purchase-order-{uuid}"
   _rev: string;
-  type: 'purchase_order';
+  type: "purchase_order";
 
   // PO Basics
   poNumber: string; // Required, unique, "PO-2025-00234"
@@ -303,7 +303,7 @@ interface PurchaseOrder extends BaseEntity {
 
   // Order Execution
   orderDate?: Date; // When sent to supplier
-  orderMethod: 'Email' | 'Phone' | 'Portal' | 'Fax';
+  orderMethod: "Email" | "Phone" | "Portal" | "Fax";
   orderConfirmationNumber?: string; // Supplier's confirmation ref
 
   // Delivery
@@ -334,14 +334,14 @@ interface PurchaseOrder extends BaseEntity {
 }
 
 enum POStatus {
-  DRAFT = 'draft',
-  PENDING_APPROVAL = 'pending_approval', // >€10k
-  APPROVED = 'approved',
-  SENT_TO_SUPPLIER = 'sent_to_supplier',
-  CONFIRMED_BY_SUPPLIER = 'confirmed_by_supplier',
-  PARTIALLY_DELIVERED = 'partially_delivered',
-  DELIVERED = 'delivered',
-  CANCELLED = 'cancelled',
+  DRAFT = "draft",
+  PENDING_APPROVAL = "pending_approval", // >€10k
+  APPROVED = "approved",
+  SENT_TO_SUPPLIER = "sent_to_supplier",
+  CONFIRMED_BY_SUPPLIER = "confirmed_by_supplier",
+  PARTIALLY_DELIVERED = "partially_delivered",
+  DELIVERED = "delivered",
+  CANCELLED = "cancelled",
 }
 
 interface PurchaseOrderLineItem {
@@ -371,7 +371,7 @@ interface PurchaseOrderLineItem {
 interface InventoryMovement extends BaseEntity {
   _id: string; // "inventory-movement-{uuid}"
   _rev: string;
-  type: 'inventory_movement';
+  type: "inventory_movement";
 
   materialId: string; // Required
   movementType: MovementType; // Required
@@ -403,12 +403,12 @@ interface InventoryMovement extends BaseEntity {
 }
 
 enum MovementType {
-  PURCHASE_RECEIPT = 'purchase_receipt', // Incoming from supplier
-  PROJECT_ALLOCATION = 'project_allocation', // Allocated to project
-  RETURN_TO_SUPPLIER = 'return_to_supplier', // Returned
-  INVENTORY_ADJUSTMENT = 'inventory_adjustment', // Correction
-  WRITE_OFF = 'write_off', // Damaged/lost
-  TRANSFER = 'transfer', // Between locations
+  PURCHASE_RECEIPT = "purchase_receipt", // Incoming from supplier
+  PROJECT_ALLOCATION = "project_allocation", // Allocated to project
+  RETURN_TO_SUPPLIER = "return_to_supplier", // Returned
+  INVENTORY_ADJUSTMENT = "inventory_adjustment", // Correction
+  WRITE_OFF = "write_off", // Damaged/lost
+  TRANSFER = "transfer", // Between locations
 }
 ```
 
@@ -926,13 +926,13 @@ GET    /api/v1/inventory/low-stock-alerts
 ```typescript
 async function updateProjectMaterialCosts(
   projectId: string,
-  deliveredMaterial: PurchaseOrderLineItem
+  deliveredMaterial: PurchaseOrderLineItem,
 ): Promise<void> {
   // When PO delivery is recorded, update project costs immediately
 
   const project = await projectRepository.findById(projectId);
   const requirement = await materialReqRepository.findById(
-    deliveredMaterial.projectMaterialReqId
+    deliveredMaterial.projectMaterialReqId,
   );
 
   // Update requirement with actual quantities/costs
@@ -940,7 +940,7 @@ async function updateProjectMaterialCosts(
   requirement.actualUnitPrice = deliveredMaterial.unitPrice;
   requirement.actualTotalCost =
     requirement.actualQuantity * requirement.actualUnitPrice;
-  requirement.requirementStatus = 'Delivered';
+  requirement.requirementStatus = "Delivered";
   await materialReqRepository.update(requirement);
 
   // Recalculate project material costs (sum all actuals)
@@ -961,18 +961,18 @@ async function updateProjectMaterialCosts(
 
   // Update budget status
   if (project.actualCost > project.budget) {
-    project.budgetStatus = 'Exceeded';
+    project.budgetStatus = "Exceeded";
   } else if (project.actualCost > project.budget * 0.9) {
-    project.budgetStatus = 'Warning';
+    project.budgetStatus = "Warning";
   }
 
   await projectRepository.update(project);
 
   // Trigger alerts if needed
-  if (project.budgetStatus !== 'OnTrack') {
+  if (project.budgetStatus !== "OnTrack") {
     await notificationService.send({
-      recipients: [project.projectManager, 'BUCH'],
-      type: 'BudgetAlert',
+      recipients: [project.projectManager, "BUCH"],
+      type: "BudgetAlert",
       message: `Projekt ${project.projectNumber}: Material-Budget bei ${percentage}%`,
       link: `/projects/${project.id}/materials`,
     });

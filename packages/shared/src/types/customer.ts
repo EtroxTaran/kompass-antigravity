@@ -1,49 +1,49 @@
-import { BaseEntity, Address } from './base';
+import { BaseEntity, Address } from "./base";
 
 export interface Customer extends BaseEntity {
-    type: 'customer';
+  type: "customer";
 
-    // Basic company information
-    companyName: string;
-    vatNumber?: string;
-    email?: string;
-    phone?: string;
-    website?: string;
+  // Basic company information
+  companyName: string;
+  vatNumber?: string;
+  email?: string;
+  phone?: string;
+  website?: string;
 
-    // Financial information
-    creditLimit?: number;
-    paymentTerms?: string;
+  // Financial information
+  creditLimit?: number;
+  paymentTerms?: string;
 
-    // Categorization
-    industry?: string;
-    customerType?:
-    | 'direct_marketer'
-    | 'retail'
-    | 'franchise'
-    | 'cooperative'
-    | 'other';
-    rating?: 'A' | 'B' | 'C';
+  // Categorization
+  industry?: string;
+  customerType?:
+    | "direct_marketer"
+    | "retail"
+    | "franchise"
+    | "cooperative"
+    | "other";
+  rating?: "A" | "B" | "C";
 
-    // Address Management
-    billingAddress: Address;
-    locations: string[]; // IDs
-    defaultDeliveryLocationId?: string;
+  // Address Management
+  billingAddress: Address;
+  locations: string[]; // IDs
+  defaultDeliveryLocationId?: string;
 
-    // Relationship management
-    owner: string; // User ID
-    contactPersons: string[]; // IDs
+  // Relationship management
+  owner: string; // User ID
+  contactPersons: string[]; // IDs
 
-    // DSGVO
-    dsgvoConsent?: {
-        marketing: boolean;
-        aiProcessing: boolean;
-        dataSharing: boolean;
-        grantedAt?: string;
-        grantedBy?: string;
-        revokedAt?: string;
-    };
+  // DSGVO
+  dsgvoConsent?: {
+    marketing: boolean;
+    aiProcessing: boolean;
+    dataSharing: boolean;
+    grantedAt?: string;
+    grantedBy?: string;
+    revokedAt?: string;
+  };
 
-    dataRetentionUntil?: string;
-    anonymized?: boolean;
-    anonymizedAt?: string;
+  dataRetentionUntil?: string;
+  anonymized?: boolean;
+  anonymizedAt?: string;
 }

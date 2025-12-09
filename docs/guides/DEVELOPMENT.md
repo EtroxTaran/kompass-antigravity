@@ -302,10 +302,10 @@ open coverage/lcov-report/index.html
 
 ```typescript
 // apps/backend/src/modules/customer/__tests__/customer.service.spec.ts
-import { Test } from '@nestjs/testing';
-import { CustomerService } from '../customer.service';
+import { Test } from "@nestjs/testing";
+import { CustomerService } from "../customer.service";
 
-describe('CustomerService', () => {
+describe("CustomerService", () => {
   let service: CustomerService;
 
   beforeEach(async () => {
@@ -316,7 +316,7 @@ describe('CustomerService', () => {
     service = module.get(CustomerService);
   });
 
-  it('should create customer', async () => {
+  it("should create customer", async () => {
     const result = await service.create(dto, mockUser);
     expect(result).toBeDefined();
   });
@@ -327,15 +327,15 @@ describe('CustomerService', () => {
 
 ```typescript
 // tests/e2e/customer/create-customer.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('User can create customer', async ({ page }) => {
-  await page.goto('/customers');
+test("User can create customer", async ({ page }) => {
+  await page.goto("/customers");
   await page.click('button:has-text("New")');
-  await page.fill('[name="name"]', 'Test Customer');
+  await page.fill('[name="name"]', "Test Customer");
   await page.click('button:has-text("Save")');
 
-  await expect(page.locator('.toast-success')).toBeVisible();
+  await expect(page.locator(".toast-success")).toBeVisible();
 });
 ```
 
@@ -348,7 +348,7 @@ Use factories for consistent test data:
 export function createTestCustomer(overrides = {}) {
   return {
     _id: `customer-${faker.string.uuid()}`,
-    type: 'customer',
+    type: "customer",
     name: faker.company.name(),
     vatNumber: `DE${faker.string.numeric(9)}`,
     ...overrides,
@@ -405,15 +405,15 @@ await db.allDocs({ include_docs: true });
 
 ```typescript
 // Backend - use NestJS Logger
-import { Logger } from '@nestjs/common';
+import { Logger } from "@nestjs/common";
 
-const logger = new Logger('CustomerService');
-logger.log('Customer created', { customerId });
-logger.error('Failed to create customer', { error });
+const logger = new Logger("CustomerService");
+logger.log("Customer created", { customerId });
+logger.error("Failed to create customer", { error });
 
 // Frontend - use console (removed in production)
-console.log('Debug info:', data);
-console.error('Error:', error);
+console.log("Debug info:", data);
+console.error("Error:", error);
 ```
 
 ## Common Issues
@@ -509,11 +509,11 @@ const statistics = useMemo(() => {
 
 // ✅ DO: Lazy load routes
 const CustomerPage = lazy(
-  () => import('./features/customer/pages/CustomerPage')
+  () => import("./features/customer/pages/CustomerPage"),
 );
 
 // ✅ DO: Virtual scrolling for large lists (>100 items)
-import { useVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer } from "@tanstack/react-virtual";
 ```
 
 ### Offline-First
@@ -527,7 +527,7 @@ if (!isOnline) {
   await localDB.put(data);
 } else {
   // Save to API
-  await api.post('/customers', data);
+  await api.post("/customers", data);
 }
 
 // ✅ DO: Queue changes for sync

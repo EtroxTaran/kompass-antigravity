@@ -62,7 +62,7 @@ This style guide provides a quick reference for the complete KOMPASS design syst
 **Google Fonts Import:**
 
 ```css
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 ```
 
 ### Font Sizes
@@ -332,7 +332,7 @@ Base unit: **4px** (`0.25rem`)
 **Table Row:**
 
 ```tsx
-<TableRow className={isSelected ? 'bg-accent/30' : ''}>
+<TableRow className={isSelected ? "bg-accent/30" : ""}>
   <TableCell>Content</TableCell>
 </TableRow>
 ```

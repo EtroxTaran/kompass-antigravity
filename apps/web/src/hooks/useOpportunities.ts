@@ -1,55 +1,83 @@
-import { useState, useEffect } from 'react';
-import { dbService } from '@/lib/db';
-import { Opportunity } from '@kompass/shared';
+import { useState, useEffect, useCallback } from "react";
+import { opportunitiesApi } from "@/services/apiClient";
+import { Opportunity } from "@kompass/shared";
 
-export function useOpportunities() {
-    const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
-    const [loading, setLoading] = useState(true);
+export function useOpportunities(params?: { customerId?: string }) {
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    const fetchOpportunities = async () => {
-        const db = dbService.getDB();
-        try {
-            const result = await db.find({
-                selector: { type: 'opportunity' },
-            });
-            setOpportunities(result.docs as unknown as Opportunity[]);
-        } catch (err) {
-            console.error('Error fetching opportunities', err);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const fetchOpportunities = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await opportunitiesApi.list(params);
+      if (result && Array.isArray(result.data)) {
+        setOpportunities(result.data as unknown as Opportunity[]);
+      } else {
+        setOpportunities([]);
+      }
+    } catch (err) {
+      console.error("Error fetching opportunities", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
 
-    useEffect(() => {
-        fetchOpportunities();
-        const db = dbService.getDB();
-        const changes = db.changes({
-            since: 'now',
-            live: true,
-            include_docs: true,
-            filter: (doc) => doc.type === 'opportunity',
-        }).on('change', () => {
-            fetchOpportunities();
-        });
+  useEffect(() => {
+    fetchOpportunities();
+  }, [fetchOpportunities]);
 
-        return () => {
-            changes.cancel();
-        };
-    }, []);
+  return { opportunities, loading, refetch: fetchOpportunities };
+}
 
-    const addOpportunity = async (opp: Omit<Opportunity, '_id' | '_rev'>) => {
-        const db = dbService.getDB();
-        const newDoc = {
-            ...opp,
-            _id: `opportunity-${crypto.randomUUID()}`,
-            createdAt: new Date().toISOString(),
-            modifiedAt: new Date().toISOString(),
-            version: 1,
-            createdBy: 'user-1', // Mock
-            modifiedBy: 'user-1', // Mock
-        };
-        await db.put(newDoc);
-    };
+export function useOpportunity(id?: string) {
+  const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
+  const [loading, setLoading] = useState(!!id);
+  const [error, setError] = useState<Error | null>(null);
 
-    return { opportunities, loading, addOpportunity };
+  const fetchOpportunity = useCallback(async () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const result = await opportunitiesApi.get(id);
+      setOpportunity(result as unknown as Opportunity);
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching opportunity", err);
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchOpportunity();
+  }, [fetchOpportunity]);
+
+  const saveOpportunity = async (data: Partial<Opportunity>) => {
+    setLoading(true);
+    try {
+      let result;
+      if (id && opportunity) {
+        result = await opportunitiesApi.update(id, data);
+      } else {
+        result = await opportunitiesApi.create(data);
+      }
+      setOpportunity(result as unknown as Opportunity);
+      return result;
+    } catch (err) {
+      console.error("Error saving opportunity", err);
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    opportunity,
+    loading,
+    error,
+    saveOpportunity,
+    refetch: fetchOpportunity,
+  };
 }
