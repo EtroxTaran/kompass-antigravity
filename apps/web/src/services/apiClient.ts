@@ -550,6 +550,14 @@ export const suppliersApi = {
   async delete(id: string): Promise<void> {
     return del(`/suppliers/${id}`);
   },
+
+  async blacklist(id: string, reason: string): Promise<unknown> {
+    return put(`/suppliers/${id}/blacklist`, { reason });
+  },
+
+  async reinstate(id: string): Promise<unknown> {
+    return put(`/suppliers/${id}/reinstate`, {});
+  },
 };
 
 // =============================================================================

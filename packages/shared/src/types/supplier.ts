@@ -21,4 +21,15 @@ export interface Supplier extends BaseEntity {
   // Evaluation
   rating?: "A" | "B" | "C";
   category?: string[]; // e.g., 'wood', 'metal', 'electronics'
+
+  // Status & Blacklist
+  status?: 'Active' | 'Inactive' | 'Blacklisted';
+  blacklistReason?: string;
+  blacklistedBy?: string; // userId
+  blacklistedAt?: string; // ISO date
+  reinstatedBy?: string; // userId
+  reinstatedAt?: string; // ISO date
+
+  // Operational
+  activeProjectCount?: number;
 }

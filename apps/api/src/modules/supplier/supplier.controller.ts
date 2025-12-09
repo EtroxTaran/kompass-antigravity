@@ -10,6 +10,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { SupplierService } from './supplier.service';
 import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
@@ -21,7 +22,7 @@ import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 @Controller('api/v1/suppliers')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class SupplierController {
-  constructor(private readonly supplierService: SupplierService) {}
+  constructor(private readonly supplierService: SupplierService) { }
 
   @Get()
   @Permissions({ entity: 'Supplier', action: 'READ' })
@@ -67,5 +68,44 @@ export class SupplierController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id') id: string, @CurrentUser() user: any) {
     await this.supplierService.delete(id, user);
+  }
+  @Put(':id/blacklist')
+  @Permissions({ entity: 'Supplier', action: 'UPDATE' }) // Ideally stricter permission, but 'UPDATE' + logic check or separate permission
+  async blacklist(
+    @Param('id') id: string,
+    @Body('reason') reason: string,
+    @CurrentUser() user: any,
+  ) {
+    if (!user.roles.includes('GF')) {
+      // Double check RBAC if plain guard isn't enough, though @Permissions is usually for fine grained.
+      // Requirement says "GF only". If there is no specific 'BLACKLIST' permission, checking role manually is safe.
+      // Or if we trust Permissions... The prompt implies strict RBAC.
+      // Let's rely on standard practice: The user must have GF role.
+      // Since we don't have a 'BLACKLIST' permission constant yet, explicit check is good.
+    }
+    // Actually, I should use the Permissions decorator if possible or just check roles inside.
+    // Given the previous code uses @Permissions, I'll stick to that, but maybe I should add a check inside if 'BLACKLIST' action isn't defined.
+    // But since I can't easily change the Permission enum/type right now without seeing it, I will assume UPDATE is the base, and I'll add a manual role check for extra safety if needed, OR just trust RBAC configuration.
+    // BUT the requirement Says "GF only".
+    // I will add a manual check for now to be safe as I don't know if 'BLACKLIST' action exists in the system.
+
+    // UPDATE: better to just check roles manually here as it's a specific business rule "GF Only".
+    if (!user.roles?.includes('GF')) {
+      throw new BadRequestException('Only GF can blacklist suppliers');
+    }
+
+    return this.supplierService.blacklist(id, user, reason);
+  }
+
+  @Put(':id/reinstate')
+  @Permissions({ entity: 'Supplier', action: 'UPDATE' })
+  async reinstate(
+    @Param('id') id: string,
+    @CurrentUser() user: any,
+  ) {
+    if (!user.roles?.includes('GF')) {
+      throw new BadRequestException('Only GF can reinstate suppliers');
+    }
+    return this.supplierService.reinstate(id, user);
   }
 }

@@ -14,6 +14,23 @@ import { MapPin, Phone, Mail, Globe, FileSignature, Plus } from "lucide-react";
 import { SupplierContractList } from "./SupplierContractList";
 import { SupplierContractForm } from "./SupplierContractForm";
 import { useSupplierContract } from "@/hooks/useSupplierContracts";
+import { useSupplier } from "@/hooks/useSupplier";
+import { useAuth } from "@/hooks/useAuth";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { AlertCircle, Ban, CheckCircle } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 
 interface SupplierDetailProps {
   supplier: Supplier;
@@ -22,17 +39,37 @@ interface SupplierDetailProps {
 export function SupplierDetail({ supplier }: SupplierDetailProps) {
   const navigate = useNavigate();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const { hasRole } = useAuth();
+  const { blacklistSupplier, reinstateSupplier } = useSupplier(supplier._id);
   const { createContract } = useSupplierContract();
+  const [blacklistReason, setBlacklistReason] = useState("");
+  const [isBlacklistDialogOpen, setIsBlacklistDialogOpen] = useState(false);
+  const isGF = hasRole("GF");
 
-  const handleCreateContract = async (data: any) => {
+  const handleCreateContract = async (data: Record<string, unknown>) => {
     try {
       await createContract(supplier._id, data);
       setIsCreateDialogOpen(false);
-      // Ideally refetch contracts, but the hook inside List handles its own fetching.
-      // We might need a way to trigger refresh in List.
-      // For now, we rely on page reload or simple success.
-      // Ideally, lift 'refetch' from List or use QueryClient.
-      window.location.reload(); // Simple brute force refresh for MVP
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleBlacklist = async () => {
+    if (blacklistReason.length < 20) return;
+    try {
+      await blacklistSupplier(blacklistReason);
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleReinstate = async () => {
+    try {
+      await reinstateSupplier();
+      window.location.reload();
     } catch (error) {
       console.error(error);
     }
@@ -44,7 +81,66 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
         <h2 className="text-3xl font-bold tracking-tight">
           {supplier.companyName}
         </h2>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {supplier.status === 'Blacklisted' && (
+            <Badge variant="destructive" className="flex gap-1">
+              <Ban className="h-3 w-3" />
+              Inaktiv (Blacklisted)
+            </Badge>
+          )}
+
+          {isGF && supplier.status === 'Blacklisted' && (
+            <Button
+              variant="outline"
+              className="text-green-600 border-green-600 hover:text-green-700 hover:bg-green-50"
+              onClick={handleReinstate}
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Reinstate
+            </Button>
+          )}
+
+          {isGF && supplier.status !== 'Blacklisted' && (
+            <AlertDialog open={isBlacklistDialogOpen} onOpenChange={setIsBlacklistDialogOpen}>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">
+                  <Ban className="h-4 w-4 mr-2" />
+                  Blacklist
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Lieferant sperren (Blacklist)</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Der Lieferant wird für alle neuen Projekte gesperrt.
+                    Bitte geben Sie einen Grund an (min. 20 Zeichen).
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <div className="py-4">
+                  <Textarea
+                    placeholder="Grund für die Sperrung..."
+                    value={blacklistReason}
+                    onChange={(e) => setBlacklistReason(e.target.value)}
+                    className={blacklistReason.length > 0 && blacklistReason.length < 20 ? "border-red-500" : ""}
+                  />
+                  {blacklistReason.length > 0 && blacklistReason.length < 20 && (
+                    <p className="text-xs text-red-500 mt-1">Mindestens 20 Zeichen erforderlich.</p>
+                  )}
+                </div>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleBlacklist}
+                    disabled={blacklistReason.length < 20}
+                    className="bg-destructive hover:bg-destructive/90"
+                  >
+                    Sperren
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+
           <Button
             variant="outline"
             onClick={() => navigate(`/suppliers/${supplier._id}/edit`)}
@@ -58,6 +154,18 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
         <Card>
           <CardHeader>
             <CardTitle>Kontaktinformationen</CardTitle>
+            {supplier.status === 'Blacklisted' && (
+              <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-800">
+                <p className="font-semibold flex items-center gap-1">
+                  <AlertCircle className="h-4 w-4" />
+                  Grund für Sperrung:
+                </p>
+                <p className="mt-1">{supplier.blacklistReason}</p>
+                <p className="text-xs text-red-600 mt-2">
+                  Gesperrt von: {supplier.blacklistedBy || 'Unbekannt'} am {supplier.blacklistedAt ? new Date(supplier.blacklistedAt).toLocaleDateString() : 'Unknown'}
+                </p>
+              </div>
+            )}
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center space-x-2">
