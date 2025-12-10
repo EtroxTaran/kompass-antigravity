@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, Ban } from "lucide-react";
+import { AlertCircle, Ban, Star } from "lucide-react";
 
 export function SupplierList() {
   const { suppliers, loading } = useSuppliers();
@@ -46,6 +46,12 @@ export function SupplierList() {
                   <Badge variant="destructive">
                     <Ban className="h-3 w-3 mr-1" />
                     Rejected
+                  </Badge>
+                )}
+                {supplier.rating && (
+                  <Badge variant="outline" className="ml-auto flex gap-1 items-center border-yellow-400/50 bg-yellow-50/50 text-yellow-700">
+                    <Star className="h-3 w-3 fill-current text-yellow-400" />
+                    {supplier.rating.overall}
                   </Badge>
                 )}
               </div>

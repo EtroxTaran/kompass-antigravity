@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { SupplierRepository, Supplier } from './supplier.repository';
+import { SupplierRepository, Supplier, SupplierRating } from './supplier.repository';
 import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
+import { RateSupplierDto } from './dto/supplier-rating.dto';
 
 import { MailService } from '../mail/mail.service';
 
@@ -23,7 +24,7 @@ export class SupplierService {
       return this.supplierRepository.searchByName(options.search, options);
     }
     if (options.rating) {
-      return this.supplierRepository.findByRating(options.rating, options);
+      return this.supplierRepository.findByRating(Number(options.rating), options);
     }
     return this.supplierRepository.findAll(options);
   }
@@ -207,5 +208,52 @@ export class SupplierService {
     });
 
     return updated;
+  }
+
+  async submitRating(
+    id: string,
+    dto: RateSupplierDto,
+    user: { id: string; email?: string },
+  ): Promise<Supplier> {
+    const supplier = await this.findById(id);
+
+    // Calculate overall for this rating
+    const overall =
+      dto.quality * 0.3 +
+      dto.reliability * 0.3 +
+      dto.communication * 0.2 +
+      dto.priceValue * 0.2;
+
+    const existingCount = supplier.rating?.reviewCount || 0;
+    const current = supplier.rating;
+
+    const aggregate = (param: number | undefined, incoming: number) => {
+      if (param === undefined) return incoming;
+      return (param * existingCount + incoming) / (existingCount + 1);
+    };
+
+    const newRating: SupplierRating = {
+      overall: Number(aggregate(current?.overall, overall).toFixed(1)),
+      quality: Number(aggregate(current?.quality, dto.quality).toFixed(1)),
+      reliability: Number(aggregate(current?.reliability, dto.reliability).toFixed(1)),
+      communication: Number(aggregate(current?.communication, dto.communication).toFixed(1)),
+      priceValue: Number(aggregate(current?.priceValue, dto.priceValue).toFixed(1)),
+      reviewCount: existingCount + 1,
+      lastUpdated: new Date().toISOString(),
+    };
+
+    if (newRating.overall < 3) {
+      console.warn(
+        `[ALERT] Low rating (${newRating.overall}) for supplier ${supplier.companyName} (${supplier._id}) by ${user.email}`,
+      );
+      // In a real scenario, call NotificationService here
+    }
+
+    return this.supplierRepository.update(
+      id,
+      { rating: newRating } as Partial<Supplier>,
+      user.id,
+      user.email,
+    );
   }
 }

@@ -22,8 +22,3 @@ import { ContractModule } from '../contract/contract.module';
     exports: [RfqService],
 })
 export class RfqModule { }
-controllers: [RfqController],
-    providers: [RfqService, RfqRepository],
-        exports: [RfqService],
-})
-export class RfqModule { }

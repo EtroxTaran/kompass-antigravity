@@ -32,7 +32,8 @@ export interface Supplier extends BaseEntity {
   paymentTerms?: string;
   deliveryTerms?: string;
 
-  rating?: 'A' | 'B' | 'C';
+  // Evaluation
+  rating?: SupplierRating;
   category?: string[];
 
   status?: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval' | 'Rejected';
@@ -52,6 +53,16 @@ export interface Supplier extends BaseEntity {
   activeProjectCount?: number;
 }
 
+export interface SupplierRating {
+  overall: number;          // 1-5 stars, weighted average
+  quality: number;          // 1-5
+  reliability: number;      // 1-5
+  communication: number;    // 1-5
+  priceValue: number;       // 1-5
+  reviewCount: number;
+  lastUpdated: string;      // ISO date
+}
+
 @Injectable()
 export class SupplierRepository extends BaseRepository<Supplier> {
   protected readonly entityType = 'supplier';
@@ -64,10 +75,10 @@ export class SupplierRepository extends BaseRepository<Supplier> {
   }
 
   async findByRating(
-    rating: string,
+    minRating: number,
     options: { page?: number; limit?: number } = {},
   ) {
-    return this.findBySelector({ rating }, options);
+    return this.findBySelector({ 'rating.overall': { $gte: minRating } }, options);
   }
 
   async searchByName(

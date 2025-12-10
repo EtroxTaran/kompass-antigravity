@@ -19,7 +19,7 @@ export interface Supplier extends BaseEntity {
   deliveryTerms?: string;
 
   // Evaluation
-  rating?: "A" | "B" | "C";
+  rating?: SupplierRating;
   category?: string[]; // e.g., 'wood', 'metal', 'electronics'
 
   // Status & Blacklist
@@ -41,4 +41,22 @@ export interface Supplier extends BaseEntity {
 
   // Operational
   activeProjectCount?: number;
+}
+
+export interface SupplierRating {
+  overall: number;          // 1-5 stars, weighted average
+  quality: number;          // 1-5
+  reliability: number;      // 1-5
+  communication: number;    // 1-5
+  priceValue: number;       // 1-5
+  reviewCount: number;
+  lastUpdated: string;      // ISO date
+}
+
+export interface RateSupplierDto {
+  quality: number;
+  reliability: number;
+  communication: number;
+  priceValue: number;
+  feedback?: string;
 }

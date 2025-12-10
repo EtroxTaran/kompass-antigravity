@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { suppliersApi } from "@/services/apiClient";
-import { Supplier } from "@kompass/shared";
+import { Supplier, RateSupplierDto } from "@kompass/shared";
 
 export function useSupplier(id?: string) {
   const [supplier, setSupplier] = useState<Supplier | null>(null);
@@ -112,6 +112,21 @@ export function useSupplier(id?: string) {
     }
   };
 
+  const rateSupplier = async (id: string, data: RateSupplierDto) => {
+    setLoading(true);
+    try {
+      const result = await suppliersApi.rate(id, data);
+      setSupplier(result as unknown as Supplier);
+      return result;
+    } catch (err) {
+      console.error("Error rating supplier", err);
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     supplier,
     loading,
@@ -121,6 +136,7 @@ export function useSupplier(id?: string) {
     reinstateSupplier,
     approveSupplier,
     rejectSupplier,
+    rateSupplier,
     refetch: fetchSupplier,
   };
 }

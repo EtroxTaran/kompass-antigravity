@@ -186,4 +186,70 @@ describe('SupplierService', () => {
             );
         });
     });
+
+    describe('submitRating', () => {
+        it('should calculate initial rating correctly', async () => {
+            (repository.findById as jest.Mock).mockResolvedValue({
+                ...mockSupplier,
+                rating: undefined
+            });
+
+            const dto = {
+                quality: 5,
+                reliability: 5,
+                communication: 5,
+                priceValue: 5,
+            };
+
+            await service.submitRating('supplier-1', dto, mockUser);
+
+            expect(repository.update).toHaveBeenCalledWith(
+                'supplier-1',
+                expect.objectContaining({
+                    rating: expect.objectContaining({
+                        overall: 5.0,
+                        reviewCount: 1,
+                    })
+                }),
+                mockUser.id,
+                mockUser.email,
+            );
+        });
+
+        it('should aggregate ratings correctly', async () => {
+            (repository.findById as jest.Mock).mockResolvedValue({
+                ...mockSupplier,
+                rating: {
+                    overall: 4.0,
+                    quality: 4.0,
+                    reliability: 4.0,
+                    communication: 4.0,
+                    priceValue: 4.0,
+                    reviewCount: 1,
+                    lastUpdated: '2025-01-01'
+                }
+            });
+
+            const dto = {
+                quality: 2,
+                reliability: 2,
+                communication: 2,
+                priceValue: 2,
+            };
+
+            await service.submitRating('supplier-1', dto, mockUser);
+
+            expect(repository.update).toHaveBeenCalledWith(
+                'supplier-1',
+                expect.objectContaining({
+                    rating: expect.objectContaining({
+                        overall: 3.0,
+                        reviewCount: 2,
+                    })
+                }),
+                mockUser.id,
+                mockUser.email,
+            );
+        });
+    });
 });

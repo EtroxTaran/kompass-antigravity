@@ -25,7 +25,6 @@ export function SupplierForm({
 }: SupplierFormProps) {
   const form = useForm<Supplier>({
     defaultValues: {
-      rating: "B",
       ...defaultValues,
     },
   });

@@ -583,6 +583,10 @@ export const suppliersApi = {
   async reject(id: string, reason: string): Promise<unknown> {
     return put(`/suppliers/${id}/reject`, { reason });
   },
+
+  async rate(id: string, data: RateSupplierDto): Promise<unknown> {
+    return put(`/suppliers/${id}/rate`, data);
+  },
 };
 
 // =============================================================================
@@ -843,7 +847,7 @@ export const rfqApi = {
   }
 };
 
-import { RequestForQuote, CreateRfqDto, RecordQuoteDto } from "@kompass/shared";
+import { RequestForQuote, CreateRfqDto, RecordQuoteDto, RateSupplierDto } from "@kompass/shared";
 
 // Mileage API
 // =============================================================================

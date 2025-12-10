@@ -1,4 +1,6 @@
 
+import { BaseEntity } from "./base";
+
 export enum RfqStatus {
     DRAFT = 'Draft',
     SENT = 'Sent',
@@ -26,9 +28,7 @@ export interface SupplierQuote {
     status: QuoteStatus;
 }
 
-export interface RequestForQuote {
-    _id: string;
-    _rev?: string;
+export interface RequestForQuote extends BaseEntity {
     type: 'request_for_quote';
 
     rfqNumber: string; // "RFQ-2025-00123"
@@ -54,10 +54,4 @@ export interface RequestForQuote {
     // Award
     awardedSupplierId?: string;
     awardedQuoteId?: string;
-
-    // Audit
-    createdBy: string;
-    createdAt: Date | string;
-    modifiedBy?: string;
-    modifiedAt?: Date | string;
 }

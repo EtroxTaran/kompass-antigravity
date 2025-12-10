@@ -10,7 +10,7 @@ export interface Supplier extends BaseEntity {
     billingAddress: Address;
     paymentTerms?: string;
     deliveryTerms?: string;
-    rating?: "A" | "B" | "C";
+    rating?: SupplierRating;
     category?: string[];
     status?: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval' | 'Rejected';
     approvedBy?: string;
@@ -24,4 +24,20 @@ export interface Supplier extends BaseEntity {
     reinstatedBy?: string;
     reinstatedAt?: string;
     activeProjectCount?: number;
+}
+export interface SupplierRating {
+    overall: number;
+    quality: number;
+    reliability: number;
+    communication: number;
+    priceValue: number;
+    reviewCount: number;
+    lastUpdated: string;
+}
+export interface RateSupplierDto {
+    quality: number;
+    reliability: number;
+    communication: number;
+    priceValue: number;
+    feedback?: string;
 }

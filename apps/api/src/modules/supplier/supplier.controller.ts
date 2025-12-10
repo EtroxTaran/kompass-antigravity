@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { SupplierService } from './supplier.service';
 import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
+import { RateSupplierDto } from './dto/supplier-rating.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RbacGuard } from '../../auth/guards/rbac.guard';
 import { Permissions } from '../../auth/decorators/permissions.decorator';
@@ -134,5 +135,15 @@ export class SupplierController {
       throw new BadRequestException('Reason is required for rejection');
     }
     return this.supplierService.reject(id, user, reason);
+  }
+
+  @Put(':id/rate')
+  @Permissions({ entity: 'Supplier', action: 'UPDATE' })
+  async rate(
+    @Param('id') id: string,
+    @Body() dto: RateSupplierDto,
+    @CurrentUser() user: any,
+  ) {
+    return this.supplierService.submitRating(id, dto, user);
   }
 }

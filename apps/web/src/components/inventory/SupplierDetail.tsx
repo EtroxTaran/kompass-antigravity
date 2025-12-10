@@ -18,7 +18,9 @@ import { useSupplier } from "@/hooks/useSupplier";
 import { useAuth } from "@/hooks/useAuth";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, Ban, CheckCircle } from "lucide-react";
+import { AlertCircle, Ban, CheckCircle, Star } from "lucide-react";
+import { StarRating } from "@/components/ui/StarRating";
+import { SupplierRatingForm } from "./SupplierRatingForm";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,6 +48,7 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
   const [rejectReason, setRejectReason] = useState("");
   const [isBlacklistDialogOpen, setIsBlacklistDialogOpen] = useState(false);
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
+  const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
   const isGF = hasRole("GF");
 
   const handleCreateContract = async (data: Record<string, unknown>) => {
@@ -299,6 +302,68 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
                 <p>{supplier.billingAddress.country}</p>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Performance Rating */}
+        <Card>
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <CardTitle>Leistungsbewertung</CardTitle>
+              <Button variant="outline" size="sm" onClick={() => setIsRatingDialogOpen(true)}>
+                <Star className="h-4 w-4 mr-2" />
+                Bewerten
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {supplier.rating ? (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold">Gesamtbewertung</span>
+                  <div className="flex items-center gap-2">
+                    <StarRating rating={supplier.rating.overall} readOnly />
+                    <span className="text-xl font-bold">{supplier.rating.overall}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Qualität</span>
+                    <span>{supplier.rating.quality}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Zuverlässigkeit</span>
+                    <span>{supplier.rating.reliability}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Kommunikation</span>
+                    <span>{supplier.rating.communication}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Preis/Leistung</span>
+                    <span>{supplier.rating.priceValue}</span>
+                  </div>
+                </div>
+
+                <div className="text-xs text-muted-foreground text-right border-t pt-2">
+                  Basierend auf {supplier.rating.reviewCount} Bewertungen
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-6 text-muted-foreground">
+                <Star className="h-8 w-8 mb-2 opacity-20" />
+                <p>Noch keine Bewertungen</p>
+              </div>
+            )}
+
+            <SupplierRatingForm
+              supplierId={supplier._id}
+              supplierName={supplier.companyName}
+              open={isRatingDialogOpen}
+              onOpenChange={setIsRatingDialogOpen}
+              onSuccess={() => window.location.reload()}
+            />
           </CardContent>
         </Card>
       </div>
