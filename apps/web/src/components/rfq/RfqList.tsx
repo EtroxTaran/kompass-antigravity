@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRfq } from '@/hooks/useRfq';
 import { RequestForQuote, RfqStatus } from '@kompass/shared';
@@ -23,11 +23,7 @@ export function RfqList() {
     const [rfqs, setRfqs] = useState<RequestForQuote[]>([]);
     const [search, setSearch] = useState('');
 
-    useEffect(() => {
-        loadRfqs();
-    }, []);
-
-    const loadRfqs = async () => {
+    const loadRfqs = useCallback(async () => {
         try {
             const data = await fetchRfqs();
             if (data) {
@@ -36,7 +32,11 @@ export function RfqList() {
         } catch (error) {
             console.error('Failed to load RFQs', error);
         }
-    };
+    }, [fetchRfqs]);
+
+    useEffect(() => {
+        loadRfqs();
+    }, [loadRfqs]);
 
     const filteredRfqs = rfqs.filter((rfq) =>
         rfq.title.toLowerCase().includes(search.toLowerCase()) ||

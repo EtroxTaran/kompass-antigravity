@@ -15,8 +15,8 @@ export const useRfq = () => {
         try {
             const response = await rfqApi.list();
             return response.data;
-        } catch (err: any) {
-            const message = err.response?.data?.message || 'Failed to fetch RFQs';
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Failed to fetch RFQs';
             setError(message);
             toast({ title: 'Error', description: message, variant: 'destructive' });
             throw err;
@@ -31,8 +31,8 @@ export const useRfq = () => {
         try {
             const rfq = await rfqApi.get(id);
             return rfq;
-        } catch (err: any) {
-            const message = err.response?.data?.message || 'Failed to fetch RFQ';
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Failed to fetch RFQ';
             setError(message);
             toast({ title: 'Error', description: message, variant: 'destructive' });
             throw err;
@@ -48,8 +48,8 @@ export const useRfq = () => {
             const rfq = await rfqApi.create(data);
             toast({ title: 'Success', description: 'RFQ created successfully' });
             return rfq;
-        } catch (err: any) {
-            const message = err.response?.data?.message || 'Failed to create RFQ';
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Failed to create RFQ';
             setError(message);
             toast({ title: 'Error', description: message, variant: 'destructive' });
             throw err;
@@ -65,8 +65,8 @@ export const useRfq = () => {
             const rfq = await rfqApi.send(id);
             toast({ title: 'Success', description: 'RFQ sent to suppliers' });
             return rfq;
-        } catch (err: any) {
-            const message = err.response?.data?.message || 'Failed to send RFQ';
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Failed to send RFQ';
             setError(message);
             toast({ title: 'Error', description: message, variant: 'destructive' });
             throw err;
@@ -82,8 +82,8 @@ export const useRfq = () => {
             const rfq = await rfqApi.recordQuote(id, data);
             toast({ title: 'Success', description: 'Quote recorded' });
             return rfq;
-        } catch (err: any) {
-            const message = err.response?.data?.message || 'Failed to record quote';
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Failed to record quote';
             setError(message);
             toast({ title: 'Error', description: message, variant: 'destructive' });
             throw err;
@@ -99,8 +99,8 @@ export const useRfq = () => {
             const rfq = await rfqApi.awardQuote(id, quoteId);
             toast({ title: 'Success', description: 'Quote awarded and contract created' });
             return rfq;
-        } catch (err: any) {
-            const message = err.response?.data?.message || 'Failed to award quote';
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Failed to award quote';
             setError(message);
             toast({ title: 'Error', description: message, variant: 'destructive' });
             throw err;
