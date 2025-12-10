@@ -12,6 +12,7 @@ import {
 import { ProjectService } from '../project/project.service';
 import { OfferService } from '../offer/offer.service';
 import { ProjectMaterialService } from '../project-material/project-material.service';
+import { SearchService } from '../search/search.service';
 
 @Injectable()
 export class OpportunityService {
@@ -20,7 +21,8 @@ export class OpportunityService {
     private readonly projectService: ProjectService,
     private readonly offerService: OfferService,
     private readonly projectMaterialService: ProjectMaterialService,
-  ) {}
+    private readonly searchService: SearchService,
+  ) { }
 
   async findAll(
     options: {
@@ -94,11 +96,27 @@ export class OpportunityService {
       currency: dto.currency || 'EUR',
     };
 
-    return this.opportunityRepository.create(
+    const opportunity = await this.opportunityRepository.create(
       opportunityData as Partial<Opportunity>,
       user.id,
       user.email,
     );
+    this.indexOpportunity(opportunity);
+    return opportunity;
+  }
+
+  private async indexOpportunity(opportunity: Opportunity) {
+    try {
+      await this.searchService.indexDocument('opportunities', {
+        _id: opportunity._id,
+        title: opportunity.title,
+        description: opportunity.description,
+        stage: opportunity.stage,
+        expectedValue: opportunity.expectedValue,
+      });
+    } catch (e) {
+      console.error('Failed to index opportunity', e);
+    }
   }
 
   async update(
@@ -133,12 +151,14 @@ export class OpportunityService {
       }
     }
 
-    return this.opportunityRepository.update(
+    const opportunity = await this.opportunityRepository.update(
       id,
       dto as Partial<Opportunity>,
       user.id,
       user.email,
     );
+    this.indexOpportunity(opportunity);
+    return opportunity;
   }
 
   async delete(

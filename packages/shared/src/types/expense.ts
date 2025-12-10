@@ -5,7 +5,10 @@ export interface Expense extends BaseEntity {
 
   // Core Info
   description: string;
-  amount: number;
+  merchantName: string;
+  amount: number; // Gross amount
+  taxAmount?: number;
+  netAmount?: number;
   currency: string;
   date: string; // ISO date
   category: "travel" | "meal" | "accommodation" | "material" | "other";
@@ -21,4 +24,10 @@ export interface Expense extends BaseEntity {
   // Status
   status: "draft" | "submitted" | "approved" | "rejected" | "reimbursed";
   rejectionReason?: string;
+
+  // Approval Tracking
+  approvedBy?: string;
+  approvedAt?: string;
+  rejectedBy?: string;
+  rejectedAt?: string;
 }

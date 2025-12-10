@@ -20,6 +20,7 @@ export interface OfferLineItem {
 export interface Offer extends BaseEntity {
   type: "offer";
   opportunityId: string;
+  projectId?: string;
   customerId: string;
   contactPersonId?: string;
   offerNumber: string; // Server generated usually

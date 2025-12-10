@@ -1,17 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
-import { dbService } from "@/lib/db";
+import { dbService, StorageInfo } from "@/lib/db";
 
-export type SyncStatus = "idle" | "active" | "paused" | "error" | "offline";
+export type SyncStatus = "idle" | "active" | "paused" | "error" | "offline" | "storage_full";
 
 interface SyncState {
   status: SyncStatus;
   isOnline: boolean;
   pendingChanges: number;
   lastSyncTime: Date | null;
+  storage: StorageInfo | null;
 }
 
 /**
- * Hook to monitor database sync status and online/offline state
+ * Hook to monitor database sync status, online/offline state, and storage usage
  */
 export function useSyncStatus() {
   const [state, setState] = useState<SyncState>({
@@ -19,6 +20,7 @@ export function useSyncStatus() {
     isOnline: navigator.onLine,
     pendingChanges: 0,
     lastSyncTime: null,
+    storage: null,
   });
 
   // Track online/offline status
@@ -47,13 +49,14 @@ export function useSyncStatus() {
     };
   }, []);
 
-  // Subscribe to sync status changes
+  // Subscribe to sync status and storage changes
   useEffect(() => {
-    const unsubscribe = dbService.subscribe((status) => {
+    const unsubscribe = dbService.subscribe((update) => {
       setState((prev) => ({
         ...prev,
-        status: status as SyncStatus,
-        lastSyncTime: status === "idle" ? new Date() : prev.lastSyncTime,
+        status: update.status as SyncStatus,
+        storage: update.storage || prev.storage,
+        lastSyncTime: update.status === "idle" ? new Date() : prev.lastSyncTime,
       }));
     });
 
@@ -62,14 +65,33 @@ export function useSyncStatus() {
 
   // Manual sync trigger
   const triggerSync = useCallback(() => {
-    if (state.isOnline) {
+    if (state.isOnline && state.status !== "storage_full") {
       dbService.stopSync();
       dbService.startSync();
     }
-  }, [state.isOnline]);
+  }, [state.isOnline, state.status]);
+
+  // Manual storage check
+  const checkStorage = useCallback(async () => {
+    const storage = await dbService.checkStorage();
+    setState((prev) => ({ ...prev, storage }));
+  }, []);
+
+  // Request persistent storage
+  const requestPersistentStorage = useCallback(async () => {
+    return dbService.requestPersistentStorage();
+  }, []);
+
+  // Derived state
+  const isStorageWarning = state.storage?.isWarning ?? false;
+  const isStorageCritical = state.storage?.isCritical ?? false;
 
   return {
     ...state,
     triggerSync,
+    checkStorage,
+    requestPersistentStorage,
+    isStorageWarning,
+    isStorageCritical,
   };
 }

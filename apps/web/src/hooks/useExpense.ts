@@ -49,13 +49,28 @@ export function useExpense(id?: string) {
   return { expense, loading, error, saveExpense, refetch: fetchExpense };
 }
 
-export function useExpenses() {
+export function useExpenses(params?: {
+  projectId?: string;
+  status?: string;
+  userId?: string;
+  view?: "all" | "my" | "pending";
+}) {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchExpenses = useCallback(async () => {
+    setLoading(true);
     try {
-      const result = await expensesApi.list();
+      let result;
+      if (params?.view === "my") {
+        result = await expensesApi.listMy();
+      } else if (params?.view === "pending") {
+        result = await expensesApi.listPending();
+      } else {
+        const { view, ...queryParams } = params || {};
+        result = await expensesApi.list(queryParams);
+      }
+
       if (result && Array.isArray(result.data)) {
         setExpenses(result.data as unknown as Expense[]);
       } else {
@@ -66,11 +81,21 @@ export function useExpenses() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [JSON.stringify(params)]);
 
   useEffect(() => {
     fetchExpenses();
   }, [fetchExpenses]);
 
-  return { expenses, loading, refetch: fetchExpenses };
+  const approveExpense = async (id: string) => {
+    await expensesApi.approve(id);
+    fetchExpenses();
+  };
+
+  const rejectExpense = async (id: string, reason: string) => {
+    await expensesApi.reject(id, reason);
+    fetchExpenses();
+  };
+
+  return { expenses, loading, refetch: fetchExpenses, approveExpense, rejectExpense };
 }

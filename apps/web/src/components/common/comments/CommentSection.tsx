@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Comment } from '@kompass/shared';
+import { Comment as CommentType } from '@kompass/shared';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { CommentThread } from './CommentThread';
@@ -13,8 +13,8 @@ import { useEffect, useMemo } from "react";
 interface CommentSectionProps {
     entityType: 'project' | 'offer' | 'invoice' | 'task' | 'opportunity';
     entityId: string;
-    comments: Comment[];
-    onCommentAdded?: (comment: Comment) => void;
+    comments: CommentType[];
+    onCommentAdded?: (comment: CommentType) => void;
     onCommentResolved?: (commentId: string) => void;
 }
 
@@ -34,7 +34,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
         if (!newComment.trim()) return;
         setIsSubmitting(true);
         try {
-            const addedComment = await commentsApi.add(entityType, entityId, newComment);
+            const addedComment = await commentsApi.add(entityType, entityId, newComment) as unknown as CommentType;
             setNewComment('');
             if (onCommentAdded) onCommentAdded(addedComment);
         } catch (error) {
@@ -62,7 +62,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
 
         // Change of plan: Just add as root comment for now to unblock.
         try {
-            const addedComment = await commentsApi.add(entityType, entityId, content, commentId);
+            const addedComment = await commentsApi.add(entityType, entityId, content, commentId) as unknown as CommentType;
             if (onCommentAdded) onCommentAdded(addedComment);
         } catch (error) {
             console.error("Failed to reply", error);
@@ -83,7 +83,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
     useEffect(() => {
         if (!socket) return;
 
-        const onAdded = (comment: Comment) => {
+        const onAdded = (comment: CommentType) => {
             if (onCommentAdded) onCommentAdded(comment);
         };
 
@@ -102,8 +102,8 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
 
     // Build comment tree
     const { rootComments, activeCount } = useMemo(() => {
-        const commentMap = new Map<string, Comment>();
-        const roots: Comment[] = [];
+        const commentMap = new Map<string, CommentType>();
+        const roots: CommentType[] = [];
 
         // First pass: map all comments and deep copy to avoid mutation issues if strict
         // Actually, we can just use object references if we are careful.

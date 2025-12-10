@@ -16,7 +16,6 @@ import { format } from "date-fns";
 import { CommentSection } from "@/components/common/comments/CommentSection";
 import { useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Offer } from "@kompass/shared";
 
 interface OfferItem {
   id?: string;

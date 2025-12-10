@@ -95,11 +95,11 @@ export class ImportService {
       });
     }
 
-    const headers = jsonData[0].map((h) => String(h).trim());
-    const rows: ParsedRow[] = jsonData.slice(1).map((row, index) => ({
+    const headers = (jsonData[0] as any[]).map((h: any) => String(h).trim());
+    const rows: ParsedRow[] = jsonData.slice(1).map((row: any, index) => ({
       rowIndex: index + 2, // 1-indexed, accounting for header
       data: headers.reduce(
-        (obj, header, i) => {
+        (obj: any, header: any, i: number) => {
           obj[header] = row[i];
           return obj;
         },

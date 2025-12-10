@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { mileageApi } from "@/services/apiClient";
+import { expensesApi } from "@/services/apiClient";
 import { Mileage } from "@kompass/shared";
 
 export function useMileage(id?: string) {
@@ -11,7 +11,7 @@ export function useMileage(id?: string) {
     if (!id) return;
     setLoading(true);
     try {
-      const result = await mileageApi.get(id);
+      const result = await expensesApi.get(id);
       setMileage(result as unknown as Mileage);
       setError(null);
     } catch (err) {
@@ -31,9 +31,10 @@ export function useMileage(id?: string) {
     try {
       let result;
       if (id && mileage) {
-        result = await mileageApi.update(id, data);
+        result = await expensesApi.update(id, data);
       } else {
-        result = await mileageApi.create(data);
+        // Special endpoint for creating mileage
+        result = await expensesApi.createMileage(data);
       }
       setMileage(result as unknown as Mileage);
       return result;
@@ -54,10 +55,15 @@ export function useMileages() {
   const [loading, setLoading] = useState(true);
 
   const fetchMileages = useCallback(async () => {
+    setLoading(true);
     try {
-      const result = await mileageApi.list();
+      // Fetch all expenses and filter for mileage on client side for now/MVP
+      // Ideally backend supports type filter
+      const result = await expensesApi.list();
       if (result && Array.isArray(result.data)) {
-        setMileages(result.data as unknown as Mileage[]);
+        const all = result.data as unknown as any[];
+        const mileageOnly = all.filter(e => e.type === 'mileage');
+        setMileages(mileageOnly as Mileage[]);
       } else {
         setMileages([]);
       }

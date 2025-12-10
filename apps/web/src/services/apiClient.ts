@@ -763,8 +763,17 @@ export const expensesApi = {
   async list(params?: {
     projectId?: string;
     status?: string;
+    userId?: string;
   }): Promise<ListResponse<unknown>> {
     return get("/expenses", params);
+  },
+
+  async listMy(): Promise<ListResponse<unknown>> {
+    return get("/expenses/my");
+  },
+
+  async listPending(): Promise<ListResponse<unknown>> {
+    return get("/expenses/pending");
   },
 
   async get(id: string): Promise<unknown> {
@@ -775,8 +784,20 @@ export const expensesApi = {
     return post("/expenses", data);
   },
 
+  async createMileage(data: unknown): Promise<unknown> {
+    return post("/expenses/mileage", data);
+  },
+
   async update(id: string, data: unknown): Promise<unknown> {
     return put(`/expenses/${id}`, data);
+  },
+
+  async approve(id: string): Promise<unknown> {
+    return put(`/expenses/${id}/approve`, {});
+  },
+
+  async reject(id: string, reason: string): Promise<unknown> {
+    return put(`/expenses/${id}/reject`, { reason });
   },
 
   async delete(id: string): Promise<void> {
@@ -1086,6 +1107,34 @@ export const projectSubcontractorApi = {
   },
 };
 
+// Search API
+export interface SearchHit {
+  id: string;
+  title: string;
+  subtitle?: string;
+  url: string;
+  _matchesPosition?: Record<string, Array<{ start: number; length: number }>>;
+}
+
+export interface GlobalSearchResult {
+  query: string;
+  processingTimeMs: number;
+  results: {
+    customers: SearchHit[];
+    projects: SearchHit[];
+    opportunities: SearchHit[];
+    suppliers: SearchHit[];
+    materials: SearchHit[];
+  };
+  totalHits: number;
+}
+
+export const searchApi = {
+  async globalSearch(query: string, limit = 10): Promise<GlobalSearchResult> {
+    return get<GlobalSearchResult>('/search', { q: query, limit: String(limit) });
+  },
+};
+
 // Export consolidated API
 export const apiClient = {
   auth: authApi,
@@ -1108,6 +1157,7 @@ export const apiClient = {
   tours: toursApi,
   inventory: inventoryApi,
   comments: commentsApi,
+  search: searchApi,
   portal: {
     requestLink: (email: string) => post('/portal/auth/request-link', { email }),
     verifyToken: (token: string) => post<{ accessToken: string; user: any }>('/portal/auth/verify', { token }),
@@ -1121,3 +1171,4 @@ export const portalApi = apiClient.portal;
 
 // Export error class for use in components
 export { ApiError };
+

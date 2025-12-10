@@ -10,15 +10,16 @@ import {
 } from './supplier.repository';
 import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
 import { RateSupplierDto } from './dto/supplier-rating.dto';
-
 import { MailService } from '../mail/mail.service';
+import { SearchService } from '../search/search.service';
 
 @Injectable()
 export class SupplierService {
   constructor(
     private readonly supplierRepository: SupplierRepository,
     private readonly mailService: MailService,
-  ) {}
+    private readonly searchService: SearchService,
+  ) { }
 
   async findAll(
     options: {
@@ -68,11 +69,27 @@ export class SupplierService {
         country: dto.billingAddress.country || 'Deutschland',
       },
     };
-    return this.supplierRepository.create(
+    const supplier = await this.supplierRepository.create(
       supplierData as Partial<Supplier>,
       user.id,
       user.email,
     );
+    this.indexSupplier(supplier);
+    return supplier;
+  }
+
+  private async indexSupplier(supplier: Supplier) {
+    try {
+      await this.searchService.indexDocument('suppliers', {
+        _id: supplier._id,
+        companyName: supplier.companyName,
+        billingAddress: supplier.billingAddress,
+        contactEmail: (supplier as any).contactEmail,
+        notes: (supplier as any).notes,
+      });
+    } catch (e) {
+      console.error('Failed to index supplier', e);
+    }
   }
 
   async update(
@@ -81,12 +98,14 @@ export class SupplierService {
     user: { id: string; email?: string },
   ): Promise<Supplier> {
     await this.findById(id);
-    return this.supplierRepository.update(
+    const supplier = await this.supplierRepository.update(
       id,
       dto as Partial<Supplier>,
       user.id,
       user.email,
     );
+    this.indexSupplier(supplier);
+    return supplier;
   }
 
   async delete(

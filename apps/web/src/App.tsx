@@ -1378,6 +1378,19 @@ function App() {
           <Route path="/warehouse/new" element={<WarehouseCreatePage />} />
           <Route path="/warehouse/:id/edit" element={<WarehouseEditPage />} />
 
+          {/* My Timesheets Route */}
+          <Route
+            path="/timesheets/my"
+            element={
+              <MainLayout
+                userRole="PM"
+                breadcrumbs={[{ label: "Meine Zeiterfassung", href: "/timesheets/my" }]}
+              >
+                <MyTimesheetsPage />
+              </MainLayout>
+            }
+          />
+
           {/* Calendar Route */}
           <Route
             path="/calendar"

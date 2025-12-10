@@ -6,7 +6,7 @@ import { PortalLayout } from "@/components/layout/PortalLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, ArrowLeft, Calendar, FileText, CheckCircle2 } from "lucide-react";
+import { Loader2, ArrowLeft, FileText } from "lucide-react";
 import { format } from "date-fns";
 
 export function PortalProjectDetail() {

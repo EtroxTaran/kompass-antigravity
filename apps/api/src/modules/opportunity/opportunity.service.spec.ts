@@ -4,6 +4,7 @@ import { OpportunityRepository } from './opportunity.repository';
 import { ProjectService } from '../project/project.service';
 import { OfferService } from '../offer/offer.service';
 import { ProjectMaterialService } from '../project-material/project-material.service';
+import { SearchService } from '../search/search.service';
 
 describe('OpportunityService', () => {
   let service: OpportunityService;
@@ -67,6 +68,13 @@ describe('OpportunityService', () => {
           provide: ProjectMaterialService,
           useValue: {
             copyFromOffer: jest.fn(),
+          },
+        },
+        {
+          provide: SearchService,
+          useValue: {
+            indexDocument: jest.fn(),
+            deleteDocument: jest.fn(),
           },
         },
       ],

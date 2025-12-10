@@ -10,6 +10,7 @@ export interface Project extends BaseEntity {
   // References
   customerId: string;
   opportunityId?: string;
+  offerId?: string;
 
   // Status
   status: "planning" | "active" | "on_hold" | "completed" | "cancelled";

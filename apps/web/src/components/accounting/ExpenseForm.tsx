@@ -20,17 +20,22 @@ export function ExpenseForm() {
 
   // Form state
   const [formData, setFormData] = useState({
+    merchantName: "",
     description: "",
     amount: 0,
     currency: "EUR",
     category: "other",
     date: new Date().toISOString().split("T")[0],
     status: "draft",
+    receiptUrl: undefined as string | undefined, // For now keeping it simple
   });
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (expense) {
       setFormData({
+        merchantName: expense.merchantName || "",
         description: expense.description || "",
         amount: expense.amount || 0,
         currency: expense.currency || "EUR",
@@ -39,6 +44,7 @@ export function ExpenseForm() {
           ? expense.date.split("T")[0]
           : new Date().toISOString().split("T")[0],
         status: expense.status || "draft",
+        receiptUrl: expense.receiptUrl,
       });
     }
   }, [expense]);
@@ -57,15 +63,31 @@ export function ExpenseForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    // Validation
+    if (formData.amount > 150 && !formData.receiptUrl && !receiptFile && !id) {
+      // If creating new and > 150, require receipt
+      setError("Receipt is mandatory for expenses over €150.");
+      return;
+    }
+
     try {
-      await saveExpense(formData as any);
+      // Mock file upload
+      let receiptUrl = formData.receiptUrl;
+      if (receiptFile) {
+        receiptUrl = `mock-storage://${receiptFile.name}`;
+      }
+
+      await saveExpense({ ...formData, receiptUrl } as any);
       navigate("/expenses");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to save expense", err);
+      setError(err.message || "Failed to save expense");
     }
   };
 
-  if (loading) return <div>Lade...</div>;
+  if (loading && id) return <div>Lade...</div>;
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
@@ -75,7 +97,20 @@ export function ExpenseForm() {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {error && <div className="p-3 mb-4 text-red-700 bg-red-100 rounded">{error}</div>}
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="merchantName">Händler / Geschäft</Label>
+            <Input
+              id="merchantName"
+              name="merchantName"
+              value={formData.merchantName}
+              onChange={handleChange}
+              placeholder="z.B. Deutsche Bahn, Hotel X"
+              required
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="date">Datum</Label>
@@ -149,6 +184,18 @@ export function ExpenseForm() {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="receipt">Beleg {formData.amount > 150 && <span className="text-red-500">*</span>}</Label>
+            <Input
+              id="receipt"
+              type="file"
+              accept="image/*,application/pdf"
+              onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
+            />
+            {formData.receiptUrl && <p className="text-xs text-green-600">Beleg vorhanden: {formData.receiptUrl}</p>}
+            <p className="text-xs text-muted-foreground">Pflicht bei Beträgen über 150€.</p>
           </div>
 
           <div className="flex justify-end gap-2 pt-4">

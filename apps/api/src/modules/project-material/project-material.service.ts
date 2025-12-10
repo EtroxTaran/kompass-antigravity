@@ -10,7 +10,7 @@ export class ProjectMaterialService {
     private readonly projectMaterialRepository: ProjectMaterialRepository,
     private readonly offerService: OfferService,
     private readonly projectService: ProjectService,
-  ) {}
+  ) { }
 
   async copyFromOffer(
     offerId: string,
@@ -144,5 +144,46 @@ export class ProjectMaterialService {
 
   async findByProject(projectId: string) {
     return this.projectMaterialRepository.findByProject(projectId);
+  }
+
+  /**
+   * Calculate material costs summary for a project
+   * Returns estimated vs actual costs with variance and percentage
+   */
+  async getMaterialCosts(projectId: string): Promise<{
+    estimated: number;
+    actual: number;
+    variance: number;
+    percentUsed: number;
+    itemCount: number;
+    deliveredCount: number;
+  }> {
+    const materials = await this.projectMaterialRepository.findByProject(projectId);
+
+    let estimated = 0;
+    let actual = 0;
+    let deliveredCount = 0;
+
+    for (const material of materials) {
+      estimated += material.estimatedTotalCost || 0;
+
+      // Actual costs = delivered items (using estimated cost as we don't have actual yet)
+      if (material.status === 'delivered') {
+        actual += material.estimatedTotalCost || 0;
+        deliveredCount++;
+      }
+    }
+
+    const variance = estimated - actual;
+    const percentUsed = estimated > 0 ? (actual / estimated) * 100 : 0;
+
+    return {
+      estimated: Math.round(estimated * 100) / 100,
+      actual: Math.round(actual * 100) / 100,
+      variance: Math.round(variance * 100) / 100,
+      percentUsed: Math.round(percentUsed * 10) / 10,
+      itemCount: materials.length,
+      deliveredCount,
+    };
   }
 }

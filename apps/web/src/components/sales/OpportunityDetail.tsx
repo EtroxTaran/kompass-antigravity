@@ -171,6 +171,13 @@ export function OpportunityDetail({ opportunity }: OpportunityDetailProps) {
           />
         </TabsContent>
       </Tabs>
+
+      <OpportunityWonDialog
+        open={showWonDialog}
+        onOpenChange={setShowWonDialog}
+        onConfirm={handleMarkAsWon}
+        isLoading={isProcessing}
+      />
     </div>
   );
 }

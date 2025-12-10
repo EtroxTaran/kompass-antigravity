@@ -10,13 +10,13 @@ import {
 import { CommentService } from './comment.service';
 import { AddCommentDto } from './dto/add-comment.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { AuthenticatedUser } from '../../auth/strategies/jwt.strategy';
+import type { AuthenticatedUser } from '../../auth/strategies/jwt.strategy';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 
 @Controller('comments')
 @UseGuards(JwtAuthGuard)
 export class CommentController {
-  constructor(private readonly commentService: CommentService) {}
+  constructor(private readonly commentService: CommentService) { }
 
   @Post(':entityType/:entityId')
   async addComment(

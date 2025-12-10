@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SupplierService } from './supplier.service';
 import { SupplierRepository } from './supplier.repository';
 import { MailService } from '../mail/mail.service';
+import { SearchService } from '../search/search.service';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('SupplierService', () => {
@@ -31,11 +32,17 @@ describe('SupplierService', () => {
       sendMail: jest.fn(),
     };
 
+    const searchService = {
+      indexDocument: jest.fn(),
+      deleteDocument: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SupplierService,
         { provide: SupplierRepository, useValue: repository },
         { provide: MailService, useValue: mailService },
+        { provide: SearchService, useValue: searchService },
       ],
     }).compile();
 
