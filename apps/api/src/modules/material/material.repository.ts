@@ -4,7 +4,7 @@ import { AuditService } from '../../shared/services/audit.service';
 import { BaseRepository, BaseEntity } from '../../shared/base.repository';
 import * as Nano from 'nano';
 
-import { Material, SupplierPrice } from "@kompass/shared";
+import { Material, SupplierPrice } from '@kompass/shared';
 
 @Injectable()
 export class MaterialRepository extends BaseRepository<Material> {

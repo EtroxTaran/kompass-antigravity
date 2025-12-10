@@ -716,6 +716,7 @@ export const projectMaterialsApi = {
 
 import {
   ProjectMaterialRequirement,
+  Project,
 } from "@kompass/shared";
 
 export const timeEntriesApi = {
@@ -800,6 +801,21 @@ export const toursApi = {
     return del(`/tours/${id}`);
   },
 };
+
+// =============================================================================
+// Comments API
+// =============================================================================
+
+export const commentsApi = {
+  async add(entityType: string, entityId: string, content: string, contextId?: string): Promise<Comment> {
+    return post(`/comments/${entityType}/${entityId}`, { content, contextId });
+  },
+
+  async resolve(entityType: string, entityId: string, commentId: string): Promise<Comment> {
+    return put(`/comments/${entityType}/${entityId}/${commentId}/resolve`, {});
+  }
+};
+
 
 // =============================================================================
 // Inventory API
@@ -1080,8 +1096,17 @@ export const apiClient = {
   expenses: expensesApi,
   tours: toursApi,
   inventory: inventoryApi,
+  comments: commentsApi,
+  portal: {
+    requestLink: (email: string) => post('/portal/auth/request-link', { email }),
+    verifyToken: (token: string) => post<{ accessToken: string; user: any }>('/portal/auth/verify', { token }),
+    getProjects: () => get<Project[]>('/portal/projects'),
+    getProject: (id: string) => get<Project>(`/portal/projects/${id}`),
+  },
   projectSubcontractor: projectSubcontractorApi,
 };
+
+export const portalApi = apiClient.portal;
 
 // Export error class for use in components
 export { ApiError };

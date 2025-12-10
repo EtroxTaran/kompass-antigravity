@@ -4,6 +4,10 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { PortalLogin } from "@/components/portal/PortalLogin";
+import { PortalVerify } from "@/components/portal/PortalVerify";
+import { PortalDashboard } from "@/components/portal/PortalDashboard";
+import { PortalProjectDetail } from "@/components/portal/PortalProjectDetail";
 import { CustomerList } from "@/components/crm/CustomerList";
 import { OpportunityBoard } from "@/components/sales/OpportunityBoard";
 import { ProjectList } from "@/components/pm/ProjectList";
@@ -1102,6 +1106,12 @@ function App() {
     <Router>
       <PresenceProvider>
         <Routes>
+          {/* Portal Routes */}
+          <Route path="/portal/login" element={<PortalLogin />} />
+          <Route path="/portal/auth/verify" element={<PortalVerify />} />
+          <Route path="/portal/projects" element={<PortalDashboard />} />
+          <Route path="/portal/projects/:id" element={<PortalProjectDetail />} />
+          <Route path="/portal" element={<Navigate to="/portal/login" replace />} />
           <Route path="/" element={<Dashboard />} />
 
           {/* Sales Routes */}

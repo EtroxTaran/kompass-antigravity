@@ -12,4 +12,4 @@ import { ProjectMaterialModule } from '../project-material/project-material.modu
   providers: [OpportunityService, OpportunityRepository],
   exports: [OpportunityService, OpportunityRepository],
 })
-export class OpportunityModule { }
+export class OpportunityModule {}

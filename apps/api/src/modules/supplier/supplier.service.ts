@@ -1,5 +1,13 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { SupplierRepository, Supplier, SupplierRating } from './supplier.repository';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import {
+  SupplierRepository,
+  Supplier,
+  SupplierRating,
+} from './supplier.repository';
 import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
 import { RateSupplierDto } from './dto/supplier-rating.dto';
 
@@ -10,7 +18,7 @@ export class SupplierService {
   constructor(
     private readonly supplierRepository: SupplierRepository,
     private readonly mailService: MailService,
-  ) { }
+  ) {}
 
   async findAll(
     options: {
@@ -24,7 +32,10 @@ export class SupplierService {
       return this.supplierRepository.searchByName(options.search, options);
     }
     if (options.rating) {
-      return this.supplierRepository.findByRating(Number(options.rating), options);
+      return this.supplierRepository.findByRating(
+        Number(options.rating),
+        options,
+      );
     }
     return this.supplierRepository.findAll(options);
   }
@@ -136,7 +147,7 @@ export class SupplierService {
         // Clear blacklist info? Often better to keep history, but for current state we might want to clear or keep as history.
         // Requirements say "Blacklist history visible", so we shouldn't wipe fields immediately if we want to show them.
         // But for 'current status', we just change status.
-        // Let's keep the old blacklist info there or maybe we need a separate history log. 
+        // Let's keep the old blacklist info there or maybe we need a separate history log.
         // For now, simple state change.
       } as Partial<Supplier>,
       user.id,
@@ -235,9 +246,15 @@ export class SupplierService {
     const newRating: SupplierRating = {
       overall: Number(aggregate(current?.overall, overall).toFixed(1)),
       quality: Number(aggregate(current?.quality, dto.quality).toFixed(1)),
-      reliability: Number(aggregate(current?.reliability, dto.reliability).toFixed(1)),
-      communication: Number(aggregate(current?.communication, dto.communication).toFixed(1)),
-      priceValue: Number(aggregate(current?.priceValue, dto.priceValue).toFixed(1)),
+      reliability: Number(
+        aggregate(current?.reliability, dto.reliability).toFixed(1),
+      ),
+      communication: Number(
+        aggregate(current?.communication, dto.communication).toFixed(1),
+      ),
+      priceValue: Number(
+        aggregate(current?.priceValue, dto.priceValue).toFixed(1),
+      ),
       reviewCount: existingCount + 1,
       lastUpdated: new Date().toISOString(),
     };
@@ -264,11 +281,12 @@ export class SupplierService {
       await this.mailService.sendMail({
         to: recipient,
         subject: `WARNUNG: Schlechte Bewertung für ${supplier.companyName}`,
-        text: `Der Lieferant ${supplier.companyName} erhielt eine Bewertung von ${newRating.overall} Sternen.\n\n` +
+        text:
+          `Der Lieferant ${supplier.companyName} erhielt eine Bewertung von ${newRating.overall} Sternen.\n\n` +
           `Projekt: ${dto.projectId || 'N/A'}\n` +
           `Bewerter: ${user.email}\n` +
           `Feedback: ${dto.feedback || 'Kein Feedback'}\n` +
-          `Qualität: ${dto.quality}, Zuverlässigkeit: ${dto.reliability}, Komm.: ${dto.communication}, Preis: ${dto.priceValue}`
+          `Qualität: ${dto.quality}, Zuverlässigkeit: ${dto.reliability}, Komm.: ${dto.communication}, Preis: ${dto.priceValue}`,
       });
     }
 
@@ -276,7 +294,7 @@ export class SupplierService {
       id,
       {
         rating: newRating,
-        ratingsHistory
+        ratingsHistory,
       } as Partial<Supplier>,
       user.id,
       user.email,

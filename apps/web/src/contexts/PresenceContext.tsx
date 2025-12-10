@@ -1,21 +1,22 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useRef } from "react";
 import { io, Socket } from "socket.io-client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ActiveUser {
     userId: string;
     socketId: string;
     username: string;
-    avatarUrl?: string;
+    avatarUrl?: string; // Placeholder for future
     joinedAt: Date;
     lastHeartbeat: Date;
 }
-
 
 interface PresenceContextType {
     joinRoom: (room: string) => void;
     leaveRoom: (room: string) => void;
     activeUsers: ActiveUser[];
     isConnected: boolean;
+    socket: Socket | null;
 }
 
 const PresenceContext = createContext<PresenceContextType>({
@@ -23,20 +24,12 @@ const PresenceContext = createContext<PresenceContextType>({
     leaveRoom: () => { },
     activeUsers: [],
     isConnected: false,
+    socket: null,
 });
 
-// Hardcoded for MVP or extracted from Auth Context
-// In a real app, we would get this from useAuth()
-const TEMP_USER_ID = "user-" + Math.floor(Math.random() * 10000);
-const TEMP_USERNAME = "User " + Math.floor(Math.random() * 100);
-
-// We need to pass the real user eventually.
-// For now, let's assume we can get it from localStorage or a simple mock if AuthContext isn't readily available in this scope without circular deps.
-// Actually, let's accept user as prop or rely on token in socket connection (if we had auth).
-// We'll simulate user info for now.
-
 export const PresenceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [socket, setSocket] = useState<Socket | null>(null);
+    const { user } = useAuth();
+    const socketRef = useRef<Socket | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([]);
     const [currentRoom, setCurrentRoom] = useState<string | null>(null);
@@ -45,9 +38,9 @@ export const PresenceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     useEffect(() => {
         // In production, use env var.
         // Vite uses import.meta.env
-        const socketUrl = "http://localhost:3000/presence";
+        const socketUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api/v1', '') : "http://localhost:3000";
 
-        const newSocket = io(socketUrl, {
+        const newSocket = io(`${socketUrl}/presence`, {
             transports: ["websocket"],
             autoConnect: true,
         });
@@ -63,61 +56,48 @@ export const PresenceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         });
 
         newSocket.on("presence:update", (users: ActiveUser[]) => {
-            // Deduplicate locally if needed, but service does it.
             setActiveUsers(users);
         });
 
-        setSocket(newSocket);
+        socketRef.current = newSocket;
 
         return () => {
             newSocket.disconnect();
+            socketRef.current = null;
         };
     }, []);
 
     // Heartbeat
     useEffect(() => {
-        if (!socket || !isConnected) return;
+        if (!isConnected) return;
 
         const interval = setInterval(() => {
-            socket.emit("heartbeat");
+            socketRef.current?.emit("heartbeat");
         }, 30000);
 
         return () => clearInterval(interval);
-    }, [socket, isConnected]);
+    }, [isConnected]);
 
     const joinRoom = (room: string) => {
-        if (!socket || !isConnected) return;
-
-        // Determine user identity
-        // Ideally from AuthContext. For MVP, we'll try to find it in localStorage 'user_storage' from AuthProvider or just mock.
-        // Let's mock consistent identity for this session.
-        // If we want to verify "User B", we need to be able to set this.
-        // But since we are logged in as Keycloak User, we should probably extract that token/profile.
-        // Simple hack: We won't send full user object from client if we can Avoid it, but protocol asks for it.
-
-        // We will use a mock user matching the logged-in user if possible. 
-        // Since we don't have access to AuthContext here cleanly without import looping potentially (?), 
-        // let's grab it from a window global or just generic store.
-
-        // For specific test scenario: "Initial Avatars".
-
-        const user = {
-            userId: TEMP_USER_ID,
-            username: TEMP_USERNAME,
-        };
+        if (!socketRef.current || !isConnected || !user) return;
 
         // If we leave previous room
         if (currentRoom && currentRoom !== room) {
             leaveRoom(currentRoom);
         }
 
-        socket.emit("join", { room, user });
+        const socketUser = {
+            userId: user._id,
+            username: user.displayName,
+        };
+
+        socketRef.current.emit("join", { room, user: socketUser });
         setCurrentRoom(room);
     };
 
     const leaveRoom = (room: string) => {
-        if (!socket) return;
-        socket.emit("leave", { room });
+        if (!socketRef.current) return;
+        socketRef.current.emit("leave", { room });
         if (currentRoom === room) {
             setCurrentRoom(null);
             setActiveUsers([]);
@@ -125,10 +105,11 @@ export const PresenceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
 
     return (
-        <PresenceContext.Provider value={{ joinRoom, leaveRoom, activeUsers, isConnected }}>
+        <PresenceContext.Provider value={{ joinRoom, leaveRoom, activeUsers, isConnected, socket: socketRef.current }}>
             {children}
         </PresenceContext.Provider>
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const usePresenceContext = () => useContext(PresenceContext);

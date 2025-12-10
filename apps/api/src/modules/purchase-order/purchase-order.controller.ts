@@ -24,7 +24,7 @@ import { Permissions } from '../../auth/decorators/permissions.decorator';
 @Controller('purchase-orders')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class PurchaseOrderController {
-  constructor(private readonly purchaseOrderService: PurchaseOrderService) { }
+  constructor(private readonly purchaseOrderService: PurchaseOrderService) {}
 
   @Post()
   @Permissions({ entity: 'purchase-order', action: 'CREATE' })

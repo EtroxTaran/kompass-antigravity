@@ -36,7 +36,12 @@ export interface Supplier extends BaseEntity {
   rating?: SupplierRating;
   category?: string[];
 
-  status?: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval' | 'Rejected';
+  status?:
+    | 'Active'
+    | 'Inactive'
+    | 'Blacklisted'
+    | 'PendingApproval'
+    | 'Rejected';
 
   // Approval Info
   approvedBy?: string; // userId
@@ -68,13 +73,13 @@ export interface SupplierRatingHistoryItem {
 }
 
 export interface SupplierRating {
-  overall: number;          // 1-5 stars, weighted average
-  quality: number;          // 1-5
-  reliability: number;      // 1-5
-  communication: number;    // 1-5
-  priceValue: number;       // 1-5
+  overall: number; // 1-5 stars, weighted average
+  quality: number; // 1-5
+  reliability: number; // 1-5
+  communication: number; // 1-5
+  priceValue: number; // 1-5
   reviewCount: number;
-  lastUpdated: string;      // ISO date
+  lastUpdated: string; // ISO date
 }
 
 @Injectable()
@@ -92,7 +97,10 @@ export class SupplierRepository extends BaseRepository<Supplier> {
     minRating: number,
     options: { page?: number; limit?: number } = {},
   ) {
-    return this.findBySelector({ 'rating.overall': { $gte: minRating } }, options);
+    return this.findBySelector(
+      { 'rating.overall': { $gte: minRating } },
+      options,
+    );
   }
 
   async searchByName(

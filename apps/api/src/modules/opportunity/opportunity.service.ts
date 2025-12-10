@@ -20,7 +20,7 @@ export class OpportunityService {
     private readonly projectService: ProjectService,
     private readonly offerService: OfferService,
     private readonly projectMaterialService: ProjectMaterialService,
-  ) { }
+  ) {}
 
   async findAll(
     options: {
@@ -203,7 +203,7 @@ export class OpportunityService {
     );
 
     // Copy materials from Offer if available
-    let materialsIds: string[] = []; // Not actually using implementation return value right now, avoiding TS unused var
+    const materialsIds: string[] = []; // Not actually using implementation return value right now, avoiding TS unused var
     if (offer) {
       await this.projectMaterialService.copyFromOffer(
         offer._id,

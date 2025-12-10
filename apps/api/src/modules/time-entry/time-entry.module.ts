@@ -10,4 +10,4 @@ import { ProjectModule } from '../project/project.module';
   providers: [TimeEntryService, TimeEntryRepository],
   exports: [TimeEntryService],
 })
-export class TimeEntryModule { }
+export class TimeEntryModule {}

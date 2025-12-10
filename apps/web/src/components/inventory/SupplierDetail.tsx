@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Supplier } from "@kompass/shared";
+import { ActiveUserAvatars } from "@/components/presence/ActiveUserAvatars";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -103,9 +104,12 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold tracking-tight">
-          {supplier.companyName}
-        </h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-3xl font-bold tracking-tight">
+            {supplier.companyName}
+          </h2>
+          <ActiveUserAvatars entityType="supplier" entityId={supplier._id} />
+        </div>
         <div className="flex gap-2 items-center">
           {supplier.status === 'Blacklisted' && (
             <Badge variant="destructive" className="flex gap-1">

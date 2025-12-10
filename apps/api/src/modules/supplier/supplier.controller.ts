@@ -23,7 +23,7 @@ import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 @Controller('api/v1/suppliers')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class SupplierController {
-  constructor(private readonly supplierService: SupplierService) { }
+  constructor(private readonly supplierService: SupplierService) {}
 
   @Get()
   @Permissions({ entity: 'Supplier', action: 'READ' })
@@ -100,10 +100,7 @@ export class SupplierController {
 
   @Put(':id/reinstate')
   @Permissions({ entity: 'Supplier', action: 'UPDATE' })
-  async reinstate(
-    @Param('id') id: string,
-    @CurrentUser() user: any,
-  ) {
+  async reinstate(@Param('id') id: string, @CurrentUser() user: any) {
     if (!user.roles?.includes('GF')) {
       throw new BadRequestException('Only GF can reinstate suppliers');
     }
@@ -111,10 +108,7 @@ export class SupplierController {
   }
   @Put(':id/approve')
   @Permissions({ entity: 'Supplier', action: 'UPDATE' })
-  async approve(
-    @Param('id') id: string,
-    @CurrentUser() user: any,
-  ) {
+  async approve(@Param('id') id: string, @CurrentUser() user: any) {
     if (!user.roles?.includes('GF')) {
       throw new BadRequestException('Only GF can approve suppliers');
     }

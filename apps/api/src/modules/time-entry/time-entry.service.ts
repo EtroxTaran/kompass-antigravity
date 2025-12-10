@@ -11,7 +11,7 @@ export class TimeEntryService {
   constructor(
     private readonly timeEntryRepository: TimeEntryRepository,
     private readonly projectService: ProjectService,
-  ) { }
+  ) {}
 
   async findAll(
     options: {
@@ -82,7 +82,7 @@ export class TimeEntryService {
       entry.projectId,
       'labor',
       cost,
-      user.id
+      user.id,
     );
 
     return entry;
@@ -102,8 +102,12 @@ export class TimeEntryService {
     );
 
     // Update Cost Difference if duration changed
-    if (dto.durationMinutes && dto.durationMinutes !== oldEntry.durationMinutes) {
-      const oldCost = (oldEntry.durationMinutes / 60) * this.DEFAULT_HOURLY_RATE;
+    if (
+      dto.durationMinutes &&
+      dto.durationMinutes !== oldEntry.durationMinutes
+    ) {
+      const oldCost =
+        (oldEntry.durationMinutes / 60) * this.DEFAULT_HOURLY_RATE;
       const newCost = (dto.durationMinutes / 60) * this.DEFAULT_HOURLY_RATE;
       const diff = newCost - oldCost;
 
@@ -111,7 +115,7 @@ export class TimeEntryService {
         oldEntry.projectId, // Assuming project ID doesn't change, or we handle move? Simplification: update valid for same project.
         'labor',
         diff,
-        user.id
+        user.id,
       );
     }
     return updated;
@@ -130,7 +134,7 @@ export class TimeEntryService {
       entry.projectId,
       'labor',
       -cost,
-      user.id
+      user.id,
     );
   }
 }

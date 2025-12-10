@@ -3,7 +3,7 @@ import { PresenceGateway } from './presence.gateway';
 import { PresenceService } from './presence.service';
 
 @Module({
-    providers: [PresenceGateway, PresenceService],
-    exports: [PresenceService],
+  providers: [PresenceGateway, PresenceService],
+  exports: [PresenceService],
 })
-export class PresenceModule { }
+export class PresenceModule {}

@@ -6,118 +6,143 @@ import { ProjectService } from '../project/project.service';
 
 @Injectable()
 export class ProjectMaterialService {
-    constructor(
-        private readonly projectMaterialRepository: ProjectMaterialRepository,
-        private readonly offerService: OfferService,
-        private readonly projectService: ProjectService,
-    ) { }
+  constructor(
+    private readonly projectMaterialRepository: ProjectMaterialRepository,
+    private readonly offerService: OfferService,
+    private readonly projectService: ProjectService,
+  ) {}
 
-    async copyFromOffer(offerId: string, projectId: string, user: { id: string; email?: string }) {
-        const offer = await this.offerService.findById(offerId);
+  async copyFromOffer(
+    offerId: string,
+    projectId: string,
+    user: { id: string; email?: string },
+  ) {
+    const offer = await this.offerService.findById(offerId);
 
-        if (!offer.lineItems || offer.lineItems.length === 0) {
-            return [];
-        }
-
-        const requirements = await Promise.all(
-            offer.lineItems.map((item) => {
-                const estimatedTotalCost = item.quantity * (item.unitPrice || 0);
-                return this.projectMaterialRepository.create({
-                    projectId,
-                    // materialId: item.materialId, // OfferLineItem might not have materialId if free text? Checking OfferLineItem... it doesn't have it in the shared type I saw. 
-                    // If OfferLineItem doesn't have materialId, we just map description. 
-                    description: item.description,
-                    quantity: item.quantity,
-                    unit: item.unit || 'pc',
-                    status: 'planned',
-                    estimatedUnitPrice: item.unitPrice || 0,
-                    estimatedTotalCost,
-                    sourceOfferId: offer._id,
-                }, user.id, user.email);
-            })
-        );
-
-        return requirements;
+    if (!offer.lineItems || offer.lineItems.length === 0) {
+      return [];
     }
 
-    async create(
-        dto: Partial<ProjectMaterialRequirement>,
-        user: { id: string; email?: string }
-    ): Promise<ProjectMaterialRequirement> {
-        // Calculate total cost
-        const estimatedTotalCost = (dto.quantity || 0) * (dto.estimatedUnitPrice || 0);
-
-        return this.projectMaterialRepository.create({
-            ...dto,
+    const requirements = await Promise.all(
+      offer.lineItems.map((item) => {
+        const estimatedTotalCost = item.quantity * (item.unitPrice || 0);
+        return this.projectMaterialRepository.create(
+          {
+            projectId,
+            // materialId: item.materialId, // OfferLineItem might not have materialId if free text? Checking OfferLineItem... it doesn't have it in the shared type I saw.
+            // If OfferLineItem doesn't have materialId, we just map description.
+            description: item.description,
+            quantity: item.quantity,
+            unit: item.unit || 'pc',
+            status: 'planned',
+            estimatedUnitPrice: item.unitPrice || 0,
             estimatedTotalCost,
-            status: dto.status || 'planned',
-        } as ProjectMaterialRequirement, user.id, user.email);
+            sourceOfferId: offer._id,
+          },
+          user.id,
+          user.email,
+        );
+      }),
+    );
+
+    return requirements;
+  }
+
+  async create(
+    dto: Partial<ProjectMaterialRequirement>,
+    user: { id: string; email?: string },
+  ): Promise<ProjectMaterialRequirement> {
+    // Calculate total cost
+    const estimatedTotalCost =
+      (dto.quantity || 0) * (dto.estimatedUnitPrice || 0);
+
+    return this.projectMaterialRepository.create(
+      {
+        ...dto,
+        estimatedTotalCost,
+        status: dto.status || 'planned',
+      } as ProjectMaterialRequirement,
+      user.id,
+      user.email,
+    );
+  }
+
+  async update(
+    id: string,
+    dto: Partial<ProjectMaterialRequirement>,
+    user: { id: string; email?: string },
+  ): Promise<ProjectMaterialRequirement> {
+    const existing = await this.projectMaterialRepository.findById(id);
+    if (!existing) {
+      throw new NotFoundException(`Project Material with ID ${id} not found`);
     }
 
-    async update(
-        id: string,
-        dto: Partial<ProjectMaterialRequirement>,
-        user: { id: string; email?: string }
-    ): Promise<ProjectMaterialRequirement> {
-        const existing = await this.projectMaterialRepository.findById(id);
-        if (!existing) {
-            throw new NotFoundException(`Project Material with ID ${id} not found`);
-        }
-
-        // Recalculate if quantity or price changes
-        let estimatedTotalCost = existing.estimatedTotalCost;
-        if (dto.quantity !== undefined || dto.estimatedUnitPrice !== undefined) {
-            const quantity = dto.quantity !== undefined ? dto.quantity : existing.quantity;
-            const unitPrice = dto.estimatedUnitPrice !== undefined ? dto.estimatedUnitPrice : existing.estimatedUnitPrice;
-            estimatedTotalCost = quantity * unitPrice;
-        }
-
-        const updated = await this.projectMaterialRepository.update(id, {
-            ...dto,
-            estimatedTotalCost
-        }, user.id, user.email);
-
-        // Calculate Cost Impact if status changed to 'delivered' or cost changed while delivered
-        const wasDelivered = existing.status === 'delivered';
-        const isDelivered = updated.status === 'delivered';
-
-        if (isDelivered && !wasDelivered) {
-            // New delivery -> Add cost
-            await this.projectService.updateActualCost(
-                updated.projectId,
-                'material',
-                updated.estimatedTotalCost, // Using estimated as actual for now if actual not tracked separately
-                user.id
-            );
-        } else if (!isDelivered && wasDelivered) {
-            // Reverted delivery -> Remove cost
-            await this.projectService.updateActualCost(
-                updated.projectId,
-                'material',
-                -existing.estimatedTotalCost,
-                user.id
-            );
-        } else if (isDelivered && wasDelivered) {
-            // Updated delivery cost
-            const diff = updated.estimatedTotalCost - existing.estimatedTotalCost;
-            if (diff !== 0) {
-                await this.projectService.updateActualCost(
-                    updated.projectId,
-                    'material',
-                    diff,
-                    user.id
-                );
-            }
-        }
-
-        return updated;
+    // Recalculate if quantity or price changes
+    let estimatedTotalCost = existing.estimatedTotalCost;
+    if (dto.quantity !== undefined || dto.estimatedUnitPrice !== undefined) {
+      const quantity =
+        dto.quantity !== undefined ? dto.quantity : existing.quantity;
+      const unitPrice =
+        dto.estimatedUnitPrice !== undefined
+          ? dto.estimatedUnitPrice
+          : existing.estimatedUnitPrice;
+      estimatedTotalCost = quantity * unitPrice;
     }
 
-    async delete(id: string, user: { id: string; email?: string }): Promise<void> {
-        await this.projectMaterialRepository.delete(id, user.id, user.email);
+    const updated = await this.projectMaterialRepository.update(
+      id,
+      {
+        ...dto,
+        estimatedTotalCost,
+      },
+      user.id,
+      user.email,
+    );
+
+    // Calculate Cost Impact if status changed to 'delivered' or cost changed while delivered
+    const wasDelivered = existing.status === 'delivered';
+    const isDelivered = updated.status === 'delivered';
+
+    if (isDelivered && !wasDelivered) {
+      // New delivery -> Add cost
+      await this.projectService.updateActualCost(
+        updated.projectId,
+        'material',
+        updated.estimatedTotalCost, // Using estimated as actual for now if actual not tracked separately
+        user.id,
+      );
+    } else if (!isDelivered && wasDelivered) {
+      // Reverted delivery -> Remove cost
+      await this.projectService.updateActualCost(
+        updated.projectId,
+        'material',
+        -existing.estimatedTotalCost,
+        user.id,
+      );
+    } else if (isDelivered && wasDelivered) {
+      // Updated delivery cost
+      const diff = updated.estimatedTotalCost - existing.estimatedTotalCost;
+      if (diff !== 0) {
+        await this.projectService.updateActualCost(
+          updated.projectId,
+          'material',
+          diff,
+          user.id,
+        );
+      }
     }
 
-    async findByProject(projectId: string) {
-        return this.projectMaterialRepository.findByProject(projectId);
-    }
+    return updated;
+  }
+
+  async delete(
+    id: string,
+    user: { id: string; email?: string },
+  ): Promise<void> {
+    await this.projectMaterialRepository.delete(id, user.id, user.email);
+  }
+
+  async findByProject(projectId: string) {
+    return this.projectMaterialRepository.findByProject(projectId);
+  }
 }

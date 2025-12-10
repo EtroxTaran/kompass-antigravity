@@ -1,4 +1,5 @@
 import { BaseEntity } from "./base";
+import { Comment } from "./comment";
 
 export type ProjectTaskStatus =
   | "todo"
@@ -41,4 +42,6 @@ export interface ProjectTask extends BaseEntity {
   // Completion tracking
   completedAt?: string;
   completedBy?: string;
+
+  comments?: Comment[];
 }

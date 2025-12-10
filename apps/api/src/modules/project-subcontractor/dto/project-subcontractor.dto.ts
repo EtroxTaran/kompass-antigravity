@@ -1,91 +1,104 @@
-import { IsString, IsEnum, IsNumber, IsOptional, IsDateString, IsUUID } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsDateString,
+  IsUUID,
+} from 'class-validator';
 import { Type } from 'class-transformer';
-import { ServiceCategory, SubcontractorStatus, AssignSubcontractorDto, UpdateAssignmentDto, RateSubcontractorDto } from '@kompass/shared';
+import {
+  ServiceCategory,
+  SubcontractorStatus,
+  AssignSubcontractorDto,
+  UpdateAssignmentDto,
+  RateSubcontractorDto,
+} from '@kompass/shared';
 
 // Implementing the shared interfaces with validation decorators
 
 export class AssignSubcontractorDtoImpl implements AssignSubcontractorDto {
-    @IsString()
-    @IsUUID()
-    supplierId: string;
+  @IsString()
+  @IsUUID()
+  supplierId: string;
 
-    @IsString()
-    @IsUUID()
-    projectId: string;
+  @IsString()
+  @IsUUID()
+  projectId: string;
 
-    @IsOptional()
-    @IsString()
-    @IsUUID()
-    contractId?: string;
+  @IsOptional()
+  @IsString()
+  @IsUUID()
+  contractId?: string;
 
-    @IsString()
-    workPackage: string;
+  @IsString()
+  workPackage: string;
 
-    @IsEnum(ServiceCategory)
-    serviceCategory: ServiceCategory;
+  @IsEnum(ServiceCategory)
+  serviceCategory: ServiceCategory;
 
-    @IsString()
-    description: string;
+  @IsString()
+  description: string;
 
-    @IsDateString()
-    plannedStartDate: string;
+  @IsDateString()
+  plannedStartDate: string;
 
-    @IsDateString()
-    plannedEndDate: string;
+  @IsDateString()
+  plannedEndDate: string;
 
-    @IsNumber()
-    estimatedCost: number;
+  @IsNumber()
+  estimatedCost: number;
 }
 
 export class UpdateAssignmentDtoImpl implements UpdateAssignmentDto {
-    @IsOptional()
-    @IsString()
-    workPackage?: string;
+  @IsOptional()
+  @IsString()
+  workPackage?: string;
 
-    @IsOptional()
-    @IsString()
-    description?: string;
+  @IsOptional()
+  @IsString()
+  description?: string;
 
-    @IsOptional()
-    @IsDateString()
-    plannedStartDate?: string;
+  @IsOptional()
+  @IsDateString()
+  plannedStartDate?: string;
 
-    @IsOptional()
-    @IsDateString()
-    plannedEndDate?: string;
+  @IsOptional()
+  @IsDateString()
+  plannedEndDate?: string;
 
-    @IsOptional()
-    @IsDateString()
-    actualStartDate?: string;
+  @IsOptional()
+  @IsDateString()
+  actualStartDate?: string;
 
-    @IsOptional()
-    @IsDateString()
-    actualEndDate?: string;
+  @IsOptional()
+  @IsDateString()
+  actualEndDate?: string;
 
-    @IsOptional()
-    @IsNumber()
-    estimatedCost?: number;
+  @IsOptional()
+  @IsNumber()
+  estimatedCost?: number;
 
-    @IsOptional()
-    @IsEnum(SubcontractorStatus)
-    status?: SubcontractorStatus;
+  @IsOptional()
+  @IsEnum(SubcontractorStatus)
+  status?: SubcontractorStatus;
 
-    @IsOptional()
-    @IsNumber()
-    completionPercentage?: number;
+  @IsOptional()
+  @IsNumber()
+  completionPercentage?: number;
 
-    @IsOptional()
-    @IsString()
-    notes?: string;
+  @IsOptional()
+  @IsString()
+  notes?: string;
 }
 
 export class RateSubcontractorDtoImpl implements RateSubcontractorDto {
-    @IsNumber()
-    qualityRating: number;
+  @IsNumber()
+  qualityRating: number;
 
-    @IsNumber()
-    timelinessRating: number;
+  @IsNumber()
+  timelinessRating: number;
 
-    @IsNumber()
-    communicationRating: number;
+  @IsNumber()
+  communicationRating: number;
 }

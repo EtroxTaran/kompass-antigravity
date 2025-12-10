@@ -1,4 +1,3 @@
-
 import { Injectable, Inject } from '@nestjs/common';
 import { OPERATIONAL_DB } from '../../database/database.module';
 import { AuditService } from '../../shared/services/audit.service';

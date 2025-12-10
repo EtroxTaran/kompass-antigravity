@@ -101,13 +101,11 @@ describe('SupplierContractService', () => {
     });
 
     it('should throw Forbidden if >= 50k and already pending and user not GF', async () => {
-      mockRepo.findById = jest
-        .fn()
-        .mockResolvedValue({
-          ...mockContract,
-          contractValue: 60000,
-          status: 'pending_approval',
-        });
+      mockRepo.findById = jest.fn().mockResolvedValue({
+        ...mockContract,
+        contractValue: 60000,
+        status: 'pending_approval',
+      });
 
       const user = {
         id: 'u1',
@@ -123,13 +121,11 @@ describe('SupplierContractService', () => {
     });
 
     it('should approve contract >= 50k with GF role', async () => {
-      mockRepo.findById = jest
-        .fn()
-        .mockResolvedValue({
-          ...mockContract,
-          contractValue: 60000,
-          status: 'pending_approval',
-        });
+      mockRepo.findById = jest.fn().mockResolvedValue({
+        ...mockContract,
+        contractValue: 60000,
+        status: 'pending_approval',
+      });
       mockRepo.update = jest
         .fn()
         .mockResolvedValue({ ...mockContract, status: 'sent_to_supplier' });

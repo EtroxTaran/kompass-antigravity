@@ -39,7 +39,7 @@ export class OfferService {
     private readonly pdfService: PdfService,
     private readonly mailService: MailService,
     private readonly searchService: SearchService,
-  ) { }
+  ) {}
 
   async findAll(options: OfferQueryOptions = {}) {
     if (options.search) {
@@ -154,12 +154,12 @@ export class OfferService {
     // Handle materials if present
     const materials = dto.materials
       ? dto.materials.map((m) => ({
-        id: m.id || uuidv4(),
-        materialId: m.materialId,
-        description: m.description,
-        quantity: m.quantity,
-        unit: m.unit,
-      }))
+          id: m.id || uuidv4(),
+          materialId: m.materialId,
+          description: m.description,
+          quantity: m.quantity,
+          unit: m.unit,
+        }))
       : undefined;
 
     // Calculate totals

@@ -7,13 +7,13 @@ import * as Nano from 'nano';
 
 @Injectable()
 export class SupplierInvoiceRepository extends BaseRepository<SupplierInvoice> {
-    protected readonly entityType = 'supplier-invoice';
-    private readonly logger = new Logger(SupplierInvoiceRepository.name);
+  protected readonly entityType = 'supplier-invoice';
+  private readonly logger = new Logger(SupplierInvoiceRepository.name);
 
-    constructor(
-        @Inject(OPERATIONAL_DB) db: Nano.DocumentScope<SupplierInvoice>,
-        auditService: AuditService,
-    ) {
-        super(db, auditService);
-    }
+  constructor(
+    @Inject(OPERATIONAL_DB) db: Nano.DocumentScope<SupplierInvoice>,
+    auditService: AuditService,
+  ) {
+    super(db, auditService);
+  }
 }

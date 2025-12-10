@@ -1,4 +1,5 @@
 import { BaseEntity } from "./base";
+import { Comment } from "./comment";
 export interface Opportunity extends BaseEntity {
     type: "opportunity";
     title: string;
@@ -14,4 +15,5 @@ export interface Opportunity extends BaseEntity {
     lostReason?: string;
     lostReasonDetails?: string;
     owner: string;
+    comments?: Comment[];
 }

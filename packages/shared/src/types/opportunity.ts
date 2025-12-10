@@ -1,4 +1,5 @@
 import { BaseEntity } from "./base";
+import { Comment } from "./comment";
 
 export interface Opportunity extends BaseEntity {
   type: "opportunity";
@@ -10,13 +11,13 @@ export interface Opportunity extends BaseEntity {
 
   // Pipeline
   stage:
-    | "lead"
-    | "qualified"
-    | "analysis"
-    | "proposal"
-    | "negotiation"
-    | "closed_won"
-    | "closed_lost";
+  | "lead"
+  | "qualified"
+  | "analysis"
+  | "proposal"
+  | "negotiation"
+  | "closed_won"
+  | "closed_lost";
 
   probability: number; // 0-100
   expectedValue: number;
@@ -34,4 +35,6 @@ export interface Opportunity extends BaseEntity {
 
   // Assignment
   owner: string;
+
+  comments?: Comment[];
 }

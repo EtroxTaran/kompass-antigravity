@@ -1,70 +1,76 @@
-
-import { IsDateString, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { SupplierInvoiceLineItem } from '../supplier-invoice.entity';
 
 export class SupplierInvoiceLineItemDto implements SupplierInvoiceLineItem {
-    @IsString()
-    description: string;
+  @IsString()
+  description: string;
 
-    @IsNumber()
-    quantity: number;
+  @IsNumber()
+  quantity: number;
 
-    @IsNumber()
-    unitPrice: number;
+  @IsNumber()
+  unitPrice: number;
 
-    @IsNumber()
-    totalPrice: number;
+  @IsNumber()
+  totalPrice: number;
 
-    @IsOptional()
-    @IsString()
-    purchaseOrderItemId?: string;
+  @IsOptional()
+  @IsString()
+  purchaseOrderItemId?: string;
 }
 
 export class CreateSupplierInvoiceDto {
-    @IsString()
-    invoiceNumber: string;
+  @IsString()
+  invoiceNumber: string;
 
-    @IsString()
-    supplierId: string;
+  @IsString()
+  supplierId: string;
 
-    @IsOptional()
-    @IsString()
-    contractId?: string;
+  @IsOptional()
+  @IsString()
+  contractId?: string;
 
-    @IsString()
-    projectId: string;
+  @IsString()
+  projectId: string;
 
-    @IsDateString()
-    invoiceDate: string;
+  @IsDateString()
+  invoiceDate: string;
 
-    @IsDateString()
-    dueDate: string;
+  @IsDateString()
+  dueDate: string;
 
-    @IsNumber()
-    netAmount: number;
+  @IsNumber()
+  netAmount: number;
 
-    @IsNumber()
-    taxRate: number;
+  @IsNumber()
+  taxRate: number;
 
-    @IsNumber()
-    taxAmount: number;
+  @IsNumber()
+  taxAmount: number;
 
-    @IsNumber()
-    grossAmount: number;
+  @IsNumber()
+  grossAmount: number;
 
-    @ValidateNested({ each: true })
-    @Type(() => SupplierInvoiceLineItemDto)
-    lineItems: SupplierInvoiceLineItemDto[];
+  @ValidateNested({ each: true })
+  @Type(() => SupplierInvoiceLineItemDto)
+  lineItems: SupplierInvoiceLineItemDto[];
 
-    @IsOptional()
-    @IsString()
-    invoiceDocument?: string;
+  @IsOptional()
+  @IsString()
+  invoiceDocument?: string;
 }
 
-export class UpdateSupplierInvoiceDto extends CreateSupplierInvoiceDto { }
+export class UpdateSupplierInvoiceDto extends CreateSupplierInvoiceDto {}
 
 export class ApproveInvoiceDto {
-    @IsString()
-    approvedBy: string;
+  @IsString()
+  approvedBy: string;
 }

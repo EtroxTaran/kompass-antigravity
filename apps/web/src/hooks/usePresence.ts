@@ -1,20 +1,26 @@
-import { useEffect } from "react";
-import { usePresenceContext } from "../contexts/PresenceContext";
+import { useEffect, useRef } from 'react';
+import { usePresenceContext } from '@/contexts/PresenceContext';
 
-export function usePresence(entityType: string, entityId?: string) {
+export const usePresence = (entityType: string, entityId?: string) => {
     const { joinRoom, leaveRoom, activeUsers, isConnected } = usePresenceContext();
+    const roomRef = useRef<string | null>(null);
 
     useEffect(() => {
         if (!entityId || !isConnected) return;
 
         const room = `${entityType}:${entityId}`;
+        roomRef.current = room;
         joinRoom(room);
 
         return () => {
-            leaveRoom(room);
+            if (roomRef.current) {
+                leaveRoom(roomRef.current);
+            }
         };
-    }, [entityType, entityId, isConnected]); // Re-join if connection drops/reconnects? 
-    // Context handles connection state. If isConnected changes to true, we should probably re-join.
+    }, [entityId, entityType, isConnected, joinRoom, leaveRoom]);
 
-    return { activeUsers };
-}
+    return {
+        activeUsers,
+        isConnected
+    };
+};

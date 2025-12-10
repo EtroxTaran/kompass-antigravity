@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+
 const PdfPrinter = require('pdfmake/src/printer');
 
 @Injectable()

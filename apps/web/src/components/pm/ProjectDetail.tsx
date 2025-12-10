@@ -18,6 +18,8 @@ import { ProjectTaskKanban } from "@/components/tasks/ProjectTaskKanban";
 import { ProjectCostOverview } from "./ProjectCostOverview";
 import { ProjectMaterialList } from "./material/ProjectMaterialList";
 import { ProjectSubcontractorList } from "./ProjectSubcontractorList";
+import { CommentSection } from "@/components/common/comments/CommentSection";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ProjectDetailProps {
   project: Project;
@@ -25,6 +27,7 @@ interface ProjectDetailProps {
 
 export function ProjectDetail({ project }: ProjectDetailProps) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   return (
     <div className="space-y-6">
@@ -64,6 +67,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
           <TabsTrigger value="materials">Materials</TabsTrigger>
           <TabsTrigger value="subcontractors">Subcontractors</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
+          <TabsTrigger value="comments">Kommentare</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
@@ -161,7 +165,22 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="comments" className="h-[600px]">
+          <CommentSection
+            entityType="project"
+            entityId={project._id}
+            comments={project.comments || []}
+            onCommentAdded={() => {
+              queryClient.invalidateQueries({ queryKey: ['project', project._id] });
+            }}
+            onCommentResolved={() => {
+              queryClient.invalidateQueries({ queryKey: ['project', project._id] });
+            }}
+          />
+        </TabsContent>
       </Tabs>
+
     </div >
   );
 }

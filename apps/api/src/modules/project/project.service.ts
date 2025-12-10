@@ -16,6 +16,7 @@ export class ProjectService {
       limit?: number;
       search?: string;
       status?: string;
+      customerId?: string;
     } = {},
   ) {
     if (options.search) {
@@ -46,6 +47,9 @@ export class ProjectService {
     }
     if (options.status) {
       return this.projectRepository.findByStatus(options.status, options);
+    }
+    if (options.customerId) {
+      return this.projectRepository.findByCustomer(options.customerId, options);
     }
     return this.projectRepository.findAll(options);
   }
@@ -186,13 +190,15 @@ export class ProjectService {
     // Update specific cost component
     switch (costType) {
       case 'material':
-        project.actualMaterialCost = (project.actualMaterialCost || 0) + amountDelta;
+        project.actualMaterialCost =
+          (project.actualMaterialCost || 0) + amountDelta;
         break;
       case 'labor':
         project.actualLaborCost = (project.actualLaborCost || 0) + amountDelta;
         break;
       case 'subcontractor':
-        project.actualSubcontractorCost = (project.actualSubcontractorCost || 0) + amountDelta;
+        project.actualSubcontractorCost =
+          (project.actualSubcontractorCost || 0) + amountDelta;
         break;
       case 'expenses':
         project.actualExpenses = (project.actualExpenses || 0) + amountDelta;

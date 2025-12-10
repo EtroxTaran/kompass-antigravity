@@ -1,4 +1,5 @@
 import { BaseEntity } from "./base";
+import { Comment } from "./comment";
 
 export interface OfferLineItem {
   id?: string;
@@ -25,13 +26,13 @@ export interface Offer extends BaseEntity {
   offerDate: string;
   validUntil: string;
   status:
-    | "draft"
-    | "sent"
-    | "viewed"
-    | "accepted"
-    | "rejected"
-    | "expired"
-    | "superseded";
+  | "draft"
+  | "sent"
+  | "viewed"
+  | "accepted"
+  | "rejected"
+  | "expired"
+  | "superseded";
   lineItems: OfferLineItem[];
   discountPercent?: number;
   taxRate?: number;
@@ -46,4 +47,6 @@ export interface Offer extends BaseEntity {
   totalNet?: number;
   totalTax?: number;
   totalGross?: number;
+
+  comments?: Comment[];
 }

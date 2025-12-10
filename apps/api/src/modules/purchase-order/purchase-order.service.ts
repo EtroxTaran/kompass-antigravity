@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PurchaseOrderRepository } from './purchase-order.repository';
-import { PurchaseOrder, PurchaseOrderItem, PurchaseOrderApprovalStatus } from '@kompass/shared';
+import {
+  PurchaseOrder,
+  PurchaseOrderItem,
+  PurchaseOrderApprovalStatus,
+} from '@kompass/shared';
 import { PdfService } from '../pdf/pdf.service';
 import { MailService } from '../mail/mail.service';
 import { SearchService } from '../search/search.service';
@@ -38,7 +42,7 @@ export class PurchaseOrderService {
     private readonly mailService: MailService,
     private readonly searchService: SearchService,
     private readonly supplierService: SupplierService,
-  ) { }
+  ) {}
 
   async findAll(
     supplierId?: string,
@@ -183,32 +187,46 @@ export class PurchaseOrderService {
   async submitForApproval(id: string, userId: string): Promise<PurchaseOrder> {
     const order = await this.findOne(id);
     if (order.status !== 'draft') {
-      throw new BadRequestException('Only draft orders can be submitted for approval');
+      throw new BadRequestException(
+        'Only draft orders can be submitted for approval',
+      );
     }
 
-    // If amount <= 1000, it should have been auto-approved on create, 
+    // If amount <= 1000, it should have been auto-approved on create,
     // but if it was edited or legacy, check again.
     if (order.totalAmount <= 1000) {
-      const updated = await this.purchaseOrderRepository.update(id, {
-        status: 'ordered',
-        approvalStatus: 'approved',
-        approvedAt: new Date().toISOString(),
-        approvedBy: 'SYSTEM'
-      }, userId);
+      const updated = await this.purchaseOrderRepository.update(
+        id,
+        {
+          status: 'ordered',
+          approvalStatus: 'approved',
+          approvedAt: new Date().toISOString(),
+          approvedBy: 'SYSTEM',
+        },
+        userId,
+      );
       this.indexOrder(updated);
       return updated;
     }
 
     // Set status to pending approval
-    const updated = await this.purchaseOrderRepository.update(id, {
-      approvalStatus: 'pending',
-      approvalRequestedAt: new Date().toISOString()
-    }, userId);
+    const updated = await this.purchaseOrderRepository.update(
+      id,
+      {
+        approvalStatus: 'pending',
+        approvalRequestedAt: new Date().toISOString(),
+      },
+      userId,
+    );
     this.indexOrder(updated);
     return updated;
   }
 
-  async approve(id: string, userId: string, userRoles: string[]): Promise<PurchaseOrder> {
+  async approve(
+    id: string,
+    userId: string,
+    userRoles: string[],
+  ): Promise<PurchaseOrder> {
     const order = await this.findOne(id);
 
     if (order.approvalStatus !== 'pending') {
@@ -221,37 +239,53 @@ export class PurchaseOrderService {
 
     if (order.totalAmount > 10000) {
       if (!userRoles.includes('GF')) {
-        throw new ForbiddenException('Purchase orders over 10.000€ require GF approval');
+        throw new ForbiddenException(
+          'Purchase orders over 10.000€ require GF approval',
+        );
       }
     } else if (order.totalAmount > 1000) {
       if (!userRoles.includes('BUCH') && !userRoles.includes('GF')) {
-        throw new ForbiddenException('Purchase orders over 1.000€ require BUCH or GF approval');
+        throw new ForbiddenException(
+          'Purchase orders over 1.000€ require BUCH or GF approval',
+        );
       }
     }
 
-    const updated = await this.purchaseOrderRepository.update(id, {
-      status: 'ordered',
-      approvalStatus: 'approved',
-      approvedAt: new Date().toISOString(),
-      approvedBy: userId
-    }, userId);
+    const updated = await this.purchaseOrderRepository.update(
+      id,
+      {
+        status: 'ordered',
+        approvalStatus: 'approved',
+        approvedAt: new Date().toISOString(),
+        approvedBy: userId,
+      },
+      userId,
+    );
     this.indexOrder(updated);
     return updated;
   }
 
-  async reject(id: string, userId: string, reason: string): Promise<PurchaseOrder> {
+  async reject(
+    id: string,
+    userId: string,
+    reason: string,
+  ): Promise<PurchaseOrder> {
     const order = await this.findOne(id);
     if (order.approvalStatus !== 'pending') {
       throw new BadRequestException('Order is not pending approval');
     }
 
-    const updated = await this.purchaseOrderRepository.update(id, {
-      status: 'draft', // Back to draft
-      approvalStatus: 'rejected',
-      rejectedAt: new Date().toISOString(),
-      rejectedBy: userId,
-      rejectionReason: reason
-    }, userId);
+    const updated = await this.purchaseOrderRepository.update(
+      id,
+      {
+        status: 'draft', // Back to draft
+        approvalStatus: 'rejected',
+        rejectedAt: new Date().toISOString(),
+        rejectedBy: userId,
+        rejectionReason: reason,
+      },
+      userId,
+    );
     this.indexOrder(updated);
     return updated;
   }

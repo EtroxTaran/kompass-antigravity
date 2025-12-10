@@ -43,6 +43,8 @@ import { RfqModule } from './modules/rfq/rfq.module';
 import { ProjectSubcontractorModule } from './modules/project-subcontractor/project-subcontractor.module';
 import { PresenceModule } from './modules/presence/presence.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
+import { CommentModule } from './modules/comment/comment.module';
+import { PortalModule } from './modules/portal/portal.module';
 
 // Guards
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -100,6 +102,8 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     RfqModule,
     ProjectSubcontractorModule,
     InventoryModule,
+    CommentModule,
+    PortalModule,
   ],
   providers: [
     // Global exception filter (RFC 7807)

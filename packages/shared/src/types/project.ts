@@ -1,4 +1,5 @@
 import { BaseEntity } from "./base";
+import { Comment } from "./comment";
 
 export interface Project extends BaseEntity {
   type: "project";
@@ -40,4 +41,6 @@ export interface Project extends BaseEntity {
 
   // Analysis
   budgetStatus?: "OnTrack" | "Warning" | "Exceeded";
+
+  comments?: Comment[];
 }

@@ -25,7 +25,7 @@ import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 @Controller('api/v1/opportunities')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class OpportunityController {
-  constructor(private readonly opportunityService: OpportunityService) { }
+  constructor(private readonly opportunityService: OpportunityService) {}
 
   /**
    * GET /api/v1/opportunities

@@ -3,10 +3,8 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import { Material, SupplierPrice } from "@kompass/shared";
-import {
-  MaterialRepository,
-} from './material.repository';
+import { Material, SupplierPrice } from '@kompass/shared';
+import { MaterialRepository } from './material.repository';
 import {
   CreateMaterialDto,
   UpdateMaterialDto,
@@ -19,7 +17,7 @@ export class MaterialService {
   constructor(
     private readonly materialRepository: MaterialRepository,
     private readonly searchService: SearchService,
-  ) { }
+  ) {}
 
   async findAll(
     options: {

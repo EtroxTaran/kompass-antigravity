@@ -15,6 +15,7 @@ const FIELD_SYNONYMS: Record<string, string[]> = {
   companyName: [
     'company_name',
     'Company Name',
+    'Company',
     'Firma',
     'Firmenname',
     'Unternehmensname',
@@ -83,7 +84,7 @@ export class ImportService {
     const jsonData = XLSX.utils.sheet_to_json(worksheet, {
       header: 1,
       defval: '',
-    }) as any[][];
+    });
 
     if (jsonData.length < 2) {
       throw new BadRequestException({

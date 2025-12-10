@@ -7,9 +7,9 @@ import { DeliveryModule } from '../delivery/delivery.module';
 import { ProjectModule } from '../project/project.module';
 
 @Module({
-    imports: [PurchaseOrderModule, DeliveryModule, ProjectModule],
-    controllers: [SupplierInvoiceController],
-    providers: [SupplierInvoiceService, SupplierInvoiceRepository],
-    exports: [SupplierInvoiceService],
+  imports: [PurchaseOrderModule, DeliveryModule, ProjectModule],
+  controllers: [SupplierInvoiceController],
+  providers: [SupplierInvoiceService, SupplierInvoiceRepository],
+  exports: [SupplierInvoiceService],
 })
-export class SupplierInvoiceModule { }
+export class SupplierInvoiceModule {}

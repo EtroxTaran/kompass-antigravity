@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useProjectTasks } from "@/hooks/useProjectTasks";
 import type {
   ProjectTask,
@@ -81,94 +82,13 @@ const priorityColors: Record<ProjectTaskPriority, string> = {
   low: "bg-gray-400 text-white",
 };
 
-interface KanbanColumnProps {
-  status: ProjectTaskStatus;
-  tasks: ProjectTask[];
-  onMoveTask: (task: ProjectTask, newStatus: ProjectTaskStatus) => void;
-  onAddTask?: () => void;
-}
-
-function KanbanColumn({
-  status,
-  tasks,
-  onMoveTask,
-  onAddTask,
-}: KanbanColumnProps) {
-  const config = statusConfig[status];
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.currentTarget.classList.add("ring-2", "ring-primary", "ring-opacity-50");
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.currentTarget.classList.remove(
-      "ring-2",
-      "ring-primary",
-      "ring-opacity-50",
-    );
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.currentTarget.classList.remove(
-      "ring-2",
-      "ring-primary",
-      "ring-opacity-50",
-    );
-    const taskData = e.dataTransfer.getData("application/json");
-    if (taskData) {
-      const task = JSON.parse(taskData) as ProjectTask;
-      if (task.status !== status) {
-        onMoveTask(task, status);
-      }
-    }
-  };
-
-  return (
-    <div
-      className={cn(
-        "flex flex-col rounded-lg border p-4 min-h-[400px]",
-        config.bgColor,
-      )}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-    >
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <span className={config.color}>{config.icon}</span>
-          <h3 className={cn("font-semibold", config.color)}>{config.label}</h3>
-          <Badge variant="secondary" className="ml-1">
-            {tasks.length}
-          </Badge>
-        </div>
-        {status === "todo" && onAddTask && (
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-6 w-6"
-            onClick={onAddTask}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
-
-      <div className="flex-1 space-y-2">
-        {tasks.map((task) => (
-          <KanbanCard key={task._id} task={task} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
 interface KanbanCardProps {
   task: ProjectTask;
+  projectId: string;
 }
 
-function KanbanCard({ task }: KanbanCardProps) {
+function KanbanCard({ task, projectId }: KanbanCardProps) {
+  const navigate = useNavigate();
   const priority = task.priority as ProjectTaskPriority;
 
   const handleDragStart = (e: React.DragEvent) => {
@@ -182,10 +102,11 @@ function KanbanCard({ task }: KanbanCardProps) {
 
   return (
     <Card
-      className="cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow"
+      className="cursor-pointer active:cursor-grabbing hover:shadow-md transition-shadow"
       draggable
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      onClick={() => navigate(`/projects/${projectId}/tasks/${task._id}/edit`)}
     >
       <CardContent className="p-3">
         <div className="flex items-start gap-2">
@@ -238,6 +159,89 @@ function KanbanCard({ task }: KanbanCardProps) {
   );
 }
 
+interface KanbanColumnProps {
+  status: ProjectTaskStatus;
+  tasks: ProjectTask[];
+  onMoveTask: (task: ProjectTask, newStatus: ProjectTaskStatus) => void;
+  onAddTask?: () => void;
+  projectId: string;
+}
+
+function KanbanColumn({
+  status,
+  tasks,
+  onMoveTask,
+  onAddTask,
+  projectId,
+}: KanbanColumnProps) {
+  const config = statusConfig[status];
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.currentTarget.classList.add("bg-muted/50");
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.currentTarget.classList.remove("bg-muted/50");
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove("bg-muted/50");
+    const taskJson = e.dataTransfer.getData("application/json");
+    if (!taskJson) return;
+
+    try {
+      const task = JSON.parse(taskJson) as ProjectTask;
+      if (task.status !== status) {
+        onMoveTask(task, status);
+      }
+    } catch (err) {
+      console.error("Failed to parse dropped task", err);
+    }
+  };
+
+  return (
+    <div
+      className="flex flex-col h-full rounded-lg bg-muted/20 p-2 border border-border/50 min-h-[500px]"
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      <div
+        className={cn(
+          "flex items-center justify-between p-2 rounded-md mb-3 border",
+          config.bgColor
+        )}
+      >
+        <div className="flex items-center gap-2 font-medium text-sm">
+          <div className={config.color}>{config.icon}</div>
+          <span>{config.label}</span>
+          <Badge variant="secondary" className="bg-white/50 text-xs ml-1">
+            {tasks.length}
+          </Badge>
+        </div>
+        {onAddTask && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 hover:bg-white/50"
+            onClick={onAddTask}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      <div className="flex-1 space-y-2">
+        {tasks.map((task) => (
+          <KanbanCard key={task._id} task={task} projectId={projectId} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 interface AddTaskDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -253,7 +257,7 @@ interface AddTaskDialogProps {
       | "modifiedAt"
       | "modifiedBy"
       | "version"
-    >,
+    >
   ) => Promise<void>;
 }
 
@@ -394,7 +398,7 @@ export function ProjectTaskKanban({ projectId }: ProjectTaskKanbanProps) {
 
   const handleMoveTask = async (
     task: ProjectTask,
-    newStatus: ProjectTaskStatus,
+    newStatus: ProjectTaskStatus
   ) => {
     // For blocked status, we would need a dialog for reason
     // For now, just update the status
@@ -465,6 +469,7 @@ export function ProjectTaskKanban({ projectId }: ProjectTaskKanbanProps) {
             onAddTask={
               status === "todo" ? () => setShowAddDialog(true) : undefined
             }
+            projectId={projectId}
           />
         ))}
       </div>

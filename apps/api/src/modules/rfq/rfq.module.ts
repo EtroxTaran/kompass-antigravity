@@ -1,4 +1,3 @@
-
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../../database/database.module';
 import { RfqController } from './rfq.controller';
@@ -10,15 +9,15 @@ import { SupplierModule } from '../supplier/supplier.module';
 import { ContractModule } from '../contract/contract.module';
 
 @Module({
-    imports: [
-        DatabaseModule,
-        PdfModule,
-        MailModule,
-        SupplierModule,
-        ContractModule,
-    ],
-    controllers: [RfqController],
-    providers: [RfqService, RfqRepository],
-    exports: [RfqService],
+  imports: [
+    DatabaseModule,
+    PdfModule,
+    MailModule,
+    SupplierModule,
+    ContractModule,
+  ],
+  controllers: [RfqController],
+  providers: [RfqService, RfqRepository],
+  exports: [RfqService],
 })
-export class RfqModule { }
+export class RfqModule {}
