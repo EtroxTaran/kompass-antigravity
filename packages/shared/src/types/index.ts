@@ -19,3 +19,4 @@ export * from "./purchase-order";
 export * from "./supplier-contract";
 export * from "./project-material";
 export * from "./protocol";
+export * from "./inventory-movement";

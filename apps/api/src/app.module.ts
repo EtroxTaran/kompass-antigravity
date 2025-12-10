@@ -42,6 +42,7 @@ import { TranscribeModule } from './modules/transcribe/transcribe.module';
 import { RfqModule } from './modules/rfq/rfq.module';
 import { ProjectSubcontractorModule } from './modules/project-subcontractor/project-subcontractor.module';
 import { PresenceModule } from './modules/presence/presence.module';
+import { InventoryModule } from './modules/inventory/inventory.module';
 
 // Guards
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -98,6 +99,7 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     TranscribeModule,
     RfqModule,
     ProjectSubcontractorModule,
+    InventoryModule,
   ],
   providers: [
     // Global exception filter (RFC 7807)

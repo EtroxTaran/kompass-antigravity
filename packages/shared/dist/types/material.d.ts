@@ -30,5 +30,14 @@ export interface Material extends BaseEntity {
     lowestPrice?: number;
     preferredSupplierId?: string;
     supplierItemNumber?: string;
+    trackInventory?: boolean;
+    currentStock?: number;
+    minimumStock?: number;
+    maximumStock?: number;
+    stockLocation?: string;
+    timesUsed?: number;
+    lastUsedDate?: string;
+    averageQuantityPerProject?: number;
+    status?: "Active" | "Discontinued" | "OutOfStock";
     inStock?: number;
 }

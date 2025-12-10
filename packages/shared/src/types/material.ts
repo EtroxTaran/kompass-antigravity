@@ -42,6 +42,21 @@ export interface Material extends BaseEntity {
   preferredSupplierId?: string;
   supplierItemNumber?: string;
 
-  // Inventory (Simple for Phase 1)
+  // Inventory (Phase 2 - optional for Phase 1)
+  trackInventory?: boolean; // Whether to track stock levels
+  currentStock?: number; // Current quantity in stock
+  minimumStock?: number; // Reorder threshold
+  maximumStock?: number; // Storage capacity limit
+  stockLocation?: string; // Warehouse location
+
+  // Usage Statistics
+  timesUsed?: number; // Count of project material requirements
+  lastUsedDate?: string; // Most recent project usage
+  averageQuantityPerProject?: number; // Calculated
+
+  // Status
+  status?: "Active" | "Discontinued" | "OutOfStock";
+
+  // Compatibility (Legacy)
   inStock?: number;
 }

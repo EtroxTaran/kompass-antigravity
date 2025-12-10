@@ -4,49 +4,7 @@ import { AuditService } from '../../shared/services/audit.service';
 import { BaseRepository, BaseEntity } from '../../shared/base.repository';
 import * as Nano from 'nano';
 
-/**
- * Supplier-specific pricing for a material
- */
-export interface SupplierPrice {
-  supplierId: string;
-  supplierName: string;
-  unitPrice: number;
-  currency: 'EUR';
-  minimumOrderQuantity: number;
-  leadTimeDays: number;
-  isPreferred: boolean;
-  notes?: string;
-  lastUpdated?: string;
-}
-
-export interface Material extends BaseEntity {
-  type: 'material';
-
-  itemNumber: string;
-  name: string;
-  description?: string;
-
-  // Categorization
-  category: string;
-  unit: 'pc' | 'm' | 'm2' | 'm3' | 'kg' | 'l';
-
-  // Pricing (legacy)
-  purchasePrice: number;
-  currency: string;
-  validFrom?: string;
-
-  // Multi-Supplier Pricing
-  supplierPrices?: SupplierPrice[];
-  averagePrice?: number;
-  lowestPrice?: number;
-
-  // Supplier (legacy)
-  preferredSupplierId?: string;
-  supplierItemNumber?: string;
-
-  // Inventory
-  inStock?: number;
-}
+import { Material, SupplierPrice } from "@kompass/shared";
 
 @Injectable()
 export class MaterialRepository extends BaseRepository<Material> {

@@ -41,3 +41,4 @@ Object.defineProperty(exports, "RfqStatus", { enumerable: true, get: function ()
 Object.defineProperty(exports, "QuoteStatus", { enumerable: true, get: function () { return request_for_quote_1.QuoteStatus; } });
 __exportStar(require("./types/rfq-dtos"), exports);
 __exportStar(require("./types/project-material"), exports);
+__exportStar(require("./types/inventory-movement"), exports);

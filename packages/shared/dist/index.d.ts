@@ -22,3 +22,4 @@ export * from "./types/supplier-contract";
 export { RequestForQuote, SupplierQuote, RfqStatus, QuoteStatus } from './types/request-for-quote';
 export * from './types/rfq-dtos';
 export * from './types/project-material';
+export * from './types/inventory-movement';

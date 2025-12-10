@@ -802,6 +802,22 @@ export const toursApi = {
 };
 
 // =============================================================================
+// Inventory API
+// =============================================================================
+
+import { CreateInventoryMovementDto, InventoryMovement } from "@kompass/shared";
+
+export const inventoryApi = {
+  async recordMovement(data: CreateInventoryMovementDto): Promise<InventoryMovement> {
+    return post("/inventory/movements", data);
+  },
+
+  async getHistory(materialId: string): Promise<InventoryMovement[]> {
+    return get(`/inventory/movements/${materialId}`);
+  },
+};
+
+// =============================================================================
 // RFQ API
 // =============================================================================
 
@@ -1063,6 +1079,7 @@ export const apiClient = {
   timeEntries: timeEntriesApi,
   expenses: expensesApi,
   tours: toursApi,
+  inventory: inventoryApi,
   projectSubcontractor: projectSubcontractorApi,
 };
 
