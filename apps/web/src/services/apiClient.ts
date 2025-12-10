@@ -1015,5 +1015,56 @@ export const supplierContractsApi = {
   },
 };
 
+// =============================================================================
+// Project Subcontractor Assignment API
+// =============================================================================
+import {
+  AssignSubcontractorDto,
+  UpdateAssignmentDto,
+  RateSubcontractorDto,
+  ProjectSubcontractor,
+} from "@kompass/shared";
+
+export const projectSubcontractorApi = {
+  async assign(projectId: string, data: AssignSubcontractorDto): Promise<ProjectSubcontractor> {
+    return post(`/projects/${projectId}/subcontractors`, data);
+  },
+
+  async findByProject(projectId: string): Promise<ProjectSubcontractor[]> {
+    return get(`/projects/${projectId}/subcontractors`);
+  },
+
+  async update(projectId: string, id: string, data: UpdateAssignmentDto): Promise<ProjectSubcontractor> {
+    return put(`/projects/${projectId}/subcontractors/${id}`, data);
+  },
+
+  async rate(projectId: string, id: string, data: RateSubcontractorDto): Promise<ProjectSubcontractor> {
+    return put(`/projects/${projectId}/subcontractors/${id}/rate`, data);
+  },
+};
+
+// Export consolidated API
+export const apiClient = {
+  auth: authApi,
+  customers: customersApi,
+  projects: projectsApi,
+  projectTasks: projectTasksApi,
+  userTasks: userTasksApi,
+  activities: activitiesApi,
+  offers: offersApi,
+  contracts: contractsApi,
+  opportunities: opportunitiesApi,
+  suppliers: suppliersApi,
+  materials: materialsApi,
+  invoices: invoicesApi,
+  contacts: contactsApi,
+  locations: locationsApi,
+  projectMaterials: projectMaterialsApi,
+  timeEntries: timeEntriesApi,
+  expenses: expensesApi,
+  tours: toursApi,
+  projectSubcontractor: projectSubcontractorApi,
+};
+
 // Export error class for use in components
 export { ApiError };

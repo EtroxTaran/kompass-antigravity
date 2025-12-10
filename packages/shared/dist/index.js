@@ -31,6 +31,7 @@ __exportStar(require("./types/offer"), exports);
 __exportStar(require("./types/contract"), exports);
 __exportStar(require("./types/expense"), exports);
 __exportStar(require("./types/tour"), exports);
+__exportStar(require("./types/project-subcontractor"), exports);
 __exportStar(require("./types/mileage"), exports);
 __exportStar(require("./types/project-cost"), exports);
 __exportStar(require("./types/purchase-order"), exports);

@@ -14,6 +14,7 @@ export * from "./types/offer";
 export * from "./types/contract";
 export * from "./types/expense";
 export * from "./types/tour";
+export * from './types/project-subcontractor';
 export * from "./types/mileage";
 export * from "./types/project-cost";
 export * from "./types/purchase-order";

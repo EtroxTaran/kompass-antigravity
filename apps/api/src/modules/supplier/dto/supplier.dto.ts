@@ -160,4 +160,8 @@ export class UpdateSupplierDto {
   @IsString({ each: true })
   @IsOptional()
   category?: string[];
+
+  @IsNumber()
+  @IsOptional()
+  activeProjectCount?: number;
 }
