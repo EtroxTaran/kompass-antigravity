@@ -1213,6 +1213,73 @@ export const searchApi = {
   },
 };
 
+// =============================================================================
+// Dashboard API
+// =============================================================================
+
+export interface GFMetrics {
+  totalRevenue: number;
+  outstandingRevenue: number;
+  pipelineValue: number;
+  weightedPipeline: number;
+  activeProjectCount: number;
+  onTimeProjectCount: number;
+  delayedProjectCount: number;
+  pipelineStages: {
+    stage: string;
+    label: string;
+    value: number;
+    count: number;
+    color: string;
+  }[];
+  monthlyRevenue: {
+    month: string;
+    revenue: number;
+    invoiceCount: number;
+  }[];
+  projectsByStatus: {
+    status: string;
+    label: string;
+    count: number;
+    color: string;
+  }[];
+  topOpportunities: {
+    _id: string;
+    title: string;
+    customerId: string;
+    customerName?: string;
+    expectedValue: number;
+    probability: number;
+    stage: string;
+  }[];
+  overdueInvoices: {
+    count: number;
+    totalValue: number;
+    invoices: {
+      _id: string;
+      invoiceNumber: string;
+      customerId: string;
+      customerName?: string;
+      totalGross: number;
+      dueDate: string;
+      daysOverdue: number;
+    }[];
+  };
+  teamUtilization: {
+    userId: string;
+    userName: string;
+    totalHours: number;
+    targetHours: number;
+    utilizationPercent: number;
+  }[];
+}
+
+export const dashboardApi = {
+  async getGFMetrics(): Promise<GFMetrics> {
+    return get<GFMetrics>("/dashboard/gf/metrics");
+  },
+};
+
 // Export consolidated API
 export const apiClient = {
   auth: authApi,
@@ -1236,6 +1303,7 @@ export const apiClient = {
   inventory: inventoryApi,
   comments: commentsApi,
   search: searchApi,
+  dashboard: dashboardApi,
   portal: {
     requestLink: (email: string) =>
       post("/portal/auth/request-link", { email }),

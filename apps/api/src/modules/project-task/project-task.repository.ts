@@ -8,6 +8,7 @@ import {
   PaginatedResult,
 } from '../../shared/base.repository';
 import * as Nano from 'nano';
+import { Comment } from '@kompass/shared';
 
 export type ProjectTaskStatus =
   | 'todo'
@@ -32,6 +33,7 @@ export interface ProjectTask extends BaseEntity {
   completedAt?: string;
   completedBy?: string;
   blockingReason?: string;
+  comments?: Comment[];
 }
 
 export interface ProjectTaskQueryOptions extends QueryOptions {

@@ -45,6 +45,7 @@ import { PresenceModule } from './modules/presence/presence.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { PortalModule } from './modules/portal/portal.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 // Guards
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -104,6 +105,7 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     InventoryModule,
     CommentModule,
     PortalModule,
+    DashboardModule,
   ],
   providers: [
     // Global exception filter (RFC 7807)
