@@ -1,14 +1,16 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InventoryMovementRepository } from "./inventory.repository";
-import { CreateInventoryMovementDto, InventoryStockDto } from "./inventory.dto";
+import { CreateInventoryMovementDto } from "./inventory.dto";
 import { InventoryMovement, Material } from "@kompass/shared";
 import { MaterialRepository } from "../material/material.repository";
+import { MailService } from "../mail/mail.service";
 
 @Injectable()
 export class InventoryService {
     constructor(
         private readonly movementRepo: InventoryMovementRepository,
-        private readonly materialRepo: MaterialRepository
+        private readonly materialRepo: MaterialRepository,
+        private readonly mailService: MailService
     ) { }
 
     async recordMovement(dto: CreateInventoryMovementDto, userId: string): Promise<InventoryMovement> {
@@ -31,8 +33,6 @@ export class InventoryService {
         // 3. Update Material Stock
         const quantityChange = dto.quantity;
 
-        // Ensure quantity is treated correctly based on type if needed, but assuming DTO is signed correctly.
-
         const currentStock = material.currentStock || 0;
         const newStock = currentStock + quantityChange; // Trusting signed quantity
 
@@ -47,6 +47,25 @@ export class InventoryService {
         }
 
         await this.materialRepo.update(material._id, updateData, userId);
+
+        // 4. Check for Low Stock Alert
+        // Only alert if we dropped below (or equal to) min stock AND we were above it before (to avoid spam, ideally)
+        // For simple MVP: Alert if newStock <= minStock
+        if (material.minimumStock !== undefined && newStock <= material.minimumStock) {
+            // Avoid spam? Ideally check if we already alerted. But stateless for now.
+            // Check if it was ALREADY low. If so, maybe don't email again? 
+            // The requirement just says "Alert when below".
+            // Implementation: Send email.
+            if (currentStock > material.minimumStock) {
+                // Determine recipient (e.g. purchasing)
+                const recipient = "purchasing@example.com";
+                await this.mailService.sendMail({
+                    to: recipient,
+                    subject: `Low Stock Alert: ${material.name}`,
+                    text: `Low stock warning for material ${material.name} (${material.itemNumber}).\nCurrent Stock: ${newStock} ${material.unit}\nMinimum Stock: ${material.minimumStock}\nPlease reorder.`
+                });
+            }
+        }
 
         return savedMovement;
     }
