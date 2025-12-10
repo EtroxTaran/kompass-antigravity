@@ -13,6 +13,44 @@ import { MainLayout } from "@/components/layout/MainLayout";
 
 import { CustomerForm } from "@/components/crm/CustomerForm";
 import { CustomerDetail } from "@/components/crm/CustomerDetail";
+
+import { RfqList } from "@/components/rfq/RfqList";
+import { RfqForm } from "@/components/rfq/RfqForm";
+import { RfqDetail } from "@/components/rfq/RfqDetail";
+
+function RfqListPage() {
+  return (
+    <MainLayout
+      userRole="PM" // Assuming PM handles RFQs mostly
+      breadcrumbs={[{ label: "Purchasing", href: "/rfqs" }, { label: "RFQs" }]}
+    >
+      <RfqList />
+    </MainLayout>
+  );
+}
+
+function RfqCreatePage() {
+  return (
+    <MainLayout
+      userRole="PM"
+      breadcrumbs={[{ label: "Purchasing", href: "/rfqs" }, { label: "RFQs", href: "/rfqs" }, { label: "New" }]}
+    >
+      <RfqForm />
+    </MainLayout>
+  );
+}
+
+function RfqDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  return (
+    <MainLayout
+      userRole="PM"
+      breadcrumbs={[{ label: "Purchasing", href: "/rfqs" }, { label: "RFQs", href: "/rfqs" }, { label: id || 'Detail' }]}
+    >
+      <RfqDetail />
+    </MainLayout>
+  );
+}
 import { ContactDetail } from "@/components/crm/ContactDetail";
 import { ProtocolList } from "@/components/crm/ProtocolList";
 import { ProtocolForm } from "@/components/crm/ProtocolForm";
@@ -1345,7 +1383,12 @@ function App() {
             </MainLayout>
           }
         />
+        {/* RFQ Routes */}
+        <Route path="/rfqs" element={<RfqListPage />} />
+        <Route path="/rfqs/new" element={<RfqCreatePage />} />
+        <Route path="/rfqs/:id" element={<RfqDetailPage />} />
 
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
         {/* Auth callback for Keycloak OIDC */}

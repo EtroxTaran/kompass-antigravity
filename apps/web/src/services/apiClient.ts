@@ -798,6 +798,53 @@ export const toursApi = {
 };
 
 // =============================================================================
+// RFQ API
+// =============================================================================
+
+export const rfqApi = {
+  async list(): Promise<ListResponse<RequestForQuote>> {
+    const data = await get<RequestForQuote[]>("/rfqs");
+    // Standardize to ListResponse format which frontend might expect, or just return array if hook handles it.
+    // However, existing hook expects array. But generic list response usually returns { data: [], total: ... }
+    // RfqService.findAll returns RequestForQuote[] now (I fixed it).
+    // But other APIs return ListResponse. Ideally backend should return ListResponse.
+    // For now, let's just return what the backend returns.
+    // The previous hook implementation expected array.
+    // Let's wrap it to match other APIs if needed, but hook calls it directly.
+    // Let's simply return the array for now as my backend service returns array.
+    return { data: data as any, total: data?.length || 0 };
+  },
+
+  // Actually, let's look at useRfq.ts again. It calls apiClient.get<RequestForQuote[]>
+  // So it expects data directly.
+
+  async getAll(): Promise<RequestForQuote[]> {
+    return get<RequestForQuote[]>("/rfqs");
+  },
+
+  async get(id: string): Promise<RequestForQuote> {
+    return get(`/rfqs/${id}`);
+  },
+
+  async create(data: CreateRfqDto): Promise<RequestForQuote> {
+    return post("/rfqs", data);
+  },
+
+  async send(id: string): Promise<RequestForQuote> {
+    return put(`/rfqs/${id}/send`, {});
+  },
+
+  async recordQuote(id: string, data: RecordQuoteDto): Promise<RequestForQuote> {
+    return post(`/rfqs/${id}/quotes`, data);
+  },
+
+  async awardQuote(id: string, quoteId: string): Promise<RequestForQuote> {
+    return put(`/rfqs/${id}/award/${quoteId}`, {});
+  }
+};
+
+import { RequestForQuote, CreateRfqDto, RecordQuoteDto } from "@kompass/shared";
+
 // Mileage API
 // =============================================================================
 

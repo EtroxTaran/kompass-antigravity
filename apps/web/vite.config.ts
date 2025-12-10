@@ -10,4 +10,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    include: ["@kompass/shared"],
+  },
+  build: {
+    commonjsOptions: {
+      include: [/packages\/shared/, /node_modules/],
+    },
+  },
 });

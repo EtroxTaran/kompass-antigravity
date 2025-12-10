@@ -101,7 +101,7 @@
     ],
     "moduleNameMapper": {
       "^uuid$": "<rootDir>/../test/__mocks__/uuid.ts",
-      "^@kompass/shared": "<rootDir>/../../libs/shared/src"
+      "^@kompass/shared": "<rootDir>/../../../packages/shared/src"
     }
   }
 }

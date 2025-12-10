@@ -18,3 +18,6 @@ export * from "./types/mileage";
 export * from "./types/project-cost";
 export * from "./types/purchase-order";
 export * from "./types/supplier-contract";
+export { RequestForQuote, SupplierQuote, RfqStatus, QuoteStatus } from './types/request-for-quote';
+export * from './types/rfq-dtos';
+export * from './types/project-material';

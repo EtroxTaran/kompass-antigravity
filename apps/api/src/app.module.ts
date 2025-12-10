@@ -39,6 +39,7 @@ import { SupplierContractModule } from './modules/supplier-contract/supplier-con
 import { SupplierInvoiceModule } from './modules/supplier-invoice/supplier-invoice.module';
 import { DeliveryModule } from './modules/delivery/delivery.module';
 import { TranscribeModule } from './modules/transcribe/transcribe.module';
+import { RfqModule } from './modules/rfq/rfq.module';
 
 // Guards
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -92,6 +93,7 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     SupplierInvoiceModule,
     DeliveryModule,
     TranscribeModule,
+    RfqModule,
   ],
   providers: [
     // Global exception filter (RFC 7807)
