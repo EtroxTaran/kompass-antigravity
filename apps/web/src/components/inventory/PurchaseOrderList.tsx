@@ -94,7 +94,7 @@ export function PurchaseOrderList() {
                     key={order._id}
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() =>
-                      navigate(`/purchase-orders/${order._id}/edit`)
+                      navigate(`/purchase-orders/${order._id}`)
                     }
                   >
                     <TableCell className="font-medium">

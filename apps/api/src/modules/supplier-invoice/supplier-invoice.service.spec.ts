@@ -3,6 +3,7 @@ import { SupplierInvoiceService } from './supplier-invoice.service';
 import { SupplierInvoiceRepository } from './supplier-invoice.repository';
 import { PurchaseOrderService } from '../purchase-order/purchase-order.service';
 import { DeliveryService } from '../delivery/delivery.service';
+import { ProjectService } from '../project/project.service';
 import { CreateSupplierInvoiceDto } from './dto/supplier-invoice.dto';
 
 describe('SupplierInvoiceService', () => {
@@ -10,6 +11,7 @@ describe('SupplierInvoiceService', () => {
     let repo: Partial<SupplierInvoiceRepository>;
     let poService: Partial<PurchaseOrderService>;
     let deliveryService: Partial<DeliveryService>;
+    let projectService: Partial<ProjectService>;
 
     beforeEach(async () => {
         repo = {
@@ -21,13 +23,17 @@ describe('SupplierInvoiceService', () => {
         deliveryService = {
             findByPurchaseOrder: jest.fn(),
         };
+        projectService = {
+            updateActualCost: jest.fn(),
+        };
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 SupplierInvoiceService,
                 { provide: SupplierInvoiceRepository, useValue: repo },
-                { provide: PurchaseOrderService, useValue: poService },
-                { provide: DeliveryService, useValue: deliveryService },
+                { provide: PurchaseOrderService, useValue: poService }, // Changed to use poService variable
+                { provide: DeliveryService, useValue: deliveryService }, // Changed to use deliveryService variable
+                { provide: ProjectService, useValue: projectService }, // Added ProjectService mock
             ],
         }).compile();
 

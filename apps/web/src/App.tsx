@@ -58,6 +58,7 @@ import { ProjectCostList } from "@/components/accounting/ProjectCostList";
 import { ProjectCostForm } from "@/components/accounting/ProjectCostForm";
 import { PurchaseOrderList } from "@/components/inventory/PurchaseOrderList";
 import { PurchaseOrderForm } from "@/components/inventory/PurchaseOrderForm";
+import { PurchaseOrderDetail } from "@/components/inventory/PurchaseOrderDetail";
 import { useCustomer } from "@/hooks/useCustomer";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -795,6 +796,17 @@ const PurchaseOrderEditPage = () => (
     <PurchaseOrderForm />
   </MainLayout>
 );
+const PurchaseOrderDetailPage = () => (
+  <MainLayout
+    userRole="LAGER"
+    breadcrumbs={[
+      { label: "Bestellungen", href: "/purchase-orders" },
+      { label: "Details" },
+    ]}
+  >
+    <PurchaseOrderDetail />
+  </MainLayout>
+);
 
 // --- INVOICE HELPERS ---
 const InvoiceListPage = () => (
@@ -1297,6 +1309,7 @@ function App() {
           <Route path="/materials/:id/edit" element={<MaterialEditPage />} />
           <Route path="/purchase-orders" element={<PurchaseOrderListPage />} />
           <Route path="/purchase-orders/new" element={<PurchaseOrderCreatePage />} />
+          <Route path="/purchase-orders/:id" element={<PurchaseOrderDetailPage />} />
           <Route path="/purchase-orders/:id/edit" element={<PurchaseOrderEditPage />} />
           <Route path="/tours" element={<TourListPage />} />
           <Route path="/tours/new" element={<TourCreatePage />} />
