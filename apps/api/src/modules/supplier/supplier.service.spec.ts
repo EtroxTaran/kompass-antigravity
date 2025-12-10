@@ -245,10 +245,41 @@ describe('SupplierService', () => {
                     rating: expect.objectContaining({
                         overall: 3.0,
                         reviewCount: 2,
-                    })
+                    }),
+                    ratingsHistory: expect.arrayContaining([
+                        expect.objectContaining({
+                            ratings: expect.objectContaining({ quality: 2 }),
+                            ratedBy: mockUser.id
+                        })
+                    ])
                 }),
                 mockUser.id,
                 mockUser.email,
+            );
+        });
+
+        it('should send email notification for low rating', async () => {
+            (repository.findById as jest.Mock).mockResolvedValue({
+                ...mockSupplier,
+                rating: undefined
+            });
+            const mailService = service['mailService']; // Access private property or use module.get
+
+            const dto = {
+                quality: 1,
+                reliability: 1,
+                communication: 1,
+                priceValue: 1,
+                projectId: 'proj-1'
+            };
+
+            await service.submitRating('supplier-1', dto, mockUser);
+
+            expect(mailService.sendMail).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    subject: expect.stringContaining('WARNUNG'),
+                    text: expect.stringContaining('1 Stern'),
+                })
             );
         });
     });

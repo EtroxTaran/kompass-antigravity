@@ -20,7 +20,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, Ban, CheckCircle, Star } from "lucide-react";
 import { StarRating } from "@/components/ui/StarRating";
-import { SupplierRatingForm } from "./SupplierRatingForm";
+import { SupplierRatingForm } from "../supplier/SupplierRatingForm";
+import { SupplierRatingHistory } from "../supplier/SupplierRatingHistory";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -366,6 +367,9 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
             />
           </CardContent>
         </Card>
+
+        <SupplierRatingHistory history={supplier.ratingsHistory} />
+
       </div>
 
       {/* Contracts Section */}

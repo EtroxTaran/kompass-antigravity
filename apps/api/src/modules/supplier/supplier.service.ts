@@ -242,16 +242,42 @@ export class SupplierService {
       lastUpdated: new Date().toISOString(),
     };
 
+    // Add to history
+    const historyItem = {
+      projectId: dto.projectId,
+      ratings: {
+        quality: dto.quality,
+        reliability: dto.reliability,
+        communication: dto.communication,
+        priceValue: dto.priceValue,
+      },
+      feedback: dto.feedback,
+      ratedBy: user.id,
+      ratedAt: new Date().toISOString(),
+    };
+
+    const ratingsHistory = [...(supplier.ratingsHistory || []), historyItem];
+
+    // Notification for low rating
     if (newRating.overall < 3) {
-      console.warn(
-        `[ALERT] Low rating (${newRating.overall}) for supplier ${supplier.companyName} (${supplier._id}) by ${user.email}`,
-      );
-      // In a real scenario, call NotificationService here
+      const recipient = process.env.INN_EMAIL || 'inn@kompass.local'; // Notify GF/INN
+      await this.mailService.sendMail({
+        to: recipient,
+        subject: `WARNUNG: Schlechte Bewertung für ${supplier.companyName}`,
+        text: `Der Lieferant ${supplier.companyName} erhielt eine Bewertung von ${newRating.overall} Sternen.\n\n` +
+          `Projekt: ${dto.projectId || 'N/A'}\n` +
+          `Bewerter: ${user.email}\n` +
+          `Feedback: ${dto.feedback || 'Kein Feedback'}\n` +
+          `Qualität: ${dto.quality}, Zuverlässigkeit: ${dto.reliability}, Komm.: ${dto.communication}, Preis: ${dto.priceValue}`
+      });
     }
 
     return this.supplierRepository.update(
       id,
-      { rating: newRating } as Partial<Supplier>,
+      {
+        rating: newRating,
+        ratingsHistory
+      } as Partial<Supplier>,
       user.id,
       user.email,
     );

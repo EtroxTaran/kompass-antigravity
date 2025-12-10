@@ -11,6 +11,7 @@ export interface Supplier extends BaseEntity {
     paymentTerms?: string;
     deliveryTerms?: string;
     rating?: SupplierRating;
+    ratingsHistory?: SupplierRatingHistoryItem[];
     category?: string[];
     status?: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval' | 'Rejected';
     approvedBy?: string;
@@ -34,10 +35,23 @@ export interface SupplierRating {
     reviewCount: number;
     lastUpdated: string;
 }
+export interface SupplierRatingHistoryItem {
+    projectId?: string;
+    ratings: {
+        quality: number;
+        reliability: number;
+        communication: number;
+        priceValue: number;
+    };
+    feedback?: string;
+    ratedBy: string;
+    ratedAt: string;
+}
 export interface RateSupplierDto {
     quality: number;
     reliability: number;
     communication: number;
     priceValue: number;
     feedback?: string;
+    projectId?: string;
 }

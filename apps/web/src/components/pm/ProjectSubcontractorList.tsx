@@ -3,10 +3,11 @@ import { useParams } from "react-router-dom";
 import { useProjectSubcontractor } from "../../hooks/useProjectSubcontractor";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
-import { Plus, AlertTriangle } from "lucide-react";
+import { Plus, AlertTriangle, Star } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { ProjectSubcontractorForm } from "./ProjectSubcontractorForm";
 import { SubcontractorProgressCard } from "./SubcontractorProgressCard";
+import { SupplierRatingForm } from "../supplier/SupplierRatingForm";
 import {
     Dialog,
     DialogContent,
@@ -20,6 +21,8 @@ export function ProjectSubcontractorList() {
     const { subcontractors, fetchSubcontractors, loading, error } =
         useProjectSubcontractor(projectId);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isRatingOpen, setIsRatingOpen] = useState(false);
+    const [selectedSub, setSelectedSub] = useState<{ id: string, name: string } | null>(null);
 
     useEffect(() => {
         fetchSubcontractors();
@@ -96,12 +99,43 @@ export function ProjectSubcontractorList() {
 
                                 <div className="md:w-1/3">
                                     <SubcontractorProgressCard assignment={sub} />
+                                    {sub.status === "Completed" && (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="w-full mt-2"
+                                            onClick={() => {
+                                                setSelectedSub({
+                                                    id: sub.supplierId,
+                                                    name: (sub as unknown as { supplier?: { companyName: string } }).supplier?.companyName || "Supplier"
+                                                });
+                                                setIsRatingOpen(true);
+                                            }}
+                                        >
+                                            <Star className="mr-2 h-4 w-4" />
+                                            Rate Supplier
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         ))}
                     </div>
                 )}
             </CardContent>
+
+            {selectedSub && (
+                <SupplierRatingForm
+                    supplierId={selectedSub.id}
+                    supplierName={selectedSub.name}
+                    projectId={projectId}
+                    open={isRatingOpen}
+                    onOpenChange={setIsRatingOpen}
+                    onSuccess={() => {
+                        setIsRatingOpen(false);
+                        // Optional: refresh list or show toast
+                    }}
+                />
+            )}
         </Card>
     );
 }

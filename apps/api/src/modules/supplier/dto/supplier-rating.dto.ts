@@ -5,4 +5,5 @@ export class RateSupplierDto {
     communication: number;
     priceValue: number;
     feedback?: string;
+    projectId?: string;
 }

@@ -51,6 +51,20 @@ export interface Supplier extends BaseEntity {
   reinstatedBy?: string;
   reinstatedAt?: string;
   activeProjectCount?: number;
+  ratingsHistory?: SupplierRatingHistoryItem[];
+}
+
+export interface SupplierRatingHistoryItem {
+  projectId?: string;
+  ratings: {
+    quality: number;
+    reliability: number;
+    communication: number;
+    priceValue: number;
+  };
+  feedback?: string;
+  ratedBy: string; // userId
+  ratedAt: string; // ISO date
 }
 
 export interface SupplierRating {

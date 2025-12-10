@@ -17,8 +17,8 @@ interface SupplierRatingFormProps {
     onSuccess?: () => void;
 }
 
-export function SupplierRatingForm({ supplierId, supplierName, open, onOpenChange, onSuccess }: SupplierRatingFormProps) {
-    const { rateSupplier } = useSupplier();
+export function SupplierRatingForm({ supplierId, supplierName, projectId, open, onOpenChange, onSuccess }: SupplierRatingFormProps) {
+    const { rateSupplier } = useSupplier(supplierId);
     const { toast } = useToast();
     const [submitting, setSubmitting] = useState(false);
 
@@ -32,8 +32,8 @@ export function SupplierRatingForm({ supplierId, supplierName, open, onOpenChang
     const handleSubmit = async () => {
         if (quality === 0 || reliability === 0 || communication === 0 || priceValue === 0) {
             toast({
-                title: "Incomplete Rating",
-                description: "Please rate all 4 dimensions.",
+                title: "Unvollständige Bewertung",
+                description: "Bitte bewerten Sie alle 4 Kategorien.",
                 variant: "destructive"
             });
             return;
@@ -46,12 +46,13 @@ export function SupplierRatingForm({ supplierId, supplierName, open, onOpenChang
                 reliability,
                 communication,
                 priceValue,
-                feedback
+                feedback,
+                projectId
             });
 
             toast({
-                title: "Rating Submitted",
-                description: `Rating for ${supplierName} has been recorded.`
+                title: "Bewertung gespeichert",
+                description: `Bewertung für ${supplierName} wurde erfolgreich gespeichert.`
             });
             onOpenChange(false);
             // Reset form
@@ -62,10 +63,10 @@ export function SupplierRatingForm({ supplierId, supplierName, open, onOpenChang
             setFeedback('');
 
             if (onSuccess) onSuccess();
-        } catch (error) {
+        } catch {
             toast({
-                title: "Error",
-                description: "Failed to submit rating.",
+                title: "Fehler",
+                description: "Bewertung konnte nicht gespeichert werden.",
                 variant: "destructive"
             });
         } finally {
@@ -77,33 +78,33 @@ export function SupplierRatingForm({ supplierId, supplierName, open, onOpenChang
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Rate Supplier: {supplierName}</DialogTitle>
+                    <DialogTitle>Lieferant bewerten: {supplierName}</DialogTitle>
                     <DialogDescription>
-                        Please rate the supplier performance on completed work.
+                        Bitte bewerten Sie die Leistung des Lieferanten{projectId ? ` für dieses Projekt` : ''}.
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label className="text-right">Quality</Label>
+                        <Label className="text-right">Qualität</Label>
                         <div className="col-span-3">
                             <StarRating rating={quality} onRatingChange={setQuality} />
                         </div>
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label className="text-right">Reliability</Label>
+                        <Label className="text-right">Zuverlässigkeit</Label>
                         <div className="col-span-3">
                             <StarRating rating={reliability} onRatingChange={setReliability} />
                         </div>
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label className="text-right">Communication</Label>
+                        <Label className="text-right">Kommunikation</Label>
                         <div className="col-span-3">
                             <StarRating rating={communication} onRatingChange={setCommunication} />
                         </div>
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label className="text-right">Price/Value</Label>
+                        <Label className="text-right">Preis/Leistung</Label>
                         <div className="col-span-3">
                             <StarRating rating={priceValue} onRatingChange={setPriceValue} />
                         </div>
@@ -113,7 +114,7 @@ export function SupplierRatingForm({ supplierId, supplierName, open, onOpenChang
                         <Label htmlFor="feedback">Feedback (Optional)</Label>
                         <Textarea
                             id="feedback"
-                            placeholder="Additional comments..."
+                            placeholder="Zusätzliche Anmerkungen..."
                             value={feedback}
                             onChange={(e) => setFeedback(e.target.value)}
                         />
@@ -121,8 +122,8 @@ export function SupplierRatingForm({ supplierId, supplierName, open, onOpenChang
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)} disabled={submitting}>Cancel</Button>
-                    <Button onClick={handleSubmit} disabled={submitting}>Submit Rating</Button>
+                    <Button variant="outline" onClick={() => onOpenChange(false)} disabled={submitting}>Abbrechen</Button>
+                    <Button onClick={handleSubmit} disabled={submitting}>Bewertung speichern</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
