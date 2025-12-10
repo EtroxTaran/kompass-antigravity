@@ -1,5 +1,13 @@
 import { BaseEntity } from "./base";
 
+export enum TimeEntryActivityType {
+  INSTALLATION = "Installation",
+  PLANNING = "Planning",
+  TRAVEL = "Travel",
+  CONSULTING = "Consulting",
+  OTHER = "Other",
+}
+
 export interface TimeEntry extends BaseEntity {
   type: "time_entry";
 
@@ -8,9 +16,9 @@ export interface TimeEntry extends BaseEntity {
   userId: string; // Who performed the work
 
   startTime: string; // ISO string
-  endTime?: string; // ISO string
   durationMinutes: number; // Calculated or entered manually
 
+  activityType: TimeEntryActivityType;
   description: string;
 
   isBillable: boolean;

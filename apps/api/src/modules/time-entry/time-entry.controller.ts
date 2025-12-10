@@ -21,7 +21,7 @@ import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 @Controller('api/v1/time-entries')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class TimeEntryController {
-  constructor(private readonly timeEntryService: TimeEntryService) {}
+  constructor(private readonly timeEntryService: TimeEntryService) { }
 
   @Get()
   @Permissions({ entity: 'TimeEntry', action: 'READ' })
@@ -56,6 +56,16 @@ export class TimeEntryController {
   @Permissions({ entity: 'TimeEntry', action: 'READ' })
   async findById(@Param('id') id: string) {
     return this.timeEntryService.findById(id);
+  }
+
+  @Get('daily-total')
+  @Permissions({ entity: 'TimeEntry', action: 'READ' })
+  async getDailyTotal(
+    @CurrentUser() user: any,
+    @Query('date') date: string,
+  ): Promise<{ totalHours: number }> {
+    const totalHours = await this.timeEntryService.getDailyTotal(user.id, date);
+    return { totalHours };
   }
 
   @Post()

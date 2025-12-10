@@ -11,7 +11,7 @@ export class TimeEntryService {
   constructor(
     private readonly timeEntryRepository: TimeEntryRepository,
     private readonly projectService: ProjectService,
-  ) {}
+  ) { }
 
   async findAll(
     options: {
@@ -57,6 +57,31 @@ export class TimeEntryService {
     options: { page?: number; limit?: number } = {},
   ) {
     return this.timeEntryRepository.findByUser(userId, options);
+  }
+
+  async getDailyTotal(userId: string, date: string): Promise<number> {
+    // Determine start and end of the day in UTC
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(date);
+    end.setHours(23, 59, 59, 999);
+
+    const result = await this.timeEntryRepository.findByUser(userId, {
+      limit: 100, // Should be enough for one day
+    });
+
+    // Filter by date range and sum up duration
+    // Note: ideally repository should support date range query
+    const dailyEntries = result.data.filter((e) => {
+      const entryDate = new Date(e.startTime);
+      return entryDate >= start && entryDate <= end;
+    });
+
+    const totalMinutes = dailyEntries.reduce(
+      (sum, e) => sum + e.durationMinutes,
+      0,
+    );
+    return totalMinutes / 60;
   }
 
   async findMyEntries(

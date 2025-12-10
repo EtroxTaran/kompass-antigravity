@@ -123,6 +123,7 @@ import { BUCHDashboard } from "@/components/dashboards/BUCHDashboard";
 import { INNDashboard } from "@/components/dashboards/INNDashboard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarView } from "@/components/calendar";
+import { MyTimesheetsPage } from "@/pages/MyTimesheetsPage";
 
 // --- INVENTORY WRAPPERS ---
 

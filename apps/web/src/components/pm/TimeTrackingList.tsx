@@ -6,11 +6,18 @@ import { Plus, Trash2, Clock, Edit } from "lucide-react";
 import { format } from "date-fns";
 
 interface TimeTrackingListProps {
-  projectId: string;
+  projectId?: string;
+  userId?: string;
 }
 
-export function TimeTrackingList({ projectId }: TimeTrackingListProps) {
-  const { timeEntries, loading, deleteTimeEntry } = useTimeTracking(projectId);
+export function TimeTrackingList({ projectId, userId }: TimeTrackingListProps) {
+  // If no projectId provided, we assume "my entries" logic or general list
+  // But wait, existing hook `useTimeTracking` takes `projectId`.
+  // I need to check `useTimeTracking` hook to see if it supports other filters or if I need to update it.
+  // For now I'll assume I pass projectId if present. 
+  // Actually, I should inspect the hook first.
+  //   const { timeEntries, loading, deleteTimeEntry } = useTimeTracking(projectId || "");
+  const { timeEntries, deleteTimeEntry, loading } = useTimeTracking(projectId, userId);
   const navigate = useNavigate();
 
   const totalMinutes = timeEntries.reduce(

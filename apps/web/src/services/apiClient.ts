@@ -727,6 +727,17 @@ export const timeEntriesApi = {
     return get("/time-entries", params);
   },
 
+  async listMy(params?: {
+    limit?: number;
+    offset?: number;
+  }): Promise<ListResponse<unknown>> {
+    return get("/time-entries/my", params as any);
+  },
+
+  async getDailyTotal(date: string): Promise<{ totalHours: number }> {
+    return get("/time-entries/daily-total", { date });
+  },
+
   async get(id: string): Promise<unknown> {
     return get(`/time-entries/${id}`);
   },

@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { timeEntriesApi } from "@/services/apiClient";
 import { useTimeEntry } from "@/hooks/useTimeEntry";
 import { useProjects } from "@/hooks/useProjects";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,35 @@ export function TimeEntryForm() {
     }
   }, [entry, form]);
 
+  // Daily Limit Check
+  const watchedStartTime = form.watch("startTime");
+  const watchedDuration = form.watch("durationMinutes");
+  const [dailyTotal, setDailyTotal] = useState(0);
+  const [showLimitWarning, setShowLimitWarning] = useState(false);
+
+  useEffect(() => {
+    const checkDailyLimit = async () => {
+      if (!watchedStartTime) return;
+      try {
+        const date = new Date(watchedStartTime).toISOString();
+        const response = await timeEntriesApi.getDailyTotal(date);
+        setDailyTotal(response.totalHours);
+      } catch (error) {
+        console.error("Failed to fetch daily total", error);
+      }
+    };
+    checkDailyLimit();
+  }, [watchedStartTime]);
+
+  useEffect(() => {
+    const currentHours = (watchedDuration || 0) / 60;
+    if (dailyTotal + currentHours > 10) {
+      setShowLimitWarning(true);
+    } else {
+      setShowLimitWarning(false);
+    }
+  }, [dailyTotal, watchedDuration]);
+
   const onSubmit = async (data: Partial<TimeEntry>) => {
     try {
       await saveEntry(data);
@@ -98,6 +128,16 @@ export function TimeEntryForm() {
           <CardTitle>Time Entry Details</CardTitle>
         </CardHeader>
         <CardContent>
+          {showLimitWarning && (
+            <div className="mb-4 p-4 border-l-4 border-yellow-500 bg-yellow-50 text-yellow-700">
+              <p className="font-bold">Warning</p>
+              <p>
+                Total hours for this day ({dailyTotal.toFixed(1)} +{" "}
+                {((watchedDuration || 0) / 60).toFixed(1)}) exceed the 10-hour
+                limit.
+              </p>
+            </div>
+          )}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -123,6 +163,36 @@ export function TimeEntryForm() {
                             {project.name}
                           </SelectItem>
                         ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="activityType"
+                rules={{ required: "Activity type is required" }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Activity Type</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select activity type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Installation">Installation</SelectItem>
+                        <SelectItem value="Planning">Planning</SelectItem>
+                        <SelectItem value="Travel">Travel</SelectItem>
+                        <SelectItem value="Consulting">Consulting</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
