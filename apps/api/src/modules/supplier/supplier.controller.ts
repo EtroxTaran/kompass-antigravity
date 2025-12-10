@@ -108,4 +108,31 @@ export class SupplierController {
     }
     return this.supplierService.reinstate(id, user);
   }
+  @Put(':id/approve')
+  @Permissions({ entity: 'Supplier', action: 'UPDATE' })
+  async approve(
+    @Param('id') id: string,
+    @CurrentUser() user: any,
+  ) {
+    if (!user.roles?.includes('GF')) {
+      throw new BadRequestException('Only GF can approve suppliers');
+    }
+    return this.supplierService.approve(id, user);
+  }
+
+  @Put(':id/reject')
+  @Permissions({ entity: 'Supplier', action: 'UPDATE' })
+  async reject(
+    @Param('id') id: string,
+    @Body('reason') reason: string,
+    @CurrentUser() user: any,
+  ) {
+    if (!user.roles?.includes('GF')) {
+      throw new BadRequestException('Only GF can reject suppliers');
+    }
+    if (!reason) {
+      throw new BadRequestException('Reason is required for rejection');
+    }
+    return this.supplierService.reject(id, user, reason);
+  }
 }

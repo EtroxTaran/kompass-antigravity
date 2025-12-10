@@ -80,6 +80,38 @@ export function useSupplier(id?: string) {
     }
   };
 
+  const approveSupplier = async () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const result = await suppliersApi.approve(id);
+      setSupplier(result as unknown as Supplier);
+      return result;
+    } catch (err) {
+      console.error("Error approving supplier", err);
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const rejectSupplier = async (reason: string) => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const result = await suppliersApi.reject(id, reason);
+      setSupplier(result as unknown as Supplier);
+      return result;
+    } catch (err) {
+      console.error("Error rejecting supplier", err);
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     supplier,
     loading,
@@ -87,6 +119,8 @@ export function useSupplier(id?: string) {
     saveSupplier,
     blacklistSupplier,
     reinstateSupplier,
+    approveSupplier,
+    rejectSupplier,
     refetch: fetchSupplier,
   };
 }

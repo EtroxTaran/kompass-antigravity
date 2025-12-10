@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SupplierService } from './supplier.service';
 import { SupplierRepository } from './supplier.repository';
+import { MailService } from '../mail/mail.service';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('SupplierService', () => {
@@ -23,12 +24,18 @@ describe('SupplierService', () => {
         repository = {
             findById: jest.fn(),
             update: jest.fn(),
+            create: jest.fn(),
+        };
+
+        const mailService = {
+            sendMail: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 SupplierService,
                 { provide: SupplierRepository, useValue: repository },
+                { provide: MailService, useValue: mailService },
             ],
         }).compile();
 
@@ -114,6 +121,68 @@ describe('SupplierService', () => {
 
             await expect(service.reinstate('supplier-1', mockUser)).rejects.toThrow(
                 BadRequestException,
+            );
+        });
+    });
+
+    describe('approve', () => {
+        it('should approve a pending supplier', async () => {
+            (repository.findById as jest.Mock).mockResolvedValue({
+                ...mockSupplier,
+                status: 'PendingApproval',
+            });
+            (repository.update as jest.Mock).mockResolvedValue({
+                ...mockSupplier,
+                status: 'Active',
+            });
+
+            await service.approve('supplier-1', mockUser);
+
+            expect(repository.update).toHaveBeenCalledWith(
+                'supplier-1',
+                expect.objectContaining({
+                    status: 'Active',
+                    approvedBy: mockUser.id,
+                }),
+                mockUser.id,
+                mockUser.email,
+            );
+        });
+
+        it('should fail if supplier is not pending approval', async () => {
+            (repository.findById as jest.Mock).mockResolvedValue({
+                ...mockSupplier,
+                status: 'Active',
+            });
+
+            await expect(service.approve('supplier-1', mockUser)).rejects.toThrow(
+                BadRequestException,
+            );
+        });
+    });
+
+    describe('reject', () => {
+        it('should reject a pending supplier with reason', async () => {
+            (repository.findById as jest.Mock).mockResolvedValue({
+                ...mockSupplier,
+                status: 'PendingApproval',
+            });
+            (repository.update as jest.Mock).mockResolvedValue({
+                ...mockSupplier,
+                status: 'Rejected',
+            });
+
+            await service.reject('supplier-1', mockUser, 'Not up to standards');
+
+            expect(repository.update).toHaveBeenCalledWith(
+                'supplier-1',
+                expect.objectContaining({
+                    status: 'Rejected',
+                    rejectedBy: mockUser.id,
+                    rejectionReason: 'Not up to standards',
+                }),
+                mockUser.id,
+                mockUser.email,
             );
         });
     });

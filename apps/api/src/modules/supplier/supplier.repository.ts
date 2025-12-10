@@ -35,7 +35,15 @@ export interface Supplier extends BaseEntity {
   rating?: 'A' | 'B' | 'C';
   category?: string[];
 
-  status?: 'Active' | 'Inactive' | 'Blacklisted';
+  status?: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval' | 'Rejected';
+
+  // Approval Info
+  approvedBy?: string; // userId
+  approvedAt?: string; // ISO date
+  rejectedBy?: string; // userId
+  rejectedAt?: string; // ISO date
+  rejectionReason?: string;
+
   blacklistReason?: string;
   blacklistedBy?: string;
   blacklistedAt?: string;

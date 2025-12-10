@@ -2,9 +2,14 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { SupplierRepository, Supplier } from './supplier.repository';
 import { CreateSupplierDto, UpdateSupplierDto } from './dto/supplier.dto';
 
+import { MailService } from '../mail/mail.service';
+
 @Injectable()
 export class SupplierService {
-  constructor(private readonly supplierRepository: SupplierRepository) { }
+  constructor(
+    private readonly supplierRepository: SupplierRepository,
+    private readonly mailService: MailService,
+  ) { }
 
   async findAll(
     options: {
@@ -44,6 +49,7 @@ export class SupplierService {
   ): Promise<Supplier> {
     const supplierData = {
       ...dto,
+      status: 'PendingApproval',
       category: dto.category || [],
       billingAddress: {
         ...dto.billingAddress,
@@ -135,5 +141,71 @@ export class SupplierService {
       user.id,
       user.email,
     );
+  }
+  async approve(
+    id: string,
+    user: { id: string; email?: string },
+  ): Promise<Supplier> {
+    const supplier = await this.findById(id);
+
+    if (supplier.status !== 'PendingApproval') {
+      throw new BadRequestException('Supplier is not pending approval');
+    }
+
+    const updated = await this.supplierRepository.update(
+      id,
+      {
+        status: 'Active',
+        approvedBy: user.id,
+        approvedAt: new Date().toISOString(),
+      } as Partial<Supplier>,
+      user.id,
+      user.email,
+    );
+
+    // Notify INN (Innovation/Procurement) or maybe the one who created it?
+    // Requirement says "Email notification to INN on approval/rejection"
+    // Assuming hardcoded email for now or environment variable
+    const recipient = process.env.INN_EMAIL || 'inn@kompass.local';
+    await this.mailService.sendMail({
+      to: recipient,
+      subject: `Lieferant genehmigt: ${supplier.companyName}`,
+      text: `Der Lieferant ${supplier.companyName} wurde von ${user.email} genehmigt und ist nun aktiv.`,
+    });
+
+    return updated;
+  }
+
+  async reject(
+    id: string,
+    user: { id: string; email?: string },
+    reason: string,
+  ): Promise<Supplier> {
+    const supplier = await this.findById(id);
+
+    if (supplier.status !== 'PendingApproval') {
+      throw new BadRequestException('Supplier is not pending approval');
+    }
+
+    const updated = await this.supplierRepository.update(
+      id,
+      {
+        status: 'Rejected',
+        rejectedBy: user.id,
+        rejectedAt: new Date().toISOString(),
+        rejectionReason: reason,
+      } as Partial<Supplier>,
+      user.id,
+      user.email,
+    );
+
+    const recipient = process.env.INN_EMAIL || 'inn@kompass.local';
+    await this.mailService.sendMail({
+      to: recipient,
+      subject: `Lieferant abgelehnt: ${supplier.companyName}`,
+      text: `Der Lieferant ${supplier.companyName} wurde von ${user.email} abgelehnt.\nGrund: ${reason}`,
+    });
+
+    return updated;
   }
 }

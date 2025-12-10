@@ -23,7 +23,16 @@ export interface Supplier extends BaseEntity {
   category?: string[]; // e.g., 'wood', 'metal', 'electronics'
 
   // Status & Blacklist
-  status?: 'Active' | 'Inactive' | 'Blacklisted';
+  status?: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval' | 'Rejected';
+
+  // Approval Info
+  approvedBy?: string; // userId
+  approvedAt?: string; // ISO date
+  rejectedBy?: string; // userId
+  rejectedAt?: string; // ISO date
+  rejectionReason?: string;
+
+  // Blacklist Info
   blacklistReason?: string;
   blacklistedBy?: string; // userId
   blacklistedAt?: string; // ISO date

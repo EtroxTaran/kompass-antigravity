@@ -4,6 +4,8 @@ import { PurchaseOrder, PurchaseOrderItem } from '@kompass/shared';
 import { PdfService } from '../pdf/pdf.service';
 import { MailService } from '../mail/mail.service';
 import { SearchService } from '../search/search.service';
+import { SupplierService } from '../supplier/supplier.service';
+import { BadRequestException } from '@nestjs/common';
 
 export class CreatePurchaseOrderDto {
   orderNumber: string;
@@ -35,29 +37,8 @@ export class PurchaseOrderService {
     private readonly pdfService: PdfService,
     private readonly mailService: MailService,
     private readonly searchService: SearchService,
-  ) {}
-
-  async create(
-    createDto: CreatePurchaseOrderDto,
-    userId: string,
-  ): Promise<PurchaseOrder> {
-    const purchaseOrder: PurchaseOrder = {
-      _id: `purchase-order-${Date.now()}`,
-      type: 'purchase-order',
-      createdAt: new Date().toISOString(),
-      modifiedAt: new Date().toISOString(),
-      createdBy: userId,
-      modifiedBy: userId,
-      version: 1,
-      ...createDto,
-    };
-    const newOrder = await this.purchaseOrderRepository.create(
-      purchaseOrder,
-      userId,
-    );
-    this.indexOrder(newOrder);
-    return newOrder;
-  }
+    private readonly supplierService: SupplierService,
+  ) { }
 
   async findAll(
     supplierId?: string,
@@ -80,6 +61,35 @@ export class PurchaseOrderService {
       throw new NotFoundException(`Purchase Order with ID ${id} not found`);
     }
     return order;
+  }
+
+  async create(
+    createDto: CreatePurchaseOrderDto,
+    userId: string,
+  ): Promise<PurchaseOrder> {
+    const supplier = await this.supplierService.findById(createDto.supplierId);
+    if (supplier.status !== 'Active') {
+      throw new BadRequestException(
+        `Cannot create purchase order for supplier with status ${supplier.status}`,
+      );
+    }
+
+    const purchaseOrder: PurchaseOrder = {
+      _id: `purchase-order-${Date.now()}`,
+      type: 'purchase-order',
+      createdAt: new Date().toISOString(),
+      modifiedAt: new Date().toISOString(),
+      createdBy: userId,
+      modifiedBy: userId,
+      version: 1,
+      ...createDto,
+    };
+    const newOrder = await this.purchaseOrderRepository.create(
+      purchaseOrder,
+      userId,
+    );
+    this.indexOrder(newOrder);
+    return newOrder;
   }
 
   async update(

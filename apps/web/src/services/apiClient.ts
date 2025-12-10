@@ -575,6 +575,14 @@ export const suppliersApi = {
   async reinstate(id: string): Promise<unknown> {
     return put(`/suppliers/${id}/reinstate`, {});
   },
+
+  async approve(id: string): Promise<unknown> {
+    return put(`/suppliers/${id}/approve`, {});
+  },
+
+  async reject(id: string, reason: string): Promise<unknown> {
+    return put(`/suppliers/${id}/reject`, { reason });
+  },
 };
 
 // =============================================================================

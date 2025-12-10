@@ -12,7 +12,12 @@ export interface Supplier extends BaseEntity {
     deliveryTerms?: string;
     rating?: "A" | "B" | "C";
     category?: string[];
-    status?: 'Active' | 'Inactive' | 'Blacklisted';
+    status?: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval' | 'Rejected';
+    approvedBy?: string;
+    approvedAt?: string;
+    rejectedBy?: string;
+    rejectedAt?: string;
+    rejectionReason?: string;
     blacklistReason?: string;
     blacklistedBy?: string;
     blacklistedAt?: string;

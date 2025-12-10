@@ -40,10 +40,12 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
   const navigate = useNavigate();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const { hasRole } = useAuth();
-  const { blacklistSupplier, reinstateSupplier } = useSupplier(supplier._id);
+  const { blacklistSupplier, reinstateSupplier, approveSupplier, rejectSupplier } = useSupplier(supplier._id);
   const { createContract } = useSupplierContract();
   const [blacklistReason, setBlacklistReason] = useState("");
+  const [rejectReason, setRejectReason] = useState("");
   const [isBlacklistDialogOpen, setIsBlacklistDialogOpen] = useState(false);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
   const isGF = hasRole("GF");
 
   const handleCreateContract = async (data: Record<string, unknown>) => {
@@ -75,6 +77,25 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
     }
   };
 
+  const handleApprove = async () => {
+    try {
+      await approveSupplier();
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleReject = async () => {
+    if (rejectReason.length < 5) return;
+    try {
+      await rejectSupplier(rejectReason);
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -88,6 +109,70 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
               Inaktiv (Blacklisted)
             </Badge>
           )}
+          {supplier.status === 'PendingApproval' && (
+            <Badge variant="secondary" className="flex gap-1 bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
+              <AlertCircle className="h-3 w-3" />
+              Wartet auf Genehmigung
+            </Badge>
+          )}
+          {supplier.status === 'Rejected' && (
+            <Badge variant="destructive" className="flex gap-1">
+              <Ban className="h-3 w-3" />
+              Abgelehnt
+            </Badge>
+          )}
+
+          {isGF && supplier.status === 'PendingApproval' && (
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="text-green-600 border-green-600 hover:text-green-700 hover:bg-green-50"
+                onClick={handleApprove}
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Genehmigen
+              </Button>
+
+              <AlertDialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">
+                    <Ban className="h-4 w-4 mr-2" />
+                    Ablehnen
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Lieferant ablehnen</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Bitte geben Sie einen Grund für die Ablehnung an.
+                      Der Lieferant wird über die Ablehnung benachrichtigt.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <div className="py-4">
+                    <Textarea
+                      placeholder="Grund für die Ablehnung..."
+                      value={rejectReason}
+                      onChange={(e) => setRejectReason(e.target.value)}
+                      className={rejectReason.length > 0 && rejectReason.length < 5 ? "border-red-500" : ""}
+                    />
+                    {rejectReason.length > 0 && rejectReason.length < 5 && (
+                      <p className="text-xs text-red-500 mt-1">Mindestens 5 Zeichen erforderlich.</p>
+                    )}
+                  </div>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleReject}
+                      disabled={rejectReason.length < 5}
+                      className="bg-destructive hover:bg-destructive/90"
+                    >
+                      Ablehnen
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          )}
 
           {isGF && supplier.status === 'Blacklisted' && (
             <Button
@@ -100,7 +185,7 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
             </Button>
           )}
 
-          {isGF && supplier.status !== 'Blacklisted' && (
+          {isGF && supplier.status !== 'Blacklisted' && supplier.status !== 'Rejected' && supplier.status !== 'PendingApproval' && (
             <AlertDialog open={isBlacklistDialogOpen} onOpenChange={setIsBlacklistDialogOpen}>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive">
@@ -163,6 +248,18 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
                 <p className="mt-1">{supplier.blacklistReason}</p>
                 <p className="text-xs text-red-600 mt-2">
                   Gesperrt von: {supplier.blacklistedBy || 'Unbekannt'} am {supplier.blacklistedAt ? new Date(supplier.blacklistedAt).toLocaleDateString() : 'Unknown'}
+                </p>
+              </div>
+            )}
+            {supplier.status === 'Rejected' && (
+              <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-800">
+                <p className="font-semibold flex items-center gap-1">
+                  <AlertCircle className="h-4 w-4" />
+                  Ablehnungsgrund:
+                </p>
+                <p className="mt-1">{supplier.rejectionReason}</p>
+                <p className="text-xs text-red-600 mt-2">
+                  Abgelehnt von: {supplier.rejectedBy || 'Unbekannt'} am {supplier.rejectedAt ? new Date(supplier.rejectedAt).toLocaleDateString() : 'Unknown'}
                 </p>
               </div>
             )}

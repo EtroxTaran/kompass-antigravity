@@ -2,6 +2,8 @@ import { useSuppliers } from "@/hooks/useSuppliers";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
+import { AlertCircle, Ban } from "lucide-react";
 
 export function SupplierList() {
   const { suppliers, loading } = useSuppliers();
@@ -24,9 +26,29 @@ export function SupplierList() {
             onClick={() => navigate(`/suppliers/${supplier._id}`)}
           >
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">
-                {supplier.companyName}
-              </CardTitle>
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-lg font-medium">
+                  {supplier.companyName}
+                </CardTitle>
+                {supplier.status === 'PendingApproval' && (
+                  <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                    <AlertCircle className="h-3 w-3 mr-1" />
+                    Pending
+                  </Badge>
+                )}
+                {supplier.status === 'Blacklisted' && (
+                  <Badge variant="destructive">
+                    <Ban className="h-3 w-3 mr-1" />
+                    Blacklist
+                  </Badge>
+                )}
+                {supplier.status === 'Rejected' && (
+                  <Badge variant="destructive">
+                    <Ban className="h-3 w-3 mr-1" />
+                    Rejected
+                  </Badge>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground truncate">
