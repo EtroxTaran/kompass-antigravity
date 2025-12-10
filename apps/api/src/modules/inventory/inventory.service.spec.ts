@@ -52,13 +52,17 @@ describe('InventoryService', () => {
             projectId: 'proj-1',
             date: '2025-01-01',
             type: 'project_usage' as const,
+            movementType: 'OUT' as any,
+            unit: 'pc' as any,
+            movementDate: '2025-01-01',
+            reason: 'Project Usage'
         };
 
         it('should record movement and update stock', async () => {
             (materialRepo.findById as jest.Mock).mockResolvedValue({
                 _id: 'mat-1',
                 currentStock: 10,
-                unit: 'pc',
+                unit: 'pc' as any,
                 minimumStock: 2,
             });
             (movementRepo.create as jest.Mock).mockResolvedValue({ _id: 'mov-1', ...dto });
@@ -77,7 +81,7 @@ describe('InventoryService', () => {
             (materialRepo.findById as jest.Mock).mockResolvedValue({
                 _id: 'mat-1',
                 currentStock: 6,
-                unit: 'pc',
+                unit: 'pc' as any,
                 minimumStock: 5,
                 name: 'Test Material',
                 itemNumber: '123'
@@ -103,7 +107,7 @@ describe('InventoryService', () => {
             (materialRepo.findById as jest.Mock).mockResolvedValue({
                 _id: 'mat-1',
                 currentStock: 4, // Already below 5
-                unit: 'pc',
+                unit: 'pc' as any,
                 minimumStock: 5,
             });
             (movementRepo.create as jest.Mock).mockResolvedValue({ _id: 'mov-1', ...dto });

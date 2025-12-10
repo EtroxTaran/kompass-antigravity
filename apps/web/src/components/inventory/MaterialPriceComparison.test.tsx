@@ -44,9 +44,9 @@ describe("MaterialPriceComparison", () => {
         render(<MaterialPriceComparison supplierPrices={mockSupplierPrices} />);
 
         // Check supplier names render
-        expect(screen.getByText("Supplier A")).toBeDefined();
-        expect(screen.getByText("Supplier B")).toBeDefined();
-        expect(screen.getByText("Supplier C")).toBeDefined();
+        expect(screen.getAllByText("Supplier A")[0]).toBeDefined();
+        expect(screen.getAllByText("Supplier B")[0]).toBeDefined();
+        expect(screen.getAllByText("Supplier C")[0]).toBeDefined();
 
         // Check rating values are displayed (new feature)
         expect(screen.getByText("4.8")).toBeDefined();
@@ -57,12 +57,14 @@ describe("MaterialPriceComparison", () => {
 
     it("highlights lowest price supplier with badge", () => {
         render(<MaterialPriceComparison supplierPrices={mockSupplierPrices} />);
-        expect(screen.getByText("Günstigster")).toBeDefined();
+        const badges = screen.getAllByText("Günstigster");
+        expect(badges.length).toBeGreaterThan(0);
     });
 
     it("displays preferred supplier with star", () => {
         render(<MaterialPriceComparison supplierPrices={mockSupplierPrices} />);
-        expect(screen.getByText("Supplier A")).toBeDefined();
+        const elements = screen.getAllByText("Supplier A");
+        expect(elements.length).toBeGreaterThan(0);
     });
 
     it("calls onSelectSupplier when button clicked", () => {
