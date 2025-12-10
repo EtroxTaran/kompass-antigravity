@@ -19,7 +19,7 @@ export class SupplierService {
     private readonly supplierRepository: SupplierRepository,
     private readonly mailService: MailService,
     private readonly searchService: SearchService,
-  ) { }
+  ) {}
 
   async findAll(
     options: {

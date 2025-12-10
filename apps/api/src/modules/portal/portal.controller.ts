@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Get, UseGuards, Request, Param, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Request,
+  Param,
+  NotFoundException,
+} from '@nestjs/common';
 import { MagicLinkService } from './magic-link.service';
 import { ProjectService } from '../project/project.service';
 import { PortalAuthGuard } from './guards/portal-auth.guard';
@@ -14,48 +23,48 @@ import { PortalAuthGuard } from './guards/portal-auth.guard';
 
 @Controller('portal')
 export class PortalController {
-    constructor(
-        private readonly magicLinkService: MagicLinkService,
-        private readonly projectService: ProjectService
-    ) { }
+  constructor(
+    private readonly magicLinkService: MagicLinkService,
+    private readonly projectService: ProjectService,
+  ) {}
 
-    @Post('auth/request-link')
-    async requestLink(@Body('email') email: string) {
-        await this.magicLinkService.requestLink(email);
-        return { message: 'If the email exists, a link has been sent.' };
+  @Post('auth/request-link')
+  async requestLink(@Body('email') email: string) {
+    await this.magicLinkService.requestLink(email);
+    return { message: 'If the email exists, a link has been sent.' };
+  }
+
+  @Post('auth/verify')
+  async verify(@Body('token') token: string) {
+    return this.magicLinkService.verifyToken(token);
+  }
+
+  // Retrieve projects for the authenticated customer
+  // We need to decode the token header to get customerId
+  // For MVP, passing token in Authorization header.
+  // We can write a quick decorator or just parse it.
+
+  @UseGuards(PortalAuthGuard)
+  @Get('projects')
+  async getProjects(@Request() req: any) {
+    const customerId = req.user.customerId;
+    // Assuming ProjectService.findAll supports filtering by customerId, or we add findByCustomer
+    // Looking at ProjectService usually it has findAll(options).
+    // If not, we will need to update ProjectService.
+    return this.projectService.findAll({ customerId });
+  }
+
+  @UseGuards(PortalAuthGuard)
+  @Get('projects/:id')
+  async getProject(@Request() req: any, @Param('id') id: string) {
+    const customerId = req.user.customerId;
+    const project = await this.projectService.findById(id);
+
+    // Security check: ensure project belongs to customer
+    if (project.customerId !== customerId) {
+      throw new NotFoundException('Project not found'); // Do not reveal existence
     }
 
-    @Post('auth/verify')
-    async verify(@Body('token') token: string) {
-        return this.magicLinkService.verifyToken(token);
-    }
-
-    // Retrieve projects for the authenticated customer
-    // We need to decode the token header to get customerId
-    // For MVP, passing token in Authorization header.
-    // We can write a quick decorator or just parse it.
-
-    @UseGuards(PortalAuthGuard)
-    @Get('projects')
-    async getProjects(@Request() req: any) {
-        const customerId = req.user.customerId;
-        // Assuming ProjectService.findAll supports filtering by customerId, or we add findByCustomer
-        // Looking at ProjectService usually it has findAll(options).
-        // If not, we will need to update ProjectService.
-        return this.projectService.findAll({ customerId });
-    }
-
-    @UseGuards(PortalAuthGuard)
-    @Get('projects/:id')
-    async getProject(@Request() req: any, @Param('id') id: string) {
-        const customerId = req.user.customerId;
-        const project = await this.projectService.findById(id);
-
-        // Security check: ensure project belongs to customer
-        if (project.customerId !== customerId) {
-            throw new NotFoundException('Project not found'); // Do not reveal existence
-        }
-
-        return project;
-    }
+    return project;
+  }
 }

@@ -24,7 +24,13 @@ export interface SearchHit {
 
 const INDEX_CONFIGS = {
   customers: {
-    searchableAttributes: ['companyName', 'billingAddress.city', 'billingAddress.street', 'vatNumber', 'notes'],
+    searchableAttributes: [
+      'companyName',
+      'billingAddress.city',
+      'billingAddress.street',
+      'vatNumber',
+      'notes',
+    ],
     displayedAttributes: ['_id', 'companyName', 'billingAddress'],
   },
   projects: {
@@ -36,7 +42,12 @@ const INDEX_CONFIGS = {
     displayedAttributes: ['_id', 'title', 'stage', 'expectedValue'],
   },
   suppliers: {
-    searchableAttributes: ['companyName', 'billingAddress.city', 'contactEmail', 'notes'],
+    searchableAttributes: [
+      'companyName',
+      'billingAddress.city',
+      'contactEmail',
+      'notes',
+    ],
     displayedAttributes: ['_id', 'companyName', 'billingAddress'],
   },
   materials: {
@@ -60,7 +71,9 @@ export class SearchService {
   async testConnection() {
     try {
       const version = await this.client.getVersion();
-      this.logger.log(`Connected to MeiliSearch version: ${version.pkgVersion}`);
+      this.logger.log(
+        `Connected to MeiliSearch version: ${version.pkgVersion}`,
+      );
       // Initialize indexes
       await this.initializeIndexes();
     } catch (error) {
@@ -89,7 +102,9 @@ export class SearchService {
 
   async indexDocument(indexUid: string, document: any) {
     try {
-      const task = await this.client.index(indexUid).addDocuments([document], { primaryKey: '_id' });
+      const task = await this.client
+        .index(indexUid)
+        .addDocuments([document], { primaryKey: '_id' });
       return task;
     } catch (e) {
       this.logger.error(`Error indexing document to ${indexUid}`, e);
@@ -109,7 +124,9 @@ export class SearchService {
 
   async addDocuments(indexUid: string, documents: any[]) {
     try {
-      const task = await this.client.index(indexUid).addDocuments(documents, { primaryKey: '_id' });
+      const task = await this.client
+        .index(indexUid)
+        .addDocuments(documents, { primaryKey: '_id' });
       return task;
     } catch (e) {
       this.logger.error(`Error adding documents to ${indexUid}`, e);

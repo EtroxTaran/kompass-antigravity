@@ -10,6 +10,7 @@ export enum ExportFormat {
   CSV = 'csv',
   EXCEL = 'excel',
   JSON = 'json',
+  LEXWARE = 'lexware',
 }
 
 export class ExportOptionsDto {

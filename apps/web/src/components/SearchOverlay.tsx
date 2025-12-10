@@ -71,18 +71,24 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
   // Highlight matching text
   const highlightMatch = (text: string, query: string): React.ReactNode => {
     if (!query || query.length < 2) return text;
-    
-    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+
+    const regex = new RegExp(
+      `(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+      "gi",
+    );
     const parts = text.split(regex);
-    
-    return parts.map((part, i) => 
+
+    return parts.map((part, i) =>
       regex.test(part) ? (
-        <mark key={i} className="bg-yellow-200 dark:bg-yellow-800 rounded px-0.5">
+        <mark
+          key={i}
+          className="bg-yellow-200 dark:bg-yellow-800 rounded px-0.5"
+        >
           {part}
         </mark>
       ) : (
         part
-      )
+      ),
     );
   };
 
@@ -111,9 +117,7 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
         )}
 
         {error && (
-          <div className="p-4 text-center text-sm text-red-500">
-            {error}
-          </div>
+          <div className="p-4 text-center text-sm text-red-500">{error}</div>
         )}
 
         {!loading && searchTerm.length >= 2 && results.length === 0 && (
@@ -140,7 +144,9 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
                       >
                         {getIcon(result.type)}
                         <div className="flex flex-col">
-                          <span>{highlightMatch(result.title, searchTerm)}</span>
+                          <span>
+                            {highlightMatch(result.title, searchTerm)}
+                          </span>
                           {result.subtitle && (
                             <span className="text-xs text-muted-foreground">
                               {highlightMatch(result.subtitle, searchTerm)}

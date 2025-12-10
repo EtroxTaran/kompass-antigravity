@@ -30,26 +30,32 @@ export function SupplierList() {
                 <CardTitle className="text-lg font-medium">
                   {supplier.companyName}
                 </CardTitle>
-                {supplier.status === 'PendingApproval' && (
-                  <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                {supplier.status === "PendingApproval" && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-yellow-100 text-yellow-800"
+                  >
                     <AlertCircle className="h-3 w-3 mr-1" />
                     Pending
                   </Badge>
                 )}
-                {supplier.status === 'Blacklisted' && (
+                {supplier.status === "Blacklisted" && (
                   <Badge variant="destructive">
                     <Ban className="h-3 w-3 mr-1" />
                     Blacklist
                   </Badge>
                 )}
-                {supplier.status === 'Rejected' && (
+                {supplier.status === "Rejected" && (
                   <Badge variant="destructive">
                     <Ban className="h-3 w-3 mr-1" />
                     Rejected
                   </Badge>
                 )}
                 {supplier.rating && (
-                  <Badge variant="outline" className="ml-auto flex gap-1 items-center border-yellow-400/50 bg-yellow-50/50 text-yellow-700">
+                  <Badge
+                    variant="outline"
+                    className="ml-auto flex gap-1 items-center border-yellow-400/50 bg-yellow-50/50 text-yellow-700"
+                  >
                     <Star className="h-3 w-3 fill-current text-yellow-400" />
                     {supplier.rating.overall}
                   </Badge>

@@ -211,7 +211,7 @@ function KanbanColumn({
       <div
         className={cn(
           "flex items-center justify-between p-2 rounded-md mb-3 border",
-          config.bgColor
+          config.bgColor,
         )}
       >
         <div className="flex items-center gap-2 font-medium text-sm">
@@ -257,7 +257,7 @@ interface AddTaskDialogProps {
       | "modifiedAt"
       | "modifiedBy"
       | "version"
-    >
+    >,
   ) => Promise<void>;
 }
 
@@ -398,7 +398,7 @@ export function ProjectTaskKanban({ projectId }: ProjectTaskKanbanProps) {
 
   const handleMoveTask = async (
     task: ProjectTask,
-    newStatus: ProjectTaskStatus
+    newStatus: ProjectTaskStatus,
   ) => {
     // For blocked status, we would need a dialog for reason
     // For now, just update the status

@@ -8,7 +8,7 @@ export class ProjectService {
   constructor(
     private readonly projectRepository: ProjectRepository,
     private readonly searchService: SearchService,
-  ) { }
+  ) {}
 
   async findAll(
     options: {

@@ -1,7 +1,15 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useOffer } from "@/hooks/useOffers";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Edit, FileText, Calendar, User, Download, Mail } from "lucide-react";
+import {
+  ArrowLeft,
+  Edit,
+  FileText,
+  Calendar,
+  User,
+  Download,
+  Mail,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -26,7 +34,9 @@ interface OfferItem {
 
 function OfferItems({ items }: { items: OfferItem[] }) {
   if (!items || items.length === 0) {
-    return <p className="text-muted-foreground py-4">No items in this offer.</p>;
+    return (
+      <p className="text-muted-foreground py-4">No items in this offer.</p>
+    );
   }
   return (
     <Card>
@@ -97,9 +107,9 @@ export function OfferDetail() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate("/offers")} // Changed to /offers to match previous expected path if /sales/offers was wrong? 
-          // Previous code had /sales/offers in one place and /offers in another. Assuming /offers or /sales/offers depending on routes.
-          // Let's stick navigate(-1) or just /offers.
+            onClick={() => navigate("/offers")} // Changed to /offers to match previous expected path if /sales/offers was wrong?
+            // Previous code had /sales/offers in one place and /offers in another. Assuming /offers or /sales/offers depending on routes.
+            // Let's stick navigate(-1) or just /offers.
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -154,17 +164,23 @@ export function OfferDetail() {
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{offer.projectId || "-"}</div>
+                <div className="text-2xl font-bold">
+                  {offer.projectId || "-"}
+                </div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Valid Until</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Valid Until
+                </CardTitle>
                 <Calendar className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {offer.validUntil ? format(new Date(offer.validUntil), "dd.MM.yyyy") : "-"}
+                  {offer.validUntil
+                    ? format(new Date(offer.validUntil), "dd.MM.yyyy")
+                    : "-"}
                 </div>
               </CardContent>
             </Card>
@@ -211,25 +227,51 @@ export function OfferDetail() {
               <CardContent className="pt-6 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal:</span>
-                  <span>{new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(subtotal)}</span>
+                  <span>
+                    {new Intl.NumberFormat("de-DE", {
+                      style: "currency",
+                      currency: "EUR",
+                    }).format(subtotal)}
+                  </span>
                 </div>
                 {offer.discountPercent && (
                   <div className="flex justify-between text-sm text-muted-foreground">
                     <span>Discount ({offer.discountPercent}%):</span>
-                    <span>- {new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(discountAmount)}</span>
+                    <span>
+                      -{" "}
+                      {new Intl.NumberFormat("de-DE", {
+                        style: "currency",
+                        currency: "EUR",
+                      }).format(discountAmount)}
+                    </span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm font-medium">
                   <span>Net:</span>
-                  <span>{new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(netTotal)}</span>
+                  <span>
+                    {new Intl.NumberFormat("de-DE", {
+                      style: "currency",
+                      currency: "EUR",
+                    }).format(netTotal)}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>VAT ({(offer.taxRate || 0.19) * 100}%):</span>
-                  <span>{new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(taxAmount)}</span>
+                  <span>
+                    {new Intl.NumberFormat("de-DE", {
+                      style: "currency",
+                      currency: "EUR",
+                    }).format(taxAmount)}
+                  </span>
                 </div>
                 <div className="flex justify-between text-lg font-bold border-t pt-2 mt-2">
                   <span>Total:</span>
-                  <span>{new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(grossTotal)}</span>
+                  <span>
+                    {new Intl.NumberFormat("de-DE", {
+                      style: "currency",
+                      currency: "EUR",
+                    }).format(grossTotal)}
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -242,14 +284,13 @@ export function OfferDetail() {
             entityId={offer._id}
             comments={offer.comments || []}
             onCommentAdded={() => {
-              queryClient.invalidateQueries({ queryKey: ['offers', id] });
+              queryClient.invalidateQueries({ queryKey: ["offers", id] });
             }}
             onCommentResolved={() => {
-              queryClient.invalidateQueries({ queryKey: ['offers', id] });
+              queryClient.invalidateQueries({ queryKey: ["offers", id] });
             }}
           />
         </TabsContent>
-
       </Tabs>
     </div>
   );

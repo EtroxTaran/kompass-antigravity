@@ -25,17 +25,20 @@ enum UserRole {
   PLAN = 'PLAN',
   INN = 'INN',
   GF = 'GF',
-  BUCH = 'BUCH'
+  BUCH = 'BUCH',
 }
 
 @Controller('expenses')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class ExpenseController {
-  constructor(private readonly expenseService: ExpenseService) { }
+  constructor(private readonly expenseService: ExpenseService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createExpenseDto: CreateExpenseDto, @CurrentUser() user: any) {
+  async create(
+    @Body() createExpenseDto: CreateExpenseDto,
+    @CurrentUser() user: any,
+  ) {
     return this.expenseService.create(createExpenseDto, user.id);
   }
 
@@ -73,7 +76,11 @@ export class ExpenseController {
   }
 
   @Put(':id/reject')
-  async reject(@Param('id') id: string, @Body('reason') reason: string, @CurrentUser() user: any) {
+  async reject(
+    @Param('id') id: string,
+    @Body('reason') reason: string,
+    @CurrentUser() user: any,
+  ) {
     return this.expenseService.reject(id, reason, user.id);
   }
 

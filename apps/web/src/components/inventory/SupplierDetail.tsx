@@ -35,7 +35,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-
 interface SupplierDetailProps {
   supplier: Supplier;
 }
@@ -44,7 +43,12 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
   const navigate = useNavigate();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const { hasRole } = useAuth();
-  const { blacklistSupplier, reinstateSupplier, approveSupplier, rejectSupplier } = useSupplier(supplier._id);
+  const {
+    blacklistSupplier,
+    reinstateSupplier,
+    approveSupplier,
+    rejectSupplier,
+  } = useSupplier(supplier._id);
   const { createContract } = useSupplierContract();
   const [blacklistReason, setBlacklistReason] = useState("");
   const [rejectReason, setRejectReason] = useState("");
@@ -111,26 +115,29 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
           <ActiveUserAvatars entityType="supplier" entityId={supplier._id} />
         </div>
         <div className="flex gap-2 items-center">
-          {supplier.status === 'Blacklisted' && (
+          {supplier.status === "Blacklisted" && (
             <Badge variant="destructive" className="flex gap-1">
               <Ban className="h-3 w-3" />
               Inaktiv (Blacklisted)
             </Badge>
           )}
-          {supplier.status === 'PendingApproval' && (
-            <Badge variant="secondary" className="flex gap-1 bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
+          {supplier.status === "PendingApproval" && (
+            <Badge
+              variant="secondary"
+              className="flex gap-1 bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+            >
               <AlertCircle className="h-3 w-3" />
               Wartet auf Genehmigung
             </Badge>
           )}
-          {supplier.status === 'Rejected' && (
+          {supplier.status === "Rejected" && (
             <Badge variant="destructive" className="flex gap-1">
               <Ban className="h-3 w-3" />
               Abgelehnt
             </Badge>
           )}
 
-          {isGF && supplier.status === 'PendingApproval' && (
+          {isGF && supplier.status === "PendingApproval" && (
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -141,7 +148,10 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
                 Genehmigen
               </Button>
 
-              <AlertDialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
+              <AlertDialog
+                open={isRejectDialogOpen}
+                onOpenChange={setIsRejectDialogOpen}
+              >
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive">
                     <Ban className="h-4 w-4 mr-2" />
@@ -152,8 +162,8 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Lieferant ablehnen</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Bitte geben Sie einen Grund für die Ablehnung an.
-                      Der Lieferant wird über die Ablehnung benachrichtigt.
+                      Bitte geben Sie einen Grund für die Ablehnung an. Der
+                      Lieferant wird über die Ablehnung benachrichtigt.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <div className="py-4">
@@ -161,10 +171,16 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
                       placeholder="Grund für die Ablehnung..."
                       value={rejectReason}
                       onChange={(e) => setRejectReason(e.target.value)}
-                      className={rejectReason.length > 0 && rejectReason.length < 5 ? "border-red-500" : ""}
+                      className={
+                        rejectReason.length > 0 && rejectReason.length < 5
+                          ? "border-red-500"
+                          : ""
+                      }
                     />
                     {rejectReason.length > 0 && rejectReason.length < 5 && (
-                      <p className="text-xs text-red-500 mt-1">Mindestens 5 Zeichen erforderlich.</p>
+                      <p className="text-xs text-red-500 mt-1">
+                        Mindestens 5 Zeichen erforderlich.
+                      </p>
                     )}
                   </div>
                   <AlertDialogFooter>
@@ -182,7 +198,7 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
             </div>
           )}
 
-          {isGF && supplier.status === 'Blacklisted' && (
+          {isGF && supplier.status === "Blacklisted" && (
             <Button
               variant="outline"
               className="text-green-600 border-green-600 hover:text-green-700 hover:bg-green-50"
@@ -193,46 +209,62 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
             </Button>
           )}
 
-          {isGF && supplier.status !== 'Blacklisted' && supplier.status !== 'Rejected' && supplier.status !== 'PendingApproval' && (
-            <AlertDialog open={isBlacklistDialogOpen} onOpenChange={setIsBlacklistDialogOpen}>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive">
-                  <Ban className="h-4 w-4 mr-2" />
-                  Blacklist
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Lieferant sperren (Blacklist)</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Der Lieferant wird für alle neuen Projekte gesperrt.
-                    Bitte geben Sie einen Grund an (min. 20 Zeichen).
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <div className="py-4">
-                  <Textarea
-                    placeholder="Grund für die Sperrung..."
-                    value={blacklistReason}
-                    onChange={(e) => setBlacklistReason(e.target.value)}
-                    className={blacklistReason.length > 0 && blacklistReason.length < 20 ? "border-red-500" : ""}
-                  />
-                  {blacklistReason.length > 0 && blacklistReason.length < 20 && (
-                    <p className="text-xs text-red-500 mt-1">Mindestens 20 Zeichen erforderlich.</p>
-                  )}
-                </div>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleBlacklist}
-                    disabled={blacklistReason.length < 20}
-                    className="bg-destructive hover:bg-destructive/90"
-                  >
-                    Sperren
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
+          {isGF &&
+            supplier.status !== "Blacklisted" &&
+            supplier.status !== "Rejected" &&
+            supplier.status !== "PendingApproval" && (
+              <AlertDialog
+                open={isBlacklistDialogOpen}
+                onOpenChange={setIsBlacklistDialogOpen}
+              >
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">
+                    <Ban className="h-4 w-4 mr-2" />
+                    Blacklist
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Lieferant sperren (Blacklist)
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Der Lieferant wird für alle neuen Projekte gesperrt. Bitte
+                      geben Sie einen Grund an (min. 20 Zeichen).
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <div className="py-4">
+                    <Textarea
+                      placeholder="Grund für die Sperrung..."
+                      value={blacklistReason}
+                      onChange={(e) => setBlacklistReason(e.target.value)}
+                      className={
+                        blacklistReason.length > 0 &&
+                        blacklistReason.length < 20
+                          ? "border-red-500"
+                          : ""
+                      }
+                    />
+                    {blacklistReason.length > 0 &&
+                      blacklistReason.length < 20 && (
+                        <p className="text-xs text-red-500 mt-1">
+                          Mindestens 20 Zeichen erforderlich.
+                        </p>
+                      )}
+                  </div>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleBlacklist}
+                      disabled={blacklistReason.length < 20}
+                      className="bg-destructive hover:bg-destructive/90"
+                    >
+                      Sperren
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
 
           <Button
             variant="outline"
@@ -247,7 +279,7 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
         <Card>
           <CardHeader>
             <CardTitle>Kontaktinformationen</CardTitle>
-            {supplier.status === 'Blacklisted' && (
+            {supplier.status === "Blacklisted" && (
               <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-800">
                 <p className="font-semibold flex items-center gap-1">
                   <AlertCircle className="h-4 w-4" />
@@ -255,11 +287,14 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
                 </p>
                 <p className="mt-1">{supplier.blacklistReason}</p>
                 <p className="text-xs text-red-600 mt-2">
-                  Gesperrt von: {supplier.blacklistedBy || 'Unbekannt'} am {supplier.blacklistedAt ? new Date(supplier.blacklistedAt).toLocaleDateString() : 'Unknown'}
+                  Gesperrt von: {supplier.blacklistedBy || "Unbekannt"} am{" "}
+                  {supplier.blacklistedAt
+                    ? new Date(supplier.blacklistedAt).toLocaleDateString()
+                    : "Unknown"}
                 </p>
               </div>
             )}
-            {supplier.status === 'Rejected' && (
+            {supplier.status === "Rejected" && (
               <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-800">
                 <p className="font-semibold flex items-center gap-1">
                   <AlertCircle className="h-4 w-4" />
@@ -267,7 +302,10 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
                 </p>
                 <p className="mt-1">{supplier.rejectionReason}</p>
                 <p className="text-xs text-red-600 mt-2">
-                  Abgelehnt von: {supplier.rejectedBy || 'Unbekannt'} am {supplier.rejectedAt ? new Date(supplier.rejectedAt).toLocaleDateString() : 'Unknown'}
+                  Abgelehnt von: {supplier.rejectedBy || "Unbekannt"} am{" "}
+                  {supplier.rejectedAt
+                    ? new Date(supplier.rejectedAt).toLocaleDateString()
+                    : "Unknown"}
                 </p>
               </div>
             )}
@@ -315,7 +353,11 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
           <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle>Leistungsbewertung</CardTitle>
-              <Button variant="outline" size="sm" onClick={() => setIsRatingDialogOpen(true)}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsRatingDialogOpen(true)}
+              >
                 <Star className="h-4 w-4 mr-2" />
                 Bewerten
               </Button>
@@ -328,7 +370,9 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
                   <span className="font-semibold">Gesamtbewertung</span>
                   <div className="flex items-center gap-2">
                     <StarRating rating={supplier.rating.overall} readOnly />
-                    <span className="text-xl font-bold">{supplier.rating.overall}</span>
+                    <span className="text-xl font-bold">
+                      {supplier.rating.overall}
+                    </span>
                   </div>
                 </div>
 
@@ -338,7 +382,9 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
                     <span>{supplier.rating.quality}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Zuverlässigkeit</span>
+                    <span className="text-muted-foreground">
+                      Zuverlässigkeit
+                    </span>
                     <span>{supplier.rating.reliability}</span>
                   </div>
                   <div className="flex justify-between">
@@ -346,7 +392,9 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
                     <span>{supplier.rating.communication}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Preis/Leistung</span>
+                    <span className="text-muted-foreground">
+                      Preis/Leistung
+                    </span>
                     <span>{supplier.rating.priceValue}</span>
                   </div>
                 </div>
@@ -373,7 +421,6 @@ export function SupplierDetail({ supplier }: SupplierDetailProps) {
         </Card>
 
         <SupplierRatingHistory history={supplier.ratingsHistory} />
-
       </div>
 
       {/* Contracts Section */}

@@ -27,13 +27,13 @@ export interface Offer extends BaseEntity {
   offerDate: string;
   validUntil: string;
   status:
-  | "draft"
-  | "sent"
-  | "viewed"
-  | "accepted"
-  | "rejected"
-  | "expired"
-  | "superseded";
+    | "draft"
+    | "sent"
+    | "viewed"
+    | "accepted"
+    | "rejected"
+    | "expired"
+    | "superseded";
   lineItems: OfferLineItem[];
   discountPercent?: number;
   taxRate?: number;

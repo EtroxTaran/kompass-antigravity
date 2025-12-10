@@ -23,7 +23,7 @@ export class CommentService {
     private readonly taskRepository: ProjectTaskRepository,
     private readonly opportunityRepository: OpportunityRepository,
     private readonly presenceGateway: PresenceGateway,
-  ) { }
+  ) {}
 
   private getRepository(entityType: string): any {
     switch (entityType) {

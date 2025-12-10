@@ -66,7 +66,9 @@ export function clearAuthToken() {
 /**
  * Build headers for API requests
  */
-function buildHeaders(contentType: string | null = "application/json"): Headers {
+function buildHeaders(
+  contentType: string | null = "application/json",
+): Headers {
   const headers = new Headers();
   if (contentType) {
     headers.set("Content-Type", contentType);
@@ -484,7 +486,10 @@ export const contractsApi = {
   },
 
   async createFromOffer(offerId: string, data: unknown): Promise<unknown> {
-    return post("/contracts/from-offer", { offerId, ...(data as Record<string, unknown>) });
+    return post("/contracts/from-offer", {
+      offerId,
+      ...(data as Record<string, unknown>),
+    });
   },
 
   async update(id: string, data: unknown): Promise<unknown> {
@@ -645,6 +650,21 @@ export const invoicesApi = {
   async delete(id: string): Promise<void> {
     return del(`/invoices/${id}`);
   },
+
+  async exportLexware(): Promise<Blob> {
+    const headers = buildHeaders();
+    const response = await fetch(
+      `${API_BASE_URL}/invoices/export?format=lexware`,
+      {
+        method: "GET",
+        headers,
+      },
+    );
+    if (!response.ok) {
+      throw new Error("Export failed");
+    }
+    return response.blob();
+  },
 };
 
 // =============================================================================
@@ -708,16 +728,20 @@ export const projectMaterialsApi = {
     get<ProjectMaterialRequirement[]>(`/projects/${projectId}/materials`),
   create: (projectId: string, data: Partial<ProjectMaterialRequirement>) =>
     post<ProjectMaterialRequirement>(`/projects/${projectId}/materials`, data),
-  update: (projectId: string, id: string, data: Partial<ProjectMaterialRequirement>) =>
-    patch<ProjectMaterialRequirement>(`/projects/${projectId}/materials/${id}`, data),
+  update: (
+    projectId: string,
+    id: string,
+    data: Partial<ProjectMaterialRequirement>,
+  ) =>
+    patch<ProjectMaterialRequirement>(
+      `/projects/${projectId}/materials/${id}`,
+      data,
+    ),
   delete: (projectId: string, id: string) =>
     del<void>(`/projects/${projectId}/materials/${id}`),
 };
 
-import {
-  ProjectMaterialRequirement,
-  Project,
-} from "@kompass/shared";
+import { ProjectMaterialRequirement, Project } from "@kompass/shared";
 
 export const timeEntriesApi = {
   async list(params?: {
@@ -839,15 +863,23 @@ export const toursApi = {
 // =============================================================================
 
 export const commentsApi = {
-  async add(entityType: string, entityId: string, content: string, contextId?: string): Promise<Comment> {
+  async add(
+    entityType: string,
+    entityId: string,
+    content: string,
+    contextId?: string,
+  ): Promise<Comment> {
     return post(`/comments/${entityType}/${entityId}`, { content, contextId });
   },
 
-  async resolve(entityType: string, entityId: string, commentId: string): Promise<Comment> {
+  async resolve(
+    entityType: string,
+    entityId: string,
+    commentId: string,
+  ): Promise<Comment> {
     return put(`/comments/${entityType}/${entityId}/${commentId}/resolve`, {});
-  }
+  },
 };
-
 
 // =============================================================================
 // Inventory API
@@ -856,7 +888,9 @@ export const commentsApi = {
 import { CreateInventoryMovementDto, InventoryMovement } from "@kompass/shared";
 
 export const inventoryApi = {
-  async recordMovement(data: CreateInventoryMovementDto): Promise<InventoryMovement> {
+  async recordMovement(
+    data: CreateInventoryMovementDto,
+  ): Promise<InventoryMovement> {
     return post("/inventory/movements", data);
   },
 
@@ -880,7 +914,10 @@ export const rfqApi = {
     // The previous hook implementation expected array.
     // Let's wrap it to match other APIs if needed, but hook calls it directly.
     // Let's simply return the array for now as my backend service returns array.
-    return { data: (data as unknown) as RequestForQuote[], total: data?.length || 0 };
+    return {
+      data: data as unknown as RequestForQuote[],
+      total: data?.length || 0,
+    };
   },
 
   // Actually, let's look at useRfq.ts again. It calls apiClient.get<RequestForQuote[]>
@@ -902,16 +939,24 @@ export const rfqApi = {
     return put(`/rfqs/${id}/send`, {});
   },
 
-  async recordQuote(id: string, data: RecordQuoteDto): Promise<RequestForQuote> {
+  async recordQuote(
+    id: string,
+    data: RecordQuoteDto,
+  ): Promise<RequestForQuote> {
     return post(`/rfqs/${id}/quotes`, data);
   },
 
   async awardQuote(id: string, quoteId: string): Promise<RequestForQuote> {
     return put(`/rfqs/${id}/award/${quoteId}`, {});
-  }
+  },
 };
 
-import { RequestForQuote, CreateRfqDto, RecordQuoteDto, RateSupplierDto } from "@kompass/shared";
+import {
+  RequestForQuote,
+  CreateRfqDto,
+  RecordQuoteDto,
+  RateSupplierDto,
+} from "@kompass/shared";
 
 // Mileage API
 // =============================================================================
@@ -1090,7 +1135,10 @@ import {
 } from "@kompass/shared";
 
 export const projectSubcontractorApi = {
-  async assign(projectId: string, data: AssignSubcontractorDto): Promise<ProjectSubcontractor> {
+  async assign(
+    projectId: string,
+    data: AssignSubcontractorDto,
+  ): Promise<ProjectSubcontractor> {
     return post(`/projects/${projectId}/subcontractors`, data);
   },
 
@@ -1098,11 +1146,19 @@ export const projectSubcontractorApi = {
     return get(`/projects/${projectId}/subcontractors`);
   },
 
-  async update(projectId: string, id: string, data: UpdateAssignmentDto): Promise<ProjectSubcontractor> {
+  async update(
+    projectId: string,
+    id: string,
+    data: UpdateAssignmentDto,
+  ): Promise<ProjectSubcontractor> {
     return put(`/projects/${projectId}/subcontractors/${id}`, data);
   },
 
-  async rate(projectId: string, id: string, data: RateSubcontractorDto): Promise<ProjectSubcontractor> {
+  async rate(
+    projectId: string,
+    id: string,
+    data: RateSubcontractorDto,
+  ): Promise<ProjectSubcontractor> {
     return put(`/projects/${projectId}/subcontractors/${id}/rate`, data);
   },
 };
@@ -1131,7 +1187,10 @@ export interface GlobalSearchResult {
 
 export const searchApi = {
   async globalSearch(query: string, limit = 10): Promise<GlobalSearchResult> {
-    return get<GlobalSearchResult>('/search', { q: query, limit: String(limit) });
+    return get<GlobalSearchResult>("/search", {
+      q: query,
+      limit: String(limit),
+    });
   },
 };
 
@@ -1159,9 +1218,13 @@ export const apiClient = {
   comments: commentsApi,
   search: searchApi,
   portal: {
-    requestLink: (email: string) => post('/portal/auth/request-link', { email }),
-    verifyToken: (token: string) => post<{ accessToken: string; user: any }>('/portal/auth/verify', { token }),
-    getProjects: () => get<Project[]>('/portal/projects'),
+    requestLink: (email: string) =>
+      post("/portal/auth/request-link", { email }),
+    verifyToken: (token: string) =>
+      post<{ accessToken: string; user: any }>("/portal/auth/verify", {
+        token,
+      }),
+    getProjects: () => get<Project[]>("/portal/projects"),
     getProject: (id: string) => get<Project>(`/portal/projects/${id}`),
   },
   projectSubcontractor: projectSubcontractorApi,
@@ -1171,4 +1234,3 @@ export const portalApi = apiClient.portal;
 
 // Export error class for use in components
 export { ApiError };
-

@@ -33,15 +33,15 @@ interface MenuItem {
 
 interface SidebarProps {
   userRole?:
-  | "GF"
-  | "ADM"
-  | "PLAN"
-  | "KALK"
-  | "BUCH"
-  | "CRM"
-  | "PM"
-  | "SALES"
-  | "LAGER";
+    | "GF"
+    | "ADM"
+    | "PLAN"
+    | "KALK"
+    | "BUCH"
+    | "CRM"
+    | "PM"
+    | "SALES"
+    | "LAGER";
   isOffline?: boolean;
   pendingChanges?: number;
   className?: string;
@@ -242,11 +242,11 @@ export function Sidebar({
                   className={cn(
                     "w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-sm font-medium",
                     isActive &&
-                    !hasSubmenu &&
-                    "bg-sidebar-primary text-sidebar-primary-foreground", // Highlight if leaf node matched
+                      !hasSubmenu &&
+                      "bg-sidebar-primary text-sidebar-primary-foreground", // Highlight if leaf node matched
                     !isActive &&
-                    !item.disabled &&
-                    "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                      !item.disabled &&
+                      "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                     item.disabled && "opacity-50 cursor-not-allowed",
                   )}
                 >
@@ -280,7 +280,7 @@ export function Sidebar({
                           className={cn(
                             "w-full text-left px-3 py-1.5 rounded-md transition-colors text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground",
                             location.pathname === subitem.path &&
-                            "text-sidebar-primary font-medium bg-sidebar-accent/50",
+                              "text-sidebar-primary font-medium bg-sidebar-accent/50",
                           )}
                         >
                           {subitem.label}
@@ -326,7 +326,7 @@ export function Sidebar({
           className={cn(
             "w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors text-sm font-medium",
             location.pathname === "/settings" &&
-            "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground",
+              "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground",
           )}
         >
           <Settings className="h-4 w-4 flex-shrink-0" />

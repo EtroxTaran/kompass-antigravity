@@ -10,18 +10,55 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { InvoiceService } from './invoice.service';
 import { CreateInvoiceDto, UpdateInvoiceDto } from './dto/invoice.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RbacGuard } from '../../auth/guards/rbac.guard';
 import { Permissions } from '../../auth/decorators/permissions.decorator';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { ExportService } from '../import-export/export.service';
+import { ExportFormat } from '../import-export/dto/export.dto';
+import { InvoiceRepository } from './invoice.repository';
 
 @Controller('api/v1/invoices')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class InvoiceController {
-  constructor(private readonly invoiceService: InvoiceService) {}
+  constructor(
+    private readonly invoiceService: InvoiceService,
+    private readonly exportService: ExportService,
+    private readonly invoiceRepository: InvoiceRepository,
+  ) {}
+
+  @Get('export')
+  @Permissions({ entity: 'Invoice', action: 'READ' })
+  async exportInvoices(@Query('format') format: string, @Res() res: Response) {
+    // Fetch all invoices for export
+    const result = await this.invoiceRepository.findAll({ limit: 10000 });
+    const invoices = result.data;
+
+    // Determine format (default to lexware)
+    const exportFormat =
+      format === 'lexware' ? ExportFormat.LEXWARE : ExportFormat.CSV;
+
+    // Generate export buffer
+    const buffer = this.exportService.exportData(invoices, {
+      format: exportFormat,
+    });
+
+    // Set response headers for file download
+    const filename = this.exportService.generateFilename(
+      'rechnungen_lexware',
+      exportFormat,
+    );
+    const contentType = this.exportService.getContentType(exportFormat);
+
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(buffer);
+  }
 
   @Get()
   @Permissions({ entity: 'Invoice', action: 'READ' })

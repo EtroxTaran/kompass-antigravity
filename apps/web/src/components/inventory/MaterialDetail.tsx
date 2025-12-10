@@ -56,10 +56,17 @@ export function MaterialDetail({ material }: MaterialDetailProps) {
           <p className="text-sm text-muted-foreground">{material.itemNumber}</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => navigate(`/materials/${material._id}/edit`)}>
+          <Button
+            variant="outline"
+            onClick={() => navigate(`/materials/${material._id}/edit`)}
+          >
             Material bearbeiten
           </Button>
-          <StockAdjustmentDialog materialId={material._id} unit={unitLabel} onSuccess={fetchHistory} />
+          <StockAdjustmentDialog
+            materialId={material._id}
+            unit={unitLabel}
+            onSuccess={fetchHistory}
+          />
         </div>
       </div>
 
@@ -91,7 +98,9 @@ export function MaterialDetail({ material }: MaterialDetailProps) {
                   </div>
                   <div
                     className={
-                      supplier ? "cursor-pointer text-primary hover:underline" : ""
+                      supplier
+                        ? "cursor-pointer text-primary hover:underline"
+                        : ""
                     }
                     onClick={() =>
                       supplier && navigate(`/suppliers/${supplier._id}`)
@@ -159,8 +168,12 @@ export function MaterialDetail({ material }: MaterialDetailProps) {
         <TabsContent value="inventory" className="space-y-6 mt-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <h3 className="text-2xl font-semibold tracking-tight">Bestandshistorie</h3>
-              <p className="text-sm text-muted-foreground">Verfolgen Sie alle Wareneingänge und Entnahmen.</p>
+              <h3 className="text-2xl font-semibold tracking-tight">
+                Bestandshistorie
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Verfolgen Sie alle Wareneingänge und Entnahmen.
+              </p>
             </div>
           </div>
 

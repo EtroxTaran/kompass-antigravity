@@ -97,7 +97,11 @@ export function ExpenseForm() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {error && <div className="p-3 mb-4 text-red-700 bg-red-100 rounded">{error}</div>}
+        {error && (
+          <div className="p-3 mb-4 text-red-700 bg-red-100 rounded">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="merchantName">Händler / Geschäft</Label>
@@ -187,15 +191,24 @@ export function ExpenseForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="receipt">Beleg {formData.amount > 150 && <span className="text-red-500">*</span>}</Label>
+            <Label htmlFor="receipt">
+              Beleg{" "}
+              {formData.amount > 150 && <span className="text-red-500">*</span>}
+            </Label>
             <Input
               id="receipt"
               type="file"
               accept="image/*,application/pdf"
               onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
             />
-            {formData.receiptUrl && <p className="text-xs text-green-600">Beleg vorhanden: {formData.receiptUrl}</p>}
-            <p className="text-xs text-muted-foreground">Pflicht bei Beträgen über 150€.</p>
+            {formData.receiptUrl && (
+              <p className="text-xs text-green-600">
+                Beleg vorhanden: {formData.receiptUrl}
+              </p>
+            )}
+            <p className="text-xs text-muted-foreground">
+              Pflicht bei Beträgen über 150€.
+            </p>
           </div>
 
           <div className="flex justify-end gap-2 pt-4">

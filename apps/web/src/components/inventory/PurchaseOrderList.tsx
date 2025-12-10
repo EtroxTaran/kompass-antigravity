@@ -48,10 +48,14 @@ export function PurchaseOrderList() {
 
   const getApprovalLabel = (status?: string) => {
     switch (status) {
-      case "approved": return "Genehmigt";
-      case "rejected": return "Abgelehnt";
-      case "pending": return "Ausstehend";
-      default: return "-";
+      case "approved":
+        return "Genehmigt";
+      case "rejected":
+        return "Abgelehnt";
+      case "pending":
+        return "Ausstehend";
+      default:
+        return "-";
     }
   };
 
@@ -93,9 +97,7 @@ export function PurchaseOrderList() {
                   <TableRow
                     key={order._id}
                     className="cursor-pointer hover:bg-muted/50"
-                    onClick={() =>
-                      navigate(`/purchase-orders/${order._id}`)
-                    }
+                    onClick={() => navigate(`/purchase-orders/${order._id}`)}
                   >
                     <TableCell className="font-medium">
                       <div className="flex items-center">
@@ -120,7 +122,9 @@ export function PurchaseOrderList() {
                       {order.approvalStatus && (
                         <Badge
                           variant="outline"
-                          className={getApprovalStatusColor(order.approvalStatus)}
+                          className={getApprovalStatusColor(
+                            order.approvalStatus,
+                          )}
                         >
                           {getApprovalLabel(order.approvalStatus)}
                         </Badge>

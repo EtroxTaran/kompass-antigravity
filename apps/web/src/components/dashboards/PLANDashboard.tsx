@@ -59,13 +59,19 @@ export function PLANDashboard() {
               <CircleDashed className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{planningProjects.length}</div>
-              <p className="text-xs text-muted-foreground">Vorbereitungsphase</p>
+              <div className="text-2xl font-bold">
+                {planningProjects.length}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Vorbereitungsphase
+              </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Abgeschlossen</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Abgeschlossen
+              </CardTitle>
               <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -118,12 +124,13 @@ export function PLANDashboard() {
                         )}
                       </div>
                       <span
-                        className={`text-xs px-2 py-1 rounded-full ${proj.status === "active"
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          proj.status === "active"
                             ? "bg-green-100 text-green-800"
                             : proj.status === "planning"
                               ? "bg-blue-100 text-blue-800"
                               : "bg-gray-100"
-                          }`}
+                        }`}
                       >
                         {proj.status.toUpperCase()}
                       </span>
@@ -131,11 +138,21 @@ export function PLANDashboard() {
 
                     <div className="flex items-center text-xs text-muted-foreground space-x-4">
                       <div className="flex items-center">
-                        <AlertTriangle className={`h-3 w-3 mr-1 ${proj.budgetStatus === 'Exceeded' ? 'text-red-500' :
-                            proj.budgetStatus === 'Warning' ? 'text-amber-500' :
-                              'text-green-500'
-                          }`} />
-                        Budget: {proj.budgetStatus === 'Exceeded' ? 'Überzogen' : proj.budgetStatus === 'Warning' ? 'Warnung' : 'OK'}
+                        <AlertTriangle
+                          className={`h-3 w-3 mr-1 ${
+                            proj.budgetStatus === "Exceeded"
+                              ? "text-red-500"
+                              : proj.budgetStatus === "Warning"
+                                ? "text-amber-500"
+                                : "text-green-500"
+                          }`}
+                        />
+                        Budget:{" "}
+                        {proj.budgetStatus === "Exceeded"
+                          ? "Überzogen"
+                          : proj.budgetStatus === "Warning"
+                            ? "Warnung"
+                            : "OK"}
                       </div>
                       <div className="flex items-center">
                         <Calendar className="h-3 w-3 mr-1" />

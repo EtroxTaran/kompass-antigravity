@@ -37,7 +37,11 @@ function RfqCreatePage() {
   return (
     <MainLayout
       userRole="PM"
-      breadcrumbs={[{ label: "Purchasing", href: "/rfqs" }, { label: "RFQs", href: "/rfqs" }, { label: "New" }]}
+      breadcrumbs={[
+        { label: "Purchasing", href: "/rfqs" },
+        { label: "RFQs", href: "/rfqs" },
+        { label: "New" },
+      ]}
     >
       <RfqForm />
     </MainLayout>
@@ -49,7 +53,11 @@ function RfqDetailPage() {
   return (
     <MainLayout
       userRole="PM"
-      breadcrumbs={[{ label: "Purchasing", href: "/rfqs" }, { label: "RFQs", href: "/rfqs" }, { label: id || 'Detail' }]}
+      breadcrumbs={[
+        { label: "Purchasing", href: "/rfqs" },
+        { label: "RFQs", href: "/rfqs" },
+        { label: id || "Detail" },
+      ]}
     >
       <RfqDetail />
     </MainLayout>
@@ -1111,8 +1119,14 @@ function App() {
           <Route path="/portal/login" element={<PortalLogin />} />
           <Route path="/portal/auth/verify" element={<PortalVerify />} />
           <Route path="/portal/projects" element={<PortalDashboard />} />
-          <Route path="/portal/projects/:id" element={<PortalProjectDetail />} />
-          <Route path="/portal" element={<Navigate to="/portal/login" replace />} />
+          <Route
+            path="/portal/projects/:id"
+            element={<PortalProjectDetail />}
+          />
+          <Route
+            path="/portal"
+            element={<Navigate to="/portal/login" replace />}
+          />
           <Route path="/" element={<Dashboard />} />
 
           {/* Sales Routes */}
@@ -1150,7 +1164,10 @@ function App() {
             }
           />
           <Route path="/sales/offers/new" element={<OfferCreatePage />} />
-          <Route path="/sales/offers/:id" element={<OfferDetailPageWrapper />} />
+          <Route
+            path="/sales/offers/:id"
+            element={<OfferDetailPageWrapper />}
+          />
           <Route path="/sales/offers/:id/edit" element={<OfferEditPage />} />
 
           {/* Contracts Routes */}
@@ -1259,8 +1276,14 @@ function App() {
 
           {/* Project Cost Routes */}
           <Route path="/project-costs" element={<ProjectCostListPage />} />
-          <Route path="/project-costs/new" element={<ProjectCostCreatePage />} />
-          <Route path="/project-costs/:id/edit" element={<ProjectCostEditPage />} />
+          <Route
+            path="/project-costs/new"
+            element={<ProjectCostCreatePage />}
+          />
+          <Route
+            path="/project-costs/:id/edit"
+            element={<ProjectCostEditPage />}
+          />
 
           {/* Customer Routes */}
           <Route
@@ -1319,9 +1342,18 @@ function App() {
           <Route path="/materials/:id" element={<MaterialDetailPage />} />
           <Route path="/materials/:id/edit" element={<MaterialEditPage />} />
           <Route path="/purchase-orders" element={<PurchaseOrderListPage />} />
-          <Route path="/purchase-orders/new" element={<PurchaseOrderCreatePage />} />
-          <Route path="/purchase-orders/:id" element={<PurchaseOrderDetailPage />} />
-          <Route path="/purchase-orders/:id/edit" element={<PurchaseOrderEditPage />} />
+          <Route
+            path="/purchase-orders/new"
+            element={<PurchaseOrderCreatePage />}
+          />
+          <Route
+            path="/purchase-orders/:id"
+            element={<PurchaseOrderDetailPage />}
+          />
+          <Route
+            path="/purchase-orders/:id/edit"
+            element={<PurchaseOrderEditPage />}
+          />
           <Route path="/tours" element={<TourListPage />} />
           <Route path="/tours/new" element={<TourCreatePage />} />
           <Route path="/tours/:id" element={<TourDetailPage />} />
@@ -1384,7 +1416,9 @@ function App() {
             element={
               <MainLayout
                 userRole="PM"
-                breadcrumbs={[{ label: "Meine Zeiterfassung", href: "/timesheets/my" }]}
+                breadcrumbs={[
+                  { label: "Meine Zeiterfassung", href: "/timesheets/my" },
+                ]}
               >
                 <MyTimesheetsPage />
               </MainLayout>

@@ -68,7 +68,9 @@ export function InvoiceDetail() {
           <Card className="p-8 bg-white shadow-lg print:shadow-none">
             <div className="flex justify-between items-start mb-12">
               <div>
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">INVOICE</h1>
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  INVOICE
+                </h1>
                 <p className="text-gray-500">#{invoice.invoiceNumber}</p>
                 <div className="mt-4">
                   <Badge className={getStatusColor(invoice.status)}>
@@ -197,10 +199,10 @@ export function InvoiceDetail() {
             entityId={invoice._id}
             comments={invoice.comments || []}
             onCommentAdded={() => {
-              queryClient.invalidateQueries({ queryKey: ['invoices', id] });
+              queryClient.invalidateQueries({ queryKey: ["invoices", id] });
             }}
             onCommentResolved={() => {
-              queryClient.invalidateQueries({ queryKey: ['invoices', id] });
+              queryClient.invalidateQueries({ queryKey: ["invoices", id] });
             }}
           />
         </TabsContent>

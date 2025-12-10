@@ -16,7 +16,7 @@ import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 @Controller('comments')
 @UseGuards(JwtAuthGuard)
 export class CommentController {
-  constructor(private readonly commentService: CommentService) { }
+  constructor(private readonly commentService: CommentService) {}
 
   @Post(':entityType/:entityId')
   async addComment(

@@ -21,10 +21,14 @@ export function ExpenseList() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [view, setView] = useState<"my" | "pending" | "all">("my");
-  const { expenses, loading, approveExpense, rejectExpense } = useExpenses({ view });
+  const { expenses, loading, approveExpense, rejectExpense } = useExpenses({
+    view,
+  });
 
   // Only BUCH and GF/ADM can see pending/all
-  const canApprove = user?.roles?.some(r => ["BUCH", "GF", "ADM"].includes(r));
+  const canApprove = user?.roles?.some((r) =>
+    ["BUCH", "GF", "ADM"].includes(r),
+  );
 
   const handleApprove = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -71,7 +75,7 @@ export function ExpenseList() {
         <div className="flex flex-row items-center justify-between">
           <CardTitle className="text-2xl font-bold">Ausgaben</CardTitle>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => { }}>
+            <Button variant="outline" onClick={() => {}}>
               <FileText className="mr-2 h-4 w-4" /> Export
             </Button>
             <Button onClick={() => navigate("/expenses/new")}>
@@ -80,10 +84,16 @@ export function ExpenseList() {
           </div>
         </div>
 
-        <Tabs value={view} onValueChange={(v) => setView(v as any)} className="w-full">
+        <Tabs
+          value={view}
+          onValueChange={(v) => setView(v as any)}
+          className="w-full"
+        >
           <TabsList>
             <TabsTrigger value="my">Meine Ausgaben</TabsTrigger>
-            {canApprove && <TabsTrigger value="pending">Zu genehmigen</TabsTrigger>}
+            {canApprove && (
+              <TabsTrigger value="pending">Zu genehmigen</TabsTrigger>
+            )}
             {canApprove && <TabsTrigger value="all">Alle</TabsTrigger>}
           </TabsList>
         </Tabs>
@@ -140,12 +150,22 @@ export function ExpenseList() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {expense.status === 'submitted' && canApprove && (
+                      {expense.status === "submitted" && canApprove && (
                         <div className="flex gap-1">
-                          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-green-600" onClick={(e) => handleApprove(e, expense._id)}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-8 w-8 p-0 text-green-600"
+                            onClick={(e) => handleApprove(e, expense._id)}
+                          >
                             <Check className="h-4 w-4" />
                           </Button>
-                          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-red-600" onClick={(e) => handleReject(e, expense._id)}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-8 w-8 p-0 text-red-600"
+                            onClick={(e) => handleReject(e, expense._id)}
+                          >
                             <X className="h-4 w-4" />
                           </Button>
                         </div>

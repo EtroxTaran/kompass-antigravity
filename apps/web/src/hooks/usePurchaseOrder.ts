@@ -102,9 +102,9 @@ export function usePurchaseOrder(id?: string) {
     submitForApproval,
     approveOrder,
     rejectOrder,
-    refetch: fetchOrder
+    refetch: fetchOrder,
   };
-};
+}
 
 export function usePurchaseOrders(params?: {
   supplierId?: string;

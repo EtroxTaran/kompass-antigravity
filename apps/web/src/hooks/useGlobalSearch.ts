@@ -2,7 +2,13 @@ import { useState, useCallback, useRef } from "react";
 import { searchApi, SearchHit, GlobalSearchResult } from "@/services/apiClient";
 
 export interface SearchResult extends SearchHit {
-  type: "customer" | "project" | "opportunity" | "supplier" | "material" | "unknown";
+  type:
+    | "customer"
+    | "project"
+    | "opportunity"
+    | "supplier"
+    | "material"
+    | "unknown";
 }
 
 export function useGlobalSearch() {
@@ -30,15 +36,33 @@ export function useGlobalSearch() {
       setError(null);
 
       try {
-        const response: GlobalSearchResult = await searchApi.globalSearch(query, 20);
+        const response: GlobalSearchResult = await searchApi.globalSearch(
+          query,
+          20,
+        );
 
         // Transform grouped results into flat array with type annotation
         const flatResults: SearchResult[] = [
-          ...response.results.customers.map((hit) => ({ ...hit, type: "customer" as const })),
-          ...response.results.projects.map((hit) => ({ ...hit, type: "project" as const })),
-          ...response.results.opportunities.map((hit) => ({ ...hit, type: "opportunity" as const })),
-          ...response.results.suppliers.map((hit) => ({ ...hit, type: "supplier" as const })),
-          ...response.results.materials.map((hit) => ({ ...hit, type: "material" as const })),
+          ...response.results.customers.map((hit) => ({
+            ...hit,
+            type: "customer" as const,
+          })),
+          ...response.results.projects.map((hit) => ({
+            ...hit,
+            type: "project" as const,
+          })),
+          ...response.results.opportunities.map((hit) => ({
+            ...hit,
+            type: "opportunity" as const,
+          })),
+          ...response.results.suppliers.map((hit) => ({
+            ...hit,
+            type: "supplier" as const,
+          })),
+          ...response.results.materials.map((hit) => ({
+            ...hit,
+            type: "material" as const,
+          })),
         ];
 
         setResults(flatResults);

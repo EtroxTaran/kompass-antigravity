@@ -1,7 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { dbService, StorageInfo } from "@/lib/db";
 
-export type SyncStatus = "idle" | "active" | "paused" | "error" | "offline" | "storage_full";
+export type SyncStatus =
+  | "idle"
+  | "active"
+  | "paused"
+  | "error"
+  | "offline"
+  | "storage_full";
 
 interface SyncState {
   status: SyncStatus;

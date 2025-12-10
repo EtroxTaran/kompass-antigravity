@@ -21,7 +21,7 @@ import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 @Controller('api/v1/time-entries')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class TimeEntryController {
-  constructor(private readonly timeEntryService: TimeEntryService) { }
+  constructor(private readonly timeEntryService: TimeEntryService) {}
 
   @Get()
   @Permissions({ entity: 'TimeEntry', action: 'READ' })

@@ -18,7 +18,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 export class ProjectMaterialController {
   constructor(
     private readonly projectMaterialService: ProjectMaterialService,
-  ) { }
+  ) {}
 
   @Get()
   async findByProject(@Param('projectId') projectId: string) {

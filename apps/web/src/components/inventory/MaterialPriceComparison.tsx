@@ -42,7 +42,10 @@ function RatingStars({ rating }: { rating?: number }) {
     <div className="flex items-center gap-1">
       <div className="flex">
         {[...Array(fullStars)].map((_, i) => (
-          <Star key={`full-${i}`} className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />
+          <Star
+            key={`full-${i}`}
+            className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500"
+          />
         ))}
         {hasPartial && (
           <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500/50" />

@@ -24,7 +24,10 @@ export function OpportunityDetail({ opportunity }: OpportunityDetailProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const queryClient = useQueryClient();
 
-  const handleMarkAsWon = async (data: { startDate?: string; projectManagerId?: string }) => {
+  const handleMarkAsWon = async (data: {
+    startDate?: string;
+    projectManagerId?: string;
+  }) => {
     setIsProcessing(true);
     try {
       const response = await opportunitiesApi.markAsWon(opportunity._id, data);
@@ -60,11 +63,12 @@ export function OpportunityDetail({ opportunity }: OpportunityDetailProps) {
         </div>
         <div className="flex gap-2">
           {opportunity.stage !== "closed_won" && (
-            <Button onClick={() => setShowWonDialog(true)}>
-              Mark as Won
-            </Button>
+            <Button onClick={() => setShowWonDialog(true)}>Mark as Won</Button>
           )}
-          <Button variant="outline" onClick={() => navigate(`/sales/${opportunity._id}/edit`)}>
+          <Button
+            variant="outline"
+            onClick={() => navigate(`/sales/${opportunity._id}/edit`)}
+          >
             Edit Opportunity
           </Button>
         </div>
@@ -93,10 +97,10 @@ export function OpportunityDetail({ opportunity }: OpportunityDetailProps) {
               <ActivityTimeline
                 customerId={opportunity.customerId}
                 customerName={customer?.companyName}
-              // Note: ActivityTimeline filters by contactId or ActivityType, but maybe we want to filter by context (Opportunity)?
-              // The current Activity model doesn't link to Opportunity directly.
-              // I will display all activities for this customer for now, or just leave it as customer timeline.
-              // Ideally we'd link activities to opportunities, but Activity type (contact.ts/activity.ts) doesn't seem to have opportunityId.
+                // Note: ActivityTimeline filters by contactId or ActivityType, but maybe we want to filter by context (Opportunity)?
+                // The current Activity model doesn't link to Opportunity directly.
+                // I will display all activities for this customer for now, or just leave it as customer timeline.
+                // Ideally we'd link activities to opportunities, but Activity type (contact.ts/activity.ts) doesn't seem to have opportunityId.
               />
             </div>
 
@@ -149,7 +153,8 @@ export function OpportunityDetail({ opportunity }: OpportunityDetailProps) {
                     <span className="font-semibold text-muted-foreground">
                       Owner
                     </span>
-                    <span>{opportunity.owner}</span> {/* Resolve User Name later */}
+                    <span>{opportunity.owner}</span>{" "}
+                    {/* Resolve User Name later */}
                   </div>
                 </CardContent>
               </Card>
@@ -163,10 +168,10 @@ export function OpportunityDetail({ opportunity }: OpportunityDetailProps) {
             entityId={opportunity._id}
             comments={opportunity.comments || []}
             onCommentAdded={() => {
-              queryClient.invalidateQueries({ queryKey: ['opportunities'] }); // or specific ID query
+              queryClient.invalidateQueries({ queryKey: ["opportunities"] }); // or specific ID query
             }}
             onCommentResolved={() => {
-              queryClient.invalidateQueries({ queryKey: ['opportunities'] });
+              queryClient.invalidateQueries({ queryKey: ["opportunities"] });
             }}
           />
         </TabsContent>

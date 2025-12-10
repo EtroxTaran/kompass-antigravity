@@ -19,6 +19,8 @@ export class ExportService {
         return this.exportToExcel(data, options);
       case ExportFormat.JSON:
         return this.exportToJson(data);
+      case ExportFormat.LEXWARE:
+        return this.exportLexwareCsv(data);
       default:
         return this.exportToCsv(data, options);
     }
@@ -78,6 +80,87 @@ export class ExportService {
    */
   exportToJson(data: any[]): Buffer {
     return Buffer.from(JSON.stringify(data, null, 2), 'utf-8');
+  }
+
+  /**
+   * Export invoices to Lexware-compatible CSV format
+   * Uses German formatting: comma decimals, semicolon separator, dd.MM.yyyy dates
+   */
+  exportLexwareCsv(invoices: any[]): Buffer {
+    if (invoices.length === 0) {
+      const headers =
+        'Rechnungsnummer;Datum;Kunde;Nettobetrag;MwSt;Bruttobetrag';
+      const bom = '\ufeff';
+      return Buffer.from(bom + headers + '\n', 'utf-8');
+    }
+
+    // German column headers as per Lexware specification
+    const headers = [
+      'Rechnungsnummer',
+      'Datum',
+      'Kunde',
+      'Nettobetrag',
+      'MwSt',
+      'Bruttobetrag',
+    ];
+
+    // Format number to German locale (comma as decimal separator)
+    const formatGermanNumber = (value: number): string => {
+      if (value === null || value === undefined) return '0,00';
+      return value.toLocaleString('de-DE', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+    };
+
+    // Format date to German format
+    const formatGermanDate = (dateStr: string): string => {
+      if (!dateStr) return '';
+      try {
+        const date = new Date(dateStr);
+        return formatDate(date, 'dd.MM.yyyy', { locale: de });
+      } catch {
+        return dateStr;
+      }
+    };
+
+    // Build CSV rows
+    const rows = invoices.map((invoice) => {
+      const invoiceNumber = invoice.invoiceNumber || '';
+      const date = formatGermanDate(invoice.date || invoice.createdAt);
+      const customer = invoice.customerName || invoice.customerId || '';
+      const netAmount = formatGermanNumber(invoice.totalNet || 0);
+      const vatAmount = formatGermanNumber(invoice.vatAmount || 0);
+      const grossAmount = formatGermanNumber(invoice.totalGross || 0);
+
+      // Escape fields that might contain semicolons or quotes
+      const escapeField = (field: string): string => {
+        if (
+          field.includes(';') ||
+          field.includes('"') ||
+          field.includes('\n')
+        ) {
+          return `"${field.replace(/"/g, '""')}"`;
+        }
+        return field;
+      };
+
+      return [
+        escapeField(invoiceNumber),
+        date,
+        escapeField(customer),
+        netAmount,
+        vatAmount,
+        grossAmount,
+      ].join(';');
+    });
+
+    // Combine headers and rows
+    const csv = [headers.join(';'), ...rows].join('\n');
+
+    // Add UTF-8 BOM for Excel compatibility
+    const bom = '\ufeff';
+    return Buffer.from(bom + csv, 'utf-8');
   }
 
   /**
@@ -182,6 +265,7 @@ export class ExportService {
   getContentType(format: ExportFormat): string {
     switch (format) {
       case ExportFormat.CSV:
+      case ExportFormat.LEXWARE:
         return 'text/csv; charset=utf-8';
       case ExportFormat.EXCEL:
         return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -198,6 +282,7 @@ export class ExportService {
   getFileExtension(format: ExportFormat): string {
     switch (format) {
       case ExportFormat.CSV:
+      case ExportFormat.LEXWARE:
         return 'csv';
       case ExportFormat.EXCEL:
         return 'xlsx';

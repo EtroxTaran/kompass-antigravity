@@ -10,23 +10,23 @@ import { ProjectModule } from '../project/project.module';
 import { DatabaseModule } from '../../database/database.module';
 
 @Module({
-    imports: [
-        ConfigModule,
-        DatabaseModule,
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
-            useFactory: async (configService: ConfigService) => ({
-                secret: configService.get<string>('JWT_SECRET'),
-                signOptions: { expiresIn: '1d' }, // Session token duration
-            }),
-            inject: [ConfigService],
-        }),
-        MailModule,
-        ContactModule,
-        CustomerModule,
-        ProjectModule
-    ],
-    controllers: [PortalController],
-    providers: [MagicLinkService],
+  imports: [
+    ConfigModule,
+    DatabaseModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' }, // Session token duration
+      }),
+      inject: [ConfigService],
+    }),
+    MailModule,
+    ContactModule,
+    CustomerModule,
+    ProjectModule,
+  ],
+  controllers: [PortalController],
+  providers: [MagicLinkService],
 })
-export class PortalModule { }
+export class PortalModule {}

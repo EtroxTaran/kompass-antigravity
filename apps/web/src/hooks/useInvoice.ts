@@ -59,6 +59,7 @@ export function useInvoices(params?: {
 }) {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchInvoices = useCallback(async () => {
@@ -85,5 +86,29 @@ export function useInvoices(params?: {
     fetchInvoices();
   }, [fetchInvoices]);
 
-  return { invoices, loading, error };
+  const exportLexware = useCallback(async () => {
+    setExporting(true);
+    try {
+      const blob = await invoicesApi.exportLexware();
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      const timestamp = new Date().toISOString().slice(0, 10);
+      link.download = `rechnungen_lexware_${timestamp}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return true;
+    } catch (err) {
+      console.error("Error exporting invoices:", err);
+      setError(err as Error);
+      throw err;
+    } finally {
+      setExporting(false);
+    }
+  }, []);
+
+  return { invoices, loading, exporting, error, exportLexware };
 }

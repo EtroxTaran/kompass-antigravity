@@ -142,7 +142,10 @@ class DatabaseService {
   subscribe(listener: (update: StatusUpdate) => void) {
     this.listeners.push(listener);
     // Initial emission with current state
-    listener({ status: this.currentStatus, storage: this.storageInfo || undefined });
+    listener({
+      status: this.currentStatus,
+      storage: this.storageInfo || undefined,
+    });
     return () => {
       this.listeners = this.listeners.filter((l) => l !== listener);
     };
@@ -150,7 +153,9 @@ class DatabaseService {
 
   private notify(status: SyncStatus) {
     this.currentStatus = status;
-    this.listeners.forEach((l) => l({ status, storage: this.storageInfo || undefined }));
+    this.listeners.forEach((l) =>
+      l({ status, storage: this.storageInfo || undefined }),
+    );
   }
 
   async startSync() {

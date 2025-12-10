@@ -1,4 +1,10 @@
-import { CloudOff, RefreshCw, CheckCircle2, WifiOff, HardDrive } from "lucide-react";
+import {
+  CloudOff,
+  RefreshCw,
+  CheckCircle2,
+  WifiOff,
+  HardDrive,
+} from "lucide-react";
 import { useSyncStatus } from "@/hooks/useSyncStatus";
 import {
   Tooltip,
@@ -9,7 +15,8 @@ import {
 import { cn } from "@/lib/utils";
 
 export function SyncIndicator() {
-  const { status, isOnline, triggerSync, storage, isStorageCritical } = useSyncStatus();
+  const { status, isOnline, triggerSync, storage, isStorageCritical } =
+    useSyncStatus();
 
   const getIcon = () => {
     if (isStorageCritical || status === "storage_full") {
@@ -63,7 +70,8 @@ export function SyncIndicator() {
               status === "error" || isStorageCritical
                 ? "bg-destructive/10"
                 : "bg-transparent hover:bg-muted",
-              (isStorageCritical || status === "storage_full") && "cursor-not-allowed opacity-50"
+              (isStorageCritical || status === "storage_full") &&
+                "cursor-not-allowed opacity-50",
             )}
           >
             {getIcon()}

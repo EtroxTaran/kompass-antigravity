@@ -22,7 +22,7 @@ export class OpportunityService {
     private readonly offerService: OfferService,
     private readonly projectMaterialService: ProjectMaterialService,
     private readonly searchService: SearchService,
-  ) { }
+  ) {}
 
   async findAll(
     options: {

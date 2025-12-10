@@ -9,7 +9,7 @@ import { SearchController } from './search.controller';
   exports: [SearchService],
 })
 export class SearchModule implements OnModuleInit {
-  constructor(private readonly searchService: SearchService) { }
+  constructor(private readonly searchService: SearchService) {}
 
   async onModuleInit() {
     // Initialize indices or checking connection

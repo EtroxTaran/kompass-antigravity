@@ -10,7 +10,7 @@ export class ProjectMaterialService {
     private readonly projectMaterialRepository: ProjectMaterialRepository,
     private readonly offerService: OfferService,
     private readonly projectService: ProjectService,
-  ) { }
+  ) {}
 
   async copyFromOffer(
     offerId: string,
@@ -158,7 +158,8 @@ export class ProjectMaterialService {
     itemCount: number;
     deliveredCount: number;
   }> {
-    const materials = await this.projectMaterialRepository.findByProject(projectId);
+    const materials =
+      await this.projectMaterialRepository.findByProject(projectId);
 
     let estimated = 0;
     let actual = 0;

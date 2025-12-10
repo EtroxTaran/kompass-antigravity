@@ -24,7 +24,12 @@ export interface Supplier extends BaseEntity {
   category?: string[]; // e.g., 'wood', 'metal', 'electronics'
 
   // Status & Blacklist
-  status?: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval' | 'Rejected';
+  status?:
+    | "Active"
+    | "Inactive"
+    | "Blacklisted"
+    | "PendingApproval"
+    | "Rejected";
 
   // Approval Info
   approvedBy?: string; // userId
@@ -45,13 +50,13 @@ export interface Supplier extends BaseEntity {
 }
 
 export interface SupplierRating {
-  overall: number;          // 1-5 stars, weighted average
-  quality: number;          // 1-5
-  reliability: number;      // 1-5
-  communication: number;    // 1-5
-  priceValue: number;       // 1-5
+  overall: number; // 1-5 stars, weighted average
+  quality: number; // 1-5
+  reliability: number; // 1-5
+  communication: number; // 1-5
+  priceValue: number; // 1-5
   reviewCount: number;
-  lastUpdated: string;      // ISO date
+  lastUpdated: string; // ISO date
 }
 
 export interface SupplierRatingHistoryItem {

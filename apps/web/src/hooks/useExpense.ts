@@ -97,5 +97,11 @@ export function useExpenses(params?: {
     fetchExpenses();
   };
 
-  return { expenses, loading, refetch: fetchExpenses, approveExpense, rejectExpense };
+  return {
+    expenses,
+    loading,
+    refetch: fetchExpenses,
+    approveExpense,
+    rejectExpense,
+  };
 }

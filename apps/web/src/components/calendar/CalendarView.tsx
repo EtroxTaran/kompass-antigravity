@@ -54,11 +54,13 @@ import {
 
 type ViewMode = "month" | "week" | "day" | "agenda";
 
-
 const START_HOUR = 7;
 const END_HOUR = 20;
 
-const TIME_SLOTS = Array.from({ length: END_HOUR - START_HOUR + 1 }, (_, i) => i + START_HOUR);
+const TIME_SLOTS = Array.from(
+  { length: END_HOUR - START_HOUR + 1 },
+  (_, i) => i + START_HOUR,
+);
 
 // Get event type icon
 function getEventTypeIcon(type: EventType) {
@@ -431,8 +433,8 @@ function FilterPanel({
                           eventTypes: checked
                             ? [...localFilters.eventTypes, type.value]
                             : localFilters.eventTypes.filter(
-                              (t) => t !== type.value,
-                            ),
+                                (t) => t !== type.value,
+                              ),
                         });
                       }}
                     />
@@ -473,8 +475,8 @@ function FilterPanel({
                           statuses: checked
                             ? [...localFilters.statuses, status.value]
                             : localFilters.statuses.filter(
-                              (s) => s !== status.value,
-                            ),
+                                (s) => s !== status.value,
+                              ),
                         });
                       }}
                     />
@@ -508,8 +510,8 @@ function FilterPanel({
                           priorities: checked
                             ? [...localFilters.priorities, priority.value]
                             : localFilters.priorities.filter(
-                              (p) => p !== priority.value,
-                            ),
+                                (p) => p !== priority.value,
+                              ),
                         });
                       }}
                     />
@@ -599,8 +601,9 @@ function MonthView({
           return (
             <div
               key={index}
-              className={`min-h-28 p-2 border-r border-b border-border last:border-r-0 ${!isCurrentMonth ? "bg-muted/30" : ""
-                } ${isToday ? "bg-blue-50 border-2 border-blue-500" : ""} hover:bg-muted/50 transition-colors`}
+              className={`min-h-28 p-2 border-r border-b border-border last:border-r-0 ${
+                !isCurrentMonth ? "bg-muted/30" : ""
+              } ${isToday ? "bg-blue-50 border-2 border-blue-500" : ""} hover:bg-muted/50 transition-colors`}
             >
               <div
                 className={`text-right mb-2 text-sm ${isToday ? "text-blue-600 font-semibold" : isCurrentMonth ? "" : "text-muted-foreground"}`}
@@ -734,7 +737,6 @@ function AgendaView({
   );
 }
 
-
 // Helper to get time range styles
 function getEventStyle(event: CalendarEvent) {
   const start = new Date(event.startDate);
@@ -762,7 +764,7 @@ function getEventStyle(event: CalendarEvent) {
     height: `${Math.max(height, 30)}px`, // Min height 30px
     backgroundColor: event.color + "1A",
     borderLeft: `3px solid ${event.color}`,
-    color: "inherit"
+    color: "inherit",
   };
 }
 
@@ -776,9 +778,11 @@ function DayView({
   events: CalendarEvent[];
   onEventClick: (event: CalendarEvent) => void;
 }) {
-  const dayEvents = events.filter(e => isSameDay(new Date(e.startDate), currentDate));
-  const allDayEvents = dayEvents.filter(e => e.allDay);
-  const timeEvents = dayEvents.filter(e => !e.allDay);
+  const dayEvents = events.filter((e) =>
+    isSameDay(new Date(e.startDate), currentDate),
+  );
+  const allDayEvents = dayEvents.filter((e) => e.allDay);
+  const timeEvents = dayEvents.filter((e) => !e.allDay);
 
   return (
     <div className="border border-border rounded-lg overflow-hidden flex flex-col h-[600px]">
@@ -787,18 +791,18 @@ function DayView({
         <div className="p-2 border-b border-border bg-muted/20">
           <div className="text-xs text-muted-foreground mb-1">Ganztägig</div>
           <div className="space-y-1">
-            {allDayEvents.map(event => (
+            {allDayEvents.map((event) => (
               <button
                 key={event.id}
                 className="w-full text-left px-2 py-1 rounded text-xs hover:shadow-sm transition-shadow truncate"
                 style={{
                   backgroundColor: event.color + "1A",
                   borderLeft: `3px solid ${event.color}`,
-                  color: "inherit"
+                  color: "inherit",
                 }}
                 onClick={() => onEventClick(event)}
               >
-                <span style={{ color: event.color, marginRight: '4px' }}>
+                <span style={{ color: event.color, marginRight: "4px" }}>
                   {getEventTypeIcon(event.type)}
                 </span>
                 {event.title}
@@ -810,10 +814,16 @@ function DayView({
 
       {/* Time Grid Scrollable */}
       <ScrollArea className="flex-1">
-        <div className="relative" style={{ height: (END_HOUR - START_HOUR) * 60 + 50 }}>
+        <div
+          className="relative"
+          style={{ height: (END_HOUR - START_HOUR) * 60 + 50 }}
+        >
           {/* Time Slots */}
-          {TIME_SLOTS.map(hour => (
-            <div key={hour} className="flex border-b border-border h-[60px] last:border-b-0">
+          {TIME_SLOTS.map((hour) => (
+            <div
+              key={hour}
+              className="flex border-b border-border h-[60px] last:border-b-0"
+            >
               <div className="w-16 flex-none text-right pr-4 py-2 text-sm text-muted-foreground border-r border-border sticky left-0 bg-background/95">
                 {hour}:00
               </div>
@@ -825,7 +835,7 @@ function DayView({
 
           {/* Events Layer */}
           <div className="absolute top-0 left-16 right-0 bottom-0">
-            {timeEvents.map(event => (
+            {timeEvents.map((event) => (
               <button
                 key={event.id}
                 className="absolute inset-x-2 rounded px-2 py-1 text-xs text-left overflow-hidden hover:z-10 hover:shadow-md transition-all"
@@ -833,11 +843,14 @@ function DayView({
                 onClick={() => onEventClick(event)}
               >
                 <div className="font-semibold flex items-center gap-1">
-                  <span style={{ color: event.color }}>{getEventTypeIcon(event.type)}</span>
+                  <span style={{ color: event.color }}>
+                    {getEventTypeIcon(event.type)}
+                  </span>
                   <span className="truncate">{event.title}</span>
                 </div>
                 <div className="text-xs opacity-80">
-                  {formatTime(new Date(event.startDate))} - {formatTime(new Date(event.endDate))}
+                  {formatTime(new Date(event.startDate))} -{" "}
+                  {formatTime(new Date(event.endDate))}
                 </div>
               </button>
             ))}
@@ -860,7 +873,9 @@ function WeekView({
 }) {
   const weekStart = new Date(currentDate);
   const dayOfWeek = weekStart.getDay();
-  weekStart.setDate(weekStart.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+  weekStart.setDate(
+    weekStart.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1),
+  );
 
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekStart);
@@ -872,25 +887,43 @@ function WeekView({
     <div className="border border-border rounded-lg overflow-hidden flex flex-col h-[600px]">
       {/* Header Days */}
       <div className="grid grid-cols-7 border-b border-border ml-16">
-        {days.map(day => (
-          <div key={day.toISOString()} className={`p-2 text-center border-r border-border last:border-r-0 ${isSameDay(day, new Date()) ? 'bg-blue-50' : ''}`}>
-            <div className="text-sm font-medium">{['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'][day.getDay()]}</div>
-            <div className={`text-sm ${isSameDay(day, new Date()) ? 'text-blue-600 font-bold' : 'text-muted-foreground'}`}>{day.getDate()}</div>
+        {days.map((day) => (
+          <div
+            key={day.toISOString()}
+            className={`p-2 text-center border-r border-border last:border-r-0 ${isSameDay(day, new Date()) ? "bg-blue-50" : ""}`}
+          >
+            <div className="text-sm font-medium">
+              {["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"][day.getDay()]}
+            </div>
+            <div
+              className={`text-sm ${isSameDay(day, new Date()) ? "text-blue-600 font-bold" : "text-muted-foreground"}`}
+            >
+              {day.getDate()}
+            </div>
           </div>
         ))}
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="relative min-w-[700px]" style={{ height: (END_HOUR - START_HOUR) * 60 + 50 }}>
+        <div
+          className="relative min-w-[700px]"
+          style={{ height: (END_HOUR - START_HOUR) * 60 + 50 }}
+        >
           {/* Time Slots Background */}
-          {TIME_SLOTS.map(hour => (
-            <div key={hour} className="flex border-b border-border h-[60px] last:border-b-0">
+          {TIME_SLOTS.map((hour) => (
+            <div
+              key={hour}
+              className="flex border-b border-border h-[60px] last:border-b-0"
+            >
               <div className="w-16 flex-none text-right pr-4 py-2 text-sm text-muted-foreground border-r border-border sticky left-0 bg-background/95">
                 {hour}:00
               </div>
               <div className="flex-1 grid grid-cols-7">
                 {Array.from({ length: 7 }).map((_, i) => (
-                  <div key={i} className="border-r border-border last:border-r-0"></div>
+                  <div
+                    key={i}
+                    className="border-r border-border last:border-r-0"
+                  ></div>
                 ))}
               </div>
             </div>
@@ -900,25 +933,32 @@ function WeekView({
           <div className="absolute top-0 left-16 right-0 bottom-0 grid grid-cols-7">
             {days.map((day) => {
               // Filter events for this day
-              const dayEvents = events.filter(e => isSameDay(new Date(e.startDate), day) && !e.allDay);
+              const dayEvents = events.filter(
+                (e) => isSameDay(new Date(e.startDate), day) && !e.allDay,
+              );
 
               return (
-                <div key={day.toISOString()} className="relative h-full border-r border-transparent last:border-r-0">
-                  {dayEvents.map(event => (
+                <div
+                  key={day.toISOString()}
+                  className="relative h-full border-r border-transparent last:border-r-0"
+                >
+                  {dayEvents.map((event) => (
                     <button
                       key={event.id}
                       className="absolute inset-x-1 rounded px-1 py-1 text-[10px] text-left overflow-hidden hover:z-10 hover:shadow-md transition-all leading-tight"
                       style={getEventStyle(event)}
                       onClick={() => onEventClick(event)}
                     >
-                      <div className="font-semibold truncate">{event.title}</div>
+                      <div className="font-semibold truncate">
+                        {event.title}
+                      </div>
                       <div className="opacity-80">
                         {formatTime(new Date(event.startDate))}
                       </div>
                     </button>
                   ))}
                 </div>
-              )
+              );
             })}
           </div>
         </div>
@@ -968,8 +1008,8 @@ export function CalendarView() {
     endDate: dateRange.endDate,
     filters:
       filters.eventTypes.length > 0 ||
-        filters.statuses.length > 0 ||
-        filters.priorities.length > 0
+      filters.statuses.length > 0 ||
+      filters.priorities.length > 0
         ? filters
         : undefined,
   });

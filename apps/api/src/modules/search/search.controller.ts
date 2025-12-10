@@ -5,14 +5,14 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 @Controller('search')
 @UseGuards(JwtAuthGuard)
 export class SearchController {
-    constructor(private readonly searchService: SearchService) { }
+  constructor(private readonly searchService: SearchService) {}
 
-    @Get()
-    async globalSearch(
-        @Query('q') query: string,
-        @Query('limit') limit?: string,
-    ): Promise<GlobalSearchResult> {
-        const parsedLimit = limit ? parseInt(limit, 10) : 10;
-        return this.searchService.globalSearch(query || '', parsedLimit);
-    }
+  @Get()
+  async globalSearch(
+    @Query('q') query: string,
+    @Query('limit') limit?: string,
+  ): Promise<GlobalSearchResult> {
+    const parsedLimit = limit ? parseInt(limit, 10) : 10;
+    return this.searchService.globalSearch(query || '', parsedLimit);
+  }
 }

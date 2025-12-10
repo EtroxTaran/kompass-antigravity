@@ -11,7 +11,7 @@ export class TimeEntryService {
   constructor(
     private readonly timeEntryRepository: TimeEntryRepository,
     private readonly projectService: ProjectService,
-  ) { }
+  ) {}
 
   async findAll(
     options: {

@@ -172,15 +172,18 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
             entityId={project._id}
             comments={project.comments || []}
             onCommentAdded={() => {
-              queryClient.invalidateQueries({ queryKey: ['project', project._id] });
+              queryClient.invalidateQueries({
+                queryKey: ["project", project._id],
+              });
             }}
             onCommentResolved={() => {
-              queryClient.invalidateQueries({ queryKey: ['project', project._id] });
+              queryClient.invalidateQueries({
+                queryKey: ["project", project._id],
+              });
             }}
           />
         </TabsContent>
       </Tabs>
-
-    </div >
+    </div>
   );
 }

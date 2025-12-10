@@ -34,7 +34,7 @@ export function useProjectMaterialCosts(projectId: string | undefined) {
             Authorization: token ? `Bearer ${token}` : "",
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (!response.ok) {

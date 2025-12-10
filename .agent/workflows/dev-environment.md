@@ -17,6 +17,7 @@ This workflow describes how to start the complete KOMPASS development environmen
 // turbo
 
 1. **Start infrastructure services (CouchDB and Keycloak)**
+
    ```bash
    cd /home/etrox/workspace/kompass-antigravity
    docker-compose up -d

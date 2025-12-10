@@ -188,7 +188,9 @@ export function TimeEntryForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Installation">Installation</SelectItem>
+                        <SelectItem value="Installation">
+                          Installation
+                        </SelectItem>
                         <SelectItem value="Planning">Planning</SelectItem>
                         <SelectItem value="Travel">Travel</SelectItem>
                         <SelectItem value="Consulting">Consulting</SelectItem>

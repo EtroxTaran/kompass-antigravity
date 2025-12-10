@@ -97,9 +97,7 @@ async function buildAuthUrl(): Promise<string> {
 /**
  * Exchange authorization code for tokens
  */
-async function exchangeCodeForTokens(
-  code: string,
-): Promise<{
+async function exchangeCodeForTokens(code: string): Promise<{
   access_token: string;
   refresh_token?: string;
   expires_in: number;

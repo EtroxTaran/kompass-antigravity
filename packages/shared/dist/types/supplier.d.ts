@@ -13,7 +13,7 @@ export interface Supplier extends BaseEntity {
     rating?: SupplierRating;
     ratingsHistory?: SupplierRatingHistoryItem[];
     category?: string[];
-    status?: 'Active' | 'Inactive' | 'Blacklisted' | 'PendingApproval' | 'Rejected';
+    status?: "Active" | "Inactive" | "Blacklisted" | "PendingApproval" | "Rejected";
     approvedBy?: string;
     approvedAt?: string;
     rejectedBy?: string;

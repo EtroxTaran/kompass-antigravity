@@ -12,4 +12,4 @@ import { ProjectModule } from '../project/project.module';
   providers: [ExpenseService, ExpenseRepository, MileageRepository],
   exports: [ExpenseService],
 })
-export class ExpenseModule { }
+export class ExpenseModule {}

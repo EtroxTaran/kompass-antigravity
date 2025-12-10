@@ -3,8 +3,16 @@ import { useInvoices } from "@/hooks/useInvoice";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, FileText, Calendar, Wallet } from "lucide-react";
+import {
+  Plus,
+  FileText,
+  Calendar,
+  Wallet,
+  Download,
+  Loader2,
+} from "lucide-react";
 import { format } from "date-fns";
+import { useToast } from "@/components/ui/use-toast";
 
 interface InvoiceListProps {
   customerId?: string;
@@ -13,7 +21,27 @@ interface InvoiceListProps {
 
 export function InvoiceList({ customerId, projectId }: InvoiceListProps) {
   const navigate = useNavigate();
-  const { invoices, loading } = useInvoices({ customerId, projectId });
+  const { invoices, loading, exporting, exportLexware } = useInvoices({
+    customerId,
+    projectId,
+  });
+  const { toast } = useToast();
+
+  const handleExportLexware = async () => {
+    try {
+      await exportLexware();
+      toast({
+        title: "Export erfolgreich",
+        description: "Die Rechnungen wurden im Lexware-Format exportiert.",
+      });
+    } catch {
+      toast({
+        title: "Export fehlgeschlagen",
+        description: "Die Rechnungen konnten nicht exportiert werden.",
+        variant: "destructive",
+      });
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
 
@@ -44,9 +72,23 @@ export function InvoiceList({ customerId, projectId }: InvoiceListProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Rechnungen</h1>
-        <Button onClick={() => navigate("/invoices/new")}>
-          <Plus className="h-4 w-4 mr-2" /> Neue Rechnung
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={handleExportLexware}
+            disabled={exporting || invoices.length === 0}
+          >
+            {exporting ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4 mr-2" />
+            )}
+            Lexware Export
+          </Button>
+          <Button onClick={() => navigate("/invoices/new")}>
+            <Plus className="h-4 w-4 mr-2" /> Neue Rechnung
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
