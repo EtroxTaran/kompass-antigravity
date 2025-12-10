@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProjectMaterialService } from './project-material.service';
 import { ProjectMaterialRepository } from './project-material.repository';
 import { OfferService } from '../offer/offer.service';
+import { ProjectService } from '../project/project.service';
 
 const mockRepository = {
     create: jest.fn(),
@@ -15,6 +16,10 @@ const mockOfferService = {
     findById: jest.fn(),
 };
 
+const mockProjectService = {
+    updateActualCost: jest.fn(),
+};
+
 describe('ProjectMaterialService', () => {
     let service: ProjectMaterialService;
 
@@ -24,6 +29,7 @@ describe('ProjectMaterialService', () => {
                 ProjectMaterialService,
                 { provide: ProjectMaterialRepository, useValue: mockRepository },
                 { provide: OfferService, useValue: mockOfferService },
+                { provide: ProjectService, useValue: mockProjectService },
             ],
         }).compile();
 
@@ -69,6 +75,54 @@ describe('ProjectMaterialService', () => {
             }),
             'user1',
             undefined
+        );
+    });
+
+    it('should trigger cost update when status changes to delivered', async () => {
+        mockRepository.findById.mockResolvedValue({
+            id: '1',
+            projectId: 'p1',
+            estimatedTotalCost: 100,
+            status: 'planned'
+        });
+        mockRepository.update.mockResolvedValue({
+            id: '1',
+            projectId: 'p1',
+            estimatedTotalCost: 100,
+            status: 'delivered'
+        });
+
+        await service.update('1', { status: 'delivered' }, { id: 'user1' });
+
+        expect(mockProjectService.updateActualCost).toHaveBeenCalledWith(
+            'p1',
+            'material',
+            100,
+            'user1'
+        );
+    });
+
+    it('should revert cost update when status changes from delivered to planned', async () => {
+        mockRepository.findById.mockResolvedValue({
+            id: '1',
+            projectId: 'p1',
+            estimatedTotalCost: 100,
+            status: 'delivered'
+        });
+        mockRepository.update.mockResolvedValue({
+            id: '1',
+            projectId: 'p1',
+            estimatedTotalCost: 100,
+            status: 'planned'
+        });
+
+        await service.update('1', { status: 'planned' }, { id: 'user1' });
+
+        expect(mockProjectService.updateActualCost).toHaveBeenCalledWith(
+            'p1',
+            'material',
+            -100,
+            'user1'
         );
     });
 });

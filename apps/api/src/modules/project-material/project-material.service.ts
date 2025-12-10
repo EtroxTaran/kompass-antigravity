@@ -2,12 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProjectMaterialRepository } from './project-material.repository';
 import { ProjectMaterialRequirement } from '@kompass/shared';
 import { OfferService } from '../offer/offer.service';
+import { ProjectService } from '../project/project.service';
 
 @Injectable()
 export class ProjectMaterialService {
     constructor(
         private readonly projectMaterialRepository: ProjectMaterialRepository,
         private readonly offerService: OfferService,
+        private readonly projectService: ProjectService,
     ) { }
 
     async copyFromOffer(offerId: string, projectId: string, user: { id: string; email?: string }) {
@@ -70,10 +72,45 @@ export class ProjectMaterialService {
             estimatedTotalCost = quantity * unitPrice;
         }
 
-        return this.projectMaterialRepository.update(id, {
+        const updated = await this.projectMaterialRepository.update(id, {
             ...dto,
             estimatedTotalCost
         }, user.id, user.email);
+
+        // Calculate Cost Impact if status changed to 'delivered' or cost changed while delivered
+        const wasDelivered = existing.status === 'delivered';
+        const isDelivered = updated.status === 'delivered';
+
+        if (isDelivered && !wasDelivered) {
+            // New delivery -> Add cost
+            await this.projectService.updateActualCost(
+                updated.projectId,
+                'material',
+                updated.estimatedTotalCost, // Using estimated as actual for now if actual not tracked separately
+                user.id
+            );
+        } else if (!isDelivered && wasDelivered) {
+            // Reverted delivery -> Remove cost
+            await this.projectService.updateActualCost(
+                updated.projectId,
+                'material',
+                -existing.estimatedTotalCost,
+                user.id
+            );
+        } else if (isDelivered && wasDelivered) {
+            // Updated delivery cost
+            const diff = updated.estimatedTotalCost - existing.estimatedTotalCost;
+            if (diff !== 0) {
+                await this.projectService.updateActualCost(
+                    updated.projectId,
+                    'material',
+                    diff,
+                    user.id
+                );
+            }
+        }
+
+        return updated;
     }
 
     async delete(id: string, user: { id: string; email?: string }): Promise<void> {
