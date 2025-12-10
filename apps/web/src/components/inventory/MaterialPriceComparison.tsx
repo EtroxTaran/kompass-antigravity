@@ -13,8 +13,50 @@ import {
 } from "@/components/ui/table";
 import { ArrowUpDown, Star, TrendingDown, Check } from "lucide-react";
 
-type SortField = "price" | "leadTime" | "moq" | "supplierName";
+type SortField = "price" | "leadTime" | "moq" | "supplierName" | "rating";
 type SortDirection = "asc" | "desc";
+
+/**
+ * Returns color class based on rating value per UI reference:
+ * ≥4.5: green, 4.0-4.4: green, 3.0-3.9: amber, <3.0: red
+ */
+function getRatingColorClass(rating: number): string {
+  if (rating >= 4.0) return "text-green-600";
+  if (rating >= 3.0) return "text-amber-600";
+  return "text-red-600";
+}
+
+/**
+ * Renders star icons for a given rating (1-5 scale)
+ */
+function RatingStars({ rating }: { rating?: number }) {
+  if (rating === undefined || rating === null) {
+    return <span className="text-muted-foreground text-sm">—</span>;
+  }
+
+  const fullStars = Math.floor(rating);
+  const hasPartial = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (hasPartial ? 1 : 0);
+
+  return (
+    <div className="flex items-center gap-1">
+      <div className="flex">
+        {[...Array(fullStars)].map((_, i) => (
+          <Star key={`full-${i}`} className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />
+        ))}
+        {hasPartial && (
+          <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500/50" />
+        )}
+        {[...Array(emptyStars)].map((_, i) => (
+          <Star key={`empty-${i}`} className="h-3.5 w-3.5 text-gray-300" />
+        ))}
+      </div>
+      <span className={`text-sm font-medium ${getRatingColorClass(rating)}`}>
+        {rating.toFixed(1)}
+      </span>
+    </div>
+  );
+}
 
 interface MaterialPriceComparisonProps {
   supplierPrices?: SupplierPrice[];
@@ -60,6 +102,10 @@ export function MaterialPriceComparison({
           break;
         case "supplierName":
           comparison = a.supplierName.localeCompare(b.supplierName);
+          break;
+        case "rating":
+          // Sort by rating descending by default (higher rating first), handle undefined
+          comparison = (b.rating ?? 0) - (a.rating ?? 0);
           break;
       }
       return sortDirection === "asc" ? comparison : -comparison;
@@ -139,6 +185,9 @@ export function MaterialPriceComparison({
               <TableHead className="text-right">
                 <SortHeader field="leadTime">Lieferzeit</SortHeader>
               </TableHead>
+              <TableHead className="text-center">
+                <SortHeader field="rating">Bewertung</SortHeader>
+              </TableHead>
               {onSelectSupplier && (
                 <TableHead className="text-right w-[100px]">Aktion</TableHead>
               )}
@@ -189,6 +238,9 @@ export function MaterialPriceComparison({
                   </TableCell>
                   <TableCell className="text-right">
                     {price.leadTimeDays} Tage
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <RatingStars rating={price.rating} />
                   </TableCell>
                   {onSelectSupplier && (
                     <TableCell className="text-right">

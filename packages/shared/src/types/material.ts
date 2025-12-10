@@ -14,6 +14,7 @@ export interface SupplierPrice {
   isPreferred: boolean; // Preferred supplier for this material
   notes?: string; // Price conditions, terms
   lastUpdated?: string; // ISO date string
+  rating?: number; // Overall supplier rating 1-5 scale
 }
 
 export interface Material extends BaseEntity {

@@ -13,6 +13,7 @@ export interface SupplierPrice {
     isPreferred: boolean;
     notes?: string;
     lastUpdated?: string;
+    rating?: number;
 }
 export interface Material extends BaseEntity {
     type: "material";
