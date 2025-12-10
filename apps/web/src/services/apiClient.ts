@@ -856,7 +856,26 @@ export const toursApi = {
   async delete(id: string): Promise<void> {
     return del(`/tours/${id}`);
   },
+
+  async optimize(stops: RouteStop[]): Promise<OptimizedRouteResponse> {
+    return post("/tours/optimize", { stops });
+  },
 };
+
+// Types for route optimization
+export interface RouteStop {
+  id: string;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+}
+
+export interface OptimizedRouteResponse {
+  stops: RouteStop[];
+  totalDistanceKm: number;
+  estimatedDurationMinutes: number;
+}
 
 // =============================================================================
 // Comments API

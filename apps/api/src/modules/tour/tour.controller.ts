@@ -15,7 +15,7 @@ import { TourService } from './tour.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RbacGuard } from '../../auth/guards/rbac.guard';
 import { Permissions } from '../../auth/decorators/permissions.decorator';
-import { CreateTourDto, UpdateTourDto } from './dto/tour.dto';
+import { CreateTourDto, UpdateTourDto, OptimizeTourDto } from './dto/tour.dto';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 
 @Controller('api/v1/tours')
@@ -56,5 +56,12 @@ export class TourController {
   @Permissions({ entity: 'Tour', action: 'DELETE' })
   remove(@Param('id') id: string) {
     return this.tourService.remove(id);
+  }
+
+  @Post('optimize')
+  @Permissions({ entity: 'Tour', action: 'READ' })
+  @HttpCode(HttpStatus.OK)
+  optimize(@Body() dto: OptimizeTourDto) {
+    return this.tourService.optimizeRoute(dto);
   }
 }

@@ -31,3 +31,23 @@ export class UpdateTourDto {
   totalDurationMinutes?: number;
   status?: 'planned' | 'in_progress' | 'completed' | 'cancelled';
 }
+
+// Route optimization DTOs
+export class OptimizeTourStopDto {
+  id: string;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+}
+
+export class OptimizeTourDto {
+  stops: OptimizeTourStopDto[];
+  startLocation?: { lat: number; lng: number };
+}
+
+export class OptimizedRouteResponse {
+  stops: OptimizeTourStopDto[];
+  totalDistanceKm: number;
+  estimatedDurationMinutes: number;
+}

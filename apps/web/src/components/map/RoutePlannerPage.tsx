@@ -9,6 +9,7 @@ import {
   Route,
   CheckCircle,
   Loader2,
+  Sparkles,
 } from "lucide-react";
 import {
   GoogleMap,
@@ -51,11 +52,13 @@ export function RoutePlannerPage() {
   const {
     stops,
     routeInfo,
+    isOptimizing,
+    error,
     addStop,
     removeStop,
     reorderStops,
     updateStopStatus,
-    calculateRoute,
+    optimizeRoute,
     clearRoute,
     openExternalNavigation,
   } = useRoutePlanner();
@@ -324,21 +327,33 @@ export function RoutePlannerPage() {
 
       {/* Bottom Actions */}
       {stops.length > 0 && (
-        <div className="p-4 border-t bg-white dark:bg-gray-900 flex gap-3">
-          <button
-            onClick={() => setShowAddPanel(true)}
-            className="flex-1 px-4 py-2 border rounded-lg text-sm flex items-center justify-center gap-2"
-          >
-            <MapPin className="w-4 h-4" />
-            Stopp hinzufügen
-          </button>
-          <button
-            onClick={calculateRoute}
-            className="flex-1 px-4 py-2 bg-primary text-white rounded-lg text-sm flex items-center justify-center gap-2"
-          >
-            <Navigation className="w-4 h-4" />
-            Route berechnen
-          </button>
+        <div className="p-4 border-t bg-white dark:bg-gray-900">
+          {error && (
+            <div className="mb-3 p-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm rounded-lg">
+              {error}
+            </div>
+          )}
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowAddPanel(true)}
+              className="flex-1 px-4 py-2 border rounded-lg text-sm flex items-center justify-center gap-2"
+            >
+              <MapPin className="w-4 h-4" />
+              Stopp hinzufügen
+            </button>
+            <button
+              onClick={optimizeRoute}
+              disabled={isOptimizing || stops.length < 2}
+              className="flex-1 px-4 py-2 bg-amber-500 hover:bg-amber-600 disabled:bg-gray-300 text-white rounded-lg text-sm flex items-center justify-center gap-2"
+            >
+              {isOptimizing ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Sparkles className="w-4 h-4" />
+              )}
+              Route optimieren
+            </button>
+          </div>
         </div>
       )}
 
