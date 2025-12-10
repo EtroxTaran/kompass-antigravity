@@ -41,6 +41,7 @@ import { DeliveryModule } from './modules/delivery/delivery.module';
 import { TranscribeModule } from './modules/transcribe/transcribe.module';
 import { RfqModule } from './modules/rfq/rfq.module';
 import { ProjectSubcontractorModule } from './modules/project-subcontractor/project-subcontractor.module';
+import { PresenceModule } from './modules/presence/presence.module';
 
 // Guards
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -60,6 +61,7 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     // Core infrastructure
     DatabaseModule,
     AuthModule,
+    PresenceModule,
     SharedModule,
     SearchModule,
     PdfModule,
@@ -93,7 +95,6 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     SupplierContractModule,
     SupplierInvoiceModule,
     DeliveryModule,
-    TranscribeModule,
     TranscribeModule,
     RfqModule,
     ProjectSubcontractorModule,

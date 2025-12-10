@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProjectList } from "../pm/ProjectList";
 import { InvoiceList } from "../accounting/InvoiceList";
 import { OfferList } from "../sales/OfferList";
+import { ActiveUserAvatars } from "@/components/presence/ActiveUserAvatars";
 
 interface CustomerDetailProps {
   customer: Customer;
@@ -20,9 +21,12 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">
-            {customer.companyName}
-          </h2>
+          <div className="flex items-center gap-4">
+            <h2 className="text-3xl font-bold tracking-tight">
+              {customer.companyName}
+            </h2>
+            <ActiveUserAvatars entityType="customer" entityId={customer._id} />
+          </div>
           <p className="text-muted-foreground">Customer Detail View</p>
         </div>
         <Button onClick={() => navigate(`/customers/${customer._id}/edit`)}>

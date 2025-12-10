@@ -83,6 +83,8 @@ import { InvoiceList } from "@/components/accounting/InvoiceList";
 import { InvoiceForm } from "@/components/accounting/InvoiceForm";
 import { InvoiceDetail } from "@/components/accounting/InvoiceDetail";
 
+import { PresenceProvider } from "@/contexts/PresenceContext";
+
 import { LocationList } from "@/components/shared/LocationList";
 import { LocationForm } from "@/components/shared/LocationForm";
 
@@ -1086,326 +1088,304 @@ function Dashboard() {
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
+      <PresenceProvider>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
 
-        {/* Sales Routes */}
-        <Route
-          path="/sales"
-          element={
-            <MainLayout
-              userRole="SALES"
-              breadcrumbs={[{ label: "Sales", href: "/sales" }]}
-            >
-              <div className="space-y-4">
-                <h1 className="text-2xl font-bold">Sales Pipeline</h1>
-                <OpportunityBoard />
+          {/* Sales Routes */}
+          <Route
+            path="/sales"
+            element={
+              <MainLayout
+                userRole="SALES"
+                breadcrumbs={[{ label: "Sales", href: "/sales" }]}
+              >
+                <div className="space-y-4">
+                  <h1 className="text-2xl font-bold">Sales Pipeline</h1>
+                  <OpportunityBoard />
+                </div>
+              </MainLayout>
+            }
+          />
+          <Route path="/sales/new" element={<OpportunityCreatePage />} />
+          <Route path="/sales/:id" element={<OpportunityDetailPage />} />
+          <Route path="/sales/:id/edit" element={<OpportunityEditPage />} />
+
+          {/* Offers Routes */}
+          <Route
+            path="/sales/offers"
+            element={
+              <MainLayout
+                userRole="SALES"
+                breadcrumbs={[
+                  { label: "Sales", href: "/sales" },
+                  { label: "Offers" },
+                ]}
+              >
+                <OfferList />
+              </MainLayout>
+            }
+          />
+          <Route path="/sales/offers/new" element={<OfferCreatePage />} />
+          <Route path="/sales/offers/:id" element={<OfferDetailPageWrapper />} />
+          <Route path="/sales/offers/:id/edit" element={<OfferEditPage />} />
+
+          {/* Contracts Routes */}
+          <Route
+            path="/sales/contracts"
+            element={
+              <MainLayout
+                userRole="SALES"
+                breadcrumbs={[
+                  { label: "Sales", href: "/sales" },
+                  { label: "Contracts" },
+                ]}
+              >
+                <ContractList />
+              </MainLayout>
+            }
+          />
+          <Route path="/sales/contracts/new" element={<ContractCreatePage />} />
+          <Route
+            path="/sales/contracts/:id"
+            element={<ContractDetailPageWrapper />}
+          />
+          <Route
+            path="/sales/contracts/:id/edit"
+            element={<ContractEditPage />}
+          />
+
+          {/* Projects Routes */}
+          <Route
+            path="/projects"
+            element={
+              <MainLayout
+                userRole="PM"
+                breadcrumbs={[{ label: "Projekte", href: "/projects" }]}
+              >
+                <div className="space-y-4">
+                  <h1 className="text-2xl font-bold">Projects</h1>
+                  <ProjectList />
+                </div>
+              </MainLayout>
+            }
+          />
+          <Route path="/projects/new" element={<ProjectCreatePage />} />
+          <Route path="/projects/:id" element={<ProjectDetailPage />} />
+          <Route path="/projects/:id/edit" element={<ProjectEditPage />} />
+
+          {/* Project Task Routes */}
+          <Route
+            path="/projects/:projectId/tasks/new"
+            element={
+              <MainLayout
+                userRole="PM"
+                breadcrumbs={[
+                  { label: "Projekte", href: "/projects" },
+                  { label: "Task" },
+                ]}
+              >
+                <ProjectTaskForm />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/projects/:projectId/tasks/:taskId/edit"
+            element={
+              <MainLayout
+                userRole="PM"
+                breadcrumbs={[
+                  { label: "Projekte", href: "/projects" },
+                  { label: "Task" },
+                ]}
+              >
+                <ProjectTaskForm />
+              </MainLayout>
+            }
+          />
+
+          {/* Time Entry Routes */}
+          <Route
+            path="/time-entries/new"
+            element={
+              <MainLayout
+                userRole="PM"
+                breadcrumbs={[
+                  { label: "Time", href: "/projects" },
+                  { label: "Log Time" },
+                ]}
+              >
+                <TimeEntryForm />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/time-entries/:id/edit"
+            element={
+              <MainLayout
+                userRole="PM"
+                breadcrumbs={[
+                  { label: "Time", href: "/projects" },
+                  { label: "Edit Time" },
+                ]}
+              >
+                <TimeEntryForm />
+              </MainLayout>
+            }
+          />
+
+          {/* Project Cost Routes */}
+          <Route path="/project-costs" element={<ProjectCostListPage />} />
+          <Route path="/project-costs/new" element={<ProjectCostCreatePage />} />
+          <Route path="/project-costs/:id/edit" element={<ProjectCostEditPage />} />
+
+          {/* Customer Routes */}
+          <Route
+            path="/customers"
+            element={
+              <MainLayout
+                userRole="CRM"
+                breadcrumbs={[{ label: "Kunden", href: "/customers" }]}
+              >
+                <div className="space-y-4">
+                  <CustomerList />
+                </div>
+              </MainLayout>
+            }
+          />
+          <Route path="/customers/new" element={<CustomerCreatePage />} />
+          <Route path="/customers/:id" element={<CustomerDetailPage />} />
+          <Route path="/customers/:id/edit" element={<CustomerEditPage />} />
+          <Route path="/contacts/:id" element={<ContactDetailPage />} />
+          <Route path="/protocols" element={<ProtocolListPage />} />
+          <Route path="/protocols/new" element={<ProtocolCreatePage />} />
+          <Route path="/protocols/:id/edit" element={<ProtocolEditPage />} />
+
+          {/* Inventory */}
+          <Route
+            path="/suppliers"
+            element={
+              <MainLayout
+                userRole="ADM"
+                breadcrumbs={[{ label: "Lieferanten", href: "/suppliers" }]}
+              >
+                <div className="space-y-4">
+                  <SupplierList />
+                </div>
+              </MainLayout>
+            }
+          />
+          <Route path="/suppliers/new" element={<SupplierCreatePage />} />
+          <Route path="/suppliers/:id" element={<SupplierDetailPage />} />
+          <Route path="/suppliers/:id/edit" element={<SupplierEditPage />} />
+
+          <Route
+            path="/materials"
+            element={
+              <MainLayout
+                userRole="ADM"
+                breadcrumbs={[{ label: "Materialien", href: "/materials" }]}
+              >
+                <div className="space-y-4">
+                  <MaterialList />
+                </div>
+              </MainLayout>
+            }
+          />
+          <Route path="/materials/new" element={<MaterialCreatePage />} />
+          <Route path="/materials/:id" element={<MaterialDetailPage />} />
+          <Route path="/materials/:id/edit" element={<MaterialEditPage />} />
+          <Route path="/purchase-orders" element={<PurchaseOrderListPage />} />
+          <Route path="/purchase-orders/new" element={<PurchaseOrderCreatePage />} />
+          <Route path="/purchase-orders/:id/edit" element={<PurchaseOrderEditPage />} />
+          <Route path="/tours" element={<TourListPage />} />
+          <Route path="/tours/new" element={<TourCreatePage />} />
+          <Route path="/tours/:id" element={<TourDetailPage />} />
+          <Route path="/tours/:id/edit" element={<TourEditPage />} />
+
+          <Route path="/rfqs" element={<RfqListPage />} />
+          <Route path="/rfqs/new" element={<RfqCreatePage />} />
+          <Route path="/rfqs/:id" element={<RfqDetailPage />} />
+
+          {/* Accounting */}
+          <Route path="/invoices" element={<InvoiceListPage />} />
+          <Route path="/invoices/new" element={<InvoiceCreatePage />} />
+          <Route path="/invoices/:id" element={<InvoiceDetailPage />} />
+          <Route path="/invoices/:id/edit" element={<InvoiceEditPage />} />
+          <Route path="/expenses" element={<ExpenseListPage />} />
+          <Route path="/expenses/new" element={<ExpenseCreatePage />} />
+          <Route path="/expenses/:id/edit" element={<ExpenseEditPage />} />
+          <Route path="/mileage" element={<MileageListPage />} />
+          <Route path="/mileage/new" element={<MileageCreatePage />} />
+          <Route path="/mileage/:id/edit" element={<MileageEditPage />} />
+
+          {/* Shared */}
+          <Route path="/locations" element={<LocationListPage />} />
+          <Route path="/locations/new" element={<LocationCreatePage />} />
+          <Route path="/locations/:id" element={<LocationEditPage />} />
+
+          {/* Tasks */}
+          <Route
+            path="/tasks"
+            element={
+              <MainLayout
+                userRole="ADM"
+                breadcrumbs={[{ label: "Meine Aufgaben", href: "/tasks" }]}
+              >
+                <div className="space-y-4">
+                  <h1 className="text-2xl font-bold">Meine Aufgaben</h1>
+                  <UserTaskDashboard />
+                </div>
+              </MainLayout>
+            }
+          />
+
+          {/* Dashboards */}
+          <Route path="/dashboard/gf" element={<GFDashboard />} />
+          <Route path="/dashboard/adm" element={<ADMDashboard />} />
+          <Route path="/dashboard/plan" element={<PLANDashboard />} />
+          <Route path="/dashboard/warehouse" element={<WarehouseDashboard />} />
+          <Route path="/dashboard/kalk" element={<KALKDashboard />} />
+          <Route path="/dashboard/buch" element={<BUCHDashboard />} />
+          <Route path="/dashboard/inn" element={<INNDashboard />} />
+
+          {/* Warehouse Management */}
+          <Route path="/warehouse" element={<WarehouseListPage />} />
+          <Route path="/warehouse/new" element={<WarehouseCreatePage />} />
+          <Route path="/warehouse/:id/edit" element={<WarehouseEditPage />} />
+
+          {/* Calendar Route */}
+          <Route
+            path="/calendar"
+            element={
+              <MainLayout
+                userRole="ADM"
+                breadcrumbs={[{ label: "Kalender", href: "/calendar" }]}
+              >
+                <CalendarView />
+              </MainLayout>
+            }
+          />
+
+          {/* Auth callback for Keycloak OIDC */}
+          <Route
+            path="/auth/callback"
+            element={
+              <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                  <p className="text-muted-foreground">
+                    Authentifizierung wird verarbeitet...
+                  </p>
+                </div>
               </div>
-            </MainLayout>
-          }
-        />
-        <Route path="/sales/new" element={<OpportunityCreatePage />} />
-        <Route path="/sales/:id" element={<OpportunityDetailPage />} />
-        <Route path="/sales/:id/edit" element={<OpportunityEditPage />} />
+            }
+          />
 
-        {/* Offers Routes */}
-        <Route
-          path="/sales/offers"
-          element={
-            <MainLayout
-              userRole="SALES"
-              breadcrumbs={[
-                { label: "Sales", href: "/sales" },
-                { label: "Offers" },
-              ]}
-            >
-              <OfferList />
-            </MainLayout>
-          }
-        />
-        <Route path="/sales/offers/new" element={<OfferCreatePage />} />
-        <Route path="/sales/offers/:id" element={<OfferDetailPageWrapper />} />
-        <Route path="/sales/offers/:id/edit" element={<OfferEditPage />} />
-
-        {/* Contracts Routes */}
-        <Route
-          path="/sales/contracts"
-          element={
-            <MainLayout
-              userRole="SALES"
-              breadcrumbs={[
-                { label: "Sales", href: "/sales" },
-                { label: "Contracts" },
-              ]}
-            >
-              <ContractList />
-            </MainLayout>
-          }
-        />
-        <Route path="/sales/contracts/new" element={<ContractCreatePage />} />
-        <Route
-          path="/sales/contracts/:id"
-          element={<ContractDetailPageWrapper />}
-        />
-        <Route
-          path="/sales/contracts/:id/edit"
-          element={<ContractEditPage />}
-        />
-
-        {/* Projects Routes */}
-        <Route
-          path="/projects"
-          element={
-            <MainLayout
-              userRole="PM"
-              breadcrumbs={[{ label: "Projekte", href: "/projects" }]}
-            >
-              <div className="space-y-4">
-                <h1 className="text-2xl font-bold">Projects</h1>
-                <ProjectList />
-              </div>
-            </MainLayout>
-          }
-        />
-        <Route path="/projects/new" element={<ProjectCreatePage />} />
-        <Route path="/projects/:id" element={<ProjectDetailPage />} />
-        <Route path="/projects/:id/edit" element={<ProjectEditPage />} />
-
-        {/* Project Task Routes */}
-        <Route
-          path="/projects/:projectId/tasks/new"
-          element={
-            <MainLayout
-              userRole="PM"
-              breadcrumbs={[
-                { label: "Projekte", href: "/projects" },
-                { label: "Task" },
-              ]}
-            >
-              <ProjectTaskForm />
-            </MainLayout>
-          }
-        />
-        <Route
-          path="/projects/:projectId/tasks/:taskId/edit"
-          element={
-            <MainLayout
-              userRole="PM"
-              breadcrumbs={[
-                { label: "Projekte", href: "/projects" },
-                { label: "Task" },
-              ]}
-            >
-              <ProjectTaskForm />
-            </MainLayout>
-          }
-        />
-
-        {/* Time Entry Routes */}
-        <Route
-          path="/time-entries/new"
-          element={
-            <MainLayout
-              userRole="PM"
-              breadcrumbs={[
-                { label: "Time", href: "/projects" },
-                { label: "Log Time" },
-              ]}
-            >
-              <TimeEntryForm />
-            </MainLayout>
-          }
-        />
-        <Route
-          path="/time-entries/:id/edit"
-          element={
-            <MainLayout
-              userRole="PM"
-              breadcrumbs={[
-                { label: "Time", href: "/projects" },
-                { label: "Edit Time" },
-              ]}
-            >
-              <TimeEntryForm />
-            </MainLayout>
-          }
-        />
-
-        {/* Customer Routes */}
-        <Route
-          path="/customers"
-          element={
-            <MainLayout
-              userRole="CRM"
-              breadcrumbs={[{ label: "Kunden", href: "/customers" }]}
-            >
-              <div className="space-y-4">
-                <CustomerList />
-              </div>
-            </MainLayout>
-          }
-        />
-        <Route path="/customers/new" element={<CustomerCreatePage />} />
-        <Route path="/customers/:id" element={<CustomerDetailPage />} />
-        <Route path="/customers/:id/edit" element={<CustomerEditPage />} />
-
-        <Route path="/customers/:id" element={<CustomerDetailPage />} />
-        <Route path="/customers/:id/edit" element={<CustomerEditPage />} />
-
-        {/* Contact Routes (Standalone) */}
-        <Route path="/contacts/:id" element={<ContactDetailPage />} />
-
-        {/* Protocol Routes */}
-        <Route path="/protocols" element={<ProtocolListPage />} />
-        <Route path="/protocols/new" element={<ProtocolCreatePage />} />
-        <Route path="/protocols/:id/edit" element={<ProtocolEditPage />} />
-
-        {/* Inventory Routes */}
-        <Route
-          path="/suppliers"
-          element={
-            <MainLayout
-              userRole="ADM"
-              breadcrumbs={[{ label: "Lieferanten", href: "/suppliers" }]}
-            >
-              <div className="space-y-4">
-                <SupplierList />
-              </div>
-            </MainLayout>
-          }
-        />
-        <Route path="/suppliers/new" element={<SupplierCreatePage />} />
-        <Route path="/suppliers/:id" element={<SupplierDetailPage />} />
-        <Route path="/suppliers/:id/edit" element={<SupplierEditPage />} />
-
-        <Route
-          path="/materials"
-          element={
-            <MainLayout
-              userRole="ADM"
-              breadcrumbs={[{ label: "Materialien", href: "/materials" }]}
-            >
-              <div className="space-y-4">
-                <MaterialList />
-              </div>
-            </MainLayout>
-          }
-        />
-        <Route path="/materials/new" element={<MaterialCreatePage />} />
-        <Route path="/materials/:id" element={<MaterialDetailPage />} />
-        <Route path="/materials/:id/edit" element={<MaterialEditPage />} />
-
-        {/* Invoice Routes */}
-        <Route path="/invoices" element={<InvoiceListPage />} />
-        <Route path="/invoices/new" element={<InvoiceCreatePage />} />
-        <Route path="/invoices/:id" element={<InvoiceDetailPage />} />
-        <Route path="/invoices/:id/edit" element={<InvoiceEditPage />} />
-
-        {/* Warehouse / Location Routes */}
-        <Route path="/warehouses" element={<WarehouseListPage />} />
-        <Route path="/warehouses/new" element={<WarehouseCreatePage />} />
-        <Route path="/warehouses/:id/edit" element={<WarehouseEditPage />} />
-
-        <Route path="/locations" element={<LocationListPage />} />
-        <Route path="/locations/new" element={<LocationCreatePage />} />
-        <Route path="/locations/:id/edit" element={<LocationEditPage />} />
-
-        {/* Inventory shortcuts */}
-        <Route
-          path="/inventory/material"
-          element={<Navigate to="/materials" replace />}
-        />
-        <Route
-          path="/inventory/suppliers"
-          element={<Navigate to="/suppliers" replace />}
-        />
-
-        {/* Expenses Routes */}
-        <Route path="/expenses" element={<ExpenseListPage />} />
-        <Route path="/expenses/new" element={<ExpenseCreatePage />} />
-        <Route path="/expenses/:id/edit" element={<ExpenseEditPage />} />
-
-        {/* Project Cost Routes */}
-        <Route path="/project-costs" element={<ProjectCostListPage />} />
-        <Route path="/project-costs/new" element={<ProjectCostCreatePage />} />
-        <Route
-          path="/project-costs/:id/edit"
-          element={<ProjectCostEditPage />}
-        />
-
-        {/* Purchase Order Routes */}
-        <Route path="/purchase-orders" element={<PurchaseOrderListPage />} />
-        <Route
-          path="/purchase-orders/new"
-          element={<PurchaseOrderCreatePage />}
-        />
-        <Route
-          path="/purchase-orders/:id/edit"
-          element={<PurchaseOrderEditPage />}
-        />
-
-        {/* Mileage Routes */}
-        <Route path="/mileage" element={<MileageListPage />} />
-        <Route path="/mileage/new" element={<MileageCreatePage />} />
-        <Route path="/mileage/:id/edit" element={<MileageEditPage />} />
-
-        {/* Tour Routes */}
-        <Route path="/tours" element={<TourListPage />} />
-        <Route path="/tours/new" element={<TourCreatePage />} />
-        <Route path="/tours/:id" element={<TourDetailPage />} />
-        <Route path="/tours/:id/edit" element={<TourEditPage />} />
-
-        {/* Task Management Routes */}
-        <Route
-          path="/tasks"
-          element={
-            <MainLayout
-              userRole="ADM"
-              breadcrumbs={[{ label: "Meine Aufgaben", href: "/tasks" }]}
-            >
-              <div className="space-y-4">
-                <h1 className="text-2xl font-bold">Meine Aufgaben</h1>
-                <UserTaskDashboard />
-              </div>
-            </MainLayout>
-          }
-        />
-
-        {/* Calendar Route */}
-        <Route
-          path="/calendar"
-          element={
-            <MainLayout
-              userRole="ADM"
-              breadcrumbs={[{ label: "Kalender", href: "/calendar" }]}
-            >
-              <CalendarView />
-            </MainLayout>
-          }
-        />
-        {/* RFQ Routes */}
-        <Route path="/rfqs" element={<RfqListPage />} />
-        <Route path="/rfqs/new" element={<RfqCreatePage />} />
-        <Route path="/rfqs/:id" element={<RfqDetailPage />} />
-
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-
-        {/* Auth callback for Keycloak OIDC */}
-        <Route
-          path="/auth/callback"
-          element={
-            <div className="flex items-center justify-center min-h-screen">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                <p className="text-muted-foreground">
-                  Authentifizierung wird verarbeitet...
-                </p>
-              </div>
-            </div>
-          }
-        />
-      </Routes>
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </PresenceProvider>
     </Router>
   );
 }
