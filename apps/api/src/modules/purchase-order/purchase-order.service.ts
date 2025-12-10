@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PurchaseOrderRepository } from './purchase-order.repository';
-import { PurchaseOrder, PurchaseOrderItem } from '@kompass/shared';
+import { PurchaseOrder, PurchaseOrderItem, PurchaseOrderApprovalStatus } from '@kompass/shared';
 import { PdfService } from '../pdf/pdf.service';
 import { MailService } from '../mail/mail.service';
 import { SearchService } from '../search/search.service';
 import { SupplierService } from '../supplier/supplier.service';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 
 export class CreatePurchaseOrderDto {
   orderNumber: string;
@@ -84,6 +84,15 @@ export class PurchaseOrderService {
       version: 1,
       ...createDto,
     };
+
+    // Auto-approve if amount <= 1000
+    if (purchaseOrder.totalAmount <= 1000) {
+      purchaseOrder.approvalStatus = 'approved';
+      purchaseOrder.approvedAt = new Date().toISOString();
+      purchaseOrder.approvedBy = 'SYSTEM';
+      purchaseOrder.status = 'ordered'; // Ready to be sent
+    }
+
     const newOrder = await this.purchaseOrderRepository.create(
       purchaseOrder,
       userId,
@@ -169,6 +178,82 @@ export class PurchaseOrderService {
     });
 
     return { success: true, message: 'Order sent successfully' };
+  }
+
+  async submitForApproval(id: string, userId: string): Promise<PurchaseOrder> {
+    const order = await this.findOne(id);
+    if (order.status !== 'draft') {
+      throw new BadRequestException('Only draft orders can be submitted for approval');
+    }
+
+    // If amount <= 1000, it should have been auto-approved on create, 
+    // but if it was edited or legacy, check again.
+    if (order.totalAmount <= 1000) {
+      const updated = await this.purchaseOrderRepository.update(id, {
+        status: 'ordered',
+        approvalStatus: 'approved',
+        approvedAt: new Date().toISOString(),
+        approvedBy: 'SYSTEM'
+      }, userId);
+      this.indexOrder(updated);
+      return updated;
+    }
+
+    // Set status to pending approval
+    const updated = await this.purchaseOrderRepository.update(id, {
+      approvalStatus: 'pending',
+      approvalRequestedAt: new Date().toISOString()
+    }, userId);
+    this.indexOrder(updated);
+    return updated;
+  }
+
+  async approve(id: string, userId: string, userRoles: string[]): Promise<PurchaseOrder> {
+    const order = await this.findOne(id);
+
+    if (order.approvalStatus !== 'pending') {
+      throw new BadRequestException('Order is not pending approval');
+    }
+
+    // Check thresholds
+    // 1000 < amount <= 10000 -> Requires BUCH
+    // amount > 10000 -> Requires GF
+
+    if (order.totalAmount > 10000) {
+      if (!userRoles.includes('GF')) {
+        throw new ForbiddenException('Purchase orders over 10.000€ require GF approval');
+      }
+    } else if (order.totalAmount > 1000) {
+      if (!userRoles.includes('BUCH') && !userRoles.includes('GF')) {
+        throw new ForbiddenException('Purchase orders over 1.000€ require BUCH or GF approval');
+      }
+    }
+
+    const updated = await this.purchaseOrderRepository.update(id, {
+      status: 'ordered',
+      approvalStatus: 'approved',
+      approvedAt: new Date().toISOString(),
+      approvedBy: userId
+    }, userId);
+    this.indexOrder(updated);
+    return updated;
+  }
+
+  async reject(id: string, userId: string, reason: string): Promise<PurchaseOrder> {
+    const order = await this.findOne(id);
+    if (order.approvalStatus !== 'pending') {
+      throw new BadRequestException('Order is not pending approval');
+    }
+
+    const updated = await this.purchaseOrderRepository.update(id, {
+      status: 'draft', // Back to draft
+      approvalStatus: 'rejected',
+      rejectedAt: new Date().toISOString(),
+      rejectedBy: userId,
+      rejectionReason: reason
+    }, userId);
+    this.indexOrder(updated);
+    return updated;
   }
 
   private async indexOrder(order: PurchaseOrder) {

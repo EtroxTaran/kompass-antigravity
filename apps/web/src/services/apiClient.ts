@@ -484,7 +484,7 @@ export const contractsApi = {
   },
 
   async createFromOffer(offerId: string, data: unknown): Promise<unknown> {
-    return post("/contracts/from-offer", { offerId, ...(data as any) });
+    return post("/contracts/from-offer", { offerId, ...(data as Record<string, unknown>) });
   },
 
   async update(id: string, data: unknown): Promise<unknown> {
@@ -812,7 +812,7 @@ export const rfqApi = {
     // The previous hook implementation expected array.
     // Let's wrap it to match other APIs if needed, but hook calls it directly.
     // Let's simply return the array for now as my backend service returns array.
-    return { data: data as any, total: data?.length || 0 };
+    return { data: (data as unknown) as RequestForQuote[], total: data?.length || 0 };
   },
 
   // Actually, let's look at useRfq.ts again. It calls apiClient.get<RequestForQuote[]>
@@ -962,6 +962,22 @@ export const purchaseOrdersApi = {
 
   async update(id: string, data: unknown): Promise<unknown> {
     return put(`/purchase-orders/${id}`, data);
+  },
+
+  async sendOrder(id: string): Promise<void> {
+    return post(`/purchase-orders/${id}/send`);
+  },
+
+  async submitForApproval(id: string): Promise<unknown> {
+    return post(`/purchase-orders/${id}/submit`);
+  },
+
+  async approve(id: string): Promise<unknown> {
+    return post(`/purchase-orders/${id}/approve`);
+  },
+
+  async reject(id: string, reason: string): Promise<unknown> {
+    return post(`/purchase-orders/${id}/reject`, { reason });
   },
 
   async delete(id: string): Promise<void> {

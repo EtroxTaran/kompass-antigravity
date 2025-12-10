@@ -33,6 +33,28 @@ export function PurchaseOrderList() {
     }
   };
 
+  const getApprovalStatusColor = (status?: string) => {
+    switch (status) {
+      case "approved":
+        return "bg-green-100 text-green-800";
+      case "rejected":
+        return "bg-red-100 text-red-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getApprovalLabel = (status?: string) => {
+    switch (status) {
+      case "approved": return "Genehmigt";
+      case "rejected": return "Abgelehnt";
+      case "pending": return "Ausstehend";
+      default: return "-";
+    }
+  };
+
   return (
     <Card className="h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -53,13 +75,14 @@ export function PurchaseOrderList() {
                 <TableHead>Lieferant (ID)</TableHead>
                 <TableHead className="text-right">Betrag</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Genehmigung</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {orders.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={5}
+                    colSpan={6}
                     className="text-center h-24 text-muted-foreground"
                   >
                     Keine Bestellungen gefunden.
@@ -92,6 +115,16 @@ export function PurchaseOrderList() {
                       >
                         {order.status}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {order.approvalStatus && (
+                        <Badge
+                          variant="outline"
+                          className={getApprovalStatusColor(order.approvalStatus)}
+                        >
+                          {getApprovalLabel(order.approvalStatus)}
+                        </Badge>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))

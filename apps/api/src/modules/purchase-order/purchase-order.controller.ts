@@ -24,7 +24,7 @@ import { Permissions } from '../../auth/decorators/permissions.decorator';
 @Controller('purchase-orders')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class PurchaseOrderController {
-  constructor(private readonly purchaseOrderService: PurchaseOrderService) {}
+  constructor(private readonly purchaseOrderService: PurchaseOrderService) { }
 
   @Post()
   @Permissions({ entity: 'purchase-order', action: 'CREATE' })
@@ -89,5 +89,44 @@ export class PurchaseOrderController {
   @Permissions({ entity: 'purchase-order', action: 'UPDATE' })
   async sendOrder(@Param('id') id: string, @Request() req: any) {
     return this.purchaseOrderService.sendOrder(id, req.user.sub);
+  }
+
+  /**
+   * POST /purchase-orders/:id/submit
+   * Submit purchase order for approval
+   */
+  @Post(':id/submit')
+  @Permissions({ entity: 'purchase-order', action: 'UPDATE' })
+  async submitForApproval(@Param('id') id: string, @Request() req: any) {
+    return this.purchaseOrderService.submitForApproval(id, req.user.sub);
+  }
+
+  /**
+   * POST /purchase-orders/:id/approve
+   * Approve purchase order
+   */
+  @Post(':id/approve')
+  @Permissions({ entity: 'purchase-order', action: 'UPDATE' })
+  async approve(@Param('id') id: string, @Request() req: any) {
+    // Pass user roles to service for threshold check
+    return this.purchaseOrderService.approve(id, req.user.sub, req.user.roles);
+  }
+
+  /**
+   * POST /purchase-orders/:id/reject
+   * Reject purchase order
+   */
+  @Post(':id/reject')
+  @Permissions({ entity: 'purchase-order', action: 'UPDATE' })
+  async reject(
+    @Param('id') id: string,
+    @Body('reason') reason: string,
+    @Request() req: any,
+  ) {
+    if (!reason) {
+      // Ideally use DTO validation, but manual check for simplicity here
+      throw new Error('Rejection reason is required');
+    }
+    return this.purchaseOrderService.reject(id, req.user.sub, reason);
   }
 }

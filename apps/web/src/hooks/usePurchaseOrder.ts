@@ -46,8 +46,65 @@ export function usePurchaseOrder(id?: string) {
     }
   };
 
-  return { order, loading, error, saveOrder, refetch: fetchOrder };
-}
+  const submitForApproval = async () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const result = await purchaseOrdersApi.submitForApproval(id);
+      setOrder(result as unknown as PurchaseOrder);
+      return result;
+    } catch (err) {
+      console.error("Error submitting purchase order", err);
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const approveOrder = async () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const result = await purchaseOrdersApi.approve(id);
+      setOrder(result as unknown as PurchaseOrder);
+      return result;
+    } catch (err) {
+      console.error("Error approving purchase order", err);
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const rejectOrder = async (reason: string) => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const result = await purchaseOrdersApi.reject(id, reason);
+      setOrder(result as unknown as PurchaseOrder);
+      return result;
+    } catch (err) {
+      console.error("Error rejecting purchase order", err);
+      setError(err as Error);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    order,
+    loading,
+    error,
+    saveOrder,
+    submitForApproval,
+    approveOrder,
+    rejectOrder,
+    refetch: fetchOrder
+  };
+};
 
 export function usePurchaseOrders(params?: {
   supplierId?: string;

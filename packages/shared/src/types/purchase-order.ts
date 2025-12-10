@@ -19,4 +19,15 @@ export interface PurchaseOrder extends BaseEntity {
   currency: string;
   status: "draft" | "ordered" | "received" | "cancelled";
   projectId?: string; // Optional link to a project
+
+  // Approval Workflow
+  approvalStatus?: "pending" | "approved" | "rejected";
+  approvalRequestedAt?: string;
+  approvedBy?: string;
+  approvedAt?: string;
+  rejectedBy?: string;
+  rejectedAt?: string;
+  rejectionReason?: string;
 }
+
+export type PurchaseOrderApprovalStatus = "pending" | "approved" | "rejected";
