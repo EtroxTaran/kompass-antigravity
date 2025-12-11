@@ -1,4 +1,11 @@
 import { Customer } from "@kompass/shared";
+import {
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+  Clock
+} from "lucide-react";
+import { differenceInDays, parseISO, format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
@@ -29,10 +36,10 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
           </div>
           <p className="text-muted-foreground">Customer Detail View</p>
         </div>
-        <Button onClick={() => navigate(`/customers/${customer._id}/edit`)}>
+        <Button onClick={() => navigate(`/ customers / ${customer._id}/edit`)}>
           Edit Customer
-        </Button>
-      </div>
+        </Button >
+      </div >
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Sidebar Info - Always Visible */}
@@ -113,6 +120,82 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
               </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                Visit & Compliance
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Visit Status */}
+              <div>
+                <span className="text-xs font-semibold block text-muted-foreground mb-1">
+                  Visit Planning
+                </span>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>Frequency:</span>
+                    <span>{customer.visitFrequencyDays ? `${customer.visitFrequencyDays} days` : "-"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Last Visit:</span>
+                    <span>{customer.lastVisit ? format(parseISO(customer.lastVisit), "dd.MM.yyyy") : "-"}</span>
+                  </div>
+
+                  {customer.visitFrequencyDays && customer.lastVisit && (
+                    <div className="mt-2">
+                      {differenceInDays(new Date(), parseISO(customer.lastVisit)) > customer.visitFrequencyDays ? (
+                        <div className="flex items-center gap-2 text-destructive bg-destructive/10 p-2 rounded text-xs font-medium">
+                          <AlertTriangle className="h-4 w-4" />
+                          <span>Visit Overdue</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded text-xs font-medium">
+                          <CheckCircle className="h-4 w-4" />
+                          <span>On Schedule</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* DSGVO Status */}
+              <div>
+                <span className="text-xs font-semibold block text-muted-foreground mb-1">
+                  Compliance (DSGVO)
+                </span>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between items-center">
+                    <span>Marketing:</span>
+                    {customer.dsgvoConsent?.marketing ? (
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-gray-300" />
+                    )}
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>AI Processing:</span>
+                    {customer.dsgvoConsent?.aiProcessing ? (
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-gray-300" />
+                    )}
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Data Sharing:</span>
+                    {customer.dsgvoConsent?.dataSharing ? (
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-gray-300" />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Main Content Areas with Tabs */}
@@ -155,6 +238,6 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
           </Tabs>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

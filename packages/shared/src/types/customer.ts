@@ -17,11 +17,11 @@ export interface Customer extends BaseEntity {
   // Categorization
   industry?: string;
   customerType?:
-    | "direct_marketer"
-    | "retail"
-    | "franchise"
-    | "cooperative"
-    | "other";
+  | "direct_marketer"
+  | "retail"
+  | "franchise"
+  | "cooperative"
+  | "other";
   rating?: "A" | "B" | "C";
 
   // Address Management
@@ -32,6 +32,10 @@ export interface Customer extends BaseEntity {
   // Relationship management
   owner: string; // User ID
   contactPersons: string[]; // IDs
+
+  // Visit Management
+  visitFrequencyDays?: number;
+  lastVisit?: string; // ISO Date
 
   // DSGVO
   dsgvoConsent?: {
