@@ -23,9 +23,16 @@ export class CommentService {
     private readonly taskRepository: ProjectTaskRepository,
     private readonly opportunityRepository: OpportunityRepository,
     private readonly presenceGateway: PresenceGateway,
-  ) {}
+  ) { }
 
-  private getRepository(entityType: string): any {
+  private getRepository(
+    entityType: string,
+  ):
+    | ProjectRepository
+    | OfferRepository
+    | InvoiceRepository
+    | ProjectTaskRepository
+    | OpportunityRepository {
     switch (entityType) {
       case 'project':
         return this.projectRepository;
@@ -118,7 +125,7 @@ export class CommentService {
     comments[commentIndex].resolved = true;
     comments[commentIndex].updatedAt = new Date().toISOString();
 
-    await repository.update(entityId, { comments }, user.id, user.email);
+    await repository.update(entityId, { comments } as any, user.id, user.email);
 
     if (this.presenceGateway && this.presenceGateway.server) {
       this.presenceGateway.server

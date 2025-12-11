@@ -139,4 +139,3 @@ export function useRoutePlanner(initialStops: RouteStop[] = []) {
 }
 
 export default useRoutePlanner;
-

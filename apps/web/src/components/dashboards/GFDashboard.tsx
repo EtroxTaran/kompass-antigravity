@@ -10,13 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Euro,
-  Briefcase,
-  AlertCircle,
-  Target,
-  Users,
-} from "lucide-react";
+import { Euro, Briefcase, AlertCircle, Target, Users } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -194,7 +188,9 @@ export function GFDashboard() {
             <Briefcase className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.activeProjectCount}</div>
+            <div className="text-2xl font-bold">
+              {metrics.activeProjectCount}
+            </div>
             <div className="flex items-center gap-3 text-xs">
               <span className="text-green-600">
                 {metrics.onTimeProjectCount} pünktlich
@@ -230,7 +226,9 @@ export function GFDashboard() {
                   <div key={stage.stage}>
                     <div className="flex items-center justify-between mb-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-sm">{stage.label}</span>
+                        <span className="font-medium text-sm">
+                          {stage.label}
+                        </span>
                         <Badge variant="outline">{stage.count}</Badge>
                       </div>
                       <span className="font-semibold text-sm">
@@ -276,7 +274,10 @@ export function GFDashboard() {
                   tick={{ fontSize: 12 }}
                 />
                 <Tooltip
-                  formatter={(value: number) => [formatCurrency(value), "Umsatz"]}
+                  formatter={(value: number) => [
+                    formatCurrency(value),
+                    "Umsatz",
+                  ]}
                 />
                 <Line
                   type="monotone"
@@ -385,7 +386,8 @@ export function GFDashboard() {
                     <div>
                       <p className="font-medium text-sm">{inv.invoiceNumber}</p>
                       <p className="text-xs text-muted-foreground">
-                        Fällig: {new Date(inv.dueDate).toLocaleDateString("de-DE")}
+                        Fällig:{" "}
+                        {new Date(inv.dueDate).toLocaleDateString("de-DE")}
                       </p>
                     </div>
                     <div className="text-right">
@@ -422,7 +424,9 @@ export function GFDashboard() {
                 metrics.teamUtilization.slice(0, 5).map((member) => (
                   <div key={member.userId} className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-sm">{member.userName}</span>
+                      <span className="font-medium text-sm">
+                        {member.userName}
+                      </span>
                       <span
                         className={`font-semibold text-sm ${getUtilizationColor(
                           member.utilizationPercent,

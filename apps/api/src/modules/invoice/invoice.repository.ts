@@ -3,6 +3,7 @@ import { OPERATIONAL_DB } from '../../database/database.module';
 import { AuditService } from '../../shared/services/audit.service';
 import { BaseRepository, BaseEntity } from '../../shared/base.repository';
 import * as Nano from 'nano';
+import { Comment } from '@kompass/shared';
 
 export interface InvoicePosition {
   description: string;
@@ -32,6 +33,7 @@ export interface Invoice extends BaseEntity {
   totalGross: number;
 
   notes?: string;
+  comments?: Comment[];
 }
 
 @Injectable()

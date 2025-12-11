@@ -3,6 +3,7 @@ import { OPERATIONAL_DB } from '../../database/database.module';
 import { AuditService } from '../../shared/services/audit.service';
 import { BaseRepository, BaseEntity } from '../../shared/base.repository';
 import * as Nano from 'nano';
+import { Comment } from '@kompass/shared';
 
 export interface Opportunity extends BaseEntity {
   type: 'opportunity';
@@ -14,13 +15,13 @@ export interface Opportunity extends BaseEntity {
 
   // Pipeline
   stage:
-    | 'lead'
-    | 'qualified'
-    | 'analysis'
-    | 'proposal'
-    | 'negotiation'
-    | 'closed_won'
-    | 'closed_lost';
+  | 'lead'
+  | 'qualified'
+  | 'analysis'
+  | 'proposal'
+  | 'negotiation'
+  | 'closed_won'
+  | 'closed_lost';
   probability: number;
   expectedValue: number;
   currency: string;
@@ -37,6 +38,7 @@ export interface Opportunity extends BaseEntity {
 
   // Assignment
   owner: string;
+  comments?: Comment[];
 }
 
 @Injectable()

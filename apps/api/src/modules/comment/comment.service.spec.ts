@@ -7,7 +7,7 @@ import { ProjectTaskRepository } from '../project-task/project-task.repository';
 import { OpportunityRepository } from '../opportunity/opportunity.repository';
 import { PresenceGateway } from '../presence/presence.gateway';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { AuthenticatedUser } from '../../auth/strategies/jwt.strategy';
 
 // Mock dependencies
 const mockRepository = {
@@ -28,11 +28,10 @@ const mockUser = {
   email: 'test@example.com',
   roles: [],
   primaryRole: 'user',
-} as any;
+} as unknown as AuthenticatedUser;
 
 describe('CommentService', () => {
   let service: CommentService;
-  let projectRepo: ProjectRepository;
 
   beforeEach(async () => {
     // Reset mocks
@@ -51,7 +50,6 @@ describe('CommentService', () => {
     }).compile();
 
     service = module.get<CommentService>(CommentService);
-    projectRepo = module.get<ProjectRepository>(ProjectRepository);
   });
 
   it('should be defined', () => {
@@ -88,6 +86,7 @@ describe('CommentService', () => {
       expect(mockRepository.update).toHaveBeenCalledWith(
         entityId,
         expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           comments: expect.arrayContaining([
             expect.objectContaining({ content: 'Test comment' }),
           ]),

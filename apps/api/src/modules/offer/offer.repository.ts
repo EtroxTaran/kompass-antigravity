@@ -8,6 +8,7 @@ import {
   PaginatedResult,
 } from '../../shared/base.repository';
 import * as Nano from 'nano';
+import { Comment } from '@kompass/shared';
 
 export type OfferStatus =
   | 'draft'
@@ -63,6 +64,7 @@ export interface Offer extends BaseEntity {
   rejectedAt?: string;
   rejectionReason?: string;
   supersededBy?: string;
+  comments?: Comment[];
 }
 
 export interface OfferQueryOptions extends QueryOptions {

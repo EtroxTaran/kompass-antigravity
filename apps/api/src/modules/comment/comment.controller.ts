@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Param,
-  Put,
-  UseGuards,
-  Req,
-} from '@nestjs/common';
+import { Controller, Post, Body, Param, Put, UseGuards } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { AddCommentDto } from './dto/add-comment.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
