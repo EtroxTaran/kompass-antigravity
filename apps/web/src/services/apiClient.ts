@@ -7,7 +7,8 @@
  */
 
 // Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+// South team uses port 3100 (offset from default 3000)
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3100";
 
 // RFC 7807 Problem Details format
 interface ProblemDetails {
@@ -815,6 +816,21 @@ export const contactsApi = {
   async delete(id: string): Promise<void> {
     return del(`/contacts/${id}`);
   },
+
+  async checkDuplicates(criteria: {
+    email?: string;
+    phone?: string;
+    excludeId?: string;
+  }): Promise<
+    Array<{
+      id: string;
+      companyName: string;
+      matchReason: string;
+      score: number;
+    }>
+  > {
+    return post("/contacts/check-duplicates", criteria);
+  },
 };
 
 // =============================================================================
@@ -1356,6 +1372,7 @@ export interface GlobalSearchResult {
     opportunities: SearchHit[];
     suppliers: SearchHit[];
     materials: SearchHit[];
+    contacts: SearchHit[];
   };
   totalHits: number;
 }

@@ -1,139 +1,53 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
-import { LocationRepository, Location } from './location.repository';
-import { CreateLocationDto, UpdateLocationDto } from './dto/location.dto';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { LocationRepository } from './location.repository';
+import { CreateLocationDto } from './dto/create-location.dto';
+import { UpdateLocationDto } from './dto/update-location.dto';
+import { Location } from '@kompass/shared';
 
 @Injectable()
 export class LocationService {
-  constructor(private readonly locationRepository: LocationRepository) {}
+  constructor(private readonly locationRepository: LocationRepository) { }
 
-  async findAll(
-    options: {
-      page?: number;
-      limit?: number;
-      search?: string;
-      locationType?: string;
-    } = {},
-  ) {
-    if (options.search) {
-      return this.locationRepository.searchByName(options.search, options);
-    }
-    if (options.locationType) {
-      return this.locationRepository.findByType(options.locationType, options);
-    }
-    return this.locationRepository.findAll(options);
+  async create(createLocationDto: CreateLocationDto, userId: string, userEmail?: string): Promise<Location> {
+    await this.validateUniqueName(createLocationDto.customerId, createLocationDto.locationName);
+
+    return this.locationRepository.create(createLocationDto as any, userId, userEmail);
   }
 
-  async findById(id: string): Promise<Location> {
+  async findAll(customerId?: string): Promise<any> {
+    if (customerId) {
+      return this.locationRepository.findByCustomerId(customerId);
+    }
+    return this.locationRepository.findAll();
+  }
+
+  async findOne(id: string): Promise<Location> {
     const location = await this.locationRepository.findById(id);
     if (!location) {
-      throw new NotFoundException({
-        type: 'https://api.kompass.de/errors/not-found',
-        title: 'Resource Not Found',
-        status: 404,
-        detail: `Location with ID '${id}' not found`,
-        resourceType: 'Location',
-        resourceId: id,
-      });
+      throw new NotFoundException(`Location with ID ${id} not found`);
     }
     return location;
   }
 
-  async findByCustomer(
-    customerId: string,
-    options: { page?: number; limit?: number } = {},
-  ) {
-    return this.locationRepository.findByCustomer(customerId, options);
-  }
+  async update(id: string, updateLocationDto: UpdateLocationDto, userId: string, userEmail?: string): Promise<Location> {
+    const existing = await this.findOne(id);
 
-  async create(
-    dto: CreateLocationDto,
-    user: { id: string; email?: string },
-  ): Promise<Location> {
-    // Validate unique location name per customer (if customerId provided)
-    if (dto.customerId) {
-      await this.validateUniqueLocationName(dto.customerId, dto.locationName);
+    if (updateLocationDto.locationName && updateLocationDto.locationName !== existing.locationName) {
+      await this.validateUniqueName(existing.customerId, updateLocationDto.locationName, id);
     }
 
-    const locationData = {
-      ...dto,
-      contactPersons: dto.contactPersons || [],
-      deliveryAddress: {
-        ...dto.deliveryAddress,
-        country: dto.deliveryAddress.country || 'Deutschland',
-      },
-    };
-
-    return this.locationRepository.create(
-      locationData as Partial<Location>,
-      user.id,
-      user.email,
-    );
+    return this.locationRepository.update(id, updateLocationDto as any, userId, userEmail);
   }
 
-  async update(
-    id: string,
-    dto: UpdateLocationDto,
-    user: { id: string; email?: string },
-  ): Promise<Location> {
-    // Ensure location exists
-    const existing = await this.findById(id);
-
-    // Validate unique location name per customer (if changing name)
-    if (dto.locationName && dto.locationName !== existing.locationName) {
-      const customerId = dto.customerId || existing.customerId;
-      if (customerId) {
-        await this.validateUniqueLocationName(customerId, dto.locationName, id);
-      }
-    }
-
-    return this.locationRepository.update(
-      id,
-      dto as Partial<Location>,
-      user.id,
-      user.email,
-    );
+  async remove(id: string, userId: string, userEmail?: string): Promise<void> {
+    await this.locationRepository.delete(id, userId, userEmail);
   }
 
-  async delete(
-    id: string,
-    user: { id: string; email?: string },
-  ): Promise<void> {
-    // Ensure location exists
-    await this.findById(id);
-
-    return this.locationRepository.delete(id, user.id, user.email);
-  }
-
-  /**
-   * Validate that location name is unique within a customer
-   */
-  private async validateUniqueLocationName(
-    customerId: string,
-    locationName: string,
-    excludeId?: string,
-  ): Promise<void> {
-    const result = await this.locationRepository.findByCustomer(customerId, {
-      limit: 1000,
-    });
-    const duplicate = result.data.find(
-      (loc) =>
-        loc.locationName.toLowerCase() === locationName.toLowerCase() &&
-        loc._id !== excludeId,
-    );
-
+  private async validateUniqueName(customerId: string, name: string, excludeId?: string) {
+    const locations = await this.locationRepository.findByCustomerId(customerId);
+    const duplicate = locations.find(l => l.locationName === name && l._id !== excludeId);
     if (duplicate) {
-      throw new ConflictException({
-        type: 'https://api.kompass.de/errors/conflict',
-        title: 'Conflict',
-        status: 409,
-        detail: `Location name '${locationName}' already exists for this customer`,
-        conflictType: 'duplicate_location_name',
-        existingResourceId: duplicate._id,
-      });
+      throw new BadRequestException(`Location with name "${name}" already exists for this customer`);
     }
   }
 }

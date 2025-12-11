@@ -12,18 +12,45 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { ContactPerson } from "@kompass/shared";
+import { Pencil, Trash2 } from "lucide-react";
 
 interface ContactListProps {
   customerId: string;
 }
 
 export function ContactList({ customerId }: ContactListProps) {
-  const { contacts, loading, addContact } = useContacts(customerId);
+  const { contacts, loading, addContact, updateContact, deleteContact } = useContacts(customerId);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingContact, setEditingContact] = useState<ContactPerson | null>(null);
 
   const handleCreate = async (data: any) => {
     await addContact(data);
     setIsDialogOpen(false);
+  };
+
+  const handleUpdate = async (data: any) => {
+    if (editingContact) {
+      await updateContact(editingContact._id, data);
+      setEditingContact(null);
+      setIsDialogOpen(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm("Are you sure you want to delete this contact?")) {
+      await deleteContact(id);
+    }
+  };
+
+  const openAddDialog = () => {
+    setEditingContact(null);
+    setIsDialogOpen(true);
+  };
+
+  const openEditDialog = (contact: ContactPerson) => {
+    setEditingContact(contact);
+    setIsDialogOpen(true);
   };
 
   if (loading) return <div>Loading contacts...</div>;
@@ -34,14 +61,17 @@ export function ContactList({ customerId }: ContactListProps) {
         <CardTitle>Contact Persons</CardTitle>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button size="sm">Add Contact</Button>
+            <Button size="sm" onClick={openAddDialog}>Add Contact</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Contact Person</DialogTitle>
+              <DialogTitle>
+                {editingContact ? "Edit Contact" : "Add New Contact Person"}
+              </DialogTitle>
             </DialogHeader>
             <ContactForm
-              onSubmit={handleCreate}
+              defaultValues={editingContact || undefined}
+              onSubmit={editingContact ? handleUpdate : handleCreate}
               onCancel={() => setIsDialogOpen(false)}
             />
           </DialogContent>
@@ -74,10 +104,28 @@ export function ContactList({ customerId }: ContactListProps) {
                   {contact.phone && <div>📞 {contact.phone}</div>}
                 </div>
               </div>
-              <div className="flex flex-col gap-1 items-end">
+              <div className="flex flex-col gap-2 items-end">
                 <Badge variant="outline" className="text-[10px] uppercase">
                   {contact.decisionMakingRole.replace("_", " ")}
                 </Badge>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => openEditDialog(contact)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-destructive hover:text-destructive"
+                    onClick={() => handleDelete(contact._id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           ))}

@@ -1,5 +1,25 @@
 import { BaseEntity } from "./base";
 
+export enum DecisionMakingRole {
+  DECISION_MAKER = "decision_maker",
+  KEY_INFLUENCER = "key_influencer",
+  RECOMMENDER = "recommender",
+  GATEKEEPER = "gatekeeper",
+  OPERATIONAL_CONTACT = "operational_contact",
+  INFORMATIONAL = "informational",
+}
+
+export enum FunctionalRole {
+  OWNER_CEO = "owner_ceo",
+  PURCHASING_MANAGER = "purchasing_manager",
+  FACILITY_MANAGER = "facility_manager",
+  STORE_MANAGER = "store_manager",
+  PROJECT_COORDINATOR = "project_coordinator",
+  FINANCIAL_CONTROLLER = "financial_controller",
+  OPERATIONS_MANAGER = "operations_manager",
+  ADMINISTRATIVE = "administrative",
+}
+
 export interface ContactPerson extends BaseEntity {
   type: "contact";
 
@@ -8,7 +28,6 @@ export interface ContactPerson extends BaseEntity {
   lastName: string;
   title?: string;
   position?: string;
-  department?: string;
 
   // Contact details
   email?: string;
@@ -18,23 +37,21 @@ export interface ContactPerson extends BaseEntity {
   // Relationship
   customerId: string;
 
-  // Decision-Making
-  decisionMakingRole:
-    | "decision_maker"
-    | "key_influencer"
-    | "recommender"
-    | "gatekeeper"
-    | "operational_contact"
-    | "informational";
+  // Decision-Making & Authority
+  decisionMakingRole: DecisionMakingRole;
   authorityLevel: "low" | "medium" | "high" | "final_authority";
   canApproveOrders: boolean;
   approvalLimitEur?: number;
+
+  // Role & Responsibilities
+  functionalRoles: FunctionalRole[];
+  departmentInfluence: string[];
 
   // Location Assignment
   assignedLocationIds: string[];
   isPrimaryContactForLocations: string[];
 
-  // Preferences
+  // Communication preferences
   preferredContactMethod?: "email" | "phone" | "mobile";
   language?: string;
 }

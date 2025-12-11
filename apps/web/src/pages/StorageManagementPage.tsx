@@ -7,15 +7,15 @@ import { HardDrive, RefreshCw, Trash2, PinOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 export function StorageManagementPage() {
-  const { 
-    tierQuotas, 
-    formatBytes, 
-    isLoading, 
-    refresh, 
+  const {
+    tierQuotas,
+    formatBytes,
+    isLoading,
+    refresh,
     pinnedIds,
-    unpinDocument 
+    unpinDocument
   } = useTieredStorage();
-  
+
   const { storage, triggerSync, status } = useSyncStatus();
 
   return (
@@ -41,20 +41,20 @@ export function StorageManagementPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {isLoading ? (
-               <div className="space-y-2">
-                 <div className="h-4 w-full bg-gray-100 animate-pulse rounded" />
-                 <div className="h-4 w-3/4 bg-gray-100 animate-pulse rounded" />
-               </div>
+              <div className="space-y-2">
+                <div className="h-4 w-full bg-gray-100 animate-pulse rounded" />
+                <div className="h-4 w-3/4 bg-gray-100 animate-pulse rounded" />
+              </div>
             ) : (
               <>
                 <div className="space-y-1">
                   <div className="flex justify-between text-sm">
                     <span className="font-medium">Gesamtbelegung</span>
                     <span className="text-gray-500">
-                      {storage ? formatBytes(storage.usage) : '0 B'} / {storage ? formatBytes(storage.quota) : '0 B'}
+                      {storage ? formatBytes(storage.used) : '0 B'} / {storage ? formatBytes(storage.total) : '0 B'}
                     </span>
                   </div>
-                  <Progress value={storage?.usagePercent ? storage.usagePercent * 100 : 0} />
+                  <Progress value={storage?.percentage || 0} />
                 </div>
 
                 <Separator className="my-4" />
@@ -68,8 +68,8 @@ export function StorageManagementPage() {
                           {formatBytes(tier.used)} / {formatBytes(tier.limit)}
                         </span>
                       </div>
-                      <Progress 
-                        value={tier.usagePercent * 100} 
+                      <Progress
+                        value={tier.usagePercent * 100}
                         className={tier.usagePercent > 0.8 ? "bg-red-100" : ""}
                         indicatorClassName={tier.usagePercent > 0.9 ? "bg-red-500" : tier.usagePercent > 0.8 ? "bg-yellow-500" : "bg-blue-500"}
                       />
@@ -102,24 +102,24 @@ export function StorageManagementPage() {
               </div>
             ) : (
               <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
-                 {pinnedIds.map(id => (
-                   <div key={id} className="flex items-center justify-between p-2 rounded border bg-gray-50 dark:bg-gray-900/50">
-                     <div className="truncate text-sm font-medium pr-2">
-                       {/* Ideally we resolve the name, update useTieredStorage to fetch meta */}
-                       Dokument {id.substring(0, 8)}...
-                     </div>
-                     <Button variant="ghost" size="icon" className="h-6 w-6 text-gray-500 hover:text-red-500" onClick={() => unpinDocument(id)}>
-                       <PinOff className="h-3 w-3" />
-                     </Button>
-                   </div>
-                 ))}
-                 
-                 <Button variant="outline" className="w-full mt-4 text-red-500 hover:text-red-600 hover:bg-red-50" onClick={() => {
-                   pinnedIds.forEach(id => unpinDocument(id));
-                 }}>
-                   <Trash2 className="mr-2 h-4 w-4" />
-                   Alle lösen
-                 </Button>
+                {pinnedIds.map(id => (
+                  <div key={id} className="flex items-center justify-between p-2 rounded border bg-gray-50 dark:bg-gray-900/50">
+                    <div className="truncate text-sm font-medium pr-2">
+                      {/* Ideally we resolve the name, update useTieredStorage to fetch meta */}
+                      Dokument {id.substring(0, 8)}...
+                    </div>
+                    <Button variant="ghost" size="icon" className="h-6 w-6 text-gray-500 hover:text-red-500" onClick={() => unpinDocument(id)}>
+                      <PinOff className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+
+                <Button variant="outline" className="w-full mt-4 text-red-500 hover:text-red-600 hover:bg-red-50" onClick={() => {
+                  pinnedIds.forEach(id => unpinDocument(id));
+                }}>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Alle lösen
+                </Button>
               </div>
             )}
           </CardContent>

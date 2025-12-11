@@ -1,132 +1,110 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
-import { ContactRepository, Contact } from './contact.repository';
-import { CreateContactDto, UpdateContactDto } from './dto/contact.dto';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { ContactRepository } from './contact.repository';
+import { CreateContactDto } from './dto/create-contact.dto';
+import { UpdateContactDto } from './dto/update-contact.dto';
+import { ContactPerson } from '@kompass/shared';
+import { SearchService } from '../search/search.service';
 
 @Injectable()
 export class ContactService {
-  constructor(private readonly contactRepository: ContactRepository) {}
+  constructor(
+    private readonly contactRepository: ContactRepository,
+    private readonly searchService: SearchService,
+  ) { }
 
-  async findAll(
-    options: { page?: number; limit?: number; search?: string } = {},
-  ) {
-    if (options.search) {
-      return this.contactRepository.findByEmail(options.search, options);
-    }
-    return this.contactRepository.findAll(options);
+  async create(createContactDto: CreateContactDto, userId: string, userEmail?: string): Promise<ContactPerson> {
+    this.validateApprovalLimit(createContactDto.canApproveOrders, createContactDto.approvalLimitEur);
+
+    // Pass DTO directly, BaseRepository handles ID, metadata, and audit
+    const newContact = await this.contactRepository.create(createContactDto, userId, userEmail);
+    this.indexContact(newContact);
+    return newContact;
   }
 
-  async findById(id: string): Promise<Contact> {
+  async findAll(customerId?: string): Promise<any> { // Returns PaginatedResult or Array
+    if (customerId) {
+      return this.contactRepository.findByCustomerId(customerId);
+    }
+    return this.contactRepository.findAll();
+  }
+
+  async findOne(id: string): Promise<ContactPerson> {
     const contact = await this.contactRepository.findById(id);
     if (!contact) {
-      throw new NotFoundException({
-        type: 'https://api.kompass.de/errors/not-found',
-        title: 'Resource Not Found',
-        status: 404,
-        detail: `Contact with ID '${id}' not found`,
-        resourceType: 'Contact',
-        resourceId: id,
-      });
+      throw new NotFoundException(`Contact with ID ${id} not found`);
     }
     return contact;
   }
 
-  async findByCustomer(
-    customerId: string,
-    options: { page?: number; limit?: number } = {},
-  ) {
-    return this.contactRepository.findByCustomer(customerId, options);
+  async update(id: string, updateContactDto: UpdateContactDto, userId: string, userEmail?: string): Promise<ContactPerson> {
+    const existing = await this.findOne(id);
+
+    const canApprove = updateContactDto.canApproveOrders ?? existing.canApproveOrders;
+    const limit = updateContactDto.approvalLimitEur ?? existing.approvalLimitEur;
+    this.validateApprovalLimit(canApprove, limit);
+
+    const updatedContact = await this.contactRepository.update(id, updateContactDto, userId, userEmail);
+    this.indexContact(updatedContact);
+    return updatedContact;
   }
 
-  async create(
-    dto: CreateContactDto,
-    user: { id: string; email?: string },
-  ): Promise<Contact> {
-    // Validate: approvalLimitEur required when canApproveOrders is true
-    if (
-      dto.canApproveOrders &&
-      (dto.approvalLimitEur === undefined || dto.approvalLimitEur === null)
-    ) {
-      throw new BadRequestException({
-        type: 'https://api.kompass.de/errors/validation-error',
-        title: 'Validation Failed',
-        status: 400,
-        detail: 'Approval limit is required when contact can approve orders',
-        errors: [
-          {
-            field: 'approvalLimitEur',
-            message: 'Required when canApproveOrders is true',
-            value: dto.approvalLimitEur,
-          },
-        ],
-      });
+  async remove(id: string, userId: string, userEmail?: string): Promise<void> {
+    await this.contactRepository.delete(id, userId, userEmail);
+    await this.searchService.deleteDocument('contacts', id);
+  }
+
+  async checkDuplicates(criteria: { email?: string; phone?: string; excludeId?: string }) {
+    const matches = [];
+
+    if (criteria.email) {
+      const emailHits = await this.searchService.search('contacts', criteria.email, { limit: 5 });
+      matches.push(...emailHits.hits.map((h: any) => ({ ...h, matchReason: 'Email Match' })));
     }
 
-    const contactData = {
-      ...dto,
-      assignedLocationIds: dto.assignedLocationIds || [],
-      isPrimaryContactForLocations: dto.isPrimaryContactForLocations || [],
-    };
-
-    return this.contactRepository.create(
-      contactData as Partial<Contact>,
-      user.id,
-      user.email,
-    );
-  }
-
-  async update(
-    id: string,
-    dto: UpdateContactDto,
-    user: { id: string; email?: string },
-  ): Promise<Contact> {
-    // Ensure contact exists
-    const existing = await this.findById(id);
-
-    // Validate: approvalLimitEur required when canApproveOrders is true
-    const canApprove =
-      dto.canApproveOrders !== undefined
-        ? dto.canApproveOrders
-        : existing.canApproveOrders;
-    const approvalLimit =
-      dto.approvalLimitEur !== undefined
-        ? dto.approvalLimitEur
-        : existing.approvalLimitEur;
-
-    if (canApprove && (approvalLimit === undefined || approvalLimit === null)) {
-      throw new BadRequestException({
-        type: 'https://api.kompass.de/errors/validation-error',
-        title: 'Validation Failed',
-        status: 400,
-        detail: 'Approval limit is required when contact can approve orders',
-        errors: [
-          {
-            field: 'approvalLimitEur',
-            message: 'Required when canApproveOrders is true',
-            value: approvalLimit,
-          },
-        ],
-      });
+    if (criteria.phone) {
+      const phoneHits = await this.searchService.search('contacts', criteria.phone, { limit: 5 });
+      matches.push(...phoneHits.hits.map((h: any) => ({ ...h, matchReason: 'Phone Match' })));
     }
 
-    return this.contactRepository.update(
-      id,
-      dto as Partial<Contact>,
-      user.id,
-      user.email,
-    );
+    // Deduplicate and filter excludeId
+    const uniqueMap = new Map();
+    for (const m of matches) {
+      if (criteria.excludeId && m.id === criteria.excludeId) continue;
+      if (!uniqueMap.has(m.id)) {
+        uniqueMap.set(m.id, {
+          id: m.id,
+          companyName: `${m.firstName} ${m.lastName}`.trim(), // Reuse companyName field for Contact Name
+          matchReason: m.matchReason,
+          score: 1.0, // Simplified score
+        });
+      }
+    }
+
+    return Array.from(uniqueMap.values());
   }
 
-  async delete(
-    id: string,
-    user: { id: string; email?: string },
-  ): Promise<void> {
-    // Ensure contact exists
-    await this.findById(id);
+  private async indexContact(contact: ContactPerson) {
+    try {
+      await this.searchService.addDocuments('contacts', [
+        {
+          _id: contact._id,
+          id: contact._id,
+          firstName: contact.firstName,
+          lastName: contact.lastName,
+          email: contact.email,
+          phone: contact.phone,
+          position: contact.position,
+          customerId: contact.customerId,
+        },
+      ]);
+    } catch (e) {
+      console.error('Failed to index contact', e);
+    }
+  }
 
-    return this.contactRepository.delete(id, user.id, user.email);
+  private validateApprovalLimit(canApprove: boolean, limit?: number) {
+    if (canApprove && (limit === undefined || limit === null)) {
+      throw new BadRequestException('Approval limit is required when canApproveOrders is true');
+    }
   }
 }

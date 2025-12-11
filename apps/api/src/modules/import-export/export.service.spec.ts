@@ -58,10 +58,10 @@ describe('ExportService', () => {
   });
 
   describe('exportToExcel', () => {
-    it('should export data to Excel format', () => {
+    it('should export data to Excel format', async () => {
       const data = [{ companyName: 'Test GmbH', email: 'test@example.com' }];
 
-      const result = service.exportToExcel(data, {
+      const result = await service.exportToExcel(data, {
         format: ExportFormat.EXCEL,
         sheetName: 'Test',
       });

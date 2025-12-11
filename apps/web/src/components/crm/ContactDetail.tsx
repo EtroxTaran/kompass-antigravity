@@ -85,7 +85,7 @@ export function ContactDetail() {
                 </span>
                 <div className="flex items-center gap-2">
                   <Building2 className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-sm">{contact.department || "-"}</span>
+                  <span className="text-sm">{contact.departmentInfluence?.join(", ") || "-"}</span>
                 </div>
               </div>
               <div>

@@ -1,5 +1,5 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
-import * as XLSX from 'xlsx';
+import * as ExcelJS from 'exceljs';
 import { parse as parseDate, isValid } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { v4 as uuidv4 } from 'uuid';
@@ -58,19 +58,69 @@ export class ImportService {
   /**
    * Parse uploaded file (Excel or CSV)
    */
-  parseFile(buffer: Buffer, filename: string): ImportSession {
+  async parseFile(buffer: Buffer, filename: string): Promise<ImportSession> {
     const importId = uuidv4();
     const extension = filename.split('.').pop()?.toLowerCase();
 
-    let workbook: XLSX.WorkBook;
+    let headers: string[] = [];
+    let rows: ParsedRow[] = [];
+
     try {
+      const workbook = new ExcelJS.Workbook();
+
       if (extension === 'csv') {
-        const csvContent = buffer.toString('utf-8');
-        workbook = XLSX.read(csvContent, { type: 'string', raw: true });
+        // Parse CSV
+        await workbook.csv.read(require('stream').Readable.from(buffer));
       } else {
-        workbook = XLSX.read(buffer, { type: 'buffer' });
+        // Parse Excel - convert Buffer to ArrayBuffer
+        const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
+        await workbook.xlsx.load(arrayBuffer);
+      }
+
+      const worksheet = workbook.worksheets[0];
+      if (!worksheet) {
+        throw new Error('No worksheet found');
+      }
+
+      const rowCount = worksheet.rowCount;
+      if (rowCount < 2) {
+        throw new BadRequestException({
+          type: 'https://api.kompass.de/errors/import-error',
+          title: 'Empty File',
+          status: 400,
+          detail: 'File must contain at least a header row and one data row',
+        });
+      }
+
+      // Extract headers from first row
+      const headerRow = worksheet.getRow(1);
+      headers = [];
+      headerRow.eachCell((cell, colNumber) => {
+        headers[colNumber - 1] = String(cell.value || '').trim();
+      });
+
+      // Extract data rows
+      rows = [];
+      for (let rowNum = 2; rowNum <= rowCount; rowNum++) {
+        const row = worksheet.getRow(rowNum);
+        const data: Record<string, any> = {};
+
+        row.eachCell((cell, colNumber) => {
+          const header = headers[colNumber - 1];
+          if (header) {
+            data[header] = cell.value;
+          }
+        });
+
+        rows.push({
+          rowIndex: rowNum,
+          data,
+        });
       }
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
       throw new BadRequestException({
         type: 'https://api.kompass.de/errors/import-error',
         title: 'File Parse Error',
@@ -78,34 +128,6 @@ export class ImportService {
         detail: `Failed to parse file: ${error.message}`,
       });
     }
-
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
-    const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-      header: 1,
-      defval: '',
-    });
-
-    if (jsonData.length < 2) {
-      throw new BadRequestException({
-        type: 'https://api.kompass.de/errors/import-error',
-        title: 'Empty File',
-        status: 400,
-        detail: 'File must contain at least a header row and one data row',
-      });
-    }
-
-    const headers = (jsonData[0] as any[]).map((h: any) => String(h).trim());
-    const rows: ParsedRow[] = jsonData.slice(1).map((row: any, index) => ({
-      rowIndex: index + 2, // 1-indexed, accounting for header
-      data: headers.reduce(
-        (obj: any, header: any, i: number) => {
-          obj[header] = row[i];
-          return obj;
-        },
-        {} as Record<string, any>,
-      ),
-    }));
 
     const session: ImportSession = {
       importId,

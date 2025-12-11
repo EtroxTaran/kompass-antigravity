@@ -81,7 +81,7 @@ export function CustomerForm({
       primaryContact: {
         firstName: "",
         lastName: "",
-        decisionMakingRole: "operational_contact",
+        decisionMakingRole: "operational_contact" as any,
         authorityLevel: "medium",
       },
       ...defaultValues,
@@ -120,7 +120,7 @@ export function CustomerForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleSubmit as any)} className="space-y-8">
         {duplicates.length > 0 && (
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
             <div className="flex">
@@ -157,7 +157,7 @@ export function CustomerForm({
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="companyName"
               rules={{ required: "Company name is required" }}
               render={({ field }) => (
@@ -172,7 +172,7 @@ export function CustomerForm({
             />
 
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="customerType"
               render={({ field }) => (
                 <FormItem>
@@ -202,7 +202,7 @@ export function CustomerForm({
             />
 
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="email"
               render={({ field }) => (
                 <FormItem>
@@ -220,7 +220,7 @@ export function CustomerForm({
             />
 
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="phone"
               render={({ field }) => (
                 <FormItem>
@@ -234,7 +234,7 @@ export function CustomerForm({
             />
 
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="vatNumber"
               render={({ field }) => (
                 <FormItem>
@@ -255,7 +255,7 @@ export function CustomerForm({
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="visitFrequencyDays"
               render={({ field }) => (
                 <FormItem>
@@ -279,7 +279,7 @@ export function CustomerForm({
             />
 
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="lastVisit"
               render={({ field }) => (
                 <FormItem>
@@ -296,7 +296,7 @@ export function CustomerForm({
               <h4 className="text-sm font-medium">DSGVO Consent</h4>
               <div className="flex flex-col gap-4">
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name="dsgvoConsent.marketing"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
@@ -319,7 +319,7 @@ export function CustomerForm({
                 />
 
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name="dsgvoConsent.aiProcessing"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
@@ -342,7 +342,7 @@ export function CustomerForm({
                 />
 
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name="dsgvoConsent.dataSharing"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
@@ -374,7 +374,7 @@ export function CustomerForm({
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="billingAddress.street"
               rules={{ required: "Street is required" }}
               render={({ field }) => (
@@ -388,7 +388,7 @@ export function CustomerForm({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="billingAddress.streetNumber"
               render={({ field }) => (
                 <FormItem>
@@ -401,7 +401,7 @@ export function CustomerForm({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="billingAddress.zipCode"
               rules={{ required: "Zip Code is required" }}
               render={({ field }) => (
@@ -415,7 +415,7 @@ export function CustomerForm({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="billingAddress.city"
               rules={{ required: "City is required" }}
               render={({ field }) => (
@@ -429,7 +429,7 @@ export function CustomerForm({
               )}
             />
             <FormField
-              control={form.control}
+              control={form.control as any}
               name="billingAddress.country"
               rules={{ required: "Country is required" }}
               render={({ field }) => (
@@ -455,7 +455,7 @@ export function CustomerForm({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <FormField
-                        control={form.control}
+                        control={form.control as any}
                         name="createHeadquarters"
                         render={({ field }) => (
                           <FormItem className="flex items-center space-x-2 space-y-0">
@@ -485,7 +485,7 @@ export function CustomerForm({
                 <CollapsibleContent>
                   <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-0">
                     <FormField
-                      control={form.control}
+                      control={form.control as any}
                       name="headquartersLocation.locationName"
                       render={({ field }) => (
                         <FormItem>
@@ -498,7 +498,7 @@ export function CustomerForm({
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={form.control as any}
                       name="headquartersLocation.openingHours"
                       render={({ field }) => (
                         <FormItem>
@@ -511,7 +511,7 @@ export function CustomerForm({
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={form.control as any}
                       name="headquartersLocation.deliveryNotes"
                       render={({ field }) => (
                         <FormItem className="md:col-span-2">
@@ -535,7 +535,7 @@ export function CustomerForm({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <FormField
-                        control={form.control}
+                        control={form.control as any}
                         name="createPrimaryContact"
                         render={({ field }) => (
                           <FormItem className="flex items-center space-x-2 space-y-0">
@@ -565,7 +565,7 @@ export function CustomerForm({
                 <CollapsibleContent>
                   <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-0">
                     <FormField
-                      control={form.control}
+                      control={form.control as any}
                       name="primaryContact.firstName"
                       rules={createPrimaryContact ? { required: "First name is required" } : undefined}
                       render={({ field }) => (
@@ -579,7 +579,7 @@ export function CustomerForm({
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={form.control as any}
                       name="primaryContact.lastName"
                       rules={createPrimaryContact ? { required: "Last name is required" } : undefined}
                       render={({ field }) => (
@@ -593,7 +593,7 @@ export function CustomerForm({
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={form.control as any}
                       name="primaryContact.email"
                       render={({ field }) => (
                         <FormItem>
@@ -606,7 +606,7 @@ export function CustomerForm({
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={form.control as any}
                       name="primaryContact.phone"
                       render={({ field }) => (
                         <FormItem>
@@ -619,7 +619,7 @@ export function CustomerForm({
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={form.control as any}
                       name="primaryContact.position"
                       render={({ field }) => (
                         <FormItem>
@@ -632,7 +632,7 @@ export function CustomerForm({
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={form.control as any}
                       name="primaryContact.decisionMakingRole"
                       render={({ field }) => (
                         <FormItem>

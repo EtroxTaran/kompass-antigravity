@@ -25,6 +25,7 @@ interface LocationFormDialogProps {
     onOpenChange: (open: boolean) => void;
     location: Location | null;
     customerId: string;
+    onSuccess?: () => void;
 }
 
 export function LocationFormDialog({
@@ -32,6 +33,7 @@ export function LocationFormDialog({
     onOpenChange,
     location,
     customerId,
+    onSuccess,
 }: LocationFormDialogProps) {
     const { saveLocation, loading } = useLocation(location?._id);
 
@@ -75,8 +77,7 @@ export function LocationFormDialog({
         data.customerId = customerId;
         await saveLocation(data);
         onOpenChange(false);
-        // Reload page to refresh locations list
-        window.location.reload();
+        onSuccess?.();
     };
 
 

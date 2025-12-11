@@ -13,10 +13,11 @@ import { Public } from './decorators/public.decorator';
 import { Permissions } from './decorators/permissions.decorator';
 import { KeycloakService } from './keycloak.service';
 import type { AuthenticatedUser } from './strategies/jwt.strategy';
+import { User, UserRole } from '@kompass/shared/src/types/user';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly keycloakService: KeycloakService) {}
+  constructor(private readonly keycloakService: KeycloakService) { }
 
   /**
    * GET /auth/me
@@ -24,37 +25,34 @@ export class AuthController {
    */
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  async getProfile(@CurrentUser() user: AuthenticatedUser) {
+  async getProfile(@CurrentUser() user: AuthenticatedUser): Promise<User | Partial<User>> {
     // Try to get synced user from CouchDB for more details
     const keycloakId = user.id.replace('user-', '');
     const syncedUser =
       await this.keycloakService.findUserByKeycloakId(keycloakId);
 
     if (syncedUser) {
-      return {
-        _id: syncedUser._id,
-        type: 'user',
-        email: syncedUser.email,
-        displayName: syncedUser.displayName,
-        firstName: syncedUser.firstName,
-        lastName: syncedUser.lastName,
-        roles: syncedUser.roles,
-        primaryRole: syncedUser.primaryRole,
-        active: syncedUser.active,
-        lastSyncedAt: syncedUser.lastSyncedAt,
-      };
+      return syncedUser;
     }
 
-    // Fallback to JWT token info
+    // Fallback to JWT token info (Minimal info, might not fully match User interface strictly)
+    // We construct a partial user or best effort
+    const now = new Date().toISOString();
     return {
-      _id: user.id,
+      _id: `user-${user.id}`,
       type: 'user',
       email: user.email,
-      displayName: user.username,
-      roles: user.roles,
-      primaryRole: user.primaryRole,
+      displayName: user.username, // Fallback to username if display name missing
+      // We assume roles are strings in JWT, need casting or mapping
+      roles: (user.roles as unknown) as UserRole[], // Risk of invalid roles if JWT has others
+      primaryRole: (user.primaryRole as UserRole) || 'ADM',
       active: true,
-    };
+      createdAt: now,
+      modifiedAt: now,
+      createdBy: 'system',
+      modifiedBy: 'system',
+      version: 1,
+    } as User;
   }
 
   /**

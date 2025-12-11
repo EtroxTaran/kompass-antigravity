@@ -28,7 +28,7 @@ export class CommentService {
     private readonly presenceGateway: PresenceGateway,
     private readonly keycloakService: KeycloakService,
     private readonly notificationService: NotificationService,
-  ) {}
+  ) { }
 
   private getRepository(
     entityType: string,
@@ -117,7 +117,7 @@ export class CommentService {
           // Assuming keycloakId is the correct recipient identifier for the notification system
           await this.notificationService.create(
             {
-              recipientId: mentionedUser.keycloakId,
+              recipientId: mentionedUser.keycloakId!,
               notificationType: NotificationType.MENTION,
               title: 'You were mentioned',
               message: `${user.username} mentioned you in a comment`,

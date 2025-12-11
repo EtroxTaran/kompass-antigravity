@@ -30,9 +30,9 @@ export function StorageAlert() {
     return null;
   }
 
-  const usagePercent = storage ? Math.round(storage.usagePercent * 100) : 0;
-  const usageMB = storage ? Math.round(storage.usage / (1024 * 1024)) : 0;
-  const quotaMB = storage ? Math.round(storage.quota / (1024 * 1024)) : 0;
+  const usagePercent = storage ? Math.round(storage.percentage) : 0;
+  const usageMB = storage ? Math.round(storage.used / (1024 * 1024)) : 0;
+  const quotaMB = storage ? Math.round(storage.total / (1024 * 1024)) : 0;
 
   const handlePersist = async () => {
     const granted = await requestPersistentStorage();

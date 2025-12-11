@@ -16,8 +16,8 @@ export function StorageFullModal() {
     const navigate = useNavigate();
 
     // If storage info is missing but marked critical, something is wrong, but we show generic
-    const used = storage ? Math.round(storage.usage / 1024 / 1024) + " MB" : "Unknown";
-    const total = storage ? Math.round(storage.quota / 1024 / 1024) + " MB" : "Unknown";
+    const used = storage ? Math.round(storage.used / 1024 / 1024) + " MB" : "Unknown";
+    const total = storage ? Math.round(storage.total / 1024 / 1024) + " MB" : "Unknown";
 
     const handleManage = () => {
         navigate("/settings/storage");

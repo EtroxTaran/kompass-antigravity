@@ -1,11 +1,4 @@
-import { essentialFilter } from "./syncFilters";
-
-export interface LruDocument {
-    _id: string;
-    _rev: string;
-    modifiedAt?: string;
-    // We can add size estimation if needed, or rely on PouchDB's info
-}
+import { storageService } from "../../services/storage.service";
 
 /**
  * Estimate size of a document in bytes
@@ -22,7 +15,7 @@ function estimateDocSize(doc: any): number {
  * 
  * @param db The PouchDB instance
  * @param targetBytes The number of bytes we want to free up (approximation)
- * @param userId Current user ID to ensure we don't evict Essential data if it happens to be in the same DB
+ * @param userId Current user ID to ensure we don't evict Essential data
  * @returns Object containing number of evicted docs and estimated freed bytes
  */
 export async function evictLruDocuments(
@@ -32,16 +25,13 @@ export async function evictLruDocuments(
 ): Promise<{ evictedCount: number; freedBytes: number }> {
     /*
      Strategy:
-     1. Query all documents content (or use a view if one existed, but allDocs is easier for now)
-     2. Filter out Essential and Pinned documents (we only evict Tier 2)
+     1. Query all documents content 
+     2. Filter out Essential and Pinned documents
      3. Sort remainder by modifiedAt (ascending - oldest first)
      4. Delete until targetBytes is reached
      */
 
     // 1. Fetch all docs with metadata
-    // We need the doc content to check filters and size, but limits might be an issue.
-    // For better performance, we might want to use a query index, but let's start with allDocs for MVP
-    // assuming local DB isn't massive (50MB max).
     const allDocs = await db.allDocs({ include_docs: true });
 
     if (allDocs.total_rows === 0) {
@@ -49,28 +39,8 @@ export async function evictLruDocuments(
     }
 
     // 2. Identify candidates for eviction
-    // We must NOT evict:
-    // - Essential data (User, Owned Customer, Active Opportunity, Today's Activity)
-    // - Pinned data (Tier 3) - passed as pinnedIds, but checking logic might be complex locally without the list.
-    //   Ideally we check against a list of pinned IDs.
-    //   For this implementation, we will rely on a "isEvictable" check.
-
-    // To keep it simple: We assume Essential data is defined by the same logic as the filter.
-    // We will re-use logic similar to essentialFilter but we need to import it or duplicate it.
-    // Let's duplicate the essential check logic for simplicity and to avoid circular deps if any.
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const candidates: any[] = [];
-
-    // Helper to check if essential
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // Helper to check if essential (reuses logic from syncFilters)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const checkEssential = (doc: any) => {
-        // Create a mock request object as expected by essentialFilter
-        const mockReq = { query: { userId } };
-        return essentialFilter(doc, mockReq);
-    };
 
     for (const row of allDocs.rows) {
         const doc = row.doc;
@@ -78,13 +48,13 @@ export async function evictLruDocuments(
         // Skip design docs
         if (doc._id.startsWith('_design/')) continue;
 
-        // Skip Essential docs
-        if (checkEssential(doc)) continue;
+        // Skip Tier 1 (Essential)
+        if (storageService.isEssential(doc, userId)) continue;
 
-        // We assume Pinned docs are handled by the caller or we implement a check.
-        // For now, let's treat everything non-essential as evictable "Recent" data.
-        // TODO: Integrate pinned check
+        // Skip Tier 3 (Pinned)
+        if (storageService.isPinned(doc._id)) continue;
 
+        // If neither, it's Tier 2 (Recent) -> Candidate for eviction
         candidates.push(doc);
     }
 

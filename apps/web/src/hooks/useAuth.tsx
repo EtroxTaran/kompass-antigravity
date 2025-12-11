@@ -14,22 +14,14 @@ import {
 } from "@/services/apiClient";
 
 // Keycloak Configuration
+// South team uses port 8180 (offset from default 8080)
 const KEYCLOAK_URL =
-  import.meta.env.VITE_KEYCLOAK_URL || "http://localhost:8080";
+  import.meta.env.VITE_KEYCLOAK_URL || "http://localhost:8180";
 const KEYCLOAK_REALM = import.meta.env.VITE_KEYCLOAK_REALM || "kompass";
 const KEYCLOAK_CLIENT_ID =
   import.meta.env.VITE_KEYCLOAK_CLIENT_ID || "kompass-web";
 
-interface User {
-  _id: string;
-  email: string;
-  displayName: string;
-  firstName?: string;
-  lastName?: string;
-  roles: string[];
-  primaryRole: string;
-  active: boolean;
-}
+import { User, UserRole } from "@kompass/shared/src/types/user";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -173,7 +165,7 @@ export function AuthProvider({
 
   const fetchUser = useCallback(async () => {
     try {
-      const user = await authApi.getMe();
+      const user = await authApi.getMe() as unknown as User;
       setState({
         isAuthenticated: true,
         isLoading: false,
@@ -237,13 +229,20 @@ export function AuthProvider({
           isLoading: false,
           user: {
             _id: "user-mock",
+            type: "user",
+            username: "admin",
             email: "admin@kompass.local",
             displayName: "Mock Admin",
             firstName: "Mock",
             lastName: "Admin",
-            roles: ["ADMIN", "GF"],
+            roles: ["ADMIN", "GF"] as UserRole[],
             primaryRole: "ADMIN",
             active: true,
+            createdAt: new Date().toISOString(),
+            modifiedAt: new Date().toISOString(),
+            createdBy: "system",
+            modifiedBy: "system",
+            version: 1,
           },
           error: null,
         });
@@ -268,13 +267,20 @@ export function AuthProvider({
         isLoading: false,
         user: {
           _id: "user-mock",
+          type: "user",
+          username: "admin",
           email: "admin@kompass.local",
           displayName: "Mock Admin",
           firstName: "Mock",
           lastName: "Admin",
-          roles: ["ADMIN", "GF"],
+          roles: ["ADMIN", "GF"] as UserRole[],
           primaryRole: "ADMIN",
           active: true,
+          createdAt: new Date().toISOString(),
+          modifiedAt: new Date().toISOString(),
+          createdBy: "system",
+          modifiedBy: "system",
+          version: 1,
         },
         error: null,
       });
@@ -303,14 +309,14 @@ export function AuthProvider({
 
   const hasRole = useCallback(
     (role: string) => {
-      return state.user?.roles.includes(role) ?? false;
+      return state.user?.roles.includes(role as UserRole) ?? false;
     },
     [state.user],
   );
 
   const hasAnyRole = useCallback(
     (roles: string[]) => {
-      return roles.some((role) => state.user?.roles.includes(role)) ?? false;
+      return roles.some((role) => state.user?.roles.includes(role as UserRole)) ?? false;
     },
     [state.user],
   );

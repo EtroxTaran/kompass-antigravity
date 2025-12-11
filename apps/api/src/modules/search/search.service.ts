@@ -10,6 +10,7 @@ export interface GlobalSearchResult {
     opportunities: SearchHit[];
     suppliers: SearchHit[];
     materials: SearchHit[];
+    contacts: SearchHit[];
   };
   totalHits: number;
 }
@@ -56,6 +57,10 @@ const INDEX_CONFIGS = {
     searchableAttributes: ['name', 'itemNumber', 'description', 'category'],
     displayedAttributes: ['_id', 'name', 'itemNumber', 'category'],
   },
+  contacts: {
+    searchableAttributes: ['firstName', 'lastName', 'email', 'phone', 'position'],
+    displayedAttributes: ['_id', 'firstName', 'lastName', 'email', 'phone'],
+  },
 };
 
 @Injectable()
@@ -64,8 +69,9 @@ export class SearchService {
   private readonly logger = new Logger(SearchService.name);
 
   constructor() {
+    // South team uses port 7800 (offset from default 7700)
     this.client = new MeiliSearch({
-      host: process.env.MEILI_HOST || 'http://localhost:7700',
+      host: process.env.MEILI_HOST || 'http://localhost:7800',
       apiKey: process.env.MEILI_API_KEY || 'masterKey',
     });
   }
@@ -169,6 +175,7 @@ export class SearchService {
       opportunities: [],
       suppliers: [],
       materials: [],
+      contacts: [],
     };
 
     let totalHits = 0;
@@ -228,6 +235,14 @@ export class SearchService {
             title: hit.name || 'Unknown Material',
             subtitle: `ArtNr: ${hit.itemNumber || 'N/A'}`,
             url: `/materials/${hit._id}`,
+            _matchesPosition: hit._matchesPosition,
+          };
+        case 'contacts':
+          return {
+            id: hit._id,
+            title: `${hit.firstName} ${hit.lastName}`.trim() || 'Unknown Contact',
+            subtitle: hit.position || hit.email || '',
+            url: `/contacts/${hit._id}`,
             _matchesPosition: hit._matchesPosition,
           };
         default:

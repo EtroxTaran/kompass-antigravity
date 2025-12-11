@@ -9,9 +9,10 @@ scrape_configs:
       - targets: ['localhost:9090']
 
   # KOMPASS API metrics (OpenTelemetry Prometheus exporter)
-  - job_name: 'kompass-api'
+  # South team port: 9564 (offset from default 9464)
+  - job_name: 'south-kompass-api'
     static_configs:
-      - targets: ['host.docker.internal:9464']
+      - targets: ['host.docker.internal:9564']
     metrics_path: '/metrics'
     scrape_interval: 10s
 

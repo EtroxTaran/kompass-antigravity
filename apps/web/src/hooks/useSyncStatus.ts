@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { dbService, StorageInfo } from "@/lib/db";
+import { dbService } from "@/lib/db";
 import { StorageTier } from "@/lib/tiered-storage/types";
+import { QuotaStatus } from "@kompass/shared/src/types/storage.types";
 
 export type SyncStatus =
   | "idle"
@@ -15,7 +16,7 @@ interface SyncState {
   isOnline: boolean;
   pendingChanges: number;
   lastSyncTime: Date | null;
-  storage: StorageInfo | null;
+  storage: QuotaStatus | null;
   activeTiers: StorageTier[];
 }
 
@@ -94,8 +95,8 @@ export function useSyncStatus() {
   }, []);
 
   // Derived state
-  const isStorageWarning = state.storage?.isWarning ?? false;
-  const isStorageCritical = state.storage?.isCritical ?? false;
+  const isStorageWarning = state.storage?.status === 'Warning';
+  const isStorageCritical = state.storage?.status === 'Critical';
 
   return {
     ...state,

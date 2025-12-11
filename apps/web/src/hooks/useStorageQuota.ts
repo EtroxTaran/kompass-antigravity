@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { storageService } from "@/services/storage.service";
 
 interface StorageQuotaState {
   usage: number;
@@ -10,10 +11,8 @@ interface StorageQuotaState {
   error: Error | null;
 }
 
-const LOW_STORAGE_THRESHOLD = 10 * 1024 * 1024; // 10MB in bytes
-
 /**
- * Hook to monitor storage quota using the Storage API
+ * Hook to monitor storage quota using the centralized StorageService
  *
  * @returns Storage quota information including usage, remaining space, and low storage warning
  */
@@ -29,30 +28,15 @@ export function useStorageQuota() {
   });
 
   const checkStorageQuota = useCallback(async () => {
-    // Check if Storage API is available
-    if (!navigator.storage || !navigator.storage.estimate) {
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: new Error("Storage API not available"),
-      }));
-      return;
-    }
-
     try {
-      const estimate = await navigator.storage.estimate();
-      const usage = estimate.usage || 0;
-      const quota = estimate.quota || 0;
-      const remaining = quota - usage;
-      const percentUsed = quota > 0 ? (usage / quota) * 100 : 0;
-      const isLowStorage = remaining < LOW_STORAGE_THRESHOLD;
+      const quotaStatus = await storageService.checkQuota();
 
       setState({
-        usage,
-        quota,
-        percentUsed,
-        remaining,
-        isLowStorage,
+        usage: quotaStatus.used,
+        quota: quotaStatus.total,
+        percentUsed: quotaStatus.percentage,
+        remaining: quotaStatus.available,
+        isLowStorage: quotaStatus.status === 'Warning' || quotaStatus.status === 'Critical',
         isLoading: false,
         error: null,
       });

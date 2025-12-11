@@ -77,9 +77,9 @@ describe('ImportService', () => {
   });
 
   describe('session management', () => {
-    it('should create and retrieve a session', () => {
+    it('should create and retrieve a session', async () => {
       const mockBuffer = Buffer.from('col1,col2\nval1,val2');
-      const session = service.parseFile(mockBuffer, 'test.csv');
+      const session = await service.parseFile(mockBuffer, 'test.csv');
 
       expect(session).toBeDefined();
       expect(session.filename).toBe('test.csv');
@@ -89,9 +89,9 @@ describe('ImportService', () => {
       expect(retrieved).toEqual(session);
     });
 
-    it('should cleanup session', () => {
+    it('should cleanup session', async () => {
       const mockBuffer = Buffer.from('col1,col2\nval1,val2');
-      const session = service.parseFile(mockBuffer, 'test.csv');
+      const session = await service.parseFile(mockBuffer, 'test.csv');
       const importId = session.importId;
 
       service.cleanupSession(importId);
@@ -102,9 +102,9 @@ describe('ImportService', () => {
   });
 
   describe('setMappings', () => {
-    it('should set field mappings for a session', () => {
+    it('should set field mappings for a session', async () => {
       const mockBuffer = Buffer.from('Firma,Email\nTest GmbH,test@test.de');
-      const session = service.parseFile(mockBuffer, 'test.csv');
+      const session = await service.parseFile(mockBuffer, 'test.csv');
 
       const mappings = {
         Firma: 'companyName',

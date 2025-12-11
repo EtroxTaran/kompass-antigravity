@@ -1,18 +1,29 @@
 version: '3.8'
 
+# South Team Environment - Isolated from other teams
+# All containers, volumes, and ports are namespaced with "south" prefix
+
+networks:
+  south-network:
+    driver: bridge
+
 services:
   couchdb:
+    container_name: south-couchdb
     image: couchdb:3.3
     ports:
-      - "5984:5984"
+      - "6084:5984"
     environment:
       - COUCHDB_USER=admin
       - COUCHDB_PASSWORD=password
     volumes:
-      - couchdb_data:/opt/couchdb/data
+      - south_couchdb_data:/opt/couchdb/data
+    networks:
+      - south-network
 
 
   keycloak:
+    container_name: south-keycloak
     image: quay.io/keycloak/keycloak:24.0
     command: start-dev
     environment:
@@ -21,47 +32,59 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_HTTP_PORT: 8080
     ports:
-      - "8080:8080"
+      - "8180:8080"
     volumes:
-      - keycloak_data:/opt/keycloak/data
+      - south_keycloak_data:/opt/keycloak/data
+    networks:
+      - south-network
 
   meilisearch:
+    container_name: south-meilisearch
     image: getmeili/meilisearch:v1.6
     ports:
-      - "7700:7700"
+      - "7800:7700"
     environment:
       - MEILI_MASTER_KEY=masterKey
     volumes:
-      - meili_data:/meili_data
+      - south_meili_data:/meili_data
+    networks:
+      - south-network
 
   # ============================================
   # Observability Stack (Phase 1.5)
   # ============================================
 
   prometheus:
+    container_name: south-prometheus
     image: prom/prometheus:v2.48.0
     ports:
-      - "9090:9090"
+      - "9190:9090"
     volumes:
       - ./infrastructure/observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus_data:/prometheus
+      - south_prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
       - '--web.enable-lifecycle'
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - south-network
 
   loki:
+    container_name: south-loki
     image: grafana/loki:2.9.0
     ports:
-      - "3100:3100"
+      - "3200:3100"
     volumes:
       - ./infrastructure/observability/loki/loki-config.yml:/etc/loki/local-config.yaml:ro
-      - loki_data:/loki
+      - south_loki_data:/loki
     command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - south-network
 
   promtail:
+    container_name: south-promtail
     image: grafana/promtail:2.9.0
     volumes:
       - ./infrastructure/observability/promtail/promtail-config.yml:/etc/promtail/config.yml:ro
@@ -70,39 +93,47 @@ services:
     command: -config.file=/etc/promtail/config.yml
     depends_on:
       - loki
+    networks:
+      - south-network
 
   tempo:
+    container_name: south-tempo
     image: grafana/tempo:2.3.1
     ports:
-      - "3200:3200"   # Tempo HTTP
-      - "4317:4317"   # OTLP gRPC
-      - "4318:4318"   # OTLP HTTP
+      - "3300:3200"   # Tempo HTTP
+      - "4417:4317"   # OTLP gRPC
+      - "4418:4318"   # OTLP HTTP
     volumes:
       - ./infrastructure/observability/tempo/tempo.yml:/etc/tempo/tempo.yaml:ro
-      - tempo_data:/tmp/tempo
+      - south_tempo_data:/tmp/tempo
     command: -config.file=/etc/tempo/tempo.yaml
+    networks:
+      - south-network
 
   grafana:
+    container_name: south-grafana
     image: grafana/grafana:10.2.0
     ports:
-      - "3001:3000"
+      - "3101:3000"
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - ./infrastructure/observability/grafana/provisioning:/etc/grafana/provisioning:ro
-      - grafana_data:/var/lib/grafana
+      - south_grafana_data:/var/lib/grafana
     depends_on:
       - prometheus
       - loki
       - tempo
+    networks:
+      - south-network
 
 volumes:
-  couchdb_data:
-  keycloak_data:
-  meili_data:
-  prometheus_data:
-  loki_data:
-  tempo_data:
-  grafana_data:
+  south_couchdb_data:
+  south_keycloak_data:
+  south_meili_data:
+  south_prometheus_data:
+  south_loki_data:
+  south_tempo_data:
+  south_grafana_data:

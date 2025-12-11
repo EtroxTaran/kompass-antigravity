@@ -8,14 +8,17 @@ import { AuthController } from './auth.controller';
 import { KeycloakService } from './keycloak.service';
 import { DatabaseModule } from '../database/database.module';
 
+import { PermissionModule } from '../modules/permission/permission.module';
+
 @Module({
   imports: [
     ConfigModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     DatabaseModule,
+    PermissionModule,
   ],
   controllers: [AuthController],
   providers: [JwtStrategy, JwtAuthGuard, RbacGuard, KeycloakService],
   exports: [JwtAuthGuard, RbacGuard, JwtStrategy, KeycloakService],
 })
-export class AuthModule {}
+export class AuthModule { }

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { customersApi } from "../services/apiClient";
+import { customersApi, contactsApi } from "../services/apiClient";
 
 // Simple debounce implementation if useDebounce is not available
 // function useDebounce<T>(value: T, delay: number): T {
@@ -28,7 +28,7 @@ export function useDuplicateCheck() {
 
     // We'll use a manual trigger or effect based approach in the form
     const checkDuplicates = useCallback(
-        async (criteria: { name?: string; email?: string; phone?: string; excludeId?: string }) => {
+        async (criteria: { name?: string; email?: string; phone?: string; excludeId?: string; type?: 'customer' | 'contact' }) => {
             // Don't check empty criteria
             if (!criteria.name && !criteria.email && !criteria.phone) {
                 setDuplicates([]);
@@ -37,7 +37,10 @@ export function useDuplicateCheck() {
 
             setIsChecking(true);
             try {
-                const results = await customersApi.checkDuplicates(criteria);
+                const type = criteria.type || 'customer';
+                const results = type === 'contact'
+                    ? await contactsApi.checkDuplicates(criteria)
+                    : await customersApi.checkDuplicates(criteria);
                 setDuplicates(results);
             } catch (error) {
                 console.error("Failed to check duplicates", error);

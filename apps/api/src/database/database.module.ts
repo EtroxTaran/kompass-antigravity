@@ -13,9 +13,10 @@ export const AUDIT_DB = 'AUDIT_DB';
     {
       provide: COUCHDB_CONNECTION,
       useFactory: (configService: ConfigService) => {
+        // South team uses port 6084 (offset from default 5984)
         const url = configService.get<string>(
           'COUCHDB_URL',
-          'http://admin:password@localhost:5984',
+          'http://admin:password@localhost:6084',
         );
         return Nano.default(url);
       },
@@ -74,7 +75,7 @@ export const AUDIT_DB = 'AUDIT_DB';
   ],
   exports: [COUCHDB_CONNECTION, OPERATIONAL_DB, AUDIT_DB],
 })
-export class DatabaseModule {}
+export class DatabaseModule { }
 
 async function createIndexes(db: Nano.DocumentScope<any>) {
   const indexes = [

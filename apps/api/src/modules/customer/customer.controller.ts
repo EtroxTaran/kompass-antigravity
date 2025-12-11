@@ -85,7 +85,7 @@ export class CustomerController {
     const result = await this.customerService.findAll({ limit: 10000 });
     const customers = result.data;
 
-    const buffer = this.exportService.exportData(customers, options);
+    const buffer = await this.exportService.exportData(customers, options);
     const filename = this.exportService.generateFilename(
       'customers',
       exportFormat,
@@ -161,7 +161,7 @@ export class CustomerController {
       });
     }
 
-    const session = this.importService.parseFile(
+    const session = await this.importService.parseFile(
       file.buffer,
       file.originalname,
     );

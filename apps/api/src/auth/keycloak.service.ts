@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Inject } from '@nestjs/common';
 import { OPERATIONAL_DB } from '../database/database.module';
 import * as Nano from 'nano';
+import { User, UserRole, USER_ROLES } from '@kompass/shared/src/types/user';
 
 interface KeycloakUser {
   id: string;
@@ -15,24 +16,6 @@ interface KeycloakUser {
   attributes?: Record<string, string[]>;
   realmRoles?: string[];
   clientRoles?: Record<string, string[]>;
-}
-
-interface SyncedUser {
-  _id: string;
-  _rev?: string;
-  type: 'user';
-  keycloakId: string;
-  username: string;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  displayName: string;
-  roles: string[];
-  primaryRole: string;
-  active: boolean;
-  lastSyncedAt: string;
-  createdAt: string;
-  modifiedAt: string;
 }
 
 @Injectable()
@@ -149,7 +132,7 @@ export class KeycloakService implements OnModuleInit {
   /**
    * Fetch roles for a specific user
    */
-  async fetchUserRoles(userId: string): Promise<string[]> {
+  async fetchUserRoles(userId: string): Promise<UserRole[]> {
     const token = await this.getAdminToken();
     const rolesUrl = `${this.keycloakUrl}/admin/realms/${this.realm}/users/${userId}/role-mappings/realm`;
 
@@ -165,13 +148,13 @@ export class KeycloakService implements OnModuleInit {
       }
 
       const roles = await response.json();
-      return roles
-        .map((r: { name: string }) => r.name)
-        .filter((role: string) =>
-          ['ADM', 'INNEN', 'PLAN', 'KALK', 'BUCH', 'GF', 'ADMIN'].includes(
-            role,
-          ),
-        );
+      const roleNames = roles.map((r: { name: string }) => r.name);
+
+      // Filter strictly by USER_ROLES and cast
+      return roleNames.filter((role: string) =>
+        (USER_ROLES as readonly string[]).includes(role)
+      ) as UserRole[];
+
     } catch (error) {
       this.logger.warn(`Failed to fetch roles for user ${userId}`, error);
       return [];
@@ -181,14 +164,14 @@ export class KeycloakService implements OnModuleInit {
   /**
    * Sync a single user from Keycloak to CouchDB
    */
-  async syncUser(keycloakUser: KeycloakUser): Promise<SyncedUser> {
+  async syncUser(keycloakUser: KeycloakUser): Promise<User> {
     const roles = await this.fetchUserRoles(keycloakUser.id);
     const docId = `user-${keycloakUser.id}`;
 
     // Check if user already exists
-    let existingUser: SyncedUser | null = null;
+    let existingUser: User | null = null;
     try {
-      existingUser = (await this.db.get(docId)) as SyncedUser;
+      existingUser = (await this.db.get(docId)) as User;
     } catch (error: any) {
       if (error.statusCode !== 404) {
         throw error;
@@ -201,12 +184,12 @@ export class KeycloakService implements OnModuleInit {
         .filter(Boolean)
         .join(' ') || keycloakUser.username;
 
-    const userData: SyncedUser = {
+    const userData: User = {
       _id: docId,
       ...(existingUser?._rev && { _rev: existingUser._rev }),
       type: 'user',
-      keycloakId: keycloakUser.id,
       username: keycloakUser.username,
+      keycloakId: keycloakUser.id,
       email: keycloakUser.email || '',
       firstName: keycloakUser.firstName,
       lastName: keycloakUser.lastName,
@@ -214,9 +197,11 @@ export class KeycloakService implements OnModuleInit {
       roles: roles.length > 0 ? roles : ['ADM'],
       primaryRole: roles.length > 0 ? roles[0] : 'ADM',
       active: keycloakUser.enabled,
-      lastSyncedAt: now,
       createdAt: existingUser?.createdAt || now,
       modifiedAt: now,
+      createdBy: existingUser?.createdBy || 'system',
+      modifiedBy: 'system',
+      version: existingUser ? (existingUser.version || 0) + 1 : 1,
     };
 
     await this.db.insert(userData);
@@ -254,9 +239,9 @@ export class KeycloakService implements OnModuleInit {
   /**
    * Find synced user by Keycloak ID
    */
-  async findUserByKeycloakId(keycloakId: string): Promise<SyncedUser | null> {
+  async findUserByKeycloakId(keycloakId: string): Promise<User | null> {
     try {
-      return (await this.db.get(`user-${keycloakId}`)) as SyncedUser;
+      return (await this.db.get(`user-${keycloakId}`)) as User;
     } catch (error: any) {
       if (error.statusCode === 404) {
         return null;
@@ -268,7 +253,7 @@ export class KeycloakService implements OnModuleInit {
   /**
    * Find synced user by username
    */
-  async findUserByUsername(username: string): Promise<SyncedUser | null> {
+  async findUserByUsername(username: string): Promise<User | null> {
     try {
       const result = await this.db.find({
         selector: {
@@ -277,7 +262,7 @@ export class KeycloakService implements OnModuleInit {
         },
         limit: 1,
       });
-      return (result.docs[0] as SyncedUser) || null;
+      return (result.docs[0] as User) || null;
     } catch (error) {
       this.logger.error(`Failed to find user by username: ${username}`, error);
       return null;
@@ -287,7 +272,7 @@ export class KeycloakService implements OnModuleInit {
   /**
    * Get all active users
    */
-  async getActiveUsers(): Promise<SyncedUser[]> {
+  async getActiveUsers(): Promise<User[]> {
     try {
       const result = await this.db.find({
         selector: {
@@ -295,7 +280,7 @@ export class KeycloakService implements OnModuleInit {
           active: true,
         },
       });
-      return result.docs as SyncedUser[];
+      return result.docs as User[];
     } catch (error) {
       this.logger.error('Failed to get active users', error);
       return [];

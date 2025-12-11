@@ -37,7 +37,7 @@ export function ContactForm({
   const { locations } = useLocations();
   const form = useForm<Partial<ContactPerson>>({
     defaultValues: {
-      decisionMakingRole: "operational_contact",
+      decisionMakingRole: "operational_contact" as any,
       authorityLevel: "low",
       ...defaultValues,
     },
@@ -52,6 +52,7 @@ export function ContactForm({
       checkDuplicates({
         email: email,
         phone: phone,
+        type: 'contact',
       });
     }, 500);
 
@@ -79,7 +80,7 @@ export function ContactForm({
               </div>
               <div className="ml-3">
                 <p className="text-sm text-yellow-700">
-                  <span className="font-bold">Warning:</span> Match found with existing Customer(s).
+                  <span className="font-bold">Warning:</span> Match found with existing Record(s).
                   {duplicates.map((d) => (
                     <span key={d.id} className="block mt-1">
                       {d.companyName} ({d.matchReason})

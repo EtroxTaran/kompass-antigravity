@@ -75,14 +75,14 @@ const locationTypeConfig: Record<
 
 export function CustomerLocationList({ customerId }: CustomerLocationListProps) {
     const navigate = useNavigate();
-    const { locations, loading } = useLocations();
+    const { locations, loading, refresh } = useLocations(customerId);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingLocation, setEditingLocation] = useState<Location | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [locationToDelete, setLocationToDelete] = useState<Location | null>(null);
 
-    // Filter locations by customerId
-    const customerLocations = locations.filter((loc) => loc.customerId === customerId);
+    // Filter locations by customerId (though API handles it now, keeping for safety if reusing global hook)
+    const customerLocations = locations;
 
     const handleAddLocation = () => {
         setEditingLocation(null);
@@ -99,6 +99,20 @@ export function CustomerLocationList({ customerId }: CustomerLocationListProps) 
         setDeleteDialogOpen(true);
     };
 
+    const confirmDelete = async () => {
+        if (!locationToDelete) return;
+        try {
+            const { locationsApi } = await import("@/services/apiClient");
+            await locationsApi.delete(locationToDelete._id);
+            await refresh(); // Refresh list
+        } catch (error) {
+            console.error("Failed to delete location", error);
+        } finally {
+            setDeleteDialogOpen(false);
+            setLocationToDelete(null);
+        }
+    };
+
     const getTypeConfig = (type: string) => {
         return locationTypeConfig[type] || locationTypeConfig.other;
     };
@@ -113,7 +127,7 @@ export function CustomerLocationList({ customerId }: CustomerLocationListProps) 
 
     return (
         <div className="space-y-6">
-            {/* Header */}
+            {/* ... Header ... */}
             <div className="flex items-center justify-between">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -236,6 +250,7 @@ export function CustomerLocationList({ customerId }: CustomerLocationListProps) 
                 onOpenChange={setIsFormOpen}
                 location={editingLocation}
                 customerId={customerId}
+                onSuccess={refresh}
             />
 
             {/* Delete Confirmation Dialog */}
@@ -254,11 +269,7 @@ export function CustomerLocationList({ customerId }: CustomerLocationListProps) 
                         </Button>
                         <Button
                             variant="destructive"
-                            onClick={() => {
-                                // TODO: Implement delete via API
-                                setDeleteDialogOpen(false);
-                                setLocationToDelete(null);
-                            }}
+                            onClick={confirmDelete}
                         >
                             Löschen
                         </Button>

@@ -141,9 +141,14 @@ const PERMISSION_MATRIX: Record<
   },
 };
 
+import { PermissionService } from '../../modules/permission/permission.service';
+
 @Injectable()
 export class RbacGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(
+    private reflector: Reflector,
+    private permissionService: PermissionService,
+  ) { }
 
   canActivate(context: ExecutionContext): boolean {
     const requiredPermissions = this.reflector.getAllAndOverride<
@@ -190,6 +195,18 @@ export class RbacGuard implements CanActivate {
     action: string,
   ): boolean {
     for (const role of userRoles) {
+      // 1. Check dynamic permissions from DB (via Service)
+      const dynamicPermissions = this.permissionService.getPermissionsForRole(role as any);
+      if (dynamicPermissions?.[entity]?.[action] === true) {
+        return true;
+      }
+      if (dynamicPermissions?.[entity]?.[action] === false) {
+        continue; // Explicitly denied in DB, skipping role? Or should it block?
+        // Usually, if one role grants it, user has it. Unless explicit DENY overrides.
+        // For now, we assume standard RBAC (additive).
+      }
+
+      // 2. Fallback to static matrix
       const rolePermissions = PERMISSION_MATRIX[role];
       if (rolePermissions?.[entity]?.[action]) {
         return true;

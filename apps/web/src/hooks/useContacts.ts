@@ -62,7 +62,28 @@ export function useContacts(customerId?: string) {
     }
   };
 
-  return { contacts, loading, error, addContact, refresh: fetchContacts };
+  const updateContact = async (id: string, contact: Partial<ContactPerson>) => {
+    try {
+      const result = await contactsApi.update(id, contact);
+      await fetchContacts();
+      return result as ContactPerson;
+    } catch (err) {
+      console.error("Error updating contact", err);
+      throw err;
+    }
+  };
+
+  const deleteContact = async (id: string) => {
+    try {
+      await contactsApi.delete(id);
+      await fetchContacts();
+    } catch (err) {
+      console.error("Error deleting contact", err);
+      throw err;
+    }
+  };
+
+  return { contacts, loading, error, addContact, updateContact, deleteContact, refresh: fetchContacts };
 }
 
 export function useContact(id?: string) {

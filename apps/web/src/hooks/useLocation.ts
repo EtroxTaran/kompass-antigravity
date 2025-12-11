@@ -52,14 +52,14 @@ export function useLocation(id?: string) {
   return { location, loading, error, saveLocation };
 }
 
-export function useLocations() {
+export function useLocations(customerId?: string) {
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchLocations = useCallback(async () => {
     try {
-      const result = await locationsApi.list();
+      const result = await locationsApi.list(customerId ? { customerId } : undefined);
       if (result && Array.isArray(result.data)) {
         setLocations(result.data as unknown as Location[]);
       } else if (Array.isArray(result)) {
@@ -74,11 +74,11 @@ export function useLocations() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [customerId]);
 
   useEffect(() => {
     fetchLocations();
   }, [fetchLocations]);
 
-  return { locations, loading, error };
+  return { locations, loading, error, refresh: fetchLocations };
 }

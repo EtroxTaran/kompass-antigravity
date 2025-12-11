@@ -21,19 +21,23 @@ if (process.env.OTEL_DEBUG === 'true') {
 }
 
 // Configure Prometheus metrics exporter
+// South team uses port 9564 (offset from default 9464)
+const prometheusPort = parseInt(process.env.PROMETHEUS_PORT || '9564', 10);
 const prometheusExporter = new PrometheusExporter({
-  port: 9464, // Prometheus metrics endpoint
+  port: prometheusPort,
   endpoint: '/metrics',
 });
 
 // Configure OTLP trace exporter (to Tempo)
+// South team uses port 4417 (offset from default 4317)
 const traceExporter = new OTLPTraceExporter({
-  url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4317',
+  url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4417',
 });
 
 // Create OpenTelemetry SDK
+// South team service name for identification
 const sdk = new NodeSDK({
-  serviceName: 'kompass-api',
+  serviceName: 'south-kompass-api',
   traceExporter,
   metricReader: prometheusExporter,
   instrumentations: [
@@ -69,10 +73,10 @@ process.on('SIGTERM', () => {
     .finally(() => process.exit(0));
 });
 
-console.log('OpenTelemetry instrumentation initialized');
-console.log(`Prometheus metrics available at: http://localhost:9464/metrics`);
+console.log('OpenTelemetry instrumentation initialized (South team)');
+console.log(`Prometheus metrics available at: http://localhost:${prometheusPort}/metrics`);
 console.log(
-  `Traces being sent to: ${process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4317'}`,
+  `Traces being sent to: ${process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4417'}`,
 );
 
 export { sdk };

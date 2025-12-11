@@ -38,7 +38,7 @@ export function SyncIndicator() {
 
   const getLabel = () => {
     if (isStorageCritical || status === "storage_full") {
-      const usagePercent = storage ? Math.round(storage.usagePercent * 100) : 0;
+      const usagePercent = storage ? Math.round(storage.percentage) : 0;
       return `Speicher voll (${usagePercent}%) - Sync pausiert`;
     }
     if (!isOnline) {
@@ -51,7 +51,7 @@ export function SyncIndicator() {
         return "Synchronisierungsfehler";
       case "idle":
         return storage
-          ? `Synchronisiert (${Math.round(storage.usagePercent * 100)}% Speicher)`
+          ? `Synchronisiert (${Math.round(storage.percentage)}% Speicher)`
           : "Synchronisiert";
       default:
         return "Status unbekannt";
@@ -71,7 +71,7 @@ export function SyncIndicator() {
                 ? "bg-destructive/10"
                 : "bg-transparent hover:bg-muted",
               (isStorageCritical || status === "storage_full") &&
-                "cursor-not-allowed opacity-50",
+              "cursor-not-allowed opacity-50",
             )}
           >
             {getIcon()}
