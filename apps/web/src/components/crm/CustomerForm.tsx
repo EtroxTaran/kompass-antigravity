@@ -1,5 +1,5 @@
-import { useForm } from "react-hook-form";
-import { Customer } from "@kompass/shared";
+import { useForm, useWatch } from "react-hook-form";
+import { Customer, ContactPerson } from "@kompass/shared";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -20,32 +20,82 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+
+// Extended form data for wizard flow
+export interface CustomerFormData extends Omit<Customer, "_id" | "_rev" | "type"> {
+  createHeadquarters?: boolean;
+  headquartersLocation?: {
+    locationName: string;
+    deliveryNotes?: string;
+    openingHours?: string;
+  };
+  createPrimaryContact?: boolean;
+  primaryContact?: {
+    firstName: string;
+    lastName: string;
+    email?: string;
+    phone?: string;
+    position?: string;
+    decisionMakingRole: ContactPerson["decisionMakingRole"];
+    authorityLevel: ContactPerson["authorityLevel"];
+  };
+}
 
 interface CustomerFormProps {
   defaultValues?: Partial<Customer>;
-  onSubmit: (data: Omit<Customer, "_id" | "_rev" | "type">) => void;
+  onSubmit: (data: CustomerFormData) => void;
   isLoading?: boolean;
+  /** Hide wizard sections when editing existing customer */
+  isEditMode?: boolean;
 }
 
 export function CustomerForm({
   defaultValues,
   onSubmit,
   isLoading,
+  isEditMode = false,
 }: CustomerFormProps) {
-  const form = useForm<Customer>({
+  const [headquartersOpen, setHeadquartersOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+  const form = useForm<CustomerFormData>({
     defaultValues: {
       customerType: "retail",
       rating: "B",
       billingAddress: {
         country: "Deutschland",
       },
+      createHeadquarters: false,
+      headquartersLocation: {
+        locationName: "Hauptsitz",
+      },
+      createPrimaryContact: false,
+      primaryContact: {
+        firstName: "",
+        lastName: "",
+        decisionMakingRole: "operational_contact",
+        authorityLevel: "medium",
+      },
       ...defaultValues,
     },
   });
 
-  const handleSubmit = (data: Customer) => {
-    // Ensure strictly required fields for the Type are present if not handled by form validation
-    // But for this form, we pass the data up
+  const createHeadquarters = useWatch({ control: form.control, name: "createHeadquarters" });
+  const createPrimaryContact = useWatch({ control: form.control, name: "createPrimaryContact" });
+
+  // Auto-expand sections when checkbox is checked
+  // Using controlled state derived from form values to avoid cascading renders
+  const effectiveHeadquartersOpen = headquartersOpen || (createHeadquarters ?? false);
+  const effectiveContactOpen = contactOpen || (createPrimaryContact ?? false);
+
+  const handleSubmit = (data: CustomerFormData) => {
     onSubmit(data);
   };
 
@@ -345,6 +395,224 @@ export function CustomerForm({
             />
           </CardContent>
         </Card>
+
+        {/* Wizard Sections - Only show when creating new customer */}
+        {!isEditMode && (
+          <>
+            {/* Headquarters Location Section */}
+            <Collapsible open={effectiveHeadquartersOpen} onOpenChange={setHeadquartersOpen}>
+              <Card>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <FormField
+                        control={form.control}
+                        name="createHeadquarters"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-medium cursor-pointer">
+                              Create Headquarters Location
+                            </FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <ChevronDown className={cn("h-4 w-4 transition-transform", effectiveHeadquartersOpen && "rotate-180")} />
+                      </Button>
+                    </CollapsibleTrigger>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Uses billing address as the headquarters delivery address
+                  </p>
+                </CardHeader>
+                <CollapsibleContent>
+                  <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-0">
+                    <FormField
+                      control={form.control}
+                      name="headquartersLocation.locationName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Location Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Hauptsitz" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="headquartersLocation.openingHours"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Opening Hours</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Mo-Fr 8:00-17:00" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="headquartersLocation.deliveryNotes"
+                      render={({ field }) => (
+                        <FormItem className="md:col-span-2">
+                          <FormLabel>Delivery Notes</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Delivery instructions, parking info, etc." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
+
+            {/* Primary Contact Section */}
+            <Collapsible open={effectiveContactOpen} onOpenChange={setContactOpen}>
+              <Card>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <FormField
+                        control={form.control}
+                        name="createPrimaryContact"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-medium cursor-pointer">
+                              Add Primary Contact
+                            </FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <ChevronDown className={cn("h-4 w-4 transition-transform", effectiveContactOpen && "rotate-180")} />
+                      </Button>
+                    </CollapsibleTrigger>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Add the main contact person for this customer
+                  </p>
+                </CardHeader>
+                <CollapsibleContent>
+                  <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-0">
+                    <FormField
+                      control={form.control}
+                      name="primaryContact.firstName"
+                      rules={createPrimaryContact ? { required: "First name is required" } : undefined}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>First Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Max" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="primaryContact.lastName"
+                      rules={createPrimaryContact ? { required: "Last name is required" } : undefined}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Last Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Mustermann" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="primaryContact.email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="max@example.com" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="primaryContact.phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone</FormLabel>
+                          <FormControl>
+                            <Input type="tel" placeholder="+49 123 45678" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="primaryContact.position"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Position</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Einkaufsleiter" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="primaryContact.decisionMakingRole"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Decision Making Role</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select role" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="decision_maker">Decision Maker</SelectItem>
+                              <SelectItem value="key_influencer">Key Influencer</SelectItem>
+                              <SelectItem value="recommender">Recommender</SelectItem>
+                              <SelectItem value="gatekeeper">Gatekeeper</SelectItem>
+                              <SelectItem value="operational_contact">Operational Contact</SelectItem>
+                              <SelectItem value="informational">Informational</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
+          </>
+        )}
 
         <div className="flex justify-end gap-4">
           <Button type="submit" disabled={isLoading}>

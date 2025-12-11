@@ -5,7 +5,7 @@ import { CreateProtocolDto, UpdateProtocolDto } from './dto/protocol.dto';
 
 @Injectable()
 export class ProtocolService {
-  constructor(private readonly protocolRepository: ProtocolRepository) { }
+  constructor(private readonly protocolRepository: ProtocolRepository) {}
 
   async create(
     createProtocolDto: CreateProtocolDto,

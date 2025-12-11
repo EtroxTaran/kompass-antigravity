@@ -39,10 +39,10 @@ description: QA Engineer workflow to ensure code quality and correctness
 2.  **Persona Testing**:
     - Read `docs/personas/` for context.
     - **Browser Test**:
-        - Open Browser (`open_browser`).
-        - Login as Persona.
-        - Verify Workflow.
-        - Check UI Integrity.
+      - Open Browser (`open_browser`).
+      - Login as Persona.
+      - Verify Workflow.
+      - Check UI Integrity.
 
 3.  **Report Failures**:
     - Create `label:bug` issues for failures.

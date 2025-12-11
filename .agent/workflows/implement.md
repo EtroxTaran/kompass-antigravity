@@ -41,6 +41,7 @@ You are a **senior full-stack developer** working autonomously.
 ## Phase 1: Git Setup
 
 1.  **Update Main**:
+
     ```bash
     git checkout main
     git pull origin main
@@ -64,6 +65,7 @@ You are a **senior full-stack developer** working autonomously.
 ## Phase 3: Implementation
 
 **Rules**:
+
 - **Formatting**: Follow Prettier.
 - **Linting**: Follow ESLint.
 - **Types**: Strict TypeScript.
@@ -74,6 +76,7 @@ You are a **senior full-stack developer** working autonomously.
 ## Phase 4: Verification
 
 Run all quality gates:
+
 1.  **Format**: `pnpm format:check`
 2.  **Lint**: `pnpm lint`
 3.  **Type Check**: `pnpm type-check`
