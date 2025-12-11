@@ -138,6 +138,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CalendarView } from "@/components/calendar";
 import { MyTimesheetsPage } from "@/pages/MyTimesheetsPage";
+import { LexwareDashboardPage } from "@/pages/integration/LexwareDashboard";
 
 // --- INVENTORY WRAPPERS ---
 
@@ -1524,6 +1525,9 @@ function App() {
 
               {/* Storage Management */}
               <Route path="/settings/storage" element={<StorageManagementPage />} />
+
+              {/* Integration */}
+              <Route path="/integration/lexware" element={<LexwareDashboardPage />} />
             </Routes >
           </TooltipProvider>
         </NotificationProvider >

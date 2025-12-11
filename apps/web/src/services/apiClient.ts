@@ -727,6 +727,38 @@ export const contactsApi = {
 // Locations API
 // =============================================================================
 
+// =============================================================================
+// Lexware Integration API
+// =============================================================================
+
+export interface LexwareSyncStatus {
+  lastSync: string;
+  files: { filename: string; createdAt: string; type: "export" | "import" }[];
+  exportPath: string;
+  importPath: string;
+}
+
+export const lexwareApi = {
+  async getStatus(): Promise<LexwareSyncStatus> {
+    return get("/integration/lexware/status");
+  },
+
+  async triggerExport(): Promise<{ count: number; filename: string }> {
+    return post("/integration/lexware/export/trigger", {});
+  },
+
+  async triggerImport(): Promise<{
+    processedFiles: number;
+    invoicesUpdated: number;
+  }> {
+    return post("/integration/lexware/import/trigger", {});
+  },
+};
+
+// =============================================================================
+// Locations API
+// =============================================================================
+
 export const locationsApi = {
   async list(params?: { customerId?: string }): Promise<ListResponse<unknown>> {
     return get("/locations", params);

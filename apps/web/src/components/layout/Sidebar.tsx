@@ -14,6 +14,7 @@ import {
   ListTodo,
   CalendarDays,
   Activity,
+  RefreshCw,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -153,6 +154,12 @@ export function Sidebar({
         label: "Kalender",
         icon: CalendarDays,
         path: "/calendar",
+      },
+      {
+        id: "lexware",
+        label: "Lexware Sync",
+        icon: RefreshCw,
+        path: "/integration/lexware",
       },
     ];
 
