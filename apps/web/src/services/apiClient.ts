@@ -227,6 +227,7 @@ interface AuthUser {
   type: "user";
   email: string;
   displayName: string;
+  username?: string;
   firstName?: string;
   lastName?: string;
   roles: string[];

@@ -13,6 +13,9 @@ import { OfferRepository } from '../offer/offer.repository';
 import { InvoiceRepository } from '../invoice/invoice.repository';
 import { ProjectTaskRepository } from '../project-task/project-task.repository';
 import { OpportunityRepository } from '../opportunity/opportunity.repository';
+import { KeycloakService } from '../../auth/keycloak.service';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationType } from '../notification/entities/notification.entity';
 
 @Injectable()
 export class CommentService {
@@ -23,6 +26,8 @@ export class CommentService {
     private readonly taskRepository: ProjectTaskRepository,
     private readonly opportunityRepository: OpportunityRepository,
     private readonly presenceGateway: PresenceGateway,
+    private readonly keycloakService: KeycloakService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   private getRepository(
@@ -73,7 +78,6 @@ export class CommentService {
     const repository = this.getRepository(entityType);
 
     // Check if entity exists
-    // BaseRepository usually has findById
     const entity = await repository.findById(entityId);
     if (!entity) throw new NotFoundException(`${entityType} not found`);
 
@@ -81,14 +85,53 @@ export class CommentService {
       id: uuidv4(),
       content: dto.content,
       author: {
-        userId: user.id, // Fixed: use user.id
-        name: user.username, // Fixed: use user.username
+        userId: user.id,
+        name: user.username,
       },
       createdAt: new Date().toISOString(),
       contextId: dto.contextId,
       resolved: false,
       replies: [],
+      mentions: [],
     };
+
+    // Parse mentions
+    const mentionRegex = /@(\w+)/g;
+    const matches = [...dto.content.matchAll(mentionRegex)];
+    const mentionedUsernames = [...new Set(matches.map((match) => match[1]))];
+
+    if (mentionedUsernames.length > 0) {
+      for (const username of mentionedUsernames) {
+        // Skip self-mentions
+        if (username === user.username) continue;
+
+        const mentionedUser =
+          await this.keycloakService.findUserByUsername(username);
+
+        if (mentionedUser) {
+          // Add user ID to mentions array
+          if (!newComment.mentions) newComment.mentions = [];
+          newComment.mentions.push(mentionedUser._id);
+
+          // Create notification
+          // Assuming keycloakId is the correct recipient identifier for the notification system
+          await this.notificationService.create(
+            {
+              recipientId: mentionedUser.keycloakId,
+              notificationType: NotificationType.MENTION,
+              title: 'You were mentioned',
+              message: `${user.username} mentioned you in a comment`,
+              data: {
+                entityType,
+                entityId,
+                commentId: newComment.id,
+              },
+            },
+            { id: user.id, email: user.email },
+          );
+        }
+      }
+    }
 
     const comments = entity.comments || [];
     comments.push(newComment);

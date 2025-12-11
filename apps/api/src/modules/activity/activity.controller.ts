@@ -23,7 +23,7 @@ import type { ActivityType } from './activity.repository';
 @Controller('api/v1/activities')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class ActivityController {
-  constructor(private readonly activityService: ActivityService) { }
+  constructor(private readonly activityService: ActivityService) {}
 
   /**
    * GET /api/v1/activities

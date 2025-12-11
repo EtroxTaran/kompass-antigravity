@@ -117,4 +117,4 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

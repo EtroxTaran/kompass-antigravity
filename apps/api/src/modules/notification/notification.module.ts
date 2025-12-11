@@ -7,13 +7,9 @@ import { DatabaseModule } from '../../database/database.module';
 import { SharedModule } from '../../shared/shared.module';
 
 @Module({
-    imports: [DatabaseModule, SharedModule],
-    controllers: [NotificationController],
-    providers: [
-        NotificationService,
-        NotificationRepository,
-        NotificationGateway,
-    ],
-    exports: [NotificationService],
+  imports: [DatabaseModule, SharedModule],
+  controllers: [NotificationController],
+  providers: [NotificationService, NotificationRepository, NotificationGateway],
+  exports: [NotificationService],
 })
-export class NotificationModule { }
+export class NotificationModule {}

@@ -7,6 +7,8 @@ import { InvoiceModule } from '../invoice/invoice.module';
 import { ProjectTaskModule } from '../project-task/project-task.module';
 import { OpportunityModule } from '../opportunity/opportunity.module';
 import { PresenceModule } from '../presence/presence.module';
+import { AuthModule } from '../../auth/auth.module';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { PresenceModule } from '../presence/presence.module';
     ProjectTaskModule,
     OpportunityModule,
     PresenceModule,
+    AuthModule,
+    NotificationModule,
   ],
   providers: [CommentService],
   controllers: [CommentController],

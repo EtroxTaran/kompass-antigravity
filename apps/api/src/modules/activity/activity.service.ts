@@ -17,7 +17,7 @@ export class ActivityService {
   constructor(
     private readonly activityRepository: ActivityRepository,
     private readonly customerRepository: CustomerRepository,
-  ) { }
+  ) {}
 
   async findAll(options: ActivityQueryOptions = {}) {
     return this.activityRepository.findAll(options);

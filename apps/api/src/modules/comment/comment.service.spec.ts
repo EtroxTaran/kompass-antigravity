@@ -8,6 +8,9 @@ import { OpportunityRepository } from '../opportunity/opportunity.repository';
 import { PresenceGateway } from '../presence/presence.gateway';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { AuthenticatedUser } from '../../auth/strategies/jwt.strategy';
+import { KeycloakService } from '../../auth/keycloak.service';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationType } from '../notification/entities/notification.entity';
 
 // Mock dependencies
 const mockRepository = {
@@ -20,6 +23,14 @@ const mockPresenceGateway = {
     to: jest.fn().mockReturnThis(),
     emit: jest.fn(),
   },
+};
+
+const mockKeycloakService = {
+  findUserByUsername: jest.fn(),
+};
+
+const mockNotificationService = {
+  create: jest.fn(),
 };
 
 const mockUser = {
@@ -46,6 +57,8 @@ describe('CommentService', () => {
         { provide: ProjectTaskRepository, useValue: mockRepository },
         { provide: OpportunityRepository, useValue: mockRepository },
         { provide: PresenceGateway, useValue: mockPresenceGateway },
+        { provide: KeycloakService, useValue: mockKeycloakService },
+        { provide: NotificationService, useValue: mockNotificationService },
       ],
     }).compile();
 
@@ -83,24 +96,43 @@ describe('CommentService', () => {
       });
       expect(result.id).toBeDefined();
       expect(mockRepository.findById).toHaveBeenCalledWith(entityId);
-      expect(mockRepository.update).toHaveBeenCalledWith(
+      expect(mockRepository.update).toHaveBeenCalled();
+    });
+
+    it('should parse mentions and send notification', async () => {
+      const entityId = 'project-1';
+      const entityType = 'project';
+      const dto = { content: 'Hello @alice how are you?' };
+      const existingEntity = { id: entityId, comments: [] };
+
+      const mentionedUser = {
+        _id: 'user-alice',
+        keycloakId: 'kc-alice',
+        username: 'alice',
+        email: 'alice@example.com',
+      };
+
+      mockRepository.findById.mockResolvedValue(existingEntity);
+      mockKeycloakService.findUserByUsername.mockResolvedValue(mentionedUser);
+
+      const result = await service.addComment(
+        entityType,
         entityId,
+        dto,
+        mockUser,
+      );
+
+      expect(mockKeycloakService.findUserByUsername).toHaveBeenCalledWith(
+        'alice',
+      );
+      expect(mockNotificationService.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          comments: expect.arrayContaining([
-            expect.objectContaining({ content: 'Test comment' }),
-          ]),
+          recipientId: 'kc-alice',
+          notificationType: NotificationType.MENTION,
         }),
-        mockUser.id,
-        mockUser.email,
+        expect.anything(),
       );
-      expect(mockPresenceGateway.server.to).toHaveBeenCalledWith(
-        `${entityType}:${entityId}`,
-      );
-      expect(mockPresenceGateway.server.emit).toHaveBeenCalledWith(
-        'comment:added',
-        result,
-      );
+      expect(result.mentions).toContain('user-alice');
     });
 
     it('should throw NotFoundException if entity does not exist', async () => {

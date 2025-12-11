@@ -14,4 +14,5 @@ export interface Comment {
   replies?: Comment[];
   // Optional: references to specific parts of the entity (e.g. line item ID)
   contextId?: string;
+  mentions?: string[]; // IDs or usernames of mentioned users
 }
