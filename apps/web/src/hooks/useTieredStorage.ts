@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { dbService } from "@/lib/db";
-import {
-  TierQuota,
-} from "@/lib/tiered-storage/types";
+import { TierQuota } from "@/lib/tiered-storage/types";
 
 export function useTieredStorage() {
   const [tierQuotas, setTierQuotas] = useState<TierQuota[]>([]);
@@ -41,9 +39,12 @@ export function useTieredStorage() {
     setPinnedIds(dbService.getPinnedDocIds());
   }, []);
 
-  const isPinned = useCallback((docId: string) => {
-    return pinnedIds.includes(docId);
-  }, [pinnedIds]);
+  const isPinned = useCallback(
+    (docId: string) => {
+      return pinnedIds.includes(docId);
+    },
+    [pinnedIds],
+  );
 
   const formatBytes = (bytes: number): string => {
     if (bytes === 0) return "0 B";
@@ -61,6 +62,6 @@ export function useTieredStorage() {
     pinDocument,
     unpinDocument,
     isPinned,
-    formatBytes
+    formatBytes,
   };
 }

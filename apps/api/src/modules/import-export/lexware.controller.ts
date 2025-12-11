@@ -4,20 +4,20 @@ import { Response } from 'express';
 
 @Controller('integration/lexware')
 export class LexwareController {
-    constructor(private readonly lexwareSyncService: LexwareSyncService) { }
+  constructor(private readonly lexwareSyncService: LexwareSyncService) {}
 
-    @Get('status')
-    async getStatus() {
-        return this.lexwareSyncService.getSyncStatus();
-    }
+  @Get('status')
+  async getStatus() {
+    return this.lexwareSyncService.getSyncStatus();
+  }
 
-    @Post('export/trigger')
-    async triggerExport() {
-        return this.lexwareSyncService.exportContractsToLexware();
-    }
+  @Post('export/trigger')
+  async triggerExport() {
+    return this.lexwareSyncService.exportContractsToLexware();
+  }
 
-    @Post('import/trigger')
-    async triggerImport() {
-        return this.lexwareSyncService.importPaymentsFromLexware();
-    }
+  @Post('import/trigger')
+  async triggerImport() {
+    return this.lexwareSyncService.importPaymentsFromLexware();
+  }
 }

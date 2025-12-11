@@ -146,10 +146,17 @@ export function ProjectForm({
                         <FormControl>
                           <Input
                             placeholder="Construction, Enterprise, Phase 2..."
-                            value={Array.isArray(field.value) ? field.value.join(", ") : ""}
+                            value={
+                              Array.isArray(field.value)
+                                ? field.value.join(", ")
+                                : ""
+                            }
                             onChange={(e) => {
                               const value = e.target.value;
-                              const tags = value.split(",").map((t) => t.trim()).filter(Boolean);
+                              const tags = value
+                                .split(",")
+                                .map((t) => t.trim())
+                                .filter(Boolean);
                               field.onChange(tags);
                             }}
                           />

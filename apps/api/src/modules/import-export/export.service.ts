@@ -258,9 +258,13 @@ export class ExportService {
 
     const rows = contracts.map((contract) => {
       const contractNumber = contract.contractNumber || '';
-      const customerNumber = contract.customerNumber || contract.customerId || ''; // Need verify mapping
-      const customerName = contract.customerName || contract.customer?.companyName || '';
-      const contractValue = formatGermanNumber(contract.totalEur || contract.contractValue || 0); // Contract uses totalEur?
+      const customerNumber =
+        contract.customerNumber || contract.customerId || ''; // Need verify mapping
+      const customerName =
+        contract.customerName || contract.customer?.companyName || '';
+      const contractValue = formatGermanNumber(
+        contract.totalEur || contract.contractValue || 0,
+      ); // Contract uses totalEur?
       // contract.repository.ts says: totalEur
       const contractDate = formatGermanDate(contract.contractDate);
       const startDate = formatGermanDate(contract.startDate);
@@ -270,7 +274,11 @@ export class ExportService {
       const description = contract.description || contract.notes || '';
 
       const escapeField = (field: string): string => {
-        if (field.includes(';') || field.includes('"') || field.includes('\n')) {
+        if (
+          field.includes(';') ||
+          field.includes('"') ||
+          field.includes('\n')
+        ) {
           return `"${field.replace(/"/g, '""')}"`;
         }
         return field;
@@ -297,102 +305,102 @@ export class ExportService {
   /**
    * Docs: https://www.datev.de/dnlexos/mobile/api/content/examples/1036228/pdf
    */
-    exportDatev(invoices: any[]): Buffer {
-      // DATEV Header line
-      // Extended header with format description
-      const headerLine =
-        '"EXTF";700;21;DATEV Format-Logistik;9;20250101000000000;20250101000000000;"";"";"";0;"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";';
+  exportDatev(invoices: any[]): Buffer {
+    // DATEV Header line
+    // Extended header with format description
+    const headerLine =
+      '"EXTF";700;21;DATEV Format-Logistik;9;20250101000000000;20250101000000000;"";"";"";0;"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";';
 
-      const headers = [
-        'Umsatz (ohne Soll/Haben-Kz)', // 1. Volume
-        'Soll/Haben-Kennzeichen', // 2. Debit/Credit
-        'Währungsumsatz (ohne Soll/Haben-Kz)', // 3. Currency volume
-        'Wechselkurs', // 4. Exchange rate
-        'Basisumsatz', // 5. Base volume
-        'Währungskennzeichen', // 6. Currency (EUR)
-        'Konto', // 7. Account (Debitor)
-        'Gegenkonto (ohne BU-Schlüssel)', // 8. Contra Account (Revenue)
-        'BU-Schlüssel', // 9. BU-Key
-        'Belegdatum', // 10. Date (DDMM)
-        'Belegfeld 1', // 11. Invoice Number
-        'Belegfeld 2', // 12. Due Date?
-        'Skonto', // 13
-        'Buchungstext', // 14. Description
-      ];
+    const headers = [
+      'Umsatz (ohne Soll/Haben-Kz)', // 1. Volume
+      'Soll/Haben-Kennzeichen', // 2. Debit/Credit
+      'Währungsumsatz (ohne Soll/Haben-Kz)', // 3. Currency volume
+      'Wechselkurs', // 4. Exchange rate
+      'Basisumsatz', // 5. Base volume
+      'Währungskennzeichen', // 6. Currency (EUR)
+      'Konto', // 7. Account (Debitor)
+      'Gegenkonto (ohne BU-Schlüssel)', // 8. Contra Account (Revenue)
+      'BU-Schlüssel', // 9. BU-Key
+      'Belegdatum', // 10. Date (DDMM)
+      'Belegfeld 1', // 11. Invoice Number
+      'Belegfeld 2', // 12. Due Date?
+      'Skonto', // 13
+      'Buchungstext', // 14. Description
+    ];
 
-      const rows = invoices.map((invoice) => {
-        // 1. Umsatz (Gross Amount)
-        const amount = (invoice.totalGross || 0)
-          .toFixed(2)
-          .replace('.', ',')
-          .replace(/-/, ''); // DATEV amounts are always positive, S/H indicates sign
+    const rows = invoices.map((invoice) => {
+      // 1. Umsatz (Gross Amount)
+      const amount = (invoice.totalGross || 0)
+        .toFixed(2)
+        .replace('.', ',')
+        .replace(/-/, ''); // DATEV amounts are always positive, S/H indicates sign
 
-        // 2. Soll/Haben
-        const sh = 'S'; // Invoices are Debit (Soll) for Customer account
+      // 2. Soll/Haben
+      const sh = 'S'; // Invoices are Debit (Soll) for Customer account
 
-        // 6. Currency
-        const currency = 'EUR';
+      // 6. Currency
+      const currency = 'EUR';
 
-        // 7. Konto (Debitor) - Use Customer ID hash or default
-        // In reality this needs a Mapping table. We'll derive from customerId for now or use dummy.
-        // E.g. 10000 + some numeric part of id? Or just 10000 generic.
-        // Let's assume a generic Debitor range or try to parse numeric customer ID if available.
-        // For this MVP we'll use a placeholder or derived ID.
-        // HACK: Use 10000 as base debitor account
-        const debitor = '10000';
+      // 7. Konto (Debitor) - Use Customer ID hash or default
+      // In reality this needs a Mapping table. We'll derive from customerId for now or use dummy.
+      // E.g. 10000 + some numeric part of id? Or just 10000 generic.
+      // Let's assume a generic Debitor range or try to parse numeric customer ID if available.
+      // For this MVP we'll use a placeholder or derived ID.
+      // HACK: Use 10000 as base debitor account
+      const debitor = '10000';
 
-        // 8. Gegenkonto (Revenue) - Based on VAT
-        // Standard SKR03: 19% = 8400, 7% = 8300, 0% = 8120
-        // We'll simplistic check vatAmount/totalNet to guess rate or use default 8400
-        let revenueAccount = '8400';
-        const vatRate =
-          invoice.totalNet > 0 ? (invoice.vatAmount / invoice.totalNet) * 100 : 0;
+      // 8. Gegenkonto (Revenue) - Based on VAT
+      // Standard SKR03: 19% = 8400, 7% = 8300, 0% = 8120
+      // We'll simplistic check vatAmount/totalNet to guess rate or use default 8400
+      let revenueAccount = '8400';
+      const vatRate =
+        invoice.totalNet > 0 ? (invoice.vatAmount / invoice.totalNet) * 100 : 0;
 
-        if (Math.abs(vatRate - 7) < 0.1) revenueAccount = '8300';
-        if (Math.abs(vatRate - 0) < 0.1) revenueAccount = '8120';
+      if (Math.abs(vatRate - 7) < 0.1) revenueAccount = '8300';
+      if (Math.abs(vatRate - 0) < 0.1) revenueAccount = '8120';
 
-        // 10. Belegdatum (DDMM)
-        const date = invoice.date
-          ? formatDate(new Date(invoice.date), 'ddMM')
-          : '0101';
+      // 10. Belegdatum (DDMM)
+      const date = invoice.date
+        ? formatDate(new Date(invoice.date), 'ddMM')
+        : '0101';
 
-        // 11. Belegfeld 1 (Invoice Number)
-        const docRef = (invoice.invoiceNumber || '').substring(0, 36);
+      // 11. Belegfeld 1 (Invoice Number)
+      const docRef = (invoice.invoiceNumber || '').substring(0, 36);
 
-        // 14. Buchungstext
-        const text =
-          `${invoice.invoiceNumber || ''} ${invoice.customerName || ''}`
-            .substring(0, 60)
-            .replace(/;/g, ' '); // simple sanitization
+      // 14. Buchungstext
+      const text =
+        `${invoice.invoiceNumber || ''} ${invoice.customerName || ''}`
+          .substring(0, 60)
+          .replace(/;/g, ' '); // simple sanitization
 
-        // Create CSV line (semicolon separated)
-        // Standard DATEV format is strictly positional.
-        // We fill up to index 14.
-        // indices: 0=Amount, 1=SH, ..., 6=Debitor, 7=Contra, ..., 9=Date, 10=Ref, 13=Text
-        return [
-          amount, // 1
-          sh, // 2
-          '', // 3
-          '', // 4
-          '', // 5
-          currency, // 6
-          debitor, // 7
-          revenueAccount, // 8
-          '', // 9
-          date, // 10
-          docRef, // 11
-          '', // 12
-          '', // 13
-          `"${text}"`, // 14
-        ].join(';');
-      });
+      // Create CSV line (semicolon separated)
+      // Standard DATEV format is strictly positional.
+      // We fill up to index 14.
+      // indices: 0=Amount, 1=SH, ..., 6=Debitor, 7=Contra, ..., 9=Date, 10=Ref, 13=Text
+      return [
+        amount, // 1
+        sh, // 2
+        '', // 3
+        '', // 4
+        '', // 5
+        currency, // 6
+        debitor, // 7
+        revenueAccount, // 8
+        '', // 9
+        date, // 10
+        docRef, // 11
+        '', // 12
+        '', // 13
+        `"${text}"`, // 14
+      ].join(';');
+    });
 
-      // DATEV uses Windows-1252 usually, but UTF-8 with BOM works for most modern imports too.
-      // Spec says ASCII/ANSI. We'll stick to UTF-8 BOM for compatibility with our other exports unless strictly required otherwise.
-      const csvContent = [headerLine, headers.join(';'), ...rows].join('\r\n'); // CRLF for Windows
+    // DATEV uses Windows-1252 usually, but UTF-8 with BOM works for most modern imports too.
+    // Spec says ASCII/ANSI. We'll stick to UTF-8 BOM for compatibility with our other exports unless strictly required otherwise.
+    const csvContent = [headerLine, headers.join(';'), ...rows].join('\r\n'); // CRLF for Windows
 
-      return Buffer.from('\ufeff' + csvContent, 'utf-8');
-    }
+    return Buffer.from('\ufeff' + csvContent, 'utf-8');
+  }
 
   /**
    * Filter data to only include specified fields

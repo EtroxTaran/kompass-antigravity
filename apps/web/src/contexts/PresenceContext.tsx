@@ -26,8 +26,8 @@ interface PresenceContextType {
 }
 
 const PresenceContext = createContext<PresenceContextType>({
-  joinRoom: () => {},
-  leaveRoom: () => {},
+  joinRoom: () => { },
+  leaveRoom: () => { },
   activeUsers: [],
   isConnected: false,
   socket: null,
@@ -41,6 +41,7 @@ export const PresenceProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isConnected, setIsConnected] = useState(false);
   const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([]);
   const [currentRoom, setCurrentRoom] = useState<string | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   // Initialize Socket
   useEffect(() => {
@@ -70,10 +71,12 @@ export const PresenceProvider: React.FC<{ children: React.ReactNode }> = ({
     });
 
     socketRef.current = newSocket;
+    setSocket(newSocket);
 
     return () => {
       newSocket.disconnect();
       socketRef.current = null;
+      setSocket(null);
     };
   }, []);
 
@@ -82,7 +85,7 @@ export const PresenceProvider: React.FC<{ children: React.ReactNode }> = ({
     if (!isConnected) return;
 
     const interval = setInterval(() => {
-      socketRef.current?.emit("heartbeat");
+      socket?.emit("heartbeat");
     }, 30000);
 
     return () => clearInterval(interval);
@@ -121,11 +124,11 @@ export const PresenceProvider: React.FC<{ children: React.ReactNode }> = ({
         leaveRoom,
         activeUsers,
         isConnected,
-        socket: socketRef.current,
+        socket,
       }}
     >
       {children}
-    </PresenceContext.Provider>
+    </PresenceContext.Provider >
   );
 };
 

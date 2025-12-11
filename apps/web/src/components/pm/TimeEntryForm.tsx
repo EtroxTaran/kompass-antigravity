@@ -64,7 +64,8 @@ export function TimeEntryForm() {
   const watchedStartTime = form.watch("startTime");
   const watchedDuration = form.watch("durationMinutes");
   const [dailyTotal, setDailyTotal] = useState(0);
-  const [showLimitWarning, setShowLimitWarning] = useState(false);
+  const currentHours = (watchedDuration || 0) / 60;
+  const showLimitWarning = dailyTotal + currentHours > 10;
 
   useEffect(() => {
     const checkDailyLimit = async () => {
@@ -79,15 +80,6 @@ export function TimeEntryForm() {
     };
     checkDailyLimit();
   }, [watchedStartTime]);
-
-  useEffect(() => {
-    const currentHours = (watchedDuration || 0) / 60;
-    if (dailyTotal + currentHours > 10) {
-      setShowLimitWarning(true);
-    } else {
-      setShowLimitWarning(false);
-    }
-  }, [dailyTotal, watchedDuration]);
 
   const onSubmit = async (data: Partial<TimeEntry>) => {
     try {

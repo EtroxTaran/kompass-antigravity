@@ -8,13 +8,12 @@ export function PortalVerify() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get("token");
-  const [status, setStatus] = useState<"verifying" | "error">("verifying");
+  const [status, setStatus] = useState<"verifying" | "error">(() =>
+    token ? "verifying" : "error",
+  );
 
   useEffect(() => {
-    if (!token) {
-      setStatus("error");
-      return;
-    }
+    if (!token) return;
 
     const verify = async () => {
       try {

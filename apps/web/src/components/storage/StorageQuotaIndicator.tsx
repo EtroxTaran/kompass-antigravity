@@ -17,7 +17,7 @@ export function StorageQuotaIndicator() {
     isLowStorage,
     isLoading,
   } = useStorageQuota();
-  
+
   const { tierQuotas, formatBytes } = useTieredStorage();
 
   if (isLoading) {
@@ -35,11 +35,16 @@ export function StorageQuotaIndicator() {
   return (
     <div className="px-3 py-2 border-t border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between mb-1">
-        <Link to="/settings/storage" className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors">
+        <Link
+          to="/settings/storage"
+          className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors"
+        >
           <HardDrive className="w-3 h-3" />
           <span>Speicher</span>
         </Link>
-        <span className="text-[10px] text-gray-400">{Math.round(percentUsed)}%</span>
+        <span className="text-[10px] text-gray-400">
+          {Math.round(percentUsed)}%
+        </span>
       </div>
 
       <TooltipProvider>
@@ -54,24 +59,31 @@ export function StorageQuotaIndicator() {
           </TooltipTrigger>
           <TooltipContent side="right" className="text-xs space-y-1">
             <p className="font-semibold border-b pb-1 mb-1">Speicher Details</p>
-            {tierQuotas.map(t => (
-               <div key={t.tier} className="flex justify-between gap-4">
-                 <span className="capitalize text-gray-400">{t.tier}:</span>
-                 <span>{formatBytes(t.used)}</span>
-               </div>
+            {tierQuotas.map((t) => (
+              <div key={t.tier} className="flex justify-between gap-4">
+                <span className="capitalize text-gray-400">{t.tier}:</span>
+                <span>{formatBytes(t.used)}</span>
+              </div>
             ))}
             <div className="pt-1 border-t mt-1 flex justify-between gap-4 font-medium">
               <span>Gesamt:</span>
-              <span>{usageFormatted} / {quotaFormatted}</span>
+              <span>
+                {usageFormatted} / {quotaFormatted}
+              </span>
             </div>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
 
       <div className="text-[10px] text-gray-500 dark:text-gray-500 flex justify-between">
-        <span>{usageFormatted} / {quotaFormatted}</span>
+        <span>
+          {usageFormatted} / {quotaFormatted}
+        </span>
         {isLowStorage && (
-          <Link to="/settings/storage" className="text-red-500 hover:underline ml-1">
+          <Link
+            to="/settings/storage"
+            className="text-red-500 hover:underline ml-1"
+          >
             • Wenig Speicher
           </Link>
         )}

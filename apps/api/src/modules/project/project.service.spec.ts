@@ -126,16 +126,38 @@ describe('ProjectService Cost Tracking', () => {
 
       const candidates = [
         // Candidate 1: Same Customer + 1 Tag Match (score: 2 + 5 = 7)
-        { _id: '2', customerId: 'cust1', tags: ['construction'], budget: 50000, name: 'C1' },
+        {
+          _id: '2',
+          customerId: 'cust1',
+          tags: ['construction'],
+          budget: 50000,
+          name: 'C1',
+        },
         // Candidate 2: Different Customer + 2 Tags + Budget (score: 10 + 3 = 13)
-        { _id: '3', customerId: 'cust2', tags: ['construction', 'large'], budget: 105000, name: 'C2' },
+        {
+          _id: '3',
+          customerId: 'cust2',
+          tags: ['construction', 'large'],
+          budget: 105000,
+          name: 'C2',
+        },
         // Candidate 3: No match
-        { _id: '4', customerId: 'cust3', tags: ['other'], budget: 1000, name: 'C3' },
+        {
+          _id: '4',
+          customerId: 'cust3',
+          tags: ['other'],
+          budget: 1000,
+          name: 'C3',
+        },
       ] as Project[];
 
       repository.findById.mockResolvedValue(sourceProject);
-      (repository as any).findByCustomer = jest.fn().mockResolvedValue({ data: [] }); // Not used for direct logic anymore but needed for execution
-      (repository as any).findAll = jest.fn().mockResolvedValue({ data: candidates });
+      (repository as any).findByCustomer = jest
+        .fn()
+        .mockResolvedValue({ data: [] }); // Not used for direct logic anymore but needed for execution
+      (repository as any).findAll = jest
+        .fn()
+        .mockResolvedValue({ data: candidates });
 
       const results = await service.findSimilar('1');
 
@@ -146,7 +168,9 @@ describe('ProjectService Cost Tracking', () => {
 
     it('should throw NotFoundException if source project not found', async () => {
       repository.findById.mockResolvedValue(null);
-      await expect(service.findSimilar('999')).rejects.toThrow(NotFoundException);
+      await expect(service.findSimilar('999')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

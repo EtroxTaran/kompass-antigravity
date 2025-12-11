@@ -116,6 +116,7 @@ export function MaterialPriceComparison({
     });
   }, [supplierPrices, sortField, sortDirection]);
 
+  // Sort logic moved to memo
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
@@ -125,20 +126,14 @@ export function MaterialPriceComparison({
     }
   };
 
-  const SortHeader = ({
-    field,
-    children,
-  }: {
-    field: SortField;
-    children: React.ReactNode;
-  }) => (
+  const renderSortHeader = (field: SortField, label: string) => (
     <Button
       variant="ghost"
       size="sm"
       className="h-8 px-2 -ml-2 font-medium"
       onClick={() => handleSort(field)}
     >
-      {children}
+      {label}
       <ArrowUpDown className="ml-2 h-4 w-4" />
     </Button>
   );
@@ -178,19 +173,19 @@ export function MaterialPriceComparison({
           <TableHeader>
             <TableRow>
               <TableHead className="w-[200px]">
-                <SortHeader field="supplierName">Lieferant</SortHeader>
+                {renderSortHeader("supplierName", "Lieferant")}
               </TableHead>
               <TableHead className="text-right">
-                <SortHeader field="price">Preis/{unit}</SortHeader>
+                {renderSortHeader("price", `Preis/${unit}`)}
               </TableHead>
               <TableHead className="text-right">
-                <SortHeader field="moq">MOQ</SortHeader>
+                {renderSortHeader("moq", "MOQ")}
               </TableHead>
               <TableHead className="text-right">
-                <SortHeader field="leadTime">Lieferzeit</SortHeader>
+                {renderSortHeader("leadTime", "Lieferzeit")}
               </TableHead>
               <TableHead className="text-center">
-                <SortHeader field="rating">Bewertung</SortHeader>
+                {renderSortHeader("rating", "Bewertung")}
               </TableHead>
               {onSelectSupplier && (
                 <TableHead className="text-right w-[100px]">Aktion</TableHead>

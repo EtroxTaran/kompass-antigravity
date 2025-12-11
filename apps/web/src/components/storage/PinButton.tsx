@@ -12,16 +12,16 @@ interface PinButtonProps {
   showLabel?: boolean;
 }
 
-export function PinButton({ 
-  docId, 
+export function PinButton({
+  docId,
   className,
   variant = "ghost",
   size = "icon",
-  showLabel = false
+  showLabel = false,
 }: PinButtonProps) {
   const { isPinned, pinDocument, unpinDocument } = useTieredStorage();
   const [isPending, setIsPending] = useState(false);
-  
+
   const pinned = isPinned(docId);
 
   const handleToggle = async (e: React.MouseEvent) => {
@@ -45,13 +45,15 @@ export function PinButton({
       className={cn("h-8 w-8", className, pinned && "text-blue-500")}
       onClick={handleToggle}
       disabled={isPending}
-      title={pinned ? "Nicht mehr offline verfügbar halten" : "Für Offline-Zugriff pinnen"}
+      title={
+        pinned
+          ? "Nicht mehr offline verfügbar halten"
+          : "Für Offline-Zugriff pinnen"
+      }
     >
       {pinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
       {showLabel && (
-        <span className="ml-2">
-          {pinned ? "Gepinned" : "Pinnen"}
-        </span>
+        <span className="ml-2">{pinned ? "Gepinned" : "Pinnen"}</span>
       )}
     </Button>
   );

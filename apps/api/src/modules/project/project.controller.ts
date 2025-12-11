@@ -21,7 +21,7 @@ import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 @Controller('api/v1/projects')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class ProjectController {
-  constructor(private readonly projectService: ProjectService) { }
+  constructor(private readonly projectService: ProjectService) {}
 
   /**
    * GET /api/v1/projects

@@ -564,7 +564,7 @@ export const offersApi = {
       // It does NOT split by comma.
       // I will assume for now we just support one tag or strict match.
       // Actually, let's just send `tags` as is.
-      params.tags = criteria.tags.join(',');
+      params.tags = criteria.tags.join(",");
     }
 
     // Workaround for `get` not supporting array params correctly (it uses set which overwrites).
@@ -1307,6 +1307,7 @@ import {
   UpdateAssignmentDto,
   RateSubcontractorDto,
   ProjectSubcontractor,
+  User,
 } from "@kompass/shared";
 
 export const projectSubcontractorApi = {
@@ -1464,7 +1465,7 @@ export const apiClient = {
     requestLink: (email: string) =>
       post("/portal/auth/request-link", { email }),
     verifyToken: (token: string) =>
-      post<{ accessToken: string; user: any }>("/portal/auth/verify", {
+      post<{ accessToken: string; user: User }>("/portal/auth/verify", {
         token,
       }),
     getProjects: () => get<Project[]>("/portal/projects"),

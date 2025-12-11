@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, KeyboardEvent } from "react";
+import React, { useState, useRef, useEffect, useMemo, KeyboardEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -28,9 +28,7 @@ export const CommentInput: React.FC<CommentInputProps> = ({
   const [users, setUsers] = useState<User[]>([]);
   const [mentionQuery, setMentionQuery] = useState<string | null>(null);
   const [mentionIndex, setMentionIndex] = useState(0);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
   // Fetch users on mount
   useEffect(() => {
     const fetchUsers = async () => {
@@ -39,8 +37,9 @@ export const CommentInput: React.FC<CommentInputProps> = ({
         setUsers(
           response.data.map((u) => ({
             ...u,
-            username: u.username || u.displayName.toLowerCase().replace(/\s/g, "."),
-          }))
+            username:
+              u.username || u.displayName.toLowerCase().replace(/\s/g, "."),
+          })),
         );
       } catch (err) {
         console.error("Failed to fetch users for mentions", err);
@@ -49,24 +48,24 @@ export const CommentInput: React.FC<CommentInputProps> = ({
     fetchUsers();
   }, []);
 
-  // Filter users when query changes
-  useEffect(() => {
-    if (mentionQuery === null) {
-      setFilteredUsers([]);
-      return;
-    }
+  // Filter users using useMemo
+  const filteredUsers = useMemo(() => {
+    if (mentionQuery === null) return [];
     const lowerQuery = mentionQuery.toLowerCase();
-    const filtered = users
+    return users
       .filter(
         (u) =>
           u.displayName.toLowerCase().includes(lowerQuery) ||
           (u.username && u.username.toLowerCase().includes(lowerQuery)) ||
           u.email.toLowerCase().includes(lowerQuery),
       )
-      .slice(0, 5); // Limit to 5 suggestions
-    setFilteredUsers(filtered);
-    setMentionIndex(0);
+      .slice(0, 5);
   }, [mentionQuery, users]);
+
+  // Reset selection index when list changes
+  useEffect(() => {
+    setMentionIndex(0);
+  }, [filteredUsers]);
 
   const handleSubmit = async () => {
     if (!content.trim() || isSubmitting) return;
@@ -147,7 +146,10 @@ export const CommentInput: React.FC<CommentInputProps> = ({
       if (textareaRef.current) {
         textareaRef.current.focus();
         // Set cursor after the inserted mention
-        const newCursorPos = lastAtSymbolIndex + (user.username || user.displayName.replace(/\s/g, "")).length + 2;
+        const newCursorPos =
+          lastAtSymbolIndex +
+          (user.username || user.displayName.replace(/\s/g, "")).length +
+          2;
         textareaRef.current.setSelectionRange(newCursorPos, newCursorPos);
       }
     }, 0);

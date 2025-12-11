@@ -16,7 +16,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import * as express from 'express';
+import type { Response } from 'express';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto, UpdateCustomerDto } from './dto/customer.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -33,7 +33,7 @@ export class CustomerController {
     private readonly customerService: CustomerService,
     private readonly exportService: ExportService,
     private readonly importService: ImportService,
-  ) { }
+  ) {}
 
   /**
    * GET /api/v1/customers
@@ -60,7 +60,7 @@ export class CustomerController {
   @Get('export')
   @Permissions({ entity: 'Customer', action: 'READ' })
   async exportCustomers(
-    @Res() res: express.Response,
+    @Res() res: Response,
     @Query('format') format: string = 'csv',
     @Query('fields') fields?: string,
   ) {
@@ -417,7 +417,13 @@ export class CustomerController {
   @Post('check-duplicates')
   @Permissions({ entity: 'Customer', action: 'READ' })
   async checkDuplicates(
-    @Body() criteria: { name?: string; email?: string; phone?: string; excludeId?: string },
+    @Body()
+    criteria: {
+      name?: string;
+      email?: string;
+      phone?: string;
+      excludeId?: string;
+    },
   ) {
     return this.customerService.checkDuplicates(criteria, criteria.excludeId);
   }

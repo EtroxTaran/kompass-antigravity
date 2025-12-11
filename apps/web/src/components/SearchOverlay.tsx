@@ -41,8 +41,11 @@ export function SearchOverlay({ open, onOpenChange }: SearchOverlayProps) {
   // Clear search on close
   useEffect(() => {
     if (!open) {
-      setSearchTerm("");
-      clearResults();
+      const timer = setTimeout(() => {
+        setSearchTerm("");
+        clearResults();
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [open, clearResults]);
 

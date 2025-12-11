@@ -29,7 +29,7 @@ export class CustomerService {
     private readonly protocolRepository: ProtocolRepository,
     @Inject(forwardRef(() => ProjectRepository))
     private readonly projectRepository: ProjectRepository,
-  ) { }
+  ) {}
 
   async findAll(
     options: { page?: number; limit?: number; search?: string } = {},

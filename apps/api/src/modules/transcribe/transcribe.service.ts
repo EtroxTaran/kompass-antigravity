@@ -10,7 +10,7 @@ export class TranscribeService {
 
   constructor() {
     this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: process.env.OPENAI_API_KEY || 'dummy-key-for-dev',
     });
   }
 

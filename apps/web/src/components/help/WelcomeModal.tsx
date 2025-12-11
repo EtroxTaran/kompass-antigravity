@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   X,
   Rocket,
@@ -47,16 +47,10 @@ export function WelcomeModal({
   userName = "Benutzer",
   onComplete,
 }: WelcomeModalProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(() => {
+    return !localStorage.getItem(WELCOME_SHOWN_KEY);
+  });
   const [currentStep, setCurrentStep] = useState(0);
-
-  useEffect(() => {
-    // Check if welcome has been shown
-    const hasSeenWelcome = localStorage.getItem(WELCOME_SHOWN_KEY);
-    if (!hasSeenWelcome) {
-      setIsOpen(true);
-    }
-  }, []);
 
   const handleClose = () => {
     localStorage.setItem(WELCOME_SHOWN_KEY, "true");

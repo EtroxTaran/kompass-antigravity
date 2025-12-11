@@ -1,13 +1,10 @@
 import PouchDB from "pouchdb";
 import PouchDBFind from "pouchdb-find";
-import {
-  StorageTier,
-  TierQuota,
-} from "./tiered-storage/types";
+import { StorageTier, TierQuota } from "./tiered-storage/types";
 import {
   essentialFilter,
   recentFilter,
-  onDemandFilter
+  onDemandFilter,
 } from "./tiered-storage/syncFilters";
 import { evictLruDocuments } from "./tiered-storage/lruEviction";
 
@@ -18,15 +15,15 @@ const REMOTE_DB_URL = "http://localhost:5984/kompass"; // TODO: Make configurabl
 
 // Tier Limits (in bytes)
 const TIER_LIMITS = {
-  essential: 5 * 1024 * 1024,      // 5MB
-  recent: 10 * 1024 * 1024,        // 10MB
-  onDemand: 35 * 1024 * 1024,      // 35MB
+  essential: 5 * 1024 * 1024, // 5MB
+  recent: 10 * 1024 * 1024, // 10MB
+  onDemand: 35 * 1024 * 1024, // 35MB
 };
 
 // Sync Intervals (in ms)
 const SYNC_INTERVALS = {
-  essential: 15 * 60 * 1000,       // 15 min
-  recent: 60 * 60 * 1000,          // 60 min
+  essential: 15 * 60 * 1000, // 15 min
+  recent: 60 * 60 * 1000, // 60 min
 };
 
 // Storage thresholds
@@ -57,8 +54,12 @@ class DatabaseService {
   private currentStatus: SyncStatus = "idle";
 
   // Replication handlers
-  private pushHandler: PouchDB.Replication.Replication<Record<string, unknown>> | null = null;
-  private essentialPullHandler: PouchDB.Replication.Replication<Record<string, unknown>> | null = null;
+  private pushHandler: PouchDB.Replication.Replication<
+    Record<string, unknown>
+  > | null = null;
+  private essentialPullHandler: PouchDB.Replication.Replication<
+    Record<string, unknown>
+  > | null = null;
   private recentPullInterval: number | null = null;
 
   private storageInfo: StorageInfo | null = null;
@@ -97,7 +98,6 @@ class DatabaseService {
       // Attempt to deploy filters to remote if we can (optional, assuming we have rights)
       // In production specific setup scripts would do this.
       await this.deployFiltersToRemote();
-
     } catch (err) {
       console.error("Error initializing DB", err);
     }
@@ -116,17 +116,23 @@ class DatabaseService {
    */
   private async deployFiltersToRemote() {
     try {
-      const ddoc: any = {
-        _id: '_design/app_filters',
+      const ddoc: {
+        _id: string;
+        filters: Record<string, string>; // or function string
+        _rev?: string;
+      } = {
+        _id: "_design/app_filters",
         filters: {
           essential: essentialFilter.toString(),
           recent: recentFilter.toString(),
-          onDemand: onDemandFilter.toString()
-        }
+          onDemand: onDemandFilter.toString(),
+        },
       };
 
       try {
-        const existing: any = await this.remoteDB.get('_design/app_filters');
+        const existing = (await this.remoteDB.get("_design/app_filters")) as {
+          _rev: string;
+        };
         ddoc._rev = existing._rev;
       } catch {
         // missing, create new
@@ -135,7 +141,10 @@ class DatabaseService {
       await this.remoteDB.put(ddoc);
       console.log("Deployed filters to remote DB");
     } catch (err) {
-      console.warn("Could not deploy filters to remote DB (might lack permissions, ignore if preset)", err);
+      console.warn(
+        "Could not deploy filters to remote DB (might lack permissions, ignore if preset)",
+        err,
+      );
     }
   }
 
@@ -179,11 +188,16 @@ class DatabaseService {
 
     // Use string matching/logic similar to filters to categorize
     // This is an estimation matching the filter logic in JS
-    const mockReq = { query: { userId: this.currentUserId, pinnedIds: Array.from(this.pinnedDocIds) } };
+    const mockReq = {
+      query: {
+        userId: this.currentUserId,
+        pinnedIds: Array.from(this.pinnedDocIds),
+      },
+    };
 
     for (const row of allDocs.rows) {
       const doc = row.doc;
-      if (!doc || doc._id.startsWith('_design/')) continue;
+      if (!doc || doc._id.startsWith("_design/")) continue;
 
       const size = JSON.stringify(doc).length;
 
@@ -198,9 +212,24 @@ class DatabaseService {
     }
 
     return [
-      { tier: 'essential', used: essentialSize, limit: TIER_LIMITS.essential, usagePercent: essentialSize / TIER_LIMITS.essential },
-      { tier: 'recent', used: recentSize, limit: TIER_LIMITS.recent, usagePercent: recentSize / TIER_LIMITS.recent },
-      { tier: 'onDemand', used: onDemandSize, limit: TIER_LIMITS.onDemand, usagePercent: onDemandSize / TIER_LIMITS.onDemand },
+      {
+        tier: "essential",
+        used: essentialSize,
+        limit: TIER_LIMITS.essential,
+        usagePercent: essentialSize / TIER_LIMITS.essential,
+      },
+      {
+        tier: "recent",
+        used: recentSize,
+        limit: TIER_LIMITS.recent,
+        usagePercent: recentSize / TIER_LIMITS.recent,
+      },
+      {
+        tier: "onDemand",
+        used: onDemandSize,
+        limit: TIER_LIMITS.onDemand,
+        usagePercent: onDemandSize / TIER_LIMITS.onDemand,
+      },
     ];
   }
 
@@ -211,7 +240,10 @@ class DatabaseService {
     this.storageInfo = await this.getStorageEstimate();
 
     // If storage is critical and we're syncing, pause sync
-    if (this.storageInfo.isCritical && (this.pushHandler || this.essentialPullHandler)) {
+    if (
+      this.storageInfo.isCritical &&
+      (this.pushHandler || this.essentialPullHandler)
+    ) {
       console.warn("Storage critical, pausing sync");
       this.stopSync();
       this.notify("storage_full");
@@ -233,15 +265,21 @@ class DatabaseService {
     if (!this.currentUserId) return;
 
     const quotas = await this.getTierQuotas();
-    const recentQuota = quotas.find(q => q.tier === 'recent');
+    const recentQuota = quotas.find((q) => q.tier === "recent");
 
     if (recentQuota && recentQuota.usagePercent > 0.8) {
       console.log("Recent tier > 80%, running eviction...");
       // Target to free: get back to 70%?
-      const targetBytes = recentQuota.used - (recentQuota.limit * 0.7);
+      const targetBytes = recentQuota.used - recentQuota.limit * 0.7;
       if (targetBytes > 0) {
-        const result = await evictLruDocuments(this.db, targetBytes, this.currentUserId);
-        console.log(`Evicted ${result.evictedCount} docs, freed ${result.freedBytes} bytes`);
+        const result = await evictLruDocuments(
+          this.db,
+          targetBytes,
+          this.currentUserId,
+        );
+        console.log(
+          `Evicted ${result.evictedCount} docs, freed ${result.freedBytes} bytes`,
+        );
       }
     }
   }
@@ -256,7 +294,9 @@ class DatabaseService {
     this.storageCheckInterval = window.setInterval(async () => {
       await this.checkStorage();
       // Also enforce limits periodically
-      this.enforceTierLimits().catch(err => console.error("Eviction error", err));
+      this.enforceTierLimits().catch((err) =>
+        console.error("Eviction error", err),
+      );
     }, 30000);
   }
 
@@ -296,7 +336,7 @@ class DatabaseService {
       l({
         status,
         storage: this.storageInfo || undefined,
-        activeTiers: Array.from(this.activeTiers)
+        activeTiers: Array.from(this.activeTiers),
       }),
     );
   }
@@ -319,32 +359,34 @@ class DatabaseService {
 
     // 1. Start Push (Continuous, Upload everything)
     if (!this.pushHandler) {
-      this.pushHandler = this.db.replicate.to(this.remoteDB, {
-        live: true,
-        retry: true
-      })
-        .on('change', () => this.notify("active"))
-        .on('error', (err) => console.error("Push error", err));
+      this.pushHandler = this.db.replicate
+        .to(this.remoteDB, {
+          live: true,
+          retry: true,
+        })
+        .on("change", () => this.notify("active"))
+        .on("error", (err) => console.error("Push error", err));
     }
 
     // 2. Start Essential Pull (Live or Frequent)
     // We use live for Essential as per spec "Available immediately" / "15 min" implies high pri.
     // Live is better for UX.
     if (!this.essentialPullHandler) {
-      this.activeTiers.add('essential');
-      this.essentialPullHandler = this.db.replicate.from(this.remoteDB, {
-        live: true,
-        retry: true,
-        filter: 'app_filters/essential',
-        query_params: { userId: this.currentUserId }
-      })
-        .on('change', () => {
+      this.activeTiers.add("essential");
+      this.essentialPullHandler = this.db.replicate
+        .from(this.remoteDB, {
+          live: true,
+          retry: true,
+          filter: "app_filters/essential",
+          query_params: { userId: this.currentUserId },
+        })
+        .on("change", () => {
           this.notify("active");
           this.checkStorage();
         })
-        .on('error', (err) => {
+        .on("error", (err) => {
           console.error("Essential Pull error", err);
-          this.activeTiers.delete('essential');
+          this.activeTiers.delete("essential");
         });
     }
 
@@ -366,20 +408,20 @@ class DatabaseService {
   async syncRecentTier() {
     if (!this.currentUserId) return;
 
-    this.activeTiers.add('recent');
-    this.notify('active');
+    this.activeTiers.add("recent");
+    this.notify("active");
 
     try {
       await this.db.replicate.from(this.remoteDB, {
-        filter: 'app_filters/recent',
-        query_params: { userId: this.currentUserId }
+        filter: "app_filters/recent",
+        query_params: { userId: this.currentUserId },
       });
       console.log("Recent tier synced");
     } catch (err) {
       console.error("Recent sync error", err);
     } finally {
-      this.activeTiers.delete('recent');
-      this.notify(this.activeTiers.size > 0 ? 'active' : 'idle');
+      this.activeTiers.delete("recent");
+      this.notify(this.activeTiers.size > 0 ? "active" : "idle");
       this.enforceTierLimits();
     }
   }
@@ -390,23 +432,23 @@ class DatabaseService {
   async syncPinnedDocuments() {
     if (this.pinnedDocIds.size === 0) return;
 
-    this.activeTiers.add('onDemand');
-    this.notify('active');
+    this.activeTiers.add("onDemand");
+    this.notify("active");
 
     try {
       // We pass the list of IDs to the filter
-      const pinnedIds = Array.from(this.pinnedDocIds).join(',');
+      const pinnedIds = Array.from(this.pinnedDocIds).join(",");
 
       await this.db.replicate.from(this.remoteDB, {
-        filter: 'app_filters/onDemand',
-        query_params: { pinnedIds }
+        filter: "app_filters/onDemand",
+        query_params: { pinnedIds },
       });
       console.log("Pinned docs synced");
     } catch (err) {
       console.error("Pinned sync error", err);
     } finally {
-      this.activeTiers.delete('onDemand');
-      this.notify(this.activeTiers.size > 0 ? 'active' : 'idle');
+      this.activeTiers.delete("onDemand");
+      this.notify(this.activeTiers.size > 0 ? "active" : "idle");
     }
   }
 
@@ -416,7 +458,10 @@ class DatabaseService {
   async pinDocument(docId: string) {
     this.pinnedDocIds.add(docId);
     // Persist pinned IDs? For now in memory, but normally in localStorage or PouchDB meta doc
-    localStorage.setItem('kompass_pinned_ids', JSON.stringify(Array.from(this.pinnedDocIds)));
+    localStorage.setItem(
+      "kompass_pinned_ids",
+      JSON.stringify(Array.from(this.pinnedDocIds)),
+    );
 
     // Trigger sync for this doc
     this.syncPinnedDocuments();
@@ -424,7 +469,10 @@ class DatabaseService {
 
   async unpinDocument(docId: string) {
     this.pinnedDocIds.delete(docId);
-    localStorage.setItem('kompass_pinned_ids', JSON.stringify(Array.from(this.pinnedDocIds)));
+    localStorage.setItem(
+      "kompass_pinned_ids",
+      JSON.stringify(Array.from(this.pinnedDocIds)),
+    );
     // We don't automatically delete the doc, eviction will assume it's "Recent" now and might eventually evict it
   }
 
@@ -481,7 +529,7 @@ class DatabaseService {
 export const dbService = new DatabaseService();
 
 // Load pinned items on startup
-const storedPinned = localStorage.getItem('kompass_pinned_ids');
+const storedPinned = localStorage.getItem("kompass_pinned_ids");
 if (storedPinned) {
   try {
     const ids = JSON.parse(storedPinned);

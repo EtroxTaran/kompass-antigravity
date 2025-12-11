@@ -7,16 +7,16 @@ import { AuthenticatedUser } from '../../auth/strategies/jwt.strategy';
 @Controller('summarize')
 @UseGuards(JwtAuthGuard)
 export class SummarizeController {
-    constructor(private readonly summarizeService: SummarizeService) { }
+  constructor(private readonly summarizeService: SummarizeService) {}
 
-    @Post()
-    async summarize(@Body() dto: SummarizeRequestDto) {
-        return this.summarizeService.summarizeText(dto.text);
-    }
+  @Post()
+  async summarize(@Body() dto: SummarizeRequestDto) {
+    return this.summarizeService.summarizeText(dto.text);
+  }
 
-    @Post('create-tasks')
-    async createTasks(@Body() dto: CreateActionItemsDto, @Req() req: any) {
-        const user = req.user as AuthenticatedUser;
-        return this.summarizeService.createActionItems(dto, user);
-    }
+  @Post('create-tasks')
+  async createTasks(@Body() dto: CreateActionItemsDto, @Req() req: any) {
+    const user = req.user as AuthenticatedUser;
+    return this.summarizeService.createActionItems(dto, user);
+  }
 }

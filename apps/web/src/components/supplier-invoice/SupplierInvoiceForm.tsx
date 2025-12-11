@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,20 +51,18 @@ export function SupplierInvoiceForm({
   const taxRate = watch("taxRate");
 
   // Calculate totals
-  useEffect(() => {
-    const net = lineItems.reduce(
-      (acc, item) => acc + item.quantity * item.unitPrice,
-      0,
-    );
-    const tax = net * (Number(taxRate) / 100);
-    const gross = net + tax;
-
-    setValue("netAmount", net);
-    setValue("taxAmount", tax);
-    setValue("grossAmount", gross);
-  }, [lineItems, taxRate, setValue]);
+  const net = lineItems.reduce(
+    (acc, item) => acc + item.quantity * item.unitPrice,
+    0,
+  );
+  const tax = net * (Number(taxRate) / 100);
+  const gross = net + tax;
 
   const onSubmit = async (data: CreateSupplierInvoiceDto) => {
+    data.netAmount = net;
+    data.taxAmount = tax;
+    data.grossAmount = gross;
+
     try {
       await createInvoice.mutateAsync(data);
       navigate(-1); // Go back
@@ -246,7 +244,7 @@ export function SupplierInvoiceForm({
                 <Input
                   className="w-32 text-right"
                   readOnly
-                  {...register("netAmount")}
+                  value={net.toFixed(2)}
                 />
               </div>
               <div className="flex items-center gap-4">
@@ -262,7 +260,7 @@ export function SupplierInvoiceForm({
                 <Input
                   className="w-32 text-right"
                   readOnly
-                  {...register("taxAmount")}
+                  value={tax.toFixed(2)}
                 />
               </div>
               <div className="flex items-center gap-4 text-lg font-bold">
@@ -270,7 +268,7 @@ export function SupplierInvoiceForm({
                 <Input
                   className="w-32 text-right font-bold"
                   readOnly
-                  {...register("grossAmount")}
+                  value={gross.toFixed(2)}
                 />
               </div>
             </div>
