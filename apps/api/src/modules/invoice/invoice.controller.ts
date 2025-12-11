@@ -30,7 +30,7 @@ export class InvoiceController {
     private readonly invoiceService: InvoiceService,
     private readonly exportService: ExportService,
     private readonly invoiceRepository: InvoiceRepository,
-  ) { }
+  ) {}
 
   @Get('export')
   @Get('export')

@@ -232,9 +232,10 @@ export class ExportService {
       const docRef = (invoice.invoiceNumber || '').substring(0, 36);
 
       // 14. Buchungstext
-      const text = `${invoice.invoiceNumber || ''} ${invoice.customerName || ''}`
-        .substring(0, 60)
-        .replace(/;/g, ' '); // simple sanitization
+      const text =
+        `${invoice.invoiceNumber || ''} ${invoice.customerName || ''}`
+          .substring(0, 60)
+          .replace(/;/g, ' '); // simple sanitization
 
       // Create CSV line (semicolon separated)
       // Standard DATEV format is strictly positional.

@@ -36,11 +36,11 @@ export interface Customer extends BaseEntity {
   paymentTerms?: string;
   industry?: string;
   customerType?:
-  | 'direct_marketer'
-  | 'retail'
-  | 'franchise'
-  | 'cooperative'
-  | 'other';
+    | 'direct_marketer'
+    | 'retail'
+    | 'franchise'
+    | 'cooperative'
+    | 'other';
   rating?: 'A' | 'B' | 'C';
   billingAddress: Address;
   locations: string[];
