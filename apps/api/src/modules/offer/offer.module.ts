@@ -5,11 +5,12 @@ import { OfferRepository } from './offer.repository';
 import { PdfModule } from '../pdf/pdf.module';
 import { MailModule } from '../mail/mail.module';
 import { SearchModule } from '../search/search.module';
+import { ProjectModule } from '../project/project.module';
 
 @Module({
-  imports: [PdfModule, MailModule, SearchModule],
+  imports: [PdfModule, MailModule, SearchModule, ProjectModule],
   controllers: [OfferController],
   providers: [OfferService, OfferRepository],
   exports: [OfferService, OfferRepository],
 })
-export class OfferModule {}
+export class OfferModule { }
