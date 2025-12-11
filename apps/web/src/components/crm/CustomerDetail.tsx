@@ -16,6 +16,7 @@ import { ProjectList } from "../pm/ProjectList";
 import { InvoiceList } from "../accounting/InvoiceList";
 import { OfferList } from "../sales/OfferList";
 import { ActiveUserAvatars } from "@/components/presence/ActiveUserAvatars";
+import { CustomerLocationList } from "./CustomerLocationList";
 
 interface CustomerDetailProps {
   customer: Customer;
@@ -204,6 +205,7 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="contacts">Contacts</TabsTrigger>
+              <TabsTrigger value="locations">Locations</TabsTrigger>
               <TabsTrigger value="projects">Projects</TabsTrigger>
               <TabsTrigger value="sales">Sales & Finance</TabsTrigger>
             </TabsList>
@@ -217,6 +219,10 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
 
             <TabsContent value="contacts">
               <ContactList customerId={customer._id} />
+            </TabsContent>
+
+            <TabsContent value="locations">
+              <CustomerLocationList customerId={customer._id} />
             </TabsContent>
 
             <TabsContent value="projects">
