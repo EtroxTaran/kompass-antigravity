@@ -35,6 +35,7 @@ const mockProjectRepository = {
 const mockSearchService = {
   search: jest.fn(),
   addDocuments: jest.fn(),
+  deleteDocument: jest.fn(),
 };
 
 describe('CustomerService Cascading Deletes', () => {
@@ -42,7 +43,7 @@ describe('CustomerService Cascading Deletes', () => {
 
   beforeEach(async () => {
     // Suppress logger output during tests
-    jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
+    jest.spyOn(Logger.prototype, 'log').mockImplementation(() => { });
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -61,6 +62,36 @@ describe('CustomerService Cascading Deletes', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('checkDuplicates', () => {
+    it('should return duplicates found in search', async () => {
+      const mockHits = [
+        { id: '1', companyName: 'Acme Corp', _matchesPosition: {} },
+      ];
+      mockSearchService.search.mockResolvedValue({ hits: mockHits });
+
+      const result = await service.checkDuplicates({ name: 'Acme' });
+
+      expect(mockSearchService.search).toHaveBeenCalledWith(
+        'customers',
+        'Acme',
+        expect.any(Object),
+      );
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe('1');
+    });
+
+    it('should exclude specified ID', async () => {
+      const mockHits = [
+        { id: '1', companyName: 'Acme Corp', _matchesPosition: {} },
+      ];
+      mockSearchService.search.mockResolvedValue({ hits: mockHits });
+
+      const result = await service.checkDuplicates({ name: 'Acme' }, '1');
+
+      expect(result).toHaveLength(0);
+    });
   });
 
   describe('delete', () => {
@@ -84,6 +115,7 @@ describe('CustomerService Cascading Deletes', () => {
       mockProtocolRepository.unlinkFromCustomer.mockResolvedValue(5);
       mockProjectRepository.unlinkFromCustomer.mockResolvedValue(1);
       mockCustomerRepository.delete.mockResolvedValue(undefined);
+      mockSearchService.deleteDocument.mockResolvedValue(undefined);
 
       await service.delete('customer-123', mockUser);
 
@@ -91,6 +123,23 @@ describe('CustomerService Cascading Deletes', () => {
         'customer-123',
         'user-1',
         'test@example.com',
+      );
+    });
+
+    it('should remove customer from search index', async () => {
+      mockCustomerRepository.findById.mockResolvedValue(mockCustomer);
+      mockContactRepository.deleteByCustomer.mockResolvedValue(3);
+      mockLocationRepository.deleteByCustomer.mockResolvedValue(2);
+      mockProtocolRepository.unlinkFromCustomer.mockResolvedValue(5);
+      mockProjectRepository.unlinkFromCustomer.mockResolvedValue(1);
+      mockCustomerRepository.delete.mockResolvedValue(undefined);
+      mockSearchService.deleteDocument.mockResolvedValue(undefined);
+
+      await service.delete('customer-123', mockUser);
+
+      expect(mockSearchService.deleteDocument).toHaveBeenCalledWith(
+        'customers',
+        'customer-123',
       );
     });
 

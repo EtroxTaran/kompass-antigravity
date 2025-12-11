@@ -29,7 +29,7 @@ export class CustomerService {
     private readonly protocolRepository: ProtocolRepository,
     @Inject(forwardRef(() => ProjectRepository))
     private readonly projectRepository: ProjectRepository,
-  ) {}
+  ) { }
 
   async findAll(
     options: { page?: number; limit?: number; search?: string } = {},
@@ -241,6 +241,52 @@ export class CustomerService {
 
     // 5. Delete the customer
     await this.customerRepository.delete(id, user.id, user.email);
+
+    // 6. Remove from search index
+    try {
+      await this.searchService.deleteDocument('customers', id);
+    } catch (e) {
+      this.logger.warn(`Failed to remove customer ${id} from search index`, e);
+    }
+
     this.logger.log(`Customer ${id} deleted successfully`);
+  }
+
+  async checkDuplicates(
+    criteria: { name?: string; email?: string; phone?: string },
+    excludeId?: string,
+  ) {
+    const results: any[] = [];
+
+    // Helper to search and push unique results
+    const searchAndCollect = async (query: string, field: string) => {
+      if (!query || query.length < 3) return;
+      try {
+        const searchRes = await this.searchService.search('customers', query, {
+          limit: 5,
+          attributesToHighlight: ['*'],
+        });
+
+        searchRes.hits.forEach((hit: any) => {
+          if (hit.id === excludeId) return;
+          if (!results.find((r) => r.id === hit.id)) {
+            results.push({
+              id: hit.id,
+              companyName: hit.companyName || hit.title, // Handle different index structures
+              matchReason: `High similarity in ${field}`,
+              score: 0.8, // Basic mock score, Meili doesn't expose score easily in simple search
+            });
+          }
+        });
+      } catch (e) {
+        this.logger.warn(`Duplicate check failed for ${field}: ${query}`, e);
+      }
+    };
+
+    if (criteria.name) await searchAndCollect(criteria.name, 'name');
+    if (criteria.email) await searchAndCollect(criteria.email, 'email');
+    if (criteria.phone) await searchAndCollect(criteria.phone, 'phone');
+
+    return results;
   }
 }
