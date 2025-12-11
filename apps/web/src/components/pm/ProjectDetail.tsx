@@ -20,6 +20,7 @@ import { ProjectMaterialList } from "./material/ProjectMaterialList";
 import { ProjectSubcontractorList } from "./ProjectSubcontractorList";
 import { CommentSection } from "@/components/common/comments/CommentSection";
 import { ActivityFeed } from "@/components/shared/ActivityFeed";
+import { SimilarProjectsWidget } from "./SimilarProjectsWidget";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface ProjectDetailProps {
@@ -127,6 +128,8 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
           </div>
 
           <ProjectCostOverview project={project} />
+
+          <SimilarProjectsWidget projectId={project._id} />
         </TabsContent>
 
         <TabsContent value="kanban" className="space-y-4">

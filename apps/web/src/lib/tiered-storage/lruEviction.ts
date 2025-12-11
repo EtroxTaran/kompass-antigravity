@@ -1,4 +1,3 @@
-import PouchDB from 'pouchdb';
 import { essentialFilter } from "./syncFilters";
 
 export interface LruDocument {

@@ -116,7 +116,7 @@ class DatabaseService {
    */
   private async deployFiltersToRemote() {
     try {
-      const ddoc = {
+      const ddoc: any = {
         _id: '_design/app_filters',
         filters: {
           essential: essentialFilter.toString(),
@@ -126,7 +126,7 @@ class DatabaseService {
       };
 
       try {
-        const existing = await this.remoteDB.get('_design/app_filters');
+        const existing: any = await this.remoteDB.get('_design/app_filters');
         ddoc._rev = existing._rev;
       } catch {
         // missing, create new

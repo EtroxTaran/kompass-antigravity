@@ -135,6 +135,30 @@ export function ProjectForm({
                     )}
                   />
                 </div>
+
+                <div className="grid grid-cols-1 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="tags"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tags (Comma separated)</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Construction, Enterprise, Phase 2..."
+                            value={Array.isArray(field.value) ? field.value.join(", ") : ""}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              const tags = value.split(",").map((t) => t.trim()).filter(Boolean);
+                              field.onChange(tags);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>

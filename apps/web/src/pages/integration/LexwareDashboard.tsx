@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { lexwareApi, LexwareSyncStatus } from "@/services/apiClient";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,11 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { RefreshCw, Upload, Download, FileText } from "lucide-react";
+import {
+    Download,
+    RefreshCw,
+    Upload,
+} from "lucide-react";
 import { format } from "date-fns";
 
 export function LexwareDashboard() {

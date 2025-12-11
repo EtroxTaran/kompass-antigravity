@@ -320,6 +320,10 @@ export const projectsApi = {
     return get(`/projects/${id}`);
   },
 
+  async findSimilar(id: string): Promise<unknown[]> {
+    return get(`/projects/${id}/similar`);
+  },
+
   async create(data: unknown): Promise<unknown> {
     return post("/projects", data);
   },
