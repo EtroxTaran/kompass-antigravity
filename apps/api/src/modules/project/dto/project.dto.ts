@@ -66,6 +66,11 @@ export class CreateProjectDto {
   @IsString()
   @IsOptional()
   offerId?: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  tags?: string[];
 }
 
 export class UpdateProjectDto {
@@ -114,4 +119,9 @@ export class UpdateProjectDto {
   @Min(0)
   @IsOptional()
   budget?: number;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  tags?: string[];
 }

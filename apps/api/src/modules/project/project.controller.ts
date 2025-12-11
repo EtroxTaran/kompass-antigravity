@@ -21,7 +21,7 @@ import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 @Controller('api/v1/projects')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class ProjectController {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(private readonly projectService: ProjectService) { }
 
   /**
    * GET /api/v1/projects
@@ -68,6 +68,16 @@ export class ProjectController {
   @Permissions({ entity: 'Project', action: 'READ' })
   async findById(@Param('id') id: string) {
     return this.projectService.findById(id);
+  }
+
+  /**
+   * GET /api/v1/projects/:id/similar
+   * Get similar projects based on industry, budget, and tags
+   */
+  @Get(':id/similar')
+  @Permissions({ entity: 'Project', action: 'READ' })
+  async findSimilar(@Param('id') id: string) {
+    return this.projectService.findSimilar(id);
   }
 
   /**
