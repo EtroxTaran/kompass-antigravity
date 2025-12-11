@@ -9,11 +9,8 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
-import {
-  ProtocolService,
-  CreateProtocolDto,
-  UpdateProtocolDto,
-} from './protocol.service';
+import { ProtocolService } from './protocol.service';
+import { CreateProtocolDto, UpdateProtocolDto } from './dto/protocol.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RbacGuard } from '../../auth/guards/rbac.guard';
 import { Permissions } from '../../auth/decorators/permissions.decorator';

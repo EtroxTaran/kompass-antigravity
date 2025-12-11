@@ -1,28 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProtocolRepository } from './protocol.repository';
 import { Protocol } from '@kompass/shared';
+import { CreateProtocolDto, UpdateProtocolDto } from './dto/protocol.dto';
 import { v4 as uuidv4 } from 'uuid';
-
-export class CreateProtocolDto {
-  title: string;
-  date: string;
-  customerId: string;
-  summary: string;
-  participants: string[];
-  opportunityId?: string;
-  projectId?: string;
-  nextActions?: any[];
-  tags?: string[];
-}
-
-export class UpdateProtocolDto {
-  title?: string;
-  date?: string;
-  summary?: string;
-  participants?: string[];
-  nextActions?: any[];
-  tags?: string[];
-}
 
 @Injectable()
 export class ProtocolService {
