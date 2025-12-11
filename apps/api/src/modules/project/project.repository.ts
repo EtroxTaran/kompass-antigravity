@@ -178,4 +178,29 @@ export class ProjectRepository extends BaseRepository<Project> {
     });
     return result.data;
   }
+
+  /**
+   * Unlink all projects from a customer (set customerId = undefined)
+   * Used for cascading customer delete - preserves project data
+   */
+  async unlinkFromCustomer(
+    customerId: string,
+    userId: string,
+    userEmail?: string,
+  ): Promise<number> {
+    const result = await this.findByCustomer(customerId, { limit: 1000 });
+    let unlinkedCount = 0;
+
+    for (const project of result.data) {
+      await this.update(
+        project._id,
+        { customerId: undefined } as unknown as Partial<Project>,
+        userId,
+        userEmail,
+      );
+      unlinkedCount++;
+    }
+
+    return unlinkedCount;
+  }
 }

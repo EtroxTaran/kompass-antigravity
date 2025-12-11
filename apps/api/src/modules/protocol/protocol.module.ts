@@ -8,6 +8,6 @@ import { DatabaseModule } from '../../database/database.module';
   imports: [DatabaseModule],
   controllers: [ProtocolController],
   providers: [ProtocolService, ProtocolRepository],
-  exports: [ProtocolService],
+  exports: [ProtocolService, ProtocolRepository],
 })
 export class ProtocolModule {}
