@@ -142,7 +142,10 @@ export function MaterialDetail({ material }: MaterialDetailProps) {
                       style: "currency",
                       currency: material.currency,
                     })}
-                    <PriceTrendIndicator trend={material.priceTrend} className="ml-2" />
+                    <PriceTrendIndicator
+                      trend={material.priceTrend}
+                      className="ml-2"
+                    />
                   </div>
                 </div>
                 {material.averagePrice && (

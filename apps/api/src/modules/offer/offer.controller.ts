@@ -30,7 +30,7 @@ import type { OfferStatus } from './offer.repository';
 @Controller('api/v1/offers')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class OfferController {
-  constructor(private readonly offerService: OfferService) { }
+  constructor(private readonly offerService: OfferService) {}
 
   /**
    * GET /api/v1/offers/recommendations

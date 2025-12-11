@@ -1,7 +1,15 @@
 import { test, expect } from "@playwright/test";
 
 test("Critical Path: Load App and Create Customer", async ({ page }) => {
-  // 1. Load the Dashboard
+  // Inject Mock Token
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      "auth_token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtb2NrLWFkbWluIiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInByZWZlcnJlZF91c2VybmFtZSI6ImFkbWluIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIkFETSJdfSwiaWF0IjoxNzY1NDg2MDMzLjk4Nn0.zQFIC_wosZ5IGMW1VgKMZIsUSqQ8G72fW93Rr4QUv6s"
+    );
+  });
+
+  // 1. Load the App
   await page.goto("/");
   await page.waitForLoadState("networkidle");
   console.log("Page loaded", await page.title());
@@ -12,7 +20,20 @@ test("Critical Path: Load App and Create Customer", async ({ page }) => {
   await expect(page.getByText("Master Data")).toBeVisible();
 
   // 3. Create a Dummy Customer (Simulate Offline Write)
-  await page.click("text=Add Dummy Customer");
+  // 3. Create a Customer
+  // Switch to ADM tab where the button is
+  await page.click("text=Sales (ADM)");
+  await page.click("text=Neuer Kunde");
+  await page.waitForURL("**/customers/new");
+
+  await page.fill('input[name="companyName"]', "Test Company");
+  await page.fill('input[name="billingAddress.street"]', "Test Str 1");
+  await page.fill('input[name="billingAddress.zipCode"]', "12345");
+  await page.fill('input[name="billingAddress.city"]', "Test City");
+  await page.fill('input[name="billingAddress.country"]', "Germany");
+
+  await page.click("button:has-text('Save Customer')");
+  await page.waitForURL("**/customers");
 
   // 4. Verify it appears in the list
   await expect(page.getByText("Test Company")).toBeVisible();

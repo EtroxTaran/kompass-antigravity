@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { Contract, OfferLineItem } from "@kompass/shared";
 import { Button } from "@/components/ui/button";
@@ -70,19 +70,21 @@ export function ContractForm({
   const lineItems =
     useWatch({ control: form.control, name: "lineItems" }) || [];
   const totalValue = lineItems.reduce(
-    (sum: number, item: any) =>
+    (sum: number, item: OfferLineItem) =>
       sum + (item.quantity || 0) * (item.unitPrice || 0),
     0,
   );
 
   // Automatically update value field in form state (but it's derived usually, good to sync though for display/submit)
-  useEffect(() => {
-    form.setValue("value", totalValue);
-  }, [totalValue, form]);
+  const onSubmitWrapper = (data: Partial<Contract>) => {
+    // Set calculated value
+    data.value = totalValue;
+    onSubmit(data);
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmitWrapper)} className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Contract Details</CardTitle>

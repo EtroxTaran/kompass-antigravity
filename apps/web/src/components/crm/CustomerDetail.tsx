@@ -1,10 +1,5 @@
 import { Customer } from "@kompass/shared";
-import {
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  Clock
-} from "lucide-react";
+import { AlertTriangle, CheckCircle, XCircle, Clock } from "lucide-react";
 import { differenceInDays, parseISO, format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,8 +35,8 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
         </div>
         <Button onClick={() => navigate(`/ customers / ${customer._id}/edit`)}>
           Edit Customer
-        </Button >
-      </div >
+        </Button>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Sidebar Info - Always Visible */}
@@ -139,16 +134,27 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span>Frequency:</span>
-                    <span>{customer.visitFrequencyDays ? `${customer.visitFrequencyDays} days` : "-"}</span>
+                    <span>
+                      {customer.visitFrequencyDays
+                        ? `${customer.visitFrequencyDays} days`
+                        : "-"}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Last Visit:</span>
-                    <span>{customer.lastVisit ? format(parseISO(customer.lastVisit), "dd.MM.yyyy") : "-"}</span>
+                    <span>
+                      {customer.lastVisit
+                        ? format(parseISO(customer.lastVisit), "dd.MM.yyyy")
+                        : "-"}
+                    </span>
                   </div>
 
                   {customer.visitFrequencyDays && customer.lastVisit && (
                     <div className="mt-2">
-                      {differenceInDays(new Date(), parseISO(customer.lastVisit)) > customer.visitFrequencyDays ? (
+                      {differenceInDays(
+                        new Date(),
+                        parseISO(customer.lastVisit),
+                      ) > customer.visitFrequencyDays ? (
                         <div className="flex items-center gap-2 text-destructive bg-destructive/10 p-2 rounded text-xs font-medium">
                           <AlertTriangle className="h-4 w-4" />
                           <span>Visit Overdue</span>
@@ -250,6 +256,6 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
           </Tabs>
         </div>
       </div>
-    </div >
+    </div>
   );
 }

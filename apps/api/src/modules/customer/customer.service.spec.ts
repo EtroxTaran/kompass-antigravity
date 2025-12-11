@@ -43,7 +43,7 @@ describe('CustomerService Cascading Deletes', () => {
 
   beforeEach(async () => {
     // Suppress logger output during tests
-    jest.spyOn(Logger.prototype, 'log').mockImplementation(() => { });
+    jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

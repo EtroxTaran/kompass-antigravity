@@ -24,17 +24,20 @@ export function MileageForm() {
 
   useEffect(() => {
     if (mileage) {
-      setFormData({
-        date: mileage.date
-          ? mileage.date.split("T")[0]
-          : new Date().toISOString().split("T")[0],
-        startLocation: mileage.startLocation || "",
-        endLocation: mileage.endLocation || "",
-        distanceKm: mileage.distanceKm || 0,
-        purpose: mileage.purpose || "",
-        licensePlate: mileage.licensePlate || "",
-        status: mileage.status || "draft",
-      });
+      const timer = setTimeout(() => {
+        setFormData({
+          date: mileage.date
+            ? mileage.date.split("T")[0]
+            : new Date().toISOString().split("T")[0],
+          startLocation: mileage.startLocation || "",
+          endLocation: mileage.endLocation || "",
+          distanceKm: mileage.distanceKm || 0,
+          purpose: mileage.purpose || "",
+          licensePlate: mileage.licensePlate || "",
+          status: mileage.status || "draft",
+        });
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [mileage]);
 

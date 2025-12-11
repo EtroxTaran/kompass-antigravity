@@ -21,7 +21,10 @@ export function StorageAlert() {
   // Reset dismissed state if storage changes severity
   useEffect(() => {
     if (isStorageCritical) {
-      setDismissed(false);
+      const timer = setTimeout(() => {
+        setDismissed(false);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [isStorageCritical]);
 

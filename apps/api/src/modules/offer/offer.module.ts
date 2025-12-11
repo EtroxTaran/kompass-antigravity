@@ -13,4 +13,4 @@ import { ProjectModule } from '../project/project.module';
   providers: [OfferService, OfferRepository],
   exports: [OfferService, OfferRepository],
 })
-export class OfferModule { }
+export class OfferModule {}

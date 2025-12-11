@@ -8,7 +8,7 @@ export class ProjectService {
   constructor(
     private readonly projectRepository: ProjectRepository,
     private readonly searchService: SearchService,
-  ) { }
+  ) {}
 
   async findAll(
     options: {
@@ -157,9 +157,7 @@ export class ProjectService {
 
       // 1. Tags Match (High weight)
       if (criteria.tags && p.tags) {
-        const commonTags = criteria.tags.filter((tag) =>
-          p.tags?.includes(tag),
-        );
+        const commonTags = criteria.tags.filter((tag) => p.tags?.includes(tag));
         score += commonTags.length * 5;
       }
 
@@ -167,7 +165,8 @@ export class ProjectService {
       if (criteria.budget && p.budget) {
         const diff = Math.abs(criteria.budget - p.budget);
         const percentDiff = diff / criteria.budget;
-        if (percentDiff <= 0.1) score += 3; // within 10%
+        if (percentDiff <= 0.1)
+          score += 3; // within 10%
         else if (percentDiff <= 0.2) score += 1; // within 20%
       }
 

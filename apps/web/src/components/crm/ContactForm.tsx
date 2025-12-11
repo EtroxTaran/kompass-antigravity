@@ -23,7 +23,7 @@ import {
 
 interface ContactFormProps {
   defaultValues?: Partial<ContactPerson>;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: Partial<ContactPerson>) => void;
   onCancel: () => void;
   isLoading?: boolean;
 }
@@ -79,7 +79,8 @@ export function ContactForm({
               </div>
               <div className="ml-3">
                 <p className="text-sm text-yellow-700">
-                  <span className="font-bold">Warning:</span> Match found with existing Customer(s).
+                  <span className="font-bold">Warning:</span> Match found with
+                  existing Customer(s).
                   {duplicates.map((d) => (
                     <span key={d.id} className="block mt-1">
                       {d.companyName} ({d.matchReason})
@@ -305,8 +306,8 @@ export function ContactForm({
                     // Native select multiple:
                     // <select multiple onChange={...} ... >
                     const options = Array.from(
-                      (val as any).target.selectedOptions,
-                      (option: any) => option.value,
+                      ((val as unknown as React.ChangeEvent<HTMLSelectElement>).target as HTMLSelectElement).selectedOptions,
+                      (option: HTMLOptionElement) => option.value,
                     );
                     field.onChange(options);
                   }}

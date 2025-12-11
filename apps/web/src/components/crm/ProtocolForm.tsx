@@ -24,15 +24,18 @@ export function ProtocolForm() {
 
   useEffect(() => {
     if (protocol) {
-      setFormData({
-        title: protocol.title || "",
-        date: protocol.date
-          ? protocol.date.split("T")[0]
-          : new Date().toISOString().split("T")[0],
-        customerId: protocol.customerId || "",
-        participants: protocol.participants?.join(", ") || "",
-        summary: protocol.summary || "",
-      });
+      const timer = setTimeout(() => {
+        setFormData({
+          title: protocol.title || "",
+          date: protocol.date
+            ? protocol.date.split("T")[0]
+            : new Date().toISOString().split("T")[0],
+          customerId: protocol.customerId || "",
+          participants: protocol.participants?.join(", ") || "",
+          summary: protocol.summary || "",
+        });
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [protocol]);
 

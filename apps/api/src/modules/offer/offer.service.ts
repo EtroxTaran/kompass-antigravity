@@ -41,7 +41,7 @@ export class OfferService {
     private readonly mailService: MailService,
     private readonly searchService: SearchService,
     private readonly projectService: ProjectService,
-  ) { }
+  ) {}
 
   async getRecommendations(criteria: {
     tags?: string[];
@@ -85,8 +85,9 @@ export class OfferService {
     // 3. Map to specific recommendation format
     return validOffers.map((offer) => ({
       id: offer._id,
-      description: `Template from Project: ${similarProjects.find((p) => p.offerId === offer._id)?.name || 'Unknown'
-        }`,
+      description: `Template from Project: ${
+        similarProjects.find((p) => p.offerId === offer._id)?.name || 'Unknown'
+      }`,
       totalEur: offer.totalEur,
       lineItemCount: offer.lineItems.length,
       tags: similarProjects.find((p) => p.offerId === offer._id)?.tags || [],
@@ -208,12 +209,12 @@ export class OfferService {
     // Handle materials if present
     const materials = dto.materials
       ? dto.materials.map((m) => ({
-        id: m.id || uuidv4(),
-        materialId: m.materialId,
-        description: m.description,
-        quantity: m.quantity,
-        unit: m.unit,
-      }))
+          id: m.id || uuidv4(),
+          materialId: m.materialId,
+          description: m.description,
+          quantity: m.quantity,
+          unit: m.unit,
+        }))
       : undefined;
 
     // Calculate totals

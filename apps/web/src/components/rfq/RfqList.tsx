@@ -26,7 +26,7 @@ export function RfqList() {
     try {
       const data = await fetchRfqs();
       if (data) {
-        setRfqs(data);
+        setTimeout(() => setRfqs(data), 0);
       }
     } catch (error) {
       console.error("Failed to load RFQs", error);

@@ -5,8 +5,8 @@ export interface ConflictData {
   entityType: string;
   entityId: string;
   entityName: string;
-  localVersion: Record<string, any>;
-  serverVersion: Record<string, any>;
+  localVersion: Record<string, unknown>;
+  serverVersion: Record<string, unknown>;
   localTimestamp: string;
   serverTimestamp: string;
   localUser: string;
@@ -16,7 +16,7 @@ export interface ConflictData {
 
 export interface ConflictResolution {
   conflictId: string;
-  resolvedData: Record<string, any>;
+  resolvedData: Record<string, unknown>;
   strategy: "local" | "server" | "manual" | "newest";
 }
 
@@ -63,14 +63,15 @@ export function useConflictResolution() {
     (
       conflict: ConflictData,
       strategy: AutoResolveStrategy,
-    ): Record<string, any> => {
+    ): Record<string, unknown> => {
       switch (strategy) {
-        case "newest":
+        case "newest": {
           const localTime = new Date(conflict.localTimestamp).getTime();
           const serverTime = new Date(conflict.serverTimestamp).getTime();
           return localTime > serverTime
             ? conflict.localVersion
             : conflict.serverVersion;
+        }
         case "local":
           return conflict.localVersion;
         case "server":

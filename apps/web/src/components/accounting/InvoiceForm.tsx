@@ -70,27 +70,16 @@ export function InvoiceForm() {
   // Watch positions to calculate totals
   const positions = watch("positions");
 
-  useEffect(() => {
-    // Recalculate totals whenever positions change
-    const calculatedTotalNet = positions.reduce(
-      (sum, pos) => sum + pos.quantity * pos.unitPrice,
-      0,
-    );
-    const calculatedVat = positions.reduce(
-      (sum, pos) => sum + pos.quantity * pos.unitPrice * pos.vatRate,
-      0,
-    );
-
-    setValue("totalNet", parseFloat(calculatedTotalNet.toFixed(2)));
-    setValue("vatAmount", parseFloat(calculatedVat.toFixed(2)));
-    setValue(
-      "totalGross",
-      parseFloat((calculatedTotalNet + calculatedVat).toFixed(2)),
-    );
-
-    // Also update line items totalNet if it wasn't done manually (though form handles it on submit usually)
-    // Ideally we update the view immediately
-  }, [positions, setValue]);
+  // Calculate totals for display
+  const calculatedTotalNet = positions.reduce(
+    (sum, pos) => sum + pos.quantity * pos.unitPrice,
+    0,
+  );
+  const calculatedVat = positions.reduce(
+    (sum, pos) => sum + pos.quantity * pos.unitPrice * pos.vatRate,
+    0,
+  );
+  const calculatedTotalGross = calculatedTotalNet + calculatedVat;
 
   const onSubmit = async (data: Invoice) => {
     // Ensure line item totals are correct
@@ -99,6 +88,11 @@ export function InvoiceForm() {
       totalNet: p.quantity * p.unitPrice,
       vatRate: Number(p.vatRate), // ensure number
     }));
+
+    // Set calculated totals
+    data.totalNet = parseFloat(calculatedTotalNet.toFixed(2));
+    data.vatAmount = parseFloat(calculatedVat.toFixed(2));
+    data.totalGross = parseFloat(calculatedTotalGross.toFixed(2));
 
     try {
       const saved = (await saveInvoice(data)) as Invoice;
@@ -222,15 +216,15 @@ export function InvoiceForm() {
             <CardContent className="space-y-4">
               <div className="flex justify-between py-2 border-b">
                 <span className="font-semibold">Net Total</span>
-                <span>{watch("totalNet")?.toFixed(2)} €</span>
+                <span>{calculatedTotalNet.toFixed(2)} €</span>
               </div>
               <div className="flex justify-between py-2 border-b">
                 <span className="font-semibold">VAT (19%)</span>
-                <span>{watch("vatAmount")?.toFixed(2)} €</span>
+                <span>{calculatedVat.toFixed(2)} €</span>
               </div>
               <div className="flex justify-between py-4 text-lg font-bold">
                 <span>Total Gross</span>
-                <span>{watch("totalGross")?.toFixed(2)} €</span>
+                <span>{calculatedTotalGross.toFixed(2)} €</span>
               </div>
               <Button type="submit" className="w-full">
                 <Save className="h-4 w-4 mr-2" />
