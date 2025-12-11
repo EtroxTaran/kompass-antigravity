@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { offersApi } from "@/services/apiClient";
 import { Offer } from "@kompass/shared";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,6 +34,7 @@ export function SmartTemplateRecommendations({
   // If customer ID changes, we might want to auto-fetch?
   // But requirement says "Suggest 'Standard Store Template'" (implies some logic)
   // Let's rely on manual trigger or explicit tags for now to avoid noise.
+
 
   const handleSearch = async () => {
     setIsLoading(true);

@@ -126,7 +126,6 @@ export class ProjectService {
 
   async findSimilar(id: string): Promise<Project[]> {
     const sourceProject = await this.findById(id);
-    if (!sourceProject) return [];
 
     return this.findBySimilarity({
       tags: sourceProject.tags,
