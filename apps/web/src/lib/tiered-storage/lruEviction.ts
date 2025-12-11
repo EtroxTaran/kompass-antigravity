@@ -1,4 +1,5 @@
 import PouchDB from 'pouchdb';
+import { essentialFilter } from "./syncFilters";
 
 export interface LruDocument {
     _id: string;
@@ -64,16 +65,12 @@ export async function evictLruDocuments(
 
     // Helper to check if essential
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const isEssential = (doc: any) => {
-        if (doc.type === 'user' && doc._id === `user-${userId}`) return true;
-        if (doc.type === 'customer' && doc.owner === userId) return true;
-        if (doc.type === 'opportunity' && doc.owner === userId && !['Lost', 'Won'].includes(doc.status)) return true;
-        if (doc.type === 'activity' && doc.assignedTo === userId) {
-            const activityDate = new Date(doc.scheduledAt);
-            const today = new Date();
-            return activityDate.toDateString() === today.toDateString();
-        }
-        return false;
+    // Helper to check if essential (reuses logic from syncFilters)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const checkEssential = (doc: any) => {
+        // Create a mock request object as expected by essentialFilter
+        const mockReq = { query: { userId } };
+        return essentialFilter(doc, mockReq);
     };
 
     for (const row of allDocs.rows) {
@@ -83,7 +80,7 @@ export async function evictLruDocuments(
         if (doc._id.startsWith('_design/')) continue;
 
         // Skip Essential docs
-        if (isEssential(doc)) continue;
+        if (checkEssential(doc)) continue;
 
         // We assume Pinned docs are handled by the caller or we implement a check.
         // For now, let's treat everything non-essential as evictable "Recent" data.
