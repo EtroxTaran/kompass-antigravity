@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { dbService, StorageInfo } from "@/lib/db";
+import { StorageTier } from "@/lib/tiered-storage/types";
 
 export type SyncStatus =
   | "idle"
@@ -15,6 +16,7 @@ interface SyncState {
   pendingChanges: number;
   lastSyncTime: Date | null;
   storage: StorageInfo | null;
+  activeTiers: StorageTier[];
 }
 
 /**
@@ -27,6 +29,7 @@ export function useSyncStatus() {
     pendingChanges: 0,
     lastSyncTime: null,
     storage: null,
+    activeTiers: [],
   });
 
   // Track online/offline status
@@ -63,6 +66,7 @@ export function useSyncStatus() {
         status: update.status as SyncStatus,
         storage: update.storage || prev.storage,
         lastSyncTime: update.status === "idle" ? new Date() : prev.lastSyncTime,
+        activeTiers: update.activeTiers || [],
       }));
     });
 
@@ -73,6 +77,7 @@ export function useSyncStatus() {
   const triggerSync = useCallback(() => {
     if (state.isOnline && state.status !== "storage_full") {
       dbService.stopSync();
+      // Restart sync, which triggers all tiers (Essential + Recent check)
       dbService.startSync();
     }
   }, [state.isOnline, state.status]);
