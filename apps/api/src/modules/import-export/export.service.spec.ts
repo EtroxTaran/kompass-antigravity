@@ -243,6 +243,82 @@ describe('ExportService', () => {
     });
   });
 
+  describe('exportDatev', () => {
+    it('should export invoices in DATEV ASCII format', () => {
+      const invoices = [
+        {
+          invoiceNumber: 'INV-2025-001',
+          date: '2025-01-15T10:00:00Z',
+          customerName: 'Test GmbH',
+          totalNet: 1000,
+          vatAmount: 190,
+          totalGross: 1190,
+          customerId: 'CUST123',
+        },
+      ];
+
+      const result = service.exportDatev(invoices);
+      const content = result.toString('utf-8');
+
+      // Check Header
+      expect(content).toContain('"EXTF";700;21;DATEV Format-Logistik');
+
+      // Check Data Row
+      // Amount: 1190.00 -> 1190,00
+      expect(content).toContain('1190,00');
+      // S/H: S
+      expect(content).toContain(';S;');
+      // Currency: EUR
+      expect(content).toContain(';EUR;');
+      // Debitor: 10000
+      expect(content).toContain(';10000;');
+      // Revenue Account: 19% VAT -> 8400
+      expect(content).toContain(';8400;');
+      // Date: 15.01 -> 1501
+      expect(content).toContain(';1501;');
+      // Doc Ref: INV-2025-001
+      expect(content).toContain(';INV-2025-001;');
+      // Text
+      expect(content).toContain('"INV-2025-001 Test GmbH"');
+    });
+
+    it('should handle 7% VAT rate correctly', () => {
+      const invoices = [
+        {
+          invoiceNumber: 'INV-7',
+          date: '2025-01-01',
+          totalNet: 100,
+          vatAmount: 7,
+          totalGross: 107,
+        },
+      ];
+
+      const result = service.exportDatev(invoices);
+      const content = result.toString('utf-8');
+
+      // Revenue Account: 7% VAT -> 8300
+      expect(content).toContain(';8300;');
+    });
+
+    it('should handle 0% VAT rate correctly', () => {
+      const invoices = [
+        {
+          invoiceNumber: 'INV-0',
+          date: '2025-01-01',
+          totalNet: 100,
+          vatAmount: 0,
+          totalGross: 100,
+        },
+      ];
+
+      const result = service.exportDatev(invoices);
+      const content = result.toString('utf-8');
+
+      // Revenue Account: 0% VAT -> 8120
+      expect(content).toContain(';8120;');
+    });
+  });
+
   describe('generateFilename', () => {
     it('should generate filename with correct extension', () => {
       const csvFilename = service.generateFilename(
@@ -262,6 +338,12 @@ describe('ExportService', () => {
         ExportFormat.LEXWARE,
       );
       expect(lexwareFilename).toMatch(/^rechnungen_export_.*\.csv$/);
+
+      const datevFilename = service.generateFilename(
+        'datev',
+        ExportFormat.DATEV,
+      );
+      expect(datevFilename).toMatch(/^datev_export_.*\.csv$/);
     });
   });
 });

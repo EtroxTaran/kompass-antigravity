@@ -11,6 +11,7 @@ export enum ExportFormat {
   EXCEL = 'excel',
   JSON = 'json',
   LEXWARE = 'lexware',
+  DATEV = 'datev',
 }
 
 export class ExportOptionsDto {

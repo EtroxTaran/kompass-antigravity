@@ -30,18 +30,23 @@ export class InvoiceController {
     private readonly invoiceService: InvoiceService,
     private readonly exportService: ExportService,
     private readonly invoiceRepository: InvoiceRepository,
-  ) {}
+  ) { }
 
   @Get('export')
-  @Permissions({ entity: 'Invoice', action: 'READ' })
+  @Get('export')
+  @Permissions({ entity: 'Invoice', action: 'READ' }) // Should also allow BUCH technically, but READ covers it if role has read permissions.
   async exportInvoices(@Query('format') format: string, @Res() res: Response) {
     // Fetch all invoices for export
     const result = await this.invoiceRepository.findAll({ limit: 10000 });
     const invoices = result.data;
 
     // Determine format (default to lexware)
-    const exportFormat =
-      format === 'lexware' ? ExportFormat.LEXWARE : ExportFormat.CSV;
+    let exportFormat = ExportFormat.CSV;
+    if (format === 'lexware') {
+      exportFormat = ExportFormat.LEXWARE;
+    } else if (format === 'datev') {
+      exportFormat = ExportFormat.DATEV;
+    }
 
     // Generate export buffer
     const buffer = this.exportService.exportData(invoices, {
