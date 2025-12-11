@@ -17,7 +17,7 @@ export class MaterialService {
   constructor(
     private readonly materialRepository: MaterialRepository,
     private readonly searchService: SearchService,
-  ) { }
+  ) {}
 
   async findAll(
     options: {

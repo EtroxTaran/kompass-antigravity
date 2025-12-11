@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { InvoiceController } from './invoice.controller';
 import { PdfModule } from '../pdf/pdf.module';
 import { MailModule } from '../mail/mail.module';
@@ -10,7 +10,7 @@ import { InvoiceRepository } from './invoice.repository';
 @Module({
   controllers: [InvoiceController],
   providers: [InvoiceService, InvoiceRepository],
-  imports: [PdfModule, MailModule, ImportExportModule],
+  imports: [PdfModule, MailModule, forwardRef(() => ImportExportModule)],
   exports: [InvoiceService, InvoiceRepository],
 })
 export class InvoiceModule {}

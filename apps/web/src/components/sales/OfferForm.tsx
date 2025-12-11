@@ -76,7 +76,7 @@ export function OfferForm({
   const taxRate = useWatch({ control: form.control, name: "taxRate" }) || 0.19;
 
   const subtotal = lineItems.reduce(
-    (sum: number, item: any) =>
+    (sum: number, item: OfferLineItem) =>
       sum + (item.quantity || 0) * (item.unitPrice || 0),
     0,
   );

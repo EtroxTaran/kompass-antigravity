@@ -46,20 +46,23 @@ export function PurchaseOrderForm() {
 
   useEffect(() => {
     if (order) {
-      setFormData({
-        orderNumber: order.orderNumber || "",
-        supplierId: order.supplierId || "",
-        projectId: order.projectId || "",
-        date: order.date
-          ? order.date.split("T")[0]
-          : new Date().toISOString().split("T")[0],
-        expectedDeliveryDate: order.expectedDeliveryDate
-          ? order.expectedDeliveryDate.split("T")[0]
-          : "",
-        status: order.status,
-        currency: order.currency || "EUR",
-        items: order.items || [],
-      });
+      const timer = setTimeout(() => {
+        setFormData({
+          orderNumber: order.orderNumber || "",
+          supplierId: order.supplierId || "",
+          projectId: order.projectId || "",
+          date: order.date
+            ? order.date.split("T")[0]
+            : new Date().toISOString().split("T")[0],
+          expectedDeliveryDate: order.expectedDeliveryDate
+            ? order.expectedDeliveryDate.split("T")[0]
+            : "",
+          status: order.status,
+          currency: order.currency || "EUR",
+          items: order.items || [],
+        });
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [order]);
 

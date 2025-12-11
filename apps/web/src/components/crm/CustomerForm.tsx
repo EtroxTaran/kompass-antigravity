@@ -31,7 +31,10 @@ import { useState, useEffect } from "react";
 import { useDuplicateCheck } from "@/hooks/useDuplicateCheck";
 
 // Extended form data for wizard flow
-export interface CustomerFormData extends Omit<Customer, "_id" | "_rev" | "type"> {
+export interface CustomerFormData extends Omit<
+  Customer,
+  "_id" | "_rev" | "type"
+> {
   createHeadquarters?: boolean;
   headquartersLocation?: {
     locationName: string;
@@ -88,12 +91,19 @@ export function CustomerForm({
     },
   });
 
-  const createHeadquarters = useWatch({ control: form.control, name: "createHeadquarters" });
-  const createPrimaryContact = useWatch({ control: form.control, name: "createPrimaryContact" });
+  const createHeadquarters = useWatch({
+    control: form.control,
+    name: "createHeadquarters",
+  });
+  const createPrimaryContact = useWatch({
+    control: form.control,
+    name: "createPrimaryContact",
+  });
 
   // Auto-expand sections when checkbox is checked
   // Using controlled state derived from form values to avoid cascading renders
-  const effectiveHeadquartersOpen = headquartersOpen || (createHeadquarters ?? false);
+  const effectiveHeadquartersOpen =
+    headquartersOpen || (createHeadquarters ?? false);
   const effectiveContactOpen = contactOpen || (createPrimaryContact ?? false);
 
   const { duplicates, checkDuplicates } = useDuplicateCheck();
@@ -266,7 +276,9 @@ export function CustomerForm({
                       placeholder="30"
                       {...field}
                       onChange={(e) =>
-                        field.onChange(e.target.value ? Number(e.target.value) : undefined)
+                        field.onChange(
+                          e.target.value ? Number(e.target.value) : undefined,
+                        )
                       }
                     />
                   </FormControl>
@@ -307,9 +319,7 @@ export function CustomerForm({
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          Marketing Allowed
-                        </FormLabel>
+                        <FormLabel>Marketing Allowed</FormLabel>
                         <FormDescription>
                           Customer agrees to receive marketing materials.
                         </FormDescription>
@@ -330,11 +340,10 @@ export function CustomerForm({
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          AI Processing Allowed
-                        </FormLabel>
+                        <FormLabel>AI Processing Allowed</FormLabel>
                         <FormDescription>
-                          Customer data may be processed by AI systems for optimization.
+                          Customer data may be processed by AI systems for
+                          optimization.
                         </FormDescription>
                       </div>
                     </FormItem>
@@ -353,9 +362,7 @@ export function CustomerForm({
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          Data Sharing Allowed
-                        </FormLabel>
+                        <FormLabel>Data Sharing Allowed</FormLabel>
                         <FormDescription>
                           Customer agrees to data sharing with partners.
                         </FormDescription>
@@ -449,7 +456,10 @@ export function CustomerForm({
         {!isEditMode && (
           <>
             {/* Headquarters Location Section */}
-            <Collapsible open={effectiveHeadquartersOpen} onOpenChange={setHeadquartersOpen}>
+            <Collapsible
+              open={effectiveHeadquartersOpen}
+              onOpenChange={setHeadquartersOpen}
+            >
               <Card>
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
@@ -474,7 +484,12 @@ export function CustomerForm({
                     </div>
                     <CollapsibleTrigger asChild>
                       <Button variant="ghost" size="sm">
-                        <ChevronDown className={cn("h-4 w-4 transition-transform", effectiveHeadquartersOpen && "rotate-180")} />
+                        <ChevronDown
+                          className={cn(
+                            "h-4 w-4 transition-transform",
+                            effectiveHeadquartersOpen && "rotate-180",
+                          )}
+                        />
                       </Button>
                     </CollapsibleTrigger>
                   </div>
@@ -517,7 +532,10 @@ export function CustomerForm({
                         <FormItem className="md:col-span-2">
                           <FormLabel>Delivery Notes</FormLabel>
                           <FormControl>
-                            <Input placeholder="Delivery instructions, parking info, etc." {...field} />
+                            <Input
+                              placeholder="Delivery instructions, parking info, etc."
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -529,7 +547,10 @@ export function CustomerForm({
             </Collapsible>
 
             {/* Primary Contact Section */}
-            <Collapsible open={effectiveContactOpen} onOpenChange={setContactOpen}>
+            <Collapsible
+              open={effectiveContactOpen}
+              onOpenChange={setContactOpen}
+            >
               <Card>
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
@@ -554,7 +575,12 @@ export function CustomerForm({
                     </div>
                     <CollapsibleTrigger asChild>
                       <Button variant="ghost" size="sm">
-                        <ChevronDown className={cn("h-4 w-4 transition-transform", effectiveContactOpen && "rotate-180")} />
+                        <ChevronDown
+                          className={cn(
+                            "h-4 w-4 transition-transform",
+                            effectiveContactOpen && "rotate-180",
+                          )}
+                        />
                       </Button>
                     </CollapsibleTrigger>
                   </div>
@@ -567,7 +593,11 @@ export function CustomerForm({
                     <FormField
                       control={form.control}
                       name="primaryContact.firstName"
-                      rules={createPrimaryContact ? { required: "First name is required" } : undefined}
+                      rules={
+                        createPrimaryContact
+                          ? { required: "First name is required" }
+                          : undefined
+                      }
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>First Name</FormLabel>
@@ -581,7 +611,11 @@ export function CustomerForm({
                     <FormField
                       control={form.control}
                       name="primaryContact.lastName"
-                      rules={createPrimaryContact ? { required: "Last name is required" } : undefined}
+                      rules={
+                        createPrimaryContact
+                          ? { required: "Last name is required" }
+                          : undefined
+                      }
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Last Name</FormLabel>
@@ -599,7 +633,11 @@ export function CustomerForm({
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="max@example.com" {...field} />
+                            <Input
+                              type="email"
+                              placeholder="max@example.com"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -612,7 +650,11 @@ export function CustomerForm({
                         <FormItem>
                           <FormLabel>Phone</FormLabel>
                           <FormControl>
-                            <Input type="tel" placeholder="+49 123 45678" {...field} />
+                            <Input
+                              type="tel"
+                              placeholder="+49 123 45678"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -637,19 +679,34 @@ export function CustomerForm({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Decision Making Role</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select role" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="decision_maker">Decision Maker</SelectItem>
-                              <SelectItem value="key_influencer">Key Influencer</SelectItem>
-                              <SelectItem value="recommender">Recommender</SelectItem>
-                              <SelectItem value="gatekeeper">Gatekeeper</SelectItem>
-                              <SelectItem value="operational_contact">Operational Contact</SelectItem>
-                              <SelectItem value="informational">Informational</SelectItem>
+                              <SelectItem value="decision_maker">
+                                Decision Maker
+                              </SelectItem>
+                              <SelectItem value="key_influencer">
+                                Key Influencer
+                              </SelectItem>
+                              <SelectItem value="recommender">
+                                Recommender
+                              </SelectItem>
+                              <SelectItem value="gatekeeper">
+                                Gatekeeper
+                              </SelectItem>
+                              <SelectItem value="operational_contact">
+                                Operational Contact
+                              </SelectItem>
+                              <SelectItem value="informational">
+                                Informational
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

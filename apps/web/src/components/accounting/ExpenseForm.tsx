@@ -34,18 +34,22 @@ export function ExpenseForm() {
 
   useEffect(() => {
     if (expense) {
-      setFormData({
-        merchantName: expense.merchantName || "",
-        description: expense.description || "",
-        amount: expense.amount || 0,
-        currency: expense.currency || "EUR",
-        category: expense.category || "other",
-        date: expense.date
-          ? expense.date.split("T")[0]
-          : new Date().toISOString().split("T")[0],
-        status: expense.status || "draft",
-        receiptUrl: expense.receiptUrl,
-      });
+      // Defer state update to avoid synchronous render warning
+      const timer = setTimeout(() => {
+        setFormData({
+          merchantName: expense.merchantName || "",
+          description: expense.description || "",
+          amount: expense.amount || 0,
+          currency: expense.currency || "EUR",
+          category: expense.category || "other",
+          date: expense.date
+            ? expense.date.split("T")[0]
+            : new Date().toISOString().split("T")[0],
+          status: expense.status || "draft",
+          receiptUrl: expense.receiptUrl,
+        });
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [expense]);
 

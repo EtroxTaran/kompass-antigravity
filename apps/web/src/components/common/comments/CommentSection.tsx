@@ -90,7 +90,15 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
       socket.off("comment:resolved", onResolved);
       leaveRoom(roomName);
     };
-  }, [socket, entityType, entityId, joinRoom, leaveRoom, onCommentAdded, onCommentResolved]);
+  }, [
+    socket,
+    entityType,
+    entityId,
+    joinRoom,
+    leaveRoom,
+    onCommentAdded,
+    onCommentResolved,
+  ]);
 
   // Build comment tree
   const { rootComments, activeCount } = useMemo(() => {

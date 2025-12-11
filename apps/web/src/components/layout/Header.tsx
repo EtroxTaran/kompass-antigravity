@@ -20,7 +20,7 @@ import {
 import { SearchOverlay } from "@/components/SearchOverlay";
 import { useNavigate } from "react-router-dom";
 import { SyncIndicator } from "@/components/shared/SyncIndicator";
-import { NotificationBell } from '@/components/shared/NotificationBell';
+import { NotificationBell } from "@/components/shared/NotificationBell";
 
 interface HeaderProps {
   userName?: string;

@@ -22,8 +22,9 @@ export function useProjectSubcontractor(projectId?: string) {
       const data =
         await apiClient.projectSubcontractor.findByProject(projectId);
       setSubcontractors(data);
-    } catch (err: any) {
-      setError(err.message || "Failed to fetch subcontractors");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to fetch subcontractors";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -41,8 +42,9 @@ export function useProjectSubcontractor(projectId?: string) {
       );
       setSubcontractors((prev) => [...prev, result]);
       return result;
-    } catch (err: any) {
-      setError(err.message || "Failed to assign subcontractor");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to assign subcontractor";
+      setError(message);
       throw err;
     } finally {
       setLoading(false);
@@ -52,37 +54,30 @@ export function useProjectSubcontractor(projectId?: string) {
   const updateAssignment = async (id: string, dto: UpdateAssignmentDto) => {
     if (!projectId) return;
     // Don't set global loading for row updates typically, but for now ok.
-    try {
-      const result = await apiClient.projectSubcontractor.update(
-        projectId,
-        id,
-        dto,
-      );
-      setSubcontractors((prev) =>
-        prev.map((item) => (item._id === id ? result : item)),
-      );
-      return result;
-    } catch (err: any) {
-      // setError(err.message); // Optional: global error vs local handling
-      throw err;
-    }
+    // try/catch removed as it was useless
+    const result = await apiClient.projectSubcontractor.update(
+      projectId,
+      id,
+      dto,
+    );
+    setSubcontractors((prev) =>
+      prev.map((item) => (item._id === id ? result : item)),
+    );
+    return result;
   };
 
   const rateSubcontractor = async (id: string, dto: RateSubcontractorDto) => {
     if (!projectId) return;
-    try {
-      const result = await apiClient.projectSubcontractor.rate(
-        projectId,
-        id,
-        dto,
-      );
-      setSubcontractors((prev) =>
-        prev.map((item) => (item._id === id ? result : item)),
-      );
-      return result;
-    } catch (err: any) {
-      throw err;
-    }
+    // try/catch removed
+    const result = await apiClient.projectSubcontractor.rate(
+      projectId,
+      id,
+      dto,
+    );
+    setSubcontractors((prev) =>
+      prev.map((item) => (item._id === id ? result : item)),
+    );
+    return result;
   };
 
   return {

@@ -30,17 +30,20 @@ export function ProjectCostForm() {
 
   useEffect(() => {
     if (cost) {
-      setFormData({
-        projectId: cost.projectId || "",
-        description: cost.description || "",
-        amount: cost.amount.toString(),
-        currency: cost.currency || "EUR",
-        date: cost.date
-          ? cost.date.split("T")[0]
-          : new Date().toISOString().split("T")[0],
-        costType: cost.costType,
-        status: cost.status,
-      });
+      const timer = setTimeout(() => {
+        setFormData({
+          projectId: cost.projectId || "",
+          description: cost.description || "",
+          amount: cost.amount.toString(),
+          currency: cost.currency || "EUR",
+          date: cost.date
+            ? cost.date.split("T")[0]
+            : new Date().toISOString().split("T")[0],
+          costType: cost.costType,
+          status: cost.status,
+        });
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [cost]);
 

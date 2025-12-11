@@ -26,17 +26,20 @@ export function TourForm() {
 
   useEffect(() => {
     if (tour) {
-      setFormData({
-        name: tour.name || "",
-        date: tour.date
-          ? tour.date.split("T")[0]
-          : new Date().toISOString().split("T")[0],
-        driverId: tour.driverId || "",
-        startLocation: tour.startLocation || "",
-        endLocation: tour.endLocation || "",
-        status: tour.status || "planned",
-      });
-      setStops(tour.stops || []);
+      const timer = setTimeout(() => {
+        setFormData({
+          name: tour.name || "",
+          date: tour.date
+            ? tour.date.split("T")[0]
+            : new Date().toISOString().split("T")[0],
+          driverId: tour.driverId || "",
+          startLocation: tour.startLocation || "",
+          endLocation: tour.endLocation || "",
+          status: tour.status || "planned",
+        });
+        setStops(tour.stops || []);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [tour]);
 

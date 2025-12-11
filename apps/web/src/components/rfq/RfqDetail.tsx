@@ -33,7 +33,7 @@ export function RfqDetail() {
       try {
         const data = await getRfq(rfqId);
         if (data) {
-          setRfq(data);
+          setTimeout(() => setRfq(data), 0);
         }
       } catch (error) {
         console.error("Failed to load RFQ", error);

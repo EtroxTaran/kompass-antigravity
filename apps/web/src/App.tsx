@@ -4,7 +4,18 @@ import {
   Routes,
   Route,
   Navigate,
+  useParams,
+  useNavigate,
 } from "react-router-dom";
+import {
+  Supplier,
+  Material,
+  Project,
+  Opportunity,
+  Offer,
+  Contract,
+  Customer,
+} from "@kompass/shared";
 import { PortalLogin } from "@/components/portal/PortalLogin";
 import { PortalVerify } from "@/components/portal/PortalVerify";
 import { PortalDashboard } from "@/components/portal/PortalDashboard";
@@ -17,6 +28,7 @@ import { SupplierList } from "@/components/inventory/SupplierList";
 import { MaterialList } from "@/components/inventory/MaterialList";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { ActivitiesPage } from "@/pages/ActivitiesPage";
+import { UserProfilePage } from "@/pages/UserProfilePage";
 
 import { CustomerForm } from "@/components/crm/CustomerForm";
 import { CustomerDetail } from "@/components/crm/CustomerDetail";
@@ -75,7 +87,7 @@ import { PurchaseOrderList } from "@/components/inventory/PurchaseOrderList";
 import { PurchaseOrderForm } from "@/components/inventory/PurchaseOrderForm";
 import { PurchaseOrderDetail } from "@/components/inventory/PurchaseOrderDetail";
 import { useCustomer } from "@/hooks/useCustomer";
-import { useParams, useNavigate } from "react-router-dom";
+
 
 import { OpportunityForm } from "@/components/sales/OpportunityForm";
 import { OpportunityDetail } from "@/components/sales/OpportunityDetail";
@@ -146,7 +158,7 @@ function SupplierCreatePage() {
   const { saveSupplier } = useSupplier();
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Supplier>) => {
     await saveSupplier(data);
     navigate("/suppliers");
   };
@@ -196,7 +208,7 @@ function SupplierEditPage() {
   const { supplier, loading, saveSupplier } = useSupplier(id);
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Supplier>) => {
     await saveSupplier(data);
     navigate(`/suppliers/${id}`);
   };
@@ -228,7 +240,7 @@ function MaterialCreatePage() {
   const { saveMaterial } = useMaterial();
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Material>) => {
     await saveMaterial(data);
     navigate("/materials");
   };
@@ -278,7 +290,7 @@ function MaterialEditPage() {
   const { material, loading, saveMaterial } = useMaterial(id);
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Material>) => {
     await saveMaterial(data);
     navigate(`/materials/${id}`);
   };
@@ -312,7 +324,7 @@ function ProjectCreatePage() {
   const { saveProject } = useProject();
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Project>) => {
     await saveProject(data);
     navigate("/projects");
   };
@@ -357,7 +369,7 @@ function ProjectEditPage() {
   const { project, loading, saveProject } = useProject(id);
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Project>) => {
     await saveProject(data);
     navigate(`/projects/${id}`);
   };
@@ -392,7 +404,7 @@ function OpportunityCreatePage() {
   const { saveOpportunity } = useOpportunity();
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Opportunity>) => {
     await saveOpportunity(data);
     navigate("/sales");
   };
@@ -438,7 +450,7 @@ function OpportunityEditPage() {
   const { opportunity, loading, saveOpportunity } = useOpportunity(id);
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Opportunity>) => {
     await saveOpportunity(data);
     navigate(`/sales/${id}`);
   };
@@ -473,7 +485,7 @@ function OfferCreatePage() {
   const { saveOffer } = useOffer();
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Offer>) => {
     await saveOffer(data);
     navigate("/sales/offers");
   };
@@ -522,7 +534,7 @@ function OfferEditPage() {
   const { offer, loading, saveOffer } = useOffer(id);
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Offer>) => {
     await saveOffer(data);
     navigate(`/sales/offers/${id}`);
   };
@@ -557,7 +569,7 @@ function ContractCreatePage() {
   const { saveContract } = useContract();
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Contract>) => {
     await saveContract(data);
     navigate("/sales/contracts");
   };
@@ -603,7 +615,7 @@ function ContractEditPage() {
   const { contract, loading, saveContract } = useContract(id);
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Contract>) => {
     await saveContract(data);
     navigate(`/sales/contracts/${id}`);
   };
@@ -675,7 +687,11 @@ function CustomerCreatePage() {
       }
 
       // 3. Create primary contact if requested
-      if (createPrimaryContact && primaryContact?.firstName && primaryContact?.lastName) {
+      if (
+        createPrimaryContact &&
+        primaryContact?.firstName &&
+        primaryContact?.lastName
+      ) {
         const { contactsApi } = await import("@/services/apiClient");
         await contactsApi.create({
           customerId,
@@ -684,7 +700,8 @@ function CustomerCreatePage() {
           email: primaryContact.email,
           phone: primaryContact.phone,
           position: primaryContact.position,
-          decisionMakingRole: primaryContact.decisionMakingRole || "operational_contact",
+          decisionMakingRole:
+            primaryContact.decisionMakingRole || "operational_contact",
           authorityLevel: primaryContact.authorityLevel || "medium",
           canApproveOrders: false,
           assignedLocationIds: [],
@@ -743,7 +760,7 @@ function CustomerEditPage() {
   const { customer, loading, saveCustomer } = useCustomer(id);
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: Partial<Customer>) => {
     await saveCustomer(data);
     navigate(`/customers/${id}`);
   };
@@ -755,7 +772,11 @@ function CustomerEditPage() {
     content = (
       <div className="space-y-4">
         <h1 className="text-2xl font-bold">Edit Customer</h1>
-        <CustomerForm defaultValues={customer} onSubmit={handleSubmit} isEditMode />
+        <CustomerForm
+          defaultValues={customer}
+          onSubmit={handleSubmit}
+          isEditMode
+        />
       </div>
     );
 
@@ -1234,7 +1255,10 @@ function App() {
                 path="/sales/offers/:id"
                 element={<OfferDetailPageWrapper />}
               />
-              <Route path="/sales/offers/:id/edit" element={<OfferEditPage />} />
+              <Route
+                path="/sales/offers/:id/edit"
+                element={<OfferEditPage />}
+              />
 
               {/* Contracts Routes */}
               <Route
@@ -1251,7 +1275,10 @@ function App() {
                   </MainLayout>
                 }
               />
-              <Route path="/sales/contracts/new" element={<ContractCreatePage />} />
+              <Route
+                path="/sales/contracts/new"
+                element={<ContractCreatePage />}
+              />
               <Route
                 path="/sales/contracts/:id"
                 element={<ContractDetailPageWrapper />}
@@ -1367,11 +1394,17 @@ function App() {
               />
               <Route path="/customers/new" element={<CustomerCreatePage />} />
               <Route path="/customers/:id" element={<CustomerDetailPage />} />
-              <Route path="/customers/:id/edit" element={<CustomerEditPage />} />
+              <Route
+                path="/customers/:id/edit"
+                element={<CustomerEditPage />}
+              />
               <Route path="/contacts/:id" element={<ContactDetailPage />} />
               <Route path="/protocols" element={<ProtocolListPage />} />
               <Route path="/protocols/new" element={<ProtocolCreatePage />} />
-              <Route path="/protocols/:id/edit" element={<ProtocolEditPage />} />
+              <Route
+                path="/protocols/:id/edit"
+                element={<ProtocolEditPage />}
+              />
 
               {/* Inventory */}
               <Route
@@ -1389,7 +1422,10 @@ function App() {
               />
               <Route path="/suppliers/new" element={<SupplierCreatePage />} />
               <Route path="/suppliers/:id" element={<SupplierDetailPage />} />
-              <Route path="/suppliers/:id/edit" element={<SupplierEditPage />} />
+              <Route
+                path="/suppliers/:id/edit"
+                element={<SupplierEditPage />}
+              />
 
               <Route
                 path="/materials"
@@ -1406,8 +1442,14 @@ function App() {
               />
               <Route path="/materials/new" element={<MaterialCreatePage />} />
               <Route path="/materials/:id" element={<MaterialDetailPage />} />
-              <Route path="/materials/:id/edit" element={<MaterialEditPage />} />
-              <Route path="/purchase-orders" element={<PurchaseOrderListPage />} />
+              <Route
+                path="/materials/:id/edit"
+                element={<MaterialEditPage />}
+              />
+              <Route
+                path="/purchase-orders"
+                element={<PurchaseOrderListPage />}
+              />
               <Route
                 path="/purchase-orders/new"
                 element={<PurchaseOrderCreatePage />}
@@ -1438,6 +1480,7 @@ function App() {
               <Route path="/expenses/new" element={<ExpenseCreatePage />} />
               <Route path="/expenses/:id/edit" element={<ExpenseEditPage />} />
               <Route path="/activities" element={<ActivitiesPage />} />
+              <Route path="/profile" element={<UserProfilePage />} />
               <Route path="/mileage" element={<MileageListPage />} />
               <Route path="/mileage/new" element={<MileageCreatePage />} />
               <Route path="/mileage/:id/edit" element={<MileageEditPage />} />
@@ -1467,7 +1510,10 @@ function App() {
               <Route path="/dashboard/gf" element={<GFDashboard />} />
               <Route path="/dashboard/adm" element={<ADMDashboard />} />
               <Route path="/dashboard/plan" element={<PLANDashboard />} />
-              <Route path="/dashboard/warehouse" element={<WarehouseDashboard />} />
+              <Route
+                path="/dashboard/warehouse"
+                element={<WarehouseDashboard />}
+              />
               <Route path="/dashboard/kalk" element={<KALKDashboard />} />
               <Route path="/dashboard/buch" element={<BUCHDashboard />} />
               <Route path="/dashboard/inn" element={<INNDashboard />} />
@@ -1475,7 +1521,10 @@ function App() {
               {/* Warehouse Management */}
               <Route path="/warehouse" element={<WarehouseListPage />} />
               <Route path="/warehouse/new" element={<WarehouseCreatePage />} />
-              <Route path="/warehouse/:id/edit" element={<WarehouseEditPage />} />
+              <Route
+                path="/warehouse/:id/edit"
+                element={<WarehouseEditPage />}
+              />
 
               {/* My Timesheets Route */}
               <Route
@@ -1521,18 +1570,27 @@ function App() {
               />
 
               {/* Fallback */}
-              <Route path="/settings" element={<Navigate to="/settings/profile" />} />
+              <Route
+                path="/settings"
+                element={<Navigate to="/settings/profile" />}
+              />
 
               {/* Storage Management */}
-              <Route path="/settings/storage" element={<StorageManagementPage />} />
+              <Route
+                path="/settings/storage"
+                element={<StorageManagementPage />}
+              />
 
               {/* Integration */}
-              <Route path="/integration/lexware" element={<LexwareDashboardPage />} />
-            </Routes >
+              <Route
+                path="/integration/lexware"
+                element={<LexwareDashboardPage />}
+              />
+            </Routes>
           </TooltipProvider>
-        </NotificationProvider >
-      </PresenceProvider >
-    </Router >
+        </NotificationProvider>
+      </PresenceProvider>
+    </Router>
   );
 }
 
