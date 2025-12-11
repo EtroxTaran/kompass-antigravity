@@ -87,4 +87,23 @@ export class ContactRepository extends BaseRepository<Contact> {
   ) {
     return this.findBySelector({ decisionMakingRole: role }, options);
   }
+
+  /**
+   * Delete all contacts for a specific customer (cascade delete)
+   */
+  async deleteByCustomer(
+    customerId: string,
+    userId: string,
+    userEmail?: string,
+  ): Promise<number> {
+    const result = await this.findByCustomer(customerId, { limit: 1000 });
+    let deletedCount = 0;
+
+    for (const contact of result.data) {
+      await this.delete(contact._id, userId, userEmail);
+      deletedCount++;
+    }
+
+    return deletedCount;
+  }
 }

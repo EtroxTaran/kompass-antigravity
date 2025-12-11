@@ -98,4 +98,23 @@ export class LocationRepository extends BaseRepository<Location> {
       options,
     );
   }
+
+  /**
+   * Delete all locations for a specific customer (cascade delete)
+   */
+  async deleteByCustomer(
+    customerId: string,
+    userId: string,
+    userEmail?: string,
+  ): Promise<number> {
+    const result = await this.findByCustomer(customerId, { limit: 1000 });
+    let deletedCount = 0;
+
+    for (const location of result.data) {
+      await this.delete(location._id, userId, userEmail);
+      deletedCount++;
+    }
+
+    return deletedCount;
+  }
 }

@@ -2,16 +2,33 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  Inject,
+  forwardRef,
+  Logger,
 } from '@nestjs/common';
 import { CustomerRepository, Customer } from './customer.repository';
 import { CreateCustomerDto, UpdateCustomerDto } from './dto/customer.dto';
 import { SearchService } from '../search/search.service';
+import { ContactRepository } from '../contact/contact.repository';
+import { LocationRepository } from '../location/location.repository';
+import { ProtocolRepository } from '../protocol/protocol.repository';
+import { ProjectRepository } from '../project/project.repository';
 
 @Injectable()
 export class CustomerService {
+  private readonly logger = new Logger(CustomerService.name);
+
   constructor(
     private readonly customerRepository: CustomerRepository,
     private readonly searchService: SearchService,
+    @Inject(forwardRef(() => ContactRepository))
+    private readonly contactRepository: ContactRepository,
+    @Inject(forwardRef(() => LocationRepository))
+    private readonly locationRepository: LocationRepository,
+    @Inject(forwardRef(() => ProtocolRepository))
+    private readonly protocolRepository: ProtocolRepository,
+    @Inject(forwardRef(() => ProjectRepository))
+    private readonly projectRepository: ProjectRepository,
   ) {}
 
   async findAll(
@@ -184,6 +201,46 @@ export class CustomerService {
     // Ensure customer exists
     await this.findById(id);
 
-    return this.customerRepository.delete(id, user.id, user.email);
+    // Cascade delete child entities
+    this.logger.log(`Cascading delete for customer ${id}`);
+
+    // 1. Delete all contacts (hard delete)
+    const deletedContacts = await this.contactRepository.deleteByCustomer(
+      id,
+      user.id,
+      user.email,
+    );
+    this.logger.log(`Deleted ${deletedContacts} contacts for customer ${id}`);
+
+    // 2. Delete all locations (hard delete)
+    const deletedLocations = await this.locationRepository.deleteByCustomer(
+      id,
+      user.id,
+      user.email,
+    );
+    this.logger.log(`Deleted ${deletedLocations} locations for customer ${id}`);
+
+    // 3. Unlink protocols (preserve historical data)
+    const unlinkedProtocols = await this.protocolRepository.unlinkFromCustomer(
+      id,
+      user.id,
+    );
+    this.logger.log(
+      `Unlinked ${unlinkedProtocols} protocols from customer ${id}`,
+    );
+
+    // 4. Unlink projects (preserve historical data)
+    const unlinkedProjects = await this.projectRepository.unlinkFromCustomer(
+      id,
+      user.id,
+      user.email,
+    );
+    this.logger.log(
+      `Unlinked ${unlinkedProjects} projects from customer ${id}`,
+    );
+
+    // 5. Delete the customer
+    await this.customerRepository.delete(id, user.id, user.email);
+    this.logger.log(`Customer ${id} deleted successfully`);
   }
 }
