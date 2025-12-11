@@ -107,6 +107,8 @@ class DatabaseService {
 
     // Start periodic storage monitoring
     this.startStorageMonitoring();
+
+    console.log("DatabaseService initialized with Tiered Storage strategy");
   }
 
   /**
