@@ -48,6 +48,7 @@ description: Sprint Planner workflow to select complete feature deliverables for
 ## Phase 4: Completeness Check
 
 For each Sprint Issue:
+
 1.  **Labels**: Ensure `feature`/`bug` label exists.
 2.  **Details**: Check for AC and Tech Notes. Flag if missing.
 3.  **Dependencies**: Check if blocked.
@@ -57,6 +58,7 @@ For each Sprint Issue:
 ## Phase 5: Summary
 
 Provide Sprint Plan Summary:
+
 - **Goal**: [Feature X]
 - **Scope**: [X] Features, [Y] Bugs.
 - **Issues**: List of issues in Sprint.

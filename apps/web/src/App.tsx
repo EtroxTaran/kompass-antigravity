@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -632,10 +633,67 @@ function ContractEditPage() {
 function CustomerCreatePage() {
   const { saveCustomer } = useCustomer();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (data: any) => {
-    await saveCustomer(data);
-    navigate("/customers");
+  const handleSubmit = async (formData: any) => {
+    setIsLoading(true);
+    try {
+      // Extract customer data (remove wizard-specific fields)
+      const {
+        createHeadquarters,
+        headquartersLocation,
+        createPrimaryContact,
+        primaryContact,
+        ...customerData
+      } = formData;
+
+      // 1. Create the customer
+      const customer = await saveCustomer(customerData);
+      const customerId = (customer as any)?._id;
+
+      if (!customerId) {
+        throw new Error("Failed to get customer ID");
+      }
+
+      // 2. Create headquarters location if requested
+      if (createHeadquarters && headquartersLocation) {
+        const { locationsApi } = await import("@/services/apiClient");
+        await locationsApi.create({
+          customerId,
+          locationName: headquartersLocation.locationName || "Hauptsitz",
+          locationType: "headquarter",
+          isActive: true,
+          deliveryAddress: customerData.billingAddress,
+          deliveryNotes: headquartersLocation.deliveryNotes,
+          openingHours: headquartersLocation.openingHours,
+          contactPersons: [],
+        });
+      }
+
+      // 3. Create primary contact if requested
+      if (createPrimaryContact && primaryContact?.firstName && primaryContact?.lastName) {
+        const { contactsApi } = await import("@/services/apiClient");
+        await contactsApi.create({
+          customerId,
+          firstName: primaryContact.firstName,
+          lastName: primaryContact.lastName,
+          email: primaryContact.email,
+          phone: primaryContact.phone,
+          position: primaryContact.position,
+          decisionMakingRole: primaryContact.decisionMakingRole || "operational_contact",
+          authorityLevel: primaryContact.authorityLevel || "medium",
+          canApproveOrders: false,
+          assignedLocationIds: [],
+          isPrimaryContactForLocations: [],
+        });
+      }
+
+      navigate("/customers");
+    } catch (error) {
+      console.error("Error creating customer:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -645,7 +703,7 @@ function CustomerCreatePage() {
     >
       <div className="space-y-4">
         <h1 className="text-2xl font-bold">New Customer</h1>
-        <CustomerForm onSubmit={handleSubmit} />
+        <CustomerForm onSubmit={handleSubmit} isLoading={isLoading} />
       </div>
     </MainLayout>
   );
@@ -693,7 +751,7 @@ function CustomerEditPage() {
     content = (
       <div className="space-y-4">
         <h1 className="text-2xl font-bold">Edit Customer</h1>
-        <CustomerForm defaultValues={customer} onSubmit={handleSubmit} />
+        <CustomerForm defaultValues={customer} onSubmit={handleSubmit} isEditMode />
       </div>
     );
 
