@@ -30,6 +30,8 @@ const INDEX_CONFIGS = {
       'billingAddress.street',
       'vatNumber',
       'notes',
+      'email',
+      'phone',
     ],
     displayedAttributes: ['_id', 'companyName', 'billingAddress'],
   },

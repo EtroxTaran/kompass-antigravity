@@ -33,7 +33,7 @@ export class CustomerController {
     private readonly customerService: CustomerService,
     private readonly exportService: ExportService,
     private readonly importService: ImportService,
-  ) {}
+  ) { }
 
   /**
    * GET /api/v1/customers
@@ -408,5 +408,17 @@ export class CustomerController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id') id: string, @CurrentUser() user: any) {
     await this.customerService.delete(id, user);
+  }
+
+  /**
+   * POST /api/v1/customers/check-duplicates
+   * Check for duplicate customers
+   */
+  @Post('check-duplicates')
+  @Permissions({ entity: 'Customer', action: 'READ' })
+  async checkDuplicates(
+    @Body() criteria: { name?: string; email?: string; phone?: string; excludeId?: string },
+  ) {
+    return this.customerService.checkDuplicates(criteria, criteria.excludeId);
   }
 }

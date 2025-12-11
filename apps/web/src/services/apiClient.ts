@@ -302,6 +302,22 @@ export const customersApi = {
   async delete(id: string): Promise<void> {
     return del(`/customers/${id}`);
   },
+
+  async checkDuplicates(criteria: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    excludeId?: string;
+  }): Promise<
+    Array<{
+      id: string;
+      companyName: string;
+      matchReason: string;
+      score: number;
+    }>
+  > {
+    return post("/customers/check-duplicates", criteria);
+  },
 };
 
 // =============================================================================
