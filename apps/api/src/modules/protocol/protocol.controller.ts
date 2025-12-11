@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { ProtocolService } from './protocol.service';
 import { CreateProtocolDto, UpdateProtocolDto } from './dto/protocol.dto';
@@ -28,8 +29,11 @@ export class ProtocolController {
 
   @Get()
   @Permissions({ entity: 'protocol', action: 'READ' })
-  findAll() {
-    return this.protocolService.findAll();
+  findAll(
+    @Query('customerId') customerId?: string,
+    @Query('projectId') projectId?: string,
+  ) {
+    return this.protocolService.findAll({ customerId, projectId });
   }
 
   @Get(':id')
