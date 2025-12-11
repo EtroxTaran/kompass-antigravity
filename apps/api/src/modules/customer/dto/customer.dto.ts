@@ -150,6 +150,14 @@ export class CreateCustomerDto {
   @IsOptional()
   contactPersons?: string[];
 
+  @IsNumber()
+  @IsOptional()
+  visitFrequencyDays?: number;
+
+  @IsString()
+  @IsOptional()
+  lastVisit?: string;
+
   @ValidateNested()
   @Type(() => DsgvoConsentDto)
   @IsOptional()

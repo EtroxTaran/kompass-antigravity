@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -145,6 +147,125 @@ export function CustomerForm({
                 </FormItem>
               )}
             />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Sales Settings & Compliance</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="visitFrequencyDays"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Visit Frequency (Days)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="30"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.value ? Number(e.target.value) : undefined)
+                      }
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Recommended days between visits via ADM
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="lastVisit"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Visit</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="col-span-1 md:col-span-2 space-y-4">
+              <h4 className="text-sm font-medium">DSGVO Consent</h4>
+              <div className="flex flex-col gap-4">
+                <FormField
+                  control={form.control}
+                  name="dsgvoConsent.marketing"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>
+                          Marketing Allowed
+                        </FormLabel>
+                        <FormDescription>
+                          Customer agrees to receive marketing materials.
+                        </FormDescription>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="dsgvoConsent.aiProcessing"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>
+                          AI Processing Allowed
+                        </FormLabel>
+                        <FormDescription>
+                          Customer data may be processed by AI systems for optimization.
+                        </FormDescription>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="dsgvoConsent.dataSharing"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>
+                          Data Sharing Allowed
+                        </FormLabel>
+                        <FormDescription>
+                          Customer agrees to data sharing with partners.
+                        </FormDescription>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
           </CardContent>
         </Card>
 

@@ -16,6 +16,8 @@ export interface Customer extends BaseEntity {
     defaultDeliveryLocationId?: string;
     owner: string;
     contactPersons: string[];
+    visitFrequencyDays?: number;
+    lastVisit?: string;
     dsgvoConsent?: {
         marketing: boolean;
         aiProcessing: boolean;
