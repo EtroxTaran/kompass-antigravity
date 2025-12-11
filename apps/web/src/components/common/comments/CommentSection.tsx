@@ -26,7 +26,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { socket } = usePresenceContext();
+  const { socket, joinRoom, leaveRoom } = usePresenceContext();
 
   const handleAddComment = async (content: string) => {
     setIsSubmitting(true);
@@ -70,6 +70,10 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
   useEffect(() => {
     if (!socket) return;
 
+    // Join the room for this entity
+    const roomName = `${entityType}:${entityId}`;
+    joinRoom(roomName);
+
     const onAdded = (comment: CommentType) => {
       if (onCommentAdded) onCommentAdded(comment);
     };
@@ -84,8 +88,9 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
     return () => {
       socket.off("comment:added", onAdded);
       socket.off("comment:resolved", onResolved);
+      leaveRoom(roomName);
     };
-  }, [socket, onCommentAdded, onCommentResolved]);
+  }, [socket, entityType, entityId, joinRoom, leaveRoom, onCommentAdded, onCommentResolved]);
 
   // Build comment tree
   const { rootComments, activeCount } = useMemo(() => {

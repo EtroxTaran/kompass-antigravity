@@ -6,4 +6,4 @@ import { PresenceService } from './presence.service';
   providers: [PresenceGateway, PresenceService],
   exports: [PresenceService, PresenceGateway],
 })
-export class PresenceModule { }
+export class PresenceModule {}
