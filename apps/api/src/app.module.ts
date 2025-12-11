@@ -44,6 +44,7 @@ import { ProjectSubcontractorModule } from './modules/project-subcontractor/proj
 import { PresenceModule } from './modules/presence/presence.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { CommentModule } from './modules/comment/comment.module';
+import { NotificationModule } from './modules/notification/notification.module';
 import { PortalModule } from './modules/portal/portal.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 
@@ -87,6 +88,7 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     UserTaskModule,
     ProjectTaskModule,
     ActivityModule,
+    NotificationModule,
     OfferModule,
     ContractModule,
     ExpenseModule,
@@ -115,4 +117,4 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Search, Bell, User, LogOut, Menu, Settings } from "lucide-react";
+import { Search, User, LogOut, Menu, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -21,11 +20,11 @@ import {
 import { SearchOverlay } from "@/components/SearchOverlay";
 import { useNavigate } from "react-router-dom";
 import { SyncIndicator } from "@/components/shared/SyncIndicator";
+import { NotificationBell } from '@/components/shared/NotificationBell';
 
 interface HeaderProps {
   userName?: string;
   userRole?: string;
-  unreadNotifications?: number;
   breadcrumbs?: { label: string; href?: string }[];
   onMobileMenuClick?: () => void;
 }
@@ -33,7 +32,6 @@ interface HeaderProps {
 export function Header({
   userName = "Michael Schmidt",
   userRole = "Außendienst",
-  unreadNotifications = 0,
   breadcrumbs = [],
   onMobileMenuClick,
 }: HeaderProps) {
@@ -104,17 +102,7 @@ export function Header({
 
           {/* Notifications */}
           <div className="relative">
-            <Button variant="ghost" size="icon" aria-label="Benachrichtigungen">
-              <Bell className="h-5 w-5 text-muted-foreground" />
-              {unreadNotifications > 0 && (
-                <Badge
-                  variant="destructive"
-                  className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]"
-                >
-                  {unreadNotifications}
-                </Badge>
-              )}
-            </Button>
+            <NotificationBell />
           </div>
 
           {/* User Profile Menu */}

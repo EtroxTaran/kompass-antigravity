@@ -194,4 +194,8 @@ export class ActivityRepository extends BaseRepository<Activity> {
     });
     return result.data;
   }
+
+  async getEntityHistory(entityId: string, limit: number = 50) {
+    return this.auditService.getHistory(entityId, limit);
+  }
 }

@@ -17,7 +17,7 @@ export class ActivityService {
   constructor(
     private readonly activityRepository: ActivityRepository,
     private readonly customerRepository: CustomerRepository,
-  ) {}
+  ) { }
 
   async findAll(options: ActivityQueryOptions = {}) {
     return this.activityRepository.findAll(options);
@@ -57,6 +57,10 @@ export class ActivityService {
 
   async findPendingFollowUps(options: ActivityQueryOptions = {}) {
     return this.activityRepository.findPendingFollowUps(options);
+  }
+
+  async getEntityHistory(entityId: string, limit: number = 50) {
+    return this.activityRepository.getEntityHistory(entityId, limit);
   }
 
   async create(

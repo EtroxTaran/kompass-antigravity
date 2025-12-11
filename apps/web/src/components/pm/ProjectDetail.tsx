@@ -19,6 +19,7 @@ import { ProjectCostOverview } from "./ProjectCostOverview";
 import { ProjectMaterialList } from "./material/ProjectMaterialList";
 import { ProjectSubcontractorList } from "./ProjectSubcontractorList";
 import { CommentSection } from "@/components/common/comments/CommentSection";
+import { ActivityFeed } from "@/components/shared/ActivityFeed";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface ProjectDetailProps {
@@ -68,6 +69,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
           <TabsTrigger value="subcontractors">Subcontractors</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
           <TabsTrigger value="comments">Kommentare</TabsTrigger>
+          <TabsTrigger value="activity">Aktivität</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
@@ -182,6 +184,10 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
               });
             }}
           />
+        </TabsContent>
+
+        <TabsContent value="activity">
+          <ActivityFeed entityId={project._id} />
         </TabsContent>
       </Tabs>
     </div>

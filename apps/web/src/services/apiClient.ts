@@ -408,7 +408,11 @@ export const activitiesApi = {
   },
 
   async getTimeline(customerId: string): Promise<{ data: unknown[] }> {
-    return get(`/activities/timeline/${customerId}`);
+    return get(`/activities/timeline?customerId=${customerId}`);
+  },
+
+  async getFeed(entityId: string, limit: number = 50): Promise<unknown[]> {
+    return get(`/activities/feed/${entityId}?limit=${limit}`);
   },
 
   async get(id: string): Promise<unknown> {
@@ -425,6 +429,31 @@ export const activitiesApi = {
 
   async delete(id: string): Promise<void> {
     return del(`/activities/${id}`);
+  },
+};
+
+// =============================================================================
+// Notifications API
+// =============================================================================
+
+export const notificationsApi = {
+  async list(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<ListResponse<unknown>> {
+    return get("/notifications", params as any);
+  },
+
+  async getUnreadCount(): Promise<{ count: number }> {
+    return get("/notifications/unread-count");
+  },
+
+  async markAllAsRead(): Promise<{ count: number }> {
+    return patch("/notifications/read-all", {});
+  },
+
+  async markAsRead(id: string): Promise<unknown> {
+    return patch(`/notifications/${id}/read`, {});
   },
 };
 

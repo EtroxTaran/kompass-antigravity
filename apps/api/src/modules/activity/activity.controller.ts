@@ -23,7 +23,7 @@ import type { ActivityType } from './activity.repository';
 @Controller('api/v1/activities')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class ActivityController {
-  constructor(private readonly activityService: ActivityService) {}
+  constructor(private readonly activityService: ActivityService) { }
 
   /**
    * GET /api/v1/activities
@@ -85,6 +85,22 @@ export class ActivityController {
       page: page ? parseInt(page, 10) : 1,
       limit: limit ? parseInt(limit, 10) : 20,
     });
+  }
+
+  /**
+   * GET /api/v1/activities/feed/:entityId
+   * Get audit log feed for any entity
+   */
+  @Get('feed/:entityId')
+  @Permissions({ entity: 'Activity', action: 'READ' })
+  async getEntityFeed(
+    @Param('entityId') entityId: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.activityService.getEntityHistory(
+      entityId,
+      limit ? parseInt(limit, 10) : 50,
+    );
   }
 
   /**

@@ -31,7 +31,7 @@ export class AuditService {
   constructor(
     @Inject(AUDIT_DB)
     private readonly auditDb: Nano.DocumentScope<AuditLogEntry>,
-  ) {}
+  ) { }
 
   /**
    * Create an audit log entry following the "audit-then-write" pattern.
@@ -143,5 +143,16 @@ export class AuditService {
     }
 
     return changes;
+  }
+  async getHistory(documentId: string, limit: number = 50): Promise<AuditLogEntry[]> {
+    const result = await this.auditDb.find({
+      selector: {
+        documentId,
+        type: 'audit_log',
+      },
+      sort: [{ timestamp: 'desc' }],
+      limit,
+    });
+    return result.docs;
   }
 }
