@@ -128,47 +128,52 @@ export class ProjectService {
     const sourceProject = await this.findById(id);
     if (!sourceProject) return [];
 
-    // Get industry from customer
-    const projectsWithCustomer = await this.projectRepository.findByCustomer(
-      sourceProject.customerId,
-    );
-    // This is a simplification; ideally we'd fetch the Customer entity to get the industry string directly.
-    // For now, let's assume we can match based on the project's own metadata we just added or infer from other projects of the same customer.
-    // However, the requirement mentions "Client Industry". Since we don't have easy access to Customer Service here without circular dependency or injection,
-    // we will focus on matching mostly by:
-    // 1. Tags (direct match)
-    // 2. Budget (+/- 20%)
-    // 3. Project Type (if we had it explicitly, but we are using tags for this now)
+    return this.findBySimilarity({
+      tags: sourceProject.tags,
+      budget: sourceProject.budget,
+      customerId: sourceProject.customerId,
+      excludeId: id,
+    });
+  }
 
-    // Fetch all projects (optimized in real-world with DB query, but here we filter in memory for complex logic if dataset is small,
-    // OR better: use repository partial matches).
-    // Let's use a broad fetch and filter/sort.
+  async findBySimilarity(criteria: {
+    tags?: string[];
+    budget?: number;
+    customerId?: string;
+    excludeId?: string;
+  }): Promise<Project[]> {
+    // Ideally use repository for filtering, but for now we fetch all and filter in memory
+    // to match the existing logic pattern.
     const allProjectsResult = await this.projectRepository.findAll({
       limit: 1000,
     });
-    const candidates = allProjectsResult.data.filter((p) => p._id !== id);
+    
+    // Initial filter by excludeId if provided
+    const candidates = criteria.excludeId 
+      ? allProjectsResult.data.filter((p) => p._id !== criteria.excludeId)
+      : allProjectsResult.data;
 
     const scoredVariables = candidates.map((p) => {
       let score = 0;
 
       // 1. Tags Match (High weight)
-      if (sourceProject.tags && p.tags) {
-        const commonTags = sourceProject.tags.filter((tag) =>
+      if (criteria.tags && p.tags) {
+        const commonTags = criteria.tags.filter((tag) =>
           p.tags?.includes(tag),
         );
         score += commonTags.length * 5;
       }
 
       // 2. Budget Match (Medium weight)
-      if (sourceProject.budget && p.budget) {
-        const diff = Math.abs(sourceProject.budget - p.budget);
-        const percentDiff = diff / sourceProject.budget;
+      if (criteria.budget && p.budget) {
+        const diff = Math.abs(criteria.budget - p.budget);
+        const percentDiff = diff / criteria.budget;
         if (percentDiff <= 0.1) score += 3; // within 10%
         else if (percentDiff <= 0.2) score += 1; // within 20%
       }
 
       // 3. Customer Match (Low weight - implied industry match)
-      if (sourceProject.customerId === p.customerId) {
+      if (criteria.customerId && criteria.customerId === p.customerId) {
         score += 2;
       }
 

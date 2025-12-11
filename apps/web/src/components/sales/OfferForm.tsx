@@ -23,6 +23,7 @@ import { useContacts } from "@/hooks/useContacts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trash2, Plus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { SmartTemplateRecommendations } from "./SmartTemplateRecommendations";
 
 interface OfferFormProps {
   defaultValues?: Partial<Offer>;
@@ -87,6 +88,31 @@ export function OfferForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <SmartTemplateRecommendations
+          initialCustomerId={selectedCustomerId}
+          onApply={(templateData) => {
+            // Apply template data to form
+            // We keep customer/date/validity from current form (or defaults)
+            // but replace line items, payment terms, etc.
+            if (templateData.lineItems) {
+              form.setValue("lineItems", templateData.lineItems);
+            }
+            if (templateData.paymentTerms) {
+              form.setValue("paymentTerms", templateData.paymentTerms);
+            }
+            if (templateData.deliveryTerms) {
+              form.setValue("deliveryTerms", templateData.deliveryTerms);
+            }
+            if (templateData.notes) {
+              form.setValue("notes", templateData.notes);
+            }
+            if (templateData.discountPercent) {
+              form.setValue("discountPercent", templateData.discountPercent);
+            }
+
+            // Show success toast? Or just let user see changes.
+          }}
+        />
         <Card>
           <CardHeader>
             <CardTitle>Offer Details</CardTitle>
@@ -304,7 +330,7 @@ export function OfferForm({
                         currency: "EUR",
                       }).format(
                         (lineItems[index]?.quantity || 0) *
-                          (lineItems[index]?.unitPrice || 0),
+                        (lineItems[index]?.unitPrice || 0),
                       )}
                     </div>
                   </div>

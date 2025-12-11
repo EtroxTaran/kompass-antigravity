@@ -19,6 +19,7 @@ import { AuthenticatedUser } from '../../auth/strategies/jwt.strategy';
 import { PdfService } from '../pdf/pdf.service';
 import { MailService } from '../mail/mail.service';
 import { SearchService } from '../search/search.service';
+import { ProjectService } from '../project/project.service';
 import { v4 as uuidv4 } from 'uuid';
 
 // Valid status transitions for Offer
@@ -39,7 +40,60 @@ export class OfferService {
     private readonly pdfService: PdfService,
     private readonly mailService: MailService,
     private readonly searchService: SearchService,
-  ) {}
+    private readonly projectService: ProjectService,
+  ) { }
+
+  async getRecommendations(criteria: {
+    tags?: string[];
+    customerId?: string;
+    budget?: number; // Optional, might be inferred from other sources if needed
+  }) {
+    // 1. Find similar projects
+    const similarProjects = await this.projectService.findBySimilarity({
+      tags: criteria.tags,
+      customerId: criteria.customerId,
+      budget: criteria.budget,
+    });
+
+    if (similarProjects.length === 0) {
+      return [];
+    }
+
+    // 2. Fetch offers for these projects
+    // We want the "latest" or "accepted" offers ideally, to serve as best-practice templates.
+    const projectIds = similarProjects.map((p) => p._id);
+    const offers = await Promise.all(
+      projectIds.map(async (projectId) => {
+        // Find offers for this project/opportunity
+        // Typically offers are linked to opportunities, which are linked to projects?
+        // Or projects linked to offers (offerId field in Project)?
+        // The Project entity has an `offerId` field which likely points to the winning offer.
+        // Let's use that if available.
+        const project = similarProjects.find((p) => p._id === projectId);
+        if (project && project.offerId) {
+          return this.findById(project.offerId).catch(() => null);
+        }
+
+        // Fallback: If no winning offer linked, maybe search for offers by Customer (approximate)
+        // or just skip. For accurate templates, we need the Offer that defined the Project.
+        return null;
+      }),
+    );
+
+    const validOffers = offers.filter((o) => o !== null);
+
+    // 3. Map to specific recommendation format
+    return validOffers.map((offer) => ({
+      id: offer._id,
+      description: `Template from Project: ${similarProjects.find((p) => p.offerId === offer._id)?.name || 'Unknown'
+        }`,
+      totalEur: offer.totalEur,
+      lineItemCount: offer.lineItems.length,
+      tags: similarProjects.find((p) => p.offerId === offer._id)?.tags || [],
+      // We return the full offer or a subset? Full offer is useful for "applying" it.
+      offerData: offer,
+    }));
+  }
 
   async findAll(options: OfferQueryOptions = {}) {
     if (options.search) {
@@ -154,12 +208,12 @@ export class OfferService {
     // Handle materials if present
     const materials = dto.materials
       ? dto.materials.map((m) => ({
-          id: m.id || uuidv4(),
-          materialId: m.materialId,
-          description: m.description,
-          quantity: m.quantity,
-          unit: m.unit,
-        }))
+        id: m.id || uuidv4(),
+        materialId: m.materialId,
+        description: m.description,
+        quantity: m.quantity,
+        unit: m.unit,
+      }))
       : undefined;
 
     // Calculate totals

@@ -30,7 +30,25 @@ import type { OfferStatus } from './offer.repository';
 @Controller('api/v1/offers')
 @UseGuards(JwtAuthGuard, RbacGuard)
 export class OfferController {
-  constructor(private readonly offerService: OfferService) {}
+  constructor(private readonly offerService: OfferService) { }
+
+  /**
+   * GET /api/v1/offers/recommendations
+   * Get recommended offers based on tags and customer
+   */
+  @Get('recommendations')
+  @Permissions({ entity: 'Offer', action: 'READ' })
+  async getRecommendations(
+    @Query('tags') tags?: string | string[],
+    @Query('customerId') customerId?: string,
+  ) {
+    const tagArray = tags ? (Array.isArray(tags) ? tags : [tags]) : undefined;
+
+    return this.offerService.getRecommendations({
+      tags: tagArray,
+      customerId,
+    });
+  }
 
   /**
    * GET /api/v1/offers
