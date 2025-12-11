@@ -4,6 +4,11 @@ import { BaseEntity } from "./base";
  * Supplier-specific pricing for a material
  * Enables multi-supplier price comparison for KALK estimates
  */
+export interface PriceHistoryEntry {
+  date: string; // ISO date
+  price: number;
+}
+
 export interface SupplierPrice {
   supplierId: string;
   supplierName: string; // Denormalized for quick display
@@ -15,6 +20,10 @@ export interface SupplierPrice {
   notes?: string; // Price conditions, terms
   lastUpdated?: string; // ISO date string
   rating?: number; // Overall supplier rating 1-5 scale
+
+  // Price History & Trends (Issue #46)
+  priceHistory?: PriceHistoryEntry[];
+  priceTrend?: "up" | "down" | "stable";
 }
 
 export interface Material extends BaseEntity {
@@ -59,4 +68,7 @@ export interface Material extends BaseEntity {
 
   // Compatibility (Legacy)
   inStock?: number;
+
+  // Issue #46
+  priceTrend?: "up" | "down" | "stable";
 }
