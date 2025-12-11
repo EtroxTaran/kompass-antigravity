@@ -3,7 +3,7 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import { Material, SupplierPrice } from '@kompass/shared';
+import { Material, SupplierPrice, PriceHistoryEntry } from '@kompass/shared';
 import { MaterialRepository } from './material.repository';
 import {
   CreateMaterialDto,
@@ -17,7 +17,7 @@ export class MaterialService {
   constructor(
     private readonly materialRepository: MaterialRepository,
     private readonly searchService: SearchService,
-  ) {}
+  ) { }
 
   async findAll(
     options: {
@@ -196,9 +196,33 @@ export class MaterialService {
 
     if (existingIndex >= 0) {
       // Update existing
+      const existingPrice = supplierPrices[existingIndex];
+      // Check if price changed significantly (~0 comparisons for float)
+      if (Math.abs(existingPrice.unitPrice - dto.unitPrice) > 0.001) {
+        // Add to history
+        const historyEntry: PriceHistoryEntry = {
+          date: existingPrice.lastUpdated || new Date().toISOString(),
+          price: existingPrice.unitPrice,
+        };
+        const priceHistory = [
+          ...(existingPrice.priceHistory || []),
+          historyEntry,
+        ];
+
+        newPrice.priceHistory = priceHistory;
+        newPrice.priceTrend = this.calculateTrend(
+          dto.unitPrice,
+          existingPrice.unitPrice,
+        );
+      } else {
+        // Preserve history and trend if price hasn't changed
+        newPrice.priceHistory = existingPrice.priceHistory;
+        newPrice.priceTrend = existingPrice.priceTrend;
+      }
       supplierPrices[existingIndex] = newPrice;
     } else {
       // Add new
+      newPrice.priceTrend = 'stable'; // Default for new
       supplierPrices.push(newPrice);
     }
 
@@ -213,9 +237,16 @@ export class MaterialService {
 
     const priceStats = this.calculatePriceStats(supplierPrices);
 
+    // Update Material's overall trend based on preferred supplier
+    let materialTrend: 'up' | 'down' | 'stable' | undefined = undefined;
+    const preferred = supplierPrices.find((p) => p.isPreferred);
+    if (preferred) {
+      materialTrend = preferred.priceTrend;
+    }
+
     return this.materialRepository.update(
       materialId,
-      { supplierPrices, ...priceStats },
+      { supplierPrices, ...priceStats, priceTrend: materialTrend },
       user.id,
       user.email,
     );
@@ -280,5 +311,16 @@ export class MaterialService {
     } catch (e) {
       console.error('Failed to index material', e);
     }
+  }
+
+  private calculateTrend(
+    currentPrice: number,
+    previousPrice: number,
+  ): 'up' | 'down' | 'stable' {
+    if (!previousPrice) return 'stable';
+    const diff = (currentPrice - previousPrice) / previousPrice;
+    if (diff > 0.02) return 'up'; // Increase > 2%
+    if (diff < -0.02) return 'down'; // Decrease > 2%
+    return 'stable';
   }
 }

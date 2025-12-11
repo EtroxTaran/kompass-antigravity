@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ArrowUpDown, Star, TrendingDown, Check } from "lucide-react";
+import { PriceTrendIndicator } from "./PriceTrendIndicator";
 
 type SortField = "price" | "leadTime" | "moq" | "supplierName" | "rating";
 type SortDirection = "asc" | "desc";
@@ -216,6 +217,7 @@ export function MaterialPriceComparison({
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
+                      <PriceTrendIndicator trend={price.priceTrend} />
                       <span
                         className={
                           isLowest ? "text-green-600 font-semibold" : ""

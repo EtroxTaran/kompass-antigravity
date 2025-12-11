@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useSupplier } from "@/hooks/useSupplier";
 import { MaterialPriceComparison } from "./MaterialPriceComparison";
+import { PriceTrendIndicator } from "./PriceTrendIndicator";
 
 // Unit display mapping
 const unitLabels: Record<string, string> = {
@@ -141,6 +142,7 @@ export function MaterialDetail({ material }: MaterialDetailProps) {
                       style: "currency",
                       currency: material.currency,
                     })}
+                    <PriceTrendIndicator trend={material.priceTrend} className="ml-2" />
                   </div>
                 </div>
                 {material.averagePrice && (

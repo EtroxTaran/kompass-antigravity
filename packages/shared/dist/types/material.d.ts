@@ -3,6 +3,10 @@ import { BaseEntity } from "./base";
  * Supplier-specific pricing for a material
  * Enables multi-supplier price comparison for KALK estimates
  */
+export interface PriceHistoryEntry {
+    date: string;
+    price: number;
+}
 export interface SupplierPrice {
     supplierId: string;
     supplierName: string;
@@ -14,6 +18,8 @@ export interface SupplierPrice {
     notes?: string;
     lastUpdated?: string;
     rating?: number;
+    priceHistory?: PriceHistoryEntry[];
+    priceTrend?: "up" | "down" | "stable";
 }
 export interface Material extends BaseEntity {
     type: "material";
@@ -40,4 +46,5 @@ export interface Material extends BaseEntity {
     averageQuantityPerProject?: number;
     status?: "Active" | "Discontinued" | "OutOfStock";
     inStock?: number;
+    priceTrend?: "up" | "down" | "stable";
 }
