@@ -126,7 +126,6 @@ export class ProjectService {
 
   async findSimilar(id: string): Promise<Project[]> {
     const sourceProject = await this.findById(id);
-    if (!sourceProject) return [];
 
     return this.findBySimilarity({
       tags: sourceProject.tags,
@@ -147,9 +146,9 @@ export class ProjectService {
     const allProjectsResult = await this.projectRepository.findAll({
       limit: 1000,
     });
-    
+
     // Initial filter by excludeId if provided
-    const candidates = criteria.excludeId 
+    const candidates = criteria.excludeId
       ? allProjectsResult.data.filter((p) => p._id !== criteria.excludeId)
       : allProjectsResult.data;
 
