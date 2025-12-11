@@ -14,6 +14,7 @@ import { ProjectList } from "@/components/pm/ProjectList";
 import { SupplierList } from "@/components/inventory/SupplierList";
 import { MaterialList } from "@/components/inventory/MaterialList";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { ActivitiesPage } from "@/pages/ActivitiesPage";
 
 import { CustomerForm } from "@/components/crm/CustomerForm";
 import { CustomerDetail } from "@/components/crm/CustomerDetail";
@@ -1372,6 +1373,7 @@ function App() {
             <Route path="/expenses" element={<ExpenseListPage />} />
             <Route path="/expenses/new" element={<ExpenseCreatePage />} />
             <Route path="/expenses/:id/edit" element={<ExpenseEditPage />} />
+            <Route path="/activities" element={<ActivitiesPage />} />
             <Route path="/mileage" element={<MileageListPage />} />
             <Route path="/mileage/new" element={<MileageCreatePage />} />
             <Route path="/mileage/:id/edit" element={<MileageEditPage />} />
