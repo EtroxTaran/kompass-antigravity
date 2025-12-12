@@ -19,7 +19,16 @@ export function ExpenseForm() {
   const { expense, loading, saveExpense } = useExpense(id);
 
   // Form state
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    merchantName: string;
+    description: string;
+    amount: number;
+    currency: string;
+    category: "travel" | "meal" | "accommodation" | "material" | "other";
+    date: string;
+    status: "draft" | "submitted" | "approved" | "rejected" | "reimbursed";
+    receiptUrl: string | undefined;
+  }>({
     merchantName: "",
     description: "",
     amount: 0,
@@ -27,7 +36,7 @@ export function ExpenseForm() {
     category: "other",
     date: new Date().toISOString().split("T")[0],
     status: "draft",
-    receiptUrl: undefined as string | undefined, // For now keeping it simple
+    receiptUrl: undefined,
   });
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -83,11 +92,11 @@ export function ExpenseForm() {
         receiptUrl = `mock-storage://${receiptFile.name}`;
       }
 
-      await saveExpense({ ...formData, receiptUrl } as any);
+      await saveExpense({ ...formData, receiptUrl });
       navigate("/expenses");
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to save expense", err);
-      setError(err.message || "Failed to save expense");
+      setError(err instanceof Error ? err.message : "Failed to save expense");
     }
   };
 

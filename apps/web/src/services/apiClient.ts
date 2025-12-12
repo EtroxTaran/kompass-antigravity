@@ -462,7 +462,7 @@ export const notificationsApi = {
     page?: number;
     limit?: number;
   }): Promise<ListResponse<unknown>> {
-    return get("/notifications", params as any);
+    return get("/notifications", params as Record<string, string>);
   },
 
   async getUnreadCount(): Promise<{ count: number }> {
@@ -911,7 +911,7 @@ export const timeEntriesApi = {
     limit?: number;
     offset?: number;
   }): Promise<ListResponse<unknown>> {
-    return get("/time-entries/my", params as any);
+    return get("/time-entries/my", params as Record<string, string>);
   },
 
   async getDailyTotal(date: string): Promise<{ totalHours: number }> {

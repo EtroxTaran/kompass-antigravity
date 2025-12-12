@@ -1,16 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import PouchDB from "pouchdb";
 import { essentialFilter, recentFilter } from "./syncFilters";
 import { evictLruDocuments } from "./lruEviction";
+
+// Mock type for PouchDB Database
+interface MockDatabase {
+  allDocs: ReturnType<typeof vi.fn>;
+  bulkDocs: ReturnType<typeof vi.fn>;
+}
 
 // Mock PouchDB
 const mockBulkDocs = vi.fn();
 const mockAllDocs = vi.fn();
 
-const mockDb = {
+const mockDb: MockDatabase = {
   allDocs: mockAllDocs,
   bulkDocs: mockBulkDocs,
-} as unknown as PouchDB.Database;
+};
 
 describe("Tiered Storage Strategy", () => {
   const userId = "test-user-123";
@@ -116,7 +121,7 @@ describe("Tiered Storage Strategy", () => {
 
       // Target 50 bytes. docOld is > 100 bytes. So deleting docOld should be enough.
       const targetBytes = 50;
-      const result = await evictLruDocuments(mockDb, targetBytes, userId);
+      const result = await evictLruDocuments(mockDb as unknown as Parameters<typeof evictLruDocuments>[0], targetBytes, userId);
 
       expect(result.evictedCount).toBe(1);
       expect(mockBulkDocs).toHaveBeenCalledTimes(1);
@@ -139,7 +144,7 @@ describe("Tiered Storage Strategy", () => {
         rows: [{ doc: docEssential }],
       });
 
-      const result = await evictLruDocuments(mockDb, 1000, userId);
+      const result = await evictLruDocuments(mockDb as unknown as Parameters<typeof evictLruDocuments>[0], 1000, userId);
 
       expect(result.evictedCount).toBe(0);
       expect(mockBulkDocs).not.toHaveBeenCalled();

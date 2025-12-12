@@ -330,7 +330,7 @@ export function OfferForm({
                         currency: "EUR",
                       }).format(
                         (lineItems[index]?.quantity || 0) *
-                        (lineItems[index]?.unitPrice || 0),
+                          (lineItems[index]?.unitPrice || 0),
                       )}
                     </div>
                   </div>

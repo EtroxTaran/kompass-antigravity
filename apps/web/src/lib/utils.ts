@@ -14,7 +14,7 @@ export function formatDate(dateString?: string): string {
       month: "2-digit",
       day: "2-digit",
     }).format(date);
-  } catch (e) {
+  } catch (_e) {
     return dateString;
   }
 }

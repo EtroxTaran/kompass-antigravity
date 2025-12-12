@@ -24,8 +24,8 @@ export interface AuditLogEntry {
   entityName?: string;
   changes: {
     field: string;
-    oldValue: any;
-    newValue: any;
+    oldValue: unknown;
+    newValue: unknown;
   }[];
   reason?: string;
   immutable: boolean; // GoBD compliance
@@ -96,7 +96,7 @@ export function AuditTimeline({ entries, className }: AuditTimelineProps) {
     });
   };
 
-  const formatValue = (value: any): string => {
+  const formatValue = (value: unknown): string => {
     if (value === null || value === undefined) return "–";
     if (typeof value === "object") return JSON.stringify(value);
     return String(value);

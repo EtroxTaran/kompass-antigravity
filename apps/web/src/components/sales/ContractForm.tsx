@@ -1,4 +1,3 @@
-
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { Contract, OfferLineItem } from "@kompass/shared";
 import { Button } from "@/components/ui/button";

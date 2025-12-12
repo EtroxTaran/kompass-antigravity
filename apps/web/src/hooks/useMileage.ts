@@ -61,8 +61,8 @@ export function useMileages() {
       // Ideally backend supports type filter
       const result = await expensesApi.list();
       if (result && Array.isArray(result.data)) {
-        const all = result.data as unknown as any[];
-        const mileageOnly = all.filter((e) => e.type === "mileage");
+        const all = result.data as unknown[];
+        const mileageOnly = all.filter((e): e is Mileage => (e as Mileage).type === "mileage");
         setMileages(mileageOnly as Mileage[]);
       } else {
         setMileages([]);

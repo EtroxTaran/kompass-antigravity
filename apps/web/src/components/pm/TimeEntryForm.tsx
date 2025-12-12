@@ -84,7 +84,7 @@ export function TimeEntryForm() {
   const onSubmit = async (data: Partial<TimeEntry>) => {
     try {
       await saveEntry(data);
-    } catch (error) {
+    } catch (_error) {
       // Error handled in hook
     }
   };

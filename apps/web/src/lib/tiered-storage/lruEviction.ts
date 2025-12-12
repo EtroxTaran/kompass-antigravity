@@ -63,7 +63,7 @@ export async function evictLruDocuments(
   const candidates: any[] = [];
 
   // Helper to check if essential
-   
+
   // Helper to check if essential (reuses logic from syncFilters)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const checkEssential = (doc: any) => {

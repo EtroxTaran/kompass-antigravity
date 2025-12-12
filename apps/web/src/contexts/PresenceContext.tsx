@@ -26,8 +26,8 @@ interface PresenceContextType {
 }
 
 const PresenceContext = createContext<PresenceContextType>({
-  joinRoom: () => { },
-  leaveRoom: () => { },
+  joinRoom: () => {},
+  leaveRoom: () => {},
   activeUsers: [],
   isConnected: false,
   socket: null,
@@ -128,7 +128,7 @@ export const PresenceProvider: React.FC<{ children: React.ReactNode }> = ({
       }}
     >
       {children}
-    </PresenceContext.Provider >
+    </PresenceContext.Provider>
   );
 };
 
