@@ -49,6 +49,7 @@ import { PortalModule } from './modules/portal/portal.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { SummarizeModule } from './modules/summarize/summarize.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { LeadModule } from './modules/lead/lead.module';
 
 // Guards
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -112,6 +113,7 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     DashboardModule,
     SummarizeModule,
     UploadModule,
+    LeadModule,
   ],
   providers: [
     // Global exception filter (RFC 7807)
@@ -121,4 +123,4 @@ import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}
