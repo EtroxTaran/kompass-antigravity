@@ -57,7 +57,10 @@ export function useSupplierContract(id?: string) {
     fetchContract();
   }, [fetchContract]);
 
-  const createContract = async (supplierId: string, data: Partial<SupplierContract>) => {
+  const createContract = async (
+    supplierId: string,
+    data: Partial<SupplierContract>,
+  ) => {
     setLoading(true);
     try {
       const result = await supplierContractsApi.create(supplierId, data);

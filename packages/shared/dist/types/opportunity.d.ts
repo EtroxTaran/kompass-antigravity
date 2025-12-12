@@ -15,5 +15,6 @@ export interface Opportunity extends BaseEntity {
     lostReason?: string;
     lostReasonDetails?: string;
     owner: string;
+    requiresHigherApproval?: boolean;
     comments?: Comment[];
 }

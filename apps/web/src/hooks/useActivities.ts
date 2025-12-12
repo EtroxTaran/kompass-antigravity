@@ -45,7 +45,8 @@ export function useActivities(
   const fetchActivities = useCallback(async () => {
     setLoading(true);
     try {
-      const params: { customerId?: string; contactId?: string; type?: string } = {};
+      const params: { customerId?: string; contactId?: string; type?: string } =
+        {};
       if (customerId) params.customerId = customerId;
       if (filters.contactId) params.contactId = filters.contactId;
       if (filters.activityType) params.type = filters.activityType; // API uses 'type' for filter usually, wait, interface says 'activityType', backend likely uses 'type' or just filter.

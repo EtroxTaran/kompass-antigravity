@@ -3,6 +3,7 @@ export interface ContactPerson extends BaseEntity {
     type: "contact";
     firstName: string;
     lastName: string;
+    isPrimary: boolean;
     title?: string;
     position?: string;
     department?: string;

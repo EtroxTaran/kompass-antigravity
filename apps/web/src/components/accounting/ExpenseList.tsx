@@ -75,7 +75,7 @@ export function ExpenseList() {
         <div className="flex flex-row items-center justify-between">
           <CardTitle className="text-2xl font-bold">Ausgaben</CardTitle>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => { }}>
+            <Button variant="outline" onClick={() => {}}>
               <FileText className="mr-2 h-4 w-4" /> Export
             </Button>
             <Button onClick={() => navigate("/expenses/new")}>
