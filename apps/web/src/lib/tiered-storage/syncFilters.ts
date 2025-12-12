@@ -26,6 +26,9 @@ export function essentialFilter(doc: any, req: any): boolean {
     return activityDate.toDateString() === today.toDateString();
   }
 
+  // Visit Reports / Protocols (Essential for Offline)
+  if (doc.type === "protocol" && doc.createdBy === userId) return true;
+
   // Deletions should generally be propagated to ensure consistency
   if (doc._deleted) return true;
 
