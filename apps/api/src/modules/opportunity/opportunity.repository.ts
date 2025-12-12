@@ -38,6 +38,10 @@ export interface Opportunity extends BaseEntity {
 
   // Assignment
   owner: string;
+
+  // Approval tracking
+  requiresHigherApproval?: boolean;
+
   comments?: Comment[];
 }
 
