@@ -10,6 +10,7 @@ import {
   CheckCircle,
   Loader2,
   Sparkles,
+  Filter,
 } from "lucide-react";
 import {
   GoogleMap,
@@ -18,35 +19,11 @@ import {
   Polyline,
 } from "@react-google-maps/api";
 import { useRoutePlanner, RouteStop } from "@/hooks/useRoutePlanner";
+import {
+  useCustomersForRoute,
+  VisitStatusFilter,
+} from "@/hooks/useCustomersForRoute";
 import { cn } from "@/lib/utils";
-
-// Mock customers for demo
-const mockCustomers: RouteStop[] = [
-  {
-    id: "1",
-    name: "Beispiel GmbH",
-    address: "Musterstraße 1, 80331 München",
-    lat: 48.1372,
-    lng: 11.5755,
-    status: "pending",
-  },
-  {
-    id: "2",
-    name: "Demo AG",
-    address: "Testweg 5, 80333 München",
-    lat: 48.145,
-    lng: 11.56,
-    status: "pending",
-  },
-  {
-    id: "3",
-    name: "Test KG",
-    address: "Beispielplatz 10, 80335 München",
-    lat: 48.139,
-    lng: 11.55,
-    status: "overdue",
-  },
-];
 
 export function RoutePlannerPage() {
   const {
@@ -64,6 +41,15 @@ export function RoutePlannerPage() {
   } = useRoutePlanner();
 
   const [showAddPanel, setShowAddPanel] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<VisitStatusFilter>("all");
+
+  // Fetch customers from API
+  const {
+    customers: availableCustomers,
+    isLoading: isLoadingCustomers,
+    error: customerError,
+    overdueCount,
+  } = useCustomersForRoute(statusFilter);
 
   // Load Google Maps
   const { isLoaded, loadError } = useJsApiLoader({
@@ -366,30 +352,98 @@ export function RoutePlannerPage() {
           />
           <div className="relative w-full max-w-lg bg-white dark:bg-gray-900 rounded-t-xl p-4 max-h-[60vh] overflow-y-auto">
             <h3 className="font-semibold mb-4">Kunden als Stopp hinzufügen</h3>
-            <div className="space-y-2">
-              {mockCustomers.map((customer) => (
-                <button
-                  key={customer.id}
-                  onClick={() => {
-                    addStop(customer);
-                    setShowAddPanel(false);
-                  }}
-                  disabled={stops.some((s) => s.id === customer.id)}
-                  className="w-full flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-left"
-                >
-                  <div
-                    className={cn(
-                      "w-3 h-3 rounded-full",
-                      getStatusColor(customer.status),
-                    )}
-                  />
-                  <div>
-                    <p className="font-medium text-sm">{customer.name}</p>
-                    <p className="text-xs text-gray-500">{customer.address}</p>
-                  </div>
-                </button>
-              ))}
+
+            {/* Status Filter */}
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => setStatusFilter("all")}
+                className={cn(
+                  "px-3 py-1.5 text-sm rounded-lg border transition-colors",
+                  statusFilter === "all"
+                    ? "bg-primary text-white border-primary"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-800",
+                )}
+              >
+                <Filter className="w-3 h-3 inline mr-1" />
+                Alle ({availableCustomers.length})
+              </button>
+              <button
+                onClick={() => setStatusFilter("pending")}
+                className={cn(
+                  "px-3 py-1.5 text-sm rounded-lg border transition-colors",
+                  statusFilter === "pending"
+                    ? "bg-blue-500 text-white border-blue-500"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-800",
+                )}
+              >
+                Ausstehend
+              </button>
+              <button
+                onClick={() => setStatusFilter("overdue")}
+                className={cn(
+                  "px-3 py-1.5 text-sm rounded-lg border transition-colors",
+                  statusFilter === "overdue"
+                    ? "bg-red-500 text-white border-red-500"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-800",
+                )}
+              >
+                Überfällig ({overdueCount})
+              </button>
             </div>
+
+            {/* Loading State */}
+            {isLoadingCustomers && (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                <span className="ml-2 text-sm text-gray-500">
+                  Lade Kunden...
+                </span>
+              </div>
+            )}
+
+            {/* Error State */}
+            {customerError && (
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm rounded-lg mb-4">
+                {customerError}
+              </div>
+            )}
+
+            {/* Customer List */}
+            {!isLoadingCustomers && !customerError && (
+              <div className="space-y-2">
+                {availableCustomers.length === 0 ? (
+                  <p className="text-center text-gray-500 py-4">
+                    Keine Kunden mit Koordinaten gefunden
+                  </p>
+                ) : (
+                  availableCustomers.map((customer) => (
+                    <button
+                      key={customer.id}
+                      onClick={() => {
+                        addStop(customer);
+                        setShowAddPanel(false);
+                      }}
+                      disabled={stops.some((s) => s.id === customer.id)}
+                      className="w-full flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-left"
+                    >
+                      <div
+                        className={cn(
+                          "w-3 h-3 rounded-full",
+                          getStatusColor(customer.status),
+                        )}
+                      />
+                      <div>
+                        <p className="font-medium text-sm">{customer.name}</p>
+                        <p className="text-xs text-gray-500">
+                          {customer.address}
+                        </p>
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+
             <button
               onClick={() => setShowAddPanel(false)}
               className="w-full mt-4 px-4 py-2 border rounded-lg text-sm"
