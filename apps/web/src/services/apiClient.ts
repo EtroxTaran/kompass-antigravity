@@ -980,6 +980,14 @@ export const expensesApi = {
     return put(`/expenses/${id}/reject`, { reason });
   },
 
+  async uploadReceipt(
+    file: File,
+  ): Promise<{ url: string; filename: string; originalName: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return upload('/upload/receipt', formData);
+  },
+
   async delete(id: string): Promise<void> {
     return del(`/expenses/${id}`);
   },

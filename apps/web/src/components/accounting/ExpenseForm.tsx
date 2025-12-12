@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { useExpense } from "@/hooks/useExpense";
+import { useProjects } from "@/hooks/useProjects";
+import { useCustomers } from "@/hooks/useCustomers";
+import { expensesApi } from "@/services/apiClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,11 +15,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Camera, Upload, Loader2, Check } from "lucide-react";
 
 export function ExpenseForm() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { expense, loading, saveExpense } = useExpense(id);
+  const { projects } = useProjects();
+  const { customers } = useCustomers();
 
   // Form state
   const [formData, setFormData] = useState<{
@@ -28,6 +34,8 @@ export function ExpenseForm() {
     date: string;
     status: "draft" | "submitted" | "approved" | "rejected" | "reimbursed";
     receiptUrl: string | undefined;
+    projectId: string | undefined;
+    customerId: string | undefined;
   }>({
     merchantName: "",
     description: "",
@@ -37,8 +45,11 @@ export function ExpenseForm() {
     date: new Date().toISOString().split("T")[0],
     status: "draft",
     receiptUrl: undefined,
+    projectId: undefined,
+    customerId: undefined,
   });
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -56,6 +67,8 @@ export function ExpenseForm() {
             : new Date().toISOString().split("T")[0],
           status: expense.status || "draft",
           receiptUrl: expense.receiptUrl,
+          projectId: expense.projectId,
+          customerId: expense.customerId,
         });
       }, 0);
       return () => clearTimeout(timer);
@@ -71,7 +84,34 @@ export function ExpenseForm() {
   };
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Handle "none" value for optional selects
+    if (value === "none") {
+      setFormData((prev) => ({ ...prev, [name]: undefined }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setReceiptFile(file);
+    setUploading(true);
+    setError(null);
+
+    try {
+      const result = await expensesApi.uploadReceipt(file);
+      setFormData((prev) => ({ ...prev, receiptUrl: result.url }));
+    } catch (err) {
+      console.error("Failed to upload receipt", err);
+      setError(
+        err instanceof Error ? err.message : "Beleg-Upload fehlgeschlagen",
+      );
+      setReceiptFile(null);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -79,24 +119,20 @@ export function ExpenseForm() {
     setError(null);
 
     // Validation
-    if (formData.amount > 150 && !formData.receiptUrl && !receiptFile && !id) {
+    if (formData.amount > 150 && !formData.receiptUrl && !id) {
       // If creating new and > 150, require receipt
-      setError("Receipt is mandatory for expenses over €150.");
+      setError("Beleg ist Pflicht bei Ausgaben über 150€.");
       return;
     }
 
     try {
-      // Mock file upload
-      let receiptUrl = formData.receiptUrl;
-      if (receiptFile) {
-        receiptUrl = `mock-storage://${receiptFile.name}`;
-      }
-
-      await saveExpense({ ...formData, receiptUrl });
+      await saveExpense({ ...formData });
       navigate("/expenses");
     } catch (err) {
       console.error("Failed to save expense", err);
-      setError(err instanceof Error ? err.message : "Failed to save expense");
+      setError(
+        err instanceof Error ? err.message : "Ausgabe konnte nicht gespeichert werden",
+      );
     }
   };
 
@@ -128,7 +164,7 @@ export function ExpenseForm() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="date">Datum</Label>
               <Input
@@ -172,7 +208,7 @@ export function ExpenseForm() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="amount">Betrag</Label>
               <Input
@@ -180,6 +216,7 @@ export function ExpenseForm() {
                 name="amount"
                 type="number"
                 step="0.01"
+                min="0"
                 value={formData.amount}
                 onChange={handleChange}
                 required
@@ -203,24 +240,115 @@ export function ExpenseForm() {
             </div>
           </div>
 
+          {/* Project/Customer Linking */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="projectId">Projekt (optional)</Label>
+              <Select
+                value={formData.projectId || "none"}
+                onValueChange={(val) => handleSelectChange("projectId", val)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Kein Projekt" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Kein Projekt</SelectItem>
+                  {projects?.map((project) => (
+                    <SelectItem key={project._id} value={project._id}>
+                      {project.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="customerId">Kunde (optional)</Label>
+              <Select
+                value={formData.customerId || "none"}
+                onValueChange={(val) => handleSelectChange("customerId", val)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Kein Kunde" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Kein Kunde</SelectItem>
+                  {customers?.map((customer) => (
+                    <SelectItem key={customer._id} value={customer._id}>
+                      {customer.companyName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Receipt Upload with Camera */}
           <div className="space-y-2">
             <Label htmlFor="receipt">
               Beleg{" "}
               {formData.amount > 150 && <span className="text-red-500">*</span>}
             </Label>
-            <Input
-              id="receipt"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
-            />
+            <div className="flex gap-2">
+              {/* File picker */}
+              <div className="flex-1">
+                <Input
+                  id="receipt"
+                  type="file"
+                  accept="image/*,application/pdf"
+                  onChange={handleFileChange}
+                  disabled={uploading}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => document.getElementById("receipt")?.click()}
+                  disabled={uploading}
+                >
+                  {uploading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Upload className="mr-2 h-4 w-4" />
+                  )}
+                  Datei wählen
+                </Button>
+              </div>
+              {/* Camera capture for mobile */}
+              <div>
+                <Input
+                  id="camera"
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handleFileChange}
+                  disabled={uploading}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => document.getElementById("camera")?.click()}
+                  disabled={uploading}
+                  title="Foto aufnehmen"
+                >
+                  <Camera className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
             {formData.receiptUrl && (
-              <p className="text-xs text-green-600">
-                Beleg vorhanden: {formData.receiptUrl}
+              <p className="text-xs text-green-600 flex items-center gap-1">
+                <Check className="h-3 w-3" />
+                Beleg hochgeladen: {formData.receiptUrl.split("/").pop()}
+              </p>
+            )}
+            {receiptFile && !formData.receiptUrl && !uploading && (
+              <p className="text-xs text-muted-foreground">
+                Ausgewählt: {receiptFile.name}
               </p>
             )}
             <p className="text-xs text-muted-foreground">
-              Pflicht bei Beträgen über 150€.
+              Pflicht bei Beträgen über 150€. Akzeptiert: Bilder und PDF.
             </p>
           </div>
 
@@ -232,7 +360,9 @@ export function ExpenseForm() {
             >
               Abbrechen
             </Button>
-            <Button type="submit">Speichern</Button>
+            <Button type="submit" disabled={uploading}>
+              Speichern
+            </Button>
           </div>
         </form>
       </CardContent>
