@@ -278,6 +278,31 @@ export function ContactForm({
           )}
         </div>
 
+        <div className="flex items-center space-x-2 rounded-md border p-4">
+          <FormField
+            control={form.control}
+            name="isPrimary"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                <FormControl>
+                  <input
+                    type="checkbox"
+                    checked={field.value ?? false}
+                    onChange={field.onChange}
+                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Primary Contact</FormLabel>
+                  <p className="text-xs text-muted-foreground">
+                    Mark as the main point of contact for this customer
+                  </p>
+                </div>
+              </FormItem>
+            )}
+          />
+        </div>
+
         <FormField
           control={form.control}
           name="assignedLocationIds"
@@ -306,7 +331,10 @@ export function ContactForm({
                     // Native select multiple:
                     // <select multiple onChange={...} ... >
                     const options = Array.from(
-                      ((val as unknown as React.ChangeEvent<HTMLSelectElement>).target as HTMLSelectElement).selectedOptions,
+                      (
+                        (val as unknown as React.ChangeEvent<HTMLSelectElement>)
+                          .target as HTMLSelectElement
+                      ).selectedOptions,
                       (option: HTMLOptionElement) => option.value,
                     );
                     field.onChange(options);

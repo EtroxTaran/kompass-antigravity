@@ -67,6 +67,10 @@ export class CreateContactDto {
   @IsString()
   customerId: string;
 
+  @IsBoolean()
+  @IsOptional()
+  isPrimary?: boolean;
+
   @IsEnum(decisionMakingRoles, {
     message: `decisionMakingRole must be one of: ${decisionMakingRoles.join(', ')}`,
   })
@@ -145,6 +149,10 @@ export class UpdateContactDto {
   @MaxLength(20)
   @Matches(/^[+]?[0-9\s\-()]+$/, { message: 'Invalid mobile number format' })
   mobile?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isPrimary?: boolean;
 
   @IsEnum(decisionMakingRoles, {
     message: `decisionMakingRole must be one of: ${decisionMakingRoles.join(', ')}`,

@@ -33,6 +33,9 @@ export interface Contact extends BaseEntity {
   canApproveOrders: boolean;
   approvalLimitEur?: number;
 
+  // Primary status - marks as main point of contact for customer
+  isPrimary: boolean;
+
   // Location Assignment
   assignedLocationIds: string[];
   isPrimaryContactForLocations: string[];
