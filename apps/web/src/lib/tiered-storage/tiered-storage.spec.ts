@@ -121,7 +121,11 @@ describe("Tiered Storage Strategy", () => {
 
       // Target 50 bytes. docOld is > 100 bytes. So deleting docOld should be enough.
       const targetBytes = 50;
-      const result = await evictLruDocuments(mockDb as unknown as Parameters<typeof evictLruDocuments>[0], targetBytes, userId);
+      const result = await evictLruDocuments(
+        mockDb as unknown as Parameters<typeof evictLruDocuments>[0],
+        targetBytes,
+        userId,
+      );
 
       expect(result.evictedCount).toBe(1);
       expect(mockBulkDocs).toHaveBeenCalledTimes(1);
@@ -144,7 +148,11 @@ describe("Tiered Storage Strategy", () => {
         rows: [{ doc: docEssential }],
       });
 
-      const result = await evictLruDocuments(mockDb as unknown as Parameters<typeof evictLruDocuments>[0], 1000, userId);
+      const result = await evictLruDocuments(
+        mockDb as unknown as Parameters<typeof evictLruDocuments>[0],
+        1000,
+        userId,
+      );
 
       expect(result.evictedCount).toBe(0);
       expect(mockBulkDocs).not.toHaveBeenCalled();

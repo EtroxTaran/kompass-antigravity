@@ -44,3 +44,4 @@ __exportStar(require("./types/project-material"), exports);
 __exportStar(require("./types/inventory-movement"), exports);
 __exportStar(require("./types/comment"), exports);
 __exportStar(require("./types/notification"), exports);
+__exportStar(require("./types/user"), exports);

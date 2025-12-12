@@ -7,7 +7,17 @@ import { Badge } from "@/components/ui/badge";
 export function UserProfilePage() {
   const { user } = useAuth();
   // Safe default if user is null
-  const userRole = (user?.primaryRole as "GF" | "ADM" | "PLAN" | "KALK" | "BUCH" | "CRM" | "PM" | "SALES" | "LAGER") || "ADM";
+  const userRole =
+    (user?.primaryRole as
+      | "GF"
+      | "ADM"
+      | "PLAN"
+      | "KALK"
+      | "BUCH"
+      | "CRM"
+      | "PM"
+      | "SALES"
+      | "LAGER") || "ADM";
 
   // Get initials for avatar fallback
   const getInitials = (name?: string) => {

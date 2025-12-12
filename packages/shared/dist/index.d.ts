@@ -25,3 +25,4 @@ export * from "./types/project-material";
 export * from "./types/inventory-movement";
 export * from "./types/comment";
 export * from "./types/notification";
+export * from "./types/user";

@@ -5,7 +5,7 @@ test("Critical Path: Load App and Create Customer", async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem(
       "auth_token",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtb2NrLWFkbWluIiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInByZWZlcnJlZF91c2VybmFtZSI6ImFkbWluIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIkFETSJdfSwiaWF0IjoxNzY1NDg2MDMzLjk4Nn0.zQFIC_wosZ5IGMW1VgKMZIsUSqQ8G72fW93Rr4QUv6s"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtb2NrLWFkbWluIiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInByZWZlcnJlZF91c2VybmFtZSI6ImFkbWluIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIkFETSJdfSwiaWF0IjoxNzY1NDg2MDMzLjk4Nn0.zQFIC_wosZ5IGMW1VgKMZIsUSqQ8G72fW93Rr4QUv6s",
     );
   });
 
