@@ -12,7 +12,7 @@ export class CreateMileageDto {
   vehicleId?: string;
   projectId?: string;
   tourId?: string;
-  status?: "draft" | "submitted" | "approved";
+  status?: 'draft' | 'submitted' | 'approved';
 }
 
 export class UpdateMileageDto {
@@ -29,5 +29,5 @@ export class UpdateMileageDto {
   vehicleId?: string;
   projectId?: string;
   tourId?: string;
-  status?: "draft" | "submitted" | "approved";
+  status?: 'draft' | 'submitted' | 'approved';
 }

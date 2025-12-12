@@ -318,6 +318,10 @@ export const customersApi = {
   > {
     return post("/customers/check-duplicates", criteria);
   },
+
+  async getAuditLog(id: string): Promise<any[]> {
+    return get(`/customers/${id}/audit`);
+  },
 };
 
 // =============================================================================
@@ -814,6 +818,10 @@ export const contactsApi = {
 
   async delete(id: string): Promise<void> {
     return del(`/contacts/${id}`);
+  },
+
+  async getAuditLog(id: string): Promise<any[]> {
+    return get(`/contacts/${id}/audit`);
   },
 };
 

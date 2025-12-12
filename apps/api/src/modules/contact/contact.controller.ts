@@ -103,4 +103,14 @@ export class ContactController {
   async delete(@Param('id') id: string, @CurrentUser() user: any) {
     await this.contactService.delete(id, user);
   }
+
+  /**
+   * GET /api/v1/contacts/:id/audit
+   * Get audit history for a contact
+   */
+  @Get('contacts/:id/audit')
+  @Permissions({ entity: 'Contact', action: 'READ' })
+  async getAuditLog(@Param('id') id: string) {
+    return this.contactService.getAuditHistory(id);
+  }
 }

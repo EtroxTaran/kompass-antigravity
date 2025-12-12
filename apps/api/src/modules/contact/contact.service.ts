@@ -5,10 +5,14 @@ import {
 } from '@nestjs/common';
 import { ContactRepository, Contact } from './contact.repository';
 import { CreateContactDto, UpdateContactDto } from './dto/contact.dto';
+import { AuditService } from '../../shared/services/audit.service';
 
 @Injectable()
 export class ContactService {
-  constructor(private readonly contactRepository: ContactRepository) {}
+  constructor(
+    private readonly contactRepository: ContactRepository,
+    private readonly auditService: AuditService,
+  ) {}
 
   async findAll(
     options: { page?: number; limit?: number; search?: string } = {},
@@ -77,11 +81,24 @@ export class ContactService {
       await this.clearPrimaryForCustomer(dto.customerId);
     }
 
-    return this.contactRepository.create(
+    const newContact = await this.contactRepository.create(
       contactData as Partial<Contact>,
       user.id,
       user.email,
     );
+
+    // GoBD Audit Log
+    await this.auditService.logChange(
+      newContact._id,
+      'contact',
+      'CREATE',
+      newContact,
+      null,
+      user.id,
+      user.email,
+    );
+
+    return newContact;
   }
 
   async update(
@@ -123,12 +140,25 @@ export class ContactService {
       await this.clearPrimaryForCustomer(existing.customerId, id);
     }
 
-    return this.contactRepository.update(
+    const updatedContact = await this.contactRepository.update(
       id,
       dto as Partial<Contact>,
       user.id,
       user.email,
     );
+
+    // GoBD Audit Log
+    await this.auditService.logChange(
+      id,
+      'contact',
+      'UPDATE',
+      updatedContact,
+      existing,
+      user.id,
+      user.email,
+    );
+
+    return updatedContact;
   }
 
   async delete(
@@ -138,7 +168,22 @@ export class ContactService {
     // Ensure contact exists
     await this.findById(id);
 
+    await this.auditService.logChange(
+      id,
+      'contact',
+      'DELETE',
+      {},
+      await this.findById(id),
+      user.id,
+      user.email,
+    );
     return this.contactRepository.delete(id, user.id, user.email);
+  }
+
+  async getAuditHistory(id: string) {
+    // Ensure contact exists
+    await this.findById(id);
+    return this.auditService.getHistory(id);
   }
 
   /**

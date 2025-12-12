@@ -427,4 +427,14 @@ export class CustomerController {
   ) {
     return this.customerService.checkDuplicates(criteria, criteria.excludeId);
   }
+
+  /**
+   * GET /api/v1/customers/:id/audit
+   * Get audit history for a customer
+   */
+  @Get(':id/audit')
+  @Permissions({ entity: 'Customer', action: 'READ' })
+  async getAuditLog(@Param('id') id: string) {
+    return this.customerService.getAuditHistory(id);
+  }
 }

@@ -28,10 +28,10 @@ export class OSRMProvider implements RoutingProvider {
 
     // source=first: The route must start at the first coordinate
     // roundtrip=false: The route does not have to return to the start point (Open TSP)
-    // Note: If you want a roundtrip (standard tour), set roundtrip=true. 
+    // Note: If you want a roundtrip (standard tour), set roundtrip=true.
     // Given the UI allows "Add Stop", usually a user plans a day tour which often starts/ends at same place.
     // However, if the user list doesn't explicitly duplicate the start, OSRM does it for us with roundtrip=true.
-    // But 'TourService' expects a list of stops to visit. 
+    // But 'TourService' expects a list of stops to visit.
     // Let's use roundtrip=false for now to allow open ended trips, as 'source=first' fixes the start.
     const tripUrl = `${this.baseUrl}/${coordinates}?source=first&roundtrip=false`;
 
