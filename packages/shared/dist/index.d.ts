@@ -26,3 +26,4 @@ export * from "./types/inventory-movement";
 export * from "./types/comment";
 export * from "./types/notification";
 export * from "./types/user";
+export * from "./types/lead";

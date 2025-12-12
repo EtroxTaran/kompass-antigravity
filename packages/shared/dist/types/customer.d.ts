@@ -9,6 +9,7 @@ export interface Customer extends BaseEntity {
     creditLimit?: number;
     paymentTerms?: string;
     industry?: string;
+    acquisitionSource?: string;
     customerType?: "direct_marketer" | "retail" | "franchise" | "cooperative" | "other";
     rating?: "A" | "B" | "C";
     billingAddress: Address;
