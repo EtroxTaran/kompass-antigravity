@@ -1,5 +1,5 @@
-import { useForm } from "react-hook-form";
-import { Opportunity } from "@kompass/shared";
+import { useForm, useWatch } from "react-hook-form";
+import { Opportunity, ContactPerson } from "@kompass/shared";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -19,11 +19,14 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCustomers } from "@/hooks/useCustomers"; // We need this to select a customer
+import { useCustomers } from "@/hooks/useCustomers";
+import { useContacts } from "@/hooks/useContacts";
+import { ApprovalLimitWarning } from "./ApprovalLimitWarning";
+import { useMemo } from "react";
 
 interface OpportunityFormProps {
   defaultValues?: Partial<Opportunity>;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: Partial<Opportunity>) => void;
   isLoading?: boolean;
 }
 
@@ -42,7 +45,7 @@ export function OpportunityForm({
   onSubmit,
   isLoading,
 }: OpportunityFormProps) {
-  const { customers } = useCustomers(); // Fetch customers for assignment
+  const { customers } = useCustomers();
 
   const form = useForm<Opportunity>({
     defaultValues: {
@@ -53,9 +56,64 @@ export function OpportunityForm({
     },
   });
 
+  // Watch form values for approval limit check
+  const customerId = useWatch({ control: form.control, name: "customerId" });
+  const contactPersonId = useWatch({ control: form.control, name: "contactPersonId" });
+  const expectedValue = useWatch({ control: form.control, name: "expectedValue" });
+
+  // Fetch contacts for selected customer
+  const { contacts } = useContacts(customerId);
+
+  // Find selected contact and calculate approval limit warning
+  const selectedContact = useMemo(
+    () => contacts.find((c) => c._id === contactPersonId),
+    [contacts, contactPersonId]
+  );
+
+  const approvalLimitExceeded = useMemo(() => {
+    if (!selectedContact?.approvalLimitEur || !expectedValue) return false;
+    return expectedValue > selectedContact.approvalLimitEur;
+  }, [selectedContact, expectedValue]);
+
+  // Find alternative contacts with higher approval limits
+  const alternativeContacts = useMemo((): ContactPerson[] => {
+    if (!expectedValue || !selectedContact) return [];
+    return contacts.filter(
+      (c) =>
+        c._id !== contactPersonId &&
+        c.approvalLimitEur &&
+        c.approvalLimitEur >= expectedValue
+    );
+  }, [contacts, contactPersonId, expectedValue, selectedContact]);
+
+  // Handle selecting an alternative contact
+  const handleSelectAlternative = (newContactId: string) => {
+    form.setValue("contactPersonId", newContactId);
+  };
+
+  // Enhanced submit handler that sets requiresHigherApproval flag
+  const handleSubmit = (data: Partial<Opportunity>) => {
+    const enhancedData = {
+      ...data,
+      requiresHigherApproval: approvalLimitExceeded,
+    };
+    onSubmit(enhancedData);
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+        {/* Approval Limit Warning */}
+        {approvalLimitExceeded && selectedContact && (
+          <ApprovalLimitWarning
+            expectedValue={expectedValue}
+            approvalLimit={selectedContact.approvalLimitEur!}
+            contactName={`${selectedContact.firstName} ${selectedContact.lastName}`}
+            alternativeContacts={alternativeContacts}
+            onSelectAlternative={handleSelectAlternative}
+          />
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-6">
             <Card>
@@ -86,7 +144,11 @@ export function OpportunityForm({
                     <FormItem>
                       <FormLabel>Customer</FormLabel>
                       <Select
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          // Clear contact when customer changes
+                          form.setValue("contactPersonId", undefined);
+                        }}
                         defaultValue={field.value}
                       >
                         <FormControl>
@@ -98,6 +160,54 @@ export function OpportunityForm({
                           {customers.map((c) => (
                             <SelectItem key={c._id} value={c._id}>
                               {c.companyName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Contact Person Selector */}
+                <FormField
+                  control={form.control}
+                  name="contactPersonId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contact Person</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value || ""}
+                        disabled={!customerId || contacts.length === 0}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={
+                                !customerId
+                                  ? "Select a customer first"
+                                  : contacts.length === 0
+                                    ? "No contacts available"
+                                    : "Select a contact person"
+                              }
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {contacts.map((contact) => (
+                            <SelectItem key={contact._id} value={contact._id}>
+                              {contact.firstName} {contact.lastName}
+                              {contact.position && ` - ${contact.position}`}
+                              {contact.approvalLimitEur && (
+                                <span className="text-muted-foreground ml-1">
+                                  (Limit: €
+                                  {contact.approvalLimitEur.toLocaleString(
+                                    "de-DE"
+                                  )}
+                                  )
+                                </span>
+                              )}
                             </SelectItem>
                           ))}
                         </SelectContent>

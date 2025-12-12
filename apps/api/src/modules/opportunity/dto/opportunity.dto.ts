@@ -77,6 +77,9 @@ export class CreateOpportunityDto {
 
   @IsString()
   owner: string;
+
+  @IsOptional()
+  requiresHigherApproval?: boolean;
 }
 
 export class UpdateOpportunityDto {
@@ -143,6 +146,9 @@ export class UpdateOpportunityDto {
   @IsString()
   @IsOptional()
   owner?: string;
+
+  @IsOptional()
+  requiresHigherApproval?: boolean;
 }
 
 export class MarkAsWonDto {

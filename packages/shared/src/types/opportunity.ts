@@ -11,13 +11,13 @@ export interface Opportunity extends BaseEntity {
 
   // Pipeline
   stage:
-    | "lead"
-    | "qualified"
-    | "analysis"
-    | "proposal"
-    | "negotiation"
-    | "closed_won"
-    | "closed_lost";
+  | "lead"
+  | "qualified"
+  | "analysis"
+  | "proposal"
+  | "negotiation"
+  | "closed_won"
+  | "closed_lost";
 
   probability: number; // 0-100
   expectedValue: number;
@@ -35,6 +35,9 @@ export interface Opportunity extends BaseEntity {
 
   // Assignment
   owner: string;
+
+  // Approval tracking
+  requiresHigherApproval?: boolean;
 
   comments?: Comment[];
 }
