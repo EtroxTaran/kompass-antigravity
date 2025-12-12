@@ -132,6 +132,10 @@ import { ExpenseForm } from "@/components/accounting/ExpenseForm";
 import { MileageList } from "@/components/accounting/MileageList";
 import { MileageForm } from "@/components/accounting/MileageForm";
 
+import { LeadList } from "@/pages/leads/LeadList";
+import { LeadForm } from "@/components/leads/LeadForm";
+import { LeadDetail } from "@/pages/leads/LeadDetail";
+
 import { TourList } from "@/components/inventory/TourList";
 import { TourDetail } from "@/components/inventory/TourDetail";
 import { TourForm } from "@/components/inventory/TourForm";
@@ -788,6 +792,59 @@ function CustomerEditPage() {
       ]}
     >
       {content}
+    </MainLayout>
+  );
+}
+
+// --- LEAD WRAPPERS ---
+
+function LeadListPage() {
+  return (
+    <MainLayout
+      userRole="SALES"
+      breadcrumbs={[{ label: "Sales", href: "/sales" }, { label: "Leads" }]}
+    >
+      <LeadList />
+    </MainLayout>
+  );
+}
+
+function LeadCreatePage() {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (data: any) => {
+    // Logic moved to component or here?
+    // LeadForm takes onSubmit.
+    const { leadsApi } = await import("@/lib/api/leadsApi");
+    await leadsApi.create(data);
+    navigate("/leads");
+  };
+
+  return (
+    <MainLayout
+      userRole="SALES"
+      breadcrumbs={[
+        { label: "Sales", href: "/sales" },
+        { label: "Leads", href: "/leads" },
+        { label: "Neu" },
+      ]}
+    >
+      <LeadForm onSubmit={handleSubmit} />
+    </MainLayout>
+  );
+}
+
+function LeadDetailPage() {
+  return (
+    <MainLayout
+      userRole="SALES"
+      breadcrumbs={[
+        { label: "Sales", href: "/sales" },
+        { label: "Leads", href: "/leads" },
+        { label: "Details" },
+      ]}
+    >
+      <LeadDetail />
     </MainLayout>
   );
 }
@@ -1484,6 +1541,12 @@ function App() {
               <Route path="/mileage/new" element={<MileageCreatePage />} />
               <Route path="/mileage/:id/edit" element={<MileageEditPage />} />
 
+              {/* --- LEADS --- */}
+              <Route path="/leads" element={<LeadListPage />} />
+              <Route path="/leads/new" element={<LeadCreatePage />} />
+              <Route path="/leads/:id" element={<LeadDetailPage />} />
+
+              {/* --- SALES --- */}
               {/* Shared */}
               <Route path="/locations" element={<LocationListPage />} />
               <Route path="/locations/new" element={<LocationCreatePage />} />

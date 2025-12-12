@@ -21,3 +21,4 @@ export * from "./project-material";
 export * from "./protocol";
 export * from "./inventory-movement";
 export * from "./comment";
+export * from "./lead";

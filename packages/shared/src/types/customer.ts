@@ -16,12 +16,13 @@ export interface Customer extends BaseEntity {
 
   // Categorization
   industry?: string;
+  acquisitionSource?: string; // e.g., 'TRADESHOW', 'COLD_CALL'
   customerType?:
-    | "direct_marketer"
-    | "retail"
-    | "franchise"
-    | "cooperative"
-    | "other";
+  | "direct_marketer"
+  | "retail"
+  | "franchise"
+  | "cooperative"
+  | "other";
   rating?: "A" | "B" | "C";
 
   // Address Management
