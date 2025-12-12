@@ -15,6 +15,7 @@ import { ActiveUserAvatars } from "@/components/presence/ActiveUserAvatars";
 import { CustomerLocationList } from "./CustomerLocationList";
 import { CustomerProtocolList } from "./CustomerProtocolList";
 import { CustomerMetrics } from "./CustomerMetrics";
+import { CustomerAuditHistory } from "./CustomerAuditHistory";
 
 interface CustomerDetailProps {
   customer: Customer;
@@ -162,7 +163,7 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
                 <span className="capitalize">
                   {customer.customerType
                     ? customerTypeLabels[customer.customerType] ||
-                      customer.customerType
+                    customer.customerType
                     : "-"}
                 </span>
               </div>
@@ -195,9 +196,9 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
                 <span>
                   {customer.creditLimit
                     ? new Intl.NumberFormat("de-DE", {
-                        style: "currency",
-                        currency: "EUR",
-                      }).format(customer.creditLimit)
+                      style: "currency",
+                      currency: "EUR",
+                    }).format(customer.creditLimit)
                     : "-"}
                 </span>
               </div>
@@ -306,6 +307,7 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
               <TabsTrigger value="protocols">Protocols</TabsTrigger>
               <TabsTrigger value="projects">Projects</TabsTrigger>
               <TabsTrigger value="sales">Sales & Finance</TabsTrigger>
+              <TabsTrigger value="history">History</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4">
@@ -342,6 +344,10 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
                   <InvoiceList customerId={customer._id} />
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="history">
+              <CustomerAuditHistory customerId={customer._id} />
             </TabsContent>
           </Tabs>
         </div>

@@ -16,7 +16,7 @@ import { CreateLeadDto, UpdateLeadDto } from './dto/lead.dto';
 @Controller('leads')
 @UseGuards(JwtAuthGuard)
 export class LeadController {
-  constructor(private readonly leadService: LeadService) { }
+  constructor(private readonly leadService: LeadService) {}
 
   @Post()
   create(@Body() createLeadDto: CreateLeadDto, @Request() req: any) {

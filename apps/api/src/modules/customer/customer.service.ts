@@ -13,6 +13,7 @@ import { ContactRepository } from '../contact/contact.repository';
 import { LocationRepository } from '../location/location.repository';
 import { ProtocolRepository } from '../protocol/protocol.repository';
 import { ProjectRepository } from '../project/project.repository';
+import { AuditService } from '../../shared/services/audit.service';
 
 @Injectable()
 export class CustomerService {
@@ -21,6 +22,7 @@ export class CustomerService {
   constructor(
     private readonly customerRepository: CustomerRepository,
     private readonly searchService: SearchService,
+    private readonly auditService: AuditService,
     @Inject(forwardRef(() => ContactRepository))
     private readonly contactRepository: ContactRepository,
     @Inject(forwardRef(() => LocationRepository))
@@ -152,6 +154,18 @@ export class CustomerService {
       user.id,
       user.email,
     );
+
+    // GoBD Audit Log
+    await this.auditService.logChange(
+      newCustomer._id,
+      'customer',
+      'CREATE',
+      newCustomer,
+      null,
+      user.id,
+      user.email,
+    );
+
     this.indexCustomer(newCustomer);
     return newCustomer;
   }
@@ -162,7 +176,7 @@ export class CustomerService {
     user: { id: string; email?: string },
   ): Promise<Customer> {
     // Ensure customer exists
-    await this.findById(id);
+    const oldCustomer = await this.findById(id);
 
     // Validate defaultDeliveryLocationId if provided
     if (dto.defaultDeliveryLocationId && dto.locations) {
@@ -190,6 +204,18 @@ export class CustomerService {
       user.id,
       user.email,
     );
+
+    // GoBD Audit Log
+    await this.auditService.logChange(
+      id,
+      'customer',
+      'UPDATE',
+      updatedCustomer,
+      oldCustomer,
+      user.id,
+      user.email,
+    );
+
     this.indexCustomer(updatedCustomer);
     return updatedCustomer;
   }
@@ -199,7 +225,18 @@ export class CustomerService {
     user: { id: string; email?: string },
   ): Promise<void> {
     // Ensure customer exists
-    await this.findById(id);
+    const customer = await this.findById(id);
+
+    // GoBD Audit Log (Log BEFORE delete to ensure record exists)
+    await this.auditService.logChange(
+      id,
+      'customer',
+      'DELETE',
+      {}, // Empty object for new state on delete
+      customer,
+      user.id,
+      user.email,
+    );
 
     // Cascade delete child entities
     this.logger.log(`Cascading delete for customer ${id}`);
@@ -287,6 +324,14 @@ export class CustomerService {
     if (criteria.email) await searchAndCollect(criteria.email, 'email');
     if (criteria.phone) await searchAndCollect(criteria.phone, 'phone');
 
+    if (criteria.phone) await searchAndCollect(criteria.phone, 'phone');
+
     return results;
+  }
+
+  async getAuditHistory(id: string) {
+    // Ensure customer exists (security check)
+    await this.findById(id);
+    return this.auditService.getHistory(id);
   }
 }
