@@ -1,8 +1,9 @@
 import { Customer } from "@kompass/shared";
-import { AlertTriangle, CheckCircle, XCircle, Clock } from "lucide-react";
+import { AlertTriangle, CheckCircle, XCircle, Clock, Star } from "lucide-react";
 import { differenceInDays, parseISO, format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { ContactList } from "./ContactList";
 import { ActivityTimeline } from "./ActivityTimeline";
@@ -13,30 +14,83 @@ import { OfferList } from "../sales/OfferList";
 import { ActiveUserAvatars } from "@/components/presence/ActiveUserAvatars";
 import { CustomerLocationList } from "./CustomerLocationList";
 import { CustomerProtocolList } from "./CustomerProtocolList";
+import { CustomerMetrics } from "./CustomerMetrics";
 
 interface CustomerDetailProps {
   customer: Customer;
 }
 
+// Rating to stars mapping
+const ratingStars: Record<string, number> = { A: 5, B: 4, C: 3 };
+
+// Customer type labels
+const customerTypeLabels: Record<string, string> = {
+  direct_marketer: "Direktvermarkter",
+  retail: "Einzelhandel",
+  franchise: "Franchise",
+  cooperative: "Genossenschaft",
+  other: "Sonstige",
+};
+
 export function CustomerDetail({ customer }: CustomerDetailProps) {
   const navigate = useNavigate();
+  const starCount = customer.rating ? ratingStars[customer.rating] || 0 : 0;
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <div className="flex items-center gap-4">
+      {/* Enhanced Header */}
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <div className="flex-1">
+          <div className="flex items-center gap-3 mb-2">
             <h2 className="text-3xl font-bold tracking-tight">
               {customer.companyName}
             </h2>
+            <Badge variant="default" className="uppercase">
+              Aktiv
+            </Badge>
             <ActiveUserAvatars entityType="customer" entityId={customer._id} />
           </div>
-          <p className="text-muted-foreground">Customer Detail View</p>
+
+          <div className="flex items-center gap-4 flex-wrap">
+            {/* Rating Stars */}
+            {starCount > 0 && (
+              <div className="flex items-center gap-2">
+                <div className="flex gap-0.5">
+                  {Array.from({ length: starCount }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className="h-4 w-4 fill-amber-400 text-amber-400"
+                    />
+                  ))}
+                </div>
+                <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-950/20 dark:text-amber-400">
+                  {customer.rating}
+                </Badge>
+              </div>
+            )}
+
+            {/* Customer Type */}
+            {customer.customerType && (
+              <Badge variant="outline">
+                {customerTypeLabels[customer.customerType] ||
+                  customer.customerType}
+              </Badge>
+            )}
+
+            {/* Industry */}
+            {customer.industry && (
+              <Badge variant="outline">{customer.industry}</Badge>
+            )}
+          </div>
         </div>
-        <Button onClick={() => navigate(`/ customers / ${customer._id}/edit`)}>
-          Edit Customer
+
+        <Button onClick={() => navigate(`/customers/${customer._id}/edit`)}>
+          Kunde bearbeiten
         </Button>
       </div>
+
+      {/* Key Metrics Bar */}
+      <CustomerMetrics customerId={customer._id} />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Sidebar Info - Always Visible */}
@@ -104,16 +158,52 @@ export function CustomerDetail({ customer }: CustomerDetailProps) {
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="font-semibold">Type:</span>
-                <span className="capitalize">{customer.customerType}</span>
+                <span className="font-semibold">Typ:</span>
+                <span className="capitalize">
+                  {customer.customerType
+                    ? customerTypeLabels[customer.customerType] ||
+                      customer.customerType
+                    : "-"}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold">Rating:</span>
-                <span>{customer.rating}</span>
+                <span className="font-semibold">Bewertung:</span>
+                <div className="flex items-center gap-1">
+                  <span>{customer.rating || "-"}</span>
+                  {starCount > 0 && (
+                    <div className="flex gap-0.5">
+                      {Array.from({ length: starCount }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className="h-3 w-3 fill-amber-400 text-amber-400"
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold">VAT:</span>
+                <span className="font-semibold">Branche:</span>
+                <span>{customer.industry || "-"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold">USt-ID:</span>
                 <span>{customer.vatNumber || "-"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold">Kreditlimit:</span>
+                <span>
+                  {customer.creditLimit
+                    ? new Intl.NumberFormat("de-DE", {
+                        style: "currency",
+                        currency: "EUR",
+                      }).format(customer.creditLimit)
+                    : "-"}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold">Zahlungsbedingungen:</span>
+                <span>{customer.paymentTerms || "-"}</span>
               </div>
             </CardContent>
           </Card>
