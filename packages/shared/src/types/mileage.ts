@@ -12,7 +12,13 @@ export interface Mileage extends BaseEntity {
 
   // Trip
   startLocation: string;
+  startLat?: number;
+  startLng?: number;
+
   endLocation: string;
+  endLat?: number;
+  endLng?: number;
+
   distanceKm: number;
 
   // Purpose
