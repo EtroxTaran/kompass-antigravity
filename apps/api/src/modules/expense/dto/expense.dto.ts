@@ -1,5 +1,6 @@
 export class CreateExpenseDto {
   description: string;
+  merchantName?: string;
   amount: number;
   currency: string;
   date: string;
