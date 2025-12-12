@@ -12,7 +12,15 @@ export function MileageForm() {
   const { mileage, loading, saveMileage } = useMileage(id);
 
   // Form state
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    date: string;
+    startLocation: string;
+    endLocation: string;
+    distanceKm: number;
+    purpose: string;
+    licensePlate: string;
+    status: "draft" | "submitted" | "approved";
+  }>({
     date: new Date().toISOString().split("T")[0],
     startLocation: "",
     endLocation: "",
@@ -52,7 +60,7 @@ export function MileageForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await saveMileage(formData as any);
+      await saveMileage(formData);
       navigate("/mileage");
     } catch (err) {
       console.error("Failed to save mileage", err);

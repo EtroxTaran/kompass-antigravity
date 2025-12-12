@@ -88,7 +88,6 @@ import { PurchaseOrderForm } from "@/components/inventory/PurchaseOrderForm";
 import { PurchaseOrderDetail } from "@/components/inventory/PurchaseOrderDetail";
 import { useCustomer } from "@/hooks/useCustomer";
 
-
 import { OpportunityForm } from "@/components/sales/OpportunityForm";
 import { OpportunityDetail } from "@/components/sales/OpportunityDetail";
 import { useOpportunity } from "@/hooks/useOpportunity";

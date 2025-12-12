@@ -43,7 +43,7 @@ export function useUserTasks(
     setLoading(true);
     const db = dbService.getDB();
     try {
-      const selector: Record<string, any> = {
+      const selector: Record<string, unknown> = {
         type: "user_task",
         assignedTo: userId,
       };

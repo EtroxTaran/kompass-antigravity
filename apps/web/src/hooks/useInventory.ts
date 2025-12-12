@@ -14,7 +14,7 @@ export const useInventory = (materialId?: string) => {
     try {
       const data = await apiClient.inventory.getHistory(materialId);
       setMovements(data);
-    } catch (error) {
+    } catch (_error) {
       toast({
         variant: "destructive",
         title: "Fehler beim Laden der Bestandsdaten",
@@ -34,7 +34,7 @@ export const useInventory = (materialId?: string) => {
       });
       fetchHistory(); // Refresh history
       return true;
-    } catch (error) {
+    } catch (_error) {
       toast({
         variant: "destructive",
         title: "Fehler beim Speichern",

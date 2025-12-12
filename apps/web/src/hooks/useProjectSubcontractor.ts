@@ -23,7 +23,8 @@ export function useProjectSubcontractor(projectId?: string) {
         await apiClient.projectSubcontractor.findByProject(projectId);
       setSubcontractors(data);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Failed to fetch subcontractors";
+      const message =
+        err instanceof Error ? err.message : "Failed to fetch subcontractors";
       setError(message);
     } finally {
       setLoading(false);
@@ -43,7 +44,8 @@ export function useProjectSubcontractor(projectId?: string) {
       setSubcontractors((prev) => [...prev, result]);
       return result;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Failed to assign subcontractor";
+      const message =
+        err instanceof Error ? err.message : "Failed to assign subcontractor";
       setError(message);
       throw err;
     } finally {

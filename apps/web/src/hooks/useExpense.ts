@@ -67,7 +67,7 @@ export function useExpenses(params?: {
       } else if (params?.view === "pending") {
         result = await expensesApi.listPending();
       } else {
-        const { view, ...queryParams } = params || {};
+        const { view: _view, ...queryParams } = params || {};
         result = await expensesApi.list(queryParams);
       }
 

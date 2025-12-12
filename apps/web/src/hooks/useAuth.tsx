@@ -20,9 +20,9 @@ import {
 } from "@/lib/auth-helpers";
 
 // Keycloak Configuration
-// These are used in helpers now, but maybe useAuth still needs them? 
+// These are used in helpers now, but maybe useAuth still needs them?
 // Actually useAuth doesn't use KEYCLOAK consts anymore if logic is moved.
-// Checking useAuth body... 
+// Checking useAuth body...
 // It uses buildAuthUrl, exchangeCodeForTokens, buildLogoutUrl.
 // It DOES NOT use KEYCLOAK consts directly.
 
@@ -106,7 +106,7 @@ export function AuthProvider({
 
           window.history.replaceState({}, "", "/");
           await fetchUser();
-        } catch (err) {
+        } catch (_err) {
           setState({
             isAuthenticated: false,
             isLoading: false,

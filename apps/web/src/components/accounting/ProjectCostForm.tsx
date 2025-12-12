@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { ProjectCost } from "@kompass/shared";
 import { useProjectCost } from "@/hooks/useProjectCost";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,7 +64,7 @@ export function ProjectCostForm() {
         ...formData,
         amount: parseFloat(formData.amount),
         type: "project-cost",
-      } as any);
+      } as Partial<ProjectCost>);
       navigate("/project-costs");
     } catch (err) {
       console.error("Failed to save project cost", err);
