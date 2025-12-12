@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { VoiceRecorder } from "@/components/shared/VoiceRecorder";
 
 export function ProtocolForm() {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const initialCustomerId = searchParams.get("customerId") || "";
   const navigate = useNavigate();
   const { protocol, loading, saveProtocol } = useProtocol(id);
 
@@ -17,9 +19,10 @@ export function ProtocolForm() {
   const [formData, setFormData] = useState({
     title: "",
     date: new Date().toISOString().split("T")[0],
-    customerId: "", // In a real app, this would be selected or passed via context
-    participants: "", // Comma separated for now
+    customerId: initialCustomerId,
+    participants: "",
     summary: "",
+    transcription: "", // Stores voice transcription separately for audit trail
   });
 
   useEffect(() => {
@@ -33,6 +36,7 @@ export function ProtocolForm() {
           customerId: protocol.customerId || "",
           participants: protocol.participants?.join(", ") || "",
           summary: protocol.summary || "",
+          transcription: protocol.transcription || "",
         });
       }, 0);
       return () => clearTimeout(timer);
@@ -53,7 +57,11 @@ export function ProtocolForm() {
       const newSummary = prev.summary
         ? `${prev.summary}<p>${text}</p>`
         : `<p>${text}</p>`;
-      return { ...prev, summary: newSummary };
+      // Store transcription separately for audit trail, append to existing
+      const newTranscription = prev.transcription
+        ? `${prev.transcription}\n${text}`
+        : text;
+      return { ...prev, summary: newSummary, transcription: newTranscription };
     });
   };
 
