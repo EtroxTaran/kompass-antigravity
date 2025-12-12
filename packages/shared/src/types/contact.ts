@@ -6,6 +6,10 @@ export interface ContactPerson extends BaseEntity {
   // Basic information
   firstName: string;
   lastName: string;
+
+  // Primary status - marks as main point of contact for customer
+  isPrimary: boolean;
+
   title?: string;
   position?: string;
   department?: string;

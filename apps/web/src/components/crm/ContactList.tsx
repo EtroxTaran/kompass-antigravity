@@ -12,6 +12,17 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Star } from "lucide-react";
+
+// Color-coded styles for decision-making roles
+const roleStyles: Record<string, string> = {
+  decision_maker: "bg-purple-100 text-purple-800 border-purple-300",
+  key_influencer: "bg-blue-100 text-blue-800 border-blue-300",
+  recommender: "bg-green-100 text-green-800 border-green-300",
+  gatekeeper: "bg-orange-100 text-orange-800 border-orange-300",
+  operational_contact: "bg-gray-100 text-gray-800 border-gray-300",
+  informational: "bg-slate-100 text-slate-600 border-slate-300",
+};
 
 interface ContactListProps {
   customerId: string;
@@ -75,7 +86,16 @@ export function ContactList({ customerId }: ContactListProps) {
                 </div>
               </div>
               <div className="flex flex-col gap-1 items-end">
-                <Badge variant="outline" className="text-[10px] uppercase">
+                {contact.isPrimary && (
+                  <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300 text-[10px] uppercase">
+                    <Star className="h-3 w-3 mr-1 fill-current" />
+                    Primary
+                  </Badge>
+                )}
+                <Badge
+                  variant="outline"
+                  className={`text-[10px] uppercase ${roleStyles[contact.decisionMakingRole] || ""}`}
+                >
                   {contact.decisionMakingRole.replace("_", " ")}
                 </Badge>
               </div>

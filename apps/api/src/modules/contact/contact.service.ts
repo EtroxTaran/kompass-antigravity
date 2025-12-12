@@ -67,9 +67,15 @@ export class ContactService {
 
     const contactData = {
       ...dto,
+      isPrimary: dto.isPrimary ?? false,
       assignedLocationIds: dto.assignedLocationIds || [],
       isPrimaryContactForLocations: dto.isPrimaryContactForLocations || [],
     };
+
+    // If setting as primary, clear other primary contacts for this customer
+    if (contactData.isPrimary) {
+      await this.clearPrimaryForCustomer(dto.customerId);
+    }
 
     return this.contactRepository.create(
       contactData as Partial<Contact>,
@@ -112,6 +118,11 @@ export class ContactService {
       });
     }
 
+    // If setting as primary, clear other primary contacts for this customer
+    if (dto.isPrimary) {
+      await this.clearPrimaryForCustomer(existing.customerId, id);
+    }
+
     return this.contactRepository.update(
       id,
       dto as Partial<Contact>,
@@ -128,5 +139,28 @@ export class ContactService {
     await this.findById(id);
 
     return this.contactRepository.delete(id, user.id, user.email);
+  }
+
+  /**
+   * Clears the isPrimary flag for all contacts of a customer except the excluded one.
+   * This ensures only one contact can be marked as primary per customer.
+   */
+  private async clearPrimaryForCustomer(
+    customerId: string,
+    excludeId?: string,
+  ): Promise<void> {
+    const result = await this.findByCustomer(customerId);
+    const contacts = result.data || result;
+
+    for (const contact of contacts) {
+      if (contact.isPrimary && contact._id !== excludeId) {
+        await this.contactRepository.update(
+          contact._id,
+          { isPrimary: false },
+          'system',
+          'system@kompass.local',
+        );
+      }
+    }
   }
 }
